@@ -35,11 +35,13 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.composition.Concentration;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -163,7 +165,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateNewMaterial() {
         materialEditBean.startMaterialCreation();
-       
+
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
 
@@ -282,6 +284,28 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
             logger.error(ExceptionUtils.getStackTrace(e));
             return false;
         }
+    }
+
+    public String getComponentOfComposition(Concentration conc) {
+        Double value = conc.getConcentration();
+        String valueString = "";
+        if (isPrintableValue(value)) {
+            valueString = String.format(Locale.US, " %.4f", value) + conc.getUnitString();
+        }
+        String name = conc.getMaterialName();
+        if (conc.getMaterial().getNames().isEmpty()) {
+            name = "Materialid: " + conc.getMaterialName();
+        }
+
+        return "-" + valueString + " " + name;
+    }
+
+    private boolean isPrintableValue(Double value) {
+        if (value == null) {
+            return false;
+        }
+        return Double.isFinite(value)
+                && !Double.isNaN(value);
 
     }
 }

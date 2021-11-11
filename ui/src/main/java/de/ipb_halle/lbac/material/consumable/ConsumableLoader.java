@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.consumable;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -37,7 +39,14 @@ public class ConsumableLoader implements MaterialLoader {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Material loadMaterial(MaterialEntity entity, EntityManager em, MaterialService materialService, TaxonomyService taxoService, TissueService tissueService) {
+    public Material loadMaterial(
+            MaterialEntity entity,
+            EntityManager em,
+            MaterialService materialService,
+            TaxonomyService taxoService,
+            TissueService tissueService,
+            ACListService aclistService,
+            User currentUser) {
         Consumable c = new Consumable(
                 entity.getMaterialid(),
                 new ArrayList<>(),

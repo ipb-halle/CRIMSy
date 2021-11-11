@@ -26,12 +26,16 @@ import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
+import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
+import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import javax.enterprise.context.SessionScoped;
@@ -45,6 +49,13 @@ public class MateriaBeanMock extends MaterialBean {
 
     private static final long serialVersionUID = 1L;
 
+   
+    public void createStorageInformationBuilder(MessagePresenter messagePresenter,
+            MaterialService materialService,
+            Material material){
+        this.storageInformationBuilder=new StorageInformationBuilder(messagePresenter, materialService,material);
+    }
+    
     boolean rightToEdit = true;
 
     public void setRightToEdit(boolean right) {
@@ -105,6 +116,8 @@ public class MateriaBeanMock extends MaterialBean {
     public void setTaxonomyService(TaxonomyService taxonomyService) {
         this.taxonomyService = taxonomyService;
     }
+    
+    
 
     public void setTissueService(TissueService tissueService) {
         this.tissueService = tissueService;
@@ -116,6 +129,10 @@ public class MateriaBeanMock extends MaterialBean {
 
     public void setCompositionBean(MaterialCompositionBean compositionBean) {
         this.compositionBean = compositionBean;
+    }
+
+    public void setHistoryOperation(HistoryOperation historyOperation) {
+        this.historyOperation = historyOperation;
     }
     
     

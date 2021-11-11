@@ -58,6 +58,12 @@ public class MaterialEditPermission implements Serializable {
         return (isCreate || isOwnerOrPermitted(type, permEDIT)) && !isHistory;
     }
 
+    public boolean isEditAllowed() {
+        boolean isCreate = bean.getMode() == MaterialBean.Mode.CREATE;
+        boolean isHistory = bean.getMode() == MaterialBean.Mode.HISTORY;
+        return (isCreate || isOwnerOrPermitted(null, permEDIT)) && !isHistory;
+    }
+
     public boolean isForwardButtonEnabled() {
         return !bean.getMaterialEditState().getMaterialBeforeEdit().getHistory().isMostRecentVersion(bean.getMaterialEditState().getCurrentVersiondate());
     }

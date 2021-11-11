@@ -75,9 +75,9 @@
                                             <p:inputText
                                                 style="width: 450px"
                                                 styleClass="inputText"
-                                                value=""
+                                                value="#{materialCompositionBean.materialName}"
                                                 placeholder="#{msgs.materialCreation_composition_nameSearchPlaceholder}">
-                                                </p:inputText>            
+                                            </p:inputText>            
                                         </p:column>
                                         <p:column styleClass="borderless">
                                             <p:commandButton
@@ -106,25 +106,22 @@
                                                         format="MDLV2000"
                                                         border="true"
                                                         readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                                        widgetVar="structurePlugin">
+                                                        widgetVar="compositionStructurePlugin">
                                                     </mol:molecule>
                                                     <!-- This JS snippet guarantees proper plugin initialization after
                                                          this p:tab is rendered by AJAX and the tab comes into focus. -->
-                                                    <script>structurePlugin.then(plugin => plugin.init());</script>
+                                                    <script>compositionStructurePlugin.then(plugin => plugin.init());</script>
                                                 </p:tab>
                                                 <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
                                                 </p:tab>
                                                 <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
-
                                                 </p:tab>
                                             </p:tabView>
                                         </p:column>             
                                     </p:row>
-
                                 </p:panelGrid>
-
                             </p:column>
                             <p:column style="vertical-align: top;min-width:30%;max-width: 30%;text-align: center;" styleClass="borderless compositionMaterialTable" >
                                 <h:outputText 
@@ -138,7 +135,7 @@
                                     saveState="false"
                                     paginated="true">
                                     <b:dataTableColumn
-                                        label="ID"
+                                        label="#{msgs.materialCreation_composition_concentrationsID}"
                                         value="#{material.getId()}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
@@ -151,8 +148,8 @@
                                             ajax="true"
                                             look="link"
                                             type="button"
-                                            tooltip="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"
-                                            disabled="#{materialBean.isInHistoryMode()}"
+                                            disabled="#{!materialBean.permission.isEditAllowed()}"
+                                            tooltip="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"                                        
                                             action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
                                             update="@(.resultTable)"
                                             icon="plus"/>
@@ -175,12 +172,12 @@
                                     var="concentration"
                                     saveState="false"
                                     paginated="true">
-                                    <b:dataTableColumn
-                                        label="ID"
-                                        value="#{concentration.getMaterialId()}">
+                                    <b:dataTableColumn                                        
+                                        label="#{msgs.materialCreation_composition_concentrationsID}"
+                                        value="#{materialCompositionBean.getFormatedIdOfConcentration(concentration)}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
-                                        label="Name"
+                                        label="#{msgs.materialCreation_composition_concentrationsName}"
                                         value="#{concentration.getMaterialName()}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
@@ -190,15 +187,15 @@
                                     <b:dataTableColumn
                                         label="#{msgs.materialCreation_composition_concentrationsValue}">
                                         <b:inputText
-                                            disabled="#{materialBean.isInHistoryMode()}"
+                                            disabled="#{!materialBean.permission.isEditAllowed()}"
                                             value="#{concentration.concentration}"
                                             />
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
-                                       label="#{msgs.materialCreation_composition_concentrationsUnit}">
+                                        label="#{msgs.materialCreation_composition_concentrationsUnit}">
                                         <b:selectOneMenu 
                                             value="#{concentration.unit}"
-                                            disabled="#{materialBean.isInHistoryMode()}"
+                                            disabled="#{!materialBean.permission.isEditAllowed()}"
                                             >
                                             <f:selectItems
                                                 value="#{materialCompositionBean.availableAmountUnits}"
@@ -213,7 +210,7 @@
                                             type="button"
                                             icon="minus"
                                             tooltip="#{msgs.materialCreation_composition_concentrationsRemoveMaterial}"
-                                            disabled="#{materialBean.isInHistoryMode()}"
+                                            disabled="#{!materialBean.permission.isEditAllowed()}"
                                             action="#{materialCompositionBean.actionRemoveConcentrationFromComposition(concentration)}"
                                             update="@(.resultTable)"
                                             ajax="true"/>
@@ -226,5 +223,4 @@
             </p:tab>
         </ui:composition>
     </h:body>
-
 </html>

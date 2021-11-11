@@ -34,7 +34,7 @@ public class StorageHistoryController implements HistoryController<MaterialStora
     }
 
     @Override
-    public void applyPositiveDifference(MaterialStorageDifference diff) {
+    public void applyPositiveDifference(MaterialStorageDifference diff) {     
         if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
             materialBean.getStorageInformationBuilder().setRemarks(diff.getDescriptionNew());
         }
@@ -58,7 +58,7 @@ public class StorageHistoryController implements HistoryController<MaterialStora
     }
 
     @Override
-    public void applyNegativeDifference(MaterialStorageDifference diff) {
+    public void applyNegativeDifference(MaterialStorageDifference diff) {     
         if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
             materialBean.getStorageInformationBuilder().setRemarks(diff.getDescriptionOld());
         }

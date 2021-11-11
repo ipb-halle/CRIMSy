@@ -30,6 +30,8 @@ import de.ipb_halle.lbac.util.Unit;
 import java.util.Objects;
 
 /**
+ * Moves the state of the compositionBean forward and backward in time driven by
+ * a given difference
  *
  * @author fmauz
  */
@@ -50,6 +52,8 @@ public class CompositionHistoryController implements HistoryController<Compositi
     }
 
     /**
+     * Calculates the new state of the compositionBean driven by the given
+     * CompositionDifference
      *
      * @param diff
      */
@@ -60,8 +64,8 @@ public class CompositionHistoryController implements HistoryController<Compositi
             Double concentrationOld = diff.getConcentrations_old().get(i);
 
             handleDelta(
-                    diff.getMaterialIds_new().get(i),
                     diff.getMaterialIds_old().get(i),
+                    diff.getMaterialIds_new().get(i),
                     concentrationOld, concentrationNew,
                     getUnitFromString(diff.getUnits_old().get(i)),
                     getUnitFromString(diff.getUnits_new().get(i))
@@ -71,6 +75,8 @@ public class CompositionHistoryController implements HistoryController<Compositi
     }
 
     /**
+     * Calculates the new state of the compositionBean driven by the given
+     * CompositionDifference
      *
      * @param diff
      */
@@ -81,8 +87,8 @@ public class CompositionHistoryController implements HistoryController<Compositi
             Double concentrationNew = diff.getConcentrations_new().get(i);
 
             handleDelta(
-                    diff.getMaterialIds_old().get(i),
                     diff.getMaterialIds_new().get(i),
+                    diff.getMaterialIds_old().get(i),
                     concentrationNew, concentrationOld,
                     getUnitFromString(diff.getUnits_new().get(i)),
                     getUnitFromString(diff.getUnits_old().get(i))
@@ -99,53 +105,102 @@ public class CompositionHistoryController implements HistoryController<Compositi
     }
 
     private void handleDelta(
-            Integer materialIdToInsert,
             Integer materialIdToRemove,
+            Integer materialIdToInsert,
             Double concentrationToRemove,
             Double concentrationToInsert,
             Unit unitToRemove,
             Unit unitToInsert) {
         if (materialIdToInsert != null) {
-            if (!compositionBean.isMaterialAlreadyInComposition(materialIdToInsert)) {
-                addNewMaterialToComposition(materialIdToInsert, concentrationToInsert, unitToInsert);
-            } else {
-                if (concentrationToInsert != null) {
-                    if (concentrationToRemove == null) {
-                        compositionBean.getConcentrationWithMaterial(materialIdToInsert).setConcentration(concentrationToInsert);
-                    } else if (Math.abs(concentrationToInsert - concentrationToRemove) > Double.MIN_VALUE) {
-                        compositionBean.getConcentrationWithMaterial(materialIdToInsert).setConcentration(concentrationToInsert);
-                    }
-                } else if (concentrationToRemove != null) {
-                    compositionBean.getConcentrationWithMaterial(materialIdToInsert).setConcentration(null);
-                }
-                if (!Objects.equals(unitToInsert, unitToRemove)) {
-                    compositionBean.getConcentrationWithMaterial(materialIdToInsert).setUnit(unitToInsert);
-                }
-            }
+            addOrChangeConcentration(materialIdToRemove, materialIdToInsert, concentrationToRemove, concentrationToInsert, unitToRemove, unitToInsert);
         } else {
-            removeConcentration(materialIdToRemove);
+            removeConcentrationFromComposition(materialIdToRemove);
         }
+    }
+
+    private void addOrChangeConcentration(
+            Integer materialIdToRemove,
+            Integer materialIdToInsert,
+            Double concentrationToRemove,
+            Double concentrationToInsert,
+            Unit unitToRemove,
+            Unit unitToInsert) {
+        Material loadedMaterialToInsert = getMaterialWithPermissionCheck(materialIdToInsert);
+
+        if (areMaterialsEqual(materialIdToInsert, materialIdToRemove)
+                && isMaterialInaccessible(loadedMaterialToInsert.getId())) {
+            changeConcentration(concentrationToRemove, concentrationToInsert, loadedMaterialToInsert.getId());
+            changeUnit(unitToRemove, unitToInsert, loadedMaterialToInsert.getId());
+        } else if (!compositionBean.isMaterialAlreadyInComposition(materialIdToInsert)) {
+            addNewConcentration(loadedMaterialToInsert, concentrationToInsert, unitToInsert);
+        } else {
+            changeConcentration(concentrationToRemove, concentrationToInsert, materialIdToInsert);
+            changeUnit(unitToRemove, unitToInsert, loadedMaterialToInsert.getId());
+        }
+    }
+
+    private void addNewConcentration(
+            Material loadedMaterialToInsert,
+            Double concentrationToInsert,
+            Unit unitToInsert) {
+        compositionBean.getConcentrationsInComposition()
+                .add(new Concentration(loadedMaterialToInsert, concentrationToInsert, unitToInsert));
+    }
+
+    private boolean isMaterialInaccessible(int materialId) {
+        return materialId == -1;
+    }
+
+    private void removeConcentrationFromComposition(Integer materialIdToRemove) {
+        Material m = getMaterialWithPermissionCheck(materialIdToRemove);
+        removeConcentration(m.getId());
+    }
+
+    private boolean areMaterialsEqual(Integer materialId, Integer otherMaterialId) {
+        return Objects.equals(materialId, otherMaterialId);
+    }
+
+    private void changeConcentration(
+            Double concentrationToRemove,
+            Double concentrationToInsert,
+            Integer materialIdToInsert) {
+        if (!areConcentrationsEqual(concentrationToInsert, concentrationToRemove)) {
+            compositionBean.getConcentrationWithMaterial(materialIdToInsert)
+                    .setConcentration(concentrationToInsert);
+        }
+    }
+
+    private void changeUnit(
+            Unit unitToRemove,
+            Unit unitToInsert,
+            int materialIdToInsert) {
+        if (!Objects.equals(unitToInsert, unitToRemove)) {
+            compositionBean.getConcentrationWithMaterial(materialIdToInsert)
+                    .setUnit(unitToInsert);
+        }
+    }
+
+    private boolean areConcentrationsEqual(Double concentration1, Double concentration2) {
+        if (concentration1 == null && concentration2 == null) {
+            return true;
+        }
+        if (concentration1 != null && concentration2 != null) {
+            return (Math.abs(concentration1 - concentration2) <= Double.MIN_VALUE);
+        }
+        return false;
+
     }
 
     private void removeConcentration(int materialId) {
-        compositionBean.getConcentrationsInComposition().remove(compositionBean.getConcentrationWithMaterial(materialId));
+        compositionBean.getConcentrationsInComposition()
+                .remove(compositionBean
+                        .getConcentrationWithMaterial(materialId));
     }
 
-    private void addConcentration(int materialId, Double oldConcentration, Unit unit) {
-        if (!compositionBean.isMaterialAlreadyInComposition(materialId)) {
-            addNewMaterialToComposition(materialId, oldConcentration, unit);
-        } else {
-            compositionBean.getConcentrationWithMaterial(materialId).setConcentration(oldConcentration);
-            compositionBean.getConcentrationWithMaterial(materialId).setUnit(unit);
+    private Material getMaterialWithPermissionCheck(Integer materialId) {
+        if (materialId == null) {
+            return null;
         }
-    }
-
-    private void addNewMaterialToComposition(int materialId, Double concentration, Unit unit) {
-        Material material = getMaterialWithPermissionCheck(materialId);
-        compositionBean.getConcentrationsInComposition().add(new Concentration(material, concentration, unit));
-    }
-
-    private Material getMaterialWithPermissionCheck(int materialId) {
         Material material = materialService.loadMaterialById(materialId);
         if (!aclistService.isPermitted(ACPermission.permREAD, material, user)) {
             material = InaccessibleMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());

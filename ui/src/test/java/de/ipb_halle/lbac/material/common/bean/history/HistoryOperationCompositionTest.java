@@ -17,15 +17,19 @@
  */
 package de.ipb_halle.lbac.material.common.bean.history;
 
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.Concentration;
+import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
+import de.ipb_halle.lbac.util.Unit;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -64,6 +68,26 @@ public class HistoryOperationCompositionTest extends HistoryOperationTest {
         checkCurrentState();
     }
 
+    //Make S2 and S1 inaccessible for the public User
+    @Test
+    public void test02_checkHistoryOperationWithInnacessibleMaterials() throws Exception {
+        compositionBean.getConcentrationsInComposition().clear();
+        compositionBean.getConcentrationsInComposition().add(new Concentration(InaccessibleMaterial.createNewInstance(acListReadable), 0.5d, Unit.getUnit("g")));
+        compositionBean.getConcentrationsInComposition().add(new Concentration(biomaterial, null, null));
+        changeACLOfMAterialToAdminOnly(structureId1);
+        changeACLOfMAterialToAdminOnly(structureId2);
+
+        instance.applyNextNegativeDifference();
+        Assert.assertEquals(2, countInaccessibleMaterialsInComposition());
+        instance.applyNextNegativeDifference();
+        Assert.assertEquals(1, countInaccessibleMaterialsInComposition());
+        instance.applyNextPositiveDifference();
+        Assert.assertEquals(2, countInaccessibleMaterialsInComposition());
+        instance.applyNextPositiveDifference();
+        Assert.assertEquals(1, countInaccessibleMaterialsInComposition());
+
+    }
+
     @Override
     protected void checkCurrentState() {
         Assert.assertEquals(2, compositionBean.getConcentrationsInComposition().size());
@@ -71,7 +95,6 @@ public class HistoryOperationCompositionTest extends HistoryOperationTest {
         Assert.assertEquals("g", getConcentrationByMaterialId(structureId1).getUnit().toString());
         Assert.assertNull(getConcentrationByMaterialId(biomaterialId).getConcentration());
         Assert.assertNull(getConcentrationByMaterialId(biomaterialId).getUnit());
-
     }
 
     @Override
@@ -120,6 +143,23 @@ public class HistoryOperationCompositionTest extends HistoryOperationTest {
         diff.addConcentrationDifference(biomaterialId, 0.3d, null);
         diff.addDifference(structureId2, null, null, null, null, null);
         return diff;
+    }
+
+    private void changeACLOfMAterialToAdminOnly(int materialId) throws Exception {
+        Material material = materialService.loadMaterialById(materialId);
+        Material copiedMaterial = material.copyMaterial();
+        copiedMaterial.setACList(context.getAdminOnlyACL());
+        materialService.saveEditedMaterial(copiedMaterial, material, context.getAdminOnlyACL().getId(), publicUser.getId());
+    }
+
+    private int countInaccessibleMaterialsInComposition() {
+        int count = 0;
+        for (Concentration c : compositionBean.getConcentrationsInComposition()) {
+            if (c.getMaterialId() == -1) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Deployment

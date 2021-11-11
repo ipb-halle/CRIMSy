@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
@@ -32,7 +34,14 @@ public class TaxonomyLoader implements MaterialLoader {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Material loadMaterial(MaterialEntity entity, EntityManager em, MaterialService materialService, TaxonomyService taxoService, TissueService tissueService) {
+    public Material loadMaterial(
+            MaterialEntity entity,
+            EntityManager em,
+            MaterialService materialService,
+            TaxonomyService taxoService,
+            TissueService tissueService,
+            ACListService aclistService,
+            User currentUser) {
         return taxoService.loadTaxonomyById(entity.getMaterialid());
     }
 

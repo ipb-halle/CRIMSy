@@ -36,6 +36,7 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.mocks.MaterialOverviewBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectType;
@@ -183,6 +184,29 @@ public class MaterialOverviewBeanTest extends TestBase {
         Assert.assertTrue(instance.hasAccessRight(m, ACPermission.permEDIT.toString()));
         Assert.assertFalse(instance.hasAccessRight(m, ACPermission.permGRANT.toString()));
         Assert.assertFalse(instance.hasAccessRight(m, ACPermission.permREAD.toString()));
+    }
+
+    @Test
+    public void test007_getConcentrationString() {
+        Concentration c = new Concentration(material);
+
+        Assert.assertEquals("- Test-Struktur", instance.getComponentOfComposition(c));
+
+        c.setConcentration(24.83748237);
+        Assert.assertEquals("- 24.8375% Test-Struktur", instance.getComponentOfComposition(c));
+
+        c.setConcentration(Double.POSITIVE_INFINITY);
+        Assert.assertEquals("- Test-Struktur", instance.getComponentOfComposition(c));
+
+        c.setConcentration(Double.NEGATIVE_INFINITY);
+        Assert.assertEquals("- Test-Struktur", instance.getComponentOfComposition(c));
+
+        c.setConcentration(Double.NaN);
+        Assert.assertEquals("- Test-Struktur", instance.getComponentOfComposition(c));
+
+        c.setConcentration(20d);
+        material.getNames().clear();
+        Assert.assertEquals("- 20.0000% Materialid: "+material.getId(), instance.getComponentOfComposition(c));
     }
 
     @Deployment

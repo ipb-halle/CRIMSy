@@ -104,7 +104,7 @@ public class MaterialHazardBuilder {
 
         for (int i = 0; i < BSL_IDS.length; i++) {
             if (hazards.keySet().contains(hazardService.getHazardById(BSL_IDS[i]))) {
-                this.bioSavetyLevel = possibleBioSavetyLevels.get(i + 1);
+                this.bioSavetyLevel = possibleBioSavetyLevels.get(i);
             }
         }
 

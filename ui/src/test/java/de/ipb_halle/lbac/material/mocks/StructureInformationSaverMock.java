@@ -35,13 +35,13 @@ public class StructureInformationSaverMock extends StructureInformationSaver {
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (id,molecule) VALUES(?,?)";
     private int molId = 0;
 
+    
+    
+    
     @Override
     public void saveMaterial(Material m, EntityManager em) {
         molId=(int)(Math.random()*100000000);
-        Structure s = (Structure) m;
-        for (IndexEntry ie : s.getIndices()) {
-            em.persist(ie.toDbEntity(m.getId(), 0));
-        }
+        Structure s = (Structure) m;        
         if (s.getMolecule() != null && s.getMolecule().getStructureModel() != null) {
             Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
                     .setParameter(1, molId)

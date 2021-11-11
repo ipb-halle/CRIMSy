@@ -221,17 +221,17 @@ public class MaterialService implements Serializable {
             MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(graph, "materials");
             Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);
             String sql = sqlBuilder.query(con, createOrderList());
-
             Query q = em.createNativeQuery(sql, MaterialEntity.class);
             q.setFirstResult(request.getFirstResult());
             q.setMaxResults(request.getMaxResults());
             for (Value param : sqlBuilder.getValueList()) {
                 q.setParameter(param.getArgumentKey(), param.getValue());
+
             }
             @SuppressWarnings("unchecked")
             List<MaterialEntity> entities = q.getResultList();
             for (MaterialEntity me : entities) {
-                Material material = loadMaterial(me);
+                Material material = loadMaterial(me, request.getUser());
                 result.addResult(material);
             }
             return result;
@@ -369,11 +369,11 @@ public class MaterialService implements Serializable {
         }
     }
 
-    private Material loadMaterial(MaterialEntity entity) {
+    private Material loadMaterial(MaterialEntity entity, User user) {
         Material material = MaterialType.getTypeById(entity.getMaterialtypeid())
                 .getFactory()
                 .createLoader()
-                .loadMaterial(entity, em, this, taxonomyService, tissueService);
+                .loadMaterial(entity, em, this, taxonomyService, tissueService, aclService, user);
 
         material.setACList(aclService.loadById(entity.getACList()));
         material.setOwner(memberService.loadUserById(entity.getOwner()));
@@ -395,7 +395,7 @@ public class MaterialService implements Serializable {
      */
     public Material loadMaterialById(int id) {
         MaterialEntity entity = em.find(MaterialEntity.class, id);
-        return loadMaterial(entity);
+        return loadMaterial(entity, null);
     }
 
     /**
