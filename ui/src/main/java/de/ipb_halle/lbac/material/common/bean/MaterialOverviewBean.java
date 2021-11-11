@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -289,13 +290,13 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         Double value = conc.getConcentration();
         String valueString = "";
         if (isPrintableValue(value)) {
-            valueString = String.format(" %.4f", value) + conc.getUnitString();
+            valueString = String.format(Locale.US, " %.4f", value) + conc.getUnitString();
         }
         String name = conc.getMaterialName();
-        if(conc.getMaterial().getNames().isEmpty()){
-            name="Materialid: "+conc.getMaterialName();
+        if (conc.getMaterial().getNames().isEmpty()) {
+            name = "Materialid: " + conc.getMaterialName();
         }
-        
+
         return "-" + valueString + " " + name;
     }
 

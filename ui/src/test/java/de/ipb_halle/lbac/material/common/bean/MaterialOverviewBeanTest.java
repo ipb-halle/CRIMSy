@@ -193,7 +193,7 @@ public class MaterialOverviewBeanTest extends TestBase {
         Assert.assertEquals("- Test-Struktur", instance.getComponentOfComposition(c));
 
         c.setConcentration(24.83748237);
-        Assert.assertEquals("- 24,8375% Test-Struktur", instance.getComponentOfComposition(c));
+        Assert.assertEquals("- 24.8375% Test-Struktur", instance.getComponentOfComposition(c));
 
         c.setConcentration(Double.POSITIVE_INFINITY);
         Assert.assertEquals("- Test-Struktur", instance.getComponentOfComposition(c));
@@ -206,7 +206,7 @@ public class MaterialOverviewBeanTest extends TestBase {
 
         c.setConcentration(20d);
         material.getNames().clear();
-        Assert.assertEquals("- 20,0000% Materialid: "+material.getId(), instance.getComponentOfComposition(c));
+        Assert.assertEquals("- 20.0000% Materialid: "+material.getId(), instance.getComponentOfComposition(c));
     }
 
     @Deployment
