@@ -17,37 +17,32 @@
  */
 package de.ipb_halle.lbac.material.consumable;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.Invalidity;
+import de.ipb_halle.lbac.material.common.MaterialNameValidator;
 import de.ipb_halle.lbac.material.common.MaterialValidator;
-import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
-import de.ipb_halle.lbac.material.common.service.MaterialFactory;
-import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author fmauz
  */
-public class ConsumableFactory implements MaterialFactory {
+public class ConsumableValidator implements MaterialValidator {
 
-    private static final long serialVersionUID = 1L;
+    MaterialNameValidator nameValidator;
+    Set<Invalidity> errors = new HashSet<>();
 
     @Override
-    public MaterialSaver createSaver() {
-        return new ConsumableSaver();
+    public boolean checkValidity(MaterialBean bean) {
+        nameValidator = new MaterialNameValidator();
+        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames(),errors);
+        return namesValide;
     }
 
     @Override
-    public MaterialLoader createLoader() {
-        return new ConsumableLoader();
+    public Set<Invalidity> getInvalidities() {
+        return errors;
     }
 
-    @Override
-    public IMaterialComparator createComparator() {
-        return new ConsumableComparator();
-    }
-
-    @Override
-    public MaterialValidator createValidator() {
-        return new ConsumableValidator();
-    }
 }

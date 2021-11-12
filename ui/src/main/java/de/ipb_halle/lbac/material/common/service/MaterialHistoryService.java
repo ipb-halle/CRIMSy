@@ -36,6 +36,9 @@ import de.ipb_halle.lbac.material.structure.StructureHistEntity;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity;
 import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
+import de.ipb_halle.lbac.material.sequence.history.SequenceDifference;
+import de.ipb_halle.lbac.material.sequence.history.SequenceHistoryEntity;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -183,6 +186,23 @@ public class MaterialHistoryService implements Serializable {
             + "unit_new "
             + "FROM components_history "
             + "WHERE materialid=:mid";
+
+    private final String SQL_GET_SEQUENCE_HISTORY = "SELECT "
+            + "id, "
+            + "actorid, "
+            + "mdate, "
+            + "digest, "
+            + "action, "
+            + "sequenceString_old, "
+            + "sequenceString_new, "
+            + "sequenceType_old, "
+            + "sequenceType_new, "
+            + "circular_old, "
+            + "circular_new, "
+            + "annotations_old, "
+            + "annotations_new "
+            + "FROM sequences_history "
+            + "WHERE id=:mid";
     
     Logger logger = LogManager.getLogger(this.getClass().getName());
     public MaterialService materialService;
@@ -191,9 +211,7 @@ public class MaterialHistoryService implements Serializable {
         this.materialService = materialService;
     }
     
-    public MaterialHistory loadHistoryOfMaterial(
-            Integer materialId) {
-        
+    public MaterialHistory loadHistoryOfMaterial(Integer materialId) {
         MaterialHistory history = new MaterialHistory();
         try {
             loadOverviewHistory(materialId, history);
@@ -204,17 +222,22 @@ public class MaterialHistoryService implements Serializable {
             loadTaxonomyHistory(materialId, history);
             loadBioMaterialHistory(materialId, history);
             loadComponents(materialId, history);
+            loadSequenceHistory(materialId, history);
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return history;
     }
-    
+
     @SuppressWarnings("unchecked")
     protected void loadIndexHistory(int materialId, MaterialHistory history) {
         List<MaterialIndexHistoryEntity> indexHistory = materialService.getEm().createNativeQuery(SQL_GET_INDEX_HISTORY, MaterialIndexHistoryEntity.class).setParameter("mid", materialId).getResultList();
+        if (indexHistory == null) {
+            return;
+        }
+
         Map<Date, ArrayList<MaterialIndexHistoryEntity>> diffsByDate = new HashMap<>();
-        
+
         for (MaterialIndexHistoryEntity mihe : indexHistory) {
             if (diffsByDate.get(mihe.getmDate()) == null) {
                 diffsByDate.put(mihe.getmDate(), new ArrayList<>());
@@ -225,7 +248,7 @@ public class MaterialHistoryService implements Serializable {
             history.addDifference(new MaterialIndexDifference(diffsByDate.get(d)));
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private void loadComponents(int materialId, MaterialHistory history) {
         List<CompositionHistoryEntity> componentHistory
@@ -233,13 +256,27 @@ public class MaterialHistoryService implements Serializable {
                         SQL_GET_COMPONENTS_HISTORY, CompositionHistoryEntity.class)
                         .setParameter("mid", materialId)
                         .getResultList();
-        
+
         if (componentHistory != null && !componentHistory.isEmpty()) {
             history.addDifference(new CompositionDifference(componentHistory, materialId));
         }
-        
     }
-    
+
+    @SuppressWarnings("unchecked")
+    private void loadSequenceHistory(Integer materialId, MaterialHistory history) {
+        List<SequenceHistoryEntity> entities = materialService.getEm()
+                .createNativeQuery(SQL_GET_SEQUENCE_HISTORY,
+                        SequenceHistoryEntity.class)
+                .setParameter("mid", materialId).getResultList();
+        if (entities == null) {
+            return;
+        }
+
+        for (SequenceHistoryEntity entity : entities) {
+            history.addDifference(SequenceDifference.fromSequenceHistoryEntity(entity));
+        }
+    }
+
     public void loadBioMaterialHistory(int materialId, MaterialHistory history) {
         @SuppressWarnings("unchecked")
         List<BioMaterialHistoryEntity> dbEntities = materialService.
@@ -247,40 +284,42 @@ public class MaterialHistoryService implements Serializable {
                 createNativeQuery(SQL_GET_BIOMATERIAL_HISTORY, BioMaterialHistoryEntity.class)
                 .setParameter("material_id", materialId)
                 .getResultList();
+        if (dbEntities == null) {
+            return;
+        }
+
         for (BioMaterialHistoryEntity dbentity : dbEntities) {
             history.addDifference(new BioMaterialDifference(dbentity));
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    private void loadStructureHistory(
-            int materialId,
-            MaterialHistory history) {
-        
-        try {
-            List<StructureHistEntity> dbEntities = materialService.getEm()
-                    .createNativeQuery(SQL_GET_STRUCTURE_HISTORY, StructureHistEntity.class)
-                    .setParameter("mid", materialId)
-                    .getResultList();
-            
-            for (StructureHistEntity dbe : dbEntities) {
-                history.addDifference(new MaterialStructureDifference(
-                        dbe,
-                        loadMolecule(dbe.getMoleculeid_old()),
-                        loadMolecule(dbe.getMoleculeid_new())));
-            }
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+    private void loadStructureHistory(int materialId, MaterialHistory history) {
+        List<StructureHistEntity> dbEntities = materialService.getEm()
+                .createNativeQuery(SQL_GET_STRUCTURE_HISTORY,
+                        StructureHistEntity.class)
+                .setParameter("mid", materialId).getResultList();
+        if (dbEntities == null) {
+            return;
+        }
+
+        for (StructureHistEntity dbe : dbEntities) {
+            history.addDifference(new MaterialStructureDifference(dbe,
+                    loadMolecule(dbe.getMoleculeid_old()),
+                    loadMolecule(dbe.getMoleculeid_new())));
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public void loadTaxonomyHistory(int materialId, MaterialHistory history) {
         List<TaxonomyHistEntity> hists = materialService.getEm()
                 .createNativeQuery(SQL_GET_TAXONOMY_HISTORY, TaxonomyHistEntity.class)
                 .setParameter("taxoid", materialId)
                 .getResultList();
-        
+        if (hists == null) {
+            return;
+        }
+
         for (TaxonomyHistEntity hist : hists) {
             TaxonomyDifference diff = new TaxonomyDifference();
             diff.setNewLevelId(hist.getLevel_new());
@@ -292,7 +331,6 @@ public class MaterialHistoryService implements Serializable {
             diff.initialise(materialId, hist.getId().getActorid(), hist.getId().getMdate());
             history.addDifference(diff);
         }
-        
     }
     
     @SuppressWarnings("unchecked")
@@ -301,7 +339,10 @@ public class MaterialHistoryService implements Serializable {
                 .createNativeQuery(SQL_GET_OVERVIEW_HISTORY)
                 .setParameter("mid", materialId)
                 .getResultList();
-        
+        if (hists == null) {
+            return;
+        }
+
         for (Object[] mhe : hists) {
             MaterialOverviewDifference md = new MaterialOverviewDifference();
             md.setMaterialID((int) mhe[0]);
@@ -326,14 +367,17 @@ public class MaterialHistoryService implements Serializable {
             history.addDifference(md);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     protected void loadHazardHistory(int materialId, MaterialHistory history) {
-        
         List<HazardsMaterialHistEntity> dbEntities = materialService.getEm()
                 .createNativeQuery(SQL_GET_HAZARD_HISTORY, HazardsMaterialHistEntity.class)
                 .setParameter("mid", materialId)
                 .getResultList();
+        if (dbEntities == null) {
+            return;
+        }
+
         Map<Date, List<HazardsMaterialHistEntity>> entitiesByDate = new HashMap<>();
         if (dbEntities.size() > 0) {
             for (HazardsMaterialHistEntity dbe : dbEntities) {
@@ -347,34 +391,38 @@ public class MaterialHistoryService implements Serializable {
             }
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     protected void loadStorageHistory(int materialId, MaterialHistory history) {
-        
         Map<Date, StorageClassHistoryEntity> sortedClassHistories = new HashMap<>();
         Map<Date, ArrayList<StorageConditionHistoryEntity>> sortedConditionHistories = new HashMap<>();
         List<StorageClassHistoryEntity> classHistoryEntities = materialService.getEm()
                 .createNativeQuery(SQL_GET_STORAGE_CLASS_HISTORY, StorageClassHistoryEntity.class)
                 .setParameter("mid", materialId)
                 .getResultList();
-        
-        for (StorageClassHistoryEntity entity : classHistoryEntities) {
-            Date date = entity.getId().getMdate();
-            sortedClassHistories.put(date, entity);
+
+        if (classHistoryEntities != null) {
+            for (StorageClassHistoryEntity entity : classHistoryEntities) {
+                Date date = entity.getId().getMdate();
+                sortedClassHistories.put(date, entity);
+            }
         }
         
         List<StorageConditionHistoryEntity> classConditionEntities = materialService.getEm()
                 .createNativeQuery(SQL_GET_STORAGE_CONDITION_HISTORY, StorageConditionHistoryEntity.class)
                 .setParameter("mid", materialId)
                 .getResultList();
-        for (StorageConditionHistoryEntity entity : classConditionEntities) {
-            Date date = entity.getmDate();
-            if (sortedConditionHistories.get(date) == null) {
-                sortedConditionHistories.put(date, new ArrayList<>());
+
+        if (classConditionEntities != null) {
+            for (StorageConditionHistoryEntity entity : classConditionEntities) {
+                Date date = entity.getmDate();
+                if (sortedConditionHistories.get(date) == null) {
+                    sortedConditionHistories.put(date, new ArrayList<>());
+                }
+                sortedConditionHistories.get(date).add(entity);
             }
-            sortedConditionHistories.get(date).add(entity);
-            
         }
+
         for (Date d : sortedClassHistories.keySet()) {
             ArrayList<StorageConditionHistoryEntity> conditions = sortedConditionHistories.get(d);
             history.addDifference(new MaterialStorageDifference(sortedClassHistories.get(d), conditions));
@@ -386,19 +434,17 @@ public class MaterialHistoryService implements Serializable {
             history.addDifference(new MaterialStorageDifference(null, sortedConditionHistories.get(d)));
         }
     }
-    
+
     protected Molecule loadMolecule(Integer moleculeId) {
         if (moleculeId == null) {
             return null;
         }
-        
+
         Query q6 = materialService.getEm().createNativeQuery(SQL_GET_MOLECULE);
         q6.setParameter("mid", moleculeId);
         Object[] result = (Object[]) q6.getSingleResult();
         
         String molecule = (String) result[1];
         return new Molecule(molecule, moleculeId);
-        
     }
-    
 }

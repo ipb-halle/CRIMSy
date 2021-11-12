@@ -424,7 +424,7 @@ public class MaterialBeanTest extends TestBase {
         instance.getMaterialNameBean().getNames().clear();
         instance.actionSaveMaterial();
 
-        Assert.assertEquals("There must be at least one materialname", instance.getErrorMessages());
+        Assert.assertEquals("materialCreation_error_NO_MATERIAL_NAME", instance.getErrorMessages());
     }
 
     @Test

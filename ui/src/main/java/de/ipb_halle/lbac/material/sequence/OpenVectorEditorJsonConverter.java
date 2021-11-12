@@ -18,9 +18,6 @@
 package de.ipb_halle.lbac.material.sequence;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -33,40 +30,44 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class OpenVectorEditorJsonConverter {
     public SequenceData jsonToSequenceData(String json, SequenceType sequenceType)
-            throws OpenVectorEditorJsonConverterException,
-            JsonProcessingException, IOException {
-        SequenceData result = new SequenceData();
+            throws OpenVectorEditorJsonConverterException, JsonProcessingException, IOException {
+        SequenceData.Builder builder = SequenceData.builder();
+
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false);
         JsonNode root = mapper.readTree(json);
 
         boolean isProteinFromJson = root.at("/isProtein").asBoolean(false);
         if (sequenceType == SequenceType.PROTEIN) {
             if (!isProteinFromJson) {
-                throw new OpenVectorEditorJsonConverterException("Not a protein sequence.");
+                throw new OpenVectorEditorJsonConverterException(
+                        "Not a protein sequence.");
             }
-            result.setSequenceString(root.at("/proteinSequence").asText());
+            builder.sequenceString(root.at("/proteinSequence").asText());
         } else {
             if (isProteinFromJson) {
-                throw new OpenVectorEditorJsonConverterException("Not a nucleotide sequence.");
+                throw new OpenVectorEditorJsonConverterException(
+                        "Not a nucleotide sequence.");
             }
-            result.setSequenceString(root.at("/sequence").asText());
+            builder.sequenceString(root.at("/sequence").asText());
         }
-        result.setSequenceType(sequenceType);
-        result.setCircular(root.at("/circular").asBoolean());
+        builder.sequenceType(sequenceType);
+        builder.circular(root.at("/circular").asBoolean(false));
 
-        List<SequenceAnnotation> annotations = new ArrayList<>();
-        for (JsonNode featureNode : root.at("/features")) {
-            SequenceAnnotation annotation = mapper.treeToValue(featureNode,
-                    SequenceAnnotation.class);
-            annotations.add(annotation);
-        }
-        result.setAnnotations(annotations);
+//        List<SequenceAnnotation> annotations = new ArrayList<>();
+//        for (JsonNode featureNode : root.at("/features")) {
+//            SequenceAnnotation annotation = mapper.treeToValue(featureNode,
+//                    SequenceAnnotation.class);
+//            annotations.add(annotation);
+//        }
+        String annotations = root.at("/features").toString();
+        builder.annotations(annotations);
 
-        return result;
+        return builder.build();
     }
 
-    public String sequenceDataToJson(SequenceData data) throws JsonProcessingException {
+    public String sequenceDataToJson(SequenceData data) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
 
@@ -76,11 +77,22 @@ public class OpenVectorEditorJsonConverter {
         } else {
             root.put("sequence", data.getSequenceString());
         }
-        root.put("circular", data.isCircular());
 
-        int i = 1;
-        for (SequenceAnnotation annotation : data.getAnnotations()) {
-            root.with("features").putPOJO("feature_" + i++, annotation);
+        Boolean isCircular = data.isCircular();
+        if (isCircular == null) {
+            root.put("circular", false);
+        } else {
+            root.put("circular", isCircular);
+        }
+
+//        int i = 1;
+//        for (SequenceAnnotation annotation : data.getAnnotations()) {
+//            root.with("features").putPOJO("feature_" + i++, annotation);
+//        }
+        String annotations = data.getAnnotations();
+        if ((annotations != null) && (!annotations.isEmpty())) {
+            JsonNode annotationsNode = mapper.readTree(annotations);
+            root.set("features", annotationsNode);
         }
 
         return mapper.writeValueAsString(root);

@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.common.service;
 
 import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.MaterialValidator;
 import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
 import java.io.Serializable;
 
@@ -32,5 +33,7 @@ public interface MaterialFactory extends Serializable {
     public MaterialLoader createLoader();
     
     public IMaterialComparator createComparator();
+    
+    public MaterialValidator createValidator();
 
 }

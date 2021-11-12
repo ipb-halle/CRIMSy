@@ -26,10 +26,9 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.structure.Molecule;
-import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
@@ -37,20 +36,24 @@ import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.common.Invalidity;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.MaterialValidator;
+import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
+import de.ipb_halle.lbac.material.structure.Molecule;
+import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -228,7 +231,9 @@ public class MaterialBean implements Serializable {
                 compositionBean.startCompositionEdit((MaterialComposition) m);
             }
             if (m.getType() == MaterialType.SEQUENCE) {
-                //sequenceInfos = new SequenceInformation((Sequence) m);
+                Sequence sequence = (Sequence) m;
+                sequenceInfos = new SequenceInformation();
+                sequenceInfos.setSequenceData(sequence.getSequenceData());
             }
 
             storageInformationBuilder = new StorageInformationBuilder(
@@ -366,7 +371,14 @@ public class MaterialBean implements Serializable {
                 }
                 materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.SEQUENCE) {
-                // TODO
+                Sequence sequence = new Sequence(
+                        null,
+                        materialNameBean.getNames(),
+                        materialEditState.getCurrentProject().getId(),
+                        hazards,
+                        storageInformationBuilder.build(),
+                        sequenceInfos.getSequenceData());
+                materialService.saveMaterialToDB(sequence, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
             }
         } else {
             throw new Exception("Material not valide");
@@ -389,11 +401,16 @@ public class MaterialBean implements Serializable {
                     composition.addComponent(c.getMaterial(), c.getConcentration(), c.getUnit());
                 }
             }
+            if (materialEditState.getMaterialToEdit().getType() == MaterialType.SEQUENCE) {
+                Sequence sequence = (Sequence) materialEditState.getMaterialToEdit();
+                sequence.setSequenceData(sequenceInfos.getSequenceData());
+            }
             materialService.saveEditedMaterial(
                     materialEditState.getMaterialToEdit(),
                     materialEditState.getMaterialBeforeEdit(),
                     materialEditState.getCurrentProject().getUserGroups().getId(),
                     userBean.getCurrentAccount().getId());
+
         } else {
             throw new Exception("Material not valide");
         }
@@ -504,21 +521,18 @@ public class MaterialBean implements Serializable {
     }
 
     public boolean checkInputValidity() {
-        boolean isValide = true;
-        errorMessages.clear();
-        int count = 1;
-        if (materialNameBean.getNames().isEmpty()) {
-            isValide = false;
-            errorMessages.add("There must be at least one materialname");
-        }
-        for (MaterialName mn : materialNameBean.getNames()) {
-            if (mn.getValue().isEmpty()) {
-                isValide = false;
-                errorMessages.add("Materialname at position " + count + " must not be empty");
+        MaterialValidator validator = currentMaterialType
+                .getFactory()
+                .createValidator();
+
+        boolean valideMaterial = validator.checkValidity(this);
+        if (!valideMaterial) {
+            for (Invalidity error : validator.getInvalidities()) {
+                errorMessages.add("materialCreation_error_" + messagePresenter.presentMessage(error.toString()));
             }
-            count++;
+
         }
-        return isValide;
+        return valideMaterial;
     }
 
     public String getErrorMessages() {

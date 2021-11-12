@@ -22,26 +22,7 @@ package de.ipb_halle.lbac.material.sequence;
  * @author flange
  */
 public enum SequenceType {
-    DNA(1),
-    RNA(2),
-    PROTEIN(3);
-
-    private final int id;
-
-    private SequenceType(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public static SequenceType getsSequenceTypeById(int id) {
-        for (SequenceType t : values()) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
-    }
+    DNA,
+    RNA,
+    PROTEIN;
 }

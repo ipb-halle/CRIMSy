@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.MaterialValidator;
 import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
 import de.ipb_halle.lbac.material.common.history.TaxonomyComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
@@ -44,6 +45,11 @@ public class TaxonomyFactory implements MaterialFactory {
     @Override
     public IMaterialComparator createComparator() {
         return new TaxonomyComparator();
+    }
+
+    @Override
+    public MaterialValidator createValidator() {
+        return new TaxonomyValidator();
     }
 
 }

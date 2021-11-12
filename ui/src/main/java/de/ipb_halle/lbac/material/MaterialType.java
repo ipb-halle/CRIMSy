@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.consumable.ConsumableFactory;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceFactory;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.structure.StructureFactory;
 import java.io.Serializable;
@@ -81,7 +82,7 @@ public enum MaterialType implements Serializable {
     SEQUENCE(
             5,
             Sequence.class,
-            null,
+            new SequenceFactory(),
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.INDEX,
             MaterialDetailType.SEQUENCE_INFORMATION),

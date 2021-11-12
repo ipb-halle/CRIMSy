@@ -1,6 +1,7 @@
 package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.MaterialValidator;
 import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
 import de.ipb_halle.lbac.material.common.history.StructureComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
@@ -33,6 +34,11 @@ public class StructureFactory implements MaterialFactory {
     @Override
     public IMaterialComparator createComparator() {
         return new StructureComparator();
+    }
+
+    @Override
+    public MaterialValidator createValidator() {
+       return new StructureValidator();
     }
 
 }

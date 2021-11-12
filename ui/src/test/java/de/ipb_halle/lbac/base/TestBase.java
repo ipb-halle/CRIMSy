@@ -426,15 +426,16 @@ public class TestBase implements Serializable {
     }
 
     protected void cleanProjectFromDB(Project p, boolean deleteAcl) {
-
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
-        entityManagerService.doSqlUpdate("delete from projects where id=" + p.getId());
-        if (deleteAcl) {
-            entityManagerService.doSqlUpdate("delete from acentries where aclist_id='" + p.getUserGroups().getId().toString() + "'");
-            entityManagerService.doSqlUpdate("delete from aclists where id='" + p.getUserGroups().getId().toString() + "'");
-        }
 
+        if (p != null) {
+            entityManagerService.doSqlUpdate("delete from projects where id=" + p.getId());
+            if (deleteAcl) {
+                entityManagerService.doSqlUpdate("delete from acentries where aclist_id='" + p.getUserGroups().getId().toString() + "'");
+                entityManagerService.doSqlUpdate("delete from aclists where id='" + p.getUserGroups().getId().toString() + "'");
+            }
+        }
     }
 
     public void cleanItemsFromDb() {
@@ -451,6 +452,8 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
+        entityManagerService.doSqlUpdate("DELETE FROM sequences_history");
+        entityManagerService.doSqlUpdate("DELETE FROM sequences");
 
         entityManagerService.doSqlUpdate("DELETE FROM compositions");
 

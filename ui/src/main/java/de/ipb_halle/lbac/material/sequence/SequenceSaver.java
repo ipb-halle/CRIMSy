@@ -15,15 +15,23 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.history;
+package de.ipb_halle.lbac.material.sequence;
+
+import javax.persistence.EntityManager;
+
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.MaterialSaver;
 
 /**
- *
- * @author fmauz
- * @param <T>
+ * 
+ * @author flange
  */
-public interface HistoryController<T extends MaterialDifference> {
-    public void applyPositiveDifference(T difference);
+public class SequenceSaver implements MaterialSaver {
+    private static final long serialVersionUID = 1L;
 
-    public void applyNegativeDifference(T difference);
+    @Override
+    public void saveMaterial(Material m, EntityManager em) {
+        Sequence sequence = (Sequence) m;
+        em.merge(sequence.createEntity());
+    }
 }

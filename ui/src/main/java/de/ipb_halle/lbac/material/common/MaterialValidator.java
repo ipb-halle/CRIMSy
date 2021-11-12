@@ -15,15 +15,18 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.history;
+package de.ipb_halle.lbac.material.common;
+
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import java.util.Set;
 
 /**
  *
  * @author fmauz
- * @param <T>
  */
-public interface HistoryController<T extends MaterialDifference> {
-    public void applyPositiveDifference(T difference);
+public interface MaterialValidator {
 
-    public void applyNegativeDifference(T difference);
+    public boolean checkValidity(MaterialBean bean);
+
+    public Set<Invalidity> getInvalidities();
 }

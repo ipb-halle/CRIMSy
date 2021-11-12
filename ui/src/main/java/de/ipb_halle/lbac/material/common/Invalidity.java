@@ -15,20 +15,14 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.history;
-
-import de.ipb_halle.lbac.material.Material;
-import java.util.List;
+package de.ipb_halle.lbac.material.common;
 
 /**
  *
  * @author fmauz
  */
-public class SequenzComparator extends IMaterialComparator {
-
-    @Override
-    public void compareDifferences(List<MaterialDifference> differences, Material originalMat, Material editedMat) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+public enum Invalidity {
+    NO_MATERIAL_NAME,
+    EMPTY_MATERIAL_NAME,
+    NO_SEQUENCETYPE_CHOOSEN
 }

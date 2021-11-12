@@ -18,9 +18,11 @@
 package de.ipb_halle.lbac.material.sequence;
 
 /**
+ * @deprecated Sequence annotations are stored as plain JSON String instead of this data model.
  * 
  * @author flange
  */
+@Deprecated
 public class SequenceAnnotation {
     /*
      * Beware: In protein sequences the start and end refer to the positions in

@@ -24,7 +24,6 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
 
@@ -37,8 +36,8 @@
     </composite:interface>
 
     <composite:implementation >
-        <h:form id="dlgMaterialViewForm">
-            <p:dialog id="dlgMaterialView"
+        <h:form id="dlgItemViewForm">
+            <p:dialog id="dlgItemView"
                       header="#{cc.attrs.agent.material.firstName}"
                       styleClass="dlgItemView"
                       widgetVar="dlg_ItemView"
@@ -76,7 +75,7 @@
                         <b:column
                             span="12"
                             styleClass="dlgMaterialViewStructure">
-                            <mol:molecule id="molViewer"
+                            <mol:molecule id="dlgItemView_molViewer"
                                           rendered="#{cc.attrs.agent.hasStructure}"
                                           value="#{cc.attrs.agent.material.molecule.structureModel}"
                                           border="true"

@@ -17,38 +17,32 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.Invalidity;
+import de.ipb_halle.lbac.material.common.MaterialNameValidator;
 import de.ipb_halle.lbac.material.common.MaterialValidator;
-import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
-import de.ipb_halle.lbac.material.common.service.MaterialFactory;
-import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author fmauz
  */
-public class TissueFactory implements MaterialFactory {
+public class TissueValidator implements MaterialValidator {
 
-    private static final long serialVersionUID = 1L;
+    MaterialNameValidator nameValidator;
+    Set<Invalidity> errors = new HashSet<>();
 
     @Override
-    public MaterialSaver createSaver() {
-        return new TissueSaver();
+    public boolean checkValidity(MaterialBean bean) {
+        nameValidator = new MaterialNameValidator();
+        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames(),errors);
+        return namesValide;
     }
 
     @Override
-    public MaterialLoader createLoader() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public IMaterialComparator createComparator() {
-        return null;
-    }
-
-    @Override
-    public MaterialValidator createValidator() {
-        return new TissueValidator();
+    public Set<Invalidity> getInvalidities() {
+        return errors;
     }
 
 }
