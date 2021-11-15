@@ -48,6 +48,7 @@ import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.util.Unit;
@@ -201,6 +202,7 @@ public abstract class HistoryOperationTest extends TestBase {
         materialBeanMock.setMaterialService(materialService);
         materialBeanMock.setAcListService(aclistService);
         materialBeanMock.setHistoryOperation(instance);
+        materialBeanMock.setSequenceInfos(new SequenceInformation());
         materialBeanMock.createStorageInformationBuilder(MessagePresenterMock.getInstance(), materialService, composition);
         taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, biomaterial.getTaxonomy());
         materialBeanMock.setTaxonomyController(taxonomyController);
