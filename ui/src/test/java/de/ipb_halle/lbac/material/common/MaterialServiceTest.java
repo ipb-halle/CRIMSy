@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common;
 
+import com.google.common.collect.HashBiMap;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
@@ -46,6 +47,9 @@ import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceData;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.util.ArrayList;
@@ -643,8 +647,8 @@ public class MaterialServiceTest extends TestBase {
                 new StorageInformation(),
                 CompositionType.EXTRACT);
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
-        composition.addComponent(struture1, 0d,null);
-        composition.addComponent(struture2, 0d,null);
+        composition.addComponent(struture1, 0d, null);
+        composition.addComponent(struture2, 0d, null);
         instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
 
         //Load composition by direct name
@@ -686,7 +690,35 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertNull(diff.getMaterialIds_new().get(1));
         Assert.assertTrue(diff.getMaterialIds_old().contains(struture1.getId()));
         Assert.assertTrue(diff.getMaterialIds_old().contains(struture2.getId()));
+    }
 
+    @Test
+    public void test010_saveLoadSequence() {
+        Sequence sequence = createAndsaveSequence();
+
+        Sequence loadedSequence = (Sequence) instance.loadMaterialById(sequence.getId());
+        Assert.assertNotNull(loadedSequence);
+        Assert.assertEquals("AAA", sequence.getSequenceData().getSequenceString());
+        Assert.assertTrue(sequence.getSequenceData().isCircular());
+        Assert.assertEquals("MyAnnotation", sequence.getSequenceData().getAnnotations());
+        Assert.assertEquals(1, sequence.getNames().size());
+        Assert.assertEquals("sequenceX", sequence.getNames().get(0).value);
+    }
+
+    private Sequence createAndsaveSequence() {
+        Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
+
+        //Create a sequence
+        SequenceData data = SequenceData.builder()
+                .annotations("MyAnnotation")
+                .circular(Boolean.TRUE)
+                .sequenceString("AAA")
+                .sequenceType(SequenceType.DNA).build();
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("sequenceX", "de", 0));
+        Sequence sequence = new Sequence(null, names, project1.getId(), new HazardInformation(), new StorageInformation(), data);
+        instance.saveMaterialToDB(sequence, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser.getId());
+        return sequence;
     }
 
     @Deployment
