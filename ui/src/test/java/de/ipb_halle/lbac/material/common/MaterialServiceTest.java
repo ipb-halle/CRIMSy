@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.common;
 
-import com.google.common.collect.HashBiMap;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
@@ -42,6 +41,8 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.history.MaterialDifference;
+import de.ipb_halle.lbac.material.common.history.MaterialOverviewDifference;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.CompositionType;
@@ -50,6 +51,7 @@ import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceData;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
+import de.ipb_halle.lbac.material.sequence.history.SequenceDifference;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.util.ArrayList;
@@ -703,6 +705,57 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("MyAnnotation", sequence.getSequenceData().getAnnotations());
         Assert.assertEquals(1, sequence.getNames().size());
         Assert.assertEquals("sequenceX", sequence.getNames().get(0).value);
+    }
+
+    @Test
+    public void test011_editSequence() throws Exception {
+        acListNonReadable = new ACList();
+        acListNonReadable = aclistService.save(acListNonReadable);
+        Sequence originalSequence = createAndsaveSequence();
+        Sequence editedSequence = originalSequence.copyMaterial();
+
+        SequenceData data = SequenceData.builder()
+                .circular(Boolean.FALSE)
+                .sequenceString("TTT")
+                .sequenceType(SequenceType.DNA).build();
+        editedSequence.setSequenceData(data);
+        editedSequence.getNames().add(new MaterialName("sequenceY", "en", 1));
+        editedSequence.setACList(acListNonReadable);
+
+        instance.saveEditedMaterial(
+                editedSequence,
+                originalSequence,
+                acListNonReadable.getId(),
+                publicUser.getId());
+
+        Sequence loadedSequence = (Sequence) instance.loadMaterialById(originalSequence.getId());
+
+        Assert.assertEquals("TTT", loadedSequence.getSequenceData().getSequenceString());
+        Assert.assertFalse(loadedSequence.getSequenceData().isCircular());
+        Assert.assertNull(loadedSequence.getSequenceData().getAnnotations());
+        Assert.assertEquals(2, loadedSequence.getNames().size());
+        Assert.assertEquals("sequenceX", loadedSequence.getNames().get(0).value);
+        Assert.assertEquals("sequenceY", loadedSequence.getNames().get(1).value);
+        Assert.assertEquals(1, loadedSequence.getHistory().getChanges().size());
+        List<MaterialDifference> diffs = loadedSequence.getHistory().getChanges().values().iterator().next();
+
+        for (MaterialDifference d : diffs) {
+            if (d instanceof SequenceDifference) {
+                SequenceDifference diff = (SequenceDifference) d;
+                Assert.assertFalse(diff.getNewSequenceData().isCircular());
+                Assert.assertTrue(diff.getOldSequenceData().isCircular());
+                Assert.assertEquals("TTT", diff.getNewSequenceData().getSequenceString());
+                Assert.assertEquals("AAA", diff.getOldSequenceData().getSequenceString());
+            }
+            if (d instanceof MaterialOverviewDifference) {
+                MaterialOverviewDifference diff = (MaterialOverviewDifference) d;
+
+                Assert.assertEquals(acListNonReadable.getId(), diff.getAcListNew().getId());
+                Assert.assertEquals(GlobalAdmissionContext.getPublicReadACL().getId(), diff.getAcListOld().getId());
+
+            }
+        }
+
     }
 
     private Sequence createAndsaveSequence() {
