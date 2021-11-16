@@ -35,5 +35,7 @@ public enum SearchCategory {
     WORDROOT,
     COLLECTION,
     TEMPLATE,
-    EXP_CODE
+    EXP_CODE,
+    SEQUENCE_TYPE,
+    SEQUENCE_STRING
 }

@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -25,20 +27,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 
+ *
  * @author flange
  */
 @Entity
 @Table(name = "sequences")
 public class SequenceEntity implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
+    @AttributeTag(type = AttributeType.SEQUENCE_STRING)
     @Column
     private String sequenceString;
 
+    @AttributeTag(type = AttributeType.SEQUENCE_TYPE)
     @Column
     private String sequenceType;
 

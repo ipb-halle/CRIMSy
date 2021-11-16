@@ -48,7 +48,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         super(entityGraph, rootName);
     }
 
-    private void addDeactivatedCondition(String pathPrefix, List<Condition> conditionList, Set<String> values) {
+    protected void addDeactivatedCondition(String pathPrefix, List<Condition> conditionList, Set<String> values) {
         Boolean deactivated = Boolean.FALSE;
         for (String val : values) {
             deactivated |= (val.compareToIgnoreCase("deactivated") == 0);
@@ -69,7 +69,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
      * @param isName limit search to names (true; SearchCategory=NAME), indices
      * (false; SearchCategory=INDEX) or not at all (SearchCategory=TEXT) (null)
      */
-    private Condition createIndexCondition(String pathPrefix, List<Condition> conditionList, Set<String> values, Boolean isName) {
+    protected Condition createIndexCondition(String pathPrefix, List<Condition> conditionList, Set<String> values, Boolean isName) {
         if (isName != null) {
             Condition typeCondition = getBinaryLeafCondition(
                     isName ? Operator.EQUAL : Operator.NOT_EQUAL,
@@ -93,7 +93,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
      * @param conditionList
      * @param values
      */
-    private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
+    protected void addLabelCondition(List<Condition> conditionList, Set<String> values) {
         Set<Integer> idSet = new HashSet<>();
         for (String value : values) {
             try {
@@ -131,7 +131,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         }
     }
 
-    private void addOwnerCondition(List<Condition> conditionList, Set<String> values) {
+    protected void addOwnerCondition(List<Condition> conditionList, Set<String> values) {
         if (values.size() != 1) {
             throw new IllegalArgumentException("Addition of multiple owners currently not supported");
         }
@@ -143,7 +143,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         conditionList.add(con);
     }
 
-    private void addProjectCondition(List<Condition> conditionList, Set<String> values) {
+    protected void addProjectCondition(List<Condition> conditionList, Set<String> values) {
         if (values.size() != 1) {
             throw new IllegalArgumentException("Addition of multiple projects currently not supported");
         }
@@ -173,7 +173,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         return addACL(conditionList, rootGraphName, request.getUser(), perm);
     }
 
-    private AttributeType[] getIndexAttributes(boolean requireTopLevel) {
+    protected AttributeType[] getIndexAttributes(boolean requireTopLevel) {
         if (requireTopLevel) {
             return new AttributeType[]{
                 AttributeType.TOPLEVEL,
@@ -184,7 +184,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
             AttributeType.TEXT};
     }
 
-    private Condition getIndexCondition(String pathPrefix, Set<String> values, boolean requireTopLevel) {
+    protected Condition getIndexCondition(String pathPrefix, Set<String> values, boolean requireTopLevel) {
         ArrayList<Condition> subConditionList = new ArrayList<>();
         for (String value : values) {
             subConditionList.add(getBinaryLeafCondition(
@@ -245,7 +245,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         return conditionList;
     }
 
-    private void addComponentACL(SearchRequest request) {
+    protected void addComponentACL(SearchRequest request) {
         String graphPathOfComponentSubGraph = String.join(
                 "/",
                 rootGraphName,

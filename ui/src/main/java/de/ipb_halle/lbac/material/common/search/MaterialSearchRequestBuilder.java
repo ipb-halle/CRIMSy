@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.common.search;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -40,6 +41,8 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private final Set<MaterialType> types = new HashSet<>();
     private String materialName;
     private Boolean deactivated;
+    private String sequenceString;
+    private SequenceType sequenceType;
 
     public MaterialSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -56,6 +59,8 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         addProject();
         addMaterialName();
         addDeactivated();
+        addSequenceString();
+        addSequenceType();
     }
 
     public void setSearchValues(MaterialSearchMaskValues values) {
@@ -69,6 +74,18 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
             types.add(t);
         }
 
+    }
+
+    private void addSequenceString() {
+        if (sequenceString != null && !sequenceString.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_STRING, new String[]{sequenceString});
+        }
+    }
+
+    private void addSequenceType() {
+        if (sequenceType != null) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_TYPE, new String[]{sequenceType.name()});
+        }
     }
 
     private void addDeactivated() {
@@ -158,6 +175,14 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     public MaterialSearchRequestBuilder setDeactivated(Boolean deactivated) {
         this.deactivated = deactivated;
         return this;
+    }
+
+    public void setSequenceString(String sequenceString) {
+        this.sequenceString = sequenceString;
+    }
+
+    public void setSequenceType(SequenceType sequenceType) {
+        this.sequenceType = sequenceType;
     }
 
 }
