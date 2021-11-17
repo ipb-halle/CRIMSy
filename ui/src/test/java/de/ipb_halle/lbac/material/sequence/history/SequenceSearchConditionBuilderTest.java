@@ -48,18 +48,43 @@ public class SequenceSearchConditionBuilderTest {
         SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(graphBuilder.buildEntityGraph(true), "materials");
         List<Condition> cons = builder.getMaterialCondition(requestBuilder.build(), true);
 
-        Assert.assertTrue(cons.get(0).getAttribute().getTypes().contains(AttributeType.MATERIAL_TYPE));
-        Assert.assertTrue(((Set) cons.get(0).getValue().getValue()).contains(MaterialType.SEQUENCE.getId()));
-        Assert.assertEquals(Operator.IN, cons.get(0).getOperator());
+        Assert.assertTrue(checkMaterialType(cons));
+        Assert.assertTrue(checkSequenceString(cons));
+        Assert.assertTrue(checkSequenceType(cons));
+    }
 
-        Assert.assertTrue(cons.get(1).getAttribute().getTypes().contains(AttributeType.SEQUENCE_STRING));
-        Assert.assertEquals("AAA", (String) cons.get(1).getValue().getValue());
-        Assert.assertEquals(Operator.EQUAL, cons.get(1).getOperator());
+    private boolean checkMaterialType(List<Condition> cons) {
+        for (Condition c : cons) {
+            if (c.getAttribute().getTypes().contains(AttributeType.MATERIAL_TYPE)) {
+                Assert.assertTrue(((Set) cons.get(0).getValue().getValue()).contains(MaterialType.SEQUENCE.getId()));
+                Assert.assertEquals(Operator.IN, cons.get(0).getOperator());
+                return true;
+            }
+        }
+        return false;
+    }
 
-        Assert.assertTrue(cons.get(2).getAttribute().getTypes().contains(AttributeType.SEQUENCE_TYPE));
-        Assert.assertEquals("DNA", (String) cons.get(2).getValue().getValue());
-        Assert.assertEquals(Operator.EQUAL, cons.get(2).getOperator());
+    private boolean checkSequenceString(List<Condition> cons) {
+        for (Condition c : cons) {
+            if (c.getAttribute().getTypes().contains(AttributeType.SEQUENCE_STRING)) {
+                Assert.assertEquals("AAA", (String) c.getValue().getValue());
+                Assert.assertEquals(Operator.EQUAL, c.getOperator());
+                return true;
+            }
+        }
+        return false;
 
+    }
+
+    private boolean checkSequenceType(List<Condition> cons) {
+        for (Condition c : cons) {
+            if (c.getAttribute().getTypes().contains(AttributeType.SEQUENCE_TYPE)) {
+                Assert.assertEquals("DNA", (String) c.getValue().getValue());
+                Assert.assertEquals(Operator.EQUAL, c.getOperator());
+                return true;
+            }
+        }
+        return false;
     }
 
     private User createUser() {
