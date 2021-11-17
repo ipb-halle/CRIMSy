@@ -57,4 +57,11 @@ CREATE TABLE sequences_history(
     PRIMARY KEY(id,actorid,mdate)
 );
 
+CREATE TABLE temp_search_parameter (
+  id         SERIAL    NOT NULL PRIMARY KEY,
+  cdate      TIMESTAMP NOT NULL DEFAULT now(),
+  processid  UUID NOT NULL,
+  field      VARCHAR NOT NULL,
+  value      VARCHAR NOT NULL);
+
 COMMIT TRANSACTION;
