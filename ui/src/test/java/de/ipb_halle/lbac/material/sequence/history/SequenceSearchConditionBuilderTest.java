@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.sequence.history;
 
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
@@ -25,7 +26,9 @@ import de.ipb_halle.lbac.material.sequence.SequenceSearchConditionBuilder;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
+import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import java.util.List;
 import java.util.Set;
 import org.junit.Assert;
@@ -38,7 +41,7 @@ import org.junit.Test;
 public class SequenceSearchConditionBuilderTest {
 
     @Test
-    public void test001() {
+    public void test001_checkConditionBuilding() {
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(createUser(), 0, 2);
         requestBuilder.addMaterialType(MaterialType.SEQUENCE);
         requestBuilder.setSequenceType(SequenceType.DNA);
@@ -51,6 +54,24 @@ public class SequenceSearchConditionBuilderTest {
         Assert.assertTrue(checkMaterialType(cons));
         Assert.assertTrue(checkSequenceString(cons));
         Assert.assertTrue(checkSequenceType(cons));
+    }
+
+    @Test
+    public void test002_checkSqlBuilding() {
+
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(createUser(), 0, 2);
+        requestBuilder.addMaterialType(MaterialType.SEQUENCE);
+        requestBuilder.setSequenceType(SequenceType.DNA);
+        requestBuilder.setSequenceString("AAA");
+        MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
+        EntityGraph graph = graphBuilder.buildEntityGraph(true);
+
+        SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(graph, "materials");
+        Condition condition = builder.convertRequestToCondition(requestBuilder.build(), ACPermission.permREAD);
+        SqlBuilder sqlBuilder = new SqlBuilder(graph);
+        String sql = sqlBuilder.query(condition);
+
+        Assert.assertNotNull(sql);
     }
 
     private boolean checkMaterialType(List<Condition> cons) {
