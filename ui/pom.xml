@@ -620,5 +620,12 @@
             <artifactId>prettytime-integration-jsf</artifactId>
             <version>5.0.0.Final</version>
         </dependency>
+
+        <!-- Model classes used by the sequence search REST API -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>fasta-search-service-models</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project> 
