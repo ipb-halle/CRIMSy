@@ -15,47 +15,36 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.sequence;
+package de.ipb_halle.lbac.material.sequence.search;
 
-import java.io.Serializable;
-import java.util.Date;
+/**
+ * CollectionService provides service to load, save, update collections.
+ */
+import de.ipb_halle.lbac.EntityManagerService;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author fmauz
- */
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateless
-public class SearchParameterService implements Serializable {
+public class InnerDatabaseTransactionService {
 
-    private final String SQL_DELETE_PARAMETER = "DELETE from temp_Search_Parameter WHERE processid=:id";
-    private static final long serialVersionUID = 1L;
-
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private final String SQL_LOAD_PARAMETER
+            = "INSERT INTO temp_search_parameter (processid,field,value)"
+            + " VALUES ('%s','%s','%s')";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public void saveParameter(UUID processid, String field, String value) {
-        SearchParameterEntity entity = new SearchParameterEntity();
-        entity.setField(field);
-        entity.setProcessid(processid);
-        entity.setCdate(new Date());
-        entity.setValue(value);
-        em.merge(entity);
-    }
+    public void innerDatabaseAction() {
+        em.createNativeQuery(String.format(
+                SQL_LOAD_PARAMETER,
+                UUID.randomUUID(),
+                "field0",
+                "value")).executeUpdate();
 
-    public void removeParameter(UUID processid) {
-        this.em.createNativeQuery(SQL_DELETE_PARAMETER)
-                .setParameter("id", processid)
-                .executeUpdate();
     }
 }
