@@ -47,14 +47,22 @@ import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
  */
 @Stateless
 public class FastaRESTSearchService {
-    private static final String URI = "http://fasta:8080/fasta-search-service";
+    private String uri = "http://fasta:8080/fasta-search-service";
     private static final String ENDPOINT = "searchPostgres";
+
+    public FastaRESTSearchService() {
+    }
+
+    FastaRESTSearchService(String uri) {
+        this.uri = uri;
+    }
 
     /**
      * Executes a REST API call to the fasta-search-service.
      * 
      * @param request request object
-     * @return {@link Response} from the JAX-RS client, needs to be closed by the caller if necessary
+     * @return {@link Response} from the JAX-RS client, needs to be closed by the
+     *         caller if necessary
      * @throws ResponseProcessingException in case processing of a received HTTP
      *                                     response fails
      * @throws ProcessingException         in case the request processing or
@@ -62,7 +70,7 @@ public class FastaRESTSearchService {
      */
     public Response execSearch(FastaSearchRequest request) throws ResponseProcessingException, ProcessingException {
         Client client = ClientBuilder.newClient();
-        return client.target(URI).path(ENDPOINT).request().accept(MediaType.APPLICATION_JSON)
+        return client.target(uri).path(ENDPOINT).request().accept(MediaType.APPLICATION_JSON)
                 .post(Entity.json(request));
     }
 }
