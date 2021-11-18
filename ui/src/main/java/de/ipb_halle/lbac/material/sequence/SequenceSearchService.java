@@ -33,6 +33,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
+import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
 
@@ -52,6 +54,9 @@ public class SequenceSearchService implements Serializable {
     @Inject
     FastaRESTSearchService fastaService;
 
+    @Inject
+    MaterialService materialService;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -66,7 +71,11 @@ public class SequenceSearchService implements Serializable {
         FastaSearchRequest fastaRequest = createRestRequest();
         try {
             Response response = fastaService.execSearch(fastaRequest);
-            FastaSearchResult searchResult = response.readEntity(FastaSearchResult.class);
+            FastaSearchResult fastaResults = response.readEntity(FastaSearchResult.class);
+            for (FastaResult singleResult : fastaResults.getResults()) {
+                int sequenceId = getSequenceIdFromResult(singleResult);
+                Sequence loadedSequence = (Sequence) materialService.loadMaterialById(sequenceId);
+            }
 
         } catch (Exception e) {
 
@@ -75,6 +84,10 @@ public class SequenceSearchService implements Serializable {
         //Hier service für request
         cleanParameter();
         return result;
+    }
+
+    private int getSequenceIdFromResult(FastaResult result) {
+        return Integer.parseInt(result.getSubjectSequenceDescription());
     }
 
     private String createSqlStatement() {
