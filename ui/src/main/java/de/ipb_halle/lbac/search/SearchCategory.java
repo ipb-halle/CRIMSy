@@ -27,8 +27,8 @@ public enum SearchCategory {
     NAME,
     USER,
     PROJECT,
-    INDEX,      // need also INDEX_TYPE?
-    TYPE,       // should be MATERIAL_TYPE?
+    INDEX, // need also INDEX_TYPE?
+    TYPE, // should be MATERIAL_TYPE?
     LOCATION,
     DEACTIVATED,
     TEXT,
@@ -37,5 +37,6 @@ public enum SearchCategory {
     TEMPLATE,
     EXP_CODE,
     SEQUENCE_TYPE,
-    SEQUENCE_STRING
+    SEQUENCE_STRING,
+    SEQUENCE_LIBRARY_TYPE
 }

@@ -44,8 +44,7 @@ public class SequenceSearchConditionBuilderTest {
     public void test001_checkConditionBuilding() {
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(createUser(), 0, 2);
         requestBuilder.addMaterialType(MaterialType.SEQUENCE);
-        requestBuilder.setSequenceType(SequenceType.DNA);
-        requestBuilder.setSequenceString("AAA");
+        requestBuilder.setSequenceInformation("AAA", "DNA", SequenceType.DNA);
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
 
         SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(graphBuilder.buildEntityGraph(true), "materials");
@@ -61,8 +60,7 @@ public class SequenceSearchConditionBuilderTest {
 
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(createUser(), 0, 2);
         requestBuilder.addMaterialType(MaterialType.SEQUENCE);
-        requestBuilder.setSequenceType(SequenceType.DNA);
-        requestBuilder.setSequenceString("AAA");
+        requestBuilder.setSequenceInformation("AAA", "DNA", SequenceType.DNA);
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
         EntityGraph graph = graphBuilder.buildEntityGraph(true);
 

@@ -43,6 +43,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private Boolean deactivated;
     private String sequenceString;
     private SequenceType sequenceType;
+    private String sequenceLibraryType;
 
     public MaterialSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -61,6 +62,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         addDeactivated();
         addSequenceString();
         addSequenceType();
+        addSequenceLibraryType();
     }
 
     public void setSearchValues(MaterialSearchMaskValues values) {
@@ -74,6 +76,12 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
             types.add(t);
         }
 
+    }
+
+    private void addSequenceLibraryType() {
+        if (sequenceLibraryType != null && !sequenceLibraryType.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_LIBRARY_TYPE, new String[]{sequenceLibraryType});
+        }
     }
 
     private void addSequenceString() {
@@ -177,11 +185,9 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public void setSequenceString(String sequenceString) {
+    public void setSequenceInformation(String sequenceString, String libraryType, SequenceType sequenceType) {
         this.sequenceString = sequenceString;
-    }
-
-    public void setSequenceType(SequenceType sequenceType) {
+        this.sequenceLibraryType = libraryType;
         this.sequenceType = sequenceType;
     }
 
