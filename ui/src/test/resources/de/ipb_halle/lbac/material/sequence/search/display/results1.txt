@@ -1,0 +1,185 @@
+# ./bin/fasta36 -m 10 query1.fasta data1.fasta
+FASTA searches a protein or DNA sequence data bank
+ version 36.3.8h May, 2020
+Please cite:
+ W.R. Pearson & D.J. Lipman PNAS (1988) 85:2444-2448
+
+Query: query1.fasta
+  1>>>query1 query sequence - 50 aa
+Library: data1.fasta
+     1002 residues in     4 sequences
+
+Statistics: (shuffled [477]) MLE statistics: Lambda= 0.2029;  K=0.01668
+ statistics sampled from 3 (3) to 477 sequences
+Algorithm: FASTA (3.8 Nov 2011) [optimized]
+Parameters: BL50 matrix (15:-5), open/ext: -10/-2
+ ktup: 2, E-join: 1 (1), E-opt: 0.2 (0.75), width:  16
+ Scan time:  0.000
+
+The best scores are:                                      opt bits E(4)
+gb|AAF72530.1|AF252622_1 beta-lactamase CTX-M-14   ( 291)  313 99.1 8.7e-26
+gb|AAP20890.1| extended-spectrum beta-lactamase    ( 286)  100 36.7   5e-07
+gb|AAP20889.1| extended-spectrum beta-lactamase    ( 286)  100 36.7   5e-07
+gb|AAK07468.1| SHV beta-lactamase, partial [Esc    ( 139)   26 15.1    0.73
+
+>>>query1, 50 aa vs data1.fasta library
+; pg_name: fasta36
+; pg_ver: 36.3.8h May, 2020
+; pg_argv:  ./bin/fasta36 -m 10 query1.fasta data1.fasta; pg_name_alg: FASTA
+; pg_ver_rel: 3.8 Nov 2011
+; pg_matrix: BL50 (15:-5)
+; pg_open-ext: -10 -2
+; pg_ktup: 2
+; pg_join_E(): 1 (1)
+; pg_optcut_E(): 0.2 (0.75)
+; mp_extrap: 60000 477
+; mp_stats: (shuffled [477]) MLE statistics: Lambda= 0.2029;  K=0.01668
+; mp_KS: -0.0000 (N=0) at   0
+; mp_Algorithm: FASTA (3.8 Nov 2011) [optimized]
+; mp_Parameters: BL50 matrix (15:-5), open/ext: -10/-2  ktup: 2, E-join: 1 (1), E-opt: 0.2 (0.75), width:  16
+>>gb|AAF72530.1|AF252622_1 beta-lactamase CTX-M-14 (plasmid) [Escherichia coli]
+; fa_frame: f
+; fa_initn: 313
+; fa_init1: 313
+; fa_opt: 313
+; fa_z-score: 506.2
+; fa_bits: 99.1
+; fa_expect: 8.7e-26
+; sw_score: 313
+; sw_ident: 1.000
+; sw_sim: 1.000
+; sw_overlap: 50
+>query1 ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 1
+; al_stop: 50
+; al_display_start: 1
+------------------------------SAVQQKLAALEKSSGGRLGV
+ALIDTADNTQVLYRGDERFPMCSTSKVMAA
+>gb|AAF72530.1|AF252622_1 ..
+; sq_len: 291
+; sq_offset: 1
+; sq_type: p
+; al_start: 31
+; al_stop: 80
+; al_display_start: 1
+MVTKRVQRMMFAAAACIPLLLGSAPLYAQTSAVQQKLAALEKSSGGRLGV
+ALIDTADNTQVLYRGDERFPMCSTSKVMAAAAVLKQSETQKQLLNQPVEI
+KPADLVNYNPIAEKHVNGTM
+; al_cons:
+                              ::::::::::::::::::::
+::::::::::::::::::::::::::::::
+>>gb|AAP20890.1| extended-spectrum beta-lactamase SHV-48 [Acinetobacter baumannii]
+; fa_frame: f
+; fa_initn:  76
+; fa_init1:  73
+; fa_opt: 100
+; fa_z-score: 169.4
+; fa_bits: 36.7
+; fa_expect:  5e-07
+; sw_score: 100
+; sw_ident: 0.400
+; sw_sim: 0.733
+; sw_overlap: 45
+>query1 ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 5
+; al_stop: 48
+; al_display_start: 1
+----------------------SAVQQKLAALEKSSGGRLGVALIDTADN
+-TQVLYRGDERFPMCSTSKVMAA
+>gb|AAP20890.1| ..
+; sq_len: 286
+; sq_offset: 1
+; sq_type: p
+; al_start: 27
+; al_stop: 71
+; al_display_start: 1
+MRYIRLCIISLLATLPLAVHASPQPLEQIKQSESQLSGRVGMIEMDLASG
+RTLTAWRADERFPMMSTFKVVLCGAVLARVDAGDEQLERKIHYRQQDLVD
+YSPVSEKHLADGMTVGELCA
+; al_cons:
+                          ...   :.. .::.:.  .: :..
+-: . .:.:::::: :: ::.
+>>gb|AAP20889.1| extended-spectrum beta-lactamase SHV-12 [Acinetobacter baumannii]
+; fa_frame: f
+; fa_initn:  76
+; fa_init1:  73
+; fa_opt: 100
+; fa_z-score: 169.4
+; fa_bits: 36.7
+; fa_expect:  5e-07
+; sw_score: 100
+; sw_ident: 0.400
+; sw_sim: 0.733
+; sw_overlap: 45
+>query1 ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 5
+; al_stop: 48
+; al_display_start: 1
+----------------------SAVQQKLAALEKSSGGRLGVALIDTADN
+-TQVLYRGDERFPMCSTSKVMAA
+>gb|AAP20889.1| ..
+; sq_len: 286
+; sq_offset: 1
+; sq_type: p
+; al_start: 27
+; al_stop: 71
+; al_display_start: 1
+MRYIRLCIISLLATLPLAVHASPQPLEQIKQSESQLSGRVGMIEMDLASG
+RTLTAWRADERFPMMSTFKVVLCGAVLARVDAGDEQLERKIHYRQQDLVD
+YSPVSEKHLADGMTVGELCA
+; al_cons:
+                          ...   :.. .::.:.  .: :..
+-: . .:.:::::: :: ::.
+>>gb|AAK07468.1| SHV beta-lactamase, partial [Escherichia coli]
+; fa_frame: f
+; fa_initn:  35
+; fa_init1:  26
+; fa_opt:  26
+; fa_z-score: 58.0
+; fa_bits: 15.1
+; fa_expect:   0.73
+; sw_score: 33
+; sw_ident: 0.417
+; sw_sim: 0.583
+; sw_overlap: 24
+>query1 ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 15
+; al_stop: 35
+; al_display_start: 1
+----------------SAVQQKLAALEKSSGGRLGVALI---DTADNTQV
+LYRGDERFPMCSTSKVMAA
+>gb|AAK07468.1| ..
+; sq_len: 139
+; sq_offset: 1
+; sq_type: p
+; al_start: 115
+; al_stop: 138
+; al_display_start: 85
+MVDDRVAGPLIRSVLPAGWFIADKTGASKRGARGIVALLGPNNKAERIVV
+LYIGX
+; al_cons:
+                              :.:  :::.---. :.   :
+:: :
+
+>>><<<
+>>>///
+
+50 residues in 1 query   sequences
+1002 residues in 4 library sequences
+ Tcomplib [36.3.8h May, 2020] (8 proc in memory [0G])
+ start: Tue May 18 10:35:18 2021 done: Tue May 18 10:35:18 2021
+ Total Scan time:  0.000 Total Display time:  0.010
+
+Function used was FASTA [36.3.8h May, 2020]
