@@ -30,13 +30,18 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
-import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import static de.ipb_halle.lbac.material.sequence.SequenceType.PROTEIN;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchResult;
+import java.util.ArrayList;
+import java.util.HashMap;
+import org.junit.Assert;
 
 /**
  *
@@ -69,11 +74,23 @@ public class SequenceSearchServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadSequence() {
+        SequenceData data = SequenceData.builder()
+                .sequenceString("abc")
+                .sequenceType(PROTEIN)
+                .circular(true)
+                .annotations("def")
+                .build();
+        Sequence seq = new Sequence(null, new ArrayList<>(), publicAclId, new HazardInformation(), new StorageInformation(), data);
+        seq.setProjectId(project.getId());
+        materialService.saveMaterialToDB(seq, publicAclId, new HashMap<>(), publicUser);
+        FastaRESTSearchServiceMock.sequenceId = seq.getId();
+
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
-        builder.setSequenceInformation("AAA", "DNA", SequenceType.DNA);
-        builder.addMaterialType(MaterialType.SEQUENCE);
+        builder.setSequenceInformation("AAA", "DNA", SequenceType.DNA, 1);
 
         SearchResult result = sequenceSearchService.searchSequences(builder.build());
+
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
 
     }
 
@@ -83,6 +100,7 @@ public class SequenceSearchServiceTest extends TestBase {
                 = prepareDeployment("SequenceSearchServiceTest.war");
         deployment = UserBeanDeployment.add(deployment);
         deployment.addClass(SequenceSearchService.class);
+        deployment.addClass(FastaRESTSearchServiceMock.class);
 
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.sequence.search;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -27,6 +28,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
+import java.util.List;
 import javax.inject.Inject;
 import org.junit.Test;
 
@@ -55,5 +57,13 @@ public class DataBaseTransactionContextTest extends TestBase {
     @Test
     public void test001() {
         outerService.outerDataBaseAction();
+    }
+
+    @Test
+    public void test002() {
+        createTaxonomyTreeInDB(context.getAdminOnlyACL().getId(), publicUser.getId());
+        entityManagerService.doSqlUpdate("CREATE VIEW testView AS SELECT materialid FROM materials");
+        List s = entityManagerService.doSqlQuery("Select * from testView");
+        int i = 0;
     }
 }
