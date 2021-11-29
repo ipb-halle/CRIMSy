@@ -44,6 +44,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private String sequenceString;
     private SequenceType sequenceType;
     private String sequenceLibraryType;
+    private Integer sequenceTranslationTable;
 
     public MaterialSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -63,6 +64,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         addSequenceString();
         addSequenceType();
         addSequenceLibraryType();
+        addSequenceTranslationTable();
     }
 
     public void setSearchValues(MaterialSearchMaskValues values) {
@@ -93,6 +95,12 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private void addSequenceType() {
         if (sequenceType != null) {
             request.addSearchCategory(SearchCategory.SEQUENCE_TYPE, new String[]{sequenceType.name()});
+        }
+    }
+
+    private void addSequenceTranslationTable() {
+        if (sequenceTranslationTable != null) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_TRANSLATION_TABLE, new String[]{String.valueOf(sequenceTranslationTable)});
         }
     }
 
@@ -185,10 +193,11 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public void setSequenceInformation(String sequenceString, String libraryType, SequenceType sequenceType) {
+    public void setSequenceInformation(String sequenceString, String libraryType, SequenceType sequenceType, int translationTable) {
         this.sequenceString = sequenceString;
         this.sequenceLibraryType = libraryType;
         this.sequenceType = sequenceType;
+        this.sequenceTranslationTable = translationTable;
     }
 
 }
