@@ -36,7 +36,7 @@ public class StructureValidator implements MaterialValidator {
     @Override
     public boolean checkValidity(MaterialBean bean) {
         nameValidator = new MaterialNameValidator();
-        boolean namesValide = nameValidator.areMaterialNamesValide(
+        boolean namesValide = nameValidator.areMaterialNamesValid(
                 bean.getMaterialNameBean().getNames(),
                 errors);
         return namesValide;

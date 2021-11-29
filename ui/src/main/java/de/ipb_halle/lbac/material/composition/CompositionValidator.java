@@ -36,7 +36,7 @@ public class CompositionValidator implements MaterialValidator {
     @Override
     public boolean checkValidity(MaterialBean bean) {
         nameValidator = new MaterialNameValidator();
-        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames(),errors);
+        boolean namesValide = nameValidator.areMaterialNamesValid(bean.getMaterialNameBean().getNames(),errors);
         return namesValide;
     }
 

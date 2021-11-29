@@ -29,27 +29,25 @@ import java.util.Set;
  * @author fmauz
  */
 public class SequenceValidator implements MaterialValidator {
-
-    MaterialNameValidator nameValidator;
-    Set<Invalidity> errors = new HashSet<>();
+    private MaterialNameValidator nameValidator;
+    private Set<Invalidity> errors = new HashSet<>();
 
     @Override
     public boolean checkValidity(MaterialBean bean) {
         nameValidator = new MaterialNameValidator();
-        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames(),errors);
+        boolean namesValid = nameValidator.areMaterialNamesValid(bean.getMaterialNameBean().getNames(), errors);
 
-        boolean sequenzValide = true;
+        boolean sequenceValid = true;
         if (!bean.getSequenceInfos().isSequenceTypeSelected()) {
-            sequenzValide = false;
-            errors.add(Invalidity.NO_SEQUENCETYPE_CHOOSEN);
+            sequenceValid = false;
+            errors.add(Invalidity.NO_SEQUENCETYPE_CHOSEN);
         }
 
-        return namesValide && sequenzValide;
+        return namesValid && sequenceValid;
     }
 
     @Override
     public Set<Invalidity> getInvalidities() {
         return errors;
     }
-
 }

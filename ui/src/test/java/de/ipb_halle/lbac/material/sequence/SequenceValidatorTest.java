@@ -47,7 +47,7 @@ public class SequenceValidatorTest {
         Assert.assertFalse(validator.checkValidity(beanMock));
         Assert.assertEquals(2, validator.getInvalidities().size());
         Assert.assertTrue(validator.getInvalidities().contains(Invalidity.NO_MATERIAL_NAME));
-        Assert.assertTrue(validator.getInvalidities().contains(Invalidity.NO_SEQUENCETYPE_CHOOSEN));
+        Assert.assertTrue(validator.getInvalidities().contains(Invalidity.NO_SEQUENCETYPE_CHOSEN));
 
     }
 

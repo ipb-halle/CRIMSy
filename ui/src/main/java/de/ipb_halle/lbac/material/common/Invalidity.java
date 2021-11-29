@@ -24,5 +24,5 @@ package de.ipb_halle.lbac.material.common;
 public enum Invalidity {
     NO_MATERIAL_NAME,
     EMPTY_MATERIAL_NAME,
-    NO_SEQUENCETYPE_CHOOSEN
+    NO_SEQUENCETYPE_CHOSEN
 }

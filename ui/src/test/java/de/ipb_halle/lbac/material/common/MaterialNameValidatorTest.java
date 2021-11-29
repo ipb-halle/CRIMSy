@@ -42,7 +42,7 @@ public class MaterialNameValidatorTest {
     @Test
     public void test001_checkNoExistingName() {
         Set<Invalidity> errors = new HashSet<>();
-        boolean isValid = validator.areMaterialNamesValide(new ArrayList<>(), errors);
+        boolean isValid = validator.areMaterialNamesValid(new ArrayList<>(), errors);
         Assert.assertFalse(isValid);
         Assert.assertEquals(1, errors.size());
         Assert.assertTrue(errors.contains(NO_MATERIAL_NAME));
@@ -53,7 +53,7 @@ public class MaterialNameValidatorTest {
         Set<Invalidity> errors = new HashSet<>();
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("", "en", 0));
-        boolean isValid = validator.areMaterialNamesValide(names, errors);
+        boolean isValid = validator.areMaterialNamesValid(names, errors);
         Assert.assertFalse(isValid);
         Assert.assertEquals(1, errors.size());
         Assert.assertTrue(errors.contains(Invalidity.EMPTY_MATERIAL_NAME));
@@ -64,7 +64,7 @@ public class MaterialNameValidatorTest {
         Set<Invalidity> errors = new HashSet<>();
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("test", "en", 0));
-        boolean isValid = validator.areMaterialNamesValide(names, errors);
+        boolean isValid = validator.areMaterialNamesValid(names, errors);
         Assert.assertTrue(isValid);
         Assert.assertEquals(0, errors.size());
 

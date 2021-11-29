@@ -32,7 +32,7 @@ public class MaterialNameValidator {
     private Set<Invalidity> errors = new HashSet<>();
     private List<MaterialName> names;
 
-    public boolean areMaterialNamesValide(
+    public boolean areMaterialNamesValid(
             List<MaterialName> names,
             Set<Invalidity> errors) {
         this.names = names;
