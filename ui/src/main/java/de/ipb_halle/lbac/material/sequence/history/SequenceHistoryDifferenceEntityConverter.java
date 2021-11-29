@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.sequence.history;
 
 import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.sequence.SequenceData;
-import de.ipb_halle.lbac.material.sequence.SequenceType;
 
 /**
  * 
@@ -40,13 +39,6 @@ public class SequenceHistoryDifferenceEntityConverter {
         entity.setCircular_new(newSequenceData.isCircular());
         entity.setAnnotations_old(oldSequenceData.getAnnotations());
         entity.setAnnotations_new(newSequenceData.getAnnotations());
-
-        if (oldSequenceData.getSequenceType() != null) {
-            entity.setSequenceType_old(oldSequenceData.getSequenceType().toString());
-        }
-        if (newSequenceData.getSequenceType() != null) {
-            entity.setSequenceType_new(newSequenceData.getSequenceType().toString());
-        }
 
         return entity;
     }
@@ -71,11 +63,6 @@ public class SequenceHistoryDifferenceEntityConverter {
         builder.annotations(entity.getAnnotations_old());
         builder.circular(entity.isCircular_old());
 
-        String type = entity.getSequenceType_old();
-        if (type != null) {
-            builder.sequenceType(SequenceType.valueOf(type));
-        }
-
         return builder.build();
     }
 
@@ -84,11 +71,6 @@ public class SequenceHistoryDifferenceEntityConverter {
         builder.sequenceString(entity.getSequenceString_new());
         builder.annotations(entity.getAnnotations_new());
         builder.circular(entity.isCircular_new());
-
-        String type = entity.getSequenceType_new();
-        if (type != null) {
-            builder.sequenceType(SequenceType.valueOf(type));
-        }
 
         return builder.build();
     }

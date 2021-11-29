@@ -18,6 +18,9 @@
 package de.ipb_halle.lbac.material.sequence.history;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -28,7 +31,6 @@ import de.ipb_halle.lbac.material.sequence.SequenceData;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
 
 /**
- * 
  * @author flange
  */
 public class SequenceDifferenceTest {
@@ -42,8 +44,6 @@ public class SequenceDifferenceTest {
         entity.setId(id);
         entity.setSequenceString_old("sequenceString_old");
         entity.setSequenceString_new("sequenceString_new");
-        entity.setSequenceType_old("DNA");
-        entity.setSequenceType_new("PROTEIN");
         entity.setAnnotations_old("annotations_old");
         entity.setAnnotations_new("annotations_new");
         entity.setCircular_old(false);
@@ -51,13 +51,13 @@ public class SequenceDifferenceTest {
 
         SequenceData expectedOldSequenceData = SequenceData.builder()
                 .sequenceString("sequenceString_old")
-                .sequenceType(SequenceType.DNA)
+                .sequenceType(null)
                 .annotations("annotations_old")
                 .circular(false)
                 .build();
         SequenceData expectedNewSequenceData = SequenceData.builder()
                 .sequenceString("sequenceString_new")
-                .sequenceType(SequenceType.PROTEIN)
+                .sequenceType(null)
                 .annotations("annotations_new")
                 .circular(false)
                 .build();
@@ -109,16 +109,43 @@ public class SequenceDifferenceTest {
                 .sequenceString("sequenceString_new")
                 .sequenceType(SequenceType.PROTEIN)
                 .annotations("annotations_new")
-                .circular(false)
+                .circular(true)
                 .build();
-
-        SequenceDifference diff = new SequenceDifference();
+        SequenceDifference diff = new SequenceDifference(oldSequenceData, newSequenceData);
         diff.initialise(123, 456, mDate);
-        diff.setOldSequenceData(oldSequenceData);
-        diff.setNewSequenceData(newSequenceData);
-
+        HistoryEntityId expectedId = new HistoryEntityId(123, mDate, 456);
         SequenceHistoryEntity entity = diff.createEntity();
 
-        assertEquals(new HistoryEntityId(123, mDate, 456), entity.getId());
+        assertEquals(expectedId, entity.getId());
+        assertEquals("sequenceString_old", entity.getSequenceString_old());
+        assertEquals("sequenceString_new", entity.getSequenceString_new());
+        assertFalse(entity.isCircular_old());
+        assertTrue(entity.isCircular_new());
+        assertEquals("annotations_old", entity.getAnnotations_old());
+        assertEquals("annotations_new", entity.getAnnotations_new());
+
+        oldSequenceData = SequenceData.builder()
+                .sequenceString("nothing new")
+                .sequenceType(SequenceType.DNA)
+                .annotations("nothing new")
+                .circular(false)
+                .build();
+        newSequenceData = SequenceData.builder()
+                .sequenceString("nothing new")
+                .sequenceType(SequenceType.PROTEIN)
+                .annotations("nothing new")
+                .circular(false)
+                .build();
+        diff = new SequenceDifference(oldSequenceData, newSequenceData);
+        diff.initialise(123, 456, mDate);
+        entity = diff.createEntity();
+
+        assertEquals(expectedId, entity.getId());
+        assertNull(entity.getSequenceString_old());
+        assertNull(entity.getSequenceString_new());
+        assertNull(entity.isCircular_old());
+        assertNull(entity.isCircular_new());
+        assertNull(entity.getAnnotations_old());
+        assertNull(entity.getAnnotations_new());
     }
 }

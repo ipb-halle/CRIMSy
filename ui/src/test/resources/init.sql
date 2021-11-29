@@ -872,8 +872,6 @@ CREATE TABLE sequences_history(
     action VARCHAR NOT NULL,
     sequenceString_old VARCHAR,
     sequenceString_new VARCHAR,
-    sequenceType_old VARCHAR,
-    sequenceType_new VARCHAR,
     circular_old BOOLEAN,
     circular_new BOOLEAN,
     annotations_old VARCHAR,

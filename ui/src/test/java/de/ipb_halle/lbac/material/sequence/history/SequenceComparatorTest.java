@@ -29,6 +29,12 @@ import de.ipb_halle.lbac.material.common.history.MaterialOverviewDifference;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceData;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -71,41 +77,40 @@ public class SequenceComparatorTest {
         editedSequence.getNames().add(new MaterialName("editedName", "de", 0));
 
         comparator.compareDifferences(diffs, originalSequence, editedSequence);
-        Assert.assertEquals(1, diffs.size());
+        assertEquals(1, diffs.size());
         MaterialIndexDifference diff = (MaterialIndexDifference) diffs.get(0);
-        Assert.assertEquals("editedName", diff.getValuesNew().get(0));
-        Assert.assertEquals("originalName", diff.getValuesOld().get(0));
+        assertEquals("editedName", diff.getValuesNew().get(0));
+        assertEquals("originalName", diff.getValuesOld().get(0));
     }
 
     @Test
     public void test002_changeOfProject() throws Exception {
         editedSequence.setProjectId(2);
         comparator.compareDifferences(diffs, originalSequence, editedSequence);
-        Assert.assertEquals(1, diffs.size());
+        assertEquals(1, diffs.size());
         MaterialOverviewDifference diff = (MaterialOverviewDifference) diffs.get(0);
-        Assert.assertEquals(2, diff.getProjectIdNew(), 0);
-        Assert.assertEquals(projectid, diff.getProjectIdOld(), 0);
+        assertEquals(2, diff.getProjectIdNew(), 0);
+        assertEquals(projectid, diff.getProjectIdOld(), 0);
     }
 
     @Test
     public void test003_addNewIndex() throws Exception {
         editedSequence.getIndices().add(new IndexEntry(2, "newIndexEntry", null));
         comparator.compareDifferences(diffs, originalSequence, editedSequence);
-        Assert.assertEquals(1, diffs.size());
+        assertEquals(1, diffs.size());
         MaterialIndexDifference diff = (MaterialIndexDifference) diffs.get(0);
-        Assert.assertNull(diff.getValuesOld().get(0));
-        Assert.assertEquals("newIndexEntry", diff.getValuesNew().get(0));
+        assertNull(diff.getValuesOld().get(0));
+        assertEquals("newIndexEntry", diff.getValuesNew().get(0));
     }
 
     @Test
     public void test004_noChange() throws Exception {
         comparator.compareDifferences(diffs, originalSequence, editedSequence);
-        Assert.assertEquals(0, diffs.size());
+        assertEquals(0, diffs.size());
     }
 
     @Test
     public void test004_changeSequenceData() throws Exception {
-
         SequenceData dataEdited = SequenceData.builder()
                 .annotations("editedAnnotation")
                 .circular(Boolean.TRUE)
@@ -114,23 +119,22 @@ public class SequenceComparatorTest {
         editedSequence.setSequenceData(dataEdited);
 
         comparator.compareDifferences(diffs, originalSequence, editedSequence);
-        Assert.assertEquals(1, diffs.size());
+
+        assertEquals(1, diffs.size());
         SequenceDifference seqDiff = (SequenceDifference) diffs.get(0);
-        Assert.assertNull(seqDiff.getOldSequenceData().getSequenceLength());
-        Assert.assertNull(seqDiff.getOldSequenceData().getSequenceString());
-        Assert.assertNull(seqDiff.getOldSequenceData().getAnnotations());
-        Assert.assertNull(seqDiff.getOldSequenceData().getSequenceType());
-        Assert.assertNull(seqDiff.getOldSequenceData().isCircular());
-        Assert.assertEquals(3, seqDiff.getNewSequenceData().getSequenceLength(), 0);
-        Assert.assertEquals("AAA", seqDiff.getNewSequenceData().getSequenceString());
-        Assert.assertEquals("editedAnnotation", seqDiff.getNewSequenceData().getAnnotations());
-        Assert.assertEquals(SequenceType.DNA, seqDiff.getNewSequenceData().getSequenceType());
-        Assert.assertTrue(seqDiff.getNewSequenceData().isCircular());
+        assertNull(seqDiff.getOldSequenceData().getSequenceString());
+        assertNull(seqDiff.getOldSequenceData().getAnnotations());
+        assertNull(seqDiff.getOldSequenceData().getSequenceType());
+        assertNull(seqDiff.getOldSequenceData().isCircular());
+
+        assertEquals("AAA", seqDiff.getNewSequenceData().getSequenceString());
+        assertEquals("editedAnnotation", seqDiff.getNewSequenceData().getAnnotations());
+        assertNull(seqDiff.getNewSequenceData().getSequenceType());
+        assertTrue(seqDiff.getNewSequenceData().isCircular());
     }
 
     @Test
     public void test005_changeSequenceData() throws Exception {
-
         SequenceData oriData = SequenceData.builder()
                 .annotations("originalAnnotation")
                 .circular(Boolean.TRUE)
@@ -139,24 +143,22 @@ public class SequenceComparatorTest {
         originalSequence.setSequenceData(oriData);
 
         comparator.compareDifferences(diffs, originalSequence, editedSequence);
-        Assert.assertEquals(1, diffs.size());
-        SequenceDifference seqDiff = (SequenceDifference) diffs.get(0);
-        Assert.assertNull(seqDiff.getNewSequenceData().getSequenceLength());
-        Assert.assertNull(seqDiff.getNewSequenceData().getSequenceString());
-        Assert.assertNull(seqDiff.getNewSequenceData().getAnnotations());
-        Assert.assertNull(seqDiff.getNewSequenceData().getSequenceType());
-        Assert.assertNull(seqDiff.getNewSequenceData().isCircular());
 
-        Assert.assertEquals(3, seqDiff.getOldSequenceData().getSequenceLength(), 0);
-        Assert.assertEquals("AAA", seqDiff.getOldSequenceData().getSequenceString());
-        Assert.assertEquals("originalAnnotation", seqDiff.getOldSequenceData().getAnnotations());
-        Assert.assertEquals(SequenceType.DNA, seqDiff.getOldSequenceData().getSequenceType());
-        Assert.assertTrue(seqDiff.getOldSequenceData().isCircular());
+        assertEquals(1, diffs.size());
+        SequenceDifference seqDiff = (SequenceDifference) diffs.get(0);
+        assertNull(seqDiff.getNewSequenceData().getSequenceString());
+        assertNull(seqDiff.getNewSequenceData().getAnnotations());
+        assertNull(seqDiff.getNewSequenceData().getSequenceType());
+        assertNull(seqDiff.getNewSequenceData().isCircular());
+
+        assertEquals("AAA", seqDiff.getOldSequenceData().getSequenceString());
+        assertEquals("originalAnnotation", seqDiff.getOldSequenceData().getAnnotations());
+        assertNull(seqDiff.getOldSequenceData().getSequenceType());
+        assertTrue(seqDiff.getOldSequenceData().isCircular());
     }
 
     @Test
     public void test006_changeSequenceData() throws Exception {
-
         SequenceData oriData = SequenceData.builder()
                 .annotations("originalAnnotation")
                 .circular(Boolean.TRUE)
@@ -167,24 +169,22 @@ public class SequenceComparatorTest {
         SequenceData dataEdited = SequenceData.builder()
                 .annotations("editedAnnotation")
                 .circular(Boolean.FALSE)
-                .sequenceString("TTTT")
+                .sequenceString("GGGG")
                 .sequenceType(SequenceType.RNA).build();
         editedSequence.setSequenceData(dataEdited);
 
         comparator.compareDifferences(diffs, originalSequence, editedSequence);
         Assert.assertEquals(1, diffs.size());
         SequenceDifference seqDiff = (SequenceDifference) diffs.get(0);
-        Assert.assertEquals(4, seqDiff.getNewSequenceData().getSequenceLength(), 0);
-        Assert.assertEquals("TTTT", seqDiff.getNewSequenceData().getSequenceString());
-        Assert.assertEquals("editedAnnotation", seqDiff.getNewSequenceData().getAnnotations());
-        Assert.assertEquals(SequenceType.RNA, seqDiff.getNewSequenceData().getSequenceType());
-        Assert.assertFalse(seqDiff.getNewSequenceData().isCircular());
+        assertEquals("GGGG", seqDiff.getNewSequenceData().getSequenceString());
+        assertEquals("editedAnnotation", seqDiff.getNewSequenceData().getAnnotations());
+        assertNull(seqDiff.getNewSequenceData().getSequenceType());
+        assertFalse(seqDiff.getNewSequenceData().isCircular());
 
-        Assert.assertEquals(3, seqDiff.getOldSequenceData().getSequenceLength(), 0);
-        Assert.assertEquals("AAA", seqDiff.getOldSequenceData().getSequenceString());
-        Assert.assertEquals("originalAnnotation", seqDiff.getOldSequenceData().getAnnotations());
-        Assert.assertEquals(SequenceType.DNA, seqDiff.getOldSequenceData().getSequenceType());
-        Assert.assertTrue(seqDiff.getOldSequenceData().isCircular());
+        assertEquals("AAA", seqDiff.getOldSequenceData().getSequenceString());
+        assertEquals("originalAnnotation", seqDiff.getOldSequenceData().getAnnotations());
+        assertNull(seqDiff.getOldSequenceData().getSequenceType());
+        assertTrue(seqDiff.getOldSequenceData().isCircular());
     }
 
     private Sequence createEmptySequence() {
