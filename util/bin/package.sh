@@ -198,14 +198,13 @@ function copyFiles {
 
 	#
 	cp $LBAC_REPO/config/$LBAC_CLOUD/master.sh target/dist/etc/$LBAC_CLOUD/
-        cp util/systemd/system/lbac.service.m4 target/dist/etc
+    cp util/systemd/system/lbac.service.m4 target/dist/etc
 
-        #
-	cp util/bin/backup.sh target/dist/bin
-        cp util/bin/join.sh target/dist/bin
-        cp util/bin/lbacInit.sh target/dist/bin
-        cp util/bin/setupROOT.sh target/dist/bin
-        cp util/bin/updateCloud.sh target/dist/bin
+    #
+    cp util/bin/join.sh target/dist/bin
+    cp util/bin/lbacInit.sh target/dist/bin
+    cp util/bin/setupROOT.sh target/dist/bin
+    cp util/bin/updateCloud.sh target/dist/bin
 }
 
 function error {
@@ -320,7 +319,7 @@ case $2 in
         if [ -f $tmp ] ; then
             decryptConfig $tmp
             . $LBAC_CONFIG
-            mv $tmp $LBAC_REPO/config/$LBAC_CLOUD
+            cp $tmp $LBAC_REPO/config/$LBAC_CLOUD
             setupMaster
             genPackage
         fi
