@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.sequence;
 
 import static de.ipb_halle.lbac.material.sequence.SequenceType.PROTEIN;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -88,9 +89,13 @@ public class SequenceDataTest {
 
         data1 = SequenceData.builder().build();
         data2 = SequenceData.builder().build();
+        assertEquals(data1, data1);
+        assertEquals(data1.hashCode(), data1.hashCode());
         assertEquals(data1, data2);
         assertEquals(data2, data1);
         assertEquals(data1.hashCode(), data2.hashCode());
+
+        assertFalse(data1.equals(new Object()));
 
         data1 = SequenceData.builder()
                 .sequenceString("abc")
@@ -98,19 +103,37 @@ public class SequenceDataTest {
                 .circular(true)
                 .annotations("def")
                 .build();
-        data2 = SequenceData.builder()
-                .sequenceString("abc")
-                .sequenceType(PROTEIN)
-                .circular(true)
-                .annotations("def")
-                .build();
-        assertEquals(data1, data2);
-        assertEquals(data2, data1);
-        assertEquals(data1.hashCode(), data2.hashCode());
-
         data2 = SequenceData.builder().build();
         assertNotEquals(data1, data2);
         assertNotEquals(data2, data1);
         assertNotEquals(data1.hashCode(), data2.hashCode());
+
+        data2 = SequenceData.builder(data2)
+                .annotations("def")
+                .build();
+        assertNotEquals(data1, data2);
+        assertNotEquals(data2, data1);
+        assertNotEquals(data1.hashCode(), data2.hashCode());
+
+        data2 = SequenceData.builder(data2)
+                .circular(true)
+                .build();
+        assertNotEquals(data1, data2);
+        assertNotEquals(data2, data1);
+        assertNotEquals(data1.hashCode(), data2.hashCode());
+
+        data2 = SequenceData.builder(data2)
+                .sequenceString("abc")
+                .build();
+        assertNotEquals(data1, data2);
+        assertNotEquals(data2, data1);
+        assertNotEquals(data1.hashCode(), data2.hashCode());
+
+        data2 = SequenceData.builder(data2)
+                .sequenceType(PROTEIN)
+                .build();
+        assertEquals(data1, data2);
+        assertEquals(data2, data1);
+        assertEquals(data1.hashCode(), data2.hashCode());
     }
 }
