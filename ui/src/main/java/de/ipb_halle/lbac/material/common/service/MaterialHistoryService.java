@@ -195,8 +195,6 @@ public class MaterialHistoryService implements Serializable {
             + "action, "
             + "sequenceString_old, "
             + "sequenceString_new, "
-            + "sequenceType_old, "
-            + "sequenceType_new, "
             + "circular_old, "
             + "circular_new, "
             + "annotations_old, "
