@@ -22,6 +22,19 @@
         </component>
     </tag>
 
+    <!-- Converters -->
+    <tag>
+        <tag-name>jsonSanitizingAndOVEJsonConverter</tag-name>
+        <converter>
+            <converter-id>jsonSanitizingAndOVEJsonConverter</converter-id>
+        </converter>
+        <attribute>
+            <name>sequenceType</name>
+            <required>true</required>
+            <type>de.ipb_halle.lbac.material.sequence.SequenceType</type>
+        </attribute>
+    </tag>
+
     <!-- EL functions -->
     <function>
         <function-name>formatDateWithTimezone</function-name>

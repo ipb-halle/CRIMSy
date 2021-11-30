@@ -17,8 +17,13 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
-import de.ipb_halle.molecularfaces.component.openvectoreditor.OpenVectorEditorCore;
-import org.junit.Assert;
+import static de.ipb_halle.lbac.material.sequence.SequenceType.DNA;
+import static de.ipb_halle.lbac.material.sequence.SequenceType.PROTEIN;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,74 +32,57 @@ import org.junit.Test;
  * @author fmauz
  */
 public class SequenceInformationTest {
-    
-    SequenceInformation seqInfo;
-    String emptyJson = "{\"sequence\":null,\"circular\":false}";
-    String seqJson1 = "{\"sequence\":\"AAA\",\"circular\":true,\"features\":\"features\"}";
-    String seqJson2 = "{\"isProtein\":true,\"proteinSequence\":\"TTT\",\"circular\":false,\"features\":\"features2\"}";
-    
+    private SequenceInformation seqInfo;
+
     @Before
     public void init() {
         seqInfo = new SequenceInformation();
     }
-    
+
     @Test
     public void test001_actionSelectSequenceType() {
-        seqInfo.setSequenceType(SequenceType.DNA);
+        seqInfo.setSequenceType(null);
         seqInfo.actionSelectSequenceType();
-        Assert.assertEquals("", seqInfo.getSequenceJson());
-        
-        seqInfo.setSequenceType(SequenceType.PROTEIN);
+        SequenceData expected = SequenceData.builder().build();
+        assertEquals(expected, seqInfo.getSequenceData());
+
+        seqInfo.setSequenceType(DNA);
         seqInfo.actionSelectSequenceType();
-        Assert.assertEquals(SequenceType.PROTEIN, seqInfo.getSequenceType());
-        Assert.assertTrue(seqInfo.isSequenceTypeSelected());
-        Assert.assertEquals(OpenVectorEditorCore.EMPTY_PROTEIN_SEQUENCE_JSON, seqInfo.getSequenceJson());
+        expected = SequenceData.builder().sequenceType(DNA).build();
+        assertEquals(expected, seqInfo.getSequenceData());
     }
-    
+
     @Test
-    public void test002_setSequenceData() {
-        SequenceData emptyData = SequenceData.builder().build();
-        seqInfo.setSequenceData(emptyData);
-        Assert.assertEquals(emptyJson, seqInfo.getSequenceJson());
-        
-        SequenceData rnaData = SequenceData.builder()
-                .annotations("\"features\"")
-                .circular(Boolean.TRUE)
-                .sequenceType(SequenceType.RNA)
-                .sequenceString("AAA")
-                .build();
-        
-        seqInfo.setSequenceData(rnaData);
-        Assert.assertEquals(SequenceType.RNA, seqInfo.getSequenceType());
-        Assert.assertEquals(seqJson1, seqInfo.getSequenceJson());
-        
-        rnaData = SequenceData.builder()
-                .annotations("\"features2\"")
-                .sequenceType(SequenceType.PROTEIN)
-                .sequenceString("TTT")
-                .build();
-        
-        seqInfo.setSequenceData(rnaData);
-        Assert.assertEquals(SequenceType.PROTEIN, seqInfo.getSequenceType());
-        Assert.assertEquals(seqJson2, seqInfo.getSequenceJson());
+    public void test002_isSequenceTypeSelected() {
+        seqInfo.setSequenceType(null);
+        assertFalse(seqInfo.isSequenceTypeSelected());
+
+        seqInfo.setSequenceType(DNA);
+        assertTrue(seqInfo.isSequenceTypeSelected());
     }
-    
+
     @Test
     public void test003_getPossibleSequenceTypes() {
-        Assert.assertEquals(SequenceType.values().length, seqInfo.getPossibleSequenceTypes().size());
+        assertEquals(SequenceType.values().length, seqInfo.getPossibleSequenceTypes().size());
     }
-    
+
     @Test
-    public void test004_setSequenceJson() {
-        seqInfo.setSequenceType(SequenceType.PROTEIN);
-        seqInfo.setSequenceJson(seqJson2);
-       
-        Assert.assertTrue(seqInfo.isSequenceTypeSelected());
-        Assert.assertEquals(seqJson2, seqInfo.getSequenceJson());
-        Assert.assertEquals("TTT", seqInfo.getSequenceData().getSequenceString());
-        Assert.assertFalse(seqInfo.getSequenceData().isCircular());
-        Assert.assertEquals("\"features2\"", seqInfo.getSequenceData().getAnnotations());
-        
+    public void test004_defaultsGettersAndSetters() {
+        assertNull(seqInfo.getSequenceType());
+        assertEquals(SequenceData.builder().build(), seqInfo.getSequenceData());
+
+        seqInfo.setSequenceType(DNA);
+        assertEquals(DNA, seqInfo.getSequenceType());
+        assertEquals(SequenceData.builder().build(), seqInfo.getSequenceData());
+
+        SequenceData data = SequenceData.builder()
+                .sequenceString("AAA")
+                .circular(true)
+                .sequenceType(PROTEIN)
+                .annotations("annotations")
+                .build();
+        seqInfo.setSequenceData(data);
+        assertEquals(PROTEIN, seqInfo.getSequenceType());
+        assertEquals(data, seqInfo.getSequenceData());
     }
-    
 }

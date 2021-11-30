@@ -18,43 +18,63 @@
 package de.ipb_halle.lbac.material.sequence;
 
 import static de.ipb_halle.lbac.base.JsonAssert.assertJsonEquals;
+import static de.ipb_halle.lbac.material.sequence.SequenceType.DNA;
+import static de.ipb_halle.lbac.material.sequence.SequenceType.PROTEIN;
+import static de.ipb_halle.lbac.material.sequence.SequenceType.RNA;
 import static org.junit.Assert.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.ConverterException;
+
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * 
  * @author flange
  */
-public class OpenVectorEditorJsonConverterTest {
-    private OpenVectorEditorJsonConverter converter = new OpenVectorEditorJsonConverter();
+public class JsonSanitizingAndOVEJsonConverterTest {
+    private JsonSanitizingAndOVEJsonConverter converter;
     private String json;
     private String convertedJson;
+    private ConverterException converterException;
     private SequenceData data;
 //    private List<SequenceAnnotation> annotations;
 //    private SequenceAnnotation annotation;
     private String annotations;
 
+    private FacesContext context = null;
+    private UIComponent component = null;
+
+    @Before
+    public void init() {
+        converter = new JsonSanitizingAndOVEJsonConverter();
+    }
+
     @Test
-    public void test001a_jsonToSequenceWithDNASequenceLinearWithoutFeatures()
-            throws Exception {
+    public void test001a_getAsObjectWithDNASequenceLinearWithoutFeatures() throws Exception {
         json = readResourceFile("sequences/in_DNASequenceLinearWithoutFeatures.json");
-        data = converter.jsonToSequenceData(json, SequenceType.DNA);
+        converter.setSequenceType(DNA);
+        data = converter.getAsObject(context, component, json);
         assertEquals("ATGGGCATCTGA", data.getSequenceString());
         assertEquals(12, data.getSequenceLength().intValue());
-        assertEquals(SequenceType.DNA, data.getSequenceType());
+        assertEquals(DNA, data.getSequenceType());
         assertFalse(data.isCircular());
 //        assertEquals(0, data.getAnnotations().size());
         assertEquals("{}", data.getAnnotations());
 
-        assertThrows(OpenVectorEditorJsonConverterException.class,
-                () -> converter.jsonToSequenceData(json, SequenceType.PROTEIN));
+        converter.setSequenceType(PROTEIN);
+        converterException = assertThrows(ConverterException.class,
+                () -> converter.getAsObject(context, component, json));
+        assertTrue(converterException.getCause() instanceof OpenVectorEditorJsonConverterException);
     }
 
     @Test
-    public void test001b_sequenceToJsonWithDNASequenceLinearWithoutFeatures() throws Exception {
+    public void test001b_getAsStringWithDNASequenceLinearWithoutFeatures() throws Exception {
         data = SequenceData.builder()
                 .sequenceString("ATGGGCATCTGA")
                 .sequenceType(SequenceType.DNA)
@@ -64,17 +84,18 @@ public class OpenVectorEditorJsonConverterTest {
                 .build();
 
         json = readResourceFile("sequences/out_DNASequenceLinearWithoutFeatures.json");
-        convertedJson = converter.sequenceDataToJson(data);
+        convertedJson = converter.getAsString(context, component, data);
         assertJsonEquals(json, convertedJson);
     }
 
     @Test
-    public void test002a_jsonToSequenceWithDNASequenceCircularWithOneFeature() throws Exception {
+    public void test002a_getAsObjectWithDNASequenceCircularWithOneFeature() throws Exception {
         json = readResourceFile("sequences/in_DNASequenceCircularWithOneFeature.json");
-        data = converter.jsonToSequenceData(json, SequenceType.DNA);
+        converter.setSequenceType(DNA);
+        data = converter.getAsObject(context, component, json);
         assertEquals("ATGGGCATCTGA", data.getSequenceString());
         assertEquals(12, data.getSequenceLength().intValue());
-        assertEquals(SequenceType.DNA, data.getSequenceType());
+        assertEquals(DNA, data.getSequenceType());
         assertTrue(data.isCircular());
 
         annotations = data.getAnnotations();
@@ -109,12 +130,14 @@ public class OpenVectorEditorJsonConverterTest {
                 + "  }";
         assertJsonEquals(expectedJson, annotations);
 
-        assertThrows(OpenVectorEditorJsonConverterException.class,
-                () -> converter.jsonToSequenceData(json, SequenceType.PROTEIN));
+        converter.setSequenceType(PROTEIN);
+        converterException = assertThrows(ConverterException.class,
+                () -> converter.getAsObject(context, component, json));
+        assertTrue(converterException.getCause() instanceof OpenVectorEditorJsonConverterException);
     }
 
     @Test
-    public void test002b_sequenceToJsonWithDNASequenceCircularWithOneFeature() throws Exception {
+    public void test002b_getAsStringWithDNASequenceCircularWithOneFeature() throws Exception {
 //        annotations = new ArrayList<>();
 //        annotation = new SequenceAnnotation();
 //        annotation.setStart(3);
@@ -136,23 +159,24 @@ public class OpenVectorEditorJsonConverterTest {
                 + "  }";
         data = SequenceData.builder()
                 .sequenceString("ATGGGCATCTGA")
-                .sequenceType(SequenceType.DNA)
+                .sequenceType(DNA)
                 .circular(true)
                 .annotations(annotations)
                 .build();
 
         json = readResourceFile("sequences/out_DNASequenceCircularWithOneFeature.json");
-        convertedJson = converter.sequenceDataToJson(data);
+        convertedJson = converter.getAsString(context, component, data);
         assertJsonEquals(json, convertedJson);
     }
 
     @Test
-    public void test003a_jsonToSequenceWithDNASequenceLinearWithThreeFeatures() throws Exception {
+    public void test003a_getAsObjectWithDNASequenceLinearWithThreeFeatures() throws Exception {
         json = readResourceFile("sequences/in_DNASequenceLinearWithThreeFeatures.json");
-        data = converter.jsonToSequenceData(json, SequenceType.DNA);
+        converter.setSequenceType(DNA);
+        data = converter.getAsObject(context, component, json);
         assertEquals("ATGGGCATCGCGTAAAGCGGTTGA", data.getSequenceString());
         assertEquals(24, data.getSequenceLength().intValue());
-        assertEquals(SequenceType.DNA, data.getSequenceType());
+        assertEquals(DNA, data.getSequenceType());
         assertFalse(data.isCircular());
 
         annotations = data.getAnnotations();
@@ -229,12 +253,14 @@ public class OpenVectorEditorJsonConverterTest {
                 + "  }";
         assertJsonEquals(expectedJson, annotations);
 
-        assertThrows(OpenVectorEditorJsonConverterException.class,
-                () -> converter.jsonToSequenceData(json, SequenceType.PROTEIN));
+        converter.setSequenceType(PROTEIN);
+        converterException = assertThrows(ConverterException.class,
+                () -> converter.getAsObject(context, component, json));
+        assertTrue(converterException.getCause() instanceof OpenVectorEditorJsonConverterException);
     }
 
     @Test
-    public void test003b_sequenceToJsonWithDNASequenceLinearWithThreeFeatures() throws Exception {
+    public void test003b_getAsStringWithDNASequenceLinearWithThreeFeatures() throws Exception {
 //        annotations = new ArrayList<>();
 //
 //        annotation = new SequenceAnnotation();
@@ -291,23 +317,24 @@ public class OpenVectorEditorJsonConverterTest {
               + "  }";
         data = SequenceData.builder()
                 .sequenceString("ATGGGCATCGCGTAAAGCGGTTGA")
-                .sequenceType(SequenceType.DNA)
+                .sequenceType(DNA)
                 .circular(false)
                 .annotations(annotations)
                 .build();
 
         json = readResourceFile("sequences/out_DNASequenceLinearWithThreeFeatures.json");
-        convertedJson = converter.sequenceDataToJson(data);
+        convertedJson = converter.getAsString(context, component, data);
         assertJsonEquals(json, convertedJson);
     }
 
     @Test
-    public void test004a_jsonToSequenceWithProteinSequenceWithOneFeature() throws Exception {
+    public void test004a_getAsObjectWithProteinSequenceWithOneFeature() throws Exception {
         json = readResourceFile("sequences/in_ProteinSequenceWithOneFeature.json");
-        data = converter.jsonToSequenceData(json, SequenceType.PROTEIN);
+        converter.setSequenceType(PROTEIN);
+        data = converter.getAsObject(context, component, json);
         assertEquals("MKIRQHHFVADEGFW", data.getSequenceString());
         assertEquals(15, data.getSequenceLength().intValue());
-        assertEquals(SequenceType.PROTEIN, data.getSequenceType());
+        assertEquals(PROTEIN, data.getSequenceType());
         assertFalse(data.isCircular());
 
         annotations = data.getAnnotations();
@@ -337,14 +364,19 @@ public class OpenVectorEditorJsonConverterTest {
                 + "  }";
         assertJsonEquals(expectedJson, annotations);
 
-        assertThrows(OpenVectorEditorJsonConverterException.class,
-                () -> converter.jsonToSequenceData(json, SequenceType.DNA));
-        assertThrows(OpenVectorEditorJsonConverterException.class,
-                () -> converter.jsonToSequenceData(json, SequenceType.RNA));
+        converter.setSequenceType(DNA);
+        converterException = assertThrows(ConverterException.class,
+                () -> converter.getAsObject(context, component, json));
+        assertTrue(converterException.getCause() instanceof OpenVectorEditorJsonConverterException);
+
+        converter.setSequenceType(RNA);
+        converterException = assertThrows(ConverterException.class,
+                () -> converter.getAsObject(context, component, json));
+        assertTrue(converterException.getCause() instanceof OpenVectorEditorJsonConverterException);
     }
 
     @Test
-    public void test004b_sequenceToJsonWithProteinSequenceWithOneFeature() throws Exception {
+    public void test004b_getAsStringWithProteinSequenceWithOneFeature() throws Exception {
 //        annotations = new ArrayList<>();
 //        annotation = new SequenceAnnotation();
 //        annotation.setStart(6);
@@ -366,14 +398,30 @@ public class OpenVectorEditorJsonConverterTest {
               + "  }";
         data = SequenceData.builder()
                 .sequenceString("MKIRQHHFVADEGFW")
-                .sequenceType(SequenceType.PROTEIN)
+                .sequenceType(PROTEIN)
                 .circular(false)
                 .annotations(annotations)
                 .build();
 
         json = readResourceFile("sequences/out_ProteinSequenceWithOneFeature.json");
-        convertedJson = converter.sequenceDataToJson(data);
+        convertedJson = converter.getAsString(context, component, data);
         assertJsonEquals(json, convertedJson);
+    }
+
+    @Test
+    public void test005_getAsObject() {
+        assertNull(converter.getAsObject(context, component, null));
+
+        converter.setSequenceType(null);
+        converterException = assertThrows(ConverterException.class,
+                () -> converter.getAsObject(context, component, "something"));
+        assertEquals("This converter requires a sequenceType.", converterException.getMessage());
+    }
+
+    @Test
+    public void test006_getAsString() {
+        assertEquals("", converter.getAsString(context, component, null));
+        assertEquals("", converter.getAsString(context, component, new Object()));
     }
 
     private String readResourceFile(String resourceFile) throws Exception {

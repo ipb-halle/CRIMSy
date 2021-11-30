@@ -27,7 +27,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces"
+      xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
         <ui:composition>
             <p:tab 
@@ -67,10 +68,11 @@
 
                             <h:panelGroup id="sequenceOpenVectorEditorId">
                                 <mol:openVectorEditor 
-                                    value="#{materialBean.sequenceInfos.sequenceJson}"
+                                    value="#{materialBean.sequenceInfos.sequenceData}"
                                     rendered="#{materialBean.sequenceInfos.sequenceTypeSelected}"
-                                    readonly="#{!materialBean.permission.isDetailInformationEditable('SEQUENCE_INFORMATION')}"
-                                    converter="jsonSanitizingConverter" />
+                                    readonly="#{!materialBean.permission.isDetailInformationEditable('SEQUENCE_INFORMATION')}">
+                                    <nwc:jsonSanitizingAndOVEJsonConverter sequenceType="#{materialBean.sequenceInfos.sequenceType}" />
+                                </mol:openVectorEditor>
                             </h:panelGroup>
                             <b:panelGrid columns="1">
                                 <b:inputText
