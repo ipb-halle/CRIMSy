@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.NodeService;
@@ -44,6 +45,7 @@ public class ServiceAdapter {
     private ContainerService containerService;
     private MemberService memberService;
     private NodeService nodeService;
+    private SequenceSearchService sequenceSearchService;
 
     public ServiceAdapter(
             ItemService itemService,
@@ -53,7 +55,8 @@ public class ServiceAdapter {
             DocumentSearchService documentService,
             ContainerService containerService,
             MemberService memberService,
-            NodeService nodeService) {
+            NodeService nodeService,
+            SequenceSearchService sequenceSearchService) {
         this.itemService = itemService;
         this.materialService = materialService;
         this.projectService = projectService;
@@ -62,12 +65,13 @@ public class ServiceAdapter {
         this.containerService = containerService;
         this.memberService = memberService;
         this.nodeService = nodeService;
+        this.sequenceSearchService = sequenceSearchService;
     }
 
     public SearchResult doSearch(SearchRequest request) {
         SearchTarget target = request.getSearchTarget();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-        
+
         if (target == SearchTarget.EXPERIMENT) {
             result = experimentService.load(request);
         }
@@ -75,7 +79,11 @@ public class ServiceAdapter {
             result = itemService.loadItems(request);
         }
         if (target == SearchTarget.MATERIAL) {
-            result = materialService.loadReadableMaterials(request);
+            if (isSequenceAlignmentSearch(request)) {
+                result = sequenceSearchService.searchSequences(request);
+            } else {
+                result = materialService.loadReadableMaterials(request);
+            }
         }
         if (target == SearchTarget.PROJECT) {
             result = projectService.loadProjects(request);
@@ -91,6 +99,10 @@ public class ServiceAdapter {
         }
 
         return result;
+    }
+
+    private boolean isSequenceAlignmentSearch(SearchRequest request) {
+        return request.getSearchValues().containsKey(SearchCategory.SEQUENCE_STRING);
     }
 
 }

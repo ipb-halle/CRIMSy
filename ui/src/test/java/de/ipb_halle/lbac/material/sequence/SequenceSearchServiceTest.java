@@ -99,9 +99,11 @@ public class SequenceSearchServiceTest extends TestBase {
         WebArchive deployment
                 = prepareDeployment("SequenceSearchServiceTest.war");
         deployment = UserBeanDeployment.add(deployment);
+        deployment = MaterialDeployment.add(PrintBeanDeployment.add(deployment));
         deployment.addClass(SequenceSearchService.class);
+        deployment.deleteClass(FastaRESTSearchService.class);
         deployment.addClass(FastaRESTSearchServiceMock.class);
 
-        return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
+        return deployment;
     }
 }
