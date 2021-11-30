@@ -96,7 +96,7 @@ public class SequenceHistoryControllerTest extends HistoryOperationTest {
 
     @Override
     protected void checkStateAt20001020() {
-        Assert.assertNull(materialBeanMock.getSequenceInfos().getSequenceType());
+        Assert.assertEquals(SequenceType.DNA, materialBeanMock.getSequenceInfos().getSequenceType());
         Assert.assertNull(materialBeanMock.getSequenceInfos().getSequenceData().getAnnotations());
         Assert.assertNull(materialBeanMock.getSequenceInfos().getSequenceData().isCircular());
         Assert.assertNull(materialBeanMock.getSequenceInfos().getSequenceData().getSequenceString());
@@ -108,8 +108,7 @@ public class SequenceHistoryControllerTest extends HistoryOperationTest {
 
         SequenceData newData = SequenceData.builder()
                 .circular(false)
-                .sequenceString("TTT")
-                .sequenceType(SequenceType.DNA).build();
+                .sequenceString("TTT").build();
         diff.setNewSequenceData(newData);
 
         SequenceData oldData = SequenceData.builder()
@@ -127,13 +126,11 @@ public class SequenceHistoryControllerTest extends HistoryOperationTest {
         SequenceData newData = SequenceData.builder()
                 .circular(true)
                 .annotations("MyAnnotation")
-                .sequenceString("AAA")
-                .sequenceType(SequenceType.DNA).build();
+                .sequenceString("AAA").build();
         diff.setNewSequenceData(newData);
         SequenceData oldData = SequenceData.builder()
                 .circular(false)
-                .sequenceString("TTT")
-                .sequenceType(SequenceType.DNA).build();
+                .sequenceString("TTT").build();
         diff.setOldSequenceData(oldData);
         diff.initialise(0, publicUser.getId(), d_20001220);
 
