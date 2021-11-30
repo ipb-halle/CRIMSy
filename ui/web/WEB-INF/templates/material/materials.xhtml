@@ -36,9 +36,9 @@
             styleClass="materialOverviewTableContainer">
             <b:row>
                 <b:column span="3">
-                    <ui:insert> 
-                        <ui:include src="materialSearchMask.xhtml"/>
-                    </ui:insert>
+                    <crimsy:materialSearchMask
+                        searchController="#{materialOverviewBean.searchController}"
+                        updateTargetClass="materialForm @(.materialOverviewTableContainer)" />
                 </b:column>
                 <b:column span="9">
                     <b:form 
