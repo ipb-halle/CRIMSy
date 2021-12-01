@@ -33,8 +33,8 @@ import javax.persistence.PersistenceContext;
 public class InnerDatabaseTransactionService {
 
     private final String SQL_LOAD_PARAMETER
-            = "INSERT INTO temp_search_parameter (processid,field,value)"
-            + " VALUES ('%s','%s','%s')";
+            = "INSERT INTO temp_search_parameter (processid,parameter)"
+            + " VALUES ('%s','%s')";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -42,8 +42,7 @@ public class InnerDatabaseTransactionService {
     public void innerDatabaseAction() {
         em.createNativeQuery(String.format(
                 SQL_LOAD_PARAMETER,
-                UUID.randomUUID(),
-                "field0",
+                UUID.randomUUID(),                
                 "value")).executeUpdate();
 
     }

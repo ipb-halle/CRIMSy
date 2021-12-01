@@ -38,9 +38,13 @@ public interface SearchResult {
     public <T> List<T> getAllFoundObjects(Class T, Node n); //T nur Searchable
 
     public void addResults(List<Searchable> foundObjects);
-    
-     public void addResult(Searchable foundObject);
+
+    public void addResult(Searchable foundObject);
 
     public DocumentStatistic getDocumentStatistic();
+
+    public void addErrorMessage(String errorMessage);
+
+    public List<String> getErrorMessages();
 
 }

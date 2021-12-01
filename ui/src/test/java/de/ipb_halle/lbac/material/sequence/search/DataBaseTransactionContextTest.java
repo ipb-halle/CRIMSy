@@ -57,13 +57,5 @@ public class DataBaseTransactionContextTest extends TestBase {
     @Test
     public void test001() {
         outerService.outerDataBaseAction();
-    }
-
-    @Test
-    public void test002() {
-        createTaxonomyTreeInDB(context.getAdminOnlyACL().getId(), publicUser.getId());
-        entityManagerService.doSqlUpdate("CREATE VIEW testView AS SELECT materialid FROM materials");
-        List s = entityManagerService.doSqlQuery("Select * from testView");
-        int i = 0;
-    }
+    }   
 }

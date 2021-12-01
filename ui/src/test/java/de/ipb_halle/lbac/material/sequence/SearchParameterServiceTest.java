@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import static de.ipb_halle.lbac.base.JsonAssert.assertJsonEquals;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
@@ -73,7 +74,7 @@ public class SearchParameterServiceTest extends TestBase {
     private void checkParameterOfProcess2() {
         List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId2.toString()));
         Assert.assertEquals(1, parameter.size());
-        Assert.assertEquals("{\":field2\":\"value3\"}", (String) parameter.get(0)[3]);
+        assertJsonEquals("{\":field2\":\"value3\"}", (String) parameter.get(0)[3]);
     }
 
     @SuppressWarnings("unchecked")
@@ -81,7 +82,7 @@ public class SearchParameterServiceTest extends TestBase {
         List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId.toString()));
         Assert.assertEquals(1, parameter.size());
 
-        Assert.assertEquals("{\":field0\":\"value1\",\":field1\":\"value2\"}", (String) parameter.get(0)[3]);
+        assertJsonEquals("{\":field0\":\"value1\",\":field1\":\"value2\"}", (String) parameter.get(0)[3]);
 
     }
 

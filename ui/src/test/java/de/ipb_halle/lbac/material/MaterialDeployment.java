@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.sequence.FastaRESTSearchService;
+import de.ipb_halle.lbac.material.sequence.SearchParameterService;
 import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
 
@@ -48,6 +49,7 @@ public class MaterialDeployment {
                 .addClass(MaterialCompositionBean.class)
                 .addClass(BiomaterialService.class)
                 .addClass(HazardService.class)
+                .addClass(SearchParameterService.class)
                 .addClass(SequenceSearchService.class)
                 .addClass(IndexService.class)
                 .addClass(TaxonomyNestingService.class);

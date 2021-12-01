@@ -36,9 +36,6 @@ import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.search.SearchCategory;
@@ -47,6 +44,7 @@ import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
  *
@@ -69,6 +67,9 @@ public class SequenceSearchService implements Serializable {
     @Inject
     MaterialService materialService;
 
+    @Inject
+    private SearchParameterService searchParameterService;
+
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
@@ -79,25 +80,31 @@ public class SequenceSearchService implements Serializable {
 
         UUID processID = generateProcessId();
         String sql = createSqlString(request, processID);
-//        saveParameterInDataBase();
 
         FastaSearchRequest fastaRequest = createRestRequest(request, sql);
 
         try {
             Response response = fastaService.execSearch(fastaRequest);
-            FastaSearchResult fastaResults = response.readEntity(FastaSearchResult.class);
-            for (FastaResult singleResult : fastaResults.getResults()) {
-                int sequenceId = getSequenceIdFromResult(singleResult);
-                Sequence loadedSequence = (Sequence) materialService.loadMaterialById(sequenceId);
-                result.addResult(new SequenceAlignment(loadedSequence, singleResult));
+            if (Status.OK == Status.fromStatusCode(response.getStatus())) {
+                FastaSearchResult fastaResults = response.readEntity(FastaSearchResult.class);
+                for (FastaResult singleResult : fastaResults.getResults()) {
+                    int sequenceId = getSequenceIdFromResult(singleResult);
+                    Sequence loadedSequence = (Sequence) materialService.loadMaterialById(sequenceId);
+                    result.addResult(new SequenceAlignment(loadedSequence, singleResult));
+                }
+            } else {
+                result.addErrorMessage(
+                        String.format("SequenceSearchService: REST call returns: %d",
+                                Status.fromStatusCode(response.getStatus())));
             }
 
         } catch (Exception e) {
-            int i=0;
+            result.addErrorMessage(
+                    String.format("SequenceSearchService: Error at sequence search: %s",
+                            e.getMessage()));
         }
-//
-//        //Hier service für request
-//        cleanParameter();
+
+        cleanParameter(processID);
         return result;
     }
 
@@ -109,7 +116,7 @@ public class SequenceSearchService implements Serializable {
         return UUID.randomUUID();
     }
 
-    private void saveParameterInDataBase() {
+    private void saveParameterInDataBase(UUID processId) {
 
     }
 
@@ -134,8 +141,8 @@ public class SequenceSearchService implements Serializable {
         return fastaRequest;
     }
 
-    private void cleanParameter() {
-
+    private void cleanParameter(UUID processID) {
+        searchParameterService.removeParameter(processID);
     }
 
     public String createSqlString(SearchRequest searchRequest, UUID processId) {
@@ -148,7 +155,8 @@ public class SequenceSearchService implements Serializable {
         String sql = sqlBuilder.query(condition);
         // This code block is only for testing purpose.
         // In the final version the substitute of the parameter must be 
-        // done sql injection save, e.g by preparred statements
+        // done sql injection save, e.g by preparred statements     
+        saveParameterInDataBase(processId);
         for (Value param : sqlBuilder.getValueList()) {
             if (param.getValue() instanceof String) {
                 sql = sql.replace(":" + param.getArgumentKey(), "'" + String.valueOf(param.getValue()) + "'");
