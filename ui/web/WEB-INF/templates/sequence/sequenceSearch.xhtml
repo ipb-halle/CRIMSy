@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <b:container>
+            <b:row>
+                <b:column span="3">
+                    <crimsy:materialSearchMask
+                        searchController="#{sequenceSearchBean.searchMaskController}"
+                        updateTargetClass="sequenceSearchResultsForm"
+                        materialTypeFieldRendered="false"
+                        moleditorRendered="false">
+                        <f:facet name="beforeTitle">
+                            <b:row>
+                                <h:outputText
+                                    value="#{msgs.sequenceSearch_searchMask_title}"
+                                    styleClass="materialFilterHeader" />
+                            </b:row>
+
+                            <b:row styleClass="materialFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="#{msgs.sequenceSearch_searchMask_query}" />
+                                </b:column>
+                            </b:row>
+                            <b:row styleClass="materialFilterRow">
+                                <b:column span="2">
+                                    <b:inputTextarea value="#{sequenceSearchBean.searchMaskController.query}" />
+                                </b:column>
+                            </b:row>
+
+                            <b:row styleClass="materialFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="#{msgs.sequenceSearch_searchMask_searchMode}" />
+                                </b:column>
+                            </b:row>
+                            <b:row styleClass="materialFilterRow">
+                                <b:column span="2">
+                                    <b:selectOneMenu
+                                        value="#{sequenceSearchBean.searchMaskController.searchMode}"
+                                        ajax="true"
+                                        onchange="ajax:sequenceSearchBean.searchMaskController.actionChangeSearchMode()"
+                                        process="@this"
+                                        update="translationTableId">
+                                        <f:selectItems
+                                            value="#{sequenceSearchBean.searchMaskController.searchModeItems}"
+                                            var="item"
+                                            itemValue="#{item}"
+                                            itemLabel="#{sequenceSearchBean.searchMaskController.getLocalizedSearchModeLabel(item)}" />
+                                    </b:selectOneMenu>
+                                </b:column>
+                            </b:row>
+
+                            <b:row styleClass="materialFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="#{msgs.sequenceSearch_searchMask_translationTable}" />
+                                </b:column>
+                            </b:row>
+                            <b:row styleClass="materialFilterRow">
+                                <b:column span="2">
+                                    <b:selectOneMenu
+                                        id="translationTableId"
+                                        value="#{sequenceSearchBean.searchMaskController.translationTable}"
+                                        disabled="#{sequenceSearchBean.searchMaskController.translationTableDisabled}">
+                                        <f:selectItems
+                                            value="#{sequenceSearchBean.searchMaskController.translationTableItems}"
+                                            var="item"
+                                            itemValue="#{item}"
+                                            itemLabel="#{item}" />
+                                    </b:selectOneMenu>
+                                </b:column>
+                            </b:row>
+
+                            <b:row styleClass="materialFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="#{msgs.sequenceSearch_searchMask_maxResults}" />
+                                </b:column>
+                            </b:row>
+                            <b:row styleClass="materialFilterRow">
+                                <b:column span="2">
+                                    <b:selectOneMenu value="#{sequenceSearchBean.searchMaskController.maxResults}">
+                                        <f:selectItems value="#{sequenceSearchBean.searchMaskController.maxResultItems}" />
+                                    </b:selectOneMenu>
+                                </b:column>
+                            </b:row>
+                        </f:facet>
+                    </crimsy:materialSearchMask>
+                </b:column>
+
+                <b:column span="9">
+                    <b:form id="sequenceSearchResultsForm">
+                        <b:container>
+                            <b:panelGrid
+                                col-spans="3,2,2,5"
+                                rendered="#{fn:length(sequenceSearchBean.resultsTableController.results) gt 0}">
+                                <b:selectOneMenu
+                                    value="#{sequenceSearchBean.resultsTableController.sortBy}"
+                                    label="#{msgs.sequenceSearch_results_sortBy}"
+                                    ajax="true"
+                                    onchange="ajax:sequenceSearchBean.resultsTableController.actionOnChangeSortBy()"
+                                    process="@this"
+                                    update="sequenceSearchResultsForm">
+                                    <f:selectItems
+                                        value="#{sequenceSearchBean.resultsTableController.sortByItems}"
+                                        var="item"
+                                        itemValue="#{item}"
+                                        itemLabel="#{sequenceSearchBean.resultsTableController.getLocalizedSortByLabel(item)}" />
+                                </b:selectOneMenu>
+                                <b:button
+                                    value="#{msgs.sequenceSearch_results_collapseAllResults}"
+                                    onclick="$('.fastaResultPanel > .panel-heading > .panel-title-link:not(.collapsed)').click();" />
+                                <b:button
+                                    value="#{msgs.sequenceSearch_results_expandAllResults}"
+                                    onclick="$('.fastaResultPanel > .panel-heading > .panel-title-link.collapsed').click();" />
+                                <b:commandLink
+                                    value="#{msgs.sequenceSearch_results_downloadAllAsFasta}"
+                                    action="#{sequenceSearchBean.resultsTableController.actionDownloadAllResultsAsFasta()}"
+                                    iconAwesome="download"
+                                    iconAlign="left" />
+                               </b:panelGrid>
+
+                               <br />
+                               <h:panelGroup styleClass="fastaResultPanelGroup">
+                                    <ui:repeat
+                                        value="#{sequenceSearchBean.resultsTableController.results}"
+                                        var="result"
+                                        varStatus="status">
+                                        <b:panel styleClass="fastaResultPanel">
+                                            <f:facet name="heading">
+                                                <h:outputFormat
+                                                    value="#{msgs.sequenceSearch_results_resultNumberFormat}"
+                                                    style="padding-right:20px;">
+                                                    <f:param value="#{status.index + 1}" />
+                                                    <f:param value="#{status.end}" />
+                                                </h:outputFormat>
+                                                <h:outputText
+                                                    value="#{result.fastaResult.subjectSequenceName}"
+                                                    style="font-size:large;" />
+                                                <h:outputText
+                                                    value="#{result.fastaResult.subjectSequenceDescription}"
+                                                    style="padding-left:20px;" />
+                                            </f:facet>
+                                            <b:panelGrid col-spans="2,1,1,1,2,1,2,1,1">
+                                                <b:commandLink
+                                                    value="#{msgs.sequenceSearch_results_downloadResultAsFasta}"
+                                                    action="#{sequenceSearchBean.resultsTableController.actionDownloadResultAsFasta(result, status.index + 1)}"
+                                                    iconAwesome="download"
+                                                    iconAlign="left" />
+                                                <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" />
+                                                <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" />
+                                                <h:outputText value="#{msgs.sequenceSearch_results_eValue}" />
+                                                <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" />
+                                                <h:outputText value="#{msgs.sequenceSearch_results_identity}" />
+                                                <h:outputText value="#{msgs.sequenceSearch_results_similarity}" />
+                                                <h:outputText value="#{msgs.sequenceSearch_results_overlap}" />
+                                                <h:outputText value="#{msgs.sequenceSearch_results_frame}" />
+
+                                                <b:commandLink
+                                                    value="#{msgs.materialOverview_actions_edit}"
+                                                    action="#{materialOverviewBean.actionEditMaterial(material)}"
+                                                    style="padding: 0 4px;"
+                                                    icon="pencil"
+                                                    ajax="false" />
+                                                <h:outputText value="#{result.fastaResult.subjectSequenceLength}" />
+                                                <h:outputText value="#{result.fastaResult.bitScore}" />
+                                                <h:outputText value="#{result.fastaResult.expectationValue}" />
+                                                <h:outputText value="#{result.fastaResult.smithWatermanScore}" />
+                                                <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" />
+                                                <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" />
+                                                <h:outputText value="#{result.fastaResult.overlap}" />
+                                                <h:outputText value="#{result.fastaResult.frame}" />
+                                            </b:panelGrid>
+                                            <hr />
+                                            <b:row>
+                                                <b:column
+                                                    span="10"
+                                                    offset="2">
+                                                    <h:outputText
+                                                        value="#{result.alignments}"
+                                                        style="white-space:pre; font-family:monospace;" />
+                                                </b:column>
+                                            </b:row>
+                                        </b:panel>
+                                    </ui:repeat>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                        </b:container>
+                    </b:form>
+                </b:column>
+            </b:row>
+        </b:container>
+    </h:body>
+</html>

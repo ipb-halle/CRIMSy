@@ -32,18 +32,21 @@ import de.ipb_halle.lbac.material.sequence.search.display.TfastxyResultDisplayCo
  * @author flange
  */
 public enum SearchMode {
-    PROTEIN_PROTEIN(PROTEIN, PROTEIN, new FastaResultDisplayConfig()),
-    DNA_DNA(DNA, DNA, new FastaResultDisplayConfig()),
-    DNA_PROTEIN(DNA, PROTEIN, new FastxyResultDisplayConfig()),
-    PROTEIN_DNA(PROTEIN, DNA, new TfastxyResultDisplayConfig());
+    PROTEIN_PROTEIN(PROTEIN, PROTEIN, false, new FastaResultDisplayConfig()),
+    DNA_DNA(DNA, DNA, false, new FastaResultDisplayConfig()),
+    DNA_PROTEIN(DNA, PROTEIN, true, new FastxyResultDisplayConfig()),
+    PROTEIN_DNA(PROTEIN, DNA, true, new TfastxyResultDisplayConfig());
 
     private final SequenceType querySequenceType;
     private final SequenceType librarySequenceType;
     private final ResultDisplayConfig displayConfig;
+    private final boolean needsTranslationTable;
 
-    SearchMode(SequenceType querySequenceType, SequenceType librarySequenceType, ResultDisplayConfig displayConfig) {
+    SearchMode(SequenceType querySequenceType, SequenceType librarySequenceType, boolean needsTranslationTable,
+            ResultDisplayConfig displayConfig) {
         this.querySequenceType = querySequenceType;
         this.librarySequenceType = librarySequenceType;
+        this.needsTranslationTable = needsTranslationTable;
         this.displayConfig = displayConfig;
     }
 
@@ -57,5 +60,9 @@ public enum SearchMode {
 
     public ResultDisplayConfig getDisplayConfig() {
         return displayConfig;
+    }
+
+    public boolean needsTranslationTable() {
+        return needsTranslationTable;
     }
 }

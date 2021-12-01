@@ -59,11 +59,14 @@ limitations under the License.
             name="moleditorRendered"
             default="true"
             type="java.lang.Boolean" />
+        <composite:facet name="beforeTitle" />
     </composite:interface>
 
     <composite:implementation>
         <b:form id="materialSearchMaskForm">
             <b:container>
+                <composite:renderFacet name="beforeTitle" />
+
                 <b:row>
                     <b:column>
                         <h:outputText
