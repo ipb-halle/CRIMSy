@@ -28,14 +28,22 @@ import java.util.List;
 import org.junit.Test;
 
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper.AlignmentLine;
 
 /**
  * @author flange
  */
 public class FastaResultDisplayWrapperTest {
+    private Sequence sequence = new Sequence(1, null, null, null, null, null);
+
     private Reader readerForResourceFile(String filename) {
         return new InputStreamReader(FastaResultDisplayWrapperTest.class.getResourceAsStream(filename));
+    }
+
+    @Test
+    public void test_getSequence() {
+        assertSame(sequence, new FastaResultDisplayWrapper(sequence, new FastaResult()).getSequence());
     }
 
     @Test
@@ -43,7 +51,7 @@ public class FastaResultDisplayWrapperTest {
         Reader reader = readerForResourceFile("results1.txt");
         FastaResult result = new FastaResultParser(reader).parse().get(0);
 
-        assertSame(result, new FastaResultDisplayWrapper(result).getFastaResult());
+        assertSame(result, new FastaResultDisplayWrapper(sequence, result).getFastaResult());
     }
 
     @Test
@@ -52,7 +60,7 @@ public class FastaResultDisplayWrapperTest {
         FastaResult result = new FastaResultParser(reader).parse().get(0);
         ResultDisplayConfig config = new ResultDisplayConfig();
 
-        assertSame(config, new FastaResultDisplayWrapper(result).config(config).getConfig());
+        assertSame(config, new FastaResultDisplayWrapper(sequence, result).config(config).getConfig());
     }
 
     @Test
@@ -261,7 +269,7 @@ public class FastaResultDisplayWrapperTest {
             "Query\n"+
             "\n"+
             "Subject 101  KPADLVNYNPIAEKHVNGTM  120";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(0)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(0)).config(config).getAlignments());
 
         // result 1
         expected =
@@ -276,7 +284,7 @@ public class FastaResultDisplayWrapperTest {
             "Query\n"+
             "\n"+
             "Subject 101  YSPVSEKHLADGMTVGELCA  120";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(1)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(1)).config(config).getAlignments());
 
         // result 2
         expected =
@@ -291,7 +299,7 @@ public class FastaResultDisplayWrapperTest {
             "Query\n"+
             "\n"+
             "Subject 101  YSPVSEKHLADGMTVGELCA  120";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(2)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(2)).config(config).getAlignments());
 
         // result 3
         expected =
@@ -302,7 +310,7 @@ public class FastaResultDisplayWrapperTest {
             "Query    32  LYRGDERFPMCSTSKVMAA   50\n"+
             "             :: :\n"+
             "Subject 135  LYIGX                139";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(3)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(3)).config(config).getAlignments());
 
         config.setLineLength(20);
         config.setPrefixSpaces(4);
@@ -333,7 +341,7 @@ public class FastaResultDisplayWrapperTest {
             "Query\n"+
             "\n"+
             "Subject 101    KPADLVNYNPIAEKHVNGTM      120";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(0)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(0)).config(config).getAlignments());
 
         // result 1
         expected =
@@ -360,7 +368,7 @@ public class FastaResultDisplayWrapperTest {
             "Query\n"+
             "\n"+
             "Subject 101    YSPVSEKHLADGMTVGELCA      120";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(1)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(1)).config(config).getAlignments());
 
         // result 2
         expected =
@@ -387,7 +395,7 @@ public class FastaResultDisplayWrapperTest {
             "Query\n"+
             "\n"+
             "Subject 101    YSPVSEKHLADGMTVGELCA      120";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(2)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(2)).config(config).getAlignments());
 
         // result 3
         expected =
@@ -406,7 +414,7 @@ public class FastaResultDisplayWrapperTest {
             "Query    42    CSTSKVMAA       50\n"+
             "\n"+
             "Subject";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(3)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(3)).config(config).getAlignments());
     }
 
     @Test
@@ -437,7 +445,7 @@ public class FastaResultDisplayWrapperTest {
             "Query    10  GATCGGCAGG               1\n"+
             "\n"+
             "Subject 983  AGCTGTGCAACAGCGAGTTC  1002";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(8)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(8)).config(config).getAlignments());
     }
 
     @Test
@@ -460,7 +468,7 @@ public class FastaResultDisplayWrapperTest {
             "Query    83  AAALSSASVIVPLTCFSAIGL*LT   12\n"+
             "             :.::. ...:.  :  ...:  :.\n"+
             "Subject 117  AGALAVTNMIIGETTEQSLGRLLS  140";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(6)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(6)).config(config).getAlignments());
     }
 
     @Test
@@ -481,7 +489,7 @@ public class FastaResultDisplayWrapperTest {
             "Query    1  SAVQQKLAALEKSSGGRLGVALIDTADNTQVLYRGDERFPMCSTSKVMAA   50\n"+
             "            ::::::::::::::::::::::::::::::::::::::::::::::::::\n"+
             "Subject 91  SAVQQKLAALEKSSGGRLGVALIDTADNTQVLYRGDERFPMCSTSKVMAA  240"; // tfasty reports 237 as al_stop
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(0)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(0)).config(config).getAlignments());
 
         /*
          * result 7: >>ENA|BAA14224|BAA14224.1 Streptomyces cacaoi beta-lactamase
@@ -492,7 +500,7 @@ public class FastaResultDisplayWrapperTest {
             "Query    9  ALEKSSGG  16\n"+
             "            : ::..::\n"+
             "Subject 36  AEEKTTGG  13"; // tfasty reports 16 as al_stop
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(6)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(6)).config(config).getAlignments());
 
         /*
          * result 14: >>ENA|CAA06312|CAA06312.1 Salmonella enterica subsp. enterica serovar Typhimurium CTX-M-7
@@ -510,7 +518,7 @@ public class FastaResultDisplayWrapperTest {
             "Query     9  ALEKSSGGRLGVALI-DTADNTQVLYRGDERFPMCSTSKVMA   49\n"+
             "             :: :   ::  ..  -::..:..   : .  .  : ... .:\n"+
             "Subject 261  ALFKHRRGRHHLTGT/DTSQNAHRPRRESANYRRC*SAQRQA  138";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(13)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(13)).config(config).getAlignments());
     }
 
     @Test
@@ -557,6 +565,6 @@ public class FastaResultDisplayWrapperTest {
             "Query   549  FEP/KCLDAFPNLR\\DFLARFEGLKKISA\\YMKSSRYIGTA\\IFTKMAHWSNK  697\n"+
             "             :::-::::::::::-::::::::::::::-::::::::.: -::.::::::::\n"+
             "Subject 170  FEP-KCLDAFPNLR-DFLARFEGLKKISA-YMKSSRYIATP-IFSKMAHWSNK  218";
-        assertEquals(expected, new FastaResultDisplayWrapper(results.get(0)).config(config).getAlignments());
+        assertEquals(expected, new FastaResultDisplayWrapper(sequence, results.get(0)).config(config).getAlignments());
     }
 }

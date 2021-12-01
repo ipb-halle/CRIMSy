@@ -158,11 +158,8 @@
                                                     <f:param value="#{status.end}" />
                                                 </h:outputFormat>
                                                 <h:outputText
-                                                    value="#{result.fastaResult.subjectSequenceName}"
+                                                    value="#{result.sequence.firstName}"
                                                     style="font-size:large;" />
-                                                <h:outputText
-                                                    value="#{result.fastaResult.subjectSequenceDescription}"
-                                                    style="padding-left:20px;" />
                                             </f:facet>
                                             <b:panelGrid col-spans="2,1,1,1,2,1,2,1,1">
                                                 <b:commandLink
@@ -181,7 +178,7 @@
 
                                                 <b:commandLink
                                                     value="#{msgs.materialOverview_actions_edit}"
-                                                    action="#{materialOverviewBean.actionEditMaterial(material)}"
+                                                    action="#{materialOverviewBean.actionEditMaterial(result.sequence)}"
                                                     style="padding: 0 4px;"
                                                     icon="pencil"
                                                     ajax="false" />

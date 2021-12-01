@@ -25,19 +25,29 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.fasta_search_service.models.fastaresult.Frame;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 
 /**
- * Wrapper for {@link FastaResult} objects that adds support to display their
+ * Wrapper for {@link Sequence} and {@link FastaResult} objects that adds support to display their
  * alignments to humans.
  * 
  * @author flange
  */
 public class FastaResultDisplayWrapper {
     private final FastaResult result;
+    private final Sequence sequence;
     private ResultDisplayConfig config = new ResultDisplayConfig();
 
-    public FastaResultDisplayWrapper(FastaResult result) {
+    public FastaResultDisplayWrapper(Sequence sequence, FastaResult result) {
+        this.sequence = sequence;
         this.result = result;
+    }
+
+    /**
+     * @return the wrapped {@link Sequence} object
+     */
+    public Sequence getSequence() {
+        return sequence;
     }
 
     /**

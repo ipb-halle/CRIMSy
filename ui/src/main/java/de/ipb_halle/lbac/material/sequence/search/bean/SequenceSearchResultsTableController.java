@@ -17,12 +17,15 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.bean.TableController;
+import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
+import de.ipb_halle.lbac.material.sequence.search.display.ResultDisplayConfig;
 
 /**
  * 
@@ -31,20 +34,42 @@ import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrap
 public class SequenceSearchResultsTableController implements TableController {
     private static final long serialVersionUID = 1L;
     private MessagePresenter messagePresenter;
+    private SequenceSearchMaskController searchMaskController;
 
     private SortItem sortBy = SortItem.EVALUE;
     private static final SortItem[] sortByItems = SortItem.values();
 
-    private List<FastaResultDisplayWrapper> results;
+    private List<FastaResultDisplayWrapper> results = new ArrayList<>();
+
+    public SequenceSearchResultsTableController(SequenceSearchMaskController searchMaskController,
+            MessagePresenter messagePresenter) {
+        this.searchMaskController = searchMaskController;
+        this.messagePresenter = messagePresenter;
+    }
 
     @Override
     public void reloadDataTableItems() {
-        //results = ...
+        //List<SequenceAlignment> searchResults = ...
+
+        ResultDisplayConfig displayConfig = searchMaskController.getSearchMode().getDisplayConfig();
+
+        results = new ArrayList<>();
+        for (SequenceAlignment alignment : searchResults) {
+            FastaResultDisplayWrapper wrapper = new FastaResultDisplayWrapper(alignment.getFoundSequence(),
+                    alignment.getAlignmentInformation()).config(displayConfig);
+            results.add(wrapper);
+        }
+
         sortResults();
+    }
+
+    private void sortResults() {
+        results.sort(sortBy.getComparator());
     }
 
     @Override
     public void setLastUser(User u) {
+        // TODO
     }
 
     /*
@@ -53,7 +78,7 @@ public class SequenceSearchResultsTableController implements TableController {
     public void actionDownloadAllResultsAsFasta() {
         // TODO
     }
-    
+
     public void actionDownloadResultAsFasta(FastaResultDisplayWrapper item, int index) {
         // TODO
     }
@@ -64,10 +89,6 @@ public class SequenceSearchResultsTableController implements TableController {
         }
     }
 
-    private void sortResults() {
-        results.sort(sortBy.getComparator());
-    }
-    
     /*
      * Getters with logics
      */
