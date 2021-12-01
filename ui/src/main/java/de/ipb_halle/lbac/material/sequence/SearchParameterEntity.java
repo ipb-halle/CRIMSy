@@ -49,10 +49,7 @@ public class SearchParameterEntity implements Serializable {
     private Date cdate;
 
     @Column
-    private String field;
-
-    @Column
-    private String value;
+    private String parameter;
 
     public int getId() {
         return id;
@@ -68,23 +65,17 @@ public class SearchParameterEntity implements Serializable {
 
     public void setProcessid(UUID processid) {
         this.processid = processid;
+    }  
+
+    public String getParameter() {
+        return parameter;
     }
 
-    public String getField() {
-        return field;
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
     }
 
-    public void setField(String field) {
-        this.field = field;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+    
 
     public Date getCdate() {
         return cdate;

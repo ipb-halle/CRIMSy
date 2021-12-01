@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -42,13 +43,13 @@ public class SearchParameterServiceTest extends TestBase {
     UUID processId;
     UUID processId2;
 
-    private final String SQL_LOAD_PARAMETER = "SELECT id,cdate,processid,field,value FROM temp_search_parameter WHERE processid=':processid' ORDER BY field";
+    private final String SQL_LOAD_PARAMETER = "SELECT id,cdate,processid,parameter FROM temp_search_parameter WHERE processid=':processid' ORDER BY parameter";
     @Inject
     SearchParameterService searchParameter;
     private static final long serialVersionUID = 1L;
 
     @Test
-    public void test001_saveLoad() {
+    public void test001_saveLoad() throws JsonProcessingException {
         createAndSaveParameter();
 
         checkParameterOfProcess1();
@@ -57,7 +58,7 @@ public class SearchParameterServiceTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void test002_removeParameter() {
+    public void test002_removeParameter() throws JsonProcessingException {
         createAndSaveParameter();
 
         searchParameter.removeParameter(processId);
@@ -72,31 +73,24 @@ public class SearchParameterServiceTest extends TestBase {
     private void checkParameterOfProcess2() {
         List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId2.toString()));
         Assert.assertEquals(1, parameter.size());
-        Assert.assertEquals(":field1", (String) parameter.get(0)[3]);
-        Assert.assertEquals("value3", (String) parameter.get(0)[4]);
+        Assert.assertEquals("{\":field2\":\"value3\"}", (String) parameter.get(0)[3]);
     }
 
     @SuppressWarnings("unchecked")
     private void checkParameterOfProcess1() {
         List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId.toString()));
-        Assert.assertEquals(2, parameter.size());
-        for (int i = 0; i < 2; i++) {
-            if (i == 0) {
-                Assert.assertEquals(":field0", (String) parameter.get(i)[3]);
-                Assert.assertEquals("value", (String) parameter.get(i)[4]);
-            } else {
-                Assert.assertEquals(":field1", (String) parameter.get(i)[3]);
-                Assert.assertEquals("value2", (String) parameter.get(i)[4]);
-            }
-        }
+        Assert.assertEquals(1, parameter.size());
+
+        Assert.assertEquals("{\":field0\":\"value1\",\":field1\":\"value2\"}", (String) parameter.get(0)[3]);
+
     }
 
-    private void createAndSaveParameter() {
+    private void createAndSaveParameter() throws JsonProcessingException {
         processId = UUID.randomUUID();
         processId2 = UUID.randomUUID();
-        searchParameter.saveParameter(processId, ":field0", "value");
-        searchParameter.saveParameter(processId, ":field1", "value2");
-        searchParameter.saveParameter(processId2, ":field1", "value3");
+        searchParameter.saveParameter(processId, new String[]{":field0", ":field1"}, new String[]{"value1", "value2"});
+        searchParameter.saveParameter(processId2, new String[]{":field2"}, new String[]{"value3"});
+
     }
 
     @Deployment

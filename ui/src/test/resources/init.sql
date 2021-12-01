@@ -21,7 +21,7 @@ SET @TESTNODE = '986ad1be-9a3b-4a70-8600-c489c2a00da4';
 SET @SCHEMA_VERSION = '00001';
 
 
-CREATE DOMAIN IF NOT EXISTS jsonb AS other;
+CREATE DOMAIN IF NOT EXISTS jsonb AS VARCHAR;
 CREATE DOMAIN IF NOT EXISTS RawJsonb AS other;
 
 CREATE ALIAS SUBSTRUCTURE FOR "de.ipb_halle.h2.MockSubstructureMatch.substructure";
@@ -883,5 +883,4 @@ CREATE TABLE temp_search_parameter (
   id         SERIAL    NOT NULL PRIMARY KEY,
   cdate      TIMESTAMP NOT NULL DEFAULT now(),
   processid  UUID NOT NULL,
-  field      VARCHAR NOT NULL,
-  value      VARCHAR NOT NULL);
+  parameter  JSONB NOT NULL);

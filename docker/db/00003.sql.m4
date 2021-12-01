@@ -59,7 +59,6 @@ CREATE TABLE temp_search_parameter (
   id         SERIAL    NOT NULL PRIMARY KEY,
   cdate      TIMESTAMP NOT NULL DEFAULT now(),
   processid  UUID NOT NULL,
-  field      VARCHAR NOT NULL,
-  value      VARCHAR NOT NULL);
+  parameter      JSONB NOT NULL);
 
 COMMIT TRANSACTION;

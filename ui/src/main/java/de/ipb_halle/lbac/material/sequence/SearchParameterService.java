@@ -17,7 +17,11 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 import javax.ejb.Stateless;
@@ -44,12 +48,19 @@ public class SearchParameterService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public void saveParameter(UUID processid, String field, String value) {
+    public void saveParameter(UUID processid, String[] fields, String[] values) throws JsonProcessingException {
         SearchParameterEntity entity = new SearchParameterEntity();
-        entity.setField(field);
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode root = mapper.createObjectNode();
+
+        for (int i = 0; i < fields.length; i++) {
+            root.put(fields[i], values[i]);
+        }
+        String s = mapper.writeValueAsString(root);
         entity.setProcessid(processid);
         entity.setCdate(new Date());
-        entity.setValue(value);
+        entity.setParameter(s);
         em.merge(entity);
     }
 
