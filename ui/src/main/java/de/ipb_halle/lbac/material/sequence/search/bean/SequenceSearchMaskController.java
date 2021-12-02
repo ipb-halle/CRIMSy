@@ -17,24 +17,17 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.bean;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.items.bean.SearchMaskValues;
-import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
-import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskController;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.bean.MaterialTableController;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.material.sequence.search.SequenceSearchInformation;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.Arrays;

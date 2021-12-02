@@ -17,16 +17,13 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
-import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchCategory;
-import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -47,10 +44,7 @@ public class SequenceSearchConditionBuilder extends MaterialSearchConditionBuild
             switch (key) {
                 case SEQUENCE_TYPE:
                     addSequenceTypeCondition(conditionList, request.getSearchValues().get(key).getValues());
-                    break;
-                case SEQUENCE_STRING:
-                    addSequenceStringCondition(conditionList, request.getSearchValues().get(key).getValues());
-                    break;
+                    break;                
             }
         }
         return conditionList;

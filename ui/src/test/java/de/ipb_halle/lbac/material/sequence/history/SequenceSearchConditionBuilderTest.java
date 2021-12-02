@@ -51,7 +51,7 @@ public class SequenceSearchConditionBuilderTest {
         List<Condition> cons = builder.getMaterialCondition(requestBuilder.build(), true);
 
         Assert.assertTrue(checkMaterialType(cons));
-        Assert.assertTrue(checkSequenceString(cons));
+       
         Assert.assertTrue(checkSequenceType(cons));
     }
 

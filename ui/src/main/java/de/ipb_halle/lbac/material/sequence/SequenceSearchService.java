@@ -129,11 +129,14 @@ public class SequenceSearchService implements Serializable {
         String libraryType = request.getSearchValues().get(SearchCategory.SEQUENCE_LIBRARY_TYPE).getValues().iterator().next();
         String seqType = request.getSearchValues().get(SearchCategory.SEQUENCE_TYPE).getValues().iterator().next();
         String translationTable = request.getSearchValues().get(SearchCategory.SEQUENCE_TRANSLATION_TABLE).getValues().iterator().next();
+
         query.setQuerySequence(queryString);
         query.setLibrarySequenceType(libraryType);
         query.setQuerySequenceType(seqType);
         query.setTranslationTable(Integer.parseInt(translationTable));
+
         query.setMaxResults(request.getMaxResults());
+
         fastaRequest.setSearchQuery(query);
         fastaRequest.setDatabaseQueries(sql);
 
@@ -145,7 +148,7 @@ public class SequenceSearchService implements Serializable {
         searchParameterService.removeParameter(processID);
     }
 
-    public String createSqlString(SearchRequest searchRequest, UUID processId) {
+    private String createSqlString(SearchRequest searchRequest, UUID processId) {
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
         EntityGraph graph = graphBuilder.buildEntityGraph(true);
 
@@ -153,10 +156,12 @@ public class SequenceSearchService implements Serializable {
         Condition condition = builder.convertRequestToCondition(searchRequest, ACPermission.permREAD);
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         String sql = sqlBuilder.query(condition);
+
+        saveParameterInDataBase(processId);
         // This code block is only for testing purpose.
         // In the final version the substitute of the parameter must be 
         // done sql injection save, e.g by preparred statements     
-        saveParameterInDataBase(processId);
+
         for (Value param : sqlBuilder.getValueList()) {
             if (param.getValue() instanceof String) {
                 sql = sql.replace(":" + param.getArgumentKey(), "'" + String.valueOf(param.getValue()) + "'");
@@ -165,8 +170,15 @@ public class SequenceSearchService implements Serializable {
             }
 
         }
+        String firstSqlPart = "DO SELECT 1;";
+        String secondSqlPart = sql.replace("\n", " ") + ";";
+        secondSqlPart = secondSqlPart.replace("SELECT DISTINCT a.aclist_id, a.owner_id, a.ctime, a.materialtypeid, a.materialid, a.projectid, a.deactivated",
+                "SELECT a.materialid,a_0_0_3.sequencestring");
+        String thirdSqlPart = "SELECT #;";
+        String fourthSqlPart = "SELECT sequencestring FROM sequences WHERE id=#;";
+        String finalString = String.join("\n", firstSqlPart, secondSqlPart, thirdSqlPart, fourthSqlPart);
 
-        return sql;
+        return finalString;
     }
 
 }
