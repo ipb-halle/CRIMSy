@@ -17,15 +17,22 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.bean;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.bean.TableController;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
 import de.ipb_halle.lbac.material.sequence.search.display.ResultDisplayConfig;
+import de.ipb_halle.lbac.material.sequence.util.FastaFileFormat;
+import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 /**
  * 
@@ -35,6 +42,7 @@ public class SequenceSearchResultsTableController implements TableController {
     private static final long serialVersionUID = 1L;
     private MessagePresenter messagePresenter;
     private SequenceSearchMaskController searchMaskController;
+    private SendFileBean sendFileBean;
 
     private SortItem sortBy = SortItem.EVALUE;
     private static final SortItem[] sortByItems = SortItem.values();
@@ -75,12 +83,35 @@ public class SequenceSearchResultsTableController implements TableController {
     /*
      * Actions
      */
-    public void actionDownloadAllResultsAsFasta() {
-        // TODO
+    public void actionDownloadAllResultsAsFasta() throws IOException {
+        if (results == null) {
+            return;
+        }
+        Collection<Sequence> sequences = allSequencesFromResults();
+        String fastaFile = FastaFileFormat.generateFastaString(sequences);
+
+        if (!fastaFile.isEmpty()) {
+            sendFileBean.sendFile(fastaFile.getBytes(), "results.fasta");
+        }
     }
 
-    public void actionDownloadResultAsFasta(FastaResultDisplayWrapper item, int index) {
-        // TODO
+    private Collection<Sequence> allSequencesFromResults() {
+        /*
+         * LinkedHashSet guarantees (1) insertion-order and (2) duplicate removal
+         * (because Sequence implements equals() and hashCode() properly).
+         */
+        Collection<Sequence> sequences = new LinkedHashSet<>();
+        results.forEach(result -> sequences.add(result.getSequence()));
+
+        return sequences;
+    }
+
+    public void actionDownloadResultAsFasta(FastaResultDisplayWrapper item, int index) throws IOException {
+        String fastaFile = FastaFileFormat.generateFastaString(item.getSequence());
+
+        if (!fastaFile.isEmpty()) {
+            sendFileBean.sendFile(fastaFile.getBytes(), "result_" + index + ".fasta");
+        }
     }
 
     public void actionOnChangeSortBy() {
