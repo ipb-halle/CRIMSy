@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.sequence.SequenceInformation;
+import de.ipb_halle.lbac.material.sequence.search.SequenceSearchInformation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,4 +37,6 @@ public class MaterialSearchMaskValues {
     public Set<MaterialType> type = new HashSet<>();
     public String molecule;
     public Boolean deactivated;
+    public String sequenceTranslationTable;
+    public SequenceSearchInformation sequenceInfos;
 }

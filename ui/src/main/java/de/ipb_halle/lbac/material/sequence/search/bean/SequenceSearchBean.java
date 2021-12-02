@@ -17,27 +17,61 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.bean;
 
+import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
+import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * 
+ *
  * @author flange
  */
 @Named
 @SessionScoped
 public class SequenceSearchBean implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
+    @Inject
+    private MaterialService materialService;
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
+    private MemberService memberService;
+
+    @Inject
+    private SequenceSearchService sequenceSearchService;
+
+    @Inject
+    private MessagePresenter messagePresenter;
     private SequenceSearchMaskController searchMaskController;
     private SequenceSearchResultsTableController resultsTableController;
 
     @PostConstruct
     public void init() {
-        searchMaskController = new SequenceSearchMaskController();
-        resultsTableControllerableController = new SequenceSearchResultsTableController();
+        resultsTableController = new SequenceSearchResultsTableController(
+                materialService,
+                sequenceSearchService,
+                messagePresenter);
+        searchMaskController = new SequenceSearchMaskController(
+                resultsTableController,
+                materialService,
+                projectService,
+                memberService);
+        resultsTableController.setSearchMaskController(searchMaskController);
+    }
+
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        resultsTableController.setLastUser(evt.getCurrentAccount());
     }
 
     /*

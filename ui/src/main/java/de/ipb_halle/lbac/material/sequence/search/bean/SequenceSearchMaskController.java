@@ -25,20 +25,26 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.items.bean.SearchMaskValues;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskController;
+import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.bean.MaterialTableController;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.SequenceInformation;
+import de.ipb_halle.lbac.material.sequence.search.SequenceSearchInformation;
 import de.ipb_halle.lbac.project.ProjectService;
+import java.util.Arrays;
 
 /**
- * 
+ *
  * @author flange
  */
 public class SequenceSearchMaskController extends MaterialSearchMaskController {
+
     private static final long serialVersionUID = 1L;
     private MessagePresenter messagePresenter;
 
@@ -52,12 +58,21 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
     private static final TranslationTable[] translationTableItems = TranslationTable.values();
 
     private int maxResults = maxResultItems[4];
-    private static final int[] maxResultItems = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 500, 750,
-            1000 };
+    private static final int[] maxResultItems = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 500, 750,
+        1000};
+
+    public SequenceSearchMaskController(
+            MaterialTableController tableController,
+            MaterialService materialService,
+            ProjectService projectService,
+            MemberService memberService) {
+        super(null, tableController, materialService, projectService, memberService, Arrays.asList(MaterialType.SEQUENCE));
+    }
 
     @Override
     public void actionStartMaterialSearch() {
-        super.actionStartMaterialSearch();
+        tableController.setLastValues(getValues());
+        tableController.reloadDataTableItems();
     }
 
     @Override
@@ -122,5 +137,17 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
 
     public int[] getMaxResultItems() {
         return maxResultItems;
+    }
+
+    @Override
+    protected MaterialSearchMaskValues getValues() {
+        MaterialSearchMaskValues values = super.getValues();
+        values.type.clear();
+        values.type.add(MaterialType.SEQUENCE);
+        values.sequenceInfos = new SequenceSearchInformation(
+                searchMode.getLibrarySequenceType().toString(),
+                searchMode.getLibrarySequenceType().toString(),
+                query, maxResults);
+        return values;
     }
 }

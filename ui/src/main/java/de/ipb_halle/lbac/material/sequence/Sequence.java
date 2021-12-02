@@ -35,6 +35,7 @@ import java.util.Objects;
  * @author fmauz
  */
 public class Sequence extends Material {
+
     private static final long serialVersionUID = 1L;
 
     private SequenceData sequenceData;
@@ -50,6 +51,10 @@ public class Sequence extends Material {
         this.type = MaterialType.SEQUENCE;
 
         this.sequenceData = sequenceData;
+    }
+
+    public Sequence(List<MaterialName> names, Integer projectId, SequenceData sequenceData) {
+        this(null, names, projectId, new HazardInformation(), new StorageInformation(), sequenceData);
     }
 
     public static Sequence fromEntities(MaterialEntity materialEntity, SequenceEntity sequenceEntity) {

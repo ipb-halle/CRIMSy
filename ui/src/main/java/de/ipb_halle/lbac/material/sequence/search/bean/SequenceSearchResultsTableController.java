@@ -20,25 +20,31 @@ package de.ipb_halle.lbac.material.sequence.search.bean;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
-import de.ipb_halle.lbac.material.common.bean.TableController;
 import de.ipb_halle.lbac.material.sequence.Sequence;
+
+import de.ipb_halle.lbac.material.common.bean.MaterialTableController;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+
 import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
+import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
 import de.ipb_halle.lbac.material.sequence.search.display.ResultDisplayConfig;
 import de.ipb_halle.lbac.material.sequence.util.FastaFileFormat;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 /**
- * 
+ *
  * @author flange
  */
-public class SequenceSearchResultsTableController implements TableController {
+public class SequenceSearchResultsTableController extends MaterialTableController {
+
     private static final long serialVersionUID = 1L;
     private MessagePresenter messagePresenter;
     private SequenceSearchMaskController searchMaskController;
@@ -46,18 +52,34 @@ public class SequenceSearchResultsTableController implements TableController {
 
     private SortItem sortBy = SortItem.EVALUE;
     private static final SortItem[] sortByItems = SortItem.values();
+    private SequenceSearchService sequenceService;
+    private User lastUser;
 
     private List<FastaResultDisplayWrapper> results = new ArrayList<>();
 
-    public SequenceSearchResultsTableController(SequenceSearchMaskController searchMaskController,
+    public SequenceSearchResultsTableController(
+            MaterialService materialService,
+            SequenceSearchService sequenceSearchService,
             MessagePresenter messagePresenter) {
-        this.searchMaskController = searchMaskController;
+        super(materialService);
         this.messagePresenter = messagePresenter;
+        this.sequenceService = sequenceSearchService;
+
+    }
+
+    public void setSearchMaskController(SequenceSearchMaskController searchMaskController) {
+        this.searchMaskController = searchMaskController;
     }
 
     @Override
     public void reloadDataTableItems() {
-        //List<SequenceAlignment> searchResults = ...
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(lastUser, 0, searchMaskController.getMaxResults());
+        builder.addMaterialType(MaterialType.SEQUENCE);
+        builder.setSearchValues(lastValues);
+        List<SequenceAlignment> searchResults
+                = sequenceService.searchSequences(
+                        builder.build()).
+                        getAllFoundObjectsAsSearchable(SequenceAlignment.class);
 
         ResultDisplayConfig displayConfig = searchMaskController.getSearchMode().getDisplayConfig();
 
@@ -77,7 +99,7 @@ public class SequenceSearchResultsTableController implements TableController {
 
     @Override
     public void setLastUser(User u) {
-        // TODO
+        lastUser = u;
     }
 
     /*
@@ -145,4 +167,5 @@ public class SequenceSearchResultsTableController implements TableController {
     public List<FastaResultDisplayWrapper> getResults() {
         return results;
     }
+
 }

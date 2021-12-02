@@ -129,4 +129,9 @@ public class SearchResultImpl implements SearchResult, Serializable {
         return errorMessages;
     }
 
+    @Override
+    public <T> List<T> getAllFoundObjectsAsSearchable(Class T) {
+        return getAllFoundObjects(T, node);
+    }
+
 }
