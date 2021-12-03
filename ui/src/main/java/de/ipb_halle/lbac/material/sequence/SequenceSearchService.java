@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchQuery;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -43,6 +44,8 @@ import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -80,7 +83,13 @@ public class SequenceSearchService implements Serializable {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
 
         UUID processID = generateProcessId();
-        String sql = createSqlString(request, processID);
+        String sql;
+        try {
+            sql = createSqlString(request, processID);
+        } catch (Exception e) {
+            logger.error("Could not save temporary parameter in database");
+            return result;
+        }
 
         FastaSearchRequest fastaRequest = createRestRequest(request, sql);
 
@@ -120,8 +129,10 @@ public class SequenceSearchService implements Serializable {
         return UUID.randomUUID();
     }
 
-    private void saveParameterInDataBase(UUID processId) {
-
+    private void saveParameterInDataBase(UUID processId, List<Value> valueList) throws JsonProcessingException {
+        List<String> fields = valueList.stream().map(v -> v.getArgumentKey()).collect(Collectors.toList());
+        List<Object> values = valueList.stream().map(v -> v.getValue()).collect(Collectors.toList());
+        searchParameterService.saveParameter(processId, fields, values);
     }
 
     private FastaSearchRequest createRestRequest(SearchRequest request, String sql) {
@@ -151,7 +162,7 @@ public class SequenceSearchService implements Serializable {
         searchParameterService.removeParameter(processID);
     }
 
-    private String createSqlString(SearchRequest searchRequest, UUID processId) {
+    private String createSqlString(SearchRequest searchRequest, UUID processId) throws JsonProcessingException {
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
         EntityGraph graph = graphBuilder.buildEntityGraph(true);
 
@@ -160,23 +171,27 @@ public class SequenceSearchService implements Serializable {
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         String sql = sqlBuilder.query(condition);
 
-        saveParameterInDataBase(processId);
+        saveParameterInDataBase(processId, sqlBuilder.getValueList());
         // This code block is only for testing purpose.
         // In the final version the substitute of the parameter must be 
         // done sql injection save, e.g by preparred statements     
-
+        String parameterPattern = "(select cast(parameter->'%s'->>0 as %s) from temp_search_parameter where processid='%s') ";
         for (Value param : sqlBuilder.getValueList()) {
+            String parameterSubQuery;
+
             if (param.getValue() instanceof String) {
-                sql = sql.replace(":" + param.getArgumentKey(), "'" + String.valueOf(param.getValue()) + "'");
+                parameterSubQuery = String.format(parameterPattern,  param.getArgumentKey(),"VARCHAR", processId.toString());
             } else {
-                sql = sql.replace(":" + param.getArgumentKey(), String.valueOf(param.getValue()));
+                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "int", processId.toString());
             }
+            sql = sql.replaceFirst(":" + param.getArgumentKey(), parameterSubQuery);
 
         }
         String firstSqlPart = "DO SELECT 1;";
         String secondSqlPart = sql.replace("\n", " ") + ";";
+        
         secondSqlPart = secondSqlPart.replace("[", "(");
-        secondSqlPart = secondSqlPart.replace("]", ")");
+        secondSqlPart = secondSqlPart.replace("]", ")");     
         secondSqlPart = secondSqlPart.replace("SELECT DISTINCT a.aclist_id, a.owner_id, a.ctime, a.materialtypeid, a.materialid, a.projectid, a.deactivated",
                 "SELECT a.materialid,a_0_0_3.sequencestring");
         String thirdSqlPart = "SELECT #;";

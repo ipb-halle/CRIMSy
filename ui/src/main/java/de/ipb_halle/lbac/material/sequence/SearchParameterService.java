@@ -19,10 +19,12 @@ package de.ipb_halle.lbac.material.sequence;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -48,14 +50,28 @@ public class SearchParameterService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public void saveParameter(UUID processid, String[] fields, String[] values) throws JsonProcessingException {
+    public void saveParameter(UUID processid, List<String> fields, List<Object> values) throws JsonProcessingException {
         SearchParameterEntity entity = new SearchParameterEntity();
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
 
-        for (int i = 0; i < fields.length; i++) {
-            root.put(fields[i], values[i]);
+        for (int i = 0; i < fields.size(); i++) {
+            if (values.get(i) instanceof Integer) {
+                root.put(fields.get(i), (Integer) values.get(i));
+            } else if (values.get(i) instanceof String) {
+                root.put(fields.get(i), (String) values.get(i));
+            } else if (values.get(i) instanceof HashSet) {
+                HashSet<Integer> set = (HashSet) values.get(i);
+                ArrayNode setNode = mapper.createArrayNode();
+                for (Integer valueInt : set) {
+                    setNode.add(valueInt);
+                }
+
+                root.set(fields.get(i), setNode);
+
+            }
+
         }
         String s = mapper.writeValueAsString(root);
         entity.setProcessid(processid);

@@ -28,6 +28,7 @@ import static de.ipb_halle.lbac.base.JsonAssert.assertJsonEquals;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -89,8 +90,8 @@ public class SearchParameterServiceTest extends TestBase {
     private void createAndSaveParameter() throws JsonProcessingException {
         processId = UUID.randomUUID();
         processId2 = UUID.randomUUID();
-        searchParameter.saveParameter(processId, new String[]{":field0", ":field1"}, new String[]{"value1", "value2"});
-        searchParameter.saveParameter(processId2, new String[]{":field2"}, new String[]{"value3"});
+        searchParameter.saveParameter(processId, Arrays.asList(":field0", ":field1"), Arrays.asList("value1", "value2"));
+        searchParameter.saveParameter(processId2, Arrays.asList(":field2"), Arrays.asList("value3"));
 
     }
 
