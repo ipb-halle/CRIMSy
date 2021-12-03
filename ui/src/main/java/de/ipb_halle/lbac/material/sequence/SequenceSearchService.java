@@ -175,6 +175,8 @@ public class SequenceSearchService implements Serializable {
         }
         String firstSqlPart = "DO SELECT 1;";
         String secondSqlPart = sql.replace("\n", " ") + ";";
+        secondSqlPart = secondSqlPart.replace("[", "(");
+        secondSqlPart = secondSqlPart.replace("]", ")");
         secondSqlPart = secondSqlPart.replace("SELECT DISTINCT a.aclist_id, a.owner_id, a.ctime, a.materialtypeid, a.materialid, a.projectid, a.deactivated",
                 "SELECT a.materialid,a_0_0_3.sequencestring");
         String thirdSqlPart = "SELECT #;";

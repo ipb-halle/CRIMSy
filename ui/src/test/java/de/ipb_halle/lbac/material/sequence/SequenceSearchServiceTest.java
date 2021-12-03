@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
+import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -30,6 +32,7 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
@@ -40,7 +43,9 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import javax.ws.rs.core.Response;
 import org.junit.Assert;
 
 /**
@@ -58,11 +63,17 @@ public class SequenceSearchServiceTest extends TestBase {
     @Inject
     SequenceSearchService sequenceSearchService;
 
+    @Inject
+    private FastaRESTSearchServiceMock mock;
+
     Project project;
     int publicAclId;
 
+    private Sequence sequence;
+
     @Before
     public void init() {
+
         materialService.setStructureInformationSaver(
                 new StructureInformationSaverMock());
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
@@ -70,28 +81,43 @@ public class SequenceSearchServiceTest extends TestBase {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
         projectService.saveProjectToDb(project);
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
+
     }
 
     @Test
     public void test001_saveAndLoadSequence() {
+        createAndSaveSequence();
+        mock.setBehaviour((e) -> {
+            FastaResult fastaResult = new FastaResult();
+            fastaResult.setQueryAlignmentLine("abc");
+            fastaResult.setSubjectSequenceName(String.valueOf(sequence.getId()));
+            FastaSearchResult result = new FastaSearchResult();
+            result.setProgramOutput("def");
+            result.setResults(Arrays.asList(fastaResult));
+
+            return Response.ok(result).build();
+        });
+
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
+        builder.setSequenceInformation("AAA", "DNA", SequenceType.DNA, 1);
+        builder.addMaterialType(MaterialType.SEQUENCE);
+
+        SearchResult result = sequenceSearchService.searchSequences(builder.build());
+
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+
+    }
+
+    private void createAndSaveSequence() {
         SequenceData data = SequenceData.builder()
                 .sequenceString("abc")
                 .sequenceType(PROTEIN)
                 .circular(true)
                 .annotations("def")
                 .build();
-        Sequence seq = new Sequence(null, new ArrayList<>(), publicAclId, new HazardInformation(), new StorageInformation(), data);
-        seq.setProjectId(project.getId());
-        materialService.saveMaterialToDB(seq, publicAclId, new HashMap<>(), publicUser);
-        FastaRESTSearchServiceMock.sequenceId = seq.getId();
-
-        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
-        builder.setSequenceInformation("AAA", "DNA", SequenceType.DNA, 1);
-
-        SearchResult result = sequenceSearchService.searchSequences(builder.build());
-
-        Assert.assertEquals(1, result.getAllFoundObjects().size());
-
+        sequence = new Sequence(null, new ArrayList<>(), publicAclId, new HazardInformation(), new StorageInformation(), data);
+        sequence.setProjectId(project.getId());
+        materialService.saveMaterialToDB(sequence, publicAclId, new HashMap<>(), publicUser);
     }
 
     @Deployment
