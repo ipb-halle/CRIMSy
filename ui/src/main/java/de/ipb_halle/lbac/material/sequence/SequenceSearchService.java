@@ -45,6 +45,7 @@ import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  *
@@ -93,12 +94,14 @@ public class SequenceSearchService implements Serializable {
                     result.addResult(new SequenceAlignment(loadedSequence, singleResult));
                 }
             } else {
-                result.addErrorMessage(
-                        String.format("SequenceSearchService: REST call returns: %d",
-                                Status.fromStatusCode(response.getStatus())));
+                String errorMessage = String.format("SequenceSearchService: REST call returns: %d",
+                        Status.fromStatusCode(response.getStatus()));
+                logger.error(errorMessage);
+                result.addErrorMessage(errorMessage);
             }
 
         } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
             result.addErrorMessage(
                     String.format("SequenceSearchService: Error at sequence search: %s",
                             e.getMessage()));
