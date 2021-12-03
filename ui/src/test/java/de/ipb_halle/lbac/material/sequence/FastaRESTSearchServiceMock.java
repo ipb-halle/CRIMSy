@@ -23,24 +23,20 @@ import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
-import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
-import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
-import java.util.Arrays;
+import java.util.function.Function;
+
 
 @Stateless
 public class FastaRESTSearchServiceMock extends FastaRESTSearchService {
+   
+    private Function<FastaSearchRequest, Response> behaviour;
 
-    public static int sequenceId;
+    public void setBehaviour(Function<FastaSearchRequest, Response> behaviour) {
+        this.behaviour = behaviour;
+    }
 
+    @Override
     public Response execSearch(FastaSearchRequest request) throws ResponseProcessingException, ProcessingException {
-        FastaResult fastaResult = new FastaResult();
-        fastaResult.setQueryAlignmentLine("abc");
-        fastaResult.setSubjectSequenceName(String.valueOf(sequenceId));
-
-        FastaSearchResult result = new FastaSearchResult();
-        result.setProgramOutput("def");
-        result.setResults(Arrays.asList(fastaResult));
-
-        return Response.ok(result).build();
+        return behaviour.apply(request);
     }
 }

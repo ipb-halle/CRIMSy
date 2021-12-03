@@ -81,19 +81,7 @@ public class SequenceSearchConditionBuilderTest {
             }
         }
         return false;
-    }
-
-    private boolean checkSequenceString(List<Condition> cons) {
-        for (Condition c : cons) {
-            if (c.getAttribute().getTypes().contains(AttributeType.SEQUENCE_STRING)) {
-                Assert.assertEquals("AAA", (String) c.getValue().getValue());
-                Assert.assertEquals(Operator.EQUAL, c.getOperator());
-                return true;
-            }
-        }
-        return false;
-
-    }
+    }   
 
     private boolean checkSequenceType(List<Condition> cons) {
         for (Condition c : cons) {

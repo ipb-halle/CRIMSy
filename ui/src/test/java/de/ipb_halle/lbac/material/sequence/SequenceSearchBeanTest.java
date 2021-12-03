@@ -71,8 +71,7 @@ public class SequenceSearchBeanTest extends TestBase {
     public void test001_search() {
 
         Sequence s = new Sequence(Arrays.asList(new MaterialName("xx", "de", 0)), null, SequenceData.builder().sequenceString("AAA").sequenceType(SequenceType.DNA).build());
-        materialService.saveMaterialToDB(s, context.getAdminOnlyACL().getId(), new HashMap<>(), publicUser);
-        FastaRESTSearchServiceMock.sequenceId = s.getId();
+        materialService.saveMaterialToDB(s, context.getAdminOnlyACL().getId(), new HashMap<>(), publicUser);       
         searchBean.getSearchMaskController().setQuery("AAA");
         searchBean.getSearchMaskController().setSearchMode(SearchMode.DNA_DNA);
         searchBean.getSearchMaskController().setTranslationTable(TranslationTable.EUPLOTID_NUCLEAR);
