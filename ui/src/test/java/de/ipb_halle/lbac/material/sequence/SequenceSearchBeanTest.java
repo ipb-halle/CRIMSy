@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
+import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
 import java.net.URISyntaxException;
 
@@ -48,6 +50,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import java.util.Arrays;
 import java.util.HashMap;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import org.junit.Test;
 
 /**
@@ -71,7 +74,18 @@ public class SequenceSearchBeanTest extends TestBase {
     public void test001_search() {
 
         Sequence s = new Sequence(Arrays.asList(new MaterialName("xx", "de", 0)), null, SequenceData.builder().sequenceString("AAA").sequenceType(SequenceType.DNA).build());
-        materialService.saveMaterialToDB(s, context.getAdminOnlyACL().getId(), new HashMap<>(), publicUser);       
+        materialService.saveMaterialToDB(s, context.getAdminOnlyACL().getId(), new HashMap<>(), publicUser);
+
+        serviceMock.setBehaviour((e) -> {
+            FastaResult fastaResult = new FastaResult();
+            fastaResult.setQueryAlignmentLine("abc");
+            fastaResult.setSubjectSequenceName(String.valueOf(s.getId()));
+            FastaSearchResult result = new FastaSearchResult();
+            result.setProgramOutput("def");
+            result.setResults(Arrays.asList(fastaResult));
+
+            return Response.ok(result).build();
+        });
         searchBean.getSearchMaskController().setQuery("AAA");
         searchBean.getSearchMaskController().setSearchMode(SearchMode.DNA_DNA);
         searchBean.getSearchMaskController().setTranslationTable(TranslationTable.EUPLOTID_NUCLEAR);
