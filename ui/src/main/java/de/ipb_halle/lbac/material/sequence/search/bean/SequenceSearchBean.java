@@ -37,7 +37,6 @@ import javax.inject.Named;
 @Named
 @SessionScoped
 public class SequenceSearchBean implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -52,7 +51,8 @@ public class SequenceSearchBean implements Serializable {
     private SequenceSearchService sequenceSearchService;
 
     @Inject
-    private MessagePresenter messagePresenter;
+    private transient MessagePresenter messagePresenter;
+
     private SequenceSearchMaskController searchMaskController;
     private SequenceSearchResultsTableController resultsTableController;
 
@@ -66,7 +66,8 @@ public class SequenceSearchBean implements Serializable {
                 resultsTableController,
                 materialService,
                 projectService,
-                memberService);
+                memberService,
+                messagePresenter);
         resultsTableController.setSearchMaskController(searchMaskController);
     }
 

@@ -94,8 +94,9 @@ public class SequenceSearchService implements Serializable {
                     result.addResult(new SequenceAlignment(loadedSequence, singleResult));
                 }
             } else {
-                String errorMessage = String.format("SequenceSearchService: REST call returns: %d",
-                        Status.fromStatusCode(response.getStatus()));
+                String error = response.readEntity(String.class);
+                String errorMessage = String.format("SequenceSearchService: REST call returns: %s %s",
+                        response.getStatus(), error);
                 logger.error(errorMessage);
                 result.addErrorMessage(errorMessage);
             }
@@ -137,13 +138,12 @@ public class SequenceSearchService implements Serializable {
         query.setLibrarySequenceType(libraryType);
         query.setQuerySequenceType(seqType);
         query.setTranslationTable(Integer.parseInt(translationTable));
-
         query.setMaxResults(request.getMaxResults());
 
         fastaRequest.setSearchQuery(query);
         fastaRequest.setDatabaseQueries(sql);
+        fastaRequest.setDatabaseConnectionString(null);
 
-        // Are the connection strings still relevant?
         return fastaRequest;
     }
 

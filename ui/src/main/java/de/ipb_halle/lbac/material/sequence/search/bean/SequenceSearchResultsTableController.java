@@ -76,10 +76,8 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(lastUser, 0, searchMaskController.getMaxResults());
         builder.addMaterialType(MaterialType.SEQUENCE);
         builder.setSearchValues(lastValues);
-        List<SequenceAlignment> searchResults
-                = sequenceService.searchSequences(
-                        builder.build()).
-                        getAllFoundObjectsAsSearchable(SequenceAlignment.class);
+        List<SequenceAlignment> searchResults = sequenceService.searchSequences(builder.build())
+                .getAllFoundObjectsAsSearchable(SequenceAlignment.class);
 
         ResultDisplayConfig displayConfig = searchMaskController.getSearchMode().getDisplayConfig();
 

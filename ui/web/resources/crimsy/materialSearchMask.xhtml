@@ -59,13 +59,12 @@ limitations under the License.
             name="moleditorRendered"
             default="true"
             type="java.lang.Boolean" />
-        <composite:facet name="beforeTitle" />
     </composite:interface>
 
     <composite:implementation>
         <b:form id="materialSearchMaskForm">
             <b:container>
-                <composite:renderFacet name="beforeTitle" />
+                <composite:insertChildren />
 
                 <b:row>
                     <b:column>
@@ -213,6 +212,7 @@ limitations under the License.
                             styleClass="materialFilterButton"
                             value="#{msgs.materialOverview_searchFilter_search}"
                             ajax="true"
+                            process="@form"
                             update="materialSearchMaskForm #{cc.attrs.updateTargetClass}"
                             action="#{cc.attrs.searchController.actionStartMaterialSearch()}"/>
                     </b:column>

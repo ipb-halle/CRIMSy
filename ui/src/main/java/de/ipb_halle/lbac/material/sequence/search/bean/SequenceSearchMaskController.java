@@ -37,7 +37,6 @@ import java.util.Arrays;
  * @author flange
  */
 public class SequenceSearchMaskController extends MaterialSearchMaskController {
-
     private static final long serialVersionUID = 1L;
     private MessagePresenter messagePresenter;
 
@@ -58,14 +57,21 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
             MaterialTableController tableController,
             MaterialService materialService,
             ProjectService projectService,
-            MemberService memberService) {
+            MemberService memberService,
+            MessagePresenter messagePresenter) {
         super(null, tableController, materialService, projectService, memberService, Arrays.asList(MaterialType.SEQUENCE));
+        this.messagePresenter = messagePresenter;
     }
 
     @Override
     public void actionStartMaterialSearch() {
         tableController.setLastValues(getValues());
         tableController.reloadDataTableItems();
+    }
+
+    @Override
+    public void actionClearSearchFilter() {
+        clearInputFields();
     }
 
     @Override
@@ -78,7 +84,7 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
      * Getters with logic
      */
     public boolean isTranslationTableDisabled() {
-        return searchMode.needsTranslationTable();
+        return !searchMode.needsTranslationTable();
     }
 
     public String getLocalizedSearchModeLabel(SearchMode mode) {
@@ -138,7 +144,7 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
         values.type.clear();
         values.type.add(MaterialType.SEQUENCE);
         values.sequenceInfos = new SequenceSearchInformation(
-                searchMode.getLibrarySequenceType().toString(),
+                searchMode.getQuerySequenceType().toString(),
                 searchMode.getLibrarySequenceType().toString(),
                 query, maxResults);
         return values;

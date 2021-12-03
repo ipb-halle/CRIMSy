@@ -22,6 +22,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
+      xmlns:of="http://omnifaces.org/functions"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -35,7 +37,6 @@
                         updateTargetClass="sequenceSearchResultsForm"
                         materialTypeFieldRendered="false"
                         moleditorRendered="false">
-                        <f:facet name="beforeTitle">
                             <b:row>
                                 <h:outputText
                                     value="#{msgs.sequenceSearch_searchMask_title}"
@@ -63,7 +64,6 @@
                                     <b:selectOneMenu
                                         value="#{sequenceSearchBean.searchMaskController.searchMode}"
                                         ajax="true"
-                                        onchange="ajax:sequenceSearchBean.searchMaskController.actionChangeSearchMode()"
                                         process="@this"
                                         update="translationTableId">
                                         <f:selectItems
@@ -107,7 +107,6 @@
                                     </b:selectOneMenu>
                                 </b:column>
                             </b:row>
-                        </f:facet>
                     </crimsy:materialSearchMask>
                 </b:column>
 
@@ -141,69 +140,68 @@
                                     action="#{sequenceSearchBean.resultsTableController.actionDownloadAllResultsAsFasta()}"
                                     iconAwesome="download"
                                     iconAlign="left" />
-                               </b:panelGrid>
+                            </b:panelGrid>
 
-                               <br />
-                               <h:panelGroup styleClass="fastaResultPanelGroup">
-                                    <ui:repeat
-                                        value="#{sequenceSearchBean.resultsTableController.results}"
-                                        var="result"
-                                        varStatus="status">
-                                        <b:panel styleClass="fastaResultPanel">
-                                            <f:facet name="heading">
-                                                <h:outputFormat
-                                                    value="#{msgs.sequenceSearch_results_resultNumberFormat}"
-                                                    style="padding-right:20px;">
-                                                    <f:param value="#{status.index + 1}" />
-                                                    <f:param value="#{status.end}" />
-                                                </h:outputFormat>
+                            <br />
+                            <h:panelGroup styleClass="fastaResultPanelGroup">
+                                <ui:repeat
+                                    value="#{sequenceSearchBean.resultsTableController.results}"
+                                    var="result"
+                                    varStatus="status">
+                                    <b:panel styleClass="fastaResultPanel">
+                                        <f:facet name="heading">
+                                            <h:outputFormat
+                                                value="#{msgs.sequenceSearch_results_resultNumberFormat}"
+                                                style="padding-right:20px;">
+                                                <f:param value="#{status.index + 1}" />
+                                                <f:param value="#{status.end}" />
+                                            </h:outputFormat>
+                                            <h:outputText
+                                                value="#{result.sequence.firstName}"
+                                                style="font-size:large;" />
+                                        </f:facet>
+                                        <b:panelGrid col-spans="2,1,1,1,2,1,2,1,1">
+                                            <b:commandLink
+                                                value="#{msgs.sequenceSearch_results_downloadResultAsFasta}"
+                                                action="#{sequenceSearchBean.resultsTableController.actionDownloadResultAsFasta(result, status.index + 1)}"
+                                                iconAwesome="download"
+                                                iconAlign="left" />
+                                            <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" />
+                                            <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" />
+                                            <h:outputText value="#{msgs.sequenceSearch_results_eValue}" />
+                                            <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" />
+                                            <h:outputText value="#{msgs.sequenceSearch_results_identity}" />
+                                            <h:outputText value="#{msgs.sequenceSearch_results_similarity}" />
+                                            <h:outputText value="#{msgs.sequenceSearch_results_overlap}" />
+                                            <h:outputText value="#{msgs.sequenceSearch_results_frame}" />
+
+                                            <b:commandLink
+                                                value="#{msgs.materialOverview_actions_edit}"
+                                                action="#{materialOverviewBean.actionEditMaterial(result.sequence)}"
+                                                style="padding: 0 4px;"
+                                                icon="pencil"
+                                                ajax="false" />
+                                            <h:outputText value="#{result.fastaResult.subjectSequenceLength}" />
+                                            <h:outputText value="#{result.fastaResult.bitScore}" />
+                                            <h:outputText value="#{result.fastaResult.expectationValue}" />
+                                            <h:outputText value="#{result.fastaResult.smithWatermanScore}" />
+                                            <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" />
+                                            <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" />
+                                            <h:outputText value="#{result.fastaResult.overlap}" />
+                                            <h:outputText value="#{result.fastaResult.frame}" />
+                                        </b:panelGrid>
+                                        <hr />
+                                        <b:row>
+                                            <b:column
+                                                span="10"
+                                                offset="2">
                                                 <h:outputText
-                                                    value="#{result.sequence.firstName}"
-                                                    style="font-size:large;" />
-                                            </f:facet>
-                                            <b:panelGrid col-spans="2,1,1,1,2,1,2,1,1">
-                                                <b:commandLink
-                                                    value="#{msgs.sequenceSearch_results_downloadResultAsFasta}"
-                                                    action="#{sequenceSearchBean.resultsTableController.actionDownloadResultAsFasta(result, status.index + 1)}"
-                                                    iconAwesome="download"
-                                                    iconAlign="left" />
-                                                <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" />
-                                                <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" />
-                                                <h:outputText value="#{msgs.sequenceSearch_results_eValue}" />
-                                                <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" />
-                                                <h:outputText value="#{msgs.sequenceSearch_results_identity}" />
-                                                <h:outputText value="#{msgs.sequenceSearch_results_similarity}" />
-                                                <h:outputText value="#{msgs.sequenceSearch_results_overlap}" />
-                                                <h:outputText value="#{msgs.sequenceSearch_results_frame}" />
-
-                                                <b:commandLink
-                                                    value="#{msgs.materialOverview_actions_edit}"
-                                                    action="#{materialOverviewBean.actionEditMaterial(result.sequence)}"
-                                                    style="padding: 0 4px;"
-                                                    icon="pencil"
-                                                    ajax="false" />
-                                                <h:outputText value="#{result.fastaResult.subjectSequenceLength}" />
-                                                <h:outputText value="#{result.fastaResult.bitScore}" />
-                                                <h:outputText value="#{result.fastaResult.expectationValue}" />
-                                                <h:outputText value="#{result.fastaResult.smithWatermanScore}" />
-                                                <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" />
-                                                <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" />
-                                                <h:outputText value="#{result.fastaResult.overlap}" />
-                                                <h:outputText value="#{result.fastaResult.frame}" />
-                                            </b:panelGrid>
-                                            <hr />
-                                            <b:row>
-                                                <b:column
-                                                    span="10"
-                                                    offset="2">
-                                                    <h:outputText
-                                                        value="#{result.alignments}"
-                                                        style="white-space:pre; font-family:monospace;" />
-                                                </b:column>
-                                            </b:row>
-                                        </b:panel>
-                                    </ui:repeat>
-                                </h:panelGroup>
+                                                    value="#{result.alignments}"
+                                                    style="white-space:pre; font-family:monospace;" />
+                                            </b:column>
+                                        </b:row>
+                                    </b:panel>
+                                </ui:repeat>
                             </h:panelGroup>
                         </b:container>
                     </b:form>
