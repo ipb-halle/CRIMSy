@@ -99,7 +99,7 @@ public class SequenceSearchServiceTest extends TestBase {
         });
 
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
-        builder.setSequenceInformation("AAA", "DNA", SequenceType.DNA, 1);
+        builder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA, 1);
         builder.addMaterialType(MaterialType.SEQUENCE);
 
         SearchResult result = sequenceSearchService.searchSequences(builder.build());

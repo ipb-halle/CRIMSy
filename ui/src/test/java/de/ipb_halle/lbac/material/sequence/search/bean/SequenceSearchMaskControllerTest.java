@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
 import de.ipb_halle.lbac.material.sequence.SequenceSearchServiceMock;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.material.sequence.search.SequenceSearchInformation;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -81,8 +82,8 @@ public class SequenceSearchMaskControllerTest {
         MaterialSearchMaskValues values = controller.getValues();
         SequenceSearchInformation sequenceInfos = values.sequenceInfos;
         assertThat(values.type, contains(MaterialType.SEQUENCE));
-        assertEquals("DNA", sequenceInfos.sequenceType);
-        assertEquals("DNA", sequenceInfos.sequenceLibraryType);
+        assertEquals(SequenceType.DNA, sequenceInfos.sequenceQueryType);
+        assertEquals(SequenceType.DNA, sequenceInfos.sequenceLibraryType);
         assertEquals("TGA", sequenceInfos.sequenceQuery);
         assertEquals(TranslationTable.ALTERNATIVE_FLATWORM_MITOCHONDRIAL.getId(), sequenceInfos.translationTable);
 
@@ -92,8 +93,8 @@ public class SequenceSearchMaskControllerTest {
         values = controller.getValues();
         sequenceInfos = values.sequenceInfos;
         assertThat(values.type, contains(MaterialType.SEQUENCE));
-        assertEquals("DNA", sequenceInfos.sequenceType);
-        assertEquals("PROTEIN", sequenceInfos.sequenceLibraryType);
+        assertEquals(SequenceType.DNA, sequenceInfos.sequenceQueryType);
+        assertEquals(SequenceType.PROTEIN, sequenceInfos.sequenceLibraryType);
         assertEquals("ATG", sequenceInfos.sequenceQuery);
         assertEquals(TranslationTable.BLEPHARISMA_MACRONUCLEAR.getId(), sequenceInfos.translationTable);
     }

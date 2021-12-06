@@ -71,8 +71,8 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
         MaterialSearchMaskValues values = super.getValues();
         values.type.clear();
         values.type.add(MaterialType.SEQUENCE);
-        values.sequenceInfos = new SequenceSearchInformation(searchMode.getQuerySequenceType().toString(),
-                searchMode.getLibrarySequenceType().toString(), query, translationTable.getId());
+        values.sequenceInfos = new SequenceSearchInformation(searchMode.getQuerySequenceType(),
+                searchMode.getLibrarySequenceType(), query, translationTable.getId());
         return values;
     }
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.sequence.history;
+package de.ipb_halle.lbac.material.sequence.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
@@ -44,7 +44,7 @@ public class SequenceSearchConditionBuilderTest {
     public void test001_checkConditionBuilding() {
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(createUser(), 0, 2);
         requestBuilder.addMaterialType(MaterialType.SEQUENCE);
-        requestBuilder.setSequenceInformation("AAA", "DNA", SequenceType.DNA,1);
+        requestBuilder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA,1);
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
 
         SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(graphBuilder.buildEntityGraph(true), "materials");
@@ -60,7 +60,7 @@ public class SequenceSearchConditionBuilderTest {
 
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(createUser(), 0, 2);
         requestBuilder.addMaterialType(MaterialType.SEQUENCE);
-        requestBuilder.setSequenceInformation("AAA", "DNA", SequenceType.DNA,1);
+        requestBuilder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA,1);
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
         EntityGraph graph = graphBuilder.buildEntityGraph(true);
 

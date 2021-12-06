@@ -102,7 +102,7 @@ public class ServiceAdapter {
     }
 
     private boolean isSequenceAlignmentSearch(SearchRequest request) {
-        return request.getSearchValues().containsKey(SearchCategory.SEQUENCE_STRING);
+        return request.getSearchValues().containsKey(SearchCategory.SEQUENCE_QUERY_STRING);
     }
 
 }

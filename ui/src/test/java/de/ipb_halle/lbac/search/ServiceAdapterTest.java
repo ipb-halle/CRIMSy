@@ -94,7 +94,7 @@ public class ServiceAdapterTest {
         SearchResult result = adapter.doSearch(builder.build());
         Assert.assertEquals(1, result.getAllFoundObjects(BioMaterial.class, nodeService.getLocalNode()).size());
 
-        builder.setSequenceInformation("AAA", "DNA", SequenceType.DNA, 0);
+        builder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA, 0);
         result = adapter.doSearch(builder.build());
         Assert.assertEquals(1, result.getAllFoundObjects(SequenceAlignment.class, nodeService.getLocalNode()).size());
     }

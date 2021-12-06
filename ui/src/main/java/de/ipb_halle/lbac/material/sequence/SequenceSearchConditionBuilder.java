@@ -42,7 +42,7 @@ public class SequenceSearchConditionBuilder extends MaterialSearchConditionBuild
         List<Condition> conditionList = super.getMaterialCondition(request, toplevel);
         for (SearchCategory key : request.getSearchValues().keySet()) {
             switch (key) {
-                case SEQUENCE_TYPE:
+                case SEQUENCE_QUERY_TYPE:
                     addSequenceTypeCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;                
             }

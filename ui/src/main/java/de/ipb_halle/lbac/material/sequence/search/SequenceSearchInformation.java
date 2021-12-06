@@ -17,22 +17,24 @@
  */
 package de.ipb_halle.lbac.material.sequence.search;
 
+import de.ipb_halle.lbac.material.sequence.SequenceType;
+
 /**
+ * Data object that holds information about a sequence search request.
  *
  * @author fmauz
  */
 public class SequenceSearchInformation {
-
-    public String sequenceType;
-    public String sequenceLibraryType;
+    public SequenceType sequenceQueryType;
+    public SequenceType sequenceLibraryType;
     public String sequenceQuery;
     public int translationTable;
 
-    public SequenceSearchInformation(String sequenceType, String sequenceLibraryType, String sequenceQuery, int translationTable) {
-        this.sequenceType = sequenceType;
+    public SequenceSearchInformation(SequenceType sequenceQueryType, SequenceType sequenceLibraryType,
+            String sequenceQuery, int translationTable) {
+        this.sequenceQueryType = sequenceQueryType;
         this.sequenceLibraryType = sequenceLibraryType;
         this.sequenceQuery = sequenceQuery;
         this.translationTable = translationTable;
     }
-
 }

@@ -137,9 +137,9 @@ public class SequenceSearchService implements Serializable {
         FastaSearchRequest fastaRequest = new FastaSearchRequest();
 
         FastaSearchQuery query = new FastaSearchQuery();
-        String queryString = request.getSearchValues().get(SearchCategory.SEQUENCE_STRING).getValues().iterator().next();
+        String queryString = request.getSearchValues().get(SearchCategory.SEQUENCE_QUERY_STRING).getValues().iterator().next();
         String libraryType = request.getSearchValues().get(SearchCategory.SEQUENCE_LIBRARY_TYPE).getValues().iterator().next();
-        String seqType = request.getSearchValues().get(SearchCategory.SEQUENCE_TYPE).getValues().iterator().next();
+        String seqType = request.getSearchValues().get(SearchCategory.SEQUENCE_QUERY_TYPE).getValues().iterator().next();
         String translationTable = request.getSearchValues().get(SearchCategory.SEQUENCE_TRANSLATION_TABLE).getValues().iterator().next();
 
         query.setQuerySequence(queryString);

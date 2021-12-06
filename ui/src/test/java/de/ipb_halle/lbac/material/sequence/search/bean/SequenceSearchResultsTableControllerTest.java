@@ -37,9 +37,7 @@ import org.junit.Test;
 
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
@@ -81,9 +79,9 @@ public class SequenceSearchResultsTableControllerTest {
         List<MaterialName> names3 = Arrays.asList(new MaterialName("firstName3", "en", 1),
                 new MaterialName("secondName3", "de", 100));
 
-        sequence1 = new Sequence(1, names1, 1, new HazardInformation(), new StorageInformation(), data1);
-        sequence2 = new Sequence(2, names2, 1, new HazardInformation(), new StorageInformation(), data2);
-        sequence3 = new Sequence(3, names3, 1, new HazardInformation(), new StorageInformation(), data3);
+        sequence1 = new Sequence(1, names1, 1, null, null, data1);
+        sequence2 = new Sequence(2, names2, 1, null, null, data2);
+        sequence3 = new Sequence(3, names3, 1, null, null, data3);
 
         Reader reader = readerForResourceFile("fastaresults/results1.txt");
         fastaResults = new FastaResultParser(reader).parse();
