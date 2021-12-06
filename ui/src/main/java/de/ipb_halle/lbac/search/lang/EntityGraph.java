@@ -175,6 +175,11 @@ public class EntityGraph {
         return this;
     }
 
+    public EntityGraph addLinkField(LinkField field) {
+        this.linkFields.add(field);
+        return this;
+    }
+
     /**
      * convert the fieldName:DbField mapping into a columnName:DbField mapping
      */

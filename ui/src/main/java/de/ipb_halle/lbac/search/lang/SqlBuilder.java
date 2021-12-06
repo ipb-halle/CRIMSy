@@ -135,7 +135,7 @@ public class SqlBuilder {
      * @param operator the condition operator
      * @param value the condition value
      */
-    private void addBinaryLeafCondition(StringBuilder sb, Set<DbField> columns, Operator operator, Value value) {
+    protected void addBinaryLeafCondition(StringBuilder sb, Set<DbField> columns, Operator operator, Value value) {
         String sep = "";
         for (DbField field : columns) {
             sb.append(sep);
@@ -183,7 +183,7 @@ public class SqlBuilder {
      * @param condition the conditions
      * @param context the activation context
      */
-    private void filter(Condition condition, String context) {
+    protected void filter(Condition condition, String context) {
         List<Attribute> attributes = new ArrayList<>();
         if (condition != null) {
             condition.getAttributes(attributes);
@@ -238,7 +238,7 @@ public class SqlBuilder {
         return sb.toString();
     }
 
-    private int getArgumentCounter() {
+    protected int getArgumentCounter() {
         return this.argumentCounter;
     }
 
@@ -251,7 +251,7 @@ public class SqlBuilder {
      * @throws IllegalStateException if joinType doesn't match one of the known
      * join types
      */
-    private String getJoinType(EntityGraph graph) {
+    protected String getJoinType(EntityGraph graph) {
         switch (graph.getJoinType()) {
             case INNER:
                 return " JOIN ";
@@ -296,6 +296,17 @@ public class SqlBuilder {
         throw new NoSuchElementException("No matching field found in getOrderColumn()");
     }
 
+    protected SqlBuilder getSqlBuilder(EntityGraph child, boolean subSelect) {
+        return new SqlBuilder(child, subSelect);
+    }
+
+    /**
+     * @return true if this SqlBuilder builds a sub-SELECT statement
+     */
+    public boolean getSubSelect() {
+        return this.subSelect;
+    }
+
     /**
      * return the list of Values with argument keys set
      *
@@ -333,7 +344,7 @@ public class SqlBuilder {
                 }
                 sb.append(" ( ");
                 String tmpAlias = child.getAlias();
-                SqlBuilder builder = new SqlBuilder(child, true);
+                SqlBuilder builder = getSqlBuilder(child, true);
                 builder.setArgumentCounter(this.argumentCounter);
                 sb.append(builder.query(
                         "sub_" + tmpAlias,
@@ -392,21 +403,23 @@ public class SqlBuilder {
         StringBuilder sb = new StringBuilder();
         String sep = "";
         for (LinkField link : child.getLinks()) {
-            if (!parent.containsColumn(link.getParent())) {
+            if (! (parent.containsColumn(link.getParent()) || link.getValued())) {
                 throw new NoSuchElementException(String.format("Column '%s'does not exist in parent table %s.%s",
                         link.getParent(),
                         parent.getAlias(),
                         parent.getTableName()));
             }
-            if (!child.containsColumn(link.getChild())) {
+            if (! (child.containsColumn(link.getChild()) || link.getValued())) {
                 throw new NoSuchElementException(String.format("Column '%s'does not exist in parent table %s.%s",
                         link.getChild(),
                         child.getAlias(),
                         child.getTableName()));
             }
             sb.append(sep);
-            sb.append(parent.getAlias());
-            sb.append(".");
+            if (! link.getValued()) {
+                sb.append(parent.getAlias());
+                sb.append(".");
+            }
             sb.append(link.getParent());
             sb.append(" = ");
             sb.append(child.getAlias());
