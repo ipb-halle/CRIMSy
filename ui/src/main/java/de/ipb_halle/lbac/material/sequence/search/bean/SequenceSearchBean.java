@@ -23,6 +23,8 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.jsf.SendFileBean;
+
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -48,6 +50,9 @@ public class SequenceSearchBean implements Serializable {
     private MemberService memberService;
 
     @Inject
+    private SendFileBean sendFileBean;
+
+    @Inject
     private SequenceSearchService sequenceSearchService;
 
     @Inject
@@ -61,6 +66,7 @@ public class SequenceSearchBean implements Serializable {
         resultsTableController = new SequenceSearchResultsTableController(
                 materialService,
                 sequenceSearchService,
+                sendFileBean,
                 messagePresenter);
         searchMaskController = new SequenceSearchMaskController(
                 resultsTableController,

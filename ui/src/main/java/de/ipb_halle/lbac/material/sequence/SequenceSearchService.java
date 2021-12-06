@@ -57,9 +57,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateless
 public class SequenceSearchService implements Serializable {
-
-    private String dbUser;
-    private String dbpass;
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -193,7 +190,7 @@ public class SequenceSearchService implements Serializable {
         secondSqlPart = secondSqlPart.replace("[", "(");
         secondSqlPart = secondSqlPart.replace("]", ")");     
         secondSqlPart = secondSqlPart.replace("SELECT DISTINCT a.aclist_id, a.owner_id, a.ctime, a.materialtypeid, a.materialid, a.projectid, a.deactivated",
-                "SELECT a.materialid,a_0_0_3.sequencestring");
+                "SELECT DISTINCT a.materialid,a_0_0_3.sequencestring");
         String thirdSqlPart = "SELECT #;";
         String fourthSqlPart = "SELECT sequencestring FROM sequences WHERE id=#;";
         String finalString = String.join("\n", firstSqlPart, secondSqlPart, thirdSqlPart, fourthSqlPart);

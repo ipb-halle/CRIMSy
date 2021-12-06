@@ -20,8 +20,9 @@ package de.ipb_halle.lbac.material.sequence.search.bean;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
@@ -60,11 +61,12 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
     public SequenceSearchResultsTableController(
             MaterialService materialService,
             SequenceSearchService sequenceSearchService,
+            SendFileBean sendFileBean,
             MessagePresenter messagePresenter) {
         super(materialService);
-        this.messagePresenter = messagePresenter;
         this.sequenceService = sequenceSearchService;
-
+        this.sendFileBean = sendFileBean;
+        this.messagePresenter = messagePresenter;
     }
 
     public void setSearchMaskController(SequenceSearchMaskController searchMaskController) {
@@ -73,7 +75,8 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
 
     @Override
     public void reloadDataTableItems() {
-        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(lastUser, 0, searchMaskController.getMaxResults());
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(lastUser, 0,
+                searchMaskController.getMaxResults());
         builder.addMaterialType(MaterialType.SEQUENCE);
         builder.setSearchValues(lastValues);
         List<SequenceAlignment> searchResults = sequenceService.searchSequences(builder.build())
@@ -104,10 +107,7 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
      * Actions
      */
     public void actionDownloadAllResultsAsFasta() throws IOException {
-        if (results == null) {
-            return;
-        }
-        Collection<Sequence> sequences = allSequencesFromResults();
+        Collection<Sequence> sequences = allDistinctSequencesFromResults();
         String fastaFile = FastaFileFormat.generateFastaString(sequences);
 
         if (!fastaFile.isEmpty()) {
@@ -115,13 +115,19 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
         }
     }
 
-    private Collection<Sequence> allSequencesFromResults() {
-        /*
-         * LinkedHashSet guarantees (1) insertion-order and (2) duplicate removal
-         * (because Sequence implements equals() and hashCode() properly).
-         */
-        Collection<Sequence> sequences = new LinkedHashSet<>();
-        results.forEach(result -> sequences.add(result.getSequence()));
+    private Collection<Sequence> allDistinctSequencesFromResults() {
+        // set with distinct objects
+        TreeSet<FastaResultDisplayWrapper> set = new TreeSet<>(
+                Comparator.comparing(result -> result.getSequence().getId()));
+        set.addAll(results);
+
+        // sorted list
+        List<FastaResultDisplayWrapper> distinctResults = new ArrayList<>(set);
+        distinctResults.sort(sortBy.getComparator());
+
+        // sorted list of distinct sequences
+        List<Sequence> sequences = new ArrayList<>(distinctResults.size());
+        distinctResults.forEach(result -> sequences.add(result.getSequence()));
 
         return sequences;
     }
@@ -165,5 +171,4 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
     public List<FastaResultDisplayWrapper> getResults() {
         return results;
     }
-
 }

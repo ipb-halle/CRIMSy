@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrap
  * @author flange
  */
 public enum SortItem {
-    SUBJECTNAME(Comparator.comparing(f -> f.getFastaResult().getSubjectSequenceName())),
+    SUBJECTNAME(Comparator.comparing(f -> f.getSequence().getFirstName())),
     LENGTH(Comparator.comparing(f -> f.getFastaResult().getSubjectSequenceLength(), Comparator.reverseOrder())),
     BITSCORE(Comparator.comparing(f -> f.getFastaResult().getBitScore(), Comparator.reverseOrder())),
     EVALUE(Comparator.comparing(f -> f.getFastaResult().getExpectationValue())),

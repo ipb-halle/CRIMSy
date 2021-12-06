@@ -38,7 +38,7 @@ public class FastaResultDisplayWrapperTest {
     private Sequence sequence = new Sequence(1, null, null, null, null, null);
 
     private Reader readerForResourceFile(String filename) {
-        return new InputStreamReader(FastaResultDisplayWrapperTest.class.getResourceAsStream(filename));
+        return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("fastaresults/" + filename));
     }
 
     @Test

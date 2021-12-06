@@ -44,6 +44,8 @@ import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
  * Considerations:
  * - What happens when there are several Response objects around and for one of 
  *   them Response.close() is called?
+ * - What if the application server decides to destroy an EJB instance while there
+ *   are still open Response objects around?
  */
 @Stateless
 public class FastaRESTSearchService {

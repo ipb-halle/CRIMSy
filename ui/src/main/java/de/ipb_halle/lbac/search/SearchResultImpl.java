@@ -57,7 +57,7 @@ public class SearchResultImpl implements SearchResult, Serializable {
     }
 
     @Override
-    public void addResults(List<Searchable> foundObjects) {
+    public void addResults(List<? extends Searchable> foundObjects) {
         foundObjectsOfNode.addAll(foundObjects);
     }
 

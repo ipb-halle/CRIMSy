@@ -17,19 +17,27 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.admission.User;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+
+import java.util.ArrayList;
+
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
+import de.ipb_halle.lbac.material.sequence.SequenceData;
+import de.ipb_halle.lbac.material.sequence.SequenceSearchServiceMock;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.search.mocks.DocumentServiceMock;
 import de.ipb_halle.lbac.search.mocks.ExperimentServiceMock;
 import de.ipb_halle.lbac.search.mocks.ItemServiceMock;
 import de.ipb_halle.lbac.search.mocks.MaterialServiceMock;
 import de.ipb_halle.lbac.search.mocks.ProjectServiceMock;
-import de.ipb_halle.lbac.search.mocks.SequenceSearchServiceMock;
 import de.ipb_halle.lbac.service.NodeService;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -54,6 +62,18 @@ public class ServiceAdapterTest {
 
     @Before
     public void init() {
+        SequenceSearchServiceMock sequenceSearchServiceMock = new SequenceSearchServiceMock();
+        sequenceSearchServiceMock.setBehaviour(request -> {
+            SearchResultImpl result = new SearchResultImpl();
+
+            Sequence sequence = new Sequence(0, new ArrayList<>(), 1, new HazardInformation(), new StorageInformation(),
+                    SequenceData.builder().build());
+
+            SequenceAlignment alignent = new SequenceAlignment(sequence, new FastaResult());
+            result.addResult(alignent);
+            return result;
+        });
+
         adapter = new ServiceAdapter(
                 new ItemServiceMock(),
                 new MaterialServiceMock(),
@@ -63,7 +83,7 @@ public class ServiceAdapterTest {
                 null,
                 null,
                 nodeService,
-                new SequenceSearchServiceMock());
+                sequenceSearchServiceMock);
     }
 
     @Test

@@ -39,7 +39,7 @@ public interface SearchResult {
 
     public <T> List<T> getAllFoundObjectsAsSearchable(Class T);
 
-    public void addResults(List<Searchable> foundObjects);
+    public void addResults(List<? extends Searchable> foundObjects);
 
     public void addResult(Searchable foundObject);
 
