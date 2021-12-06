@@ -60,6 +60,10 @@ public class Value {
         return arg;
     }
 
+    public String getCastExpression() {
+        return castExpression;
+    }
+
     public Object getValue() {
         return this.value;
     }
@@ -100,18 +104,6 @@ public class Value {
 
     public void setSingleValue(Object singleValue) {
         this.singleValue = singleValue;
-    }
-
-    public String getTransferCastExpression() {
-        return transferCastExpression;
-    }
-
-    public void setTransferCastExpression(String transferCastExpression) {
-        this.transferCastExpression = transferCastExpression;
-    }
-
-    public String getUnmodifiedCastExpression() {
-        return castExpression;
     }
 
 }

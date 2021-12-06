@@ -36,7 +36,7 @@ import java.util.UUID;
  */
 public class SqlParamTableBuilder extends SqlBuilder {
 
-    private final static String paramTableNameQuery = "SELECT process_id, parameter FROM tmp_search_parameter";
+    protected final static String paramTableNameQuery = "SELECT process_id, parameter FROM tmp_search_parameter";
     private final static String paramTableId = "process_id";
     private final static String paramTableName = "param_table";
     private String processId;
@@ -86,12 +86,12 @@ public class SqlParamTableBuilder extends SqlBuilder {
                 sb.append("(");
                 sb.append(field.getAliasedColumnName());
                 sb.append(",");
-                sb.append(getCastParameter(value.getArgumentKey()));
+                sb.append(getCastParameter(value));
                 sb.append(")");
             } else {
                 sb.append(field.getAliasedColumnName());
                 sb.append(operator.getSql());
-                sb.append(getCastParameter(value.getArgumentKey()));
+                sb.append(getCastParameter(value));
             }
             sep = " OR ";
         }
@@ -109,11 +109,16 @@ public class SqlParamTableBuilder extends SqlBuilder {
     }
 
     /**
-     * @param key Argument key for the value
-     * @return
+     * @param value the original condition value object
+     * @return a modified cast parameter to use the JSON object
+     * from the parameter table
      */
-    private String getCastParameter(String key) {
-        return "parameter->>'" + key + "'";
+    private String getCastParameter(Value value) {
+        String  expr = value.getCastExpression();
+        String param = "parameter->>'" + value.getArgumentKey() + "'";
+        return (expr == null)
+                ? param
+                : String.format(expr, param);
     };
 
     public String getProcessId() {

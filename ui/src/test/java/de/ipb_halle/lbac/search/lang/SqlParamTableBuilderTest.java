@@ -57,12 +57,18 @@ public class SqlParamTableBuilderTest extends TestBase {
                 Operator.ILIKE,
                 new Value("%TEST%"));
 
-        System.out.println("\n#\n#========================================\n#\n# Statement\n#\n");
         String sql = builder.query(condition);
-        System.out.println(sql);
+        String processId = builder.getProcessId();
         String json = builder.getValuesAsJson().toString();
-        System.out.println("\n#\n#========================================\n#\n# Parameter\n#\n");
-        System.out.println(json);
+
+        assertTrue("sql contains processId", sql.contains(processId));
+        assertTrue("sql contains parameter table query",
+                sql.contains(SqlParamTableBuilder.paramTableNameQuery));
+
+        assertTrue("JSON contains field 'field0'", json.contains("field0"));
+        assertTrue("JSON contains test value '%TEST%'", json.contains("%TEST%"));
+
+
 
     }
 }
