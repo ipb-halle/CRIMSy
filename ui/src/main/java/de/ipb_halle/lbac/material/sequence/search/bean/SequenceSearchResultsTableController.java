@@ -45,7 +45,6 @@ import de.ipb_halle.lbac.util.jsf.SendFileBean;
  * @author flange
  */
 public class SequenceSearchResultsTableController extends MaterialTableController {
-
     private static final long serialVersionUID = 1L;
     private MessagePresenter messagePresenter;
     private SequenceSearchMaskController searchMaskController;
@@ -58,11 +57,8 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
 
     private List<FastaResultDisplayWrapper> results = new ArrayList<>();
 
-    public SequenceSearchResultsTableController(
-            MaterialService materialService,
-            SequenceSearchService sequenceSearchService,
-            SendFileBean sendFileBean,
-            MessagePresenter messagePresenter) {
+    public SequenceSearchResultsTableController(MaterialService materialService,
+            SequenceSearchService sequenceSearchService, SendFileBean sendFileBean, MessagePresenter messagePresenter) {
         super(materialService);
         this.sequenceService = sequenceSearchService;
         this.sendFileBean = sendFileBean;
@@ -133,6 +129,9 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
     }
 
     public void actionDownloadResultAsFasta(FastaResultDisplayWrapper item, int index) throws IOException {
+        if (item == null) {
+            return;
+        }
         String fastaFile = FastaFileFormat.generateFastaString(item.getSequence());
 
         if (!fastaFile.isEmpty()) {
@@ -141,9 +140,7 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
     }
 
     public void actionOnChangeSortBy() {
-        if (results != null) {
-            sortResults();
-        }
+        sortResults();
     }
 
     /*

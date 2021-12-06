@@ -17,8 +17,14 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.bean;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,12 +40,16 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
 import de.ipb_halle.lbac.material.sequence.SequenceData;
 import de.ipb_halle.lbac.material.sequence.SequenceSearchServiceMock;
+import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayConfig;
+import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParser;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParserException;
+import de.ipb_halle.lbac.material.sequence.search.display.TfastxyResultDisplayConfig;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
@@ -54,6 +64,9 @@ public class SequenceSearchResultsTableControllerTest {
     private SequenceSearchResultsTableController controller;
     private Sequence sequence1, sequence2, sequence3;
     private SequenceAlignment alignment1, alignment2, alignment3a, alignment3b;
+    private List<SequenceAlignment> alignments;
+    private List<FastaResult> fastaResults;
+    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
     @Before
     public void init() throws FastaResultParserException {
@@ -73,23 +86,47 @@ public class SequenceSearchResultsTableControllerTest {
         sequence3 = new Sequence(3, names3, 1, new HazardInformation(), new StorageInformation(), data3);
 
         Reader reader = readerForResourceFile("fastaresults/results1.txt");
-        List<FastaResult> fastaResults = new FastaResultParser(reader).parse();
+        fastaResults = new FastaResultParser(reader).parse();
 
         alignment1 = new SequenceAlignment(sequence1, fastaResults.get(3));
         alignment2 = new SequenceAlignment(sequence2, fastaResults.get(1));
         alignment3a = new SequenceAlignment(sequence3, fastaResults.get(2));
         alignment3b = new SequenceAlignment(sequence3, fastaResults.get(0));
+        alignments = Arrays.asList(alignment1, alignment2, alignment3a, alignment3b);
 
         sendFileBeanMock = new SendFileBeanMock();
 
-        controller = new SequenceSearchResultsTableController(null, sequenceSearchServiceMock, sendFileBeanMock, null);
+        controller = new SequenceSearchResultsTableController(null, sequenceSearchServiceMock, sendFileBeanMock,
+                messagePresenter);
         sequenceSearchMaskController = new SequenceSearchMaskController(controller, null, null, null, null);
         controller.setSearchMaskController(sequenceSearchMaskController);
     }
 
     @Test
+    public void test_reloadDataTableItems_withDifferentSearchModes() {
+        sequenceSearchServiceMock.setBehaviour(request -> {
+            SearchResult result = new SearchResultImpl(new Node());
+            result.addResults(alignments);
+            return result;
+        });
+
+        sequenceSearchMaskController.setSearchMode(SearchMode.DNA_DNA);
+        sequenceSearchMaskController.actionStartMaterialSearch();
+        List<FastaResultDisplayWrapper> results = controller.getResults();
+        for (FastaResultDisplayWrapper wrapper : results) {
+            assertThat(wrapper.getConfig(), instanceOf(FastaResultDisplayConfig.class));
+        }
+
+        sequenceSearchMaskController.setSearchMode(SearchMode.PROTEIN_DNA);
+        sequenceSearchMaskController.actionStartMaterialSearch();
+        results = controller.getResults();
+        for (FastaResultDisplayWrapper wrapper : results) {
+            assertThat(wrapper.getConfig(), instanceOf(TfastxyResultDisplayConfig.class));
+        }
+    }
+
+    @Test
     public void test_actionDownloadAllResultsAsFasta_after_loadingResults() throws IOException {
-        List<SequenceAlignment> alignments = Arrays.asList(alignment1, alignment2, alignment3a, alignment3b);
         sequenceSearchServiceMock.setBehaviour(request -> {
             SearchResult result = new SearchResultImpl(new Node());
             result.addResults(alignments);
@@ -123,7 +160,100 @@ public class SequenceSearchResultsTableControllerTest {
         assertNull(sendFileBeanMock.getFilename());
     }
 
+    @Test
+    public void test_actionDownloadResultAsFasta_after_loadingResults() throws IOException {
+        controller.actionDownloadResultAsFasta(null, 42);
+        assertNull(sendFileBeanMock.getContent());
+        assertNull(sendFileBeanMock.getFilename());
+
+        FastaResultDisplayWrapper wrapper = new FastaResultDisplayWrapper(null, null);
+        controller.actionDownloadResultAsFasta(wrapper, 42);
+        assertNull(sendFileBeanMock.getContent());
+        assertNull(sendFileBeanMock.getFilename());
+
+        wrapper = new FastaResultDisplayWrapper(sequence1, null);
+        controller.actionDownloadResultAsFasta(wrapper, 42);
+        String result = new String(sendFileBeanMock.getContent());
+        String expected = ">1 firstName1\nsequence1";
+        assertEquals(expected, result);
+        assertEquals("result_42.fasta", sendFileBeanMock.getFilename());
+    }
+
+    @Test
+    public void test_actionOnChangeSortBy_after_loadingResults() {
+        sequenceSearchServiceMock.setBehaviour(request -> {
+            SearchResult result = new SearchResultImpl(new Node());
+            result.addResults(alignments);
+            return result;
+        });
+        sequenceSearchMaskController.actionStartMaterialSearch();
+        List<FastaResultDisplayWrapper> results = controller.getResults();
+
+        assertionsForDefaultAlignments(results);
+
+        // result list sorted differently
+        controller.setSortBy(SortItem.SUBJECTNAME);
+        controller.actionOnChangeSortBy();
+
+        assertThat(results, hasSize(4));
+        assertEquals(fastaResults.get(3), results.get(0).getFastaResult());
+        assertTrue(sequence1.isEqualTo(results.get(0).getSequence()));
+        assertEquals(fastaResults.get(1), results.get(1).getFastaResult());
+        assertTrue(sequence2.isEqualTo(results.get(1).getSequence()));
+        assertEquals(fastaResults.get(0), results.get(2).getFastaResult());
+        assertTrue(sequence3.isEqualTo(results.get(2).getSequence()));
+        assertEquals(fastaResults.get(2), results.get(3).getFastaResult());
+        assertTrue(sequence3.isEqualTo(results.get(3).getSequence()));
+    }
+
+    @Test
+    public void test_getLocalizedSortByLabel() {
+        assertEquals("sequenceSearch_sortItem_EVALUE", controller.getLocalizedSortByLabel(SortItem.EVALUE));
+        assertEquals("sequenceSearch_sortItem_SMITHWATERMANSCORE",
+                controller.getLocalizedSortByLabel(SortItem.SMITHWATERMANSCORE));
+    }
+
+    @Test
+    public void test_getAndSetSortBy() {
+        assertEquals(SortItem.EVALUE, controller.getSortBy());
+        controller.setSortBy(SortItem.SIMILARITY);
+        assertEquals(SortItem.SIMILARITY, controller.getSortBy());
+    }
+
+    @Test
+    public void test_getSortByItems() {
+        assertArrayEquals(SortItem.values(), controller.getSortByItems());
+    }
+
+    @Test
+    public void test_getResults() {
+        assertThat(controller.getResults(), empty());
+
+        // load some results
+        sequenceSearchServiceMock.setBehaviour(request -> {
+            SearchResult result = new SearchResultImpl(new Node());
+            result.addResults(alignments);
+            return result;
+        });
+        sequenceSearchMaskController.actionStartMaterialSearch();
+        List<FastaResultDisplayWrapper> results = controller.getResults();
+
+        assertionsForDefaultAlignments(results);
+    }
+
     private Reader readerForResourceFile(String filename) {
         return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));
+    }
+
+    private void assertionsForDefaultAlignments(List<FastaResultDisplayWrapper> results) {
+        assertThat(results, hasSize(4));
+        assertEquals(fastaResults.get(0), results.get(0).getFastaResult());
+        assertTrue(sequence3.isEqualTo(results.get(0).getSequence()));
+        assertEquals(fastaResults.get(1), results.get(1).getFastaResult());
+        assertTrue(sequence2.isEqualTo(results.get(1).getSequence()));
+        assertEquals(fastaResults.get(2), results.get(2).getFastaResult());
+        assertTrue(sequence3.isEqualTo(results.get(2).getSequence()));
+        assertEquals(fastaResults.get(3), results.get(3).getFastaResult());
+        assertTrue(sequence1.isEqualTo(results.get(3).getSequence()));
     }
 }
