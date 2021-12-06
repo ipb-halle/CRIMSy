@@ -41,18 +41,20 @@ import de.ipb_halle.lbac.material.sequence.util.FastaFileFormat;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 /**
+ * JSF controller for the sequence search's alignment results.
  *
  * @author flange
  */
 public class SequenceSearchResultsTableController extends MaterialTableController {
     private static final long serialVersionUID = 1L;
+
+    private SequenceSearchService sequenceSearchService;
+    private SendFileBean sendFileBean;
     private MessagePresenter messagePresenter;
     private SequenceSearchMaskController searchMaskController;
-    private SendFileBean sendFileBean;
 
     private SortItem sortBy = SortItem.EVALUE;
     private static final SortItem[] sortByItems = SortItem.values();
-    private SequenceSearchService sequenceService;
     private User lastUser;
 
     private List<FastaResultDisplayWrapper> results = new ArrayList<>();
@@ -60,7 +62,7 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
     public SequenceSearchResultsTableController(MaterialService materialService,
             SequenceSearchService sequenceSearchService, SendFileBean sendFileBean, MessagePresenter messagePresenter) {
         super(materialService);
-        this.sequenceService = sequenceSearchService;
+        this.sequenceSearchService = sequenceSearchService;
         this.sendFileBean = sendFileBean;
         this.messagePresenter = messagePresenter;
     }
@@ -69,13 +71,16 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
         this.searchMaskController = searchMaskController;
     }
 
+    /**
+     * Reload the results list by performing a sequence database search and sort it.
+     */
     @Override
     public void reloadDataTableItems() {
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(lastUser, 0,
                 searchMaskController.getMaxResults());
         builder.addMaterialType(MaterialType.SEQUENCE);
         builder.setSearchValues(lastValues);
-        List<SequenceAlignment> searchResults = sequenceService.searchSequences(builder.build())
+        List<SequenceAlignment> searchResults = sequenceSearchService.searchSequences(builder.build())
                 .getAllFoundObjectsAsSearchable(SequenceAlignment.class);
 
         ResultDisplayConfig displayConfig = searchMaskController.getSearchMode().getDisplayConfig();
@@ -101,6 +106,11 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
 
     /*
      * Actions
+     */
+    /**
+     * Offer a download of all distinct result sequences in a single fasta file.
+     *
+     * @throws IOException
      */
     public void actionDownloadAllResultsAsFasta() throws IOException {
         Collection<Sequence> sequences = allDistinctSequencesFromResults();
@@ -128,6 +138,11 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
         return sequences;
     }
 
+    /**
+     * Offer a download of the given result as fasta file.
+     *
+     * @throws IOException
+     */
     public void actionDownloadResultAsFasta(FastaResultDisplayWrapper item, int index) throws IOException {
         if (item == null) {
             return;
@@ -139,12 +154,19 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
         }
     }
 
+    /**
+     * Sort the result list.
+     */
     public void actionOnChangeSortBy() {
         sortResults();
     }
 
     /*
-     * Getters with logics
+     * Getters with logic
+     */
+    /**
+     * @param item
+     * @return i18nized name for the given {@link SortItem}
      */
     public String getLocalizedSortByLabel(SortItem item) {
         return messagePresenter.presentMessage("sequenceSearch_sortItem_" + item.toString());

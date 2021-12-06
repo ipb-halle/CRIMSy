@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.bean;
 
-
 import org.hibernate.validator.constraints.NotBlank;
 
 import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
@@ -33,6 +32,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import java.util.Arrays;
 
 /**
+ * JSF controller for the search filters in sequence database searches.
  *
  * @author flange
  */
@@ -50,28 +50,14 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
     private static final TranslationTable[] translationTableItems = TranslationTable.values();
 
     private int maxResults = maxResultItems[4];
-    private static final int[] maxResultItems = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 500, 750,
-        1000};
+    private static final int[] maxResultItems = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 500, 750,
+            1000 };
 
-    public SequenceSearchMaskController(
-            MaterialTableController tableController,
-            MaterialService materialService,
-            ProjectService projectService,
-            MemberService memberService,
-            MessagePresenter messagePresenter) {
-        super(null, tableController, materialService, projectService, memberService, Arrays.asList(MaterialType.SEQUENCE));
+    public SequenceSearchMaskController(MaterialTableController tableController, MaterialService materialService,
+            ProjectService projectService, MemberService memberService, MessagePresenter messagePresenter) {
+        super(null, tableController, materialService, projectService, memberService,
+                Arrays.asList(MaterialType.SEQUENCE));
         this.messagePresenter = messagePresenter;
-    }
-
-    @Override
-    public void actionStartMaterialSearch() {
-        tableController.setLastValues(getValues());
-        tableController.reloadDataTableItems();
-    }
-
-    @Override
-    public void actionClearSearchFilter() {
-        clearInputFields();
     }
 
     @Override
@@ -80,13 +66,51 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
         query = "";
     }
 
+    @Override
+    protected MaterialSearchMaskValues getValues() {
+        MaterialSearchMaskValues values = super.getValues();
+        values.type.clear();
+        values.type.add(MaterialType.SEQUENCE);
+        values.sequenceInfos = new SequenceSearchInformation(searchMode.getQuerySequenceType().toString(),
+                searchMode.getLibrarySequenceType().toString(), query, translationTable.getId());
+        return values;
+    }
+
+    /*
+     * Actions
+     */
+    /**
+     * Start a sequence database search.
+     */
+    @Override
+    public void actionStartMaterialSearch() {
+        tableController.setLastValues(getValues());
+        tableController.reloadDataTableItems();
+    }
+
+    /**
+     * Clear all input fields.
+     */
+    @Override
+    public void actionClearSearchFilter() {
+        clearInputFields();
+    }
+
     /*
      * Getters with logic
+     */
+    /**
+     * @return {@code true} in case the active {@code searchMode} does not require a
+     *         translation table.
      */
     public boolean isTranslationTableDisabled() {
         return !searchMode.needsTranslationTable();
     }
 
+    /**
+     * @param mode
+     * @return 18nized name for the given {@link SearchMode}
+     */
     public String getLocalizedSearchModeLabel(SearchMode mode) {
         return messagePresenter.presentMessage("sequenceSearch_searchMode_" + mode.toString());
     }
@@ -136,17 +160,5 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
 
     public int[] getMaxResultItems() {
         return maxResultItems;
-    }
-
-    @Override
-    protected MaterialSearchMaskValues getValues() {
-        MaterialSearchMaskValues values = super.getValues();
-        values.type.clear();
-        values.type.add(MaterialType.SEQUENCE);
-        values.sequenceInfos = new SequenceSearchInformation(
-                searchMode.getQuerySequenceType().toString(),
-                searchMode.getLibrarySequenceType().toString(),
-                query, maxResults);
-        return values;
     }
 }
