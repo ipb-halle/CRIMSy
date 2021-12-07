@@ -110,14 +110,7 @@ public class SequenceSearchServiceTest extends TestBase {
 
     @Test
     public void test002_process500Error() {
-        mock.setBehaviour((e) -> {
-            FastaResult fastaResult = new FastaResult();
-            fastaResult.setQueryAlignmentLine("abc");
-            fastaResult.setSubjectSequenceName(String.valueOf(sequence.getId()));
-            FastaSearchResult result = new FastaSearchResult();
-            result.setProgramOutput("def");
-            result.setResults(Arrays.asList(fastaResult));
-
+        mock.setBehaviour((e) -> {           
             return Response.serverError().build();
         });
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);

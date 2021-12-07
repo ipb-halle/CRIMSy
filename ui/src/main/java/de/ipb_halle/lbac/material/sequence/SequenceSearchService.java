@@ -61,7 +61,6 @@ public class SequenceSearchService implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String ERROR_SAVE_PARAMETER = "Could not save temporary parameter in database";
-    private final String ERROR_REST_CALL_FAILED = "SequenceSearchService: REST call returns: %s %s";
     private final String ERROR_REST_CALL_EXEPTION = "SequenceSearchService: Error at sequence search: %s";
     @Inject
     NodeService nodeService;
@@ -104,10 +103,9 @@ public class SequenceSearchService implements Serializable {
                     Sequence loadedSequence = (Sequence) materialService.loadMaterialById(sequenceId);
                     result.addResult(new SequenceAlignment(loadedSequence, singleResult));
                 }
-            } else {
-                String error = response.readEntity(String.class);
-                String errorMessage = String.format(ERROR_REST_CALL_FAILED,
-                        response.getStatus(), error);
+            } else {               
+                String errorMessage = String.format(ERROR_REST_CALL_EXEPTION,
+                        response.getStatus());
                 logger.error(errorMessage);
                 result.addErrorMessage(errorMessage);
             }
