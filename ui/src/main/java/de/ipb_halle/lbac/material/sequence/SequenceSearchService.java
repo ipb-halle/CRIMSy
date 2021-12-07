@@ -57,8 +57,12 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateless
 public class SequenceSearchService implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
+    private final String ERROR_SAVE_PARAMETER = "Could not save temporary parameter in database";
+    private final String ERROR_REST_CALL_FAILED = "SequenceSearchService: REST call returns: %s %s";
+    private final String ERROR_REST_CALL_EXEPTION = "SequenceSearchService: Error at sequence search: %s";
     @Inject
     NodeService nodeService;
 
@@ -84,7 +88,8 @@ public class SequenceSearchService implements Serializable {
         try {
             sql = createSqlString(request, processID);
         } catch (Exception e) {
-            logger.error("Could not save temporary parameter in database");
+            logger.error(ERROR_SAVE_PARAMETER);
+            result.addErrorMessage(ERROR_SAVE_PARAMETER);
             return result;
         }
 
@@ -101,7 +106,7 @@ public class SequenceSearchService implements Serializable {
                 }
             } else {
                 String error = response.readEntity(String.class);
-                String errorMessage = String.format("SequenceSearchService: REST call returns: %s %s",
+                String errorMessage = String.format(ERROR_REST_CALL_FAILED,
                         response.getStatus(), error);
                 logger.error(errorMessage);
                 result.addErrorMessage(errorMessage);
@@ -110,7 +115,7 @@ public class SequenceSearchService implements Serializable {
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
             result.addErrorMessage(
-                    String.format("SequenceSearchService: Error at sequence search: %s",
+                    String.format(ERROR_REST_CALL_EXEPTION,
                             e.getMessage()));
         }
 
@@ -177,7 +182,7 @@ public class SequenceSearchService implements Serializable {
             String parameterSubQuery;
 
             if (param.getValue() instanceof String) {
-                parameterSubQuery = String.format(parameterPattern,  param.getArgumentKey(),"VARCHAR", processId.toString());
+                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "VARCHAR", processId.toString());
             } else {
                 parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "int", processId.toString());
             }
@@ -186,9 +191,9 @@ public class SequenceSearchService implements Serializable {
         }
         String firstSqlPart = "DO SELECT 1;";
         String secondSqlPart = sql.replace("\n", " ") + ";";
-        
+
         secondSqlPart = secondSqlPart.replace("[", "(");
-        secondSqlPart = secondSqlPart.replace("]", ")");     
+        secondSqlPart = secondSqlPart.replace("]", ")");
         secondSqlPart = secondSqlPart.replace("SELECT DISTINCT a.aclist_id, a.owner_id, a.ctime, a.materialtypeid, a.materialid, a.projectid, a.deactivated",
                 "SELECT DISTINCT a.materialid,a_0_0_3.sequencestring");
         String thirdSqlPart = "SELECT #;";

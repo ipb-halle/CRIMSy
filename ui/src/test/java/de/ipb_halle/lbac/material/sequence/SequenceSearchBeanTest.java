@@ -47,6 +47,7 @@ import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.SearchWebClient;
 import de.ipb_halle.lbac.search.bean.SearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
 import java.util.Arrays;
 import java.util.HashMap;
 import javax.inject.Inject;
@@ -91,7 +92,6 @@ public class SequenceSearchBeanTest extends TestBase {
         searchBean.getSearchMaskController().setTranslationTable(TranslationTable.EUPLOTID_NUCLEAR);
         searchBean.getResultsTableController().setLastUser(publicUser);
         searchBean.getSearchMaskController().actionStartMaterialSearch();
-        int j = 0;
     }
 
     @Deployment
@@ -111,6 +111,7 @@ public class SequenceSearchBeanTest extends TestBase {
         deployment.addClass(SearchService.class);
         deployment.addClass(PrintBean.class);
         deployment.addClass(DocumentSearchService.class);
+        deployment.addClass(SendFileBeanMock.class);
         deployment.addClass(SearchOrchestrator.class);
         deployment.addClass(LabelService.class);
         deployment = MaterialBeanDeployment.add(deployment);

@@ -103,9 +103,62 @@ public class SequenceSearchServiceTest extends TestBase {
         builder.addMaterialType(MaterialType.SEQUENCE);
 
         SearchResult result = sequenceSearchService.searchSequences(builder.build());
-
+        Assert.assertEquals(0, result.getErrorMessages().size());
         Assert.assertEquals(1, result.getAllFoundObjects().size());
 
+    }
+
+    @Test
+    public void test002_process500Error() {
+        mock.setBehaviour((e) -> {
+            FastaResult fastaResult = new FastaResult();
+            fastaResult.setQueryAlignmentLine("abc");
+            fastaResult.setSubjectSequenceName(String.valueOf(sequence.getId()));
+            FastaSearchResult result = new FastaSearchResult();
+            result.setProgramOutput("def");
+            result.setResults(Arrays.asList(fastaResult));
+
+            return Response.serverError().build();
+        });
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
+        builder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA, 1);
+        builder.addMaterialType(MaterialType.SEQUENCE);
+
+        SearchResult result = sequenceSearchService.searchSequences(builder.build());
+        Assert.assertEquals(1, result.getErrorMessages().size());
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test003_errorAtSqlBuild() {
+        mock.setBehaviour((e) -> {
+            FastaResult fastaResult = new FastaResult();
+            fastaResult.setQueryAlignmentLine("abc");
+            fastaResult.setSubjectSequenceName(String.valueOf(sequence.getId()));
+            FastaSearchResult result = new FastaSearchResult();
+            result.setProgramOutput("def");
+            result.setResults(Arrays.asList(fastaResult));
+
+            return Response.ok(result).build();
+        });
+
+        SearchResult result = sequenceSearchService.searchSequences(null);
+        Assert.assertEquals(1, result.getErrorMessages().size());
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test003_processRuntimeError() {
+        mock.setBehaviour((e) -> {
+            throw new RuntimeException();
+        });
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
+        builder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA, 1);
+        builder.addMaterialType(MaterialType.SEQUENCE);
+
+        SearchResult result = sequenceSearchService.searchSequences(builder.build());
+        Assert.assertEquals(1, result.getErrorMessages().size());
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
     }
 
     private void createAndSaveSequence() {
