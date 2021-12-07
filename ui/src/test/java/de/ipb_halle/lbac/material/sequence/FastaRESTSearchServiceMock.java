@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
@@ -25,10 +25,11 @@ import javax.ws.rs.core.Response;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
 import java.util.function.Function;
 
-
-@Stateless
+/**
+ * @author fmauz
+ */
+@Singleton
 public class FastaRESTSearchServiceMock extends FastaRESTSearchService {
-   
     private Function<FastaSearchRequest, Response> behaviour;
 
     public void setBehaviour(Function<FastaSearchRequest, Response> behaviour) {
