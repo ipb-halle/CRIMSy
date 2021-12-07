@@ -18,10 +18,12 @@
 package de.ipb_halle.lbac.search.lang;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.StringJoiner;
 
 /**
  * Builds a SELECT statement for an EntityGraph using given entity annotations
@@ -493,13 +495,17 @@ public class SqlBuilder {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT DISTINCT ");
 
-        String sep = "";
-        for (DbField field : this.entityGraph.getFieldMap().values()) {
-            sb.append(sep);
-            sb.append(context);
-            sb.append(".");
-            sb.append(field.getColumnName()); // slightly more efficient than computing "alias.columName" in DbField
-            sep = ", ";
+        if (this.entityGraph.isEntityClass()) {
+            StringJoiner joiner = new StringJoiner(", ");
+            this.entityGraph
+                .getFieldMap()
+                .values()
+                .stream()
+                .sorted(Comparator.comparingInt(DbField::getFieldOrder))
+                .forEach(field -> { joiner.add(context + "." + field.getColumnName()); });
+            sb.append(joiner);
+        } else {
+            sb.append("*");
         }
         return sb.toString();
     }

@@ -430,6 +430,7 @@ public class EntityGraph {
         String columnName = field.getName();
         Column column = field.getAnnotation(Column.class);
         Basic basic = field.getAnnotation(Basic.class);
+        FieldOrder fieldOrder = field.getAnnotation(FieldOrder.class);
         if ((basic != null) || (column != null)) {
             if ((column != null) && (!column.name().isEmpty())) {
                 columnName = column.name();
@@ -438,6 +439,7 @@ public class EntityGraph {
                     (field.getAnnotation(GeneratedValue.class) != null) ? true : false)
                     .setEntityGraph(this)
                     .setFieldName(fieldName)
+                    .setFieldOrder(fieldOrder)
                     .setColumnName(columnName)
                     .setTableName(this.tableName)
                     .addAccessors(accessors)
@@ -502,10 +504,12 @@ public class EntityGraph {
 
         AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
         AttributeTags attributeTags = field.getAnnotation(AttributeTags.class);
+        FieldOrder fieldOrder = field.getAnnotation(FieldOrder.class);
         DbField dbField = new DbField(true,
                 (field.getAnnotation(GeneratedValue.class) != null) ? true : false)
                 .setEntityGraph(this)
                 .setFieldName(fieldName)
+                .setFieldOrder(fieldOrder)
                 .setColumnName(columnName)
                 .setTableName(this.tableName)
                 .addAccessors(accessors)
