@@ -71,10 +71,14 @@ function cacrl {
 # and rebuilding. Usually called once per week.
 #
 function refresh {
+    . $LBAC_DATASTORE/dist/etc/config.sh
     cd $LBAC_DATASTORE/dist
     docker-compose down --rmi all --volumes --remove-orphans
     docker-compose build --pull
     docker-compose up -d
+    if [ $LBAC_DOCKER_EXCLUSIVE = "ON" ] ; then
+        docker image prune -f
+    fi
 }
 
 #

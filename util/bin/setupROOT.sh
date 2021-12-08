@@ -74,6 +74,7 @@ $CRON_ED_CMD
 #
 #Min Hour Day Month Week Cmd
 13 * * * * "$LBAC_DATASTORE/dist/bin/updateCloud.sh" update 2>/dev/null > /dev/null
+5 4 * * 1 "$LBAC_DATASTORE/dist/bin/updateCloud.sh" refresh 2>/dev/null > /dev/null
 8 1 * * * "$LBAC_DATASTORE/dist/bin/backup.sh" 2>/dev/null > /dev/null
 # LBAC CRON END
 .
