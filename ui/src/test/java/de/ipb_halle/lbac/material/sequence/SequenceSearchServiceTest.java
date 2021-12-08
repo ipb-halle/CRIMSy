@@ -75,7 +75,7 @@ public class SequenceSearchServiceTest extends TestBase {
 
     @Before
     public void init() {
-
+        entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
         materialService.setStructureInformationSaver(
                 new StructureInformationSaverMock());
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
