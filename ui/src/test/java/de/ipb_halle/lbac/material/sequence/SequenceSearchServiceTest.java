@@ -71,6 +71,8 @@ public class SequenceSearchServiceTest extends TestBase {
 
     private Sequence sequence;
 
+    private final String SQL_LOAD_PARAMETER = "SELECT * from temp_search_parameter";
+
     @Before
     public void init() {
 
@@ -106,11 +108,13 @@ public class SequenceSearchServiceTest extends TestBase {
         Assert.assertEquals(0, result.getErrorMessages().size());
         Assert.assertEquals(1, result.getAllFoundObjects().size());
 
+        Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
+
     }
 
     @Test
     public void test002_process500Error() {
-        mock.setBehaviour((e) -> {           
+        mock.setBehaviour((e) -> {
             return Response.serverError().build();
         });
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
@@ -120,6 +124,7 @@ public class SequenceSearchServiceTest extends TestBase {
         SearchResult result = sequenceSearchService.searchSequences(builder.build());
         Assert.assertEquals(1, result.getErrorMessages().size());
         Assert.assertEquals(0, result.getAllFoundObjects().size());
+        Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
     }
 
     @Test
@@ -138,6 +143,7 @@ public class SequenceSearchServiceTest extends TestBase {
         SearchResult result = sequenceSearchService.searchSequences(null);
         Assert.assertEquals(1, result.getErrorMessages().size());
         Assert.assertEquals(0, result.getAllFoundObjects().size());
+        Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
     }
 
     @Test
@@ -152,6 +158,7 @@ public class SequenceSearchServiceTest extends TestBase {
         SearchResult result = sequenceSearchService.searchSequences(builder.build());
         Assert.assertEquals(1, result.getErrorMessages().size());
         Assert.assertEquals(0, result.getAllFoundObjects().size());
+        Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
     }
 
     private void createAndSaveSequence() {

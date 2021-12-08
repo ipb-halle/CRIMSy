@@ -89,7 +89,7 @@ public class SequenceSearchService implements Serializable {
         try {
             sql = createSqlString(request, processID);
         } catch (Exception e) {
-            logger.error(ERROR_SAVE_PARAMETER);
+            logger.error(ExceptionUtils.getStackTrace(e));           
             result.addErrorMessage(ERROR_SAVE_PARAMETER);
             return result;
         }
@@ -133,7 +133,7 @@ public class SequenceSearchService implements Serializable {
         return UUID.randomUUID();
     }
 
-    private void saveParameterInDataBase(UUID processId, List<Value> valueList) throws JsonProcessingException {
+    private void saveParameterInDataBase(UUID processId, List<Value> valueList) throws Exception {
         List<String> fields = valueList.stream().map(v -> v.getArgumentKey()).collect(Collectors.toList());
         List<Object> values = valueList.stream().map(v -> v.getValue()).collect(Collectors.toList());
         searchParameterService.saveParameter(processId, fields, values);
@@ -166,7 +166,7 @@ public class SequenceSearchService implements Serializable {
         searchParameterService.removeParameter(processID);
     }
 
-    private String createSqlString(SearchRequest searchRequest, UUID processId) throws JsonProcessingException {
+    private String createSqlString(SearchRequest searchRequest, UUID processId) throws Exception {
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
         EntityGraph graph = graphBuilder.buildEntityGraph(true);
 
