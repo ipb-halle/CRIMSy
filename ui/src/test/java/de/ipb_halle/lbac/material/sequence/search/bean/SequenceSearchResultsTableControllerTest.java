@@ -98,7 +98,7 @@ public class SequenceSearchResultsTableControllerTest {
 
         controller = new SequenceSearchResultsTableController(null, sequenceSearchServiceMock, sendFileBeanMock,
                 messagePresenter);
-        sequenceSearchMaskController = new SequenceSearchMaskController(controller, null, null, null, null);
+        sequenceSearchMaskController = new SequenceSearchMaskController(null, controller, null, null, null, null);
         controller.setSearchMaskController(sequenceSearchMaskController);
     }
 

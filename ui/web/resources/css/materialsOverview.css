@@ -41,6 +41,10 @@
     height: 30px !important;
 }
 
+textarea.materialFilterInputfield {
+    width:395px  !important;
+    height:120px !important;
+}
 
 .materialFilterHeader{
     margin: 25px;

@@ -69,7 +69,7 @@ public class SequenceSearchMaskControllerTest {
 
         sequenceSearchResultsTableController = new SequenceSearchResultsTableController(null, sequenceSearchServiceMock,
                 null, messagePresenter);
-        controller = new SequenceSearchMaskController(sequenceSearchResultsTableController, null, null, null,
+        controller = new SequenceSearchMaskController(null, sequenceSearchResultsTableController, null, null, null,
                 messagePresenter);
         sequenceSearchResultsTableController.setSearchMaskController(controller);
     }

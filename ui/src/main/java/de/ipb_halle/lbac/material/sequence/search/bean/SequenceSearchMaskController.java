@@ -23,6 +23,7 @@ import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskController;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.bean.MaterialTableController;
@@ -53,9 +54,9 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
     private static final int[] maxResultItems = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 500, 750,
             1000 };
 
-    public SequenceSearchMaskController(MaterialTableController tableController, MaterialService materialService,
+    public SequenceSearchMaskController(MaterialOverviewBean overviewBean, MaterialTableController tableController, MaterialService materialService,
             ProjectService projectService, MemberService memberService, MessagePresenter messagePresenter) {
-        super(null, tableController, materialService, projectService, memberService,
+        super(overviewBean, tableController, materialService, projectService, memberService,
                 Arrays.asList(MaterialType.SEQUENCE));
         this.messagePresenter = messagePresenter;
     }

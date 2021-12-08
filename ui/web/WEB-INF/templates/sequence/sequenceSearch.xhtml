@@ -29,7 +29,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
-        <b:container>
+        <b:container styleClass="materialOverviewTableContainer">
             <b:row>
                 <b:column span="3">
                     <crimsy:materialSearchMask
@@ -50,7 +50,9 @@
                             </b:row>
                             <b:row styleClass="materialFilterRow">
                                 <b:column span="2">
-                                    <b:inputTextarea value="#{sequenceSearchBean.searchMaskController.query}" />
+                                    <b:inputTextarea
+                                        value="#{sequenceSearchBean.searchMaskController.query}"
+                                        styleClass="materialFilterInputfield" />
                                 </b:column>
                             </b:row>
 
@@ -63,6 +65,7 @@
                                 <b:column span="2">
                                     <b:selectOneMenu
                                         value="#{sequenceSearchBean.searchMaskController.searchMode}"
+                                        styleClass="materialFilterInputfield"
                                         ajax="true"
                                         process="@this"
                                         update="translationTableId">
@@ -85,6 +88,7 @@
                                     <b:selectOneMenu
                                         id="translationTableId"
                                         value="#{sequenceSearchBean.searchMaskController.translationTable}"
+                                        styleClass="materialFilterInputfield"
                                         disabled="#{sequenceSearchBean.searchMaskController.translationTableDisabled}">
                                         <f:selectItems
                                             value="#{sequenceSearchBean.searchMaskController.translationTableItems}"
@@ -102,7 +106,9 @@
                             </b:row>
                             <b:row styleClass="materialFilterRow">
                                 <b:column span="2">
-                                    <b:selectOneMenu value="#{sequenceSearchBean.searchMaskController.maxResults}">
+                                    <b:selectOneMenu
+                                        value="#{sequenceSearchBean.searchMaskController.maxResults}"
+                                        styleClass="materialFilterInputfield">
                                         <f:selectItems value="#{sequenceSearchBean.searchMaskController.maxResultItems}" />
                                     </b:selectOneMenu>
                                 </b:column>

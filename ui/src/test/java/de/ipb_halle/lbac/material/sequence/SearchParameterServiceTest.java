@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,6 +27,7 @@ import static de.ipb_halle.lbac.base.JsonAssert.assertJsonEquals;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +51,7 @@ public class SearchParameterServiceTest extends TestBase {
     private static final long serialVersionUID = 1L;
 
     @Test
-    public void test001_saveLoad() throws JsonProcessingException {
+    public void test001_saveLoad() throws Exception {
         createAndSaveParameter();
 
         checkParameterOfProcess1();
@@ -60,7 +60,7 @@ public class SearchParameterServiceTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void test002_removeParameter() throws JsonProcessingException {
+    public void test002_removeParameter() throws Exception {
         createAndSaveParameter();
 
         searchParameter.removeParameter(processId);
@@ -89,7 +89,7 @@ public class SearchParameterServiceTest extends TestBase {
 
     }
 
-    private void createAndSaveParameter() throws JsonProcessingException {
+    private void createAndSaveParameter() throws Exception {
         processId = UUID.randomUUID();
         processId2 = UUID.randomUUID();
         searchParameter.saveParameter(processId, Arrays.asList(":field0", ":field1"), Arrays.asList("value1", "value2"));

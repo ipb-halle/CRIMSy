@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.sequence.search.bean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -56,6 +57,9 @@ public class SequenceSearchBean implements Serializable {
     private SequenceSearchService sequenceSearchService;
 
     @Inject
+    private MaterialOverviewBean overviewBean;
+
+    @Inject
     private transient MessagePresenter messagePresenter;
 
     private SequenceSearchMaskController searchMaskController;
@@ -69,6 +73,7 @@ public class SequenceSearchBean implements Serializable {
                 sendFileBean,
                 messagePresenter);
         searchMaskController = new SequenceSearchMaskController(
+                overviewBean,
                 resultsTableController,
                 materialService,
                 projectService,
