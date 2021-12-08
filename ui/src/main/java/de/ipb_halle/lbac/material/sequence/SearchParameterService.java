@@ -31,6 +31,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,6 +44,7 @@ import org.apache.logging.log4j.Logger;
 public class SearchParameterService implements Serializable {
 
     private final String SQL_DELETE_PARAMETER = "DELETE from temp_Search_Parameter WHERE processid=:id";
+    private final String SQL_INSERT_PARAMETER = "INSERT INTO temp_search_parameter(processid,parameter) VALUES(cast(:processid as UUID),:parameter)";
     private static final long serialVersionUID = 1L;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -74,10 +76,12 @@ public class SearchParameterService implements Serializable {
 
         }
         String s = mapper.writeValueAsString(root);
-        entity.setProcessid(processid);
-        entity.setCdate(new Date());
-        entity.setParameter(s);
-        em.merge(entity);
+        Query q = em.createNativeQuery(SQL_INSERT_PARAMETER);
+
+        q.setParameter("processid", processid.toString());
+        q.setParameter("parameter", s);
+        q.executeUpdate();
+
     }
 
     public void removeParameter(UUID processid) {

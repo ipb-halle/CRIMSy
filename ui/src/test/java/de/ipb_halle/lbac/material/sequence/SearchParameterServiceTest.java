@@ -45,7 +45,7 @@ public class SearchParameterServiceTest extends TestBase {
     UUID processId;
     UUID processId2;
 
-    private final String SQL_LOAD_PARAMETER = "SELECT id,cdate,processid,parameter FROM temp_search_parameter WHERE processid=':processid' ORDER BY parameter";
+    private final String SQL_LOAD_PARAMETER = "SELECT id,cdate,cast(processid as varchar),parameter FROM temp_search_parameter WHERE processid=':processid' ORDER BY parameter";
     @Inject
     SearchParameterService searchParameter;
     private static final long serialVersionUID = 1L;
@@ -75,12 +75,14 @@ public class SearchParameterServiceTest extends TestBase {
     private void checkParameterOfProcess2() {
         List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId2.toString()));
         Assert.assertEquals(1, parameter.size());
+        Assert.assertEquals(processId2, UUID.fromString((String) parameter.get(0)[2]));
         assertJsonEquals("{\":field2\":\"value3\"}", (String) parameter.get(0)[3]);
     }
 
     @SuppressWarnings("unchecked")
     private void checkParameterOfProcess1() {
         List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId.toString()));
+        Assert.assertEquals(processId, UUID.fromString((String) parameter.get(0)[2]));
         Assert.assertEquals(1, parameter.size());
 
         assertJsonEquals("{\":field0\":\"value1\",\":field1\":\"value2\"}", (String) parameter.get(0)[3]);

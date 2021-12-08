@@ -75,7 +75,8 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         setUserName(values.userName);
         setDeactivated(values.deactivated);
         if (values.sequenceInfos != null) {
-            setSequenceInformation(values.sequenceInfos.sequenceQuery,
+            setSequenceInformation(
+                    values.sequenceInfos.sequenceQuery,
                     values.sequenceInfos.sequenceLibraryType,
                     values.sequenceInfos.sequenceQueryType,
                     values.sequenceInfos.translationTable);
