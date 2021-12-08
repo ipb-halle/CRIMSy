@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +31,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +44,7 @@ import org.apache.logging.log4j.Logger;
 public class SearchParameterService implements Serializable {
 
     private final String SQL_DELETE_PARAMETER = "DELETE from temp_Search_Parameter WHERE processid=:id";
-    private final String SQL_INSERT_PARAMETER = "INSERT INTO temp_search_parameter(processid,parameter) VALUES(cast(:processid as UUID),:parameter)";
+    private final String SQL_INSERT_PARAMETER = "INSERT INTO temp_search_parameter(processid,parameter) VALUES(cast(:processid as UUID),cast(:parameter as jsonb))";
     private static final long serialVersionUID = 1L;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -53,16 +53,15 @@ public class SearchParameterService implements Serializable {
     private EntityManager em;
 
     public void saveParameter(UUID processid, List<String> fields, List<Object> values) throws JsonProcessingException {
-        SearchParameterEntity entity = new SearchParameterEntity();
-
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
-
         for (int i = 0; i < fields.size(); i++) {
             if (values.get(i) instanceof Integer) {
                 root.put(fields.get(i), (Integer) values.get(i));
             } else if (values.get(i) instanceof String) {
                 root.put(fields.get(i), (String) values.get(i));
+            } else if (values.get(i) instanceof Boolean) {
+                root.put(fields.get(i), (Boolean) values.get(i));
             } else if (values.get(i) instanceof HashSet) {
                 HashSet<Integer> set = (HashSet) values.get(i);
                 ArrayNode setNode = mapper.createArrayNode();

@@ -57,6 +57,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateless
 public class SequenceSearchService implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private final String ERROR_SAVE_PARAMETER = "Could not save temporary parameter in database";
@@ -120,7 +121,7 @@ public class SequenceSearchService implements Serializable {
             result.addErrorMessage(String.format(ERROR_REST_CALL_EXEPTION, e.getMessage()));
         }
 
-        // cleanParameter(processID);
+        cleanParameter(processID);
         return result;
     }
 
@@ -184,15 +185,12 @@ public class SequenceSearchService implements Serializable {
                     param.getArgumentKey() + " -> " + param.getValue() + " " + param.getValue().getClass().getName());
             String parameterSubQuery;
             if (param.getValue() instanceof String) {
-                logger.info("Gehe in String");
                 parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "VARCHAR",
                         processId.toString());
             } else if (param.getValue() instanceof Boolean) {
-                logger.info("Gehe in Boolean");
                 parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "BOOLEAN",
                         processId.toString());
             } else {
-                logger.info("Gehe in int");
                 parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "int",
                         processId.toString());
             }
@@ -210,7 +208,6 @@ public class SequenceSearchService implements Serializable {
         String thirdSqlPart = "SELECT #;";
         String fourthSqlPart = "SELECT sequencestring FROM sequences WHERE id=#;";
         String finalString = String.join("\n", firstSqlPart, secondSqlPart, thirdSqlPart, fourthSqlPart);
-
         return finalString;
     }
 
