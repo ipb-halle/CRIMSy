@@ -30,7 +30,7 @@ limitations under the License.
             name="searchController"
             type="de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskController"
             required="true" />
-        <composite:attribute name="updateTargetClass" />
+        <composite:attribute name="updateTargets" />
         <composite:attribute
             name="nameFieldRendered"
             default="true"
@@ -202,7 +202,7 @@ limitations under the License.
                             styleClass="materialFilterButton"
                             value="#{msgs.materialOverview_searchFilter_clear}"
                             ajax="true"
-                            update="materialSearchMaskForm #{cc.attrs.updateTargetClass}"
+                            update="materialSearchMaskForm #{cc.attrs.updateTargets}"
                             action="#{cc.attrs.searchController.actionClearSearchFilter()}"/>
                     </b:column>
                     <b:column
@@ -213,7 +213,7 @@ limitations under the License.
                             value="#{msgs.materialOverview_searchFilter_search}"
                             ajax="true"
                             process="@form"
-                            update="materialSearchMaskForm #{cc.attrs.updateTargetClass}"
+                            update="materialSearchMaskForm #{cc.attrs.updateTargets}"
                             action="#{cc.attrs.searchController.actionStartMaterialSearch()}"/>
                     </b:column>
                 </b:row>

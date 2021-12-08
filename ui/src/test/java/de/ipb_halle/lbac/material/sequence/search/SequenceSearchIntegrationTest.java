@@ -25,8 +25,10 @@ import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
@@ -42,6 +44,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.FastaRESTSearchService;
 import de.ipb_halle.lbac.material.sequence.FastaRESTSearchServiceMock;
 import de.ipb_halle.lbac.material.sequence.Sequence;
@@ -61,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.ResponseProcessingException;
@@ -93,9 +97,12 @@ public class SequenceSearchIntegrationTest extends TestBase {
     private AtomicReference<FastaSearchRequest> requestRef;
     private SequenceSearchMaskController searchMaskController;
     private SequenceSearchResultsTableController tableController;
+    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
     @Before
     public void init() throws FastaResultParserException {
+        messagePresenter.resetMessages();
+
         Reader reader = readerForResourceFile("fastaresults/results1.txt");
         List<FastaResult> parserResults = new FastaResultParser(reader).parse();
 
@@ -148,12 +155,16 @@ public class SequenceSearchIntegrationTest extends TestBase {
 
         searchMaskController = searchBean.getSearchMaskController();
         tableController = searchBean.getResultsTableController();
+
+        initParametersInControllers();
     }
 
     @Test
     public void test001_normalSearch1() {
-        initParametersInControllers();
         searchMaskController.actionStartMaterialSearch();
+
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertNull(messagePresenter.getLastErrorMessage());
 
         /*
          * asserts on request
@@ -191,6 +202,9 @@ public class SequenceSearchIntegrationTest extends TestBase {
         // TODO: add filters for projects/material names/etc.
         searchMaskController.actionStartMaterialSearch();
 
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertNull(messagePresenter.getLastErrorMessage());
+
         /*
          * asserts on request
          */
@@ -224,7 +238,8 @@ public class SequenceSearchIntegrationTest extends TestBase {
         searchMaskController.actionStartMaterialSearch();
 
         assertThat(tableController.getResults(), hasSize(0));
-        // TODO: assert on errors on the level of tableController
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertEquals("sequenceSearch_error", messagePresenter.getLastErrorMessage());
     }
 
     @Test
@@ -235,7 +250,8 @@ public class SequenceSearchIntegrationTest extends TestBase {
         searchMaskController.actionStartMaterialSearch();
 
         assertThat(tableController.getResults(), hasSize(0));
-        // TODO: assert on errors on the level of tableController
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertEquals("sequenceSearch_error", messagePresenter.getLastErrorMessage());
     }
 
     @Test
@@ -246,7 +262,8 @@ public class SequenceSearchIntegrationTest extends TestBase {
         searchMaskController.actionStartMaterialSearch();
 
         assertThat(tableController.getResults(), hasSize(0));
-        // TODO: assert on errors on the level of tableController
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertEquals("sequenceSearch_error", messagePresenter.getLastErrorMessage());
     }
 
     @Test
@@ -257,7 +274,8 @@ public class SequenceSearchIntegrationTest extends TestBase {
         searchMaskController.actionStartMaterialSearch();
 
         assertThat(tableController.getResults(), hasSize(0));
-        // TODO: assert on errors on the level of tableController
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertEquals("sequenceSearch_error", messagePresenter.getLastErrorMessage());
     }
 
     @Test
@@ -268,16 +286,48 @@ public class SequenceSearchIntegrationTest extends TestBase {
         searchMaskController.actionStartMaterialSearch();
 
         assertThat(tableController.getResults(), hasSize(0));
-        // TODO: assert on errors on the level of tableController
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertEquals("sequenceSearch_error", messagePresenter.getLastErrorMessage());
+    }
+
+    @Test
+    public void test008_searchReturnsEmptyResultList() {
+        restServiceMock.setBehaviour(r -> {
+            FastaSearchResult result = new FastaSearchResult();
+            return Response.ok(result).build();
+        });
+        searchMaskController.actionStartMaterialSearch();
+
+        assertThat(tableController.getResults(), hasSize(0));
+        assertEquals("sequenceSearch_noResults", messagePresenter.getLastInfoMessage());
+        assertNull(messagePresenter.getLastErrorMessage());
+    }
+
+    /*
+     * That's unfair, because query cannot become null or empty due to bean
+     * validation.
+     */
+    @Test
+    public void test009_nullOrEmptyQuery_throwsEJBException() {
+        searchMaskController.setQuery(null);
+        EJBException exception = assertThrows(EJBException.class, () -> searchMaskController.actionStartMaterialSearch());
+        assertThat(exception.getCause(), instanceOf(NullPointerException.class));
+
+        searchMaskController.setQuery("");
+        exception = assertThrows(EJBException.class, () -> searchMaskController.actionStartMaterialSearch());
+        assertThat(exception.getCause(), instanceOf(NullPointerException.class));
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("SequenceSearchBeanTest.war");
+        WebArchive deployment = prepareDeployment("SequenceSearchIntegrationTest.war");
         MaterialDeployment.add(deployment);
         UserBeanDeployment.add(deployment);
-        return deployment.deleteClass(FastaRESTSearchService.class).addClass(FastaRESTSearchServiceMock.class)
-                .addClass(SequenceSearchBean.class).addClass(SendFileBeanMock.class);
+        return deployment
+                .deleteClass(FastaRESTSearchService.class)
+                .addClass(FastaRESTSearchServiceMock.class)
+                .addClass(SequenceSearchBean.class)
+                .addClass(SendFileBeanMock.class);
     }
 
     private void initParametersInControllers() {

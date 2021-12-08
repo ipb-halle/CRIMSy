@@ -57,31 +57,32 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateless
 public class SequenceSearchService implements Serializable {
-    
     private static final long serialVersionUID = 1L;
-    
+
     private final String ERROR_SAVE_PARAMETER = "Could not save temporary parameter in database";
-    private final String ERROR_REST_CALL_EXEPTION = "SequenceSearchService: Error at sequence search: %s";
+    private final String ERROR_REST_CALL_NOT_OK = "SequenceSearchService: Error at sequence search: status=%d, message=%s";
+    private final String ERROR_REST_CALL_EXEPTION = "SequenceSearchService: Error at sequence search: message=%s";
+
     @Inject
     NodeService nodeService;
-    
+
     @Inject
     FastaRESTSearchService fastaService;
-    
+
     @Inject
     MaterialService materialService;
-    
+
     @Inject
     private SearchParameterService searchParameterService;
-    
+
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
-    
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+
     public SearchResult searchSequences(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-        
+
         UUID processID = generateProcessId();
         String sql;
         try {
@@ -91,120 +92,126 @@ public class SequenceSearchService implements Serializable {
             result.addErrorMessage(ERROR_SAVE_PARAMETER);
             return result;
         }
-        
+
         FastaSearchRequest fastaRequest = createRestRequest(request, sql);
-        
+
         try {
             Response response = fastaService.execSearch(fastaRequest);
             if (Status.OK == Status.fromStatusCode(response.getStatus())) {
-                FastaSearchResult fastaResults = response.readEntity(FastaSearchResult.class);
-                for (FastaResult singleResult : fastaResults.getResults()) {
-                    int sequenceId = getSequenceIdFromResult(singleResult);
-                    Sequence loadedSequence = (Sequence) materialService.loadMaterialById(sequenceId);
-                    result.addResult(new SequenceAlignment(loadedSequence, singleResult));
+                FastaSearchResult fastaSearchResult = response.readEntity(FastaSearchResult.class);
+                List<FastaResult> fastaResults = fastaSearchResult.getResults();
+
+                if (fastaResults != null) {
+                    for (FastaResult singleResult : fastaSearchResult.getResults()) {
+                        int sequenceId = getSequenceIdFromResult(singleResult);
+                        Sequence loadedSequence = (Sequence) materialService.loadMaterialById(sequenceId);
+                        result.addResult(new SequenceAlignment(loadedSequence, singleResult));
+                    }
                 }
-            } else {                
-                String errorMessage = String.format(ERROR_REST_CALL_EXEPTION,
-                        response.getStatus());
+            } else {
+                String messageFromResponse = response.readEntity(String.class);
+                String errorMessage = String.format(ERROR_REST_CALL_NOT_OK, response.getStatus(), messageFromResponse);
                 logger.error(errorMessage);
                 result.addErrorMessage(errorMessage);
             }
-            
+
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
-            result.addErrorMessage(
-                    String.format(ERROR_REST_CALL_EXEPTION,
-                            e.getMessage()));
+            result.addErrorMessage(String.format(ERROR_REST_CALL_EXEPTION, e.getMessage()));
         }
 
         // cleanParameter(processID);
         return result;
     }
-    
+
     private int getSequenceIdFromResult(FastaResult result) {
         return Integer.parseInt(result.getSubjectSequenceName());
     }
-    
+
     private UUID generateProcessId() {
         return UUID.randomUUID();
     }
-    
+
     private void saveParameterInDataBase(UUID processId, List<Value> valueList) throws JsonProcessingException {
         List<String> fields = valueList.stream().map(v -> v.getArgumentKey()).collect(Collectors.toList());
         List<Object> values = valueList.stream().map(v -> v.getValue()).collect(Collectors.toList());
         searchParameterService.saveParameter(processId, fields, values);
     }
-    
+
     private FastaSearchRequest createRestRequest(SearchRequest request, String sql) {
-        
+
         FastaSearchRequest fastaRequest = new FastaSearchRequest();
-        
+
         FastaSearchQuery query = new FastaSearchQuery();
         String queryString = request.getSearchValues().get(SearchCategory.SEQUENCE_QUERY_STRING).getValues().iterator().next();
         String libraryType = request.getSearchValues().get(SearchCategory.SEQUENCE_LIBRARY_TYPE).getValues().iterator().next();
         String seqType = request.getSearchValues().get(SearchCategory.SEQUENCE_QUERY_TYPE).getValues().iterator().next();
         String translationTable = request.getSearchValues().get(SearchCategory.SEQUENCE_TRANSLATION_TABLE).getValues().iterator().next();
-        
+
         query.setQuerySequence(queryString);
         query.setLibrarySequenceType(libraryType);
         query.setQuerySequenceType(seqType);
         query.setTranslationTable(Integer.parseInt(translationTable));
         query.setMaxResults(request.getMaxResults());
-        
+
         fastaRequest.setSearchQuery(query);
         fastaRequest.setDatabaseQueries(sql);
         fastaRequest.setDatabaseConnectionString(null);
-        
+
         return fastaRequest;
     }
-    
+
     private void cleanParameter(UUID processID) {
         searchParameterService.removeParameter(processID);
     }
-    
+
     private String createSqlString(SearchRequest searchRequest, UUID processId) throws JsonProcessingException {
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
         EntityGraph graph = graphBuilder.buildEntityGraph(true);
-        
+
         SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(graph, "materials");
         Condition condition = builder.convertRequestToCondition(searchRequest, ACPermission.permREAD);
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         String sql = sqlBuilder.query(condition);
-        
+
         saveParameterInDataBase(processId, sqlBuilder.getValueList());
         // This code block is only for testing purpose.
-        // In the final version the substitute of the parameter must be 
-        // done sql injection save, e.g by preparred statements     
+        // In the final version the substitute of the parameter must be
+        // done sql injection save, e.g by preparred statements
         String parameterPattern = "(select cast(parameter->'%s'->>0 as %s) from temp_search_parameter where processid='%s') ";
         for (Value param : sqlBuilder.getValueList()) {
-            logger.info(param.getArgumentKey() + " -> " + param.getValue() + " " + param.getValue().getClass().getName());
-            String parameterSubQuery;            
+            logger.info(
+                    param.getArgumentKey() + " -> " + param.getValue() + " " + param.getValue().getClass().getName());
+            String parameterSubQuery;
             if (param.getValue() instanceof String) {
                 logger.info("Gehe in String");
-                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "VARCHAR", processId.toString());
-            }
-            else if (param.getValue() instanceof Boolean) {
+                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "VARCHAR",
+                        processId.toString());
+            } else if (param.getValue() instanceof Boolean) {
                 logger.info("Gehe in Boolean");
-                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "BOOLEAN", processId.toString());
+                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "BOOLEAN",
+                        processId.toString());
             } else {
                 logger.info("Gehe in int");
-                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "int", processId.toString());
+                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "int",
+                        processId.toString());
             }
             sql = sql.replaceFirst(":" + param.getArgumentKey(), parameterSubQuery);
-            
+
         }
         String firstSqlPart = "DO SELECT 1;";
         String secondSqlPart = sql.replace("\n", " ") + ";";
-        
+
         secondSqlPart = secondSqlPart.replace("[", "(");
         secondSqlPart = secondSqlPart.replace("]", ")");
-        secondSqlPart = secondSqlPart.replace("SELECT DISTINCT a.aclist_id, a.owner_id, a.ctime, a.materialtypeid, a.materialid, a.projectid, a.deactivated",
+        secondSqlPart = secondSqlPart.replace(
+                "SELECT DISTINCT a.aclist_id, a.owner_id, a.ctime, a.materialtypeid, a.materialid, a.projectid, a.deactivated",
                 "SELECT DISTINCT a.materialid,a_0_0_3.sequencestring");
         String thirdSqlPart = "SELECT #;";
         String fourthSqlPart = "SELECT sequencestring FROM sequences WHERE id=#;";
         String finalString = String.join("\n", firstSqlPart, secondSqlPart, thirdSqlPart, fourthSqlPart);
-        
+
         return finalString;
     }
-    
+
 }

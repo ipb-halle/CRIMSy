@@ -68,6 +68,8 @@ public class SequenceSearchResultsTableControllerTest {
 
     @Before
     public void init() throws FastaResultParserException {
+        messagePresenter.resetMessages();
+
         SequenceData data1 = SequenceData.builder().sequenceString("sequence1").build();
         SequenceData data2 = SequenceData.builder().sequenceString("sequence2").build();
         SequenceData data3 = SequenceData.builder().sequenceString("sequence3").build();
@@ -121,6 +123,46 @@ public class SequenceSearchResultsTableControllerTest {
         for (FastaResultDisplayWrapper wrapper : results) {
             assertThat(wrapper.getConfig(), instanceOf(TfastxyResultDisplayConfig.class));
         }
+    }
+
+    @Test
+    public void test_reloadDataTableItems_normalSearch_checkMessages() {
+        sequenceSearchServiceMock.setBehaviour(request -> {
+            SearchResult result = new SearchResultImpl(new Node());
+            result.addResults(alignments);
+            return result;
+        });
+        sequenceSearchMaskController.actionStartMaterialSearch();
+
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertNull(messagePresenter.getLastErrorMessage());
+    }
+
+    @Test
+    public void test_reloadDataTableItems_withErrorInSearchResult() {
+        sequenceSearchServiceMock.setBehaviour(request -> {
+            SearchResult result = new SearchResultImpl(new Node());
+            result.addErrorMessage("error!");
+            return result;
+        });
+        sequenceSearchMaskController.actionStartMaterialSearch();
+
+        assertThat(controller.getResults(), empty());
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertEquals("sequenceSearch_error", messagePresenter.getLastErrorMessage());
+    }
+
+    @Test
+    public void test_reloadDataTableItems_emptyResults() {
+        sequenceSearchServiceMock.setBehaviour(request -> {
+            SearchResult result = new SearchResultImpl(new Node());
+            return result;
+        });
+        sequenceSearchMaskController.actionStartMaterialSearch();
+
+        assertThat(controller.getResults(), empty());
+        assertEquals("sequenceSearch_noResults", messagePresenter.getLastInfoMessage());
+        assertNull(messagePresenter.getLastErrorMessage());
     }
 
     @Test

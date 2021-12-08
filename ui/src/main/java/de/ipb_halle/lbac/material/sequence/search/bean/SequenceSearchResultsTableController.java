@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
 import de.ipb_halle.lbac.material.sequence.search.display.ResultDisplayConfig;
 import de.ipb_halle.lbac.material.sequence.util.FastaFileFormat;
+import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 /**
@@ -72,7 +73,8 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
     }
 
     /**
-     * Reload the results list by performing a sequence database search and sort it.
+     * Reload the results list by performing a sequence database search and sort
+     * this list.
      */
     @Override
     public void reloadDataTableItems() {
@@ -80,7 +82,16 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
                 searchMaskController.getMaxResults());
         builder.addMaterialType(MaterialType.SEQUENCE);
         builder.setSearchValues(lastValues);
-        List<SequenceAlignment> searchResults = sequenceSearchService.searchSequences(builder.build())
+
+        SearchResult searchResultFromService = sequenceSearchService.searchSequences(builder.build());
+
+        boolean hasErrors = !searchResultFromService.getErrorMessages().isEmpty();
+        if (hasErrors) {
+            messagePresenter.error("sequenceSearch_error");
+            return;
+        }
+
+        List<SequenceAlignment> searchResults = searchResultFromService
                 .getAllFoundObjectsAsSearchable(SequenceAlignment.class);
 
         ResultDisplayConfig displayConfig = searchMaskController.getSearchMode().getDisplayConfig();
@@ -93,6 +104,10 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
         }
 
         sortResults();
+
+        if (results.isEmpty()) {
+            messagePresenter.info("sequenceSearch_noResults");
+        }
     }
 
     private void sortResults() {
