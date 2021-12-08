@@ -27,6 +27,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -49,6 +50,7 @@ public class SearchParameterEntity implements Serializable {
     private Date cdate;
 
     @Column
+    @Type(type = "RawJsonb")
     private String parameter;
 
     public int getId() {
@@ -65,7 +67,7 @@ public class SearchParameterEntity implements Serializable {
 
     public void setProcessid(UUID processid) {
         this.processid = processid;
-    }  
+    }
 
     public String getParameter() {
         return parameter;
@@ -74,8 +76,6 @@ public class SearchParameterEntity implements Serializable {
     public void setParameter(String parameter) {
         this.parameter = parameter;
     }
-
-    
 
     public Date getCdate() {
         return cdate;
