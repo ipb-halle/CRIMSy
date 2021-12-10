@@ -42,7 +42,7 @@ public class SequenceSearchConditionBuilder extends MaterialSearchConditionBuild
         List<Condition> conditionList = super.getMaterialCondition(request, toplevel);
         for (SearchCategory key : request.getSearchValues().keySet()) {
             switch (key) {
-                case SEQUENCE_QUERY_TYPE:
+                case SEQUENCE_LIBRARY_TYPE:
                     addSequenceTypeCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;                
             }
@@ -57,16 +57,6 @@ public class SequenceSearchConditionBuilder extends MaterialSearchConditionBuild
                     sequenceString,
                     rootGraphName + "/material_compositions/componentMaterials/sequences",
                     AttributeType.SEQUENCE_TYPE));
-        }
-    }
-
-    private void addSequenceStringCondition(List<Condition> conditionList, Set<String> values) {
-        if (hasExactOneEntry(values)) {
-            String sequenceString = values.iterator().next();
-            conditionList.add(getBinaryLeafCondition(Operator.EQUAL,
-                    sequenceString,
-                    rootGraphName + "/material_compositions/componentMaterials/sequences",
-                    AttributeType.SEQUENCE_STRING));
         }
     }
 
