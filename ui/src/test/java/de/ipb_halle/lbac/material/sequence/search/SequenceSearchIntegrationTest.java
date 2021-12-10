@@ -41,12 +41,14 @@ import org.junit.runner.RunWith;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
-import de.ipb_halle.lbac.material.sequence.FastaRESTSearchService;
-import de.ipb_halle.lbac.material.sequence.FastaRESTSearchServiceMock;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceData;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
@@ -58,6 +60,8 @@ import de.ipb_halle.lbac.material.sequence.search.bean.SortItem;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParser;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParserException;
+import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchService;
+import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchServiceMock;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -322,12 +326,16 @@ public class SequenceSearchIntegrationTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("SequenceSearchIntegrationTest.war");
         MaterialDeployment.add(deployment);
+        MaterialBeanDeployment.add(deployment);
         UserBeanDeployment.add(deployment);
+        ItemDeployment.add(deployment);
+        PrintBeanDeployment.add(deployment);
         return deployment
                 .deleteClass(FastaRESTSearchService.class)
                 .addClass(FastaRESTSearchServiceMock.class)
                 .addClass(SequenceSearchBean.class)
-                .addClass(SendFileBeanMock.class);
+                .addClass(SendFileBeanMock.class)
+                .addClass(MaterialOverviewBean.class);
     }
 
     private void initParametersInControllers() {

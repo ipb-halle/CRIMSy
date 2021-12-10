@@ -15,29 +15,25 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.sequence;
+package de.ipb_halle.lbac.material.sequence.search.service;
 
-import javax.ejb.Singleton;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.ResponseProcessingException;
-import javax.ws.rs.core.Response;
-
-import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
 import java.util.function.Function;
 
-/**
- * @author fmauz
- */
-@Singleton
-public class FastaRESTSearchServiceMock extends FastaRESTSearchService {
-    private Function<FastaSearchRequest, Response> behaviour;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
 
-    public void setBehaviour(Function<FastaSearchRequest, Response> behaviour) {
+/**
+ * @author flange
+ */
+public class SequenceSearchServiceMock extends SequenceSearchService {
+    private Function<SearchRequest, SearchResult> behaviour;
+
+    public void setBehaviour(Function<SearchRequest, SearchResult> behaviour) {
         this.behaviour = behaviour;
     }
 
     @Override
-    public Response execSearch(FastaSearchRequest request) throws ResponseProcessingException, ProcessingException {
+    public SearchResult searchSequences(SearchRequest request) {
         return behaviour.apply(request);
     }
 }

@@ -38,11 +38,11 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.Sequence;
-import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
-import de.ipb_halle.lbac.material.sequence.SequenceSearchServiceMock;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
+import de.ipb_halle.lbac.material.sequence.search.SequenceAlignment;
 import de.ipb_halle.lbac.material.sequence.search.SequenceSearchInformation;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchServiceMock;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 
@@ -54,7 +54,7 @@ public class SequenceSearchMaskControllerTest {
     private SequenceSearchMaskController controller;
     private SequenceSearchResultsTableController sequenceSearchResultsTableController;
     private SequenceSearchServiceMock sequenceSearchServiceMock = new SequenceSearchServiceMock();
-    SequenceAlignment alignment;
+    private SequenceAlignment alignment;
 
     @Before
     public void init() {

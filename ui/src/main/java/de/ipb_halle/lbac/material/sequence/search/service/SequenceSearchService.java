@@ -15,9 +15,8 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.sequence;
+package de.ipb_halle.lbac.material.sequence.search.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchQuery;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -39,6 +38,8 @@ import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.search.SequenceAlignment;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;

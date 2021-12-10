@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.sequence;
+package de.ipb_halle.lbac.material.sequence.search.service;
 
 import javax.ejb.Stateless;
 import javax.ws.rs.ProcessingException;

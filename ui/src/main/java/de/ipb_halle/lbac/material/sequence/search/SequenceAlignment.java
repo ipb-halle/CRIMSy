@@ -15,10 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.sequence;
+package de.ipb_halle.lbac.material.sequence.search;
 
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.bean.Type;

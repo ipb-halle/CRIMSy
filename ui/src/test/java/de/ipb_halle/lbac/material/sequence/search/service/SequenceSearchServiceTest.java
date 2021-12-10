@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.sequence;
+package de.ipb_halle.lbac.material.sequence.search.service;
 
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
@@ -38,6 +38,10 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceData;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
+
 import static de.ipb_halle.lbac.material.sequence.SequenceType.PROTEIN;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;

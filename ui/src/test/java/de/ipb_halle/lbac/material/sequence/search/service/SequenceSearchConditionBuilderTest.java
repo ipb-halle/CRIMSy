@@ -15,14 +15,13 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.sequence.search;
+package de.ipb_halle.lbac.material.sequence.search.service;
 
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
-import de.ipb_halle.lbac.material.sequence.SequenceSearchConditionBuilder;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;

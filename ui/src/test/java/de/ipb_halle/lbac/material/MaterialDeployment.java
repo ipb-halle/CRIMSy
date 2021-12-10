@@ -25,9 +25,9 @@ import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.sequence.FastaRESTSearchService;
-import de.ipb_halle.lbac.material.sequence.SearchParameterService;
-import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
+import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchService;
+import de.ipb_halle.lbac.material.sequence.search.service.SearchParameterService;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;

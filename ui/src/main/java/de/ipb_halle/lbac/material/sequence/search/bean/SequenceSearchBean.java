@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 

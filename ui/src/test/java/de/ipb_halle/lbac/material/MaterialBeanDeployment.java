@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 

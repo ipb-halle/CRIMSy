@@ -32,11 +32,10 @@ import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.common.bean.MaterialTableController;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-
-import de.ipb_halle.lbac.material.sequence.SequenceAlignment;
-import de.ipb_halle.lbac.material.sequence.SequenceSearchService;
+import de.ipb_halle.lbac.material.sequence.search.SequenceAlignment;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
 import de.ipb_halle.lbac.material.sequence.search.display.ResultDisplayConfig;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.material.sequence.util.FastaFileFormat;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
