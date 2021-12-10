@@ -1,6 +1,6 @@
 {
-    "name":     "CRIMSy-Tests",
-    "version":  "0.0.1",
+    "name": "CRIMSy-Tests",
+    "version": "0.0.1",
     "description": "Cypress integration tests for CRIMSy.",
     "main": "index.js",
     "scripts": {
@@ -11,6 +11,6 @@
     "license": "Apache License 2.0",
     "private": false,
     "devDependencies": {
-        "cypress": "5.6.0"
+        "cypress": "9.1.1"
     }
 }
