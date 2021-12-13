@@ -97,7 +97,7 @@ public class Value {
             jsonCast = "CAST(%s AS BOOLEAN)";
         }else if (value instanceof Date) {
             jsonCast = "to_timestamp(CAST(%s AS BIGINT))";
-        } else if (value.getClass().isInstance(Collection.class)) {
+        } else if (value instanceof Collection) {
             Collection collection = (Collection) value;
             if(! collection.isEmpty()){
                 Object obj = collection.iterator().next();
@@ -109,7 +109,7 @@ public class Value {
                     throw new IllegalArgumentException("Illegal object type in collection");
                 }
             }
-            throw new IllegalArgumentException("Value class does not support empty collections.");
+//            throw new IllegalArgumentException("Value class does not support empty collections.");
         } else {
             throw new IllegalArgumentException("datatype not supported: " + value.getClass().getName());
         }
