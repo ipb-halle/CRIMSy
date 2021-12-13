@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.common;
 
 /**
+ * Errors for material validation.
  *
  * @author fmauz
  */

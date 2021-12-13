@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.material.common.MaterialNameValidator;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
 import de.ipb_halle.lbac.material.common.MaterialValidator;
 import de.ipb_halle.lbac.material.common.history.BioMaterialComparator;
@@ -49,7 +50,7 @@ public class BioMaterialFactory implements MaterialFactory {
 
     @Override
     public MaterialValidator createValidator() {
-        return new BioMaterialValidator();
+        return new MaterialNameValidator();
     }
 
 }

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.lbac.material.common.MaterialNameValidator;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
 import de.ipb_halle.lbac.material.common.MaterialValidator;
 import de.ipb_halle.lbac.material.common.history.CompositionComparator;
@@ -49,7 +50,7 @@ public class CompositionFactory implements MaterialFactory {
 
     @Override
     public MaterialValidator createValidator() {
-        return new CompositionValidator();
+        return new MaterialNameValidator();
     }
 
 }

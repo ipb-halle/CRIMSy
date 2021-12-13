@@ -21,12 +21,23 @@ import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import java.util.Set;
 
 /**
+ * Validator for a material.
  *
  * @author fmauz
  */
 public interface MaterialValidator {
-
+    /**
+     * Check the validity of the material that is currently in
+     * {@link MaterialBean}'s edit state.
+     * 
+     * @param bean
+     * @return validation result
+     */
     public boolean checkValidity(MaterialBean bean);
 
+    /**
+     * @return errors from last call of {@link #checkValidity(MaterialBean)} or
+     *         empty set if this method was not called before
+     */
     public Set<Invalidity> getInvalidities();
 }
