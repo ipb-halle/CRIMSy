@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Biological sequence as material type.
  *
  * @author fmauz
  */
 public class Sequence extends Material {
-
     private static final long serialVersionUID = 1L;
 
     private SequenceData sequenceData;

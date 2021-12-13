@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.sequence.history;
 
 import de.ipb_halle.lbac.material.common.bean.history.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;

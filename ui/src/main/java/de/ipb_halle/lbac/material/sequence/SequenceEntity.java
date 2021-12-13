@@ -27,6 +27,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
+ * Database entity for the material {@link Sequence}.
  *
  * @author flange
  */
