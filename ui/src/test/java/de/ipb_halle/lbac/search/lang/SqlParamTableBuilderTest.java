@@ -17,19 +17,20 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.NodeEntity;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -67,8 +68,18 @@ public class SqlParamTableBuilderTest extends TestBase {
 
         assertTrue("JSON contains field 'field0'", json.contains("field0"));
         assertTrue("JSON contains test value '%TEST%'", json.contains("%TEST%"));
-
-
-
+    }
+    
+    @Test
+    public void test002_createSequenceSql(){
+        User user=new User();
+        user.setId(100);
+        MaterialEntityGraphBuilder materialGraphBuilder=new MaterialEntityGraphBuilder();
+        EntityGraph graph=materialGraphBuilder.buildEntityGraph(true);
+        SqlParamTableBuilder sqlBuilder = new SqlParamTableBuilder(graph);
+         MaterialSearchConditionBuilder conditionBuilder=new MaterialSearchConditionBuilder(graph,"materials");
+        MaterialSearchRequestBuilder requestBuilder=new MaterialSearchRequestBuilder(user,0,10);
+        String sql= sqlBuilder.query(conditionBuilder.convertRequestToCondition(requestBuilder.build(),ACPermission.permREAD));
+        int i=0;
     }
 }
