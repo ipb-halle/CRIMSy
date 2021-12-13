@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.search.lang;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -39,13 +41,13 @@ public class Value {
     private HashSet valueSet;
     private ArrayList valueList;
     private Object singleValue;
-    private String transferCastExpression;
+    private String jsonCast;
 
     public Value() {
     }
 
     public Value(Object value) {
-        this.value = value;
+        setValue(value);        
     }
 
     public String getArgumentKey() {
@@ -79,6 +81,38 @@ public class Value {
     }
 
     public void setValue(Object value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Value cannot be null");
+        } else if (value instanceof Integer) {
+            jsonCast = "CAST(%s AS INTEGER)";
+        } else if (value instanceof Long) {
+            jsonCast = "CAST(%s AS BIGINT)";
+        } else if (value instanceof String) {
+            jsonCast = "CAST(%s AS VARCHAR)";
+        } else if (value instanceof Double) {
+            jsonCast = "CAST(%s AS DOUBLE)";
+        } else if (value instanceof Float) {
+            jsonCast = "CAST(%s AS FLOAT)";
+        } else if (value instanceof Boolean) {
+            jsonCast = "CAST(%s AS BOOLEAN)";
+        }else if (value instanceof Date) {
+            jsonCast = "to_timestamp(CAST(%s AS BIGINT))";
+        } else if (value.getClass().isInstance(Collection.class)) {
+            Collection collection = (Collection) value;
+            if(! collection.isEmpty()){
+                Object obj = collection.iterator().next();
+                if (obj instanceof Integer) {
+                    jsonCast = "convert_jsonb_to_int_array(%s)";
+                } else if (obj instanceof String) {
+                    jsonCast = "convert_jsonb_to_varchar_array(%s)";
+                } else {
+                    throw new IllegalArgumentException("Illegal object type in collection");
+                }
+            }
+            throw new IllegalArgumentException("Value class does not support empty collections.");
+        } else {
+            throw new IllegalArgumentException("datatype not supported: " + value.getClass().getName());
+        }
         this.value = value;
     }
 
@@ -106,4 +140,11 @@ public class Value {
         this.singleValue = singleValue;
     }
 
+    public String getJsonCast() {
+        return jsonCast;
+    }
+
+    public String getCastJsonField(String field) {
+        return String.format(this.jsonCast, field);
+    }
 }

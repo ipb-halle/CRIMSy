@@ -114,8 +114,10 @@ public class SqlParamTableBuilder extends SqlBuilder {
      * from the parameter table
      */
     private String getCastParameter(Value value) {
+        
         String  expr = value.getCastExpression();
-        String param = "parameter->>'" + value.getArgumentKey() + "'";
+//        String param = "CAST(parameter->>'" + value.getArgumentKey() + "' AS "+value.getJsonCast()+")";
+        String param = value.getCastJsonValue("parameter->>'" + value.getArgumentKey() + "'");
         return (expr == null)
                 ? param
                 : String.format(expr, param);
