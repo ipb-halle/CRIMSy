@@ -1,0 +1,14 @@
+Types needing special handling 
+for JSON parameter table (enum etc.)
+
+UUID                    --> done
+byte[]                  --> not done, postponed
+Timestamp               --> not done
+
+JobType                 --> done (int)
+JobStatus               --> done (int)
+LinkedDataType          --> done (int)
+AdmissionSubSystemType  --> done (int)
+LinkedDataType          --> done (int)
+ExpRecordType           --> done (int)
+TopicCategory           --> done (string)

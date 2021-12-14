@@ -39,6 +39,7 @@ public class SqlParamTableBuilder extends SqlBuilder {
     protected final static String paramTableNameQuery = "SELECT process_id, parameter FROM tmp_search_parameter";
     private final static String paramTableId = "process_id";
     private final static String paramTableName = "param_table";
+    private final static String paramFieldName = "parameter";
     private String processId;
     private EntityGraph paramGraph;
 
@@ -86,12 +87,12 @@ public class SqlParamTableBuilder extends SqlBuilder {
                 sb.append("(");
                 sb.append(field.getAliasedColumnName());
                 sb.append(",");
-                sb.append(getCastParameter(value));
+                sb.append(value.getJsonParameter(paramFieldName));
                 sb.append(")");
             } else {
                 sb.append(field.getAliasedColumnName());
                 sb.append(operator.getSql());
-                sb.append(getCastParameter(value));
+                sb.append(value.getJsonParameter(paramFieldName));
             }
             sep = " OR ";
         }
@@ -108,21 +109,6 @@ public class SqlParamTableBuilder extends SqlBuilder {
         this.paramGraph.activate(context);
     }
 
-    /**
-     * @param value the original condition value object
-     * @return a modified cast parameter to use the JSON object
-     * from the parameter table
-     */
-    private String getCastParameter(Value value) {
-        
-        String  expr = value.getCastExpression();
-//        String param = "CAST(parameter->>'" + value.getArgumentKey() + "' AS "+value.getJsonCast()+")";
-        String param = value.getCastJsonField("parameter->>'" + value.getArgumentKey() + "'");
-        return (expr == null)
-                ? param
-                : String.format(expr, param);
-    };
-
     public String getProcessId() {
         return this.processId;
     }
@@ -133,11 +119,9 @@ public class SqlParamTableBuilder extends SqlBuilder {
     }
 
     public JsonObject getValuesAsJson() {
-        Gson gson = new Gson();
         JsonObject obj = new JsonObject();
         for (Value param : super.getValueList()) {
-            JsonElement el = gson.toJsonTree(param.getValue());
-            obj.add(param.getArgumentKey(), el);
+            obj.add(param.getArgumentKey(), param.getValueAsJsonElement());
         }
         return obj;
     }

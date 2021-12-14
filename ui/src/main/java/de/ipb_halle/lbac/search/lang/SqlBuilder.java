@@ -34,7 +34,7 @@ import java.util.StringJoiner;
 public class SqlBuilder {
 
     protected EntityGraph entityGraph;
-    private List<Value> valueList;
+    protected List<Value> valueList;
     private Set<DbField> allFields;
     private int argumentCounter;
     private boolean subSelect;

@@ -17,10 +17,13 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -37,11 +40,6 @@ public class Value {
     private String argumentKey;
     @XmlTransient
     private String castExpression;
-
-    private HashSet valueSet;
-    private ArrayList valueList;
-    private Object singleValue;
-    private String jsonCast;
 
     public Value() {
     }
@@ -81,70 +79,68 @@ public class Value {
     }
 
     public void setValue(Object value) {
+        this.value = value;
+    }
+    
+    /**
+     * @param value the original condition value object
+     * @return a modified cast parameter to use the JSON object
+     * from the parameter table
+     */
+    public String getJsonParameter(String field) {
         if (value == null) {
             throw new IllegalArgumentException("Value cannot be null");
         } else if (value instanceof Integer) {
-            jsonCast = "CAST(%s AS INTEGER)";
+            return String.format("CAST(%s->>'%s' AS INTEGER)", field, this.argumentKey);
         } else if (value instanceof Long) {
-            jsonCast = "CAST(%s AS BIGINT)";
+            return String.format("CAST(%s->>'%s' AS BIGINT)", field, this.argumentKey);
         } else if (value instanceof String) {
-            jsonCast = "CAST(%s AS VARCHAR)";
+            return String.format("CAST(%s->>'%s' AS VARCHAR)", field, this.argumentKey);
         } else if (value instanceof Double) {
-            jsonCast = "CAST(%s AS DOUBLE)";
+            return String.format("CAST(%s->>'%s' AS DOUBLE)", field, this.argumentKey);
         } else if (value instanceof Float) {
-            jsonCast = "CAST(%s AS FLOAT)";
+            return String.format("CAST(%s->>'%s' AS FLOAT)", field, this.argumentKey);
         } else if (value instanceof Boolean) {
-            jsonCast = "CAST(%s AS BOOLEAN)";
-        }else if (value instanceof Date) {
-            jsonCast = "to_timestamp(CAST(%s AS BIGINT))";
+            return String.format("CAST(%s->>'%s' AS BOOLEAN)", field, this.argumentKey);
+        } else if (value instanceof Enum) {
+            if (value.getClass().isAnnotationPresent(JsonEnumerateAsString.class)) {
+                return String.format("CAST(%s->>'%s' AS VARCHAR)", field, this.argumentKey);
+            } else {
+                return String.format("CAST(%s->>'%s' AS INTEGER)", field, this.argumentKey);
+            }
+        } else if (value instanceof UUID) {
+            return String.format("CAST(%s->>'%s' AS UUID)", field, this.argumentKey);    
+        } else if (value instanceof Date) {
+            return String.format("CAST(%s->>'%s' AS INTEGER)", field, this.argumentKey);
         } else if (value instanceof Collection) {
             Collection collection = (Collection) value;
             if(! collection.isEmpty()){
                 Object obj = collection.iterator().next();
                 if (obj instanceof Integer) {
-                    jsonCast = "convert_jsonb_to_int_array(%s)";
+                    return String.format("convert_jsonb_to_int_array(%s->'%s')", field, this.argumentKey);
                 } else if (obj instanceof String) {
-                    jsonCast = "convert_jsonb_to_varchar_array(%s)";
+                    return String.format("convert_jsonb_to_varchar_array(%s->'%s')", field, this.argumentKey);
                 } else {
                     throw new IllegalArgumentException("Illegal object type in collection");
                 }
             }
-//            throw new IllegalArgumentException("Value class does not support empty collections.");
+            throw new IllegalArgumentException("Value class does not support empty collections.");
         } else {
             throw new IllegalArgumentException("datatype not supported: " + value.getClass().getName());
         }
-        this.value = value;
     }
 
-    public HashSet getValueSet() {
-        return valueSet;
-    }
-
-    public void setValueSet(HashSet valueSet) {
-        this.valueSet = valueSet;
-    }
-
-    public ArrayList getValueList() {
-        return valueList;
-    }
-
-    public void setValueList(ArrayList valueList) {
-        this.valueList = valueList;
-    }
-
-    public Object getSingleValue() {
-        return singleValue;
-    }
-
-    public void setSingleValue(Object singleValue) {
-        this.singleValue = singleValue;
-    }
-
-    public String getJsonCast() {
-        return jsonCast;
-    }
-
-    public String getCastJsonField(String field) {
-        return String.format(this.jsonCast, field);
+    public JsonElement getValueAsJsonElement() {
+        Gson gson = new Gson();
+        if (value == null) {
+            throw new IllegalArgumentException("Value cannot be null");
+        } else if (value instanceof Date) {
+            return gson.toJsonTree(((Date) value).getTime());
+        } else if (value instanceof Enum) {
+            if (! value.getClass().isAnnotationPresent(JsonEnumerateAsString.class)) {
+                return gson.toJsonTree(((Enum) value).ordinal());
+            }
+        }
+        return gson.toJsonTree(value);
     }
 }

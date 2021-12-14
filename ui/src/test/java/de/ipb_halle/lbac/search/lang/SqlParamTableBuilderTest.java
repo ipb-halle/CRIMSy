@@ -18,13 +18,21 @@
 package de.ipb_halle.lbac.search.lang;
 
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.NodeEntity;
+import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,5 +89,38 @@ public class SqlParamTableBuilderTest extends TestBase {
         MaterialSearchRequestBuilder requestBuilder=new MaterialSearchRequestBuilder(user,0,10);
         String sql= sqlBuilder.query(conditionBuilder.convertRequestToCondition(requestBuilder.build(),ACPermission.permREAD));
         int i=0;
+    }
+
+    @Test
+    public void testJsonParameter() {
+        EntityGraph graph = new EntityGraph(NodeEntity.class);
+        SqlParamTableBuilder builder = new SqlParamTableBuilder(graph);
+
+        List<Value> list = new ArrayList<>();
+        list.add(new Value(5).setArgumentKey("field1"));
+        list.add(new Value("Hallo Welt").setArgumentKey("field2"));
+        list.add(new Value(9876543210l).setArgumentKey("field3"));
+        list.add(new Value(true).setArgumentKey("field4"));
+        list.add(new Value(1.234d).setArgumentKey("field5"));
+        list.add(new Value(1.234f).setArgumentKey("field6"));
+        
+        Date date = new Date();
+        list.add(new Value(date).setArgumentKey("field7"));
+        
+        Integer[] intArray = { 1, 2, 3 };
+        list.add(new Value(Arrays.asList(intArray)).setArgumentKey("field8"));
+        list.add(new Value(new HashSet<>(Arrays.asList(intArray))).setArgumentKey("field9"));
+        
+        String[] stringArray = { "fip", "fap", "fup" };
+        list.add(new Value(Arrays.asList(stringArray)).setArgumentKey("field10"));
+        list.add(new Value(new HashSet<>(Arrays.asList(stringArray))).setArgumentKey("field11"));
+        
+        list.add(new Value(TopicCategory.OTHER).setArgumentKey("field12"));
+        list.add(new Value(AdmissionSubSystemType.BUILTIN).setArgumentKey("field13"));
+        list.add(new Value(UUID.randomUUID()).setArgumentKey("field14"));
+        
+        builder.valueList = list;
+        String json = builder.getValuesAsJson().toString();
+        assertTrue("JSON Object build correctly", false);
     }
 }
