@@ -26,20 +26,17 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
     <h:body>
         <ui:composition>
             <p:tab
-
                 title="#{msgs.materialCreation_panelNames_composition}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
-                <p:outputPanel
-                    rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
+                <p:outputPanel rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
                     <p:panelGrid>
                         <p:row>
-                            <p:column
-                                styleClass="borderless"
-                                >
+                            <p:column styleClass="borderless">
                                 <p:outputLabel
                                     style="border-width: 0px"
                                     value="#{msgs.materialCreation_composition_chooseTypeLabel}">                                    
@@ -47,8 +44,7 @@
                             </p:column>
                             <p:column
                                 styleClass="borderless compositionTypeSelectBox"
-                                style="width:60%"
-                                >
+                                style="width:60%">
                                 <b:selectOneMenu
                                     ajax="true"
                                     disabled="#{!materialCompositionBean.isCompositionTypeEditable()}"
@@ -67,8 +63,7 @@
                         class="wideBody"
                         id="searchPanelId">
                         <p:row styleClass="borderless">
-                            <p:column 
-                                style="vertical-align: top;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;border-left-right: 2px;">
+                            <p:column style="vertical-align: top;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;border-left-right: 2px;">
                                 <p:panelGrid>
                                     <p:row styleClass="borderless">
                                         <p:column styleClass="borderless">
@@ -88,15 +83,16 @@
                                             </p:commandButton>          
                                         </p:column>
                                     </p:row>
-                                    <p:row  styleClass="borderless">
-                                        <p:column 
-                                            styleClass="borderless">
+                                    <p:row styleClass="borderless">
+                                        <p:column styleClass="borderless">
                                             <p:tabView
                                                 styleClass="searchTabView"
                                                 activeIndex="#{materialCompositionBean.activeIndex}"
                                                 id="searchTabViewId"
                                                 dynamic="true">
-                                                <p:ajax event="tabChange" listener="#{materialCompositionBean.onTabChange}"/>
+                                                <p:ajax
+                                                    event="tabChange"
+                                                    listener="#{materialCompositionBean.onTabChange}"/>
                                                 <p:tab
                                                     disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
                                                     title="#{materialCompositionBean.getLocalizedTabTitle('STRUCTURE')}">
@@ -112,18 +108,25 @@
                                                          this p:tab is rendered by AJAX and the tab comes into focus. -->
                                                     <script>compositionStructurePlugin.then(plugin => plugin.init());</script>
                                                 </p:tab>
-                                                <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
-                                                       disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
+                                                <p:tab
+                                                    title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
+                                                    disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
+                                                    <crimsy:sequenceSearchMask 
+                                                        valuesHolder="#{materialCompositionBean.sequenceSearchMaskValuesHolder}"
+                                                        maxResultsFieldRendered="false" />
                                                 </p:tab>
-                                                <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
-                                                       disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
+                                                <p:tab
+                                                    title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
+                                                    disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
                                                 </p:tab>
                                             </p:tabView>
                                         </p:column>             
                                     </p:row>
                                 </p:panelGrid>
                             </p:column>
-                            <p:column style="vertical-align: top;min-width:30%;max-width: 30%;text-align: center;" styleClass="borderless compositionMaterialTable" >
+                            <p:column
+                                style="vertical-align: top;min-width:30%;max-width: 30%;text-align: center;"
+                                styleClass="borderless compositionMaterialTable">
                                 <h:outputText 
                                     value="#{msgs.materialCreation_composition_searchResultTitle}"
                                     style="font-weight: bold;font-size: 115%"/>
@@ -142,8 +145,7 @@
                                         label="Name"
                                         value="#{material.getFirstName()}">
                                     </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_searchResultTable_Action}">
+                                    <b:dataTableColumn label="#{msgs.materialCreation_composition_searchResultTable_Action}">
                                         <b:commandButton
                                             ajax="true"
                                             look="link"
@@ -184,27 +186,22 @@
                                         label="#{msgs.materialCreation_composition_concentrationsType}"
                                         value="#{materialCompositionBean.getLocalizedMaterialType(concentration)}">
                                     </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsValue}">
+                                    <b:dataTableColumn label="#{msgs.materialCreation_composition_concentrationsValue}">
                                         <b:inputText
                                             disabled="#{!materialBean.permission.isEditAllowed()}"
-                                            value="#{concentration.concentration}"
-                                            />
+                                            value="#{concentration.concentration}"/>
                                     </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsUnit}">
+                                    <b:dataTableColumn label="#{msgs.materialCreation_composition_concentrationsUnit}">
                                         <b:selectOneMenu 
                                             value="#{concentration.unit}"
-                                            disabled="#{!materialBean.permission.isEditAllowed()}"
-                                            >
+                                            disabled="#{!materialBean.permission.isEditAllowed()}">
                                             <f:selectItems
                                                 value="#{materialCompositionBean.availableAmountUnits}"
                                                 var="unit"
                                                 itemLabel="#{unit.unit}" />
                                         </b:selectOneMenu>
                                     </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_searchResultTable_Action}">
+                                    <b:dataTableColumn label="#{msgs.materialCreation_composition_searchResultTable_Action}">
                                         <b:commandButton 
                                             look="link"
                                             type="button"

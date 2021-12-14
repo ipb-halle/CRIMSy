@@ -24,15 +24,23 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.search.SequenceAlignment;
+import de.ipb_halle.lbac.material.sequence.search.SequenceSearchInformation;
+import de.ipb_halle.lbac.material.sequence.search.bean.SearchMode;
+import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchMaskValuesHolder;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.Quality;
 import de.ipb_halle.lbac.util.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toCollection;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -60,9 +68,13 @@ public class MaterialCompositionBean implements Serializable {
     private Mode mode;
     private CompositionHistoryController historyController;
     private int activeIndex = 0;
+    private SequenceSearchMaskValuesHolder sequenceSearchMaskValuesHolder;
 
     @Inject
     private MaterialService materialService;
+
+    @Inject
+    private SequenceSearchService sequenceSearchService;
 
     @Inject
     private transient MessagePresenter presenter;
@@ -71,13 +83,19 @@ public class MaterialCompositionBean implements Serializable {
     private UserBean userBean;
 
     public MaterialCompositionBean() {
-
     }
 
     public MaterialCompositionBean(MaterialService materialService, MessagePresenter presenter, UserBean userBean) {
         this.materialService = materialService;
         this.presenter = presenter;
         this.userBean = userBean;
+
+        init();
+    }
+
+    @PostConstruct
+    public void init() {
+        sequenceSearchMaskValuesHolder = new SequenceSearchMaskValuesHolder(presenter);
     }
 
     public void startCompositionEdit(MaterialComposition comp) {
@@ -170,8 +188,35 @@ public class MaterialCompositionBean implements Serializable {
         if (searchMolecule != null && !searchMolecule.isEmpty() && choosenMaterialType == MaterialType.STRUCTURE) {
             requestBuilder.setStructure(searchMolecule);
         }
-        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
-        foundMaterials = result.getAllFoundObjects(choosenMaterialType.getClassOfDto(), result.getNode());
+
+        if (choosenMaterialType == MaterialType.SEQUENCE) {
+            sequenceSearch(requestBuilder);
+        } else {
+            SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+            foundMaterials = result.getAllFoundObjects(choosenMaterialType.getClassOfDto(), result.getNode());
+        }
+    }
+
+    private void sequenceSearch(MaterialSearchRequestBuilder requestBuilder) {
+        SearchMode searchMode = sequenceSearchMaskValuesHolder.getSearchMode();
+        requestBuilder.setSequenceInformation(sequenceSearchMaskValuesHolder.getQuery(),
+                searchMode.getLibrarySequenceType(), searchMode.getQuerySequenceType(),
+                sequenceSearchMaskValuesHolder.getTranslationTable().getId());
+        SearchResult searchResultFromService = sequenceSearchService.searchSequences(requestBuilder.build());
+
+        boolean hasErrors = !searchResultFromService.getErrorMessages().isEmpty();
+        if (hasErrors) {
+            presenter.error("sequenceSearch_error");
+            return;
+        }
+
+        List<SequenceAlignment> searchResults = searchResultFromService
+                .getAllFoundObjectsAsSearchable(SequenceAlignment.class);
+        searchResults.sort(
+                Comparator.comparing(seqAlignment -> seqAlignment.getAlignmentInformation().getExpectationValue()));
+
+        foundMaterials.clear();
+        searchResults.forEach(seqAlignment -> foundMaterials.add(seqAlignment.getFoundSequence()));
     }
 
     public List<Material> getMaterialsThatCanBeAdded() {
@@ -319,4 +364,7 @@ public class MaterialCompositionBean implements Serializable {
                 Quality.VOLUME);
     }
 
+    public SequenceSearchMaskValuesHolder getSequenceSearchMaskValuesHolder() {
+        return sequenceSearchMaskValuesHolder;
+    }
 }

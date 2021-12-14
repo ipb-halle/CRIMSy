@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.items.ItemDeployment;
@@ -48,6 +47,11 @@ import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,14 +64,11 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.TabChangeEvent;
-
-
 
 /**
  *
@@ -75,7 +76,6 @@ import org.primefaces.event.TabChangeEvent;
  */
 @RunWith(Arquillian.class)
 public class MaterialCompositionBeanTest extends TestBase {
-
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -130,48 +130,48 @@ public class MaterialCompositionBeanTest extends TestBase {
 
     @Test
     public void test001_getCompositionTypes() {
-        Assert.assertEquals(3, bean.getCompositionTypes().size());
-        Assert.assertTrue(bean.getCompositionTypes().contains(CompositionType.EXTRACT));
-        Assert.assertTrue(bean.getCompositionTypes().contains(CompositionType.MIXTURE));
-        Assert.assertTrue(bean.getCompositionTypes().contains(CompositionType.PROTEIN));
+        assertEquals(3, bean.getCompositionTypes().size());
+        assertTrue(bean.getCompositionTypes().contains(CompositionType.EXTRACT));
+        assertTrue(bean.getCompositionTypes().contains(CompositionType.MIXTURE));
+        assertTrue(bean.getCompositionTypes().contains(CompositionType.PROTEIN));
     }
 
     @Test
     public void test002_setChoosenType() {
         bean.setChoosenType(CompositionType.MIXTURE);
-        Assert.assertEquals(CompositionType.MIXTURE, bean.getChoosenType());
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled("No valide name"));
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
-        Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
-        Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
+        assertEquals(CompositionType.MIXTURE, bean.getChoosenType());
+        assertFalse(bean.isMaterialTypePanelDisabled("No valide name"));
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
+        assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
+        assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
 
         bean.setChoosenType(CompositionType.PROTEIN);
-        Assert.assertEquals(CompositionType.PROTEIN, bean.getChoosenType());
-        Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
+        assertEquals(CompositionType.PROTEIN, bean.getChoosenType());
+        assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
 
         bean.setChoosenType(CompositionType.EXTRACT);
-        Assert.assertEquals(CompositionType.EXTRACT, bean.getChoosenType());
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
-        Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
+        assertEquals(CompositionType.EXTRACT, bean.getChoosenType());
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
+        assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
     }
 
     @Test
     public void test003_switchMaterialType() {
         bean.setChoosenType(CompositionType.MIXTURE);
         bean.actionSwitchMaterialType(MaterialType.STRUCTURE.toString());
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
         //Materialtype not allowed by Composition type
         bean.actionSwitchMaterialType(MaterialType.SEQUENCE.toString());
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
         //Materialtype not valide 
         bean.actionSwitchMaterialType("no valide type");
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
         //Materialtype null
         bean.actionSwitchMaterialType(null);
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
     }
 
     @Test
@@ -179,10 +179,10 @@ public class MaterialCompositionBeanTest extends TestBase {
         Structure dummyStructure1 = new Structure("", 0d, 0d, 1, new ArrayList<>(), 0);
         Structure dummyStructure2 = new Structure("", 0d, 0d, 2, new ArrayList<>(), 0);
 
-        Assert.assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
+        assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertTrue(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
-        Assert.assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure2.getId()));
+        assertTrue(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
+        assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure2.getId()));
     }
 
     @Test
@@ -193,15 +193,15 @@ public class MaterialCompositionBeanTest extends TestBase {
         bean.setChoosenType(CompositionType.MIXTURE);
 
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
+        assertEquals(1, bean.getConcentrationsInComposition().size());
         //Not the same material again
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
+        assertEquals(1, bean.getConcentrationsInComposition().size());
         // No biomaterial because compositionType is MIXTURE
         bean.actionAddMaterialToComposition(dummyBioMaterial3);
-        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
+        assertEquals(1, bean.getConcentrationsInComposition().size());
         bean.actionAddMaterialToComposition(dummyStructure2);
-        Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
+        assertEquals(2, bean.getConcentrationsInComposition().size());
     }
 
     @Test
@@ -216,15 +216,15 @@ public class MaterialCompositionBeanTest extends TestBase {
 
         // Only the two strcutures should be available because compositiontype is MIXTURE
         List<Integer> listOfIds = bean.getMaterialsThatCanBeAdded().stream().map(m -> m.getId()).collect(Collectors.toCollection(ArrayList::new));
-        Assert.assertEquals(2, listOfIds.size());
-        Assert.assertTrue(listOfIds.contains(1));
-        Assert.assertTrue(listOfIds.contains(2));
+        assertEquals(2, listOfIds.size());
+        assertTrue(listOfIds.contains(1));
+        assertTrue(listOfIds.contains(2));
 
         // Only one strcuture should be available because compositiontype is MIXTURE and the other structure is already in
         bean.getConcentrationsInComposition().add(new Concentration(dummyStructure1));
         listOfIds = bean.getMaterialsThatCanBeAdded().stream().map(m -> m.getId()).collect(Collectors.toCollection(ArrayList::new));
-        Assert.assertEquals(1, listOfIds.size());
-        Assert.assertTrue(listOfIds.contains(2));
+        assertEquals(1, listOfIds.size());
+        assertTrue(listOfIds.contains(2));
     }
 
     @Test
@@ -235,35 +235,35 @@ public class MaterialCompositionBeanTest extends TestBase {
         bean.setChoosenType(CompositionType.MIXTURE);
         bean.actionSwitchMaterialType("STRUCTURE");
         bean.actionStartSearch();
-        Assert.assertEquals(2, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(2, bean.getMaterialsThatCanBeAdded().size());
 
         bean.setMaterialName("l-002");
         bean.actionStartSearch();
-        Assert.assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
 
         bean.setSearchMolecule("H2O");
         bean.actionStartSearch();
-        Assert.assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
 
         bean.setChoosenType(CompositionType.EXTRACT);
         bean.actionSwitchMaterialType("BIOMATERIAL");
         bean.actionStartSearch();
-        Assert.assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
     }
 
     @Test
     public void test008_checkLocalizationOfMaterialType() {
         Structure dummyStructure1 = new Structure("", 0d, 0d, 1, new ArrayList<>(), 0);
-        Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedMaterialType(new Concentration(dummyStructure1)));
+        assertEquals("search_category_STRUCTURE", bean.getLocalizedMaterialType(new Concentration(dummyStructure1)));
     }
 
     @Test
     public void test009_onTabChange() {
         Tab structureTab = new Tab();
         structureTab.setTitle("search_category_STRUCTURE");
-        Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedTabTitle(MaterialType.STRUCTURE.toString()));
+        assertEquals("search_category_STRUCTURE", bean.getLocalizedTabTitle(MaterialType.STRUCTURE.toString()));
         bean.onTabChange(new TabChangeEvent(new UIViewRoot(), new BehaviorBase(), structureTab));
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
     }
 
     @Test
@@ -294,14 +294,14 @@ public class MaterialCompositionBeanTest extends TestBase {
         builder.setMaterialName("test-composition");
         SearchResult result = searchService.search(Arrays.asList(builder.build()), nodeService.getLocalNode());
         List<MaterialComposition> foundObjects = result.getAllFoundObjects(MaterialComposition.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, foundObjects.size());
+        assertEquals(1, foundObjects.size());
 
         MaterialComposition composition = foundObjects.get(0);
-        Assert.assertEquals(1, composition.getIndices().size());
-        Assert.assertEquals(2, composition.getComponents().size());
-        Assert.assertEquals(1, composition.getHazards().getHazards().size());
-        Assert.assertEquals(1, composition.getStorageInformation().getStorageClass().id, 0);
-        Assert.assertEquals(1, composition.getStorageInformation().getStorageConditions().size());
+        assertEquals(1, composition.getIndices().size());
+        assertEquals(2, composition.getComponents().size());
+        assertEquals(1, composition.getHazards().getHazards().size());
+        assertEquals(1, composition.getStorageInformation().getStorageClass().id, 0);
+        assertEquals(1, composition.getStorageInformation().getStorageConditions().size());
 
     }
 
