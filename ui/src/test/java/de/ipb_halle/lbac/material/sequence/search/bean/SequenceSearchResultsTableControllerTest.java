@@ -110,14 +110,14 @@ public class SequenceSearchResultsTableControllerTest {
             return result;
         });
 
-        sequenceSearchMaskController.setSearchMode(SearchMode.DNA_DNA);
+        sequenceSearchMaskController.getValuesHolder().setSearchMode(SearchMode.DNA_DNA);
         sequenceSearchMaskController.actionStartMaterialSearch();
         List<FastaResultDisplayWrapper> results = controller.getResults();
         for (FastaResultDisplayWrapper wrapper : results) {
             assertThat(wrapper.getConfig(), instanceOf(FastaResultDisplayConfig.class));
         }
 
-        sequenceSearchMaskController.setSearchMode(SearchMode.PROTEIN_DNA);
+        sequenceSearchMaskController.getValuesHolder().setSearchMode(SearchMode.PROTEIN_DNA);
         sequenceSearchMaskController.actionStartMaterialSearch();
         results = controller.getResults();
         for (FastaResultDisplayWrapper wrapper : results) {

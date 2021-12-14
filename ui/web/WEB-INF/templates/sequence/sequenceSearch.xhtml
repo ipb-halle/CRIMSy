@@ -37,83 +37,12 @@
                         updateTargets="sequenceSearchResultsForm growlMsg"
                         materialTypeFieldRendered="false"
                         moleditorRendered="false">
-                            <b:row>
-                                <h:outputText
-                                    value="#{msgs.sequenceSearch_searchMask_title}"
-                                    styleClass="materialFilterHeader" />
-                            </b:row>
-
-                            <b:row styleClass="materialFilterRow">
-                                <b:column span="2">
-                                    <h:outputText value="#{msgs.sequenceSearch_searchMask_query}" />
-                                </b:column>
-                            </b:row>
-                            <b:row styleClass="materialFilterRow">
-                                <b:column span="2">
-                                    <b:inputTextarea
-                                        value="#{sequenceSearchBean.searchMaskController.query}"
-                                        styleClass="materialFilterInputfield"
-                                        style="resize:none" />
-                                </b:column>
-                            </b:row>
-
-                            <b:row styleClass="materialFilterRow">
-                                <b:column span="2">
-                                    <h:outputText value="#{msgs.sequenceSearch_searchMask_searchMode}" />
-                                </b:column>
-                            </b:row>
-                            <b:row styleClass="materialFilterRow">
-                                <b:column span="2">
-                                    <b:selectOneMenu
-                                        value="#{sequenceSearchBean.searchMaskController.searchMode}"
-                                        styleClass="materialFilterInputfield"
-                                        ajax="true"
-                                        process="@this"
-                                        update="translationTableId">
-                                        <f:selectItems
-                                            value="#{sequenceSearchBean.searchMaskController.searchModeItems}"
-                                            var="item"
-                                            itemValue="#{item}"
-                                            itemLabel="#{sequenceSearchBean.searchMaskController.getLocalizedSearchModeLabel(item)}" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </b:row>
-
-                            <b:row styleClass="materialFilterRow">
-                                <b:column span="2">
-                                    <h:outputText value="#{msgs.sequenceSearch_searchMask_translationTable}" />
-                                </b:column>
-                            </b:row>
-                            <b:row styleClass="materialFilterRow">
-                                <b:column span="2">
-                                    <b:selectOneMenu
-                                        id="translationTableId"
-                                        value="#{sequenceSearchBean.searchMaskController.translationTable}"
-                                        styleClass="materialFilterInputfield"
-                                        disabled="#{sequenceSearchBean.searchMaskController.translationTableDisabled}">
-                                        <f:selectItems
-                                            value="#{sequenceSearchBean.searchMaskController.translationTableItems}"
-                                            var="item"
-                                            itemValue="#{item}"
-                                            itemLabel="#{item}" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </b:row>
-
-                            <b:row styleClass="materialFilterRow">
-                                <b:column span="2">
-                                    <h:outputText value="#{msgs.sequenceSearch_searchMask_maxResults}" />
-                                </b:column>
-                            </b:row>
-                            <b:row styleClass="materialFilterRow">
-                                <b:column span="2">
-                                    <b:selectOneMenu
-                                        value="#{sequenceSearchBean.searchMaskController.maxResults}"
-                                        styleClass="materialFilterInputfield">
-                                        <f:selectItems value="#{sequenceSearchBean.searchMaskController.maxResultItems}" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </b:row>
+                        <b:row>
+                            <h:outputText
+                                value="#{msgs.sequenceSearch_searchMask_title}"
+                                styleClass="materialFilterHeader" />
+                        </b:row>
+                        <crimsy:sequenceSearchMask valuesHolder="#{sequenceSearchBean.searchMaskController.valuesHolder}" />
                     </crimsy:materialSearchMask>
                 </b:column>
 

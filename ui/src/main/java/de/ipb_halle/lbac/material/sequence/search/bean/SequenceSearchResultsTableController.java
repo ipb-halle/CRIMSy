@@ -78,7 +78,7 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
     @Override
     public void reloadDataTableItems() {
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(lastUser, 0,
-                searchMaskController.getMaxResults());
+                searchMaskController.getValuesHolder().getMaxResults());
         builder.addMaterialType(MaterialType.SEQUENCE);
         builder.setSearchValues(lastValues);
 
@@ -93,7 +93,7 @@ public class SequenceSearchResultsTableController extends MaterialTableControlle
         List<SequenceAlignment> searchResults = searchResultFromService
                 .getAllFoundObjectsAsSearchable(SequenceAlignment.class);
 
-        ResultDisplayConfig displayConfig = searchMaskController.getSearchMode().getDisplayConfig();
+        ResultDisplayConfig displayConfig = searchMaskController.getValuesHolder().getSearchMode().getDisplayConfig();
 
         results = new ArrayList<>();
         for (SequenceAlignment alignment : searchResults) {

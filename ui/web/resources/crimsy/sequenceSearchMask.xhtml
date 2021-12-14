@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Leibniz Bioactives Cloud
+Copyright 2019 Leibniz-Institut f. Pflanzenbiochemie
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
+    <composite:interface>
+        <composite:attribute
+            name="valuesHolder"
+            type="de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchMaskValuesHolder"
+            required="true" />
+        <composite:attribute
+            name="queryFieldRendered"
+            default="true"
+            type="java.lang.Boolean" />
+        <composite:attribute
+            name="searchModeFieldRendered"
+            default="true"
+            type="java.lang.Boolean" />
+        <composite:attribute
+            name="translationTableFieldRendered"
+            default="true"
+            type="java.lang.Boolean" />
+        <composite:attribute
+            name="maxResultsFieldRendered"
+            default="true"
+            type="java.lang.Boolean" />
+    </composite:interface>
+
+    <composite:implementation>
+        <ui:fragment rendered="#{cc.attrs.queryFieldRendered}">
+            <b:row styleClass="materialFilterRow">
+                <b:column span="2">
+                    <h:outputText value="#{msgs.sequenceSearch_searchMask_query}" />
+                </b:column>
+            </b:row>
+            <b:row styleClass="materialFilterRow">
+                <b:column span="2">
+                    <b:inputTextarea
+                        value="#{cc.attrs.valuesHolder.query}"
+                        styleClass="materialFilterInputfield"
+                        style="resize:none" />
+                </b:column>
+            </b:row>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{cc.attrs.searchModeFieldRendered}">
+            <b:row styleClass="materialFilterRow">
+                <b:column span="2">
+                    <h:outputText value="#{msgs.sequenceSearch_searchMask_searchMode}" />
+                </b:column>
+            </b:row>
+            <b:row styleClass="materialFilterRow">
+                <b:column span="2">
+                    <b:selectOneMenu
+                        value="#{cc.attrs.valuesHolder.searchMode}"
+                        styleClass="materialFilterInputfield"
+                        ajax="true"
+                        process="@this"
+                        update="translationTableId">
+                        <f:selectItems
+                            value="#{cc.attrs.valuesHolder.searchModeItems}"
+                            var="item"
+                            itemValue="#{item}"
+                            itemLabel="#{cc.attrs.valuesHolder.getLocalizedSearchModeLabel(item)}" />
+                    </b:selectOneMenu>
+                </b:column>
+            </b:row>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{cc.attrs.translationTableFieldRendered}">
+            <b:row styleClass="materialFilterRow">
+                <b:column span="2">
+                    <h:outputText value="#{msgs.sequenceSearch_searchMask_translationTable}" />
+                </b:column>
+            </b:row>
+            <b:row styleClass="materialFilterRow">
+                <b:column span="2">
+                    <b:selectOneMenu
+                        id="translationTableId"
+                        value="#{cc.attrs.valuesHolder.translationTable}"
+                        styleClass="materialFilterInputfield"
+                        disabled="#{cc.attrs.valuesHolder.translationTableDisabled}">
+                        <f:selectItems
+                            value="#{cc.attrs.valuesHolder.translationTableItems}"
+                            var="item"
+                            itemValue="#{item}"
+                            itemLabel="#{item}" />
+                    </b:selectOneMenu>
+                </b:column>
+            </b:row>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{cc.attrs.maxResultsFieldRendered}">
+            <b:row styleClass="materialFilterRow">
+                <b:column span="2">
+                    <h:outputText value="#{msgs.sequenceSearch_searchMask_maxResults}" />
+                </b:column>
+            </b:row>
+            <b:row styleClass="materialFilterRow">
+                <b:column span="2">
+                    <b:selectOneMenu
+                        value="#{cc.attrs.valuesHolder.maxResults}"
+                        styleClass="materialFilterInputfield">
+                        <f:selectItems value="#{cc.attrs.valuesHolder.maxResultItems}" />
+                    </b:selectOneMenu>
+                </b:column>
+            </b:row>
+        </ui:fragment>
+    </composite:implementation>
+</html>

@@ -55,6 +55,7 @@ import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.material.sequence.search.bean.SearchMode;
 import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchBean;
 import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchMaskController;
+import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchMaskValuesHolder;
 import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchResultsTableController;
 import de.ipb_halle.lbac.material.sequence.search.bean.SortItem;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper;
@@ -100,6 +101,7 @@ public class SequenceSearchIntegrationTest extends TestBase {
     private List<FastaResult> fastaResults;
     private AtomicReference<FastaSearchRequest> requestRef;
     private SequenceSearchMaskController searchMaskController;
+    private SequenceSearchMaskValuesHolder valuesHolder;
     private SequenceSearchResultsTableController tableController;
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
@@ -158,6 +160,7 @@ public class SequenceSearchIntegrationTest extends TestBase {
         });
 
         searchMaskController = searchBean.getSearchMaskController();
+        valuesHolder = searchMaskController.getValuesHolder();
         tableController = searchBean.getResultsTableController();
 
         initParametersInControllers();
@@ -199,10 +202,10 @@ public class SequenceSearchIntegrationTest extends TestBase {
     public void test002_normalSearch2() {
         tableController.setLastUser(publicUser);
         tableController.setSortBy(SortItem.SUBJECTNAME);
-        searchMaskController.setQuery("GCC");
-        searchMaskController.setSearchMode(SearchMode.PROTEIN_DNA);
-        searchMaskController.setTranslationTable(TranslationTable.STANDARD);
-        searchMaskController.setMaxResults(10000);
+        valuesHolder.setQuery("GCC");
+        valuesHolder.setSearchMode(SearchMode.PROTEIN_DNA);
+        valuesHolder.setTranslationTable(TranslationTable.STANDARD);
+        valuesHolder.setMaxResults(10000);
         // TODO: add filters for projects/material names/etc.
         searchMaskController.actionStartMaterialSearch();
 
@@ -313,11 +316,11 @@ public class SequenceSearchIntegrationTest extends TestBase {
      */
     @Test
     public void test009_nullOrEmptyQuery_throwsEJBException() {
-        searchMaskController.setQuery(null);
+        valuesHolder.setQuery(null);
         EJBException exception = assertThrows(EJBException.class, () -> searchMaskController.actionStartMaterialSearch());
         assertThat(exception.getCause(), instanceOf(NullPointerException.class));
 
-        searchMaskController.setQuery("");
+        valuesHolder.setQuery("");
         exception = assertThrows(EJBException.class, () -> searchMaskController.actionStartMaterialSearch());
         assertThat(exception.getCause(), instanceOf(NullPointerException.class));
     }
@@ -341,10 +344,10 @@ public class SequenceSearchIntegrationTest extends TestBase {
     private void initParametersInControllers() {
         tableController.setLastUser(publicUser);
         tableController.setSortBy(SortItem.IDENTITY);
-        searchMaskController.setQuery("AAA");
-        searchMaskController.setSearchMode(SearchMode.DNA_PROTEIN);
-        searchMaskController.setTranslationTable(TranslationTable.EUPLOTID_NUCLEAR);
-        searchMaskController.setMaxResults(42);
+        valuesHolder.setQuery("AAA");
+        valuesHolder.setSearchMode(SearchMode.DNA_PROTEIN);
+        valuesHolder.setTranslationTable(TranslationTable.EUPLOTID_NUCLEAR);
+        valuesHolder.setMaxResults(42);
         // TODO: add filters for projects/material names/etc.
     }
 

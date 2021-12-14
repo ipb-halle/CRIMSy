@@ -21,11 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -52,6 +48,7 @@ import de.ipb_halle.lbac.search.SearchResultImpl;
 public class SequenceSearchMaskControllerTest {
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
     private SequenceSearchMaskController controller;
+    private SequenceSearchMaskValuesHolder valuesHolder;
     private SequenceSearchResultsTableController sequenceSearchResultsTableController;
     private SequenceSearchServiceMock sequenceSearchServiceMock = new SequenceSearchServiceMock();
     private SequenceAlignment alignment;
@@ -71,14 +68,15 @@ public class SequenceSearchMaskControllerTest {
                 null, messagePresenter);
         controller = new SequenceSearchMaskController(null, sequenceSearchResultsTableController, null, null, null,
                 messagePresenter);
+        valuesHolder = controller.getValuesHolder();
         sequenceSearchResultsTableController.setSearchMaskController(controller);
     }
 
     @Test
     public void test_getValues() {
-        controller.setSearchMode(SearchMode.DNA_DNA);
-        controller.setQuery("TGA");
-        controller.setTranslationTable(TranslationTable.ALTERNATIVE_FLATWORM_MITOCHONDRIAL);
+        valuesHolder.setSearchMode(SearchMode.DNA_DNA);
+        valuesHolder.setQuery("TGA");
+        valuesHolder.setTranslationTable(TranslationTable.ALTERNATIVE_FLATWORM_MITOCHONDRIAL);
         MaterialSearchMaskValues values = controller.getValues();
         SequenceSearchInformation sequenceInfos = values.sequenceInfos;
         assertThat(values.type, contains(MaterialType.SEQUENCE));
@@ -87,9 +85,9 @@ public class SequenceSearchMaskControllerTest {
         assertEquals("TGA", sequenceInfos.sequenceQuery);
         assertEquals(TranslationTable.ALTERNATIVE_FLATWORM_MITOCHONDRIAL.getId(), sequenceInfos.translationTable);
 
-        controller.setSearchMode(SearchMode.DNA_PROTEIN);
-        controller.setQuery("ATG");
-        controller.setTranslationTable(TranslationTable.BLEPHARISMA_MACRONUCLEAR);
+        valuesHolder.setSearchMode(SearchMode.DNA_PROTEIN);
+        valuesHolder.setQuery("ATG");
+        valuesHolder.setTranslationTable(TranslationTable.BLEPHARISMA_MACRONUCLEAR);
         values = controller.getValues();
         sequenceInfos = values.sequenceInfos;
         assertThat(values.type, contains(MaterialType.SEQUENCE));
@@ -112,70 +110,10 @@ public class SequenceSearchMaskControllerTest {
 
     @Test
     public void test_actionClearSearchFilter() {
-        controller.setQuery("TGA");
+        valuesHolder.setQuery("TGA");
         controller.setMolecule("ABC");
         controller.actionClearSearchFilter();
-        assertEquals("", controller.getQuery());
+        assertEquals("", valuesHolder.getQuery());
         assertEquals("", controller.getMolecule());
-    }
-
-    @Test
-    public void test_isTranslationTableDisabled() {
-        controller.setSearchMode(SearchMode.PROTEIN_PROTEIN);
-        assertTrue(controller.isTranslationTableDisabled());
-
-        controller.setSearchMode(SearchMode.PROTEIN_DNA);
-        assertFalse(controller.isTranslationTableDisabled());
-    }
-
-    @Test
-    public void test_getLocalizedSearchModeLabel() {
-        assertEquals("sequenceSearch_searchMode_PROTEIN_PROTEIN",
-                controller.getLocalizedSearchModeLabel(SearchMode.PROTEIN_PROTEIN));
-        assertEquals("sequenceSearch_searchMode_DNA_PROTEIN",
-                controller.getLocalizedSearchModeLabel(SearchMode.DNA_PROTEIN));
-    }
-
-    @Test
-    public void test_getAndSetQuery() {
-        assertEquals("", controller.getQuery());
-        controller.setQuery("TGA");
-        assertEquals("TGA", controller.getQuery());
-    }
-
-    @Test
-    public void test_getAndSetSearchMode() {
-        assertEquals(SearchMode.PROTEIN_PROTEIN, controller.getSearchMode());
-        controller.setSearchMode(SearchMode.PROTEIN_DNA);
-        assertEquals(SearchMode.PROTEIN_DNA, controller.getSearchMode());
-    }
-
-    @Test
-    public void test_getSearchModeItems() {
-        assertArrayEquals(SearchMode.values(), controller.getSearchModeItems());
-    }
-
-    @Test
-    public void test_getAndSetTranslationTable() {
-        assertEquals(TranslationTable.STANDARD, controller.getTranslationTable());
-        controller.setTranslationTable(TranslationTable.BACTERIAL_AND_PLANT_PLASTID);
-        assertEquals(TranslationTable.BACTERIAL_AND_PLANT_PLASTID, controller.getTranslationTable());
-    }
-
-    @Test
-    public void test_getTranslationTableItems() {
-        assertArrayEquals(TranslationTable.values(), controller.getTranslationTableItems());
-    }
-
-    @Test
-    public void test_getAndSetMaxResults() {
-        assertEquals(50, controller.getMaxResults());
-        controller.setMaxResults(42);
-        assertEquals(42, controller.getMaxResults());
-    }
-
-    @Test
-    public void test_getMaxResultItems() {
-        assertTrue(controller.getMaxResultItems().length >= 1);
     }
 }

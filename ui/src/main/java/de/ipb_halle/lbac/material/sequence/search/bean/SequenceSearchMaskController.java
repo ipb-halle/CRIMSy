@@ -17,9 +17,6 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.bean;
 
-import org.hibernate.validator.constraints.NotBlank;
-
-import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
@@ -39,41 +36,31 @@ import java.util.Arrays;
  */
 public class SequenceSearchMaskController extends MaterialSearchMaskController {
     private static final long serialVersionUID = 1L;
-    private MessagePresenter messagePresenter;
+    private final SequenceSearchMaskValuesHolder valuesHolder;
 
-    @NotBlank
-    private String query = "";
-
-    private SearchMode searchMode = SearchMode.PROTEIN_PROTEIN;
-    private static final SearchMode[] searchModeItems = SearchMode.values();
-
-    private TranslationTable translationTable = TranslationTable.STANDARD;
-    private static final TranslationTable[] translationTableItems = TranslationTable.values();
-
-    private int maxResults = maxResultItems[4];
-    private static final int[] maxResultItems = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 500, 750,
-            1000 };
-
-    public SequenceSearchMaskController(MaterialOverviewBean overviewBean, MaterialTableController tableController, MaterialService materialService,
-            ProjectService projectService, MemberService memberService, MessagePresenter messagePresenter) {
+    public SequenceSearchMaskController(MaterialOverviewBean overviewBean, MaterialTableController tableController,
+            MaterialService materialService, ProjectService projectService, MemberService memberService,
+            MessagePresenter messagePresenter) {
         super(overviewBean, tableController, materialService, projectService, memberService,
                 Arrays.asList(MaterialType.SEQUENCE));
-        this.messagePresenter = messagePresenter;
+        valuesHolder = new SequenceSearchMaskValuesHolder(messagePresenter);
     }
 
     @Override
     public void clearInputFields() {
         super.clearInputFields();
-        query = "";
+        valuesHolder.setQuery("");
     }
 
     @Override
     protected MaterialSearchMaskValues getValues() {
+        SearchMode searchMode = valuesHolder.getSearchMode();
         MaterialSearchMaskValues values = super.getValues();
         values.type.clear();
         values.type.add(MaterialType.SEQUENCE);
         values.sequenceInfos = new SequenceSearchInformation(searchMode.getQuerySequenceType(),
-                searchMode.getLibrarySequenceType(), query, translationTable.getId());
+                searchMode.getLibrarySequenceType(), valuesHolder.getQuery(),
+                valuesHolder.getTranslationTable().getId());
         return values;
     }
 
@@ -98,68 +85,9 @@ public class SequenceSearchMaskController extends MaterialSearchMaskController {
     }
 
     /*
-     * Getters with logic
+     * Getters
      */
-    /**
-     * @return {@code true} in case the active {@code searchMode} does not require a
-     *         translation table.
-     */
-    public boolean isTranslationTableDisabled() {
-        return !searchMode.needsTranslationTable();
-    }
-
-    /**
-     * @param mode
-     * @return 18nized name for the given {@link SearchMode}
-     */
-    public String getLocalizedSearchModeLabel(SearchMode mode) {
-        return messagePresenter.presentMessage("sequenceSearch_searchMode_" + mode.toString());
-    }
-
-    /*
-     * Getters/setters for fields
-     */
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public SearchMode getSearchMode() {
-        return searchMode;
-    }
-
-    public void setSearchMode(SearchMode searchMode) {
-        this.searchMode = searchMode;
-    }
-
-    public SearchMode[] getSearchModeItems() {
-        return searchModeItems;
-    }
-
-    public TranslationTable getTranslationTable() {
-        return translationTable;
-    }
-
-    public void setTranslationTable(TranslationTable translationTable) {
-        this.translationTable = translationTable;
-    }
-
-    public TranslationTable[] getTranslationTableItems() {
-        return translationTableItems;
-    }
-
-    public int getMaxResults() {
-        return maxResults;
-    }
-
-    public void setMaxResults(int maxResults) {
-        this.maxResults = maxResults;
-    }
-
-    public int[] getMaxResultItems() {
-        return maxResultItems;
+    public SequenceSearchMaskValuesHolder getValuesHolder() {
+        return valuesHolder;
     }
 }
