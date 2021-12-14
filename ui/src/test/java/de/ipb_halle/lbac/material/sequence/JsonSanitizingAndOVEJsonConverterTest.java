@@ -424,6 +424,25 @@ public class JsonSanitizingAndOVEJsonConverterTest {
         assertEquals("", converter.getAsString(context, component, new Object()));
     }
 
+    @Test
+    public void test007_getAsObject_withJsonWithNullSequence() {
+        json = "{\"isProtein\":false,\"sequence\":null}";
+        converter.setSequenceType(DNA);
+        data = converter.getAsObject(context, component, json);
+        assertNull(null, data.getSequenceString());
+        assertNull(null, data.getSequenceLength());
+        assertEquals(DNA, data.getSequenceType());
+        assertFalse(data.isCircular());
+
+        json = "{\"isProtein\":true,\"proteinSequence\":null}";
+        converter.setSequenceType(PROTEIN);
+        data = converter.getAsObject(context, component, json);
+        assertNull(null, data.getSequenceString());
+        assertNull(null, data.getSequenceLength());
+        assertEquals(PROTEIN, data.getSequenceType());
+        assertFalse(data.isCircular());
+    }
+
     private String readResourceFile(String resourceFile) throws Exception {
         return new String(Files.readAllBytes(Paths.get(this.getClass()
                 .getClassLoader().getResource(resourceFile).toURI())));

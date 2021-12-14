@@ -44,13 +44,13 @@ public class OpenVectorEditorJsonConverter {
                 throw new OpenVectorEditorJsonConverterException(
                         "Not a protein sequence.");
             }
-            builder.sequenceString(root.at("/proteinSequence").asText());
+            builder.sequenceString(root.at("/proteinSequence").asText(null));
         } else {
             if (isProteinFromJson) {
                 throw new OpenVectorEditorJsonConverterException(
                         "Not a nucleotide sequence.");
             }
-            builder.sequenceString(root.at("/sequence").asText());
+            builder.sequenceString(root.at("/sequence").asText(null));
         }
         builder.sequenceType(sequenceType);
         builder.circular(root.at("/circular").asBoolean(false));
