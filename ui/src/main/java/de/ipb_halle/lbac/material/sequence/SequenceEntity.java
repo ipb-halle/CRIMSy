@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.sequence;
 
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.FieldOrder;
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -38,10 +39,12 @@ public class SequenceEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @FieldOrder(order = 1)
     private Integer id;
 
     @AttributeTag(type = AttributeType.SEQUENCE_STRING)
     @Column
+    @FieldOrder(order = 2)
     private String sequenceString;
 
     @AttributeTag(type = AttributeType.SEQUENCE_TYPE)

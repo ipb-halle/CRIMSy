@@ -87,12 +87,12 @@ public class SqlParamTableBuilder extends SqlBuilder {
                 sb.append("(");
                 sb.append(field.getAliasedColumnName());
                 sb.append(",");
-                sb.append(value.getJsonParameter(paramFieldName));
+                sb.append(value.getJsonParameter(String.join(".", this.paramGraph.getAlias(), paramFieldName)));
                 sb.append(")");
             } else {
                 sb.append(field.getAliasedColumnName());
                 sb.append(operator.getSql());
-                sb.append(value.getJsonParameter(paramFieldName));
+                sb.append(value.getJsonParameter(String.join(".", this.paramGraph.getAlias(), paramFieldName)));
             }
             sep = " OR ";
         }

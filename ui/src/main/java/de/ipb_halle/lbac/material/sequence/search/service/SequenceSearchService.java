@@ -36,11 +36,14 @@ import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.entity.NodeEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceEntity;
 import de.ipb_halle.lbac.material.sequence.search.SequenceAlignment;
 import de.ipb_halle.lbac.search.SearchCategory;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
@@ -48,6 +51,7 @@ import de.ipb_halle.lbac.search.lang.SqlParamTableBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.criteria.JoinType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -91,7 +95,7 @@ public class SequenceSearchService implements Serializable {
         try {
             sql = createSqlString(request, processID);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));           
+            logger.error(ExceptionUtils.getStackTrace(e));
             result.addErrorMessage(ERROR_SAVE_PARAMETER);
             return result;
         }
@@ -163,15 +167,22 @@ public class SequenceSearchService implements Serializable {
     }
 
     private String createSqlString(SearchRequest searchRequest, UUID processId) throws Exception {
+        EntityGraph sequenceGraph = new EntityGraph(SequenceEntity.class);
+        sequenceGraph.addAttributeType(AttributeType.TOPLEVEL);
+        sequenceGraph.addAttributeType(AttributeType.DIRECT);
         MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
-        EntityGraph graph = graphBuilder.buildEntityGraph(true);
 
-        SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(graph, "materials");
+        EntityGraph materialGraph = graphBuilder.buildEntityGraph(false);
+
+        materialGraph.addLinkField("id", "materialid").setJoinType(JoinType.INNER);
+        sequenceGraph.addChildInherit(materialGraph);
+
+        SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(sequenceGraph, "sequences/materials");
         Condition condition = builder.convertRequestToCondition(searchRequest, ACPermission.permREAD);
-        SqlParamTableBuilder sqlBuilder = new SqlParamTableBuilder(graph);
+        SqlParamTableBuilder sqlBuilder = new SqlParamTableBuilder(sequenceGraph);
         String sql = sqlBuilder.query(condition);
         searchParameterService.saveParameter(processId, sqlBuilder.getValuesAsJson().toString());
-       
+
         // This code block is only for testing purpose.
         // In the final version the substitute of the parameter must be
         // done sql injection save, e.g by preparred statements
