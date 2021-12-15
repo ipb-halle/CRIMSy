@@ -51,36 +51,10 @@ public class SearchParameterService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public void saveParameter(UUID processid, List<String> fields, List<Object> values) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode root = mapper.createObjectNode();
-        for (int i = 0; i < fields.size(); i++) {
-            if (values.get(i) instanceof Integer) {
-                root.put(fields.get(i), (Integer) values.get(i));
-            } else if (values.get(i) instanceof String) {
-                root.put(fields.get(i), (String) values.get(i));
-            } else if (values.get(i) instanceof Double) {
-                root.put(fields.get(i), (Double) values.get(i));
-            } else if (values.get(i) instanceof Boolean) {
-                root.put(fields.get(i), (Boolean) values.get(i));
-            } else if (values.get(i) instanceof HashSet) {
-                HashSet<Integer> set = (HashSet) values.get(i);
-                ArrayNode setNode = mapper.createArrayNode();
-                for (Integer valueInt : set) {
-                    setNode.add(valueInt);
-                }
-
-                root.set(fields.get(i), setNode);
-            } else {
-                throw new Exception("Could not transform value to json format: " + values.get(i));
-            }
-
-        }
-        String s = mapper.writeValueAsString(root);
+    public void saveParameter(UUID processid, String parameterAsJson) throws Exception {
         Query q = em.createNativeQuery(SQL_INSERT_PARAMETER);
-
         q.setParameter("processid", processid.toString());
-        q.setParameter("parameter", s);
+        q.setParameter("parameter", parameterAsJson);
         q.executeUpdate();
 
     }

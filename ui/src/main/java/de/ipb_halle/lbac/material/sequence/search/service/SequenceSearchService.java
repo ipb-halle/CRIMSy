@@ -44,6 +44,7 @@ import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.SqlParamTableBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -134,12 +135,6 @@ public class SequenceSearchService implements Serializable {
         return UUID.randomUUID();
     }
 
-    private void saveParameterInDataBase(UUID processId, List<Value> valueList) throws Exception {
-        List<String> fields = valueList.stream().map(v -> v.getArgumentKey()).collect(Collectors.toList());
-        List<Object> values = valueList.stream().map(v -> v.getValue()).collect(Collectors.toList());
-        searchParameterService.saveParameter(processId, fields, values);
-    }
-
     private FastaSearchRequest createRestRequest(SearchRequest request, String sql) {
 
         FastaSearchRequest fastaRequest = new FastaSearchRequest();
@@ -173,10 +168,10 @@ public class SequenceSearchService implements Serializable {
 
         SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(graph, "materials");
         Condition condition = builder.convertRequestToCondition(searchRequest, ACPermission.permREAD);
-        SqlBuilder sqlBuilder = new SqlBuilder(graph);
+        SqlParamTableBuilder sqlBuilder = new SqlParamTableBuilder(graph);
         String sql = sqlBuilder.query(condition);
-
-        saveParameterInDataBase(processId, sqlBuilder.getValueList());
+        searchParameterService.saveParameter(processId, sqlBuilder.getValuesAsJson().toString());
+       
         // This code block is only for testing purpose.
         // In the final version the substitute of the parameter must be
         // done sql injection save, e.g by preparred statements
