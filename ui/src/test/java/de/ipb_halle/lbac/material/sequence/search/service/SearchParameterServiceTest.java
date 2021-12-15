@@ -50,12 +50,15 @@ public class SearchParameterServiceTest extends TestBase {
     SearchParameterService searchParameter;
     private static final long serialVersionUID = 1L;
 
+    private String json1 = "{\"field0\":1,\"field2\":\"Hallo\"}";
+    private String json2 = "{\"field3\":1}";
+
     @Test
     public void test001_saveLoad() throws Exception {
         createAndSaveParameter();
 
-        checkParameterOfProcess1();
-        checkParameterOfProcess2();
+        checkParameterOfProcess(processId, json1);
+        checkParameterOfProcess(processId2, json2);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,28 +75,18 @@ public class SearchParameterServiceTest extends TestBase {
     }
 
     @SuppressWarnings("unchecked")
-    private void checkParameterOfProcess2() {
-        List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId2.toString()));
-        Assert.assertEquals(1, parameter.size());
-        Assert.assertEquals(processId2, UUID.fromString((String) parameter.get(0)[2]));
-        assertJsonEquals("{\":field2\":\"value3\"}", (String) parameter.get(0)[3]);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void checkParameterOfProcess1() {
+    private void checkParameterOfProcess(UUID processId, String expectedJson) {
         List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId.toString()));
-        Assert.assertEquals(processId, UUID.fromString((String) parameter.get(0)[2]));
         Assert.assertEquals(1, parameter.size());
-
-        assertJsonEquals("{\":field0\":\"value1\",\":field1\":\"value2\"}", (String) parameter.get(0)[3]);
-
+        Assert.assertEquals(processId, UUID.fromString((String) parameter.get(0)[2]));
+        assertJsonEquals(expectedJson, (String) parameter.get(0)[3]);
     }
 
     private void createAndSaveParameter() throws Exception {
         processId = UUID.randomUUID();
         processId2 = UUID.randomUUID();
-        searchParameter.saveParameter(processId, Arrays.asList(":field0", ":field1"), Arrays.asList("value1", "value2"));
-        searchParameter.saveParameter(processId2, Arrays.asList(":field2"), Arrays.asList("value3"));
+        searchParameter.saveParameter(processId, json1);
+        searchParameter.saveParameter(processId2, json2);
 
     }
 
