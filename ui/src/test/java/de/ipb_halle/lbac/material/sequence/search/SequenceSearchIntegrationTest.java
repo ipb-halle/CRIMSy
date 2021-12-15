@@ -109,7 +109,8 @@ public class SequenceSearchIntegrationTest extends TestBase {
     public void init() throws FastaResultParserException {
         messagePresenter.resetMessages();
 
-        Reader reader = readerForResourceFile("fastaresults/results1.txt");
+        Reader reader = readerForResourceFile("fastaresults/results7.txt");
+        // This list is ordered by the E-value.
         List<FastaResult> parserResults = new FastaResultParser(reader).parse();
 
         SequenceData data1 = SequenceData.builder().sequenceString("seq1").sequenceType(SequenceType.DNA).build();
@@ -193,9 +194,9 @@ public class SequenceSearchIntegrationTest extends TestBase {
         List<FastaResultDisplayWrapper> results = tableController.getResults();
         assertThat(results, hasSize(4));
         assertTrue(sequence1.isEqualTo(results.get(0).getSequence()));
-        assertTrue(sequence3.isEqualTo(results.get(1).getSequence()));
+        assertTrue(sequence2.isEqualTo(results.get(1).getSequence()));
         assertTrue(sequence3.isEqualTo(results.get(2).getSequence()));
-        assertTrue(sequence2.isEqualTo(results.get(3).getSequence()));
+        assertTrue(sequence3.isEqualTo(results.get(3).getSequence()));
     }
 
     @Test

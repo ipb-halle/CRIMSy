@@ -19,13 +19,18 @@ package de.ipb_halle.lbac.material.sequence.search.service;
 
 import java.util.function.Function;
 
+import javax.ejb.Singleton;
+
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 
 /**
  * @author flange
  */
+@Singleton
 public class SequenceSearchServiceMock extends SequenceSearchService {
+    private static final long serialVersionUID = 1L;
+
     private Function<SearchRequest, SearchResult> behaviour;
 
     public void setBehaviour(Function<SearchRequest, SearchResult> behaviour) {

@@ -24,8 +24,8 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.search.SequenceAlignment;
-import de.ipb_halle.lbac.material.sequence.search.SequenceSearchInformation;
 import de.ipb_halle.lbac.material.sequence.search.bean.SearchMode;
 import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchMaskValuesHolder;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
@@ -36,7 +36,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toCollection;
 
@@ -216,7 +218,26 @@ public class MaterialCompositionBean implements Serializable {
                 Comparator.comparing(seqAlignment -> seqAlignment.getAlignmentInformation().getExpectationValue()));
 
         foundMaterials.clear();
-        searchResults.forEach(seqAlignment -> foundMaterials.add(seqAlignment.getFoundSequence()));
+        addDistinctSequencesToFoundMaterials(searchResults);
+    }
+
+    /*
+     * Problem: searchResults can contain the same Sequence material more than once.
+     * One the other hand, we would like to have only distinct materials in
+     * foundMaterials.
+     * 
+     * Solution: Use the Material ID to check if the Sequence was already added.
+     */
+    private void addDistinctSequencesToFoundMaterials(List<SequenceAlignment> searchResults) {
+        Set<Integer> alreadyAddedMaterialIds = new HashSet<>();
+        for (SequenceAlignment alignment : searchResults) {
+            Sequence foundSequence = alignment.getFoundSequence();
+            int id = foundSequence.getId();
+            if (!alreadyAddedMaterialIds.contains(id)) {
+                alreadyAddedMaterialIds.add(id);
+                foundMaterials.add(foundSequence);
+            }
+        }
     }
 
     public List<Material> getMaterialsThatCanBeAdded() {
