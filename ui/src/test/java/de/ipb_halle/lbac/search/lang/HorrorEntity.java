@@ -43,12 +43,16 @@ public class HorrorEntity extends ACObjectEntity {
     }
     
     @Id
+    @FieldOrder(order=1)
     Integer id;
     
     @Column(name="foobar")
+    @FieldOrder(order=3)
+    @AttributeTag(type=AttributeType.TEXT)
     private String foo;
     
     @Basic
+    @FieldOrder(order=2)
     private int anzahl;
  
     @Embedded

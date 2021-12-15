@@ -36,6 +36,7 @@ public class DbField {
     private String columnName;
     private EntityGraph entityGraph;
     private String fieldName;
+    private int fieldOrder;
     private boolean indexField;
     private boolean generatedField;
     private OrderDirection orderDirection;
@@ -52,6 +53,7 @@ public class DbField {
         this.alias = "";
         this.indexField = indexField;
         this.generatedField = generatedField;
+        this.fieldOrder = Integer.MAX_VALUE;
         this.attributeTypes = new HashSet<>();
         this.orderDirection = OrderDirection.NONE;
         this.valueAccessors = new ArrayList(3);
@@ -151,6 +153,10 @@ public class DbField {
         }        
         throw new IllegalStateException("DbField has no accessor");
     }
+
+    public int getFieldOrder() {
+        return this.fieldOrder;
+    }
     
     public OrderDirection getOrderDirection() {
         return this.orderDirection;
@@ -249,7 +255,19 @@ public class DbField {
         this.fieldName = fieldName;
         return this;
     }
+
+    public DbField setFieldOrder(int fieldOrder) {
+        this.fieldOrder = fieldOrder;
+        return this;
+    }
     
+    public DbField setFieldOrder(FieldOrder fieldOrder) {
+        if (fieldOrder != null) {
+            this.fieldOrder = fieldOrder.order();
+        }
+        return this;
+    }
+
     public DbField setOrderDirection(OrderDirection dir) {
         this.orderDirection = dir;
         return this;

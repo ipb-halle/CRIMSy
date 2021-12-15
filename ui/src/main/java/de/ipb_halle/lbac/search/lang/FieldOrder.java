@@ -15,18 +15,26 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.forum.topics;
+package de.ipb_halle.lbac.search.lang;
 
-import de.ipb_halle.lbac.search.lang.JsonEnumerateAsString;
-import java.io.Serializable;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Annotation for fields 
  *
- * @author fmauz
+ * @author fbroda
  */
-@JsonEnumerateAsString
-public enum TopicCategory implements Serializable {
-    OTHER,
-    COLLECTION,
-    DOCUMENT
+@Documented
+@Inherited
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface FieldOrder {
+
+    int order(); 
+
 }

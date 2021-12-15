@@ -25,9 +25,21 @@ public class LinkField {
     String parent;
     String child;
 
+    /* do not treat the parent child as a table column name,
+     * consider it instead to be a value
+     */
+    boolean valued;
+
     LinkField(String parent, String child) {
         this.parent = parent;
         this.child = child;
+        valued = false;
+    }
+
+    LinkField(String parent, String child, boolean valued) {
+        this.parent = parent;
+        this.child = child;
+        this.valued = valued;
     }
 
     String getChild() { 
@@ -36,6 +48,10 @@ public class LinkField {
 
     String getParent() { 
         return this.parent; 
+    }
+
+    boolean getValued() {
+        return this.valued;
     }
 
 }

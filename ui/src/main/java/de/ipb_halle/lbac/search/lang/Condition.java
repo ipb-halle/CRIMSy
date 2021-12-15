@@ -143,22 +143,6 @@ public class Condition {
         this.value = value;
     }
 
-    public void switchToTransferMode() {
-        if (value != null && value.getValue() != null) {
-            value.setTransferCastExpression(value.getUnmodifiedCastExpression());
-            if (value.getValue() instanceof Set) {
-                value.setValueSet((HashSet) value.getValue());
-            } else if (value.getValue() instanceof List) {
-                value.setValueList((ArrayList) value.getValue());
-            } else {
-                value.setSingleValue(value.getValue());
-            }
-            value.setValue(null);
-        }
-    }
-
-   
-    
     public void debug(String level){
         if(operator!=null){
             System.out.println(level+operator);

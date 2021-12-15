@@ -44,7 +44,7 @@ function error {
 function install {
     rm -f $LBAC_DATASTORE/dist/proxy/conf/crt/*
     rm -f $LBAC_DATASTORE/dist/proxy/conf/crl/*
-    cat $LBAC_DATASTORE/dist/etc/*/addresses.txt | sort | uniq -f2 -w41 | xargs -l1 -i /bin/bash -c download "{}"
+    cat $LBAC_DATASTORE/dist/etc/*/addresses.txt | sort | uniq -f2 -w41 | xargs -i /bin/bash -c download "{}"
 
     c_rehash $LBAC_DATASTORE/dist/proxy/conf/crt/
     c_rehash $LBAC_DATASTORE/dist/proxy/conf/crl/

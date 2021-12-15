@@ -23,6 +23,8 @@ import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -39,6 +41,7 @@ public class AssayEntity implements Serializable {
     private Long exprecordid;
 
     @Column
+    @Enumerated(EnumType.ORDINAL)
     private LinkedDataType outcomeType;
 
     @AttributeTag(type = AttributeType.TEXT)
