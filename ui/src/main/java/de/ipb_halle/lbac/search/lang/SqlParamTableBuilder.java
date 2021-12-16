@@ -25,8 +25,8 @@ import java.util.UUID;
 
 /**
  * Builds a SELECT statement for an EntityGraph using given entity annotations
- * and Conditions. Query parameters are stored in a parameter table.
- * NOTE: The methods of this class are not thread safe.
+ * and Conditions. Query parameters are stored in a parameter table. NOTE: The
+ * methods of this class are not thread safe.
  *
  * @author fbroda
  */
@@ -57,7 +57,7 @@ public class SqlParamTableBuilder extends SqlBuilder {
         this(graph, subSelect, UUID.randomUUID().toString());
     }
 
-    private SqlParamTableBuilder(EntityGraph graph, boolean  subSelect, String processId) {
+    private SqlParamTableBuilder(EntityGraph graph, boolean subSelect, String processId) {
         super(graph, subSelect);
         this.paramGraph = new EntityGraph(paramTableNameQuery)
                 .setGraphName(paramTableName)
@@ -66,6 +66,7 @@ public class SqlParamTableBuilder extends SqlBuilder {
         graph.addChild(paramGraph);
         this.processId = processId;
     }
+
     /**
      * add a leaf condition with a binary operator
      *
@@ -97,6 +98,7 @@ public class SqlParamTableBuilder extends SqlBuilder {
 
     /**
      * Always activate the parameter table
+     *
      * @param cond
      * @param context
      */
@@ -121,10 +123,5 @@ public class SqlParamTableBuilder extends SqlBuilder {
             obj.add(param.getArgumentKey(), param.getValueAsJsonElement());
         }
         return obj;
-    }
-
-    @Override
-    public List<Value> getValueList() {
-        return new ArrayList<> ();
     }
 }

@@ -36,7 +36,6 @@ import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.entity.NodeEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.sequence.Sequence;
@@ -46,11 +45,9 @@ import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
-import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlParamTableBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.criteria.JoinType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -89,11 +86,12 @@ public class SequenceSearchService implements Serializable {
 
     public SearchResult searchSequences(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-
-        UUID processID = generateProcessId();
         String sql;
+        String processID;
         try {
-            sql = createSqlString(request, processID);
+            String[] sqlAndProcessId = createSqlString(request);
+            sql = sqlAndProcessId[0];
+            processID = sqlAndProcessId[1];
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
             result.addErrorMessage(ERROR_SAVE_PARAMETER);
@@ -127,7 +125,7 @@ public class SequenceSearchService implements Serializable {
             result.addErrorMessage(String.format(ERROR_REST_CALL_EXEPTION, e.getMessage()));
         }
 
-        cleanParameter(processID);
+        cleanParameter(UUID.fromString(processID));
         return result;
     }
 
@@ -166,7 +164,7 @@ public class SequenceSearchService implements Serializable {
         searchParameterService.removeParameter(processID);
     }
 
-    private String createSqlString(SearchRequest searchRequest, UUID processId) throws Exception {
+    private String[] createSqlString(SearchRequest searchRequest) throws Exception {
         EntityGraph sequenceGraph = new EntityGraph(SequenceEntity.class);
         sequenceGraph.addAttributeType(AttributeType.TOPLEVEL);
         sequenceGraph.addAttributeType(AttributeType.DIRECT);
@@ -181,41 +179,15 @@ public class SequenceSearchService implements Serializable {
         Condition condition = builder.convertRequestToCondition(searchRequest, ACPermission.permREAD);
         SqlParamTableBuilder sqlBuilder = new SqlParamTableBuilder(sequenceGraph);
         String sql = sqlBuilder.query(condition);
-        searchParameterService.saveParameter(processId, sqlBuilder.getValuesAsJson().toString());
-
-        // This code block is only for testing purpose.
-        // In the final version the substitute of the parameter must be
-        // done sql injection save, e.g by preparred statements
-        String parameterPattern = "(select cast(parameter->'%s'->>0 as %s) from temp_search_parameter where processid='%s') ";
-        for (Value param : sqlBuilder.getValueList()) {
-            logger.info(
-                    param.getArgumentKey() + " -> " + param.getValue() + " " + param.getValue().getClass().getName());
-            String parameterSubQuery;
-            if (param.getValue() instanceof String) {
-                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "VARCHAR",
-                        processId.toString());
-            } else if (param.getValue() instanceof Boolean) {
-                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "BOOLEAN",
-                        processId.toString());
-            } else {
-                parameterSubQuery = String.format(parameterPattern, param.getArgumentKey(), "int",
-                        processId.toString());
-            }
-            sql = sql.replaceFirst(":" + param.getArgumentKey(), parameterSubQuery);
-
-        }
+        sql = sql.replace("\n", " ") + ";";
+        searchParameterService.saveParameter(sqlBuilder.getProcessId(), sqlBuilder.getValuesAsJson().toString());
         String firstSqlPart = "DO SELECT 1;";
-        String secondSqlPart = sql.replace("\n", " ") + ";";
-
-        secondSqlPart = secondSqlPart.replace("[", "(");
-        secondSqlPart = secondSqlPart.replace("]", ")");
-        secondSqlPart = secondSqlPart.replace(
-                "SELECT DISTINCT a.aclist_id, a.owner_id, a.ctime, a.materialtypeid, a.materialid, a.projectid, a.deactivated",
-                "SELECT DISTINCT a.materialid,a_0_0_3.sequencestring");
+        String secondSqlPart = sql;
         String thirdSqlPart = "SELECT #;";
         String fourthSqlPart = "SELECT sequencestring FROM sequences WHERE id=#;";
         String finalString = String.join("\n", firstSqlPart, secondSqlPart, thirdSqlPart, fourthSqlPart);
-        return finalString;
+
+        return new String[]{finalString, sqlBuilder.getProcessId()};
     }
 
 }

@@ -51,9 +51,9 @@ public class SearchParameterService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public void saveParameter(UUID processid, String parameterAsJson) throws Exception {
+    public void saveParameter(String processid, String parameterAsJson) throws Exception {
         Query q = em.createNativeQuery(SQL_INSERT_PARAMETER);
-        q.setParameter("processid", processid.toString());
+        q.setParameter("processid", processid);
         q.setParameter("parameter", parameterAsJson);
         q.executeUpdate();
 

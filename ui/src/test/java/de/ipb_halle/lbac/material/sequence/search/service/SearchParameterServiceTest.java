@@ -85,8 +85,8 @@ public class SearchParameterServiceTest extends TestBase {
     private void createAndSaveParameter() throws Exception {
         processId = UUID.randomUUID();
         processId2 = UUID.randomUUID();
-        searchParameter.saveParameter(processId, json1);
-        searchParameter.saveParameter(processId2, json2);
+        searchParameter.saveParameter(processId.toString(), json1);
+        searchParameter.saveParameter(processId2.toString(), json2);
 
     }
 
