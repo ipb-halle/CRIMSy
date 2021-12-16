@@ -17,13 +17,9 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,8 +32,8 @@ import java.util.UUID;
  */
 public class SqlParamTableBuilder extends SqlBuilder {
 
-    protected final static String paramTableNameQuery = "SELECT process_id, parameter FROM tmp_search_parameter";
-    private final static String paramTableId = "process_id";
+    protected final static String paramTableNameQuery = "SELECT processid, parameter FROM temp_search_parameter";
+    private final static String paramTableId = "processid";
     private final static String paramTableName = "param_table";
     private final static String paramFieldName = "parameter";
     private String processId;
@@ -66,6 +62,7 @@ public class SqlParamTableBuilder extends SqlBuilder {
         this.paramGraph = new EntityGraph(paramTableNameQuery)
                 .setGraphName(paramTableName)
                 .addLinkField(new LinkField("'" + processId + "'", paramTableId, true));
+        this.paramGraph.addAttributeType(AttributeType.DIRECT);
         graph.addChild(paramGraph);
         this.processId = processId;
     }
