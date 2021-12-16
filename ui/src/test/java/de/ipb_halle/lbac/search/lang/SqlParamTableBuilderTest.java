@@ -24,15 +24,20 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.NodeEntity;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
+import de.ipb_halle.lbac.material.sequence.SequenceEntity;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchConditionBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.criteria.JoinType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,18 +82,29 @@ public class SqlParamTableBuilderTest extends TestBase {
         assertTrue("JSON contains field 'field0'", json.contains("field0"));
         assertTrue("JSON contains test value '%TEST%'", json.contains("%TEST%"));
     }
-    
+
     @Test
-    public void test002_createSequenceSql(){
-        User user=new User();
-        user.setId(100);
-        MaterialEntityGraphBuilder materialGraphBuilder=new MaterialEntityGraphBuilder();
-        EntityGraph graph=materialGraphBuilder.buildEntityGraph(true);
-        SqlParamTableBuilder sqlBuilder = new SqlParamTableBuilder(graph);
-         MaterialSearchConditionBuilder conditionBuilder=new MaterialSearchConditionBuilder(graph,"materials");
-        MaterialSearchRequestBuilder requestBuilder=new MaterialSearchRequestBuilder(user,0,10);
-        String sql= sqlBuilder.query(conditionBuilder.convertRequestToCondition(requestBuilder.build(),ACPermission.permREAD));
-        int i=0;
+    public void test002_createSequenceSql() {
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
+        requestBuilder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA, 1);
+        requestBuilder.addMaterialType(MaterialType.SEQUENCE);
+
+        EntityGraph sequenceGraph = new EntityGraph(SequenceEntity.class);
+        sequenceGraph.addAttributeType(AttributeType.TOPLEVEL);
+        sequenceGraph.addAttributeType(AttributeType.DIRECT);
+        MaterialEntityGraphBuilder graphBuilder = new MaterialEntityGraphBuilder();
+
+        EntityGraph materialGraph = graphBuilder.buildEntityGraph(false);
+
+        materialGraph.addLinkField("id", "materialid").setJoinType(JoinType.INNER);
+        sequenceGraph.addChildInherit(materialGraph);
+
+        SequenceSearchConditionBuilder builder = new SequenceSearchConditionBuilder(sequenceGraph, "sequences/materials");
+        Condition condition = builder.convertRequestToCondition(requestBuilder.build(), ACPermission.permREAD);
+        SqlParamTableBuilder sqlBuilder = new SqlParamTableBuilder(sequenceGraph);
+        String sql = sqlBuilder.query(condition);
+
+        int i = 0;
     }
 
     @Test
@@ -103,22 +119,22 @@ public class SqlParamTableBuilderTest extends TestBase {
         list.add(new Value(true).setArgumentKey("field4"));
         list.add(new Value(1.234d).setArgumentKey("field5"));
         list.add(new Value(1.234f).setArgumentKey("field6"));
-        
+
         Date date = new Date();
         list.add(new Value(date).setArgumentKey("field7"));
-        
-        Integer[] intArray = { 1, 2, 3 };
+
+        Integer[] intArray = {1, 2, 3};
         list.add(new Value(Arrays.asList(intArray)).setArgumentKey("field8"));
         list.add(new Value(new HashSet<>(Arrays.asList(intArray))).setArgumentKey("field9"));
-        
-        String[] stringArray = { "fip", "fap", "fup" };
+
+        String[] stringArray = {"fip", "fap", "fup"};
         list.add(new Value(Arrays.asList(stringArray)).setArgumentKey("field10"));
         list.add(new Value(new HashSet<>(Arrays.asList(stringArray))).setArgumentKey("field11"));
-        
+
         list.add(new Value(TopicCategory.OTHER).setArgumentKey("field12"));
         list.add(new Value(AdmissionSubSystemType.BUILTIN).setArgumentKey("field13"));
         list.add(new Value(UUID.randomUUID()).setArgumentKey("field14"));
-        
+
         builder.valueList = list;
         String json = builder.getValuesAsJson().toString();
         assertTrue("JSON Object build correctly", false);
