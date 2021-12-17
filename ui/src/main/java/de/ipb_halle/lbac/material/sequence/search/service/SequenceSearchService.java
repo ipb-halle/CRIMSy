@@ -133,10 +133,6 @@ public class SequenceSearchService implements Serializable {
         return Integer.parseInt(result.getSubjectSequenceName());
     }
 
-    private UUID generateProcessId() {
-        return UUID.randomUUID();
-    }
-
     private FastaSearchRequest createRestRequest(SearchRequest request, String sql) {
 
         FastaSearchRequest fastaRequest = new FastaSearchRequest();
