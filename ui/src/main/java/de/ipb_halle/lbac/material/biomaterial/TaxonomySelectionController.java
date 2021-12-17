@@ -32,6 +32,8 @@ import org.primefaces.model.TreeNode;
  */
 public class TaxonomySelectionController implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     protected TaxonomyTreeController treeController;
     protected TreeNode selectedTaxonomy;
     protected Tissue selectedTissue;

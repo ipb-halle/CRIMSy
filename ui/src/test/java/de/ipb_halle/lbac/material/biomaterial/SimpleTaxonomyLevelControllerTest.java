@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,25 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author fmauz
  */
-public class SimpleTaxonomyLevelController extends TaxonomyLevelController {
+public class SimpleTaxonomyLevelControllerTest {
 
-    private static final long serialVersionUID = 1L;
+    @Test
+    public void test001_getLevels() {
+        List<TaxonomyLevel> levels = new ArrayList<>();
+        levels.add(new TaxonomyLevel(0, "level 1", 1));
+        levels.add(new TaxonomyLevel(1, "level 2", 2));
+        levels.add(new TaxonomyLevel(2, "level 4", 4));
+        SimpleTaxonomyLevelController controller = new SimpleTaxonomyLevelController(levels);
+        Assert.assertEquals(3, controller.getLevels().size());
 
-    public SimpleTaxonomyLevelController(List<TaxonomyLevel> levels) {
-        super(null);
-        this.levels = levels;
     }
-
-    @Override
-    public List<TaxonomyLevel> getLevels() {
-        return levels;
-    }     
 }
