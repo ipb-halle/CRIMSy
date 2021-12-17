@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,24 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import java.io.Serializable;
-import javax.ejb.Stateless;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author fmauz
  */
-@Stateless
-public class BiomaterialService implements Serializable {
+public class BioMaterialEntityTest {
 
+    @Test
+    public void test001_testEntity() {
+        BioMaterialEntity entity = new BioMaterialEntity();
+        entity.setId(1);
+        entity.setTaxoid(2);
+        entity.setTissueid(3);
+        Assert.assertEquals(1, entity.getId(), 0);
+        Assert.assertEquals(2, entity.getTaxoid(), 0);
+        Assert.assertEquals(3, entity.getTissueid(), 0);
+
+    }
 }

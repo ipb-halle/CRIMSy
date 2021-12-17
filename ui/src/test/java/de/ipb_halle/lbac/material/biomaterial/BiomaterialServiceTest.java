@@ -68,10 +68,7 @@ public class BiomaterialServiceTest extends TestBase {
     private TaxonomyService taxonomyService;
 
     @Inject
-    private MaterialService materialService;
-
-    @Inject
-    private BiomaterialService bioMaterialService;
+    private MaterialService materialService;   
 
     @Inject
     private ProjectService projectService;

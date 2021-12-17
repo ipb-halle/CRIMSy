@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material;
 
-import de.ipb_halle.lbac.material.biomaterial.BiomaterialService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -47,7 +46,6 @@ public class MaterialDeployment {
                 .addClass(IndexService.class)
                 .addClass(FastaRESTSearchService.class)
                 .addClass(MaterialCompositionBean.class)
-                .addClass(BiomaterialService.class)
                 .addClass(HazardService.class)
                 .addClass(SearchParameterService.class)
                 .addClass(SequenceSearchService.class)
