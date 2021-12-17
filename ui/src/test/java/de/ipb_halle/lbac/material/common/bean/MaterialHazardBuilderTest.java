@@ -63,6 +63,13 @@ public class MaterialHazardBuilderTest extends TestBase {
     private Consumable consumable;
     private Project project;
 
+    private final int H_STATEMENT_ID = 10;
+    private final int P_STATEMENT_ID = 11;
+    private final int[] BSL_IDS = new int[]{12, 13, 14, 15};
+    private final int RADIOACTIVE_STATEMENT_ID = 16;
+    private final int CUSTOM_STATEMENT_ID = 17;
+    private final int GMO_STATEMENT_ID = 20;
+
     @Before
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
@@ -104,6 +111,8 @@ public class MaterialHazardBuilderTest extends TestBase {
         Assert.assertEquals(
                 "img/hazards/GHS01.png",
                 builder.getImageLocation(new HazardType(1, true, "GHS01", 1)));
+
+        Assert.assertEquals("img/hazards/R1.png", builder.getRadioactiveImageLocation());
     }
 
     @Test
@@ -156,6 +165,9 @@ public class MaterialHazardBuilderTest extends TestBase {
 
         builder.setCustomText("C-Statemnet");
         Assert.assertEquals(5, builder.buildHazardsMap().size());
+
+        builder.setGmo(true);
+        Assert.assertEquals(6, builder.buildHazardsMap().size());
     }
 
     @Test
@@ -222,7 +234,7 @@ public class MaterialHazardBuilderTest extends TestBase {
         hazards.put(hazardService.getHazardById(15), null);
         builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
         Assert.assertEquals("hazard_S4", builder.getBioSavetyLevel());
-        
+
         hazards.clear();
         builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
         Assert.assertEquals("hazard_S0", builder.getBioSavetyLevel());
@@ -235,6 +247,61 @@ public class MaterialHazardBuilderTest extends TestBase {
         Assert.assertEquals("img/hazards/BIOHAZARD.png", builder.getImageLocationOfBls(1));
         Assert.assertEquals("img/hazards/BIOHAZARD.png", builder.getImageLocationOfBls(2));
         Assert.assertEquals("img/hazards/BIOHAZARD.png", builder.getImageLocationOfBls(3));
+    }
+
+    @Test
+    public void test009_addHazardType() {
+
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
+        Assert.assertNull(builder.getCustomText());
+        builder.addHazardType(hazardService.getHazardById(CUSTOM_STATEMENT_ID), "Custom Text");
+        Assert.assertEquals("Custom Text", builder.getCustomText());
+
+        Assert.assertFalse(builder.isRadioctive());
+        builder.addHazardType(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID), null);
+        Assert.assertTrue(builder.isRadioctive());
+
+        Assert.assertFalse(builder.isGmo());
+        builder.addHazardType(hazardService.getHazardById(GMO_STATEMENT_ID), null);
+        Assert.assertTrue(builder.isGmo());
+        builder.setGmo(false);
+        Assert.assertFalse(builder.isGmo());
+
+        Assert.assertNull(builder.gethStatements());
+        builder.addHazardType(hazardService.getHazardById(H_STATEMENT_ID), "MyHStatement");
+        Assert.assertEquals("MyHStatement", builder.gethStatements());
+
+        Assert.assertNull(builder.getpStatements());
+        builder.addHazardType(hazardService.getHazardById(P_STATEMENT_ID), "MyPStatement");
+        Assert.assertEquals("MyPStatement", builder.getpStatements());
+
+        Assert.assertEquals(0, builder.getSelectedHazards().length);
+
+        HazardType[] hazards = new HazardType[2];
+        hazards[0] = hazardService.getHazardById(1);
+        hazards[1] = hazardService.getHazardById(2);
+        builder.setSelectedHazards(hazards);
+        Assert.assertEquals(2, builder.getSelectedHazards().length);
+    }
+
+    @Test
+    public void test010_isHazardEditable() {
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
+        Assert.assertTrue(builder.isHazardEditable());
+        builder.setEditable(false);
+        Assert.assertFalse(builder.isHazardEditable());
+    }
+
+    @Test
+    public void test011_getLocalizedName() {
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
+        Assert.assertEquals("hazard_R1", builder.getLocalizedName(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID)));
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            builder.getLocalizedName(null);
+        });
+        Assert.assertEquals("hazard_R1", builder.getLocalizedRadioactiveLabel());
+        Assert.assertEquals("hazard_C1", builder.getLocalizedCustomLabel());
+        Assert.assertEquals("hazard_Statements", builder.getLocalizedStatements());
     }
 
     @Deployment
