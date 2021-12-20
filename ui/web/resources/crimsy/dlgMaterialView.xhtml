@@ -55,7 +55,9 @@
                     styleClass="materialView borderless">
 
                     <!-- material-specific information -->
-                    <ui:include src="#{cc.attrs.agent.linkPreviewTemplate}" />
+                    <ui:include src="#{cc.attrs.agent.linkPreviewTemplate}">
+                        <ui:param name="agent" value="#{cc.attrs.agent}" />
+                    </ui:include>
 
                     <!-- material-agnostic information -->
                     <b:row>

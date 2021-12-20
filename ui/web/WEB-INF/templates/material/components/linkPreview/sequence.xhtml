@@ -29,9 +29,9 @@
         <ui:composition>
             <b:row>
                 <mol:openVectorEditor 
-                    value="#{cc.attrs.agent.material.sequenceData}"
+                    value="#{agent.material.sequenceData}"
                     readonly="true">
-                    <nwc:jsonSanitizingAndOVEJsonConverter sequenceType="#{cc.attrs.agent.material.sequenceData.sequenceType}" />
+                    <nwc:jsonSanitizingAndOVEJsonConverter sequenceType="#{agent.material.sequenceData.sequenceType}" />
                 </mol:openVectorEditor>
             </b:row>
         </ui:composition>

@@ -47,7 +47,7 @@
                         </p:row>
                         <ui:repeat
                             var="concentration"
-                            value="#{cc.attrs.agent.getComponentsOfMaterial()}">
+                            value="#{agent.getComponentsOfMaterial()}">
                             <p:row styleClass="borderless">
                                 <p:column
                                     style="width:100%"
@@ -55,7 +55,7 @@
                                     <h:outputText value="#{concentration.getMaterial().getFirstName()}" />
                                 </p:column>
                                 <p:column styleClass="borderless">
-                                    <h:outputText value="#{cc.attrs.agent.getLocalizedMaterialTypeName(concentration.getMaterial())}" />
+                                    <h:outputText value="#{agent.getLocalizedMaterialTypeName(concentration.getMaterial())}" />
                                 </p:column>
                                 <p:column styleClass="borderless">
                                     <h:outputText value="#{concentration.getConcentration()}" />

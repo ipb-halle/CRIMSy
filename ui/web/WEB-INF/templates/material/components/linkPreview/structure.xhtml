@@ -31,12 +31,10 @@
                 <b:column
                     span="11"
                     styleClass="dlgMaterialViewStructure">
-                    <!-- This is broken, because mol:molecule is a composite component.
-                         A real component like mol:openChemLibJSPlugin works here. -->
                     <mol:molecule
                         id="dlgMaterialView_molViewer"
-                        rendered="#{cc.attrs.agent.hasStructure}"
-                        value="#{cc.attrs.agent.material.molecule.structureModel}"
+                        rendered="#{agent.hasStructure}"
+                        value="#{agent.material.molecule.structureModel}"
                         border="true" 
                         pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                         format="MDLV2000"
@@ -49,11 +47,11 @@
                     <p:panelGrid>
                         <ui:repeat
                             var="hazard"
-                            value="#{cc.attrs.agent.getHazards()}">
+                            value="#{agent.getHazards()}">
                             <p:row>
                                 <p:column>
                                     <b:image
-                                        name="#{cc.attrs.agent.getImageIconOf(hazard)}"
+                                        name="#{agent.getImageIconOf(hazard)}"
                                         styleClass="img-hazard" />
                                 </p:column>
                             </p:row>
