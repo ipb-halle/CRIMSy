@@ -47,7 +47,7 @@
                 header="#{cc.attrs.agent.material.firstName}"
                 styleClass="dlgMaterialView"
                 widgetVar="dlg_MaterialView"
-                modal="true" 
+                modal="true"
                 width="600"
                 height="600">
                 <b:container
@@ -56,7 +56,9 @@
 
                     <!-- material-specific information -->
                     <ui:include src="#{cc.attrs.agent.linkPreviewTemplate}">
-                        <ui:param name="agent" value="#{cc.attrs.agent}" />
+                        <ui:param
+                            name="agent"
+                            value="#{cc.attrs.agent}" />
                     </ui:include>
 
                     <!-- material-agnostic information -->
