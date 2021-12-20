@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.material.common.MaterialValidator;
 import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.common.service.MaterialUIInformation;
 
 /**
  *
@@ -52,4 +53,8 @@ public class TissueFactory implements MaterialFactory {
         return new MaterialNameValidator();
     }
 
+    @Override
+    public MaterialUIInformation createUIInformation() {
+        return new TissueUIInformation();
+    }
 }

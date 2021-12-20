@@ -15,26 +15,20 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.service;
+package de.ipb_halle.lbac.material.structure;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
-import de.ipb_halle.lbac.material.common.MaterialValidator;
-import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
-import java.io.Serializable;
+import de.ipb_halle.lbac.globals.NavigationConstants;
+import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.service.MaterialUIInformation;
 
 /**
- *
- * @author fmauz
+ * UI information for the material type {@link MaterialType#STRUCTURE}.
+ * 
+ * @author flange
  */
-public interface MaterialFactory extends Serializable {
-
-    public MaterialSaver createSaver();
-
-    public MaterialLoader createLoader();
-    
-    public IMaterialComparator createComparator();
-    
-    public MaterialValidator createValidator();
-
-    public MaterialUIInformation createUIInformation();
+public class StructureUIInformation implements MaterialUIInformation {
+    @Override
+    public String getLinkPreviewTemplate() {
+        return "material/components/linkPreview/structure" + NavigationConstants.TEMPLATE_EXT;
+    }
 }

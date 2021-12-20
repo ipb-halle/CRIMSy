@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.material.common.MaterialValidator;
 import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.common.service.MaterialUIInformation;
 import de.ipb_halle.lbac.material.sequence.history.SequenceComparator;
 
 /**
@@ -49,5 +50,10 @@ public class SequenceFactory implements MaterialFactory {
     @Override
     public MaterialValidator createValidator() {
         return new SequenceValidator();
+    }
+
+    @Override
+    public MaterialUIInformation createUIInformation() {
+        return new SequenceUIInformation();
     }
 }

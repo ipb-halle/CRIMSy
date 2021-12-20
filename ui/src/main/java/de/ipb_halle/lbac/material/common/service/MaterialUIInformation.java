@@ -17,24 +17,21 @@
  */
 package de.ipb_halle.lbac.material.common.service;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
-import de.ipb_halle.lbac.material.common.MaterialValidator;
-import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
-import java.io.Serializable;
+import de.ipb_halle.lbac.globals.NavigationConstants;
 
 /**
+ * UI information for a specific material.
  *
- * @author fmauz
+ * @author flange
  */
-public interface MaterialFactory extends Serializable {
-
-    public MaterialSaver createSaver();
-
-    public MaterialLoader createLoader();
-    
-    public IMaterialComparator createComparator();
-    
-    public MaterialValidator createValidator();
-
-    public MaterialUIInformation createUIInformation();
+public interface MaterialUIInformation {
+    /**
+     * Path of the facelet template (a {@code ui:composition}) relative to
+     * {@link NavigationConstants#TEMPLATE_FOLDER} that is {@code ui:include}d in
+     * the link preview dialog for this material.
+     * 
+     * @return path of the facelet template or {@code null} if such a template does
+     *         not exist
+     */
+    public String getLinkPreviewTemplate();
 }
