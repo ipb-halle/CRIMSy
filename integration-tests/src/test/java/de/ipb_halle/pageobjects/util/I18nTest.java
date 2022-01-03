@@ -17,44 +17,55 @@
  */
 package de.ipb_halle.pageobjects.util;
 
-import static org.junit.Assert.*;
-import static de.ipb_halle.pageobjects.util.I18n.*;
-import static java.util.Locale.*;
+import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY;
+import static de.ipb_halle.pageobjects.util.I18n.getJSFMessage;
+import static de.ipb_halle.pageobjects.util.I18n.getUIMessage;
+import static de.ipb_halle.pageobjects.util.I18n.isJSFMessage;
+import static de.ipb_halle.pageobjects.util.I18n.isUIMessage;
+import static java.util.Locale.ENGLISH;
+import static java.util.Locale.GERMAN;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 /**
- * 
  * @author flange
  */
 public class I18nTest {
+    private static final String nonExistingKey = "abcdef_nonexistingkey";
+
     @Test
     public void test001_getJSFMessage() {
-        assertEquals("{0}: Validation Error: Value is required.",
-                getJSFMessage(REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
-        assertEquals("{0}: Validierungsfehler: Eingabe erforderlich.",
-                getJSFMessage(REQUIRED_VALIDATION_ERROR_KEY, GERMAN));
-        assertNull(getJSFMessage("abcdef_nonexistingkey", ENGLISH));
+        assertEquals("{0}: Validation Error: Value is required.", getJSFMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
+        assertEquals("{0}: Validierungsfehler: Eingabe erforderlich.", getJSFMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, GERMAN));
+        assertNull(getJSFMessage(nonExistingKey, ENGLISH));
+        assertNull(getJSFMessage(null, ENGLISH));
+        assertThrows(NullPointerException.class, () -> getJSFMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, null));
     }
 
     @Test
     public void test002_isJSFMessage() {
-        assertTrue(
-                isJSFMessage("Password: Validation Error: Value is required.",
-                        REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
-        assertTrue(isJSFMessage(
-                "Passwort: Validierungsfehler: Eingabe erforderlich.",
-                REQUIRED_VALIDATION_ERROR_KEY, GERMAN));
-        assertFalse(
-                isJSFMessage("Password: Validation failed: Value is required.",
-                        REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
+        assertTrue(isJSFMessage("Password: Validation Error: Value is required.", JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
+        assertTrue(isJSFMessage("Passwort: Validierungsfehler: Eingabe erforderlich.", JSF_REQUIRED_VALIDATION_ERROR_KEY, GERMAN));
+        assertFalse(isJSFMessage("Password: Validation failed: Value is required.", JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
+        assertFalse(isJSFMessage("", JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
+        assertFalse(isJSFMessage("Password: Validation failed: Value is required.", nonExistingKey, ENGLISH));
+        assertFalse(isJSFMessage(null, JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
+        assertFalse(isJSFMessage("Password: Validation failed: Value is required.", null, ENGLISH));
+        assertThrows(NullPointerException.class, () -> isJSFMessage("Password: Validation Error: Value is required.", JSF_REQUIRED_VALIDATION_ERROR_KEY, null));
     }
 
     @Test
     public void test003_getUIMessage() {
         assertEquals("Save", getUIMessage("Save", ENGLISH));
         assertEquals("Speichern", getUIMessage("Save", GERMAN));
-        assertNull(getUIMessage("abcdef non-existing key", ENGLISH));
+        assertNull(getUIMessage(nonExistingKey, ENGLISH));
+        assertNull(getUIMessage(null, ENGLISH));
+        assertThrows(NullPointerException.class, () -> getUIMessage("Save", null));
     }
 
     @Test
@@ -62,5 +73,10 @@ public class I18nTest {
         assertTrue(isUIMessage("Save", "Save", ENGLISH));
         assertTrue(isUIMessage("Speichern", "Save", GERMAN));
         assertFalse(isUIMessage("abcdef is no valid value", "Save", ENGLISH));
+        assertFalse(isUIMessage("", "Save", ENGLISH));
+        assertFalse(isUIMessage("Save", nonExistingKey, ENGLISH));
+        assertFalse(isUIMessage(null, "Save", ENGLISH));
+        assertFalse(isUIMessage("Save", null, ENGLISH));
+        assertThrows(NullPointerException.class, () -> isUIMessage("Save", "Save", null));
     }
 }

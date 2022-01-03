@@ -67,9 +67,9 @@ public class LoginTest {
         assertFalse(loginPage.isLoggedIn());
 
         assertTrue(I18n.isJSFMessage(loginPage.getLoginNameMessage().get(),
-                I18n.REQUIRED_VALIDATION_ERROR_KEY, locale));
+                I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
         assertTrue(I18n.isJSFMessage(loginPage.getPasswordMessage().get(),
-                I18n.REQUIRED_VALIDATION_ERROR_KEY, locale));
+                I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
     }
 
     @Test
