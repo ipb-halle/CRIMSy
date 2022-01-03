@@ -102,10 +102,10 @@ public class AssayController extends ExpRecordController {
                 .get(getLinkedDataIndex())
                 .getLinkedDataType()) {
             case ASSAY_TARGET:
-                return Arrays.asList(MaterialType.BIOMATERIAL);
+                return Arrays.asList(MaterialType.BIOMATERIAL,MaterialType.COMPOSITION);
             case ASSAY_SINGLE_POINT_OUTCOME:
             case ASSAY_MULTI_POINT_OUTCOME:
-                return Arrays.asList(MaterialType.STRUCTURE);
+                return Arrays.asList(MaterialType.STRUCTURE,MaterialType.COMPOSITION);
             default:
                 return super.getMaterialTypes();
         }

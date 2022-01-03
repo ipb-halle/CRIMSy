@@ -29,8 +29,18 @@ import java.util.List;
  */
 public enum CompositionType implements Serializable {
 
-    EXTRACT(MaterialType.BIOMATERIAL, MaterialType.STRUCTURE),
-    MIXTURE(MaterialType.STRUCTURE);
+    EXTRACT(
+            MaterialType.BIOMATERIAL,
+            MaterialType.INACCESSIBLE,
+            MaterialType.STRUCTURE
+    ),
+    PROTEIN(
+            MaterialType.SEQUENCE,
+            MaterialType.INACCESSIBLE,
+            MaterialType.BIOMATERIAL
+    ),
+    MIXTURE(MaterialType.STRUCTURE,
+            MaterialType.INACCESSIBLE);
 
     private final List<MaterialType> allowedMaterialTypes;
 

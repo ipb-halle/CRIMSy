@@ -45,7 +45,7 @@
                             <b:column span="2"
                                       styleClass="storageClassHeader">
                                 <p:selectBooleanCheckbox
-                                    disabled="#{!materialBean.getStorageInformationBuilder().accessRightToEdit}"
+                                    disabled="#{!materialBean.getStorageInformationBuilder().isConditionEditable()}"
                                     value="#{materialBean.getStorageInformationBuilder().storageClassActivated}">
                                     <p:ajax  update="@(.storageClassChoosable)"/> 
                                 </p:selectBooleanCheckbox>
@@ -56,9 +56,10 @@
                                 <b:selectOneMenu
                                     id="ads"
                                     ajax="true"
-                                    styleClass="#{materialBean.getStorageInformationBuilder().getStorageClassMenuStyleClass()}"
+                                    styleClass="storageClassChoosable"
                                     converter="StorageClassConverter"
-                                    disabled="#{materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
+                                    disabled="#{!materialBean.getStorageInformationBuilder().isConditionEditable()}"
+                                    rendered="#{materialBean.getStorageInformationBuilder().isStorageClassRendered()}"
                                     value="#{materialBean.getStorageInformationBuilder().choosenStorageClass}">
                                     <f:selectItems 
                                         var="item"

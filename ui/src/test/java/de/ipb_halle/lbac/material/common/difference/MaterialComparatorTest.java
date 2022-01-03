@@ -34,7 +34,12 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.composition.CompositionDifference;
+import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
+import de.ipb_halle.lbac.material.composition.CompositionType;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -308,7 +313,6 @@ public class MaterialComparatorTest {
 
     @Test
     public void test007_compareMaterialWithStorageDifference() throws Exception {
-        UUID ownerID = UUID.randomUUID();
         Structure oldStruc = createEmptyStructure(user);
         Structure newStruc = createEmptyStructure(user);
 
@@ -342,31 +346,140 @@ public class MaterialComparatorTest {
     }
 
     @Test
-    public void compareBioMaterialWithHazardDiffs() throws Exception {
+    public void test008_compareBioMaterialWithHazardDiffs() throws Exception {
 
         BioMaterial original = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), null, null);
         original.setACList(new ACList());
         original.setOwner(user);
         original.getHazards().getHazards().put(new HazardType(12, false, "S1", 2), null);
         BioMaterial copy = original.copyMaterial();
-        List<MaterialDifference> diffs=instance.compareMaterial(original, copy);
-        Assert.assertEquals(0,diffs.size());
-        
+        List<MaterialDifference> diffs = instance.compareMaterial(original, copy);
+        Assert.assertEquals(0, diffs.size());
+
         copy.getHazards().getHazards().clear();
         copy.getHazards().getHazards().put(new HazardType(13, false, "S2", 2), null);
-        diffs=instance.compareMaterial(original, copy);
-        Assert.assertEquals(1,diffs.size());
+        diffs = instance.compareMaterial(original, copy);
+        Assert.assertEquals(1, diffs.size());
+    }
+
+    @Test
+    public void test009_compareCompositions() throws Exception {
+        //Prepare materials
+        Structure structure1 = createEmptyStructure(user, "struc1", 1);
+        Structure structure2 = createEmptyStructure(user, "struc2", 2);
+        MaterialComposition composition1 = createEmptyComposition();
+        MaterialComposition composition2 = createEmptyComposition();
+
+        //UC1 -> add a new component
+        composition1.addComponent(structure1, 1d, null);
+
+        List<MaterialDifference> diffs = instance.compareMaterial(composition2, composition1);
+        checkDifference(diffs, 1);
+        checkDiffEntity(diffs, 0, null, structure1.getId(), null, 1d);
+
+        //UC2 -> remove a component 
+        diffs = instance.compareMaterial(composition1, composition2);
+        checkDifference(diffs, 1);
+        checkDiffEntity(diffs, 0, structure1.getId(), null, 1d, null);
+
+        //UC3 -> swap components
+        composition2.addComponent(structure2, null, null);
+        diffs = instance.compareMaterial(composition1, composition2);
+        checkDifference(diffs, 2);
+        checkDiffEntity(diffs, 0, null, structure2.getId(), null, null);
+        checkDiffEntity(diffs, 1, structure1.getId(), null, 1d, null);
+
+        //UC4 -> change concentrations
+        composition1.getComponents().clear();
+        composition2.getComponents().clear();
+        composition1.addComponent(structure1, .2d, null);
+        composition2.addComponent(structure1, .3d, null);
+        diffs = instance.compareMaterial(composition1, composition2);
+        checkDifference(diffs, 1);
+        checkDiffEntity(diffs, 0, structure1.getId(), structure1.getId(), .2d, .3d);
+        //UC5 -> add 2 components
+        composition1.getComponents().clear();
+        composition2.getComponents().clear();
+        composition2.addComponent(structure1, .2d, null);
+        composition2.addComponent(structure2, .3d, null);
+        diffs = instance.compareMaterial(composition1, composition2);
+        checkDifference(diffs, 2);
+        checkDiffEntity(diffs, 0, null, structure1.getId(), null, .2d);
+        checkDiffEntity(diffs, 1, null, structure2.getId(), null, .3d);
+
+        //UC6 -> change unit
+        composition1.getComponents().clear();
+        composition2.getComponents().clear();
+        composition1.addComponent(structure1, .2d, Unit.getUnit("%"));
+        composition2.addComponent(structure1, .2d, null);
+        diffs = instance.compareMaterial(composition1, composition2);
+        Assert.assertEquals(1, diffs.size());
+        CompositionDifference diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        Assert.assertNull(diff.getUnits_new().get(0));
+        Assert.assertEquals("%", diff.getUnits_old().get(0));
+
+        diffs = instance.compareMaterial(composition2, composition1);
+        Assert.assertEquals(1, diffs.size());
+        diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        Assert.assertNull(diff.getUnits_old().get(0));
+        Assert.assertEquals("%", diff.getUnits_new().get(0));
+
+        composition1.getComponents().clear();
+        composition2.getComponents().clear();
+        composition1.addComponent(structure1, .2d, Unit.getUnit("%"));
+        composition2.addComponent(structure1, .2d, Unit.getUnit("ml"));
+        diffs = instance.compareMaterial(composition1, composition2);
+        Assert.assertEquals(1, diffs.size());
+        diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        Assert.assertEquals("ml", diff.getUnits_new().get(0));
+        Assert.assertEquals("%", diff.getUnits_old().get(0));
 
     }
 
+    private void checkDifference(List<MaterialDifference> diffs, int expectedDifferences) {
+        CompositionDifference diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        List<CompositionHistoryEntity> entities = diff.createEntity();
+        Assert.assertEquals(expectedDifferences, entities.size());
+    }
+
+    private void checkDiffEntity(
+            List<MaterialDifference> diffs,
+            int position,
+            Integer materialIdOld,
+            Integer materialIdNew,
+            Double concentrationOld,
+            Double concentrationNew) {
+        CompositionDifference diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        List<CompositionHistoryEntity> entities = diff.createEntity();
+        CompositionHistoryEntity entity = entities.get(position);
+        Assert.assertEquals(materialIdOld, entity.getMaterialid_old());
+        Assert.assertEquals(materialIdNew, entity.getMaterialid_new());
+        Assert.assertEquals(concentrationOld, entity.getConcentration_old());
+        Assert.assertEquals(concentrationNew, entity.getConcentration_new());
+
+    }
+
+    private MaterialComposition createEmptyComposition() {
+        MaterialComposition composition = new MaterialComposition(3, 1, CompositionType.MIXTURE);
+        composition.setACList(new ACList());
+        composition.setOwner(user);
+        return composition;
+    }
+
     protected Structure createEmptyStructure(User user) {
+        return createEmptyStructure(user, "", 0);
+    }
+
+    protected Structure createEmptyStructure(User user, String name, int id) {
         List<MaterialName> names = new ArrayList<>();
+        if (!name.equals("")) {
+            names.add(new MaterialName(name, "en", 0));
+        }
         int projectId = 4;
         HazardInformation hazards = new HazardInformation();
         StorageInformation storage = new StorageInformation();
         double molarMass = 0;
         double exactMolarMass = 0;
-        int id = 0;
         Structure s = new Structure(
                 "",
                 molarMass,

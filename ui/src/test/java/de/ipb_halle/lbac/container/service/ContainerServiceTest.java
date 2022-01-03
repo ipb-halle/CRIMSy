@@ -97,7 +97,7 @@ public class ContainerServiceTest extends TestBase {
     public void init() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
 
         creationTools = new CreationTools("", "", "", memberService, projectService);
 

@@ -17,12 +17,14 @@
  */
 package de.ipb_halle.lbac.forum.topics;
 
+import de.ipb_halle.lbac.search.lang.JsonEnumerateAsString;
 import java.io.Serializable;
 
 /**
  *
  * @author fmauz
  */
+@JsonEnumerateAsString
 public enum TopicCategory implements Serializable {
     OTHER,
     COLLECTION,

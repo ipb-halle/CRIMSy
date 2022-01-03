@@ -71,6 +71,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ItemServiceTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
     private Container c0, c1, c2;
     @Inject
     private ItemService instance;

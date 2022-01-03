@@ -33,7 +33,6 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.Searchable;
-import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -87,7 +86,6 @@ public class DocumentSearchService {
     private final int MAX_TERMS = Integer.MAX_VALUE;
 
     private boolean development = false;
-    private ConditionValueFetcher fetcher;
 
     private String uriOfPublicColl;
     protected SearchQueryStemmer searchQueryStemmer;
@@ -99,8 +97,6 @@ public class DocumentSearchService {
         if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development) {
             development = true;
         }
-        fetcher = new ConditionValueFetcher();
-
     }
 
     protected String SQL_LOAD_DOCUMENTS = "SELECT DISTINCT "

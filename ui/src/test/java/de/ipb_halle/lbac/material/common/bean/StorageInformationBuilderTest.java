@@ -67,7 +67,7 @@ public class StorageInformationBuilderTest extends TestBase {
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = creationTools.createAndSaveProject("StorageClassControllerTest_project");
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
     }
 
     @After
@@ -100,14 +100,14 @@ public class StorageInformationBuilderTest extends TestBase {
 
         Assert.assertEquals(1, controller.build().getStorageConditions().size(), 3);
 
-         controller = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService, s);
+        controller = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService, s);
         Assert.assertEquals(23, controller.getPossibleStorageClasses().size());
         Assert.assertNotNull(controller.build());
         Assert.assertNotNull(controller.build().getStorageClass());
         Assert.assertEquals(1, controller.build().getStorageClass().id, 0);
 
         Assert.assertEquals(1, controller.build().getStorageConditions().size(), 3);
-        
+
     }
 
     @Test

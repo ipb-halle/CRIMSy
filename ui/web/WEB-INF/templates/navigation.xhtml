@@ -28,7 +28,11 @@
     <h:body>
         <ui:composition>
             <b:form>
-                <b:navBar position="top" sticky="true" styleClass="navigationMenu">
+                <b:navBar
+                    position="top"
+                    sticky="true"
+                    styleClass="navigationMenu"
+                    style="z-index: 900;">
                     <b:flyOutMenu width="50px" styleClass="lbacDropDownMenu">
                         <b:dropMenu 
                             pt:data-test-id="navigation:bioCloud"
@@ -42,6 +46,9 @@
                                 value="#{msgs.navigation_bioCloud_wordCloudSearch}"
                                 styleClass="tstNavWordCloud"
                                 actionListener="#{navigator.navigate('wordCloud2')}"/>
+                            <b:navCommandLink
+                                value="#{msgs.navigation_bioCloud_sequenceSearch}"
+                                actionListener="#{navigator.navigate('sequence/sequenceSearch')}"/>
                             <b:navCommandLink
                                 value="#{msgs.navigation_bioCloud_forum}"
                                 styleClass="tstNavForum"

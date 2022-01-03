@@ -29,26 +29,10 @@
 #   statements for the schema version
 #
 #
-CURRENT_SCHEMA_VERSION=00001
-CURRENT_PG_VERSION=12
+CURRENT_SCHEMA_VERSION=00003
  cd /docker-entrypoint-initdb.d/
 
 function getSchemaVersion {
-    if [ -e /data/db/pgsql/PG_VERSION ] ; then
-        PG_VERSION=`cat /data/db/pgsql/PG_VERSION`
-    else
-        PG_VERSION=$CURRENT_PG_VERSION
-        ln -s /data/db/pgsql_$CURRENT_PG_VERSION /data/db/pgsql
-    fi
-
-    if [ $PG_VERSION != $CURRENT_PG_VERSION ] ; then
-        LBAC_SCHEMA_VERSION='BACKUP'
-
-        rm /data/db/pgsql
-        ln -s /data/db/pgsql_$CURRENT_PG_VERSION /data/db/pgsql
-        return
-    fi
-
     LBAC_SCHEMA_VERSION=`echo "\\pset tuples_only on
         SELECT value FROM lbac.info WHERE key='DBSchema Version';" \
         | psql lbac | head -1 | tr -d ' '`
@@ -63,26 +47,24 @@ function updatePre11 {
     fi
 }
 
-    updatePre11
-    getSchemaVersion
-
-    echo "Found schema of database             : $LBAC_SCHEMA_VERSION"
-    echo "Found target schema in filedefinition: $CURRENT_SCHEMA_VERSION "
+updatePre11
+getSchemaVersion
+echo "Found schema of database             : $LBAC_SCHEMA_VERSION"
+echo "Found target schema in filedefinition: $CURRENT_SCHEMA_VERSION "
 
 while [ "$LBAC_SCHEMA_VERSION" != "$CURRENT_SCHEMA_VERSION" ] ; do
     OLD_SCHEMA_VERSION=$LBAC_SCHEMA_VERSION
 
     case $LBAC_SCHEMA_VERSION in
-        BACKUP)
-            echo "Scheduling version update ..."
-            touch /data/db/VERSION_UPDATE
-            exit
-            ;;
         00000)
             echo "Applying 00001.sql ..."
             cat 00001.sql | psql lbac
             ;;
-        00001)
+        00002)
+            echo "Applying 00002.sql ..."
+            cat 00002.sql | psql lbac
+            ;;
+        00003)
             echo "reached head of development"
             ;;
     esac

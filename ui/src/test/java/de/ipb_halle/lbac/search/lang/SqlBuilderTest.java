@@ -151,5 +151,40 @@ public class SqlBuilderTest extends TestBase {
                 Arrays.asList(new String[]{"aclist_id", "anzahl",
             "besitzer_id", "foobar", "id", "ort", "strasse"}));
         assertEquals("Set of column names does not match", columnNames, map.keySet());
+
+        SqlBuilder builder = new SqlBuilder(graph);
+        Condition condition = new Condition(new Attribute(AttributeType.TEXT), Operator.IS_NOT_NULL);
+        String query = builder.query(condition);
+        assertTrue("Field order matches", query.startsWith("SELECT DISTINCT a.id, a.anzahl, a.foobar, "));
+        assertTrue("Condition contains", query.contains("WHERE (a.foobar IS NOT NULL)"));
+
+    }
+
+    @Test
+    public void testSqlBuilder_5() {
+        String raw_query = "SELECT fip, fap, fum FROM foobar";
+        EntityGraph graph = new EntityGraph(raw_query);
+        graph
+                .setTableName("foobar")
+                .setGraphName("foobar")
+                .addField(new DbField(false, false)
+                        .addAttributeType(AttributeType.TEXT)
+                        .setEntityGraph(graph)
+                        .setColumnName("fip")
+                        .setTableName("foobar"))
+                .addField(new DbField(false, false)
+                        .setEntityGraph(graph)
+                        .setColumnName("fap")
+                        .setTableName("foobar"));
+
+
+        Condition condition = new Condition(new Attribute("foobar", AttributeType.TEXT),
+                Operator.IS_NOT_NULL);
+        String query = new SqlBuilder(graph).query(condition);
+        raw_query = "SELECT DISTINCT * \nFROM ( "
+                + raw_query
+                + ")  AS a";
+//        assertEquals("Query matches", raw_query, query);
+        assertTrue("Query matches", query.startsWith(raw_query));
     }
 }

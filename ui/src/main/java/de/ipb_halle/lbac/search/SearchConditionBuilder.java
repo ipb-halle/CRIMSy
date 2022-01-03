@@ -55,7 +55,8 @@ public abstract class SearchConditionBuilder {
      * Create an access control condition and combine it with other conditions.
      *
      * @param conditionList
-     * @param request
+     * @param graphPath
+     * @param user
      * @param acPermission
      * @return the combined condition
      */
@@ -71,7 +72,7 @@ public abstract class SearchConditionBuilder {
                     graphPath));
         }
 
-        Condition aclCondition = getDisjunction(subCondition);
+        Condition aclCondition = getDisjunction(subCondition);       
 
         if ((conditionList == null) || (conditionList.isEmpty())) {
             return aclCondition;
@@ -95,6 +96,7 @@ public abstract class SearchConditionBuilder {
     /**
      * @param user the user for whom the access control condition is to be built
      * @param permission the permission to check
+     * @param graphPath
      * @param acObjAttrtype one or more values of <code>AttributeType</code> to
      * select the entity to which the generated condition should be applied
      * @return a <code>Condition</code> object to be applied to an EntityGraph

@@ -22,7 +22,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import org.apache.johnzon.mapper.JohnzonConverter;
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 
 /**
  *
@@ -33,10 +33,7 @@ import org.apache.johnzon.mapper.JohnzonConverter;
 public class MaterialHistoryEntity implements Serializable {
 
     @EmbeddedId
-    private MaterialHistoryId id;
-
-    @Column
-    private Integer actorid;
+    private HistoryEntityId id;
 
     @Column
     private String digest;
@@ -62,20 +59,12 @@ public class MaterialHistoryEntity implements Serializable {
     @Column
     private Integer ownerid_new;
 
-    public MaterialHistoryId getId() {
+    public HistoryEntityId getId() {
         return id;
     }
 
-    public void setId(MaterialHistoryId id) {
+    public void setId(HistoryEntityId id) {
         this.id = id;
-    }
-
-    public Integer getActorid() {
-        return actorid;
-    }
-
-    public void setActorid(Integer actorid) {
-        this.actorid = actorid;
     }
 
     public String getDigest() {

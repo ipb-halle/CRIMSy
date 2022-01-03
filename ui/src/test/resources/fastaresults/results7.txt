@@ -1,0 +1,356 @@
+# ./bin/fasta36 -m 10 query7.fasta data7.fasta
+FASTA searches a protein or DNA sequence data bank
+ version 36.3.8i Nov, 2020
+Please cite:
+ W.R. Pearson & D.J. Lipman PNAS (1988) 85:2444-2448
+
+Query: query7.fasta
+  1>>>query query sequence - 50 aa
+Library: data7.fasta
+     2292 residues in     7 sequences
+
+Statistics: (shuffled [419]) MLE statistics: Lambda= 0.2243;  K=0.01787
+ statistics sampled from 7 (7) to 419 sequences
+Algorithm: FASTA (3.8 Nov 2011) [optimized]
+Parameters: BL50 matrix (15:-5), open/ext: -10/-2
+ ktup: 2, E-join: 1 (1), E-opt: 0.2 (1), width:  16
+ Scan time:  0.010
+
+The best scores are:                                      opt bits E(7)
+sp|O69395|BLT2_ECOLX Beta-lactamase Toho-2 OS=Esch ( 289)  313 109.3 1.2e-28
+sp|O65976|BLC6_SALTM Beta-lactamase CTX-M-6 OS=Sal ( 291)  256 90.9 4.4e-23
+sp|P00809|BLAC_BACCE Beta-lactamase 1 OS=Bacillus  ( 306)  128 49.5 1.4e-10
+sp|Q03680|BLA1_STRCI Beta-lactamase 1 OS=Streptomy ( 325)  110 43.6 8.3e-09
+sp|P00807|BLAC_STAAU Beta-lactamase OS=Staphylococ ( 281)   97 39.4 1.3e-07
+sp|Q9K9L8|GLSA1_BACHD Glutaminase 1 OS=Bacillus ha ( 308)   85 35.6 2.1e-06
+sp|Q8CDJ3|BAKOR_MOUSE Beclin 1-associated autophag ( 492)   82 34.6 6.7e-06
+
+>>>query, 50 aa vs data7.fasta library
+; pg_name: fasta36
+; pg_ver: 36.3.8i Nov, 2020
+; pg_argv:  ./bin/fasta36 -m 10 query7.fasta data7.fasta; pg_name_alg: FASTA
+; pg_ver_rel: 3.8 Nov 2011
+; pg_matrix: BL50 (15:-5)
+; pg_open-ext: -10 -2
+; pg_ktup: 2
+; pg_join_E(): 1 (1)
+; pg_optcut_E(): 0.2 (1)
+; mp_extrap: 60000 419
+; mp_stats: (shuffled [419]) MLE statistics: Lambda= 0.2243;  K=0.01787
+; mp_KS: -0.0000 (N=0) at   0
+; mp_Algorithm: FASTA (3.8 Nov 2011) [optimized]
+; mp_Parameters: BL50 matrix (15:-5), open/ext: -10/-2  ktup: 2, E-join: 1 (1), E-opt: 0.2 (1), width:  16
+>>sp|O69395|BLT2_ECOLX Beta-lactamase Toho-2 OS=Escherichia coli OX=562 GN=bla PE=3 SV=1
+; fa_frame: f
+; fa_initn: 313
+; fa_init1: 313
+; fa_opt: 313
+; fa_z-score: 561.8
+; fa_bits: 109.3
+; fa_expect: 1.2e-28
+; sw_score: 313
+; sw_ident: 1.000
+; sw_sim: 1.000
+; sw_overlap: 50
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 1
+; al_stop: 50
+; al_display_start: 1
+------------------------------SAVQQKLAALEKSSGGRLGV
+ALIDTADNTQVLYRGDERFPMCSTSKVMAA
+>sp|O69395|BLT2_ECOLX ..
+; sq_len: 289
+; sq_offset: 1
+; sq_type: p
+; al_start: 31
+; al_stop: 80
+; al_display_start: 1
+MVTKRVQRMMSAAAACIPLLLGSPTLYAQTSAVQQKLAALEKSSGGRLGV
+ALIDTADNTQVLYRGDERFPMCSTSKVMAAAAVLKQSETQKQLLNQPVEI
+KPADLVNYNPIAEKHVNGTM
+; al_cons:
+                              ::::::::::::::::::::
+::::::::::::::::::::::::::::::
+>>sp|O65976|BLC6_SALTM Beta-lactamase CTX-M-6 OS=Salmonella typhimurium OX=90371 GN=bla PE=3 SV=1
+; fa_frame: f
+; fa_initn: 256
+; fa_init1: 256
+; fa_opt: 256
+; fa_z-score: 462.0
+; fa_bits: 90.9
+; fa_expect: 4.4e-23
+; sw_score: 256
+; sw_ident: 0.800
+; sw_sim: 0.940
+; sw_overlap: 50
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 1
+; al_stop: 50
+; al_display_start: 1
+------------------------------SAVQQKLAALEKSSGGRLGV
+ALIDTADNTQVLYRGDERFPMCSTSKVMAA
+>sp|O65976|BLC6_SALTM ..
+; sq_len: 291
+; sq_offset: 1
+; sq_type: p
+; al_start: 31
+; al_stop: 80
+; al_display_start: 1
+MMTQSIRRSMLTVMATLPLLFSSATLHAQANSVQQQLEALEKSSGGRLGV
+ALINTADNSQILYVADERFAMCSTSKVMAAAAVLKQSESDKHLLNQRVEI
+RASDLVNYNPIAEKHVNGTM
+; al_cons:
+                              ..:::.: ::::::::::::
+:::.::::.:.:: .:::: ::::::::::
+>>sp|P00809|BLAC_BACCE Beta-lactamase 1 OS=Bacillus cereus OX=1396 GN=blaY PE=3 SV=1
+; fa_frame: f
+; fa_initn: 128
+; fa_init1: 128
+; fa_opt: 128
+; fa_z-score: 237.7
+; fa_bits: 49.5
+; fa_expect: 1.4e-10
+; sw_score: 128
+; sw_ident: 0.449
+; sw_sim: 0.735
+; sw_overlap: 49
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 2
+; al_stop: 50
+; al_display_start: 1
+-----------------------------SAVQQKLAALEKSSGGRLGVA
+LIDTADNTQVLYRGDERFPMCSTSKVMAA
+>sp|P00809|BLAC_BACCE ..
+; sq_len: 306
+; sq_offset: 1
+; sq_type: p
+; al_start: 50
+; al_stop: 98
+; al_display_start: 20
+LSITSLEAFTGESLQVEAKEKTGQVKHKNQATHKEFSQLEKKFDARLGVY
+AIDTGTNQTISYRPNERFAFASTYKALAAGVLLQQNSIDSLNEVITYTKE
+DLVDYSPVTEKHVDTGMKLG
+; al_cons:
+                              :...... :::.  .:::: 
+ :::. :  . :: .::: . :: :..::
+>--
+; fa_frame: f
+; fa_initn:  52
+; fa_init1:  35
+; fa_opt:  35
+; fa_z-score: 75.1
+; fa_bits: 19.4
+; fa_expect:   0.16
+; sw_score: 35
+; sw_ident: 0.357
+; sw_sim: 0.786
+; sw_overlap: 14
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 16
+; al_stop: 29
+; al_display_start: 1
+---------------SAVQQKLAALEKSSGGRLGVALIDTADNTQVLYRG
+DERFPMCSTSKVMAA
+>sp|P00809|BLAC_BACCE ..
+; sq_len: 306
+; sq_offset: 1
+; sq_type: p
+; al_start: 139
+; al_stop: 152
+; al_display_start: 109
+SLNEVITYTKEDLVDYSPVTEKHVDTGMKLGEIAEAAVRSSDNTAGNILF
+NKIGGPKGYEKALRHMGDRITMSNRFETELNEAIPGDIRDTSTAKAIATN
+LKAFTVGNALPAEKRKILTE
+; al_cons:
+                              :... : . ..:::
+>>sp|Q03680|BLA1_STRCI Beta-lactamase 1 OS=Streptomyces cacaoi OX=1898 GN=blaL PE=1 SV=1
+; fa_frame: f
+; fa_initn: 107
+; fa_init1: 105
+; fa_opt: 110
+; fa_z-score: 205.8
+; fa_bits: 43.6
+; fa_expect: 8.3e-09
+; sw_score: 110
+; sw_ident: 0.408
+; sw_sim: 0.714
+; sw_overlap: 49
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 2
+; al_stop: 50
+; al_display_start: 1
+-----------------------------SAVQQKLAALEKSSGGRLGVA
+LIDTADNTQVLYRGDERFPMCSTSKVMAA
+>sp|Q03680|BLA1_STRCI ..
+; sq_len: 325
+; sq_offset: 1
+; sq_type: p
+; al_start: 52
+; al_stop: 100
+; al_display_start: 22
+LVACGQASGSESGQQPGLGGCGTSAHGSADAHEKEFRALEKKFDAHPGVY
+AIDTRDGQEITHRADERFAYGSTFKALQAGAILAQVLRDGREVRRGAEAD
+GMDKVVHYGQDAILPNSPVT
+; al_cons:
+                              : .... ::::.  .. :: 
+ ::: :. .. .:.:::: . :: :.. :
+>--
+; fa_frame: f
+; fa_initn:  48
+; fa_init1:  38
+; fa_opt:  38
+; fa_z-score: 79.9
+; fa_bits: 20.3
+; fa_expect:  0.085
+; sw_score: 38
+; sw_ident: 0.700
+; sw_sim: 0.800
+; sw_overlap: 10
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 14
+; al_stop: 23
+; al_display_start: 1
+-----------------SAVQQKLAALEKSSGGRLGVALIDTADNTQVLY
+RGDERFPMCSTSKVMAA
+>sp|Q03680|BLA1_STRCI ..
+; sq_len: 325
+; sq_offset: 1
+; sq_type: p
+; al_start: 248
+; al_stop: 257
+; al_display_start: 218
+FAEDLRAFAVEDGEKAALAPNDREQLNDWMSGSRTGDALIRAGVPKDWKV
+EDKSGQVKYGTRNDIAVVRPPGRAPIVVSVMSHGDTQDAEPHDELVAEAG
+LVVADGLK
+; al_cons:
+                              ::.: : :::
+>>sp|P00807|BLAC_STAAU Beta-lactamase OS=Staphylococcus aureus OX=1280 GN=blaZ PE=1 SV=1
+; fa_frame: f
+; fa_initn: 101
+; fa_init1:  91
+; fa_opt:  97
+; fa_z-score: 184.2
+; fa_bits: 39.4
+; fa_expect: 1.3e-07
+; sw_score: 97
+; sw_ident: 0.354
+; sw_sim: 0.729
+; sw_overlap: 48
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 1
+; al_stop: 48
+; al_display_start: 1
+--------------------SAVQQKLAALEKSSGGRLGVALIDTADNTQ
+VLYRGDERFPMCSTSKVMAA
+>sp|P00807|BLAC_STAAU ..
+; sq_len: 281
+; sq_offset: 1
+; sq_type: p
+; al_start: 21
+; al_stop: 68
+; al_display_start: 1
+MKKLIFLIVIALVLSACNSNSSHAKELNDLEKKYNAHIGVYALDTKSGKE
+VKFNSDKRFAYASTSKAINSAILLEQVPYNKLNKKVHINKDDIVAYSPIL
+EKYVGKDITLKALIEASMTY
+; al_cons:
+                    :.  ..:  :::. ....::  .:: .. .
+: . .:.:: . ::::..
+>>sp|Q9K9L8|GLSA1_BACHD Glutaminase 1 OS=Bacillus halodurans (strain ATCC BAA-125 / DSM 18197 / FERM 7344 / JCM 9153 / C-125) OX=272558 GN=glsA1 PE=3 SV=1
+; fa_frame: f
+; fa_initn: 101
+; fa_init1:  82
+; fa_opt:  85
+; fa_z-score: 162.5
+; fa_bits: 35.6
+; fa_expect: 2.1e-06
+; sw_score: 85
+; sw_ident: 0.340
+; sw_sim: 0.638
+; sw_overlap: 47
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 3
+; al_stop: 49
+; al_display_start: 1
+---------------------SAVQQKLAALEKSSGGRLGVALIDTADNT
+QVLYRGDERFPMCSTSKVMAA
+>sp|Q9K9L8|GLSA1_BACHD ..
+; sq_len: 308
+; sq_offset: 1
+; sq_type: p
+; al_start: 24
+; al_stop: 70
+; al_display_start: 1
+MWKQDETLEQIVLECKKYTEEGTVASYIPALAKADVSTLGIAIYRGGDEQ
+VIAGDADEKFTLQSISKVIALALALLDVGEEAVFSKVGMEPTGDPFNSIS
+KLETSVPSKPLNPMINAGAL
+; al_cons:
+                       : . . :: :.. . ::.:.   .:. 
+ .   .::.: . : :::.:
+>>sp|Q8CDJ3|BAKOR_MOUSE Beclin 1-associated autophagy-related key regulator OS=Mus musculus OX=10090 GN=Atg14 PE=1 SV=1
+; fa_frame: f
+; fa_initn:  71
+; fa_init1:  54
+; fa_opt:  82
+; fa_z-score: 153.6
+; fa_bits: 34.6
+; fa_expect: 6.7e-06
+; sw_score: 82
+; sw_ident: 0.394
+; sw_sim: 0.758
+; sw_overlap: 33
+>query ..
+; sq_len: 50
+; sq_offset: 1
+; sq_type: p
+; al_start: 15
+; al_stop: 46
+; al_display_start: 1
+---SAVQQKLAALEKSSGGR-LGVALIDTADNTQVLYRGDERFPMCSTSK
+VMAA
+>sp|Q8CDJ3|BAKOR_MOUSE ..
+; sq_len: 492
+; sq_offset: 1
+; sq_type: p
+; al_start: 18
+; al_stop: 50
+; al_display_start: 1
+MASPSGKGSWTPEAPGFGPRALARDLVDSVDDAEGLYVAVERCPLCNTTR
+RRLTCAKCVQSGDFVYFDGRDRERFIDKKERLSQLKNKQEEFQKEVLKAM
+EGKRLTDQLRWKIMSCKMRI
+; al_cons:
+                 : :-:.  :.:..:... :: . :: :.:.:..
+
+>>><<<
+>>>///
+
+50 residues in 1 query   sequences
+2292 residues in 7 library sequences
+ Tcomplib [36.3.8i Nov, 2020] (8 proc in memory [0G])
+ start: Mon Sep  6 10:28:23 2021 done: Mon Sep  6 10:28:23 2021
+ Total Scan time:  0.010 Total Display time:  0.000
+
+Function used was FASTA [36.3.8i Nov, 2020]

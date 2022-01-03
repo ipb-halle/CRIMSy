@@ -20,10 +20,9 @@ package de.ipb_halle.lbac.material.common.search;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.search.SearchCategory;
-import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
-import de.ipb_halle.lbac.search.SearchRequestImpl;
 import de.ipb_halle.lbac.search.SearchTarget;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,6 +40,11 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private String projectName;
     private final Set<MaterialType> types = new HashSet<>();
     private String materialName;
+    private Boolean deactivated;
+    private String sequenceQueryString;
+    private SequenceType sequenceQueryType;
+    private SequenceType sequenceLibraryType;
+    private Integer sequenceTranslationTable;
 
     public MaterialSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -56,6 +60,11 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         addUser();
         addProject();
         addMaterialName();
+        addDeactivated();
+        addSequenceQueryString();
+        addSequenceQueryType();
+        addSequenceLibraryType();
+        addSequenceTranslationTable();
     }
 
     public void setSearchValues(MaterialSearchMaskValues values) {
@@ -64,10 +73,52 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         setProjectName(values.projectName);
         setId(String.valueOf(values.id));
         setUserName(values.userName);
+        setDeactivated(values.deactivated);
+        if (values.sequenceInfos != null) {
+            setSequenceInformation(
+                    values.sequenceInfos.sequenceQuery,
+                    values.sequenceInfos.sequenceLibraryType,
+                    values.sequenceInfos.sequenceQueryType,
+                    values.sequenceInfos.translationTable);
+        }
         for (MaterialType t : values.type) {
             types.add(t);
         }
 
+    }
+
+    private void addSequenceLibraryType() {
+        if (sequenceLibraryType != null) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_LIBRARY_TYPE, new String[]{sequenceLibraryType.name()});
+        }
+    }
+
+    private void addSequenceQueryString() {
+        if (sequenceQueryString != null && !sequenceQueryString.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_QUERY_STRING, new String[]{sequenceQueryString});
+        }
+    }
+
+    private void addSequenceQueryType() {
+        if (sequenceQueryType != null) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_QUERY_TYPE, new String[]{sequenceQueryType.name()});
+        }
+    }
+
+    private void addSequenceTranslationTable() {
+        if (sequenceTranslationTable != null) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_TRANSLATION_TABLE, new String[]{String.valueOf(sequenceTranslationTable)});
+        }
+    }
+
+    private void addDeactivated() {
+        if (deactivated != null) {
+            if (deactivated) {
+                request.addSearchCategory(SearchCategory.DEACTIVATED, new String[]{"deactivated"});
+            } else {
+                request.addSearchCategory(SearchCategory.DEACTIVATED, new String[]{"activated"});
+            }
+        }
     }
 
     private void addStructure() {
@@ -83,7 +134,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     }
 
     private void addId() {
-        if (id != null&&!id.equals("null")) {
+        if (id != null && !id.equals("null")) {
             request.addSearchCategory(SearchCategory.LABEL, id);
         }
     }
@@ -144,4 +195,15 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         this.materialName = materialName;
     }
 
+    public MaterialSearchRequestBuilder setDeactivated(Boolean deactivated) {
+        this.deactivated = deactivated;
+        return this;
+    }
+
+    public void setSequenceInformation(String sequenceQueryString, SequenceType sequenceLibraryType, SequenceType sequenceQueryType, int translationTable) {
+        this.sequenceQueryString = sequenceQueryString;
+        this.sequenceLibraryType = sequenceLibraryType;
+        this.sequenceQueryType = sequenceQueryType;
+        this.sequenceTranslationTable = translationTable;
+    }
 }

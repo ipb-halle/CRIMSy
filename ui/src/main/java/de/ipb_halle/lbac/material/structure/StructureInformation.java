@@ -26,6 +26,8 @@ import java.io.Serializable;
  */
 public class StructureInformation implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     protected Double exactMolarMass;
     protected Double averageMolarMass;
     protected String sumFormula;

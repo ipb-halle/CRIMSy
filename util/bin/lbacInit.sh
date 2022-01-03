@@ -22,9 +22,6 @@
 max_repeat=8
 compose="dist_"
 
-lbac_db="db"
-lbac_proxy="proxy"
-lbac_ui="ui"
 #
 #==========================================================
 #
@@ -86,6 +83,38 @@ function remove() {
 
     fi
 }
+#
+#==========================================================
+#
+function restartService() {
+    service=$1
+    repeat=0
+    restarted=0
+    while [ $repeat -lt $max_repeat ] ; do
+        check $service
+        echo "CONTAINER STATUS: $status"
+        case $status in
+            restarting)
+                sleep 10
+                ;;
+            running)
+                if [ $restarted -lt 1 ] ; then
+                    restarted=1
+                    docker restart $compose${service}_1
+                else
+                    return 0
+                fi
+                ;;
+            removing)
+                sleep 10
+                ;;
+            *)
+                ;;
+        esac
+        repeat=$(($repeat + 1))
+    done
+    return 1
+}
 
 #
 #==========================================================
@@ -130,9 +159,10 @@ function  startService() {
 }
 
 function start() {
-    startService $lbac_db || error "Starting database container failed"
-    startService $lbac_ui || error "Starting ui container failed"
-    startService $lbac_proxy || error "Starting proxy container failes"
+    startService db || error "Starting database container failed"
+    startService fasta || error "Starting fasta container failed"
+    startService ui || error "Starting ui container failed"
+    startService proxy || error "Starting proxy container failes"
 }
 #
 #==========================================================
@@ -143,9 +173,10 @@ function stopService() {
 }
 
 function stop() {
-    stopService $lbac_proxy
-    stopService $lbac_ui
-    stopService $lbac_db
+    stopService proxy
+    stopService ui
+    stopService fasta
+    stopService db
 }
 #
 #==========================================================
@@ -175,6 +206,9 @@ case $1 in
         ;;
     remove)
         remove
+        ;;
+    restartService)
+        restartService $2
         ;;
     *)
         echo "Usage: lbacInit.sh check SERVICE|start|startService SERVICE|stop|stopService SERVICE|remove"

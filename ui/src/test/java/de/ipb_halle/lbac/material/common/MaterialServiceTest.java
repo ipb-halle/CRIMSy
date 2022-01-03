@@ -41,10 +41,17 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.history.MaterialDifference;
+import de.ipb_halle.lbac.material.common.history.MaterialOverviewDifference;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceData;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
+import de.ipb_halle.lbac.material.sequence.history.SequenceDifference;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.util.ArrayList;
@@ -53,7 +60,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -69,6 +75,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class MaterialServiceTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
 
     @Inject
     private MaterialService instance;
@@ -97,7 +105,7 @@ public class MaterialServiceTest extends TestBase {
         creationTools = new CreationTools(hazardStatement, precautionaryStatement, storageClassRemark, memberService, projectService);
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-        instance.setStructureInformationSaver(new StructureInformationSaverMock(instance.getEm()));
+        instance.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
@@ -624,10 +632,10 @@ public class MaterialServiceTest extends TestBase {
     }
 
     @Test
-    public void test009_saveLoadMaterialComposition() {
+    public void test009_saveLoadMaterialComposition() throws Exception {
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Structure struture1 = creationTools.createStructure(project1);
-        struture1.getNames().set(0, new MaterialName("First Structure","de",0));
+        struture1.getNames().set(0, new MaterialName("First Structure", "de", 0));
         Structure struture2 = creationTools.createStructure(project1);
 
         instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
@@ -638,13 +646,14 @@ public class MaterialServiceTest extends TestBase {
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
-
                 new StorageInformation(),
                 CompositionType.EXTRACT);
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
-        composition.addComponent(struture1, 0d);
-        composition.addComponent(struture2, 0d);
+        composition.addComponent(struture1, 0d, null);
+        composition.addComponent(struture2, 0d, null);
         instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
+
+        //Load composition by direct name
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("composition");
         SearchResult result = instance.loadReadableMaterials(requestBuilder.build());
@@ -655,11 +664,120 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("composition-1", loadedComposition.getFirstName());
         Assert.assertEquals(2, loadedComposition.getComponents().size());
 
+        //Edit the loaded composition and save it
+        MaterialComposition compositionToEdit = loadedComposition.copyMaterial();
+        compositionToEdit.getComponents().clear();
+
+        instance.saveEditedMaterial(
+                compositionToEdit,
+                loadedComposition,
+                GlobalAdmissionContext.getPublicReadACL().getId(),
+                publicUser.getId());
+
+        requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("composition");
+        result = instance.loadReadableMaterials(requestBuilder.build());
+        Assert.assertEquals(1, result.getAllFoundObjects(MaterialComposition.class, result.getNode()).size());
+        loadedComposition = (MaterialComposition) result.getAllFoundObjects(MaterialComposition.class, result.getNode()).get(0);
+
+        //Check if the changes are made
+        Assert.assertEquals(0, loadedComposition.getComponents().size());
+        Assert.assertEquals(1, loadedComposition.getHistory().getChanges().size());
+        CompositionDifference diff = (CompositionDifference) loadedComposition.getHistory().getChanges().values().iterator().next().get(0);
+        Assert.assertEquals(2, diff.getConcentrations_new().size());
+        Assert.assertNull(diff.getConcentrations_new().get(0));
+        Assert.assertNull(diff.getConcentrations_new().get(1));
+        Assert.assertTrue(diff.getConcentrations_old().contains(0d));
+        Assert.assertNull(diff.getMaterialIds_new().get(0));
+        Assert.assertNull(diff.getMaterialIds_new().get(1));
+        Assert.assertTrue(diff.getMaterialIds_old().contains(struture1.getId()));
+        Assert.assertTrue(diff.getMaterialIds_old().contains(struture2.getId()));
+    }
+
+    @Test
+    public void test010_saveLoadSequence() {
+        Sequence sequence = createAndsaveSequence();
+
+        Sequence loadedSequence = (Sequence) instance.loadMaterialById(sequence.getId());
+        Assert.assertNotNull(loadedSequence);
+        Assert.assertEquals("AAA", sequence.getSequenceData().getSequenceString());
+        Assert.assertTrue(sequence.getSequenceData().isCircular());
+        Assert.assertEquals("MyAnnotation", sequence.getSequenceData().getAnnotations());
+        Assert.assertEquals(1, sequence.getNames().size());
+        Assert.assertEquals("sequenceX", sequence.getNames().get(0).value);
+    }
+
+    @Test
+    public void test011_editSequence() throws Exception {
+        acListNonReadable = new ACList();
+        acListNonReadable = aclistService.save(acListNonReadable);
+        Sequence originalSequence = createAndsaveSequence();
+        Sequence editedSequence = originalSequence.copyMaterial();
+
+        SequenceData data = SequenceData.builder()
+                .circular(Boolean.FALSE)
+                .sequenceString("TTT")
+                .sequenceType(SequenceType.DNA).build();
+        editedSequence.setSequenceData(data);
+        editedSequence.getNames().add(new MaterialName("sequenceY", "en", 1));
+        editedSequence.setACList(acListNonReadable);
+
+        instance.saveEditedMaterial(
+                editedSequence,
+                originalSequence,
+                acListNonReadable.getId(),
+                publicUser.getId());
+
+        Sequence loadedSequence = (Sequence) instance.loadMaterialById(originalSequence.getId());
+
+        Assert.assertEquals("TTT", loadedSequence.getSequenceData().getSequenceString());
+        Assert.assertFalse(loadedSequence.getSequenceData().isCircular());
+        Assert.assertNull(loadedSequence.getSequenceData().getAnnotations());
+        Assert.assertEquals(2, loadedSequence.getNames().size());
+        Assert.assertEquals("sequenceX", loadedSequence.getNames().get(0).value);
+        Assert.assertEquals("sequenceY", loadedSequence.getNames().get(1).value);
+        Assert.assertEquals(1, loadedSequence.getHistory().getChanges().size());
+        List<MaterialDifference> diffs = loadedSequence.getHistory().getChanges().values().iterator().next();
+
+        for (MaterialDifference d : diffs) {
+            if (d instanceof SequenceDifference) {
+                SequenceDifference diff = (SequenceDifference) d;
+                Assert.assertFalse(diff.getNewSequenceData().isCircular());
+                Assert.assertTrue(diff.getOldSequenceData().isCircular());
+                Assert.assertEquals("TTT", diff.getNewSequenceData().getSequenceString());
+                Assert.assertEquals("AAA", diff.getOldSequenceData().getSequenceString());
+            }
+            if (d instanceof MaterialOverviewDifference) {
+                MaterialOverviewDifference diff = (MaterialOverviewDifference) d;
+
+                Assert.assertEquals(acListNonReadable.getId(), diff.getAcListNew().getId());
+                Assert.assertEquals(GlobalAdmissionContext.getPublicReadACL().getId(), diff.getAcListOld().getId());
+
+            }
+        }
+
+    }
+
+    private Sequence createAndsaveSequence() {
+        Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
+
+        //Create a sequence
+        SequenceData data = SequenceData.builder()
+                .annotations("MyAnnotation")
+                .circular(Boolean.TRUE)
+                .sequenceString("AAA")
+                .sequenceType(SequenceType.DNA).build();
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("sequenceX", "de", 0));
+        Sequence sequence = new Sequence(null, names, project1.getId(), new HazardInformation(), new StorageInformation(), data);
+        instance.saveMaterialToDB(sequence, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser.getId());
+        return sequence;
     }
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("MaterialServiceTest.war");
-        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
+
+        return UserBeanDeployment.add(MaterialDeployment.add(deployment));
     }
 }

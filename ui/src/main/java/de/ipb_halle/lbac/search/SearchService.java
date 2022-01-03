@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -34,10 +35,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
-import de.ipb_halle.lbac.search.lang.Operator;
-import de.ipb_halle.lbac.search.lang.Value;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
@@ -70,6 +67,8 @@ public class SearchService {
     private MemberService memberService;
     @Inject
     private NodeService nodeService;
+    @Inject
+    private SequenceSearchService sequenceSearchService;
 
     private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
 
@@ -88,7 +87,8 @@ public class SearchService {
                 documentService,
                 containerService,
                 memberService,
-                nodeService);
+                nodeService,
+                sequenceSearchService);
     }
 
     public SearchResult search(

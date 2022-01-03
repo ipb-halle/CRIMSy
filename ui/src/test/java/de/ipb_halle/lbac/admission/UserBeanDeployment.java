@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
+import de.ipb_halle.lbac.admission.mock.UserPluginSettingsBeanMock;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.timezone.TimeZonesBean;
@@ -30,7 +31,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
  * @author fbroda
  */
 public class UserBeanDeployment {
-    
+
     public static WebArchive add(WebArchive deployment) {
         return deployment
                 .addClass(KeyManager.class)
@@ -39,7 +40,7 @@ public class UserBeanDeployment {
                 .addClass(SystemSettings.class)
                 .addClass(Navigator.class)
                 .addClass(PreferenceService.class)
-                .addClass(UserPluginSettingsBean.class)
+                .addClass(UserPluginSettingsBeanMock.class)
                 .addClass(TimeZonesBean.class)
                 .addClass(UserTimeZoneSettingsBean.class)
                 .addClass(UserBeanMock.class);

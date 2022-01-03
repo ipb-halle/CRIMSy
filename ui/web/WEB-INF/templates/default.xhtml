@@ -90,6 +90,7 @@
                                                  ajax="true"
                                                  update="foundObjectDataTableId newDocumentsBadge spinningIcon addDocumentButton"
                                                  icon-align="right"
+                                                 process="@form"
                                                  rendered="true"
                                                  value="#{msgs.searchMgr_fetchButton}">
                                     <b:badge 
@@ -261,6 +262,14 @@
                                                     ajax="true"
                                                     value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
                                             </b:column>
+                                             <b:column span="1"
+                                                      offset="4"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.compositions}"
+                                                    ajax="true"
+                                                    label="#{msgs.search_category_COMPOSITION}"/>
+                                            </b:column>
                                         </b:row>
 
 
@@ -268,6 +277,7 @@
                                         <b:row>
                                             <b:column span="2">
                                                 <mol:molecule
+                                                    id="molEditorSearchPage"
                                                     value="#{searchBean.getSearchFilter().structureString}"
                                                     pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                                     format="MDLV2000"

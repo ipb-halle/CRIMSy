@@ -21,31 +21,14 @@
 #
 #==========================================================
 #
-# Install or update crontab settings
+# Global settings
 #
-function installCron {
-    TMP_CRONTAB=`mktemp /tmp/crontab.XXXXXX`
-    crontab -l > $TMP_CRONTAB
+BACKUP_AGE=4
 
-    CRON_MAILTO=0
-    grep -q MAILTO $TMP_CRONTAB && CRON_MAILTO=1
-    if [ $CRON_MAILTO -eq 0 ] ; then
-        editCronMAILTO
-    fi
-
-    CRON_LBAC=0
-    grep -q "LBAC CRON BEGIN" $TMP_CRONTAB && CRON_LBAC=1
-    if [ $CRON_LBAC -eq 0 ] ; then
-        # simply append to end
-        CRON_ED_CMD='$a'
-    else
-        # replace block
-        CRON_ED_CMD="/LBAC CRON BEGIN/,/LBAC CRON END/c"
-    fi
-    editCronTab
-    cat $TMP_CRONTAB | crontab -u root -
-    rm $TMP_CRONTAB
-}
+#
+#==========================================================
+#
+#
 
 #
 # Inserts a MAILTO directive
@@ -74,7 +57,7 @@ $CRON_ED_CMD
 #
 #Min Hour Day Month Week Cmd
 13 * * * * "$LBAC_DATASTORE/dist/bin/updateCloud.sh" update 2>/dev/null > /dev/null
-8 1 * * * "$LBAC_DATASTORE/dist/bin/backup.sh" 2>/dev/null > /dev/null
+8 1 * * * "$LBAC_DATASTORE/dist/bin/setupROOT.sh" backup 2>/dev/null > /dev/null
 # LBAC CRON END
 .
 w
@@ -82,6 +65,34 @@ q
 EOF
 
 }
+
+#
+# Install or update crontab settings
+#
+function installCron {
+    TMP_CRONTAB=`mktemp /tmp/crontab.XXXXXX`
+    crontab -l > $TMP_CRONTAB
+
+    CRON_MAILTO=0
+    grep -q MAILTO $TMP_CRONTAB && CRON_MAILTO=1
+    if [ $CRON_MAILTO -eq 0 ] ; then
+        editCronMAILTO
+    fi
+
+    CRON_LBAC=0
+    grep -q "LBAC CRON BEGIN" $TMP_CRONTAB && CRON_LBAC=1
+    if [ $CRON_LBAC -eq 0 ] ; then
+        # simply append to end
+        CRON_ED_CMD='$a'
+    else
+        # replace block
+        CRON_ED_CMD="/LBAC CRON BEGIN/,/LBAC CRON END/c"
+    fi
+    editCronTab
+    cat $TMP_CRONTAB | crontab -u root -
+    rm $TMP_CRONTAB
+}
+
 
 #
 # Install a single additional CLOUD
@@ -115,13 +126,17 @@ function installClouds {
 }
 
 #
-# install / recover / replay database backup
+# Setup / install the init scripts
 #
-function installDbBackup {
-    echo "restoring data from database dump ..."
-    cat "$LBAC_DATASTORE/backup/db/dump.latest.sql" | \
-        docker exec -i -u postgres dist_db_1 psql template1 
-    echo "finished database restore ..."
+function installInit {
+    case $LBAC_INIT_TYPE in
+        SYSTEMD)
+            installSystemd
+            ;;
+        SYSV)
+            installSysVInit
+            ;;
+    esac
 }
 
 #
@@ -185,19 +200,8 @@ EOF
         insserv /etc/init.d/lbac
 }
 
-function installInit {
-    case $LBAC_INIT_TYPE in
-        SYSTEMD)
-            installSystemd
-            ;;
-        SYSV)
-            installSysVInit
-            ;;
-    esac
-}
-
 #
-# perform updates for database, scripts, etc.
+# execute database migrations
 #
 function postInstall {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
@@ -206,14 +210,18 @@ function postInstall {
     sleep 15
 
     docker exec -i dist_db_1 chown postgres /data/db
-    docker exec -i -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
-    if [ -f "$LBAC_DATASTORE/data/db/VERSION_UPDATE" ] ; then
+    docker exec -i -u postgres dist_db_1 /usr/local/bin/getversion.sh
 
-        installDbBackup
-        rm "$LBAC_DATASTORE/data/db/VERSION_UPDATE"
-        # re-run dbupdate after installation of backup
-        docker exec -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
+    if [ -e "$LBAC_DATASTORE/tmp/OLD_PG_VERSION" ] ; then
+        OLD_PG_VERSION=`cat "$LBAC_DATASTORE/tmp/OLD_PG_VERSION"`
+        CURRENT_PG_VERSION=`cat "$LBAC_DATASTORE/data/db/CURRENT_PG_VERSION"`
+        if [ $CURRENT_PG_VERSION != $OLD_PG_VERSION ] ; then 
+            LABEL=latest
+            restoreDB
+        fi
     fi
+
+    docker exec -i -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
 }
 
 #
@@ -222,6 +230,33 @@ function postInstall {
 function removeFunc {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" remove 
     docker rmi pgchem 2>/dev/null >/dev/null
+}
+
+#
+# restore the entire system
+#
+function restoreFunc {
+    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" stopService ui
+
+    pushd "$LBAC_DATASTORE/backup/ui" > /dev/null
+    tar -C "$LBAC_DATASTORE/data" -xvf ui.$LABEL.tar.gz
+    popd > /dev/null
+
+    restoreDB
+
+    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService ui
+}
+
+#
+# restore a database snapshot only
+#
+function restoreDB {
+    echo "restoring database snapshot: $LABEL"
+    cat "$LBAC_DATASTORE/backup/db/dump.$LABEL.sql" |\
+        docker exec -i -u postgres dist_db_1 psql ||\
+        error "Error during database restore"
+
+    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" restartService ui
 }
 
 #
@@ -254,14 +289,50 @@ function shutdownFunc {
 }
 
 #
+#
+#
+function snapshotCleanup {
+        pushd "$LBAC_DATASTORE/backup" > /dev/null
+        find db/ ui/ -type f -mtime +$BACKUP_AGE -exec rm {} \; 
+        popd > /dev/null
+}
+
+#
+#
+#
+function snapshotDB {
+        mkdir -p "$LBAC_DATASTORE/backup/db"
+        pushd "$LBAC_DATASTORE/backup/db" > /dev/null
+        rm -f dump.latest.sql
+        docker exec dist_db_1 pg_dump --create --clean --if-exists \
+          -U lbac > "$LBAC_DATASTORE/backup/db/dump.$LABEL.sql" || \
+          error "Error during database dump"
+        ln -s dump.$LABEL.sql dump.latest.sql
+        popd > /dev/null
+}
+
+#
 # snapshot
 #
 function snapshotFunc {
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" stopService proxy 
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" stopService ui
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
+    snapshotDB
+    snapshotUI
+    snapshotCleanup
+    docker exec -i -u postgres dist_db_1 /usr/local/bin/getversion.sh
+    cp "$LBAC_DATASTORE/data/db/CURRENT_PG_VERSION" "$LBAC_DATASTORE/tmp/OLD_PG_VERSION"
+}
 
-    "$LBAC_DATASTORE/dist/bin/backup.sh"
+#
+#
+#
+function snapshotUI {
+        mkdir -p "$LBAC_DATASTORE/backup/ui"
+        pushd "$LBAC_DATASTORE/backup/ui" > /dev/null
+        rm -f ui.latest.tar.gz
+        tar -C "$LBAC_DATASTORE/data" -czf ui.$LABEL.tar.gz ui
+        ln -s ui.$LABEL.tar.gz ui.latest.tar.gz
+        popd > /dev/null
 }
 
 #
@@ -312,7 +383,8 @@ function error {
 # 
 #==========================================================
 #
-test `id -u` -eq 0 || error "This script must be called as root"
+test `id -u` -eq 0 || (echo "setupROOT.sh: promoting to super user" && sudo $0 $@) || exit 1
+test `id -u` -eq 0 || exit 0
 
 if [ "$1" = "initROOT" ] ; then
         LBAC_DATASTORE=$2
@@ -328,6 +400,10 @@ fi
 . "$LBAC_DATASTORE/dist/etc/config.sh" || error "configuration missing: LBAC_DATASTORE/dist/etc/config.sh"
 
 case $1 in
+    backup)
+        LABEL=`date "+%Y%m%d%H%M"`
+        snapshotFunc
+        ;;
     installCron)
         echo "Setting up CRON"
         installCron
@@ -341,9 +417,6 @@ case $1 in
         echo "Activate all clouds"
         installClouds
         ;;
-    installDbBackup)
-        installDbBackup
-        ;;
     installInit)
         echo "Installing Init Script"
         installInit
@@ -356,6 +429,16 @@ case $1 in
         echo "Removing existing images"
         removeFunc
         ;;
+    restore)
+        echo "restoring snapshot"
+        LABEL=$2
+        restoreFunc
+        ;;
+    restoreDB)
+        echo "restoring database snapshot"
+        LABEL=$2
+        restoreDB
+        ;;
     setPermissions)
         echo "Setting directory permissions"
         setPermissions
@@ -366,6 +449,7 @@ case $1 in
         ;;
     snapshot)
         echo "Taking snapshot"
+        LABEL=$2
         snapshotFunc
         ;;
     start)
@@ -378,5 +462,6 @@ case $1 in
         ;;
     *)
         error "setupROOT.sh called with invalid arguments"
+        ;;
 esac
-
+echo "done"

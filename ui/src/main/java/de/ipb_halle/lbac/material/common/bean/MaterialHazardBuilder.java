@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,15 +60,6 @@ public class MaterialHazardBuilder {
     private final int RADIOACTIVE_STATEMENT_ID = 16;
     private final int CUSTOM_STATEMENT_ID = 17;
     private final int GMO_STATEMENT_ID = 20;
-
-    public MaterialHazardBuilder(
-            HazardService hazardService,
-            MaterialType materialType,
-            boolean isEditable,
-            Map<HazardType, String> hazards) {
-        this(hazardService, materialType, isEditable, hazards, JsfMessagePresenter.getInstance());
-
-    }
 
     /**
      *
@@ -105,7 +95,7 @@ public class MaterialHazardBuilder {
 
         for (int i = 0; i < BSL_IDS.length; i++) {
             if (hazards.keySet().contains(hazardService.getHazardById(BSL_IDS[i]))) {
-                this.bioSavetyLevel = possibleBioSavetyLevels.get(i + 1);
+                this.bioSavetyLevel = possibleBioSavetyLevels.get(i);
             }
         }
 
@@ -118,12 +108,6 @@ public class MaterialHazardBuilder {
      * @param hazard
      */
     public void removeHazard(HazardType hazard) {
-        for (int i = 0; i < BSL_IDS.length; i++) {
-            if (hazard.getId() == BSL_IDS[i]) {
-                bioSavetyLevel = possibleBioSavetyLevels.get(0);
-            }
-        }
-
         hStatements = hazard.getId() == H_STATEMENT_ID ? null : hStatements;
         pStatements = hazard.getId() == P_STATEMENT_ID ? null : pStatements;
         customText = hazard.getId() == CUSTOM_STATEMENT_ID ? null : customText;
@@ -136,10 +120,11 @@ public class MaterialHazardBuilder {
     }
 
     /**
-     * Adds a Hazard. If the hazard is a h- or p-statement, radioactivity, gmo
-     * or a custom statement the corresponding varable will be changed.
+     * Adds a Hazard.If the hazard is a h- or p-statement, radioactivity, gmo or
+     * a custom statement the corresponding varable will be changed.
      *
      * @param hazard
+     * @param remark
      */
     public void addHazardType(HazardType hazard, String remark) {
         for (int i = 0; i < BSL_IDS.length; i++) {
@@ -195,7 +180,7 @@ public class MaterialHazardBuilder {
     }
 
     public String getRadioactiveImageLocation() {
-        return getImageLocation(hazardService.getHazardById(16));
+        return getImageLocation(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID));
     }
 
     /**
@@ -240,15 +225,18 @@ public class MaterialHazardBuilder {
     }
 
     public String getLocalizedName(HazardType h) {
+        if (h == null) {
+            throw new IllegalArgumentException("Null was passed to getLocalizedName");
+        }
         return messagePresenter.presentMessage("hazard_" + h.getName());
     }
 
     public String getLocalizedRadioactiveLabel() {
-        return getLocalizedName(hazardService.getHazardById(16));
+        return getLocalizedName(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID));
     }
 
     public String getLocalizedCustomLabel() {
-        return getLocalizedName(hazardService.getHazardById(17));
+        return getLocalizedName(hazardService.getHazardById(CUSTOM_STATEMENT_ID));
     }
 
     public String getLocalizedStatements() {
@@ -344,11 +332,7 @@ public class MaterialHazardBuilder {
     public List<String> getPossibleBioSavetyLevels() {
         return possibleBioSavetyLevels;
     }
-
-    public void setMessagePresenter(MessagePresenter messagePresenter) {
-        this.messagePresenter = messagePresenter;
-    }
-
+    
     /**
      * Returns a biohazard image if riskgroup 2,3 or 4 is choosen. Returns a
      * empty image else

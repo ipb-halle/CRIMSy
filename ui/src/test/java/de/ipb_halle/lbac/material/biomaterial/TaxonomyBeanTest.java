@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
-import de.ipb_halle.lbac.project.ProjectService;
 import java.util.HashMap;
 import java.util.List;
 import javax.faces.component.UIViewRoot;
@@ -79,7 +78,7 @@ public class TaxonomyBeanTest extends TestBase {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         materialService.setEditedMaterialSaver(new MaterialEditSaver(materialService, taxoNestingService));
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         bean.setMaterialService(materialService);
 
     }

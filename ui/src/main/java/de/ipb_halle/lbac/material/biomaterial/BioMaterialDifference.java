@@ -18,6 +18,9 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.history.HistoryController;
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.io.Serializable;
 import java.util.Date;
@@ -29,8 +32,10 @@ import java.util.Objects;
  */
 public class BioMaterialDifference implements Serializable, MaterialDifference, DTO {
 
+    private static final long serialVersionUID = 1L;
+
     protected Integer actorId;
-    protected Date mTime;
+    protected Date mdate;
     protected int materialId;
     protected Integer taxonomyid_old;
     protected Integer taxonomyid_new;
@@ -44,7 +49,7 @@ public class BioMaterialDifference implements Serializable, MaterialDifference, 
     public BioMaterialDifference(
             BioMaterialHistoryEntity dbentity) {
         this.actorId = dbentity.getId().getActorid();
-        this.mTime = dbentity.getId().getMtime();
+        this.mdate = dbentity.getId().getMdate();
         this.materialId = dbentity.getId().getId();
         this.taxonomyid_old = dbentity.getTaxoid_old();
         this.taxonomyid_new = dbentity.getTaxoid_new();
@@ -59,14 +64,14 @@ public class BioMaterialDifference implements Serializable, MaterialDifference, 
 
     @Override
     public void initialise(int materialId, Integer actorID, Date mDate) {
-        this.mTime = mDate;
+        this.mdate = mDate;
         this.materialId = materialId;
         this.actorId = actorID;
     }
 
     @Override
     public Date getModificationDate() {
-        return mTime;
+        return mdate;
     }
 
     public boolean differenceFound() {
@@ -115,11 +120,16 @@ public class BioMaterialDifference implements Serializable, MaterialDifference, 
     public BioMaterialHistoryEntity createEntity() {
         return new BioMaterialHistoryEntity()
                 .setAction("EDIT")
-                .setId(new BioMaterialHistEntityId(materialId, mTime, actorId))
+                .setId(new HistoryEntityId(materialId, mdate, actorId))
                 .setTaxoid_new(taxonomyid_new)
                 .setTaxoid_old(taxonomyid_old)
                 .setTissueid_new(tissueid_new)
                 .setTissueid_old(tissueid_old);
+    }
+
+    @Override
+    public BioMaterialHistoryController createHistoryController(MaterialBean bean) {
+        return new BioMaterialHistoryController(bean);
     }
 
 }

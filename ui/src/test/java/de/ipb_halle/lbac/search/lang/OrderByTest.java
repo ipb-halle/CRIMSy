@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.items.entity.ItemEntity;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

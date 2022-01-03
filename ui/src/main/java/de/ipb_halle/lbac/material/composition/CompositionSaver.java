@@ -28,16 +28,18 @@ import javax.persistence.EntityManager;
 public class CompositionSaver implements MaterialSaver {
 
     private static final long serialVersionUID = 1L;
-    private EntityManager em;
-
-    public CompositionSaver(EntityManager em) {
-        this.em = em;
-    }
 
     @Override
-    public void saveMaterial(Material m) {
+    public void saveMaterial(Material m, EntityManager em) {
         MaterialComposition composition = (MaterialComposition) m;
         em.merge(composition.createEntity());
+        for (Concentration component : composition.getComponents()) {
+            MaterialCompositionEntity componentEntity = new MaterialCompositionEntity();
+            componentEntity.setId(new MaterialCompositionId(m.getId(), component.getMaterialId()));
+            componentEntity.setConcentration(component.getConcentration());
+            componentEntity.setUnit(component.getUnit()==null?null:component.getUnit().toString());
+            em.merge(componentEntity);
+        }
     }
 
 }

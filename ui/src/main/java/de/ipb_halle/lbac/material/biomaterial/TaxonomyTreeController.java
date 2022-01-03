@@ -40,6 +40,8 @@ import org.primefaces.model.TreeNode;
  */
 public class TaxonomyTreeController implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Set<Integer> expandedTreeNodes = new HashSet<>();
     private Integer idOfSelectedTaxonomy;
     protected TaxonomyLevelController levelController;

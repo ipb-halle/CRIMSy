@@ -29,49 +29,53 @@ import java.util.Set;
  * @author fbroda
  */
 public class DbField {
+
     private String alias;
     private Set<AttributeType> attributeTypes;
     private String className;
     private String columnName;
     private EntityGraph entityGraph;
     private String fieldName;
+    private int fieldOrder;
     private boolean indexField;
     private boolean generatedField;
     private OrderDirection orderDirection;
     private String orderKey;
     private String tableName;
     private List<Field> valueAccessors;
-
+    
     public DbField() {
         this(false, false);
     }
+
     @SuppressWarnings("unchecked")
     public DbField(boolean indexField, boolean generatedField) {
         this.alias = "";
         this.indexField = indexField;
         this.generatedField = generatedField;
-        this.attributeTypes = new HashSet<> ();
+        this.fieldOrder = Integer.MAX_VALUE;
+        this.attributeTypes = new HashSet<>();
         this.orderDirection = OrderDirection.NONE;
         this.valueAccessors = new ArrayList(3);
     }
-
+    
     DbField addAccessor(Field field) {
         this.valueAccessors.add(field);
         return this;
     }
-
+    
     DbField addAccessors(List<Field> fields) {
         this.valueAccessors.addAll(fields);
         return this;
     }
-
+    
     DbField addAttributeTag(AttributeTag tag) {
         if (tag != null) {
             this.attributeTypes.add(tag.type());
         }
         return this;
     }
-
+    
     DbField addAttributeTag(AttributeTags tag) {
         if (tag != null) {
             for (AttributeType type : tag.types()) {
@@ -80,17 +84,17 @@ public class DbField {
         }
         return this;
     }
-
+    
     DbField addAttributeType(AttributeType type) {
         this.attributeTypes.add(type);
         return this;
     }
-
+    
     DbField addAttributeTypes(Set<AttributeType> types) {
         this.attributeTypes.addAll(types);
         return this;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -99,7 +103,7 @@ public class DbField {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
+        
         DbField that = (DbField) o;
         if (alias.equals(that.alias) && columnName.equals(that.columnName)) {
             return true;
@@ -108,10 +112,11 @@ public class DbField {
     }
 
     /**
-     * Obtain the value of a field in a concrete object. The field 
-     * may be buried in the class and hierarchy (embedded fields).
+     * Obtain the value of a field in a concrete object. The field may be buried
+     * in the class and hierarchy (embedded fields).
+     *
      * @param obj The object from which the field value should be obtained
-     * @return the value 
+     * @return the value
      * @throws java.lang.IllegalAccessException
      */
     public Object get(Object obj) throws IllegalAccessException {
@@ -124,19 +129,19 @@ public class DbField {
         }
         return result;
     }
-
+    
     public String getAliasedColumnName() {
         return this.alias + "." + this.columnName;
     }
-
+    
     public Set<AttributeType> getAttributeTypes() {
         return this.attributeTypes;
     }
-
+    
     public String getColumnName() {
         return this.columnName;
     }
-
+    
     public EntityGraph getEntityGraph() {
         return this.entityGraph;
     }
@@ -145,14 +150,18 @@ public class DbField {
         int i = this.valueAccessors.size();
         if (i > 0) {
             return this.valueAccessors.get(i - 1).getType();
-        } 
+        }        
         throw new IllegalStateException("DbField has no accessor");
     }
 
+    public int getFieldOrder() {
+        return this.fieldOrder;
+    }
+    
     public OrderDirection getOrderDirection() {
         return this.orderDirection;
     }
-
+    
     public String getPlaceHolder() {
         Field field = this.valueAccessors.get(
                 this.valueAccessors.size() - 1);
@@ -162,7 +171,7 @@ public class DbField {
         }
         return cast.expression();
     }
-
+    
     public String getTableName() {
         return this.tableName;
     }
@@ -175,15 +184,16 @@ public class DbField {
     public int hashCode() {
         return this.alias.hashCode() + this.columnName.hashCode();
     }
-
+    
     public boolean isGeneratedField() {
         return this.generatedField;
     }
 
     /**
-     * @param attribute the Attribute to match 
-     * @return true if this field matches (contains all) the requested
-     * attribute types
+     * @param context
+     * @param attribute the Attribute to match
+     * @return true if this field matches (contains all) the requested attribute
+     * types
      */
     public boolean matches(String context, Attribute attribute) {
         return this.attributeTypes.containsAll(attribute.getTypes())
@@ -191,23 +201,25 @@ public class DbField {
     }
 
     /**
-     * compares table name, column name and order key of this instance 
-     * against another DbField to select matching columns in ORDER BY 
-     * clauses.
+     * compares table name, column name and order key of this instance against
+     * another DbField to select matching columns in ORDER BY clauses.
+     *
      * @param field
-     * @return true if both objects have the same columnName, tableName
-     * and orderKey.
+     * @param context
+     * @return true if both objects have the same columnName, tableName and
+     * orderKey.
      */
-    public boolean matchesOrder(DbField field) {
-        return this.columnName.equals(field.columnName) 
-            && this.tableName.equals(field.tableName)
-            && (((this.orderKey == null) && (field.orderKey == null))
-            || this.orderKey.equals(field.orderKey));
+    public boolean matchesOrder(DbField field, String context) {
+        return this.columnName.equals(field.columnName)
+                && this.tableName.equals(field.tableName)
+                && this.alias.equals(context)
+                && (((this.orderKey == null) && (field.orderKey == null))
+                || this.orderKey.equals(field.orderKey));
     }
 
     /**
-     * set the value of a field, which may be buried in 
-     * the object hierarchy
+     * set the value of a field, which may be buried in the object hierarchy
+     *
      * @param obj the object in which the value should be set
      * @param value the value which should be set
      * @throws java.lang.IllegalAccessException
@@ -223,24 +235,36 @@ public class DbField {
         this.alias = alias;
         return this;
     }
-
+    
     public DbField setClassName(String className) {
         this.className = className;
         return this;
     }
-
+    
     public DbField setColumnName(String columnName) {
         this.columnName = columnName;
         return this;
     }
-
+    
     public DbField setEntityGraph(EntityGraph entityGraph) {
         this.entityGraph = entityGraph;
         return this;
     }
-
+    
     public DbField setFieldName(String fieldName) {
         this.fieldName = fieldName;
+        return this;
+    }
+
+    public DbField setFieldOrder(int fieldOrder) {
+        this.fieldOrder = fieldOrder;
+        return this;
+    }
+    
+    public DbField setFieldOrder(FieldOrder fieldOrder) {
+        if (fieldOrder != null) {
+            this.fieldOrder = fieldOrder.order();
+        }
         return this;
     }
 
@@ -250,20 +274,20 @@ public class DbField {
     }
 
     /**
-     * Key field to identify fields for ORDER BY clauses.
-     * Must be assigned during creation of the EntityGraph and 
-     * will be evaluated in matchesOrder().
+     * Key field to identify fields for ORDER BY clauses. Must be assigned
+     * during creation of the EntityGraph and will be evaluated in
+     * matchesOrder().
+     *
      * @param key the order key
-     * @return this 
+     * @return this
      */
     public DbField setOrderKey(String key) {
         this.orderKey = key;
         return this;
     }
-
+    
     public DbField setTableName(String tableName) {
         this.tableName = tableName;
         return this;
     }
 }
-

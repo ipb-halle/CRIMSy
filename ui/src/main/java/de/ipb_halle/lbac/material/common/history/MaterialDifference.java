@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -31,4 +32,8 @@ public interface MaterialDifference extends Serializable{
     public void initialise(int materialId, Integer actorID, Date mDate);
 
     public Date getModificationDate();
+    
+    public <T extends MaterialDifference> HistoryController<T> createHistoryController(MaterialBean bean);
+    
+    
 }

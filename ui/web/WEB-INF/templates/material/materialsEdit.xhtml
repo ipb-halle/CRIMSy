@@ -62,8 +62,7 @@
                                 onclick="ajax:materialBean.switchOneVersionBack();"
                                 process="@form"
                                 update="@form"
-                                ajax="true"
-                                oncomplete="addStateSaveBehavior();openDetailPanel();"
+                                ajax="true"                               
                                 icon-awesome="backward"
                                 />
                         </b:column>
@@ -93,8 +92,7 @@
                                 onclick="ajax:materialBean.switchOneVersionForward();"
                                 process="@form"
                                 update="@form"
-                                ajax="true"
-                                oncomplete="addStateSaveBehavior();openDetailPanel();"
+                                ajax="true"                                
                                 icon-awesome="forward"
                                 />
                         </b:column>
@@ -139,8 +137,19 @@
                                 value="#{materialBean.getMode()}"/>
                         </b:column>
                         <b:column span="4" offset="2">
-                            <h:outputText
-                                value="#{materialBean.getErrorMessages()}"/>
+                            <b:panel
+                                look="danger"
+                                rendered="#{not empty materialBean.errorMessages}">
+                                <ui:repeat
+                                    value="#{materialBean.errorMessages}"
+                                    var="errorMessage"
+                                    varStatus="status">
+                                    <h:outputText value="#{errorMessage}"/>
+                                    <ui:fragment rendered="#{!status.last}">
+                                        <br />
+                                    </ui:fragment>
+                                </ui:repeat>
+                            </b:panel>
                         </b:column>
                     </b:row>
 
@@ -149,20 +158,22 @@
 
             <b:panel
                 rendered="#{materialBean.isValideProjectChoosen()}"
-                styleClass="materialDetailPanel">
+                style="width: 100%">
                 <!-- Note: This tabView needs to be dynamic (= lazy loading via
                            AJAX) because some molecular structure plugins do not
                            load properly when they are in hidden tabs. -->
-                <p:tabView styleClass="itemEditTabView" dynamic="true">
+                <p:tabView styleClass="itemEditTabView" dynamic="true" style="width: 100%">
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/materialNames.xhtml"/>
                     </ui:insert>
-
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/indices.xhtml"/>
                     </ui:insert>
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/structures.xhtml"/>
+                    </ui:insert>
+                    <ui:insert> 
+                        <ui:include src="/WEB-INF/templates/material/components/sequences.xhtml"/>
                     </ui:insert>
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/hazards.xhtml"/>

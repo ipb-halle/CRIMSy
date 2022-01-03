@@ -27,13 +27,16 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <!-- plugin modules -->
+        
         <crimsy:dlgMaterialEdit
             id="ccDlgMaterialEdit" 
             agent="#{experimentBean.materialAgent}" />
-
+  
         <crimsy:dlgMaterialView
             id="ccDlgMaterialView"
             agent="#{experimentBean.linkedDataAgent}" />
+        
+        
         <crimsy:dlgItemView
             id="ccDlgItemView"
             agent="#{experimentBean.linkedDataAgent}" />
@@ -46,6 +49,8 @@
             <crimsy:dlgLinkCreation
                 id="ccDlgLinkCreation"/>
         </h:panelGroup>
+        
+      
         <crimsy:acobjectModal
             acobjectController="#{experimentBean.acObjectController}"
             groupsAgent="#{groupAgent}"
@@ -62,8 +67,7 @@
                 <ui:param name="chartController" value="#{experimentBean}" />
             </ui:include>
         </ui:insert>
-
-        <!-- content -->
+     
         <b:panel
             id="experiments"
             title="#{msgs.expExperiments}"
@@ -128,11 +132,10 @@
                             </p:panelGrid>
                         </b:column> 
                     </h:form>
-
                     <!-- This form has "multipart/form-data" as enctype because the image editor
                          component needs to use file uploads. The autocomplete="off" is needed
                          because Firefox caches hidden input fields (also related to the image
-                         editor), see https://stackoverflow.com/questions/9787135/firefox-caches-hidden-inputs -->
+                         editor), see https://stackoverflow.com/questions/9787135/firefox-caches-hidden-inputs -->                                        
                     <h:form id="expRecordsForm" enctype="multipart/form-data" pt:autocomplete="off">
                         <b:column span="9">
                             <b:panel collapsible="false" title="#{msgs.expExperimentRecords}">
@@ -145,7 +148,6 @@
                 </b:row> 
             </p:outputPanel>
         </b:panel>
-
     </h:body>
 
 </html>

@@ -1,0 +1,432 @@
+# ./bin/fasta36 -m 10 -n query8.fasta data8.fasta
+FASTA searches a protein or DNA sequence data bank
+ version 36.3.8h May, 2020
+Please cite:
+ W.R. Pearson & D.J. Lipman PNAS (1988) 85:2444-2448
+
+Query: query8.fasta
+  1>>>query query sequence - 99 nt
+Library: data8.fasta
+     6897 residues in     7 sequences
+
+Statistics: (shuffled [427]) MLE statistics: Lambda= 0.1757;  K=0.04176
+ statistics sampled from 6 (6) to 427 sequences
+Algorithm: FASTA (3.8 Nov 2011) [optimized]
+Parameters: +5/-4 matrix (5:-4), open/ext: -12/-4
+ ktup: 3, E-join: 0.25 (0.786), E-opt: 0.05 (0.571), width:  16
+ Scan time:  0.030
+
+The best scores are:                                      opt bits E(7)
+ENA|BAA28282|BAA28282.1 Escherichia coli beta- ( 870) [f]  495 132.7 7.6e-35
+ENA|CAA06312|CAA06312.1 Salmonella enterica su ( 876) [f]  335 92.2 1.2e-22
+ENA|BAA14224|BAA14224.1 Streptomyces cacaoi be ( 978) [f]  133 41.0 3.2e-07
+ENA|CAA25753|CAA25753.1 Bacillus cereus type 1 ( 921) [f]   82 28.0  0.0025
+ENA|BAC26705|BAC26705.1 Mus musculus (house mo (1479) [f]   69 24.7   0.025
+ENA|CAA06312|CAA06312.1 Salmonella enterica su ( 876) [r]   67 24.2   0.035
+ENA|CAA27733|CAA27733.1 Staphylococcus aureus  ( 846) [f]   64 23.5   0.059
+ENA|BAA28282|BAA28282.1 Escherichia coli beta- ( 870) [r]   62 23.0   0.084
+ENA|BAC26705|BAC26705.1 Mus musculus (house mo (1479) [r]   50 19.9    0.64
+ENA|BAA14224|BAA14224.1 Streptomyces cacaoi be ( 978) [r]   46 18.9     1.3
+ENA|BAB06346|BAB06346.1 Bacillus halodurans C- ( 927) [r]   44 18.4     1.7
+
+>>>query, 99 nt vs data8.fasta library
+; pg_name: fasta36
+; pg_ver: 36.3.8h May, 2020
+; pg_argv:  ./bin/fasta36 -m 10 -n query8.fasta data8.fasta; pg_name_alg: FASTA
+; pg_ver_rel: 3.8 Nov 2011
+; pg_matrix: +5/-4 (5:-4)
+; pg_open-ext: -12 -4
+; pg_ktup: 3
+; pg_join_E(): 0.25 (0.786)
+; pg_optcut_E(): 0.05 (0.571)
+; mp_extrap: 60000 427
+; mp_stats: (shuffled [427]) MLE statistics: Lambda= 0.1757;  K=0.04176
+; mp_KS: -0.0000 (N=0) at   0
+; mp_Algorithm: FASTA (3.8 Nov 2011) [optimized]
+; mp_Parameters: +5/-4 matrix (5:-4), open/ext: -12/-4  ktup: 3, E-join: 0.25 (0.786), E-opt: 0.05 (0.571), width:  16
+>>ENA|BAA28282|BAA28282.1 Escherichia coli beta-lactamase
+; fa_frame: f
+; fa_initn: 495
+; fa_init1: 495
+; fa_opt: 495
+; fa_z-score: 674.2
+; fa_bits: 132.7
+; fa_expect: 7.6e-35
+; bs_ident: 1.000
+; bs_sim: 1.000
+; bs_overlap: 99
+>query ..
+; sq_len: 99
+; sq_offset: 1
+; sq_type: D
+; al_start: 1
+; al_stop: 99
+; al_display_start: 1
+------------------------------CCTGCCGATCTGGTTAACTA
+CAATCCGATTGCCGAAAAACACGTCAACGGCACAATGACGCTGGCAGAAC
+TGAGCGCGGCCGCTTTGCAGTACAGCGAC
+>ENA|BAA28282|BAA28282.1 ..
+; sq_len: 870
+; sq_offset: 1
+; sq_type: D
+; al_start: 304
+; al_stop: 402
+; al_display_start: 274
+CAGCTGCTTAATCAGCCTGTCGAGATCAAGCCTGCCGATCTGGTTAACTA
+CAATCCGATTGCCGAAAAACACGTCAACGGCACAATGACGCTGGCAGAAC
+TGAGCGCGGCCGCTTTGCAGTACAGCGACAATACCGCCATGAACAAATTG
+ATTGCCCAGCTCGGTGGCCCGGGAGGCGTG
+; al_cons:
+                              ::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::
+>>ENA|CAA06312|CAA06312.1 Salmonella enterica subsp. enterica serovar Typhimurium CTX-M-7
+; fa_frame: f
+; fa_initn: 335
+; fa_init1: 335
+; fa_opt: 335
+; fa_z-score: 454.9
+; fa_bits: 92.2
+; fa_expect: 1.2e-22
+; bs_ident: 0.840
+; bs_sim: 0.840
+; bs_overlap: 94
+>query ..
+; sq_len: 99
+; sq_offset: 1
+; sq_type: D
+; al_start: 6
+; al_stop: 99
+; al_display_start: 1
+-------------------------CCTGCCGATCTGGTTAACTACAATC
+CGATTGCCGAAAAACACGTCAACGGCACAATGACGCTGGCAGAACTGAGC
+GCGGCCGCTTTGCAGTACAGCGAC
+>ENA|CAA06312|CAA06312.1 ..
+; sq_len: 876
+; sq_offset: 1
+; sq_type: D
+; al_start: 309
+; al_stop: 402
+; al_display_start: 279
+GCTAAATCAGCGCGTTGAAATCAGAGCAAGCGACCTGGTTAACTACAATC
+CGATTGCGGAGAAACACGTTAACGGCACGATGACGCTGGCTCAGCTTGGC
+GCCGGCGCCCTGCAGTATAGCGACAATACTGCCATGAATAAGCTGATTGC
+CCATCTGGGTGGGCCCGATAAAGTGACGGC
+; al_cons:
+                              ::: ::::::::::::::::
+::::::: :: :::::::: :::::::: :::::::::::  : ::  ::
+:: : :::  ::::::: ::::::
+>>ENA|BAA14224|BAA14224.1 Streptomyces cacaoi beta-lactamase
+; fa_frame: f
+; fa_initn: 132
+; fa_init1: 132
+; fa_opt: 133
+; fa_z-score: 177.3
+; fa_bits: 41.0
+; fa_expect: 3.2e-07
+; bs_ident: 0.642
+; bs_sim: 0.642
+; bs_overlap: 95
+>query ..
+; sq_len: 99
+; sq_offset: 1
+; sq_type: D
+; al_start: 6
+; al_stop: 99
+; al_display_start: 1
+-------------------------CCTGCCGAT-CTGGTTAACTACAAT
+CCGATTGCCGAAAAACACGTCAACGGCACAATGACGCTGGCAGAACTGAG
+CGCGGCCGCTTTGCAGTACAGCGAC
+>ENA|BAA14224|BAA14224.1 ..
+; sq_len: 978
+; sq_offset: 1
+; sq_type: D
+; al_start: 398
+; al_stop: 489
+; al_display_start: 368
+TGGACAAGGTGGTCCACTACGGGCAGGACGCGATCCTGCCCAACT-CA--
+CCGGTGACCGAGAAGCACGTCGCGGACGGCATGTCCCTGCGCGAGCTGTG
+CGACGCCGTCGTGGCCTACAGCGACAACACCGCGGCCAACCTGCTCTTCG
+ACCAGCTCGGCGGCCGAAGGGGCTCAACGC
+; al_cons:
+                              ::::-:::   ::::-::--
+::: :  :::: :: ::::::   : :   ::: : :::   :: ::: :
+::  ::::   ::   :::::::::
+>>ENA|CAA25753|CAA25753.1 Bacillus cereus type 1 penicillinase
+; fa_frame: f
+; fa_initn:  90
+; fa_init1:  60
+; fa_opt:  82
+; fa_z-score: 107.9
+; fa_bits: 28.0
+; fa_expect: 0.0025
+; bs_ident: 0.568
+; bs_sim: 0.568
+; bs_overlap: 74
+>query ..
+; sq_len: 99
+; sq_offset: 1
+; sq_type: D
+; al_start: 25
+; al_stop: 98
+; al_display_start: 1
+------CCTGCCGATCTGGTTAACTACAATCCGATTGCCGAAAAACACGT
+CAACGGCACAATGACGCTGGCAGAACTGAGCGCGGCCGCTTTGCAGTACA
+GCGAC
+>ENA|CAA25753|CAA25753.1 ..
+; sq_len: 921
+; sq_offset: 1
+; sq_type: D
+; al_start: 376
+; al_stop: 449
+; al_display_start: 346
+TATACGAAAGAAGACTTAGTGGATTATTCACCTGTTACAGAGAAACATGT
+AGATACTGGAATGAAACTAGGAGAAATTGCAGAGGCAGCTGTTCGTTCAA
+GTGATAATACTGCAGGGAACATTTTATTTAATAAAATAGGAGGACCGAAA
+GGATATGAAAAAGCGCTTAGGCATATGGGG
+; al_cons:
+                              ::  :: : :: ::::: ::
+  :      :::::  :: : :::: :    : ::: ::: : :  :  :
+: ::
+>>ENA|BAC26705|BAC26705.1 Mus musculus (house mouse) hypothetical protein
+; fa_frame: f
+; fa_initn:  85
+; fa_init1:  64
+; fa_opt:  69
+; fa_z-score: 86.4
+; fa_bits: 24.7
+; fa_expect:  0.025
+; bs_ident: 0.611
+; bs_sim: 0.611
+; bs_overlap: 54
+>query ..
+; sq_len: 99
+; sq_offset: 1
+; sq_type: D
+; al_start: 30
+; al_stop: 77
+; al_display_start: 1
+-CCTGCCGATCTGGTTAACTACAATCCGATTGCCGAAAAACACGTCAACG
+GCACAATGACGCTGGCAG------AACTGAGCGCGGCCGCTTTGCAGTAC
+AGCGAC
+>ENA|BAC26705|BAC26705.1 ..
+; sq_len: 1479
+; sq_offset: 1
+; sq_type: D
+; al_start: 1005
+; al_stop: 1058
+; al_display_start: 975
+TCCCAAAAAGCTGTGCAACAGCGAGTTCTGTGGCGAAAACCTCAGCAAGC
+AGAAACTGACACGCGCAGTGAGGAAACTGAACGCAAACATCCTTTACCTT
+TGTTCTTCTCAGCATGTAAA
+; al_cons:
+                              :: :::::: : :  :::  
+  : : :::: :  ::::------:::::: :::
+>>ENA|CAA06312|CAA06312.1 Salmonella enterica subsp. enterica serovar Typhimurium CTX-M-7
+; fa_frame: r
+; fa_initn:  73
+; fa_init1:  46
+; fa_opt:  67
+; fa_z-score: 87.8
+; fa_bits: 24.2
+; fa_expect:  0.035
+; bs_ident: 0.657
+; bs_sim: 0.657
+; bs_overlap: 35
+>query ..
+; sq_len: 99
+; sq_offset: 100
+; sq_type: D
+; al_start: 45
+; al_stop: 11
+; al_display_start: 75
+GCTCAGTTCTGCCAGCGTCATTGTGCCGTTGACGTGTTTTTCGGCAATCG
+GATTGTAGTTAACCAGATCGGCAGG
+>ENA|CAA06312|CAA06312.1 ..
+; sq_len: 876
+; sq_offset: 1
+; sq_type: D
+; al_start: 310
+; al_stop: 344
+; al_display_start: 280
+CTAAATCAGCGCGTTGAAATCAGAGCAAGCGACCTGGTTAACTACAATCC
+GATTGCGGAGAAACACGTTAACGGCACGATGACGCTGGCTCAGCTTGGCG
+CCGGCGCCCTGCAGTATAGC
+; al_cons:
+                              ::: :: ::  :  ::::: 
+:::::  :  :: ::
+>>ENA|CAA27733|CAA27733.1 Staphylococcus aureus hypothetical protein
+; fa_frame: f
+; fa_initn:  64
+; fa_init1:  64
+; fa_opt:  64
+; fa_z-score: 83.9
+; fa_bits: 23.5
+; fa_expect:  0.059
+; bs_ident: 0.632
+; bs_sim: 0.632
+; bs_overlap: 38
+>query ..
+; sq_len: 99
+; sq_offset: 1
+; sq_type: D
+; al_start: 7
+; al_stop: 44
+; al_display_start: 1
+------------------------CCTGCCGATCTGGTTAACTACAATCC
+GATTGCCGAAAAACACGTCAACGGCACAATGACGCTGGCAGAACTGAGCG
+CGGCCGCTTTGCAGTACAGC
+>ENA|CAA27733|CAA27733.1 ..
+; sq_len: 846
+; sq_offset: 1
+; sq_type: D
+; al_start: 274
+; al_stop: 311
+; al_display_start: 244
+TTAAATAAAAAAGTACATATTAACAAAGATGATATAGTTGCTTATTCTCC
+TATTTTAGAAAAATATGTAGGAAAAGATATCACTTTAAAAGCACTTATTG
+AGGCTTCAATGACATATAGT
+; al_cons:
+                              ::: : :::   ::   :::
+ :::   :::::: : ::
+>>ENA|BAA28282|BAA28282.1 Escherichia coli beta-lactamase
+; fa_frame: r
+; fa_initn: 104
+; fa_init1:  62
+; fa_opt:  62
+; fa_z-score: 81.0
+; fa_bits: 23.0
+; fa_expect:  0.084
+; bs_ident: 0.720
+; bs_sim: 0.720
+; bs_overlap: 25
+>query ..
+; sq_len: 99
+; sq_offset: 100
+; sq_type: D
+; al_start: 26
+; al_stop: 2
+; al_display_start: 56
+ATTGTGCCGTTGACGTGTTTTTCGGCAATCGGATTGTAGTTAACCAGATC
+GGCAGG
+>ENA|BAA28282|BAA28282.1 ..
+; sq_len: 870
+; sq_offset: 1
+; sq_type: D
+; al_start: 689
+; al_stop: 713
+; al_display_start: 659
+CCGGCATTCGGGCCGGCTTACCGACGTCGTGGACTGTGGGTGATAAGACC
+GGCAGCGGCGACTACGGCACCACCAATGATATTGCGGTGATCTGGCCGCA
+GGGTCGTGCGCCGCTGGTTC
+; al_cons:
+                              ::: ::: : : :  ::: :
+:::::
+>>ENA|BAC26705|BAC26705.1 Mus musculus (house mouse) hypothetical protein
+; fa_frame: r
+; fa_initn:  56
+; fa_init1:  50
+; fa_opt:  50
+; fa_z-score: 60.4
+; fa_bits: 19.9
+; fa_expect:   0.64
+; bs_ident: 0.737
+; bs_sim: 0.737
+; bs_overlap: 19
+>query ..
+; sq_len: 99
+; sq_offset: 100
+; sq_type: D
+; al_start: 80
+; al_stop: 62
+; al_display_start: 99
+-----------GTCGCTGTACTGCAAAGCGGCCGCGCTCAGTTCTGCCAG
+CGTCATTGTGCCGTTGACGTGTTTTTCGGCAATCGGATTGTAGTTAACCA
+GATCGGCAGG
+>ENA|BAC26705|BAC26705.1 ..
+; sq_len: 1479
+; sq_offset: 1
+; sq_type: D
+; al_start: 913
+; al_stop: 931
+; al_display_start: 883
+GAGCATAACAACCCCGCCTACACTATCAGCGCCGCGCTGGGCTACGCCAC
+GCAGCTCGTCAACATTGTGTCTCACATACTTGACATCAATCTTCCCAAAA
+AGCTGTGCAACAGCGAGTTC
+; al_cons:
+                              ::::::::  : :  ::::
+>>ENA|BAA14224|BAA14224.1 Streptomyces cacaoi beta-lactamase
+; fa_frame: r
+; fa_initn:  74
+; fa_init1:  46
+; fa_opt:  47
+; fa_z-score: 58.1
+; fa_bits: 18.9
+; fa_expect:    1.3
+; bs_ident: 0.846
+; bs_sim: 0.846
+; bs_overlap: 13
+>query ..
+; sq_len: 99
+; sq_offset: 100
+; sq_type: D
+; al_start: 14
+; al_stop: 2
+; al_display_start: 44
+ACGTGTTTTTCGGCAATCGGATTGTAGTTAACCAGATCGGCAGG
+>ENA|BAA14224|BAA14224.1 ..
+; sq_len: 978
+; sq_offset: 1
+; sq_type: D
+; al_start: 515
+; al_stop: 527
+; al_display_start: 485
+GCGACAACACCGCGGCCAACCTGCTCTTCGACCAGCTCGGCGGCCGAAGG
+GGCTCAACGCGGGTCCTCAAGCAGCTCGGCGACCACACCACGAGCATGGA
+CCGCTACGAGCAGGAGCTGG
+; al_cons:
+                              ::::: ::::: :
+>>ENA|BAB06346|BAB06346.1 Bacillus halodurans C-125 glutaminase
+; fa_frame: r
+; fa_initn:  87
+; fa_init1:  44
+; fa_opt:  60
+; fa_z-score: 55.8
+; fa_bits: 18.4
+; fa_expect:    1.7
+; bs_ident: 0.667
+; bs_sim: 0.667
+; bs_overlap: 30
+>query ..
+; sq_len: 99
+; sq_offset: 100
+; sq_type: D
+; al_start: 57
+; al_stop: 28
+; al_display_start: 87
+CAAAGCGGCCGCGCTCAGTTCTGCCAGCGTCATTGTGCCGTTGACGTGTT
+TTTCGGCAATCGGATTGTAGTTAACCAGATCGGCAGG
+>ENA|BAB06346|BAB06346.1 ..
+; sq_len: 927
+; sq_offset: 1
+; sq_type: D
+; al_start: 583
+; al_stop: 612
+; al_display_start: 553
+GTGGAACAGCTTCTGGATTTATACACGAAGCAGTGTGCGATTGAAATGTG
+TTGCTCCGATTTGGCGCGCATAGGCTATGTATTTGCCAATGAAGGGAGAG
+ACCCTGATACTGGGCAGCGG
+; al_cons:
+                              :: :::::  ::::  ::: 
+:: :  : ::
+
+>>><<<
+>>>///
+
+99 residues in 1 query   sequences
+6897 residues in 7 library sequences
+ Tcomplib [36.3.8h May, 2020] (8 proc in memory [0G])
+ start: Tue May 25 14:59:40 2021 done: Tue May 25 14:59:40 2021
+ Total Scan time:  0.030 Total Display time:  0.010
+
+Function used was FASTA [36.3.8h May, 2020]
