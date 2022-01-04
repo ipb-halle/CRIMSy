@@ -17,20 +17,27 @@
  */
 package de.ipb_halle.pageobjects.pages;
 
-import java.util.Optional;
+import static com.codeborne.selenide.Selenide.*;
+import static de.ipb_halle.pageobjects.util.Selectors.css;
+
+import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.navigation.NavigationConstants;
 
 /**
- * 
  * @author flange
  */
 public class LoginPage extends AbstractPage {
-    private static final String LOGINNAME_INPUT = "login:loginName_input";
-    private static final String LOGINNAME_MESSAGE = "login:loginName_message";
-    private static final String PASSWORD_INPUT = "login:password_input";
-    private static final String PASSWORD_MESSAGE = "login:password_message";
-    private static final String LOGIN_BUTTON = "login:loginButton";
+    private static final SelenideElement LOGINNAME_INPUT = $(
+            css("input", "login:loginName_input"));
+    private static final SelenideElement LOGINNAME_MESSAGE = $(
+            css("login:loginName_message"));
+    private static final SelenideElement PASSWORD_INPUT = $(
+            css("input", "login:password_input"));
+    private static final SelenideElement PASSWORD_MESSAGE = $(
+            css("login:password_message"));
+    private static final SelenideElement LOGIN_BUTTON = $(
+            css("login:loginButton"));
 
     public void navigate() {
         if (isLoggedIn()) {
@@ -39,20 +46,23 @@ public class LoginPage extends AbstractPage {
         navigateTo(NavigationConstants.LOGIN);
     }
 
-    public Optional<SearchPage> login(String loginName, String password) {
-        /*
-         * fill LOGINNAME_INPUT with loginName 
-         * fill PASSWORD_INPUT with password
-         * click LOGIN_BUTTON
-         */
-        throw new UnsupportedOperationException("Not implemented yet");
+    public AbstractPage login(String loginName, String password) {
+        LOGINNAME_INPUT.setValue(loginName);
+        PASSWORD_INPUT.setValue(password);
+        LOGIN_BUTTON.click();
+
+        if (isLoggedIn()) {
+            return page(SearchPage.class);
+        } else {
+            return this;
+        }
     }
 
-    public Optional<String> getLoginNameMessage() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public SelenideElement getLoginNameMessage() {
+        return LOGINNAME_MESSAGE;
     }
 
-    public Optional<String> getPasswordMessage() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public SelenideElement getPasswordMessage() {
+        return PASSWORD_MESSAGE;
     }
 }

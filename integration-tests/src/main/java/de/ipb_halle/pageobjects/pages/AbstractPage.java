@@ -17,7 +17,12 @@
  */
 package de.ipb_halle.pageobjects.pages;
 
+import static com.codeborne.selenide.Selenide.*;
+import static de.ipb_halle.pageobjects.util.Selectors.css;
+
 import java.util.List;
+
+import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.navigation.NavigationConstants;
 
@@ -26,28 +31,40 @@ import de.ipb_halle.pageobjects.navigation.NavigationConstants;
  * @author flange
  */
 public abstract class AbstractPage {
-    private static final String LOGIN_CMDLINK = "navigation:login";
-    private static final String LOGOUT_CMDLINK = "navigation:logout";
+    private static final SelenideElement LOGIN_CMDLINK = $(
+            css("navigation:login"));
+    private static final SelenideElement LOGOUT_CMDLINK = $(
+            css("navigation:logout"));
 
     public <T extends AbstractPage> T navigateTo(NavigationConstants target) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     * @return if the user is logged in
+     */
     public boolean isLoggedIn() {
-        // check if there is LOGIN_CMDLINK or LOGOUT_CMDLINK in the navigation bar (or none or both)
-        throw new UnsupportedOperationException("Not implemented yet");
+        boolean loginExists = LOGIN_CMDLINK.exists();
+        boolean logoutExists = LOGOUT_CMDLINK.exists();
+
+        if (logoutExists && !loginExists) {
+            return true;
+        }
+        if (loginExists && !logoutExists) {
+            return false;
+        }
+        throw new RuntimeException("Ambiguous login state");
     }
 
     /**
-     * 
      * @return login page or default search page
      */
     public AbstractPage logout() {
-        throw new UnsupportedOperationException("Not implemented yet");
         if (!isLoggedIn()) {
             throw new RuntimeException("I am already logged out");
         }
-        // click on LOGOUT_CMDLINK
+        LOGOUT_CMDLINK.click();
+        return page(LoginPage.class);
     }
 
     /*

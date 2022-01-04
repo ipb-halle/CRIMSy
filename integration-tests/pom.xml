@@ -55,6 +55,20 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <!-- pass maven properties as system properties to tests -->
+                        <selenide.reportsFolder>${project.build.directory}/selenide-reports</selenide.reportsFolder>
+                        <integrationtests.browserName>${integrationtests.browserName}</integrationtests.browserName>
+                        <integrationtests.selenoidUrl>${integrationtests.selenoidUrl}</integrationtests.selenoidUrl>
+                        <integrationtests.crimsyUrl>${integrationtests.crimsyUrl}</integrationtests.crimsyUrl>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -66,18 +80,51 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.codeborne</groupId>
+            <artifactId>selenide</artifactId>
+            <version>6.1.2</version>
+        </dependency>
+        <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>ui</artifactId>
             <!-- TODO: Make this a constant in the parent POM.
                        ... OOOPS! There is no parent POM ... -->
             <version>2.0.2</version>
+            <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <!-- TODO: make this a constant -->
+            <!-- TODO: make this a constant in the parent -->
             <version>2.2.12</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>firefox</id>
+            <properties>
+                <integrationtests.browserName>firefox</integrationtests.browserName>
+            </properties>
+        </profile>
+        <profile>
+            <id>chrome</id>
+            <properties>
+                <integrationtests.browserName>chrome</integrationtests.browserName>
+            </properties>
+        </profile>
+        <profile>
+            <id>selenoid</id>
+            <properties>
+                <integrationtests.selenoidUrl>http://localhost:4444/wd/hub</integrationtests.selenoidUrl>
+                <integrationtests.crimsyUrl>http://proxy</integrationtests.crimsyUrl>
+            </properties>
+        </profile>
+        <profile>
+            <id>local</id>
+            <properties>
+                <integrationtests.crimsyUrl>http://localhost</integrationtests.crimsyUrl>
+            </properties>
+        </profile>
+    </profiles>
 </project>

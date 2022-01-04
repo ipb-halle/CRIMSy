@@ -17,19 +17,15 @@
  */
 package de.ipb_halle.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static com.codeborne.selenide.Selenide.open;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import de.ipb_halle.pageobjects.pages.LoginPage;
-import de.ipb_halle.pageobjects.util.I18n;
+import de.ipb_halle.test.SelenideRule;
 
 /**
  * 
@@ -38,49 +34,53 @@ import de.ipb_halle.pageobjects.util.I18n;
 public class LoginTest {
     private LoginPage loginPage;
 
-    // this could become a parameter in a parameterized test
-    private Locale locale = Locale.ENGLISH;
+    @Rule
+    public SelenideRule selenideRule = new SelenideRule();
 
     @Before
     public void before() {
-        loginPage = new LoginPage();
-        loginPage.navigate();
+        loginPage = open("/", LoginPage.class);
     }
 
     @Test
-    public void test001_sucessfulLogin() {
-        Optional<SearchPage> nextPage = loginPage.login("admin", "admin");
-
-        assertTrue(nextPage.isPresent());
-        assertTrue(nextPage.get().isLoggedIn());
-
-        List<String> growls = loginPage.getGrowlMessages();
-        assertEquals(1, growls.size());
-        assertTrue(I18n.isUIMessage(growls.get(0), "admission_login_succeeded", locale));
+    public void test() {
+        assertTrue(loginPage.login("admin", "admin").isLoggedIn());
     }
 
-    @Test
-    public void test002_emptyInputs() {
-        Optional<SearchPage> nextpage = loginPage.login("", "");
-
-        assertTrue(nextpage.isEmpty());
-        assertFalse(loginPage.isLoggedIn());
-
-        assertTrue(I18n.isJSFMessage(loginPage.getLoginNameMessage().get(),
-                I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
-        assertTrue(I18n.isJSFMessage(loginPage.getPasswordMessage().get(),
-                I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
-    }
-
-    @Test
-    public void test003_failedLogin() {
-        Optional<SearchPage> nextPage = loginPage.login("nonexistinguser", "password");
-
-        assertTrue(nextPage.isEmpty());
-        assertFalse(loginPage.isLoggedIn());
-
-        List<String> growls = loginPage.getGrowlMessages();
-        assertEquals(1, growls.size());
-        assertTrue(I18n.isUIMessage(growls.get(0), "admission_login_failure", locale));
-    }
+//    @Test
+//    public void test001_sucessfulLogin() {
+//        Optional<SearchPage> nextPage = loginPage.login("admin", "admin");
+//
+//        assertTrue(nextPage.isPresent());
+//        assertTrue(nextPage.get().isLoggedIn());
+//
+//        List<String> growls = loginPage.getGrowlMessages();
+//        assertEquals(1, growls.size());
+//        assertTrue(I18n.isUIMessage(growls.get(0), "admission_login_succeeded", locale));
+//    }
+//
+//    @Test
+//    public void test002_emptyInputs() {
+//        Optional<SearchPage> nextpage = loginPage.login("", "");
+//
+//        assertTrue(nextpage.isEmpty());
+//        assertFalse(loginPage.isLoggedIn());
+//
+//        assertTrue(I18n.isJSFMessage(loginPage.getLoginNameMessage().get(),
+//                I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
+//        assertTrue(I18n.isJSFMessage(loginPage.getPasswordMessage().get(),
+//                I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
+//    }
+//
+//    @Test
+//    public void test003_failedLogin() {
+//        Optional<SearchPage> nextPage = loginPage.login("nonexistinguser", "password");
+//
+//        assertTrue(nextPage.isEmpty());
+//        assertFalse(loginPage.isLoggedIn());
+//
+//        List<String> growls = loginPage.getGrowlMessages();
+//        assertEquals(1, growls.size());
+//        assertTrue(I18n.isUIMessage(growls.get(0), "admission_login_failure", locale));
+//    }
 }

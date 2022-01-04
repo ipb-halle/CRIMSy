@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.testutil;
+package de.ipb_halle.test;
 
 import static org.junit.Assert.assertTrue;
 

@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,8 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.util;
+package de.ipb_halle.pageobjects.pages;
 
-/**
- * 
- * @author flange
- */
-public class Selector {
-    private Selector() {
-    }
+public class SearchPage extends AbstractPage {
 
-    private static final String SELECTOR_ATTRIBUTE = "data-test-id";
-
-    public static String cssSelector(String htmlElement, String selector) {
-        return String.format("%s[%s=\"%s\"]", htmlElement, SELECTOR_ATTRIBUTE,
-                selector);
-    }
 }
