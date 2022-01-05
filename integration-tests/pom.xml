@@ -63,6 +63,7 @@
                     <systemPropertyVariables>
                         <!-- pass maven properties as system properties to tests -->
                         <selenide.reportsFolder>${project.build.directory}/selenide-reports</selenide.reportsFolder>
+                        <selenide.downloadsFolder>${project.build.directory}/selenide-downloads</selenide.downloadsFolder>
                         <integrationtests.browserName>${integrationtests.browserName}</integrationtests.browserName>
                         <integrationtests.selenoidUrl>${integrationtests.selenoidUrl}</integrationtests.selenoidUrl>
                         <integrationtests.crimsyUrl>${integrationtests.crimsyUrl}</integrationtests.crimsyUrl>
@@ -78,6 +79,11 @@
             <artifactId>junit</artifactId>
             <version>4.13.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
         </dependency>
         <dependency>
             <groupId>com.codeborne</groupId>

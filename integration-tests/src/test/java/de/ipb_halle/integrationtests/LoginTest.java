@@ -18,21 +18,35 @@
 package de.ipb_halle.integrationtests;
 
 import static com.codeborne.selenide.Selenide.open;
+import static de.ipb_halle.pageobjects.growl.Severity.INFO;
+import static de.ipb_halle.pageobjects.growl.Severity.WARN;
+import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY;
+import static de.ipb_halle.test.GrowlAssert.assertGrowlI18n;
+import static de.ipb_halle.test.I18nAssert.assertJSFMessage;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import de.ipb_halle.pageobjects.growl.Growl;
 import de.ipb_halle.pageobjects.pages.LoginPage;
 import de.ipb_halle.test.SelenideRule;
 
 /**
- * 
  * @author flange
  */
 public class LoginTest {
     private LoginPage loginPage;
+    private Locale locale = Locale.ENGLISH;
 
     @Rule
     public SelenideRule selenideRule = new SelenideRule();
@@ -43,44 +57,30 @@ public class LoginTest {
     }
 
     @Test
-    public void test() {
+    public void test_sucessfulLogin() {
         assertTrue(loginPage.login("admin", "admin").isLoggedIn());
+        List<Growl> growls = Growl.getGrowls();
+        assertThat(growls, hasSize(1));
+        assertGrowlI18n("admission_login_succeeded_detail", locale, INFO,
+                growls.get(0));
     }
 
-//    @Test
-//    public void test001_sucessfulLogin() {
-//        Optional<SearchPage> nextPage = loginPage.login("admin", "admin");
-//
-//        assertTrue(nextPage.isPresent());
-//        assertTrue(nextPage.get().isLoggedIn());
-//
-//        List<String> growls = loginPage.getGrowlMessages();
-//        assertEquals(1, growls.size());
-//        assertTrue(I18n.isUIMessage(growls.get(0), "admission_login_succeeded", locale));
-//    }
-//
-//    @Test
-//    public void test002_emptyInputs() {
-//        Optional<SearchPage> nextpage = loginPage.login("", "");
-//
-//        assertTrue(nextpage.isEmpty());
-//        assertFalse(loginPage.isLoggedIn());
-//
-//        assertTrue(I18n.isJSFMessage(loginPage.getLoginNameMessage().get(),
-//                I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
-//        assertTrue(I18n.isJSFMessage(loginPage.getPasswordMessage().get(),
-//                I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
-//    }
-//
-//    @Test
-//    public void test003_failedLogin() {
-//        Optional<SearchPage> nextPage = loginPage.login("nonexistinguser", "password");
-//
-//        assertTrue(nextPage.isEmpty());
-//        assertFalse(loginPage.isLoggedIn());
-//
-//        List<String> growls = loginPage.getGrowlMessages();
-//        assertEquals(1, growls.size());
-//        assertTrue(I18n.isUIMessage(growls.get(0), "admission_login_failure", locale));
-//    }
+    // Don't run too frequent/often or you'll run into the intruder lockout.
+    @Test
+    public void test_failedLogin() {
+        assertFalse(loginPage.login("nonexistinguser", "pw").isLoggedIn());
+        List<Growl> growls = Growl.getGrowls();
+        assertThat(growls, hasSize(1));
+        assertGrowlI18n("admission_login_failure", locale, WARN, growls.get(0));
+    }
+
+    @Test
+    public void test_emptyInputs_validationErrors() {
+        assertFalse(loginPage.login("", "").isLoggedIn());
+        assertThat(Growl.getGrowls(), is(empty()));
+        assertJSFMessage(loginPage.getLoginNameMessage().getText(),
+                JSF_REQUIRED_VALIDATION_ERROR_KEY, locale);
+        assertJSFMessage(loginPage.getPasswordMessage().getText(),
+                JSF_REQUIRED_VALIDATION_ERROR_KEY, locale);
+    }
 }

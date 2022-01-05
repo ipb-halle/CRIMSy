@@ -18,7 +18,7 @@
 package de.ipb_halle.pageobjects.pages;
 
 import static com.codeborne.selenide.Selenide.*;
-import static de.ipb_halle.pageobjects.util.Selectors.css;
+import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
@@ -29,15 +29,15 @@ import de.ipb_halle.pageobjects.navigation.NavigationConstants;
  */
 public class LoginPage extends AbstractPage {
     private static final SelenideElement LOGINNAME_INPUT = $(
-            css("input", "login:loginName_input"));
+            testId("input", "login:loginName_input"));
     private static final SelenideElement LOGINNAME_MESSAGE = $(
-            css("login:loginName_message"));
+            testId("login:loginName_message"));
     private static final SelenideElement PASSWORD_INPUT = $(
-            css("input", "login:password_input"));
+            testId("input", "login:password_input"));
     private static final SelenideElement PASSWORD_MESSAGE = $(
-            css("login:password_message"));
+            testId("login:password_message"));
     private static final SelenideElement LOGIN_BUTTON = $(
-            css("login:loginButton"));
+            testId("login:loginButton"));
 
     public void navigate() {
         if (isLoggedIn()) {

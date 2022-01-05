@@ -28,12 +28,65 @@ public class Selectors {
 
     private static final String TEST_ATTRIBUTE_NAME = "data-test-id";
 
-    public static String css(String testId) {
-        return String.format("[%s=\"%s\"]", TEST_ATTRIBUTE_NAME, testId);
+    /**
+     * @param testId
+     * @return CSS selector that selects {@code testId} in the DOM element
+     *         attribute {@code data-test-id}
+     */
+    public static String testId(String testId) {
+        return String.format("[%s='%s']", TEST_ATTRIBUTE_NAME, testId);
     }
 
-    public static String css(String htmlElement, String testId) {
-        return String.format("%s[%s=\"%s\"]", htmlElement, TEST_ATTRIBUTE_NAME,
-                testId);
+    /**
+     * @param htmlElement
+     * @param testId
+     * @return CSS selector that selects for {@code testId} in the attribute
+     *         {@code data-test-id} in DOM elements of type {@code htmlElement}
+     */
+    public static String testId(String htmlElement, String testId) {
+        return elementWithAttribute(htmlElement, TEST_ATTRIBUTE_NAME, testId);
+    }
+
+    /**
+     * @param classes
+     * @return CSS selector that selects for given CSS classes
+     */
+    public static String cssClasses(String... classes) {
+        StringBuilder sb = new StringBuilder();
+        for (String c : classes) {
+            sb.append(".").append(c);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * @param htmlElement
+     * @param classes
+     * @return CSS selector that selects for the given CSS classes in DOM
+     *         elements of type {@code htmlElement}
+     */
+    public static String elementAndCssClasses(String htmlElement,
+            String... classes) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(htmlElement);
+        for (String c : classes) {
+            sb.append(".").append(c);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * @param htmlElement
+     * @param attributeName
+     * @param attributeValue
+     * @return CSS selector that selects for the attribute in DOM elements of
+     *         type {@code htmlElement}
+     */
+    public static String elementWithAttribute(String htmlElement,
+            String attributeName, String attributeValue) {
+        return String.format("%s[%s='%s']", htmlElement, attributeName,
+                attributeValue);
     }
 }

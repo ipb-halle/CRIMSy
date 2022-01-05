@@ -43,7 +43,10 @@ public class I18nAssert {
      */
     public static void assertJSFMessage(String test, String key,
             Locale locale) {
-        assertTrue(I18n.isJSFMessage(test, key, locale));
+        String assertMessage = String.format(
+                "Test string \"%s\" does not match the JSF message with key \"%s\", which is \"%s\".",
+                test, key, I18n.getJSFMessage(key, locale));
+        assertTrue(assertMessage, I18n.isJSFMessage(test, key, locale));
     }
 
     /**
@@ -56,6 +59,9 @@ public class I18nAssert {
      * @param locale
      */
     public static void assertUIMessage(String test, String key, Locale locale) {
-        assertTrue(I18n.isUIMessage(test, key, locale));
+        String assertMessage = String.format(
+                "Test string \"%s\" does not match the UI message with key \"%s\", which is \"%s\".",
+                test, key, I18n.getUIMessage(key, locale));
+        assertTrue(assertMessage, I18n.isUIMessage(test, key, locale));
     }
 }

@@ -18,9 +18,7 @@
 package de.ipb_halle.pageobjects.pages;
 
 import static com.codeborne.selenide.Selenide.*;
-import static de.ipb_halle.pageobjects.util.Selectors.css;
-
-import java.util.List;
+import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
@@ -32,25 +30,25 @@ import de.ipb_halle.pageobjects.navigation.NavigationConstants;
  */
 public abstract class AbstractPage {
     private static final SelenideElement LOGIN_CMDLINK = $(
-            css("navigation:login"));
+            testId("navigation:login"));
     private static final SelenideElement LOGOUT_CMDLINK = $(
-            css("navigation:logout"));
+            testId("navigation:logout"));
 
     public <T extends AbstractPage> T navigateTo(NavigationConstants target) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
-     * @return if the user is logged in
+     * @return {@code true} if the user is logged in
      */
     public boolean isLoggedIn() {
-        boolean loginExists = LOGIN_CMDLINK.exists();
-        boolean logoutExists = LOGOUT_CMDLINK.exists();
+        boolean loginDisplayed = LOGIN_CMDLINK.isDisplayed();
+        boolean logoutDisplayed = LOGOUT_CMDLINK.isDisplayed();
 
-        if (logoutExists && !loginExists) {
+        if (logoutDisplayed && !loginDisplayed) {
             return true;
         }
-        if (loginExists && !logoutExists) {
+        if (!logoutDisplayed && loginDisplayed) {
             return false;
         }
         throw new RuntimeException("Ambiguous login state");
@@ -64,18 +62,7 @@ public abstract class AbstractPage {
             throw new RuntimeException("I am already logged out");
         }
         LOGOUT_CMDLINK.click();
+        // TODO: can also be the search page
         return page(LoginPage.class);
-    }
-
-    /*
-     * I have the suspicion that growls must become a singleton.
-     * Or should there be a "wait for growl"?
-     */
-    public List<String> getGrowlMessages() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void clearGrowlMessages() {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

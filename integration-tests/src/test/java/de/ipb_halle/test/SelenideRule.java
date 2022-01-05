@@ -24,7 +24,8 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
- * JUnit Rule that configures the Selenide default browser.
+ * JUnit Rule that configures the Selenide default browser before running the
+ * test(s) and clears the browser cookies afterwards.
  * 
  * @author flange
  */
