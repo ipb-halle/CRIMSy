@@ -39,6 +39,7 @@ import org.junit.Test;
 
 import de.ipb_halle.pageobjects.growl.Growl;
 import de.ipb_halle.pageobjects.pages.LoginPage;
+import de.ipb_halle.pageobjects.pages.SearchPage;
 import de.ipb_halle.test.SelenideRule;
 
 /**
@@ -58,7 +59,9 @@ public class LoginTest {
 
     @Test
     public void test_sucessfulLogin() {
-        assertTrue(loginPage.login("admin", "admin").isLoggedIn());
+        SearchPage searchPage = (SearchPage) loginPage.login("admin", "admin");
+
+        assertTrue(searchPage.isLoggedIn());
         List<Growl> growls = Growl.getGrowls();
         assertThat(growls, hasSize(1));
         assertGrowlI18n("admission_login_succeeded_detail", locale, INFO,

@@ -27,8 +27,11 @@ import java.util.Set;
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.plugins.MolPlugin;
+import de.ipb_halle.pageobjects.table.DataTable;
 
 /**
+ * Page object for /ui/web/WEB-INF/templates/default.xhtml
+ * 
  * @author flange
  */
 public class SearchPage extends AbstractPage {
@@ -66,7 +69,18 @@ public class SearchPage extends AbstractPage {
         }
     }
 
+    /*
+     * Actions
+     */
+    public SearchPage search(String searchText) {
+        SEARCH_TEXT.setValue(searchText);
+        SEARCH_BUTTON.click();
+        return this;
+    }
+
     public SearchPage activateFilter(TypeFilter filter) {
+        toggleAdvancedSearchIfNeeded();
+
         if (!filter.checkbox.isSelected()) {
             filter.checkbox.click();
         }
@@ -74,23 +88,17 @@ public class SearchPage extends AbstractPage {
     }
 
     public SearchPage deactivateFilter(TypeFilter filter) {
+        toggleAdvancedSearchIfNeeded();
+
         if (filter.checkbox.isSelected()) {
             filter.checkbox.click();
         }
         return this;
     }
 
-    public Set<TypeFilter> getActiveTypeFilters() {
-        Set<TypeFilter> result = EnumSet.noneOf(TypeFilter.class);
-        for (TypeFilter tf : TypeFilter.values()) {
-            if (tf.checkbox.isSelected()) {
-                result.add(tf);
-            }
-        }
-        return result;
-    }
-
     public SearchPage setActiveTypeFilters(Set<TypeFilter> filters) {
+        toggleAdvancedSearchIfNeeded();
+
         Set<TypeFilter> alreadyActive = getActiveTypeFilters();
         EnumSet<TypeFilter> activate = EnumSet.allOf(TypeFilter.class);
         activate.removeAll(alreadyActive);
@@ -108,12 +116,41 @@ public class SearchPage extends AbstractPage {
         return this;
     }
 
+    /*
+     * Getters
+     */
+    /**
+     * @return all activated type filters
+     */
+    public Set<TypeFilter> getActiveTypeFilters() {
+        Set<TypeFilter> result = EnumSet.noneOf(TypeFilter.class);
+        for (TypeFilter tf : TypeFilter.values()) {
+            if (tf.checkbox.isSelected()) {
+                result.add(tf);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @return number of search results from remote nodes
+     */
     public int getNumberOfNewDocuments() {
         return Integer.parseInt(NUMBER_OF_NEW_DOCUMENTS_BADGE.getText());
     }
 
+    /**
+     * @return page object of the structure editor in the advance search panel
+     */
     public MolPlugin getMolEditor() {
         return new MolPlugin(MOLEDITOR_TESTID, MOLEDITOR_WIDGETVAR);
+    }
+
+    /**
+     * @return page object of the results data table
+     */
+    public DataTable getSearchResultsTable() {
+        return DataTable.extract(SEARCH_RESULTS_TABLE);
     }
 
     public SelenideElement getSearchText() {
@@ -134,5 +171,11 @@ public class SearchPage extends AbstractPage {
 
     public SelenideElement getToggleAdvancedSearchButton() {
         return TOGGLE_ADVANCED_SEARCH_BUTTON;
+    }
+
+    private void toggleAdvancedSearchIfNeeded() {
+        if (!TypeFilter.DOCUMENT.checkbox.isDisplayed()) {
+            TOGGLE_ADVANCED_SEARCH_BUTTON.click();
+        }
     }
 }

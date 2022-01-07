@@ -22,9 +22,9 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.navigation.NavigationConstants;
-
 /**
+ * Page object for /ui/web/WEB-INF/templates/login.xhtml
+ * 
  * @author flange
  */
 public class LoginPage extends AbstractPage {
@@ -41,9 +41,10 @@ public class LoginPage extends AbstractPage {
 
     public void navigate() {
         if (isLoggedIn()) {
-            throw new RuntimeException("I am already logged in");
+            throw new RuntimeException(
+                    "I am already logged in! Log out first to reach this page.");
         }
-        navigateTo(NavigationConstants.LOGIN);
+        LOGIN_CMDLINK.click();
     }
 
     public AbstractPage login(String loginName, String password) {
@@ -51,7 +52,7 @@ public class LoginPage extends AbstractPage {
         PASSWORD_INPUT.setValue(password);
         LOGIN_BUTTON.click();
 
-        if (isLoggedIn()) {
+        if (isLoggedIn() && loginName.equals(getCurrentUsername())) {
             return page(SearchPage.class);
         } else {
             return this;

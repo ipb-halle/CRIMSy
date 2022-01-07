@@ -22,22 +22,55 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.navigation.NavigationConstants;
+import de.ipb_halle.pageobjects.navigation.Navigation;
 
 /**
+ * Parent class for page objects.
  * 
  * @author flange
  */
 public abstract class AbstractPage {
-    private static final SelenideElement LOGIN_CMDLINK = $(
+    protected static final SelenideElement LOGIN_CMDLINK = $(
             testId("navigation:login"));
-    private static final SelenideElement LOGOUT_CMDLINK = $(
+    protected static final SelenideElement LOGOUT_CMDLINK = $(
             testId("navigation:logout"));
+    private static final SelenideElement CURRENT_USERNAME = $(
+            testId("navigation:username"));
 
-    public <T extends AbstractPage> T navigateTo(NavigationConstants target) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    /*
+     * Actions
+     */
+    /**
+     * Navigate to the given target page.
+     * 
+     * @param <T>
+     * @param target
+     * @return page object of target page
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends AbstractPage> T navigateTo(Navigation target) {
+        target.getMenu().activate();
+        target.getNavCmdLink().click();
+        return (T) page(target.getPageObjectClass());
     }
 
+    /**
+     * Log out
+     * 
+     * @return page object for the login page or the default search page
+     */
+    public AbstractPage logout() {
+        if (!isLoggedIn()) {
+            throw new RuntimeException("I am already logged out");
+        }
+        LOGOUT_CMDLINK.click();
+        // TODO: can also be the search page
+        return page(LoginPage.class);
+    }
+
+    /*
+     * Getters
+     */
     /**
      * @return {@code true} if the user is logged in
      */
@@ -55,14 +88,10 @@ public abstract class AbstractPage {
     }
 
     /**
-     * @return login page or default search page
+     * @return name of the currently logged in user
      */
-    public AbstractPage logout() {
-        if (!isLoggedIn()) {
-            throw new RuntimeException("I am already logged out");
-        }
-        LOGOUT_CMDLINK.click();
-        // TODO: can also be the search page
-        return page(LoginPage.class);
+    public String getCurrentUsername() {
+        Navigation.Menu.SETTINGS.activate();
+        return CURRENT_USERNAME.getText();
     }
 }
