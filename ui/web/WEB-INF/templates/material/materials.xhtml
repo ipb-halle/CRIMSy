@@ -26,14 +26,14 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <crimsy:acobjectModal
             acobjectController="#{materialOverviewBean.acObjectController}"
             groupsAgent="#{groupAgent}"
             updateTargetClass="materialOverviewTableContainer"/>
-        <b:container
-            styleClass="materialOverviewTableContainer">
+        <b:container styleClass="materialOverviewTableContainer">
             <b:row>
                 <b:column span="3">
                     <crimsy:materialSearchMask
@@ -41,50 +41,46 @@
                         updateTargets="materialForm @(.materialOverviewTableContainer)" />
                 </b:column>
                 <b:column span="9">
-                    <b:form 
-                        id="materialForm">
+                    <b:form id="materialForm">
                         <b:container>
                             <b:row>
                                 <b:column span="1">
                                     <b:commandButton
-                                        styleClass="tstNewMaterial"
-                                        action="#{materialOverviewBean.actionCreateNewMaterial()}"
+                                        pt:data-test-id="materialOverview:newMaterial"
                                         value="#{msgs.materials_createNew}"
-                                        />
+                                        styleClass="tstNewMaterial"
+                                        action="#{materialOverviewBean.actionCreateNewMaterial()}" />
                                 </b:column>
                             </b:row>
                             <b:row>
                                 <b:dataTable
+                                    pt:data-test-id="materialOverview:resultsTable"
+                                    value="#{materialOverviewBean.readableMaterials}"
+                                    var="material"
                                     styleClass="materialDataTable"
                                     paginated="false"
-                                    value="#{materialOverviewBean.readableMaterials}"
                                     searching="false"
-                                    var="material"
                                     saveState="false">
-
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialOverview_tableheader_name}">
+                                    <b:dataTableColumn label="#{msgs.materialOverview_tableheader_name}">
                                         <h:outputText
                                             id="materialNames"
-                                            escape="false"
-                                            value="#{materialOverviewBean.getWrappedNames(material, 3)}">
+                                            value="#{materialOverviewBean.getWrappedNames(material, 3)}"
+                                            escape="false">
                                             <f:converter converterId="RichTextConverter" />
                                         </h:outputText>
-                                        <p:tooltip for="materialNames"  position="right">
+                                        <p:tooltip
+                                            for="materialNames"
+                                            position="right">
                                             <h:outputText 
-                                                escape="false"
-                                                value="#{materialOverviewBean.getWrappedNames(material, 20)}" >
+                                                value="#{materialOverviewBean.getWrappedNames(material, 20)}"
+                                                escape="false">
                                                 <f:converter converterId="RichTextConverter" />
                                             </h:outputText>
-
                                         </p:tooltip>
                                     </b:dataTableColumn>
-
-
-
                                     <b:dataTableColumn
-                                        label="#{msgs.materialOverview_tableheader_type}"
-                                        value="#{materialOverviewBean.getLocalizedMaterialType(material)}">
+                                        value="#{materialOverviewBean.getLocalizedMaterialType(material)}"
+                                        label="#{msgs.materialOverview_tableheader_type}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         styleClass="div-container-hazard"
@@ -111,103 +107,109 @@
                                             </ui:insert>
                                         </ui:fragment>
                                     </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialOverview_tableheader_actions}">
-                                        <b:commandButton style="padding: 0 4px;"
-                                                         icon="pencil"
-                                                         look="link"
-                                                         type="submit"
-                                                         ajax="false"
-                                                         action="#{materialOverviewBean.actionEditMaterial(material)}"                                                       
-                                                         tooltip="#{msgs.materialOverview_actions_edit}"
-                                                         />
-                                        <b:commandButton style="padding: 0 4px;"
-                                                         icon-awesome="fa-eyedropper"
-                                                         look="link"
-                                                         type="submit"
-                                                         ajax="false"
-                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permCREATE')}"
-                                                         action="#{materialOverviewBean.actionCreateNewItem(material)}"
-                                                         tooltip="#{msgs.materialOverview_actions_createItem}"
-                                                         />
-
-
-                                        <b:commandButton style="padding: 0 4px;"
-                                                         icon="glyphicon glyphicon-user"
-                                                         look="link"
-                                                         ajax="true"
-                                                         process="@this"
-                                                         tooltip="#{msgs.materialOverview_actions_changeRights}"                                                         
-                                                         update="@(.acoEditModal)"
-                                                         type="button"
-                                                         action="#{materialOverviewBean.actionStartAclChange(material)}"
-                                                         oncomplete="PF('dlgAcl').show();"
-                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permGRANT')}"/>
-
-
-                                        <b:commandButton style="padding: 0 4px;"
-                                                         icon="trash"
-                                                         look="link"
-                                                         type="button"
-                                                         ajax="true"
-                                                         update="@form"
-                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permDELETE')}"
-                                                         onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"
-                                                         tooltip="#{msgs.materialOverview_actions_deactivate}"
-                                                         />
+                                    <b:dataTableColumn label="#{msgs.materialOverview_tableheader_actions}">
+                                        <b:commandButton 
+                                            style="padding: 0 4px;"
+                                            icon="pencil"
+                                            look="link"
+                                            type="submit"
+                                            ajax="false"
+                                            action="#{materialOverviewBean.actionEditMaterial(material)}"                                                       
+                                            tooltip="#{msgs.materialOverview_actions_edit}" />
+                                        <b:commandButton
+                                            style="padding: 0 4px;"
+                                            icon-awesome="fa-eyedropper"
+                                            look="link"
+                                            type="submit"
+                                            ajax="false"
+                                            disabled="#{!materialOverviewBean.hasAccessRight(material,'permCREATE')}"
+                                            action="#{materialOverviewBean.actionCreateNewItem(material)}"
+                                            tooltip="#{msgs.materialOverview_actions_createItem}" />
+                                        <b:commandButton
+                                            style="padding: 0 4px;"
+                                            icon="glyphicon glyphicon-user"
+                                            look="link"
+                                            ajax="true"
+                                            process="@this"
+                                            tooltip="#{msgs.materialOverview_actions_changeRights}"                                                         
+                                            update="@(.acoEditModal)"
+                                            type="button"
+                                            action="#{materialOverviewBean.actionStartAclChange(material)}"
+                                            oncomplete="PF('dlgAcl').show();"
+                                            disabled="#{!materialOverviewBean.hasAccessRight(material,'permGRANT')}" />
+                                        <b:commandButton
+                                            style="padding: 0 4px;"
+                                            icon="trash"
+                                            look="link"
+                                            type="button"
+                                            ajax="true"
+                                            update="@form"
+                                            disabled="#{!materialOverviewBean.hasAccessRight(material,'permDELETE')}"
+                                            onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"
+                                            tooltip="#{msgs.materialOverview_actions_deactivate}" />
                                     </b:dataTableColumn>
                                 </b:dataTable>
                             </b:row>
                             <b:row>
-                                <b:column span="1" styleClass="navigationColumn"> 
-                                    <b:commandButton 
+                                <b:column
+                                    span="1"
+                                    styleClass="navigationColumn"> 
+                                    <b:commandButton
+                                        pt:data-test-id="materialOverview:firstPageButton"
                                         styleClass="navigationButton"
                                         disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
                                         action="#{materialOverviewBean.tableController.tableController.actionFirstResult()}"
                                         icon-awesome="fa-fast-backward"
                                         ajax="true"
-                                        update="@(.materialOverviewTableContainer)"
-                                        />
+                                        update="@(.materialOverviewTableContainer)" />
                                 </b:column>
-                                <b:column span="1" styleClass="navigationColumn"> 
-                                    <b:commandButton 
+                                <b:column
+                                    span="1"
+                                    styleClass="navigationColumn"> 
+                                    <b:commandButton
+                                        pt:data-test-id="materialOverview:prevPageButton"
                                         styleClass="navigationButton"
                                         disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
                                         action="#{materialOverviewBean.tableController.tableController.actionPriorResults()}"
                                         ajax="true"
                                         update="@(.materialOverviewTableContainer)"
-                                        icon-awesome="fa-backward"/>
+                                        icon-awesome="fa-backward" />
                                 </b:column> 
-                                <b:column span="1" styleClass="navigationColumn"> 
-                                    <b:commandButton 
+                                <b:column
+                                    span="1"
+                                    styleClass="navigationColumn"> 
+                                    <b:commandButton
+                                        pt:data-test-id="materialOverview:nextPageButton"
                                         styleClass="navigationButton"
                                         disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
                                         action="#{materialOverviewBean.tableController.tableController.actionNextResults()}"
                                         ajax="true"
                                         update="@(.materialOverviewTableContainer)"
-                                        icon-awesome="fa-forward"
-                                        />
+                                        icon-awesome="fa-forward" />
                                 </b:column> 
-                                <b:column span="1" styleClass="navigationColumn"> 
-                                    <b:commandButton 
+                                <b:column
+                                    span="1"
+                                    styleClass="navigationColumn"> 
+                                    <b:commandButton
+                                        pt:data-test-id="materialOverview:lastPageButton"
                                         styleClass="navigationButton"
                                         action="#{materialOverviewBean.tableController.tableController.actionLastResult()}"
                                         disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
                                         ajax="true"
                                         update="@(.materialOverviewTableContainer)"
-                                        icon-awesome="fa-fast-forward"
-                                        />
+                                        icon-awesome="fa-fast-forward" />
                                 </b:column> 
-                                <b:column span="2" offset="1"> 
-                                    <h:outputText value="#{materialOverviewBean.tableController.tableController.getNavigationInfos()}"/>
+                                <b:column
+                                    pt:data-test-id="materialOverview:paginationInfoText"
+                                    span="2"
+                                    offset="1"> 
+                                    <h:outputText value="#{materialOverviewBean.tableController.tableController.getNavigationInfos()}" />
                                 </b:column> 
                             </b:row>
-
                         </b:container>
                     </b:form>
                 </b:column>
             </b:row>
         </b:container>
     </h:body>
-
 </html>

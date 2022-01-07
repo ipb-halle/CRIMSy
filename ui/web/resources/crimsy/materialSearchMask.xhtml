@@ -24,7 +24,8 @@ limitations under the License.
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <composite:interface>
         <composite:attribute
             name="searchController"
@@ -83,6 +84,7 @@ limitations under the License.
                     <b:row styleClass="materialFilterRow">
                         <b:column span="2">
                             <p:autoComplete
+                                pt:data-test-id="materialSearchMask:name"
                                 value="#{cc.attrs.searchController.name}"
                                 maxResults="10"
                                 completeMethod="#{cc.attrs.searchController.getSimilarMaterialNames}"
@@ -100,6 +102,7 @@ limitations under the License.
                     <b:row styleClass="materialFilterRow">
                         <b:column span="2">
                             <b:inputText
+                                pt:data-test-id="materialSearchMask:id"
                                 value="#{cc.attrs.searchController.id}"
                                 styleClass="materialFilterInputfield" />
                         </b:column>
@@ -115,6 +118,7 @@ limitations under the License.
                     <b:row styleClass="materialFilterRow">
                         <b:column span="2">
                             <p:autoComplete
+                                pt:data-test-id="materialSearchMask:userName"
                                 value="#{cc.attrs.searchController.userName}"
                                 maxResults="10"
                                 completeMethod="#{cc.attrs.searchController.getSimilarUserNames}"
@@ -132,6 +136,7 @@ limitations under the License.
                     <b:row styleClass="materialFilterRow">
                         <b:column span="2">
                             <p:autoComplete
+                                pt:data-test-id="materialSearchMask:projectName"
                                 value="#{cc.attrs.searchController.projectName}"
                                 maxResults="10"
                                 completeMethod="#{cc.attrs.searchController.getSimilarProjectNames}"
@@ -149,6 +154,7 @@ limitations under the License.
                     <b:row styleClass="materialFilterRow">
                         <b:column span="2">
                             <b:inputText
+                                pt:data-test-id="materialSearchMask:index"
                                 value="#{cc.attrs.searchController.index}"
                                 styleClass="materialFilterInputfield" />
                         </b:column>
@@ -164,8 +170,9 @@ limitations under the License.
                     <b:row styleClass="materialFilterRow">
                         <b:column>
                             <b:selectOneMenu
-                                styleClass="materialFilterInputfield"
-                                value="#{cc.attrs.searchController.materialType}">
+                                pt:data-test-id="materialSearchMask:materialType"
+                                value="#{cc.attrs.searchController.materialType}"
+                                styleClass="materialFilterInputfield">
                                 <f:selectItem
                                     noSelectionOption="true"
                                     itemValue=""
@@ -185,11 +192,13 @@ limitations under the License.
                         <b:column span="2">
                             <mol:molecule
                                 id="molEditorSearchMask"
+                                pt:data-test-id="materialSearchMask:molEditor"
                                 value="#{cc.attrs.searchController.molecule}" 
                                 pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                 format="MDLV2000"
                                 border="true"
-                                readonly="false" />
+                                readonly="false"
+                                widgetVar="molEditorWidgetVar" />
                         </b:column>
                     </b:row>
                 </ui:fragment>
@@ -199,8 +208,9 @@ limitations under the License.
                         span="1" 
                         styleClass="materialFilterButtonColumn">
                         <b:commandButton
-                            styleClass="materialFilterButton"
+                            pt:data-test-id="materialSearchMask:clearButton"
                             value="#{msgs.materialOverview_searchFilter_clear}"
+                            styleClass="materialFilterButton"
                             ajax="true"
                             update="materialSearchMaskForm #{cc.attrs.updateTargets}"
                             action="#{cc.attrs.searchController.actionClearSearchFilter()}"/>
@@ -209,8 +219,9 @@ limitations under the License.
                         span="1"
                         styleClass="materialFilterButtonColumn materialFilterButtonRight">
                         <b:commandButton
-                            styleClass="materialFilterButton"
+                            pt:data-test-id="materialSearchMask:searchButton"
                             value="#{msgs.materialOverview_searchFilter_search}"
+                            styleClass="materialFilterButton"
                             ajax="true"
                             process="@form"
                             update="materialSearchMaskForm #{cc.attrs.updateTargets}"

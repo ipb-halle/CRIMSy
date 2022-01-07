@@ -61,6 +61,14 @@ public class MolPlugin {
         executeJavaScript(js);
     }
 
+    /**
+     * @return plugin type
+     */
+    public String getPluginType() {
+        // TODO
+        return null;
+    }
+
     private String escape(String s) {
         if (s == null) {
             return "";

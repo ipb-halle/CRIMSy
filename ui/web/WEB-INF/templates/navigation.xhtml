@@ -39,20 +39,24 @@
                             value="BioCloud"
                             styleClass="tstNavBioCloud">
                             <b:navCommandLink
+                                pt:data-test-id="navigation:search"
                                 value="#{msgs.navigation_bioCloud_search}"
                                 styleClass="tstNavLBAC"
-                                actionListener="#{navigator.navigate('default')}"/>
+                                actionListener="#{navigator.navigate('default')}" />
                             <b:navCommandLink
+                                pt:data-test-id="navigation:wordCloudSearch"
                                 value="#{msgs.navigation_bioCloud_wordCloudSearch}"
                                 styleClass="tstNavWordCloud"
-                                actionListener="#{navigator.navigate('wordCloud2')}"/>
+                                actionListener="#{navigator.navigate('wordCloud2')}" />
                             <b:navCommandLink
+                                pt:data-test-id="navigation:sequenceSearch"
                                 value="#{msgs.navigation_bioCloud_sequenceSearch}"
-                                actionListener="#{navigator.navigate('sequence/sequenceSearch')}"/>
+                                actionListener="#{navigator.navigate('sequence/sequenceSearch')}" />
                             <b:navCommandLink
+                                pt:data-test-id="navigation:forum"
                                 value="#{msgs.navigation_bioCloud_forum}"
                                 styleClass="tstNavForum"
-                                actionListener="#{navigator.navigate('socialForum')}"/>
+                                actionListener="#{navigator.navigate('socialForum')}" />
                         </b:dropMenu>
                         <b:navLink />
                     </b:flyOutMenu>
@@ -65,30 +69,36 @@
                             pt:data-test-id="navigation:lims"
                             value="LIMS"
                             styleClass="tstNavLIMS">
-                            <b:navCommandLink 
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:materials"
                                 value="#{msgs.navigation_lims_materials}"
                                 styleClass="tstNavMaterials"
-                                actionListener="#{navigator.navigate('material/materials')}"/>
-                            <b:navCommandLink 
+                                actionListener="#{navigator.navigate('material/materials')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:projects"
                                 value="#{msgs.navigation_lims_projects}"
                                 styleClass="tstNavProjects"
-                                actionListener="#{navigator.navigate('project/projectOverview')}"/>
-                            <b:navCommandLink 
+                                actionListener="#{navigator.navigate('project/projectOverview')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:items"
                                 value="#{msgs.navigation_lims_items}"
                                 styleClass="tstNavItems"
-                                actionListener="#{navigator.navigate('item/items')}"/>
-                            <b:navCommandLink 
+                                actionListener="#{navigator.navigate('item/items')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:taxonomy"
                                 value="#{msgs.navigation_lims_taxonomy}"
                                 styleClass="tstNavTaxonomy"
-                                actionListener="#{navigator.navigate('material/taxonomy')}"/>
-                            <b:navCommandLink 
+                                actionListener="#{navigator.navigate('material/taxonomy')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:experiments"
                                 value="#{msgs.navigation_lims_experiments}"
                                 styleClass="tstNavExperiments"
-                                actionListener="#{navigator.navigate('exp/experiments')}"/>
-                            <b:navCommandLink 
+                                actionListener="#{navigator.navigate('exp/experiments')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:containers"
                                 value="#{msgs.navigation_lims_containers}"
                                 styleClass="tstNavContainers"
-                                actionListener="#{navigator.navigate('container/container')}"/>
+                                actionListener="#{navigator.navigate('container/container')}" />
                         </b:dropMenu>
                         <b:navLink />
                     </b:flyOutMenu>
@@ -104,18 +114,18 @@
                     <b:navbarLinks pull="right" styleClass="tstProperties">
                         <b:navCommandLink
                             pt:data-test-id="navigation:login"
+                            value="Login"
                             iconAwesome="log-in"
                             rendered="#{userBean.currentAccount.isPublicAccount()}"
-                            value="Login"
                             styleClass="tstLoginCmdLink"
-                            actionListener="#{navigator.navigate('login')}"/>
+                            actionListener="#{navigator.navigate('login')}" />
                         <b:navCommandLink
                             pt:data-test-id="navigation:logout"
+                            value="Logout"
                             iconAwesome="log-out"
                             rendered="#{! userBean.currentAccount.isPublicAccount()}"
-                            value="Logout"
                             styleClass="tstLogoutCmdLink"
-                            actionListener="#{userBean.actionLogout}"/>
+                            actionListener="#{userBean.actionLogout}" />
                         <b:dropMenu
                             pt:data-test-id="navigation:settings"
                             value="#{msgs.navigation_admission_title}" 
@@ -123,47 +133,65 @@
                             rendered="#{! userBean.currentAccount.isPublicAccount()}"
                             iconAwesome="cog"
                             iconAlign="left">
-                            <b:navLink header="#{userBean.currentAccount.name}"/>
+                            <b:navLink 
+                                pt:data-test-id="navigation:username"
+                                header="#{userBean.currentAccount.name}" />
 
                             <!-- Admission -->
-                            <b:navCommandLink iconAwesome="pencil" 
-                                              value="#{msgs.navigation_admission_myAccount}"
-                                              styleClass="tstNavMyAccount"
-                                              actionListener="#{navigator.navigate('myAccount')}"/>
-                            <b:navCommandLink iconAwesome="user"
-                                              value="#{msgs.navigation_admission_userManagement}"
-                                              styleClass="tstNavUserManager"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              actionListener="#{navigator.navigate('userManagement')}"/>
-                            <b:navCommandLink iconAwesome="users"
-                                              value="#{msgs.navigation_admission_groupManagement}"
-                                              styleClass="tstNavGroupManager"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              actionListener="#{navigator.navigate('groupManagement')}"/>
-                            <b:navCommandLink iconAwesome="fa-users"
-                                              value="#{msgs.navigation_admission_ldap}"
-                                              styleClass="tstNavLdapSettings"
-                                              rendered="#{userBean.getPermission('LDAP_ENABLE', 'permEDIT')}"
-                                              actionListener="#{navigator.navigate('LdapAdminProperties')}"/>
-                            <b:navCommandLink iconAwesome="wrench"
-                                              value="#{msgs.navigation_admission_printerSettings}"
-                                              styleClass="tstNavPrinterSettings"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
-                                              actionListener="#{navigator.navigate('print/printerList')}"/>
-                            <b:navCommandLink iconAwesome="wrench"
-                                              value="#{msgs.navigation_admission_systemSettings}"
-                                              styleClass="tstNavSystemSettings"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
-                                              actionListener="#{navigator.navigate('systemSettings')}"/>
-                            <b:navCommandLink iconAwesome="wrench"
-                                              value="#{msgs.navigation_admission_cloudNodeManagement}"
-                                              styleClass="tstNavCloudNodeManagement"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              actionListener="#{navigator.navigate('cloudNodeManagement')}"/>
-                            <b:navCommandLink iconAwesome="fa-file-archive-o"
-                                              value="#{msgs.navigation_admission_collectionManagement}"
-                                              styleClass="tstNavCollectionManagement"
-                                              actionListener="#{navigator.navigate('collectionManagement')}"/>
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:myAccount"
+                                value="#{msgs.navigation_admission_myAccount}"
+                                iconAwesome="pencil" 
+                                styleClass="tstNavMyAccount"
+                                actionListener="#{navigator.navigate('myAccount')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:userManagement"
+                                value="#{msgs.navigation_admission_userManagement}"
+                                iconAwesome="user"
+                                styleClass="tstNavUserManager"
+                                rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                actionListener="#{navigator.navigate('userManagement')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:groupManagement"
+                                value="#{msgs.navigation_admission_groupManagement}"
+                                iconAwesome="users"
+                                styleClass="tstNavGroupManager"
+                                rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                actionListener="#{navigator.navigate('groupManagement')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:ldapSettings"
+                                value="#{msgs.navigation_admission_ldap}"
+                                iconAwesome="fa-users"
+                                styleClass="tstNavLdapSettings"
+                                rendered="#{userBean.getPermission('LDAP_ENABLE', 'permEDIT')}"
+                                actionListener="#{navigator.navigate('LdapAdminProperties')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:printerSettings"
+                                value="#{msgs.navigation_admission_printerSettings}"
+                                iconAwesome="wrench"
+                                styleClass="tstNavPrinterSettings"
+                                rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
+                                actionListener="#{navigator.navigate('print/printerList')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:systemSettings"
+                                value="#{msgs.navigation_admission_systemSettings}"
+                                iconAwesome="wrench"
+                                styleClass="tstNavSystemSettings"
+                                rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
+                                actionListener="#{navigator.navigate('systemSettings')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:cloudNodeManagement"
+                                value="#{msgs.navigation_admission_cloudNodeManagement}"
+                                iconAwesome="wrench"
+                                styleClass="tstNavCloudNodeManagement"
+                                rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                actionListener="#{navigator.navigate('cloudNodeManagement')}" />
+                            <b:navCommandLink
+                                pt:data-test-id="navigation:collectionManagement"
+                                value="#{msgs.navigation_admission_collectionManagement}"
+                                iconAwesome="fa-file-archive-o"
+                                styleClass="tstNavCollectionManagement"
+                                actionListener="#{navigator.navigate('collectionManagement')}" />
 
                             <!-- LBAC-QSAR-35 playground -->
 
