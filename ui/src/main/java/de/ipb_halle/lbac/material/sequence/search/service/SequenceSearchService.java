@@ -22,14 +22,9 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.service.NodeService;
-import java.io.Serializable;
 import java.util.UUID;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
@@ -46,7 +41,6 @@ import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlParamTableBuilder;
-import de.ipb_halle.lbac.search.lang.Value;
 import java.util.List;
 import javax.persistence.criteria.JoinType;
 import javax.ws.rs.core.Response;
@@ -57,33 +51,32 @@ import org.apache.commons.lang.exception.ExceptionUtils;
  *
  * @author fmauz
  */
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateless
-public class SequenceSearchService implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private final String ERROR_SAVE_PARAMETER = "Could not save temporary parameter in database";
-    private final String ERROR_REST_CALL_NOT_OK = "SequenceSearchService: Error at sequence search: status=%d, message=%s";
-    private final String ERROR_REST_CALL_EXEPTION = "SequenceSearchService: Error at sequence search: message=%s";
+public class SequenceSearchService {
+    private static final String ERROR_SAVE_PARAMETER = "Could not save temporary parameter in database";
+    private static final String ERROR_REST_CALL_NOT_OK = "SequenceSearchService: Error at sequence search: status=%d, message=%s";
+    private static final String ERROR_REST_CALL_EXEPTION = "SequenceSearchService: Error at sequence search: message=%s";
 
     @Inject
-    NodeService nodeService;
+    private NodeService nodeService;
 
     @Inject
-    FastaRESTSearchService fastaService;
+    private FastaRESTSearchService fastaService;
 
     @Inject
-    MaterialService materialService;
+    private MaterialService materialService;
 
     @Inject
     private SearchParameterService searchParameterService;
 
-    @PersistenceContext(name = "de.ipb_halle.lbac")
-    protected EntityManager em;
-
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
+    /**
+     * Execute a sequence search.
+     * 
+     * @param request
+     * @return
+     */
     public SearchResult searchSequences(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         String sql;
@@ -114,12 +107,14 @@ public class SequenceSearchService implements Serializable {
                     }
                 }
             } else {
-                String messageFromResponse = response.readEntity(String.class);
+                String messageFromResponse = "";
+                if (response.hasEntity()) {
+                    messageFromResponse = response.readEntity(String.class);
+                }
                 String errorMessage = String.format(ERROR_REST_CALL_NOT_OK, response.getStatus(), messageFromResponse);
                 logger.error(errorMessage);
                 result.addErrorMessage(errorMessage);
             }
-
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
             result.addErrorMessage(String.format(ERROR_REST_CALL_EXEPTION, e.getMessage()));
@@ -134,7 +129,6 @@ public class SequenceSearchService implements Serializable {
     }
 
     private FastaSearchRequest createRestRequest(SearchRequest request, String sql) {
-
         FastaSearchRequest fastaRequest = new FastaSearchRequest();
 
         FastaSearchQuery query = new FastaSearchQuery();

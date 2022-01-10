@@ -59,32 +59,7 @@ CREATE TABLE temp_search_parameter (
   id         SERIAL    NOT NULL PRIMARY KEY,
   cdate      TIMESTAMP NOT NULL DEFAULT now(),
   processid  UUID NOT NULL,
-  parameter      JSONB NOT NULL);
-
-CREATE OR REPLACE FUNCTION convert_jsonb_to_int_array(input jsonb) 
-    returns INTEGER ARRAY 
-    language plpgsql
-    as 
-$$
-    declare
-        output INTEGER[];
-    begin
-        SELECT INTO output array_agg(value) FROM jsonb_array_elements_text(input);
-        RETURN output;
-    end;
-$$;
-
-CREATE OR REPLACE FUNCTION convert_jsonb_to_varchar_array(input jsonb)
-    returns VARCHAR ARRAY
-    language plpgsql
-    as
-$$
-    declare
-        output VARCHAR[];
-    begin
-        SELECT INTO output array_agg(value) FROM jsonb_array_elements_text(input);
-        RETURN output;
-    end;
-$$;
+  parameter  JSONB NOT NULL
+);
 
 COMMIT TRANSACTION;

@@ -93,7 +93,7 @@ public class SearchParameterServiceTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
-                = prepareDeployment("SearchParameterEntityTest.war");
+                = prepareDeployment("SearchParameterServiceTest.war");
         deployment = UserBeanDeployment.add(deployment);
         deployment.addClass(SearchParameterService.class);
 

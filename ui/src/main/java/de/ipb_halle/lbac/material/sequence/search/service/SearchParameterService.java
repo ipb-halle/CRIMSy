@@ -17,13 +17,6 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -31,8 +24,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -40,28 +31,33 @@ import org.apache.logging.log4j.Logger;
  */
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateless
-public class SearchParameterService implements Serializable {
-
-    private final String SQL_DELETE_PARAMETER = "DELETE from temp_Search_Parameter WHERE processid=:id";
+public class SearchParameterService {
+    private final String SQL_DELETE_PARAMETER = "DELETE from temp_search_parameter WHERE processid=:id";
     private final String SQL_INSERT_PARAMETER = "INSERT INTO temp_search_parameter(processid,parameter) VALUES(cast(:processid as UUID),cast(:parameter as jsonb))";
-    private static final long serialVersionUID = 1L;
-
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
+    /**
+     * Saves a search parameter in the database table "temp_search_parameter".
+     * 
+     * @param processid
+     * @param parameterAsJson
+     * @throws Exception
+     */
     public void saveParameter(String processid, String parameterAsJson) throws Exception {
         Query q = em.createNativeQuery(SQL_INSERT_PARAMETER);
         q.setParameter("processid", processid);
         q.setParameter("parameter", parameterAsJson);
         q.executeUpdate();
-
     }
 
+    /**
+     * Removes a search parameter from the database table "temp_search_parameter".
+     * 
+     * @param processid
+     */
     public void removeParameter(UUID processid) {
-        this.em.createNativeQuery(SQL_DELETE_PARAMETER)
-                .setParameter("id", processid)
-                .executeUpdate();
+        this.em.createNativeQuery(SQL_DELETE_PARAMETER).setParameter("id", processid).executeUpdate();
     }
 }

@@ -883,4 +883,5 @@ CREATE TABLE temp_search_parameter (
   id         SERIAL    NOT NULL PRIMARY KEY,
   cdate      TIMESTAMP NOT NULL DEFAULT now(),
   processid  UUID NOT NULL,
-  parameter  JSONB NOT NULL);
+  parameter  JSONB NOT NULL
+);

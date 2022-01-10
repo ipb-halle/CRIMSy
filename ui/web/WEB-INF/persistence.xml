@@ -61,7 +61,6 @@
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageEntity</class>
         <class>de.ipb_halle.lbac.material.composition.CompositionEntity</class>
         <class>de.ipb_halle.lbac.material.sequence.SequenceEntity</class>
-        <class>de.ipb_halle.lbac.material.sequence.SearchParameterEntity</class>
         <class>de.ipb_halle.lbac.material.sequence.history.SequenceHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.structure.StructureEntity</class>
         <class>de.ipb_halle.lbac.material.structure.StructureHistEntity</class>
