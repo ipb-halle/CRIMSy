@@ -27,10 +27,12 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
-      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <ui:composition>
             <p:tab
+                pt:data-test-id="materialEdit:compositionTab"
                 title="#{msgs.materialCreation_panelNames_composition}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
                 <p:outputPanel rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}">

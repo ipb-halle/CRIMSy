@@ -26,11 +26,12 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
-
         <ui:composition>
-            <p:tab 
+            <p:tab
+                pt:data-test-id="materialEdit:structureInfosTab"
                 title="#{msgs.materialCreation_panelStrucInfos_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('STRUCTURE_INFORMATION')}">
                 <p:outputPanel

@@ -25,10 +25,12 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <ui:composition>
             <p:tab
+                pt:data-test-id="materialEdit:indicesTab"
                 title="#{msgs.materialCreation_panelIndices_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('INDEX')}">
                 <p:outputPanel

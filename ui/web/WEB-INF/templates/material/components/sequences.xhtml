@@ -27,10 +27,12 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces"
-      xmlns:nwc="http://ipb-halle.de/nwc">
+      xmlns:nwc="http://ipb-halle.de/nwc"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <ui:composition>
-            <p:tab 
+            <p:tab
+                pt:data-test-id="materialEdit:sequenceInfosTab"
                 title="#{msgs.materialCreation_panelSequenceInfos_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('SEQUENCE_INFORMATION')}">
                 <p:outputPanel

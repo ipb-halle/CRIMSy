@@ -100,7 +100,7 @@ public class SearchPage extends AbstractPage {
         toggleAdvancedSearchIfNeeded();
 
         Set<TypeFilter> alreadyActive = getActiveTypeFilters();
-        EnumSet<TypeFilter> activate = EnumSet.allOf(TypeFilter.class);
+        EnumSet<TypeFilter> activate = EnumSet.copyOf(filters);
         activate.removeAll(alreadyActive);
         EnumSet<TypeFilter> deactivate = EnumSet.complementOf(activate);
 

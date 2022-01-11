@@ -62,7 +62,11 @@ public class MaterialSearchMaskPage extends AbstractPage {
         applyIfNotNull(model.getUserName(), USER_NAME_INPUT);
         applyIfNotNull(model.getProjectName(), PROJECT_NAME_INPUT);
         applyIfNotNull(model.getIndex(), INDEX_INPUT);
-        applyIfNotNull(model.getMaterialType(), MATERIAL_TYPE_SELECTION);
+
+        String materialType = model.getMaterialType();
+        if (materialType != null) {
+            MATERIAL_TYPE_SELECTION.selectOption(materialType);
+        }
 
         String molfile = model.getMolfile();
         if (molfile != null) {
@@ -70,6 +74,12 @@ public class MaterialSearchMaskPage extends AbstractPage {
         }
 
         return this;
+    }
+
+    private void applyIfNotNull(String value, SelenideElement element) {
+        if (value != null) {
+            element.setValue(value);
+        }
     }
 
     public MaterialSearchMaskPage clear() {
@@ -82,9 +92,16 @@ public class MaterialSearchMaskPage extends AbstractPage {
         return this;
     }
 
-    private void applyIfNotNull(String value, SelenideElement element) {
-        if (value != null) {
-            element.setValue(value);
-        }
+    /*
+     * Getters
+     */
+    public MaterialSearchMaskModel getModel() {
+        return new MaterialSearchMaskModel()
+                .name(NAME_INPUT.text())
+                .id(ID_INPUT.text()).userName(USER_NAME_INPUT.text())
+                .projectName(PROJECT_NAME_INPUT.text())
+                .index(INDEX_INPUT.text())
+                .materialType(MATERIAL_TYPE_SELECTION.getSelectedValue())
+                .molfile(molEditor.getMolecule());
     }
 }

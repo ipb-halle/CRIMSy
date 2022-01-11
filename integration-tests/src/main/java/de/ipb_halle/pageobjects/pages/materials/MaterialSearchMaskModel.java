@@ -31,6 +31,9 @@ public class MaterialSearchMaskModel {
     private String materialType;
     private String molfile;
 
+    /*
+     * Fluent setters
+     */
     public MaterialSearchMaskModel name(String name) {
         this.name = name;
         return this;
@@ -66,6 +69,9 @@ public class MaterialSearchMaskModel {
         return this;
     }
 
+    /*
+     * Getters
+     */
     public String getName() {
         return name;
     }

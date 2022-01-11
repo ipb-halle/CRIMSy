@@ -26,10 +26,12 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <ui:composition>
             <p:tab
+                pt:data-test-id="materialEdit:hazardsTab"
                 title="#{msgs.materialCreation_panelHazard_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('HAZARD_INFORMATION')}">
                 <p:panel

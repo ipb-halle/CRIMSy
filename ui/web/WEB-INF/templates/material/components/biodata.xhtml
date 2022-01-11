@@ -24,10 +24,12 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <ui:composition>
             <p:tab
+                pt:data-test-id="materialEdit:biodataTab"
                 title="#{msgs.materialCreation_panelBiodata_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
                 <p:outputPanel

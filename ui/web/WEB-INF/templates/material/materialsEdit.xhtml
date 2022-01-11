@@ -25,126 +25,132 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui"
       xmlns:o="http://omnifaces.org/ui"
       xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
-        <b:form 
-            id="materialEditForm">
+        <b:form id="materialEditForm">
             <b:panel>
                 <b:container>
                     <b:row>
                         <b:column span="2">
-                            <h:outputText 
-                                value="#{msgs.materialCreation_project}"/>
+                            <h:outputText value="#{msgs.materialCreation_project}" />
                         </b:column>
                         <b:column span="3">
                             <b:selectOneMenu
+                                pt:data-test-id="materialEdit:project"
                                 value="#{materialBean.materialEditState.currentProject}"
                                 styleClass="tstProjectMenu"
                                 ajax="true"
                                 process="@this"
                                 disabled="#{!materialBean.isProjectEditEnabled()}"
                                 update="@form">
-
                                 <f:selectItems 
                                     value="#{materialBean.getPossibleProjects()}"
                                     var="p"
-                                    itemLabel="#{p.toString()}"/>
+                                    itemLabel="#{p.toString()}" />
                             </b:selectOneMenu>
                         </b:column>
-                        <b:column span="1"
-                                  rendered="#{materialBean.areRevisionElementsVisible()}"
-                                  styleClass="revisionChangeClass"
-                                  >
+                        <b:column
+                            span="1"
+                            rendered="#{materialBean.areRevisionElementsVisible()}"
+                            styleClass="revisionChangeClass">
                             <b:commandButton
+                                pt:data-test-id="materialEdit:backward"
                                 disabled="#{!materialBean.permission.isBackwardButtonEnabled()}"
                                 onclick="ajax:materialBean.switchOneVersionBack();"
                                 process="@form"
                                 update="@form"
                                 ajax="true"                               
-                                icon-awesome="backward"
-                                />
+                                icon-awesome="backward" />
                         </b:column>
                         <b:column span="3"
                                   rendered="#{materialBean.areRevisionElementsVisible()}">
                             <h:outputFormat
+                                pt:data-test-id="materialEdit:changedText"
                                 value="#{msgs.materialCreation_changed}"
                                 styleClass="revisionChangeClass"
                                 rendered="#{!materialBean.historyOperation.originalMaterial}">
-                                <o:param value="#{materialBean.materialEditState.currentVersiondate}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <o:param 
+                                    value="#{materialBean.materialEditState.currentVersiondate}"
+                                    converter="org.ocpsoft.PrettyTimeConverter" />
                                 <o:param value="#{nwc:formatDateWithTimezone(materialBean.materialEditState.currentVersiondate)}" />
                             </h:outputFormat>
                             <h:outputFormat
+                                pt:data-test-id="materialEdit:changedText"
                                 value="#{msgs.materialCreation_created}"
                                 styleClass="revisionChangeClass"
                                 rendered="#{materialBean.historyOperation.originalMaterial}">
-                                <o:param value="#{materialBean.materialEditState.materialBeforeEdit.creationTime}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <o:param 
+                                    value="#{materialBean.materialEditState.materialBeforeEdit.creationTime}"
+                                    converter="org.ocpsoft.PrettyTimeConverter" />
                                 <o:param value="#{nwc:formatDateWithTimezone(materialBean.materialEditState.materialBeforeEdit.creationTime)}" />
                             </h:outputFormat>
                         </b:column>
-                        <b:column span="1"
-                                  rendered="#{materialBean.areRevisionElementsVisible()}">
+                        <b:column 
+                            span="1"
+                            rendered="#{materialBean.areRevisionElementsVisible()}">
                             <b:commandButton
+                                pt:data-test-id="materialEdit:forward"
                                 disabled="#{!materialBean.permission.isForwardButtonEnabled()}"
                                 onclick="ajax:materialBean.switchOneVersionForward();"
                                 process="@form"
                                 update="@form"
                                 ajax="true"                                
-                                icon-awesome="forward"
-                                />
+                                icon-awesome="forward" />
                         </b:column>
-
-                        <b:column  span="1">
+                        <b:column span="1">
                             <b:commandButton
-                                action="#{navigator.navigate('material/materials')}"
-                                value="#{msgs.materialCreation_cancel}"/>
+                                pt:data-test-id="materialEdit:cancel"
+                                value="#{msgs.materialCreation_cancel}"
+                                action="#{navigator.navigate('material/materials')}" />
                         </b:column>
                         <b:column span="1">
                             <!-- The server side bean gets only access to the hidden input fields, so they must be updated before submitting their value to the server -->
                             <b:commandButton
+                                pt:data-test-id="materialEdit:save"
                                 styleClass="tstMaterialCreate"
                                 value="#{materialBean.getCreateButtonText()}"
                                 disabled="#{!materialBean.isCreationAllowed()}"
-                                action="#{materialBean.actionSaveMaterial()}"/>
+                                action="#{materialBean.actionSaveMaterial()}" />
                         </b:column>
                     </b:row>
-
-                    <b:row
-                        rendered="#{materialBean.isValideProjectChoosen()}">
+                    <b:row rendered="#{materialBean.isValideProjectChoosen()}">
                         <b:column span="2">
-                            <h:outputText
-                                value="#{msgs.materialCreation_type}"
-                                />
+                            <h:outputText value="#{msgs.materialCreation_type}" />
                         </b:column>
-                        <b:column span="3"
-                                  styleClass="materialTypeMenuClass">
+                        <b:column 
+                            span="3"
+                            styleClass="materialTypeMenuClass">
                             <b:selectOneMenu
+                                pt:data-test-id="materialEdit:materialType"
                                 value="#{materialBean.currentMaterialType}"
                                 styleClass="tstMaterialTypeMenu"
                                 ajax="true"
                                 process="@this"
                                 disabled="#{materialBean.isTypeChoiseDisabled()}"
                                 update="@form">
-                                <f:selectItems 
-                                    value="#{materialBean.getMaterialTypes()}"/>
+                                <f:selectItems value="#{materialBean.getMaterialTypes()}" />
                             </b:selectOneMenu>
                         </b:column>
-                        <b:column span="1">
-                            <h:outputText
-                                value="#{materialBean.getMode()}"/>
+                        <b:column
+                            pt:data-test-id="materialEdit:mode"
+                            span="1">
+                            <h:outputText value="#{materialBean.mode}" />
                         </b:column>
-                        <b:column span="4" offset="2">
+                        <b:column 
+                            span="4"
+                            offset="2">
                             <b:panel
+                                pt:data-test-id="materialEdit:errorMessages"
                                 look="danger"
                                 rendered="#{not empty materialBean.errorMessages}">
                                 <ui:repeat
                                     value="#{materialBean.errorMessages}"
                                     var="errorMessage"
                                     varStatus="status">
-                                    <h:outputText value="#{errorMessage}"/>
+                                    <h:outputText value="#{errorMessage}" />
                                     <ui:fragment rendered="#{!status.last}">
                                         <br />
                                     </ui:fragment>
@@ -152,7 +158,6 @@
                             </b:panel>
                         </b:column>
                     </b:row>
-
                 </b:container>
             </b:panel>
 
@@ -162,35 +167,36 @@
                 <!-- Note: This tabView needs to be dynamic (= lazy loading via
                            AJAX) because some molecular structure plugins do not
                            load properly when they are in hidden tabs. -->
-                <p:tabView styleClass="itemEditTabView" dynamic="true" style="width: 100%">
+                <p:tabView
+                    styleClass="itemEditTabView"
+                    dynamic="true"
+                    style="width: 100%">
                     <ui:insert> 
-                        <ui:include src="/WEB-INF/templates/material/components/materialNames.xhtml"/>
+                        <ui:include src="/WEB-INF/templates/material/components/materialNames.xhtml" />
                     </ui:insert>
                     <ui:insert> 
-                        <ui:include src="/WEB-INF/templates/material/components/indices.xhtml"/>
+                        <ui:include src="/WEB-INF/templates/material/components/indices.xhtml" />
                     </ui:insert>
                     <ui:insert> 
-                        <ui:include src="/WEB-INF/templates/material/components/structures.xhtml"/>
+                        <ui:include src="/WEB-INF/templates/material/components/structures.xhtml" />
                     </ui:insert>
                     <ui:insert> 
-                        <ui:include src="/WEB-INF/templates/material/components/sequences.xhtml"/>
+                        <ui:include src="/WEB-INF/templates/material/components/sequences.xhtml" />
                     </ui:insert>
                     <ui:insert> 
-                        <ui:include src="/WEB-INF/templates/material/components/hazards.xhtml"/>
+                        <ui:include src="/WEB-INF/templates/material/components/hazards.xhtml" />
                     </ui:insert>
                     <ui:insert> 
-                        <ui:include src="/WEB-INF/templates/material/components/storageClasses.xhtml"/>
+                        <ui:include src="/WEB-INF/templates/material/components/storageClasses.xhtml" />
                     </ui:insert>
                     <ui:insert> 
-                        <ui:include src="/WEB-INF/templates/material/components/biodata.xhtml"/>
+                        <ui:include src="/WEB-INF/templates/material/components/biodata.xhtml" />
                     </ui:insert>
                     <ui:insert> 
-                        <ui:include src="/WEB-INF/templates/material/components/composition.xhtml"/>
+                        <ui:include src="/WEB-INF/templates/material/components/composition.xhtml" />
                     </ui:insert>
                 </p:tabView>
             </b:panel>
-
         </b:form>
     </h:body>
-
 </html>

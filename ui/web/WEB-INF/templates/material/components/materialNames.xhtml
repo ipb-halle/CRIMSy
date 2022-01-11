@@ -25,14 +25,15 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <ui:composition>
-            <p:tab 
+            <p:tab
+                pt:data-test-id="materialEdit:materialNamesTab"
                 title="#{msgs.materialCreation_panelNames_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
-                <p:outputPanel
-                    rendered="#{materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
+                <p:outputPanel rendered="#{materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
                     <b:dataTable
                         id="materialNameTable"
                         styleClass="materialNameTableClass materialNamesPanelClass"
