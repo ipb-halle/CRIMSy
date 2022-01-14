@@ -19,7 +19,7 @@ include(dist/etc/config_m4.inc)dnl
  */
  
  
-/* Only postgres dbuser can grant priviliges /*
+/* Only postgres dbuser can create new dbusers /*
 \connect lbac 
 \connect - postgres
 BEGIN TRANSACTION;
