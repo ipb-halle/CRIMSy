@@ -80,7 +80,7 @@ GRANT SELECT ON acentries TO fasta;
 GRANT SELECT ON memberships TO fasta;
 GRANT SELECT ON temp_search_parameter TO fasta;
 GRANT SELECT ON material_indices TO fasta;
-GRANT SELECT ON usergroups TO fasta;
+GRANT SELECT ON usersgroups TO fasta;
 GRANT SELECT ON projects TO fasta;
 GRANT USAGE ON SCHEMA lbac TO fasta;
 
