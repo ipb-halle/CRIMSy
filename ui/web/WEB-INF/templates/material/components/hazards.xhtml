@@ -44,7 +44,7 @@
                         converter="HazardConverter"
                         layout="custom"
                         binding="#{ghsHazardsSelectManyCheckbox}">
-                        <f:selectItems 
+                        <f:selectItems
                             value="#{materialBean.hazardController.getHazardsOfType('GHS')}"
                             var="hazard" 
                             itemLabel="#{materialBean.hazardController.getLocalizedName(hazard)}"> 
@@ -57,17 +57,18 @@
                     <p:selectManyCheckbox> component
                     see: https://www.primefaces.org/showcase/ui/input/manyCheckbox.xhtml
                     -->
-                    <p:panelGrid 
+                    <p:panelGrid
+                        pt:data-test-id="hazardsTab:GHSTable"
                         columns="12"
                         styleClass="borderlessGridPanel">
-                        <c:forEach 
+                        <c:forEach
                             varStatus="status"
                             var="hazard"
                             items="#{materialBean.hazardController.getHazardsOfType('GHS')}">
                             <p:checkbox
                                 for="ghsHazardsId"
                                 itemIndex="#{status.index}"
-                                disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                                disabled="#{!materialBean.hazardController.isHazardEditable()}" />
                             <!-- There is a bug in PrimeFaces 6.2 that causes p:outputLabel to reference
                                  the wrong target id in the previous p:selectManyCheckbox component. This 
                                  can also be observed in the PF showcase for this version and was solved
@@ -85,16 +86,16 @@
                             -->
                             <h:panelGroup>
                                 <label
+                                    data-test-id="hazardsTab:GHSLabel"
                                     for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
-                                    <h:outputText 
-                                        value="#{materialBean.hazardController.getLocalizedName(hazard)}"/>
+                                    <h:outputText value="#{materialBean.hazardController.getLocalizedName(hazard)}" />
                                 </label>
                             </h:panelGroup>
                             <h:panelGroup>
-                                <label
-                                    for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
-                                    <b:image 
-                                        name="#{materialBean.hazardController.getImageLocation(hazard)}"/>
+                                <label for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
+                                    <b:image
+                                        pt:data-test-id="hazardsTab:GHSImage"
+                                        name="#{materialBean.hazardController.getImageLocation(hazard)}" />
                                 </label>
                             </h:panelGroup>                                
                         </c:forEach>
@@ -103,24 +104,26 @@
                     <b:row>
                         <h:outputText
                             styleClass="statementHeader"
-                            value="#{msgs.hazard_HS}"/>
+                            value="#{msgs.hazard_HS}" />
                     </b:row>
                     <b:row>
-                        <p:inputText 
-                            styleClass="hazardStatementRemark"
+                        <p:inputText
+                            pt:data-test-id="hazardsTab:hStatements"
                             value="#{materialBean.hazardController.hStatements}"
-                            disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                            styleClass="hazardStatementRemark"
+                            disabled="#{!materialBean.hazardController.isHazardEditable()}" />
                     </b:row>
                     <b:row>
                         <h:outputText
                             styleClass="statementHeader"
-                            value="#{msgs.hazard_PS}"/>
+                            value="#{msgs.hazard_PS}" />
                     </b:row>
                     <b:row>
-                        <p:inputText 
-                            styleClass="hazardStatementRemark"
+                        <p:inputText
+                            pt:data-test-id="hazardsTab:pStatements"
                             value="#{materialBean.hazardController.pStatements}"
-                            disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                            styleClass="hazardStatementRemark"
+                            disabled="#{!materialBean.hazardController.isHazardEditable()}" />
                     </b:row>
                 </p:panel>
                 <p:panel
@@ -128,71 +131,75 @@
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('RADIOACTIVITY')}">
                     <p:selectBooleanCheckbox
                         id="radioctiveCheckBox"
+                        pt:data-test-id="hazardsTab:radioactive"
                         value="#{materialBean.hazardController.radioctive}"
                         label="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"
-                        disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                        disabled="#{!materialBean.hazardController.isHazardEditable()}" />
                     <p:outputLabel
                         for="@previous"
                         styleClass="radioactiveLabel"
-                        value="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"/>
-                    <b:image 
+                        value="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}" />
+                    <b:image
                         styleClass="radioactiveImage"
-                        name="#{materialBean.hazardController.radioactiveImageLocation}"/>   
+                        name="#{materialBean.hazardController.radioactiveImageLocation}" />   
                 </p:panel>
                 <p:panel
                     header="#{msgs.hazard_S_Label}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('BSL')}">
-
-                    <p:selectOneRadio    
+                    <p:selectOneRadio
                         id="custom_bsl"
                         value="#{materialBean.hazardController.bioSavetyLevel}"
                         disabled="#{!materialBean.hazardController.isHazardEditable()}" 
                         layout="custom">
-                        <f:selectItems 
+                        <f:selectItems
                             value="#{materialBean.hazardController.possibleBioSavetyLevels}"
                             var="bsl" itemLabel="#{bsl}"
-                            itemValue="#{bsl}"/>
+                            itemValue="#{bsl}" />
                     </p:selectOneRadio>
                     <p:panelGrid
+                        pt:data-test-id="hazardsTab:bioSafetyLevelTable"
                         styleClass="borderlessGridPanel"
                         columns="3">
-                        <c:forEach 
+                        <c:forEach
                             varStatus="status"
                             var="bsl"
                             items="#{materialBean.hazardController.possibleBioSavetyLevels}">
-                            <p:radioButton 
+                            <p:radioButton
                                 styleClass="bioSavetyCheckBox"
                                 for="custom_bsl"
                                 itemIndex="#{status.index}"
-                                disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                                disabled="#{!materialBean.hazardController.isHazardEditable()}" />
                             <p:outputLabel
+                                pt:data-test-id="hazardsTab:bioSafetyLevelLabel"
                                 for="@previous" 
                                 value="#{bsl}"/>
-                            <b:image 
+                            <b:image
+                                pt:data-test-id="hazardsTab:bioSafetyLevelImage"
                                 styleClass="bioHazardImage"
-                                name="#{materialBean.hazardController.getImageLocationOfBls(status.index)}"/>   
+                                name="#{materialBean.hazardController.getImageLocationOfBls(status.index)}" />   
                         </c:forEach>
                     </p:panelGrid>
-
                 </p:panel>
 
                 <p:panel
                     header="#{msgs.hazard_GMO}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('GMO')}">
                     <p:selectBooleanCheckbox
+                        pt:data-test-id="hazardsTab:gmo"
+                        value="#{materialBean.hazardController.gmo}"
                         styleClass="customRemarks"
                         itemLabel="#{msgs.hazard_GMO}"
-                        value="#{materialBean.hazardController.gmo}"
-                        disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                        disabled="#{!materialBean.hazardController.isHazardEditable()}" />
                 </p:panel>
 
                 <p:panel
                     header="#{materialBean.hazardController.getLocalizedCustomLabel()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('CUSTOM')}">
-                    <p:inputText 
-                        styleClass="customRemarks"
+                    <p:inputText
+                        pt:data-test-id="hazardsTab:customRemarks"
                         value="#{materialBean.hazardController.customText}"
-                        disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                        styleClass="customRemarks"
+                        disabled="#{!materialBean.hazardController.isHazardEditable()}" />
                 </p:panel>
             </p:tab>
         </ui:composition>

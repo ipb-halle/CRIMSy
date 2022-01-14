@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.growl;
+package de.ipb_halle.pageobjects.components.growl;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.conditions.CssClass;

@@ -66,7 +66,7 @@ public class Selectors {
      * @return CSS selector that selects for the given CSS classes in DOM
      *         elements of type {@code htmlElement}
      */
-    public static String elementAndCssClasses(String htmlElement,
+    public static String elementWithCssClasses(String htmlElement,
             String... classes) {
         StringBuilder sb = new StringBuilder();
         sb.append(htmlElement);

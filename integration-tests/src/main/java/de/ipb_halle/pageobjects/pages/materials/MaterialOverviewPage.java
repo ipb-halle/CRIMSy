@@ -23,15 +23,18 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.pages.AbstractPage;
-import de.ipb_halle.pageobjects.table.DataTable;
+import de.ipb_halle.pageobjects.components.table.DataTable;
+import de.ipb_halle.pageobjects.navigation.Navigation;
+import de.ipb_halle.pageobjects.pages.NavigablePage;
+import de.ipb_halle.pageobjects.pages.composite.MaterialSearchMaskModel;
+import de.ipb_halle.pageobjects.pages.composite.MaterialSearchMaskPage;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/material/materials.xhtml
  * 
  * @author flange
  */
-public class MaterialOverviewPage extends AbstractPage {
+public class MaterialOverviewPage extends NavigablePage {
     private static final SelenideElement NEW_MATERIAL_BUTTON = $(
             testId("materialOverview:newMaterial"));
     private static final SelenideElement RESULTS_TABLE = $(
@@ -46,6 +49,11 @@ public class MaterialOverviewPage extends AbstractPage {
             testId("materialOverview:lastPageButton"));
     private static final SelenideElement PAGINATION_INFO_TEXT = $(
             testId("materialOverview:paginationInfoText"));
+
+    @Override
+    public Navigation getNavigationItem() {
+        return Navigation.MATERIALS_OVERVIEW;
+    }
 
     /*
      * Actions

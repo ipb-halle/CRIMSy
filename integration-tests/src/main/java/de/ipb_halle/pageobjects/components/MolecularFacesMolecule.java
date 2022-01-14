@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.plugins;
+package de.ipb_halle.pageobjects.components;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.executeJavaScript;
@@ -24,15 +24,15 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 import com.codeborne.selenide.SelenideElement;
 
 /**
- * Page object for MolecularFaces' molecule component.
+ * Page object abstraction for MolecularFaces' molecule component.
  * 
  * @author flange
  */
-public class MolPlugin {
+public class MolecularFacesMolecule {
     private final SelenideElement inputElement;
     private final String widgetVar;
 
-    public MolPlugin(String testId, String widgetVar) {
+    public MolecularFacesMolecule(String testId, String widgetVar) {
         this.inputElement = $(testId("input", testId));
         this.widgetVar = widgetVar;
     }
@@ -65,8 +65,7 @@ public class MolPlugin {
      * @return plugin type
      */
     public String getPluginType() {
-        // TODO
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private String escape(String s) {

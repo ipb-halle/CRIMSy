@@ -15,11 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.growl;
+package de.ipb_halle.pageobjects.components.growl;
 
 import static com.codeborne.selenide.Selenide.$$;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithAttribute;
-import static de.ipb_halle.pageobjects.util.Selectors.elementAndCssClasses;
+import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class Growl {
      * moment. The CSS class is a workaround.
      */
     private static final ElementsCollection GROWL_DIVS = $$(
-            elementAndCssClasses("div", "growlMessages"));
+            elementWithCssClasses("div", "growlMessages"));
 
     private final String message;
     private final Severity severity;
@@ -57,7 +57,7 @@ public class Growl {
     }
 
     /**
-     * @return all visible growls on the current page
+     * @return all currently visible growls
      */
     public static List<Growl> getGrowls() {
         List<Growl> growls = new ArrayList<>();

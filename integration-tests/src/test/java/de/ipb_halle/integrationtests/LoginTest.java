@@ -18,8 +18,8 @@
 package de.ipb_halle.integrationtests;
 
 import static com.codeborne.selenide.Selenide.open;
-import static de.ipb_halle.pageobjects.growl.Severity.INFO;
-import static de.ipb_halle.pageobjects.growl.Severity.WARN;
+import static de.ipb_halle.pageobjects.components.growl.Severity.INFO;
+import static de.ipb_halle.pageobjects.components.growl.Severity.WARN;
 import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY;
 import static de.ipb_halle.test.GrowlAssert.assertGrowlI18n;
 import static de.ipb_halle.test.I18nAssert.assertJSFMessage;
@@ -37,7 +37,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.ipb_halle.pageobjects.growl.Growl;
+import de.ipb_halle.pageobjects.components.growl.Growl;
 import de.ipb_halle.pageobjects.pages.LoginPage;
 import de.ipb_halle.pageobjects.pages.SearchPage;
 import de.ipb_halle.test.SelenideRule;

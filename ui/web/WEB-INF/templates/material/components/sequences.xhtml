@@ -50,6 +50,7 @@
                                     style="margin-right:20px" />
                                 <p:selectOneRadio
                                     id="sequenceTypeRadioId"
+                                    pt:data-test-id="sequenceInfosTab:sequenceType"
                                     value="#{materialBean.sequenceInfos.sequenceType}"
                                     disabled="#{materialBean.sequenceInfos.sequenceTypeSelected}">
                                     <f:selectItems
@@ -61,25 +62,29 @@
                                         event="change"
                                         listener="#{materialBean.sequenceInfos.actionSelectSequenceType}"
                                         process="@this"
-                                        update="sequenceTypeRadioId sequenceOpenVectorEditorId"/>
+                                        update="sequenceTypeRadioId sequenceOpenVectorEditorId" />
                                 </p:selectOneRadio>
                             </h:panelGrid>
                             <h:outputText value="#{msgs.materialCreation_panelSequenceInfos_automaticSequenceInformationText}" />
 
                             <h:panelGroup id="sequenceOpenVectorEditorId">
-                                <mol:openVectorEditor 
+                                <mol:openVectorEditor
+                                    pt:data-test-id="sequenceInfosTab:sequenceEditor"
                                     value="#{materialBean.sequenceInfos.sequenceData}"
                                     rendered="#{materialBean.sequenceInfos.sequenceTypeSelected}"
-                                    readonly="#{!materialBean.permission.isDetailInformationEditable('SEQUENCE_INFORMATION')}">
+                                    readonly="#{!materialBean.permission.isDetailInformationEditable('SEQUENCE_INFORMATION')}"
+                                    widgetVar="sequenceEditorVar">
                                     <nwc:jsonSanitizingAndOVEJsonConverter sequenceType="#{materialBean.sequenceInfos.sequenceType}" />
                                 </mol:openVectorEditor>
                             </h:panelGroup>
                             <b:panelGrid columns="1">
                                 <b:inputText
+                                    pt:data-test-id="sequenceInfosTab:sequenceLength"
                                     value="#{materialBean.sequenceInfos.sequenceData.sequenceLength}"
                                     label="#{msgs.materialCreation_panelSequenceInfos_sequenceLength}"
                                     disabled="true" />
                                 <b:inputTextarea
+                                    pt:data-test-id="sequenceInfosTab:sequenceString"
                                     value="#{materialBean.sequenceInfos.sequenceData.sequenceString}"
                                     label="#{msgs.materialCreation_panelSequenceInfos_sequence}"
                                     disabled="true" />

@@ -26,15 +26,16 @@ import java.util.Set;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.plugins.MolPlugin;
-import de.ipb_halle.pageobjects.table.DataTable;
+import de.ipb_halle.pageobjects.components.MolecularFacesMolecule;
+import de.ipb_halle.pageobjects.components.table.DataTable;
+import de.ipb_halle.pageobjects.navigation.Navigation;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/default.xhtml
  * 
  * @author flange
  */
-public class SearchPage extends AbstractPage {
+public class SearchPage extends NavigablePage {
     private static final SelenideElement SEARCH_TEXT = $(
             testId("input", "search:searchText"));
     private static final SelenideElement SEARCH_BUTTON = $(
@@ -49,8 +50,8 @@ public class SearchPage extends AbstractPage {
             testId("search:searchResultsTable"));
     private static final SelenideElement TOGGLE_ADVANCED_SEARCH_BUTTON = $(
             testId("search:toggleAdvancedSearchButton"));
-    private static final String MOLEDITOR_TESTID = "search:molEditor";
-    private static final String MOLEDITOR_WIDGETVAR = "molEditorWidgetVar";
+    private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule(
+            "search:molEditor", "molEditorWidgetVar");
 
     public enum TypeFilter {
         DOCUMENT("search:filterDocumentCheckbox"),
@@ -67,6 +68,11 @@ public class SearchPage extends AbstractPage {
         private TypeFilter(String testId) {
             checkbox = $(testId("input", testId));
         }
+    }
+
+    @Override
+    public Navigation getNavigationItem() {
+        return Navigation.SEARCH;
     }
 
     /*
@@ -142,8 +148,8 @@ public class SearchPage extends AbstractPage {
     /**
      * @return page object of the structure editor in the advance search panel
      */
-    public MolPlugin getMolEditor() {
-        return new MolPlugin(MOLEDITOR_TESTID, MOLEDITOR_WIDGETVAR);
+    public MolecularFacesMolecule getMolEditor() {
+        return MOL_EDITOR;
     }
 
     /**

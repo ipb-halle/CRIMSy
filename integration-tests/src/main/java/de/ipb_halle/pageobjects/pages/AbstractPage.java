@@ -48,10 +48,25 @@ public abstract class AbstractPage {
      * @return page object of target page
      */
     @SuppressWarnings("unchecked")
-    public static <T extends AbstractPage> T navigateTo(Navigation target) {
+    public <T extends AbstractPage> T navigateTo(Navigation target) {
         target.getMenu().activate();
         target.getNavCmdLink().click();
         return (T) page(target.getPageObjectClass());
+    }
+
+    public <T extends AbstractPage> T navigateTo(Navigation target,
+            Class<T> clazz) {
+        target.getMenu().activate();
+        target.getNavCmdLink().click();
+        return page(clazz);
+    }
+
+    public <T extends NavigablePage> T navigateTo(Class<T> clazz) {
+        T page = page(clazz);
+        Navigation target = page.getNavigationItem();
+        target.getMenu().activate();
+        target.getNavCmdLink().click();
+        return page;
     }
 
     /**

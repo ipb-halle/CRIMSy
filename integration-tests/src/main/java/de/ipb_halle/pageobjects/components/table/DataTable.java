@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.table;
+package de.ipb_halle.pageobjects.components.table;
 
 import java.util.ArrayList;
 import java.util.HashMap;

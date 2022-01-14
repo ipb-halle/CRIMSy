@@ -15,18 +15,18 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.pages.materials;
+package de.ipb_halle.pageobjects.pages.composite;
 
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
+import de.ipb_halle.pageobjects.components.MolecularFacesMolecule;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
-import de.ipb_halle.pageobjects.plugins.MolPlugin;
 
 /**
- * Page object for /ui/web/WEB-INF/templates/material/materialSearchMask.xhtml
+ * Page object for /ui/web/resources/crimsy/materialSearchMask.xhtml
  * 
  * @author flange
  */
@@ -36,22 +36,19 @@ public class MaterialSearchMaskPage extends AbstractPage {
     private static final SelenideElement ID_INPUT = $(
             testId("input", "materialSearchMask:id"));
     private static final SelenideElement USER_NAME_INPUT = $(
-            testId("input", "materialSearchMask:userName"));
+            testId("materialSearchMask:userName"));
     private static final SelenideElement PROJECT_NAME_INPUT = $(
             testId("materialSearchMask:projectName"));
     private static final SelenideElement INDEX_INPUT = $(
             testId("input", "materialSearchMask:index"));
     private static final SelenideElement MATERIAL_TYPE_SELECTION = $(
-            testId("materialSearchMask:materialType"));
-    private static final String MOLEDITOR_TESTID = "materialSearchMask:molEditor";
-    private static final String MOLEDITOR_WIDGETVAR = "molEditorWidgetVar";
+            testId("select", "materialSearchMask:materialType"));
+    private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule(
+            "materialSearchMask:molEditor", "molEditorWidgetVar");
     private static final SelenideElement CLEAR_BUTTON = $(
             testId("materialSearchMask:clearButton"));
     private static final SelenideElement SEARCH_BUTTON = $(
             testId("materialSearchMask:searchButton"));
-
-    private MolPlugin molEditor = new MolPlugin(MOLEDITOR_TESTID,
-            MOLEDITOR_WIDGETVAR);
 
     /*
      * Actions
@@ -70,7 +67,7 @@ public class MaterialSearchMaskPage extends AbstractPage {
 
         String molfile = model.getMolfile();
         if (molfile != null) {
-            molEditor.setMolecule(molfile);
+            MOL_EDITOR.setMolecule(molfile);
         }
 
         return this;
@@ -95,13 +92,21 @@ public class MaterialSearchMaskPage extends AbstractPage {
     /*
      * Getters
      */
+    /*
+     * TODO: Need to think about situations where not all input fields are
+     * available, because their appearance is configurable in
+     * materialSearchMask.xhtml. This is not problematic in applyModel(),
+     * because fields can simply be left null and the input elements are not
+     * interacted with.
+     */
     public MaterialSearchMaskModel getModel() {
         return new MaterialSearchMaskModel()
                 .name(NAME_INPUT.text())
-                .id(ID_INPUT.text()).userName(USER_NAME_INPUT.text())
+                .id(ID_INPUT.text())
+                .userName(USER_NAME_INPUT.text())
                 .projectName(PROJECT_NAME_INPUT.text())
                 .index(INDEX_INPUT.text())
                 .materialType(MATERIAL_TYPE_SELECTION.getSelectedValue())
-                .molfile(molEditor.getMolecule());
+                .molfile(MOL_EDITOR.getMolecule());
     }
 }

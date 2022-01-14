@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.WebDriverRunner;
 
 /**
  * Configure the Selenide default browser. 
@@ -55,6 +56,10 @@ public class WebDriverConfig {
     public void configure() {
         Configuration.baseUrl = crimsyUrl;
         Configuration.browser = browserName;
+
+        // scroll to element before clicking
+        int navbarOffset = 47;
+        WebDriverRunner.addListener(new ScrollWebdriverListener(navbarOffset));
 
         if ((selenoidUrl == null) || selenoidUrl.trim().isEmpty()) {
             configureLocal();

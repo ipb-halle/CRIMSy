@@ -47,6 +47,9 @@ public class LoginPage extends AbstractPage {
         LOGIN_CMDLINK.click();
     }
 
+    /*
+     * Actions
+     */
     public AbstractPage login(String loginName, String password) {
         LOGINNAME_INPUT.setValue(loginName);
         PASSWORD_INPUT.setValue(password);
@@ -59,6 +62,9 @@ public class LoginPage extends AbstractPage {
         }
     }
 
+    /*
+     * Getters
+     */
     public SelenideElement getLoginNameMessage() {
         return LOGINNAME_MESSAGE;
     }

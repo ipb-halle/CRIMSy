@@ -18,7 +18,7 @@
 package de.ipb_halle.pageobjects.util;
 
 import static de.ipb_halle.pageobjects.util.Selectors.cssClasses;
-import static de.ipb_halle.pageobjects.util.Selectors.elementAndCssClasses;
+import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithAttribute;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 import static org.junit.Assert.assertEquals;
@@ -42,11 +42,11 @@ public class SelectorsTest {
     }
 
     @Test
-    public void test_elementAndCssClasses() {
-        assertEquals("div", elementAndCssClasses("div"));
-        assertEquals("div.class1", elementAndCssClasses("div", "class1"));
+    public void test_elementWithCssClasses() {
+        assertEquals("div", elementWithCssClasses("div"));
+        assertEquals("div.class1", elementWithCssClasses("div", "class1"));
         assertEquals("div.class1.class2",
-                elementAndCssClasses("div", "class1", "class2"));
+                elementWithCssClasses("div", "class1", "class2"));
     }
 
     @Test

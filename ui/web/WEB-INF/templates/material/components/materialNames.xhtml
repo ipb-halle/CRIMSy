@@ -36,11 +36,12 @@
                 <p:outputPanel rendered="#{materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
                     <b:dataTable
                         id="materialNameTable"
+                        pt:data-test-id="materialNamesTab:materialNamesTable"
+                        value="#{materialBean.materialNameBean.names}"
+                        var="mName"
                         styleClass="materialNameTableClass materialNamesPanelClass"
                         paginated="false"
-                        value="#{materialBean.materialNameBean.names}"
                         searching="false"
-                        var="mName"
                         saveState="false">
                         <b:dataTableColumn
                             orderable="false"
@@ -56,7 +57,6 @@
                                         }">
                                 <f:converter converterId="InputConverter" />
                             </b:inputText>
-
                         </b:dataTableColumn>
                         <b:dataTableColumn
                             styleClass="materialNameLanguage"
@@ -65,91 +65,83 @@
                             <b:selectOneMenu
                                 disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
                                 value="#{mName.language}">
-                                <f:selectItems 
-                                    value="#{materialBean.materialNameBean.getPossibleLanguages()}"/>
+                                <f:selectItems value="#{materialBean.materialNameBean.getPossibleLanguages()}"/>
                             </b:selectOneMenu>
                         </b:dataTableColumn>
                         <b:dataTableColumn
                             styleClass="materialNameAction"
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_action}">
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-double-up "
-                                             look="link"
-                                             ajax="true"
-                                             process="@(.materialNameTableClass)"
-                                             update="@(.materialNameTableClass)"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
-                                                         'HIGHEST')}"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_highestRank}"
-                                             onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHEST');"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-up"
-                                             look="link"
-                                             ajax="true"
-                                             process="@(.materialNameTableClass)"
-                                             update="@(.materialNameTableClass)"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
-                                                         'HIGHER')}"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_higher}"
-                                             onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHER');"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-down "
-                                             look="link"
-                                             ajax="true"
-                                             process="@(.materialNameTableClass)"
-                                             update="@(.materialNameTableClass)"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_lower}"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
-                                                         'LOWER')}"
-                                             onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWER');"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-double-down"
-                                             look="link"
-                                             ajax="true"
-                                             update="@(.materialNameTableClass)"
-                                             process="@(.materialNameTableClass)"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
-                                                         'LOWEST')}"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_lowestRank}"
-                                             onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWEST');"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon="trash"
-                                             look="link"
-                                             ajax="true"
-                                             process="@(.materialNameTableClass)"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
-                                                         'DELETE')}"
-                                             update="@(.materialNameTableClass)"
-                                             onclick="ajax:materialBean.materialNameBean.removeName(mName);"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-plus "
-                                             look="link"
-                                             onclick="ajax:materialBean.materialNameBean.addNewName();"
-                                             ajax="true"
-                                             process="@form"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
-                                                         'NEW')}"
-                                             update="@(.materialNameTableClass)"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_add}"
-                                             type="button"/>
+                            <b:commandButton
+                                style="padding: 0 4px;"
+                                icon-awesome="fa-angle-double-up"
+                                look="link"
+                                ajax="true"
+                                process="@(.materialNameTableClass)"
+                                update="@(.materialNameTableClass)"
+                                disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(mName, 'HIGHEST')}"
+                                tooltip="#{msgs.materialCreation_panelNames_tooltip_highestRank}"
+                                onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHEST');"
+                                type="button" />
+                            <b:commandButton
+                                style="padding: 0 4px;"
+                                icon-awesome="fa-angle-up"
+                                look="link"
+                                ajax="true"
+                                process="@(.materialNameTableClass)"
+                                update="@(.materialNameTableClass)"
+                                disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(mName, 'HIGHER')}"
+                                tooltip="#{msgs.materialCreation_panelNames_tooltip_higher}"
+                                onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHER');"
+                                type="button" />
+                            <b:commandButton
+                                style="padding: 0 4px;"
+                                icon-awesome="fa-angle-down"
+                                look="link"
+                                ajax="true"
+                                process="@(.materialNameTableClass)"
+                                update="@(.materialNameTableClass)"
+                                tooltip="#{msgs.materialCreation_panelNames_tooltip_lower}"
+                                disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(mName, 'LOWER')}"
+                                onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWER');"
+                                type="button" />
+                            <b:commandButton
+                                style="padding: 0 4px;"
+                                icon-awesome="fa-angle-double-down"
+                                look="link"
+                                ajax="true"
+                                update="@(.materialNameTableClass)"
+                                process="@(.materialNameTableClass)"
+                                disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(mName, 'LOWEST')}"
+                                tooltip="#{msgs.materialCreation_panelNames_tooltip_lowestRank}"
+                                onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWEST');"
+                                type="button" />
+                            <b:commandButton
+                                style="padding: 0 4px;"
+                                icon="trash"
+                                look="link"
+                                ajax="true"
+                                process="@(.materialNameTableClass)"
+                                disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(mName, 'DELETE')}"
+                                update="@(.materialNameTableClass)"
+                                onclick="ajax:materialBean.materialNameBean.removeName(mName);"
+                                tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"
+                                type="button" />
+                            <b:commandButton
+                                style="padding: 0 4px;"
+                                icon-awesome="fa-plus"
+                                look="link"
+                                onclick="ajax:materialBean.materialNameBean.addNewName();"
+                                ajax="true"
+                                process="@form"
+                                disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(mName, 'NEW')}"
+                                update="@(.materialNameTableClass)"
+                                tooltip="#{msgs.materialCreation_panelNames_tooltip_add}"
+                                type="button" />
                         </b:dataTableColumn>
                     </b:dataTable>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>
     </h:body>
-
 </html>

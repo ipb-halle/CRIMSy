@@ -40,49 +40,48 @@
                     <b:container>
                         <b:row>
                             <b:column span="5">
-                                <h:outputText
-                                    value="#{msgs.materialCreation_panelStrucInfos_formula}"/>
+                                <h:outputText value="#{msgs.materialCreation_panelStrucInfos_formula}" />
                             </b:column>
                             <b:column span="6">
-                                <h:outputText
-                                    value="#{msgs.materialCreation_panelStrucInfos_mass}"/>
+                                <h:outputText value="#{msgs.materialCreation_panelStrucInfos_mass}" />
                             </b:column>
                         </b:row>
                         <b:row>
                             <b:column span="6">
                                 <mol:molecule
+                                    pt:data-test-id="structureInfosTab:molEditor"
                                     value="#{materialBean.structureInfos.structureModel}"
                                     pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                     format="MDLV2000"
                                     border="true"
                                     readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                    widgetVar="structurePlugin">
-                                </mol:molecule>
+                                    widgetVar="structurePlugin" />
                                 <!-- This JS snippet guarantees proper plugin initialization after
                                      this p:tab is rendered by AJAX and the tab comes into focus. -->
                                 <script>structurePlugin.then(plugin => plugin.init());</script>
-
                             </b:column>
                             <b:column span="6">
                                 <b:container>
                                     <b:row>
                                         <b:column span="6">
                                             <b:selectBooleanCheckbox 
+                                                pt:data-test-id="structureInfosTab:autoCalc"
                                                 disabled="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
                                                 value="#{materialBean.autoCalcFormularAndMasses}"
                                                 caption="Formel und Masse automatisch berechnen"
                                                 ajax="true"
-                                                update="@(.autocalculatable)"/>
+                                                update="@(.autocalculatable)" />
                                         </b:column>
                                     </b:row>
                                     <b:row>
                                         <b:column span="2">
-                                            <h:outputText
-                                                value="#{msgs.materialCreation_panelStrucInfos_sumformula}"/>
+                                            <h:outputText value="#{msgs.materialCreation_panelStrucInfos_sumformula}" />
                                         </b:column>
-                                        <b:column span="2"
-                                                  styleClass="autocalculatable">
+                                        <b:column
+                                            span="2"
+                                            styleClass="autocalculatable">
                                             <b:inputText
+                                                pt:data-test-id="structureInfosTab:sumFormula"
                                                 disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
                                                 value="#{materialBean.structureInfos.sumFormula}">
                                                 <f:converter converterId="InputConverter" />
@@ -91,12 +90,13 @@
                                     </b:row>
                                     <b:row>
                                         <b:column span="2">
-                                            <h:outputText
-                                                value="#{msgs.materialCreation_panelStrucInfos_molarMass}"/>
+                                            <h:outputText value="#{msgs.materialCreation_panelStrucInfos_molarMass}" />
                                         </b:column>
-                                        <b:column span="2"
-                                                  styleClass="autocalculatable">
+                                        <b:column
+                                            span="2"
+                                            styleClass="autocalculatable">
                                             <b:inputText
+                                                pt:data-test-id="structureInfosTab:averageMolarMass"
                                                 disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
                                                 value="#{materialBean.structureInfos.averageMolarMass}">
                                                 <f:converter converterId="InputConverter" />
@@ -105,12 +105,13 @@
                                     </b:row>
                                     <b:row>
                                         <b:column span="2">
-                                            <h:outputText
-                                                value="#{msgs.materialCreation_panelStrucInfos_exactMolarMass}"/>
+                                            <h:outputText value="#{msgs.materialCreation_panelStrucInfos_exactMolarMass}" />
                                         </b:column>
-                                        <b:column span="2"
-                                                  styleClass="autocalculatable">
+                                        <b:column
+                                            span="2"
+                                            styleClass="autocalculatable">
                                             <b:inputText
+                                                pt:data-test-id="structureInfosTab:exactMolarMass"
                                                 disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
                                                 value="#{materialBean.structureInfos.exactMolarMass}">
                                                 <f:converter converterId="InputConverter" />
@@ -125,5 +126,4 @@
             </p:tab>
         </ui:composition>
     </h:body>
-
 </html>

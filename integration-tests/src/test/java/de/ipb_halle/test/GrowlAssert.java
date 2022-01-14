@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;
 
-import de.ipb_halle.pageobjects.growl.Growl;
-import de.ipb_halle.pageobjects.growl.Severity;
+import de.ipb_halle.pageobjects.components.growl.Growl;
+import de.ipb_halle.pageobjects.components.growl.Severity;
 
 /**
  * Assertion methods for {@link Growl}s.

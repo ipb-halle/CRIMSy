@@ -24,15 +24,16 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.pages.materials.tabs.MaterialEditTab;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/material/materialsEdit.xhtml
  * 
  * @author flange
  */
-public class MaterialEditPage extends AbstractPage {
+public class MaterialEditPage extends AbstractPage implements MaterialEditTab {
     private static final SelenideElement PROJECT_SELECTION = $(
-            testId("materialEdit:project"));
+            testId("select", "materialEdit:project"));
     private static final SelenideElement BACKWARD_BUTTON = $(
             testId("materialEdit:backward"));
     private static final SelenideElement CHANGED_TEXT = $(
@@ -44,27 +45,11 @@ public class MaterialEditPage extends AbstractPage {
     private static final SelenideElement SAVE_BUTTON = $(
             testId("materialEdit:save"));
     private static final SelenideElement MATERIAL_TYPE_SELECTION = $(
-            testId("materialEdit:materialType"));
+            testId("select", "materialEdit:materialType"));
     private static final SelenideElement MODE_TEXT = $(
             testId("materialEdit:mode"));
     private static final SelenideElement ERROR_MESSAGES = $(
             testId("materialEdit:errorMessages"));
-    private static final SelenideElement MATERIAL_NAMES_TAB = $(
-            testId("materialEdit:materialNamesTab"));
-    private static final SelenideElement INDICES_TAB = $(
-            testId("materialEdit:indicesTab"));
-    private static final SelenideElement STRUCTURE_INFOS_TAB = $(
-            testId("materialEdit:structureInfosTab"));
-    private static final SelenideElement SEQUENCE_INFOS_TAB = $(
-            testId("materialEdit:sequenceInfosTab"));
-    private static final SelenideElement HARZARDS_TAB = $(
-            testId("materialEdit:hazardsTab"));
-    private static final SelenideElement STORAGE_TAB = $(
-            testId("materialEdit:storageTab"));
-    private static final SelenideElement BIODATA_TAB = $(
-            testId("materialEdit:materialNamesTab"));
-    private static final SelenideElement COMPOSITION_TAB = $(
-            testId("materialEdit:compositionTab"));
 
     /*
      * Actions
@@ -107,46 +92,6 @@ public class MaterialEditPage extends AbstractPage {
         } else {
             return page(MaterialOverviewPage.class);
         }
-    }
-
-    public MaterialNamesTab openMaterialNamesTab() {
-        MATERIAL_NAMES_TAB.click();
-        return page(MaterialNamesTab.class);
-    }
-
-    public IndicesTab openIndicesTab() {
-        INDICES_TAB.click();
-        return page(IndicesTab.class);
-    }
-
-    public StructureInfosTab openStructureInfosTab() {
-        STRUCTURE_INFOS_TAB.click();
-        return page(StructureInfosTab.class);
-    }
-
-    public SequenceInfosTab openSequenceInfosTab() {
-        SEQUENCE_INFOS_TAB.click();
-        return page(SequenceInfosTab.class);
-    }
-
-    public HarzardsTab openHazardsTab() {
-        HARZARDS_TAB.click();
-        return page(HarzardsTab.class);
-    }
-
-    public StorageTab openStorageTab() {
-        STORAGE_TAB.click();
-        return page(StorageTab.class);
-    }
-
-    public BiodataTab openBiodataTab() {
-        BIODATA_TAB.click();
-        return page(BiodataTab.class);
-    }
-
-    public CompositionTab openCompositionTab() {
-        COMPOSITION_TAB.click();
-        return page(CompositionTab.class);
     }
 
     /*

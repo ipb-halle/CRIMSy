@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.pages.materials;
+package de.ipb_halle.pageobjects.pages.composite;
 
 /**
  * Model class for input data in {@link MaterialSearchMaskPage}.
