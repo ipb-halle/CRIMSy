@@ -71,7 +71,8 @@ public class LinkedDataAgent implements Serializable {
             return NavigationConstants.TEMPLATE_FOLDER
                     + material.getType().getFactory().createUIInformation().getLinkPreviewTemplate();
         } else {
-            return null;
+            return NavigationConstants.TEMPLATE_FOLDER + "material/components/linkPreview/noMaterial"
+                    + NavigationConstants.TEMPLATE_EXT;
         }
     }
 
