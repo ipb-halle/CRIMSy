@@ -17,6 +17,16 @@ include(dist/etc/config_m4.inc)dnl
  * limitations under the License.
  *
  */
+ 
+ 
+/* Only postgres dbuser can grant priviliges /*
+\connect lbac 
+\connect - postgres
+BEGIN TRANSACTION;
+CREATE USER fasta WITH PASSWORD 'fasta'; 
+ALTER USER fasta SET search_path to lbac;
+COMMIT TRANSACTION;
+ 
 
 \connect lbac 
 \connect - lbac
@@ -61,5 +71,16 @@ CREATE TABLE temp_search_parameter (
   processid  UUID NOT NULL,
   parameter  JSONB NOT NULL
 );
+
+
+GRANT SELECT ON sequences TO fasta;
+GRANT SELECT ON materials TO fasta;
+GRANT SELECT ON material_compositions TO fasta;
+GRANT SELECT ON ACENTRIES TO fasta;
+GRANT SELECT ON MEMBERSHIPS TO fasta;
+GRANT SELECT ON temp_search_parameter TO fasta;
+GRANT SELECT ON material_indices TO fasta;
+GRANT SELECT ON USERSGROUPS TO fasta;
+GRANT SELECT ON projects TO fasta;
 
 COMMIT TRANSACTION;
