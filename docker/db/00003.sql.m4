@@ -19,7 +19,7 @@ include(dist/etc/config_m4.inc)dnl
  */
  
  
-/* Only postgres dbuser can create new dbusers /*
+/* Only postgres dbuser can create new dbusers */
 \connect lbac 
 \connect - postgres
 BEGIN TRANSACTION;
@@ -76,11 +76,12 @@ CREATE TABLE temp_search_parameter (
 GRANT SELECT ON sequences TO fasta;
 GRANT SELECT ON materials TO fasta;
 GRANT SELECT ON material_compositions TO fasta;
-GRANT SELECT ON ACENTRIES TO fasta;
-GRANT SELECT ON MEMBERSHIPS TO fasta;
+GRANT SELECT ON acentries TO fasta;
+GRANT SELECT ON memberships TO fasta;
 GRANT SELECT ON temp_search_parameter TO fasta;
 GRANT SELECT ON material_indices TO fasta;
-GRANT SELECT ON USERSGROUPS TO fasta;
+GRANT SELECT ON usergroups TO fasta;
 GRANT SELECT ON projects TO fasta;
+GRANT USAGE ON SCHEMA lbac TO fasta;
 
 COMMIT TRANSACTION;
