@@ -45,6 +45,7 @@ import org.primefaces.event.FlowEvent;
 @SessionScoped
 @Named
 public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHolder {
+
     private static final long serialVersionUID = 1L;
 
     private static final Pattern LINKTEXT_PATTERN = Pattern.compile("[\\w]+");
@@ -82,9 +83,10 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     /**
      * Constructor for test purposes to inject the dependencies
+     *
      * @param materialAgent
      * @param itemAgent
-     * @param experimentBean 
+     * @param experimentBean
      */
     public LinkCreationProcess(
             MaterialAgent materialAgent,
@@ -150,7 +152,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
         LinkedData link = new LinkedData(
                 expBean.getExpRecordController().getExpRecord(),
                 LinkedDataType.LINK_MATERIAL,
-                expBean.getExpRecordController().getExpRecord().getLinkedDataNextRank()
+                expBean.getExpRecordController().getExpRecord().getLinkedData().size()
         );
         link.setPayload(new LinkText(linkText));
         link.setMaterial(material);
@@ -222,7 +224,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
         LinkedData link = new LinkedData(
                 expBean.getExpRecordController().getExpRecord(),
                 LinkedDataType.LINK_ITEM,
-                expBean.getExpRecordController().getExpRecord().getLinkedDataNextRank()
+                expBean.getExpRecordController().getExpRecord().getLinkedData().size()
         );
         link.setPayload(new LinkText(linkText));
         link.setItem(item);

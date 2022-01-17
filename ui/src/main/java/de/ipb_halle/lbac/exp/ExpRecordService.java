@@ -240,11 +240,9 @@ public class ExpRecordService implements Serializable {
                     material = this.materialService.loadMaterialById(e.getMaterialId());
                     if (!aclistService.isPermitted(ACPermission.permREAD, material, user)) {
                         material = InaccessibleMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
-
                     }
                 }
             }
-            expRecord.setLinkedDataMaxRank(e.getRank());
 
             if (material != null) {
                 result.add(new LinkedData(e, expRecord, material, item));

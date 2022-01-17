@@ -75,7 +75,7 @@ public class LinkCreationProcessTest extends TestBase {
     private ItemService itemService;
 
     private User publicUser;
-    private int materialId;
+    private int materialId, materialId2, materialId3;
     private int itemId;
 
     @Before
@@ -91,6 +91,8 @@ public class LinkCreationProcessTest extends TestBase {
         linkCreationProcess = new LinkCreationProcess(materialAgent, itemAgent, experimentBean);
         linkCreationProcess.init();
         materialId = materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M1");
+        materialId2 = materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M2");
+        materialId3 = materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M3");
         itemId = itemCreator.createItem(
                 publicUser.getId(),
                 GlobalAdmissionContext.getPublicReadACL().getId(),
@@ -105,7 +107,7 @@ public class LinkCreationProcessTest extends TestBase {
         prepareLinkCreation();
 
         linkCreationProcess.setLinkText("test001_createMaterialLink");
-        linkCreationProcess.onFlowProcess(new FlowEvent(new TestUIComponent(), "step1", "step2"));
+        triggerWizardStep();
         linkCreationProcess.setMaterial(materialService.loadMaterialById(materialId));
         experimentBean.getExpRecordController().actionSaveRecord();
 
@@ -120,7 +122,7 @@ public class LinkCreationProcessTest extends TestBase {
         prepareLinkCreation();
 
         linkCreationProcess.setLinkText("test001_createItemLink");
-        linkCreationProcess.onFlowProcess(new FlowEvent(new TestUIComponent(), "step1", "step2"));
+        triggerWizardStep();
         linkCreationProcess.setItem(itemService.loadItemById(itemId));
         experimentBean.getExpRecordController().actionSaveRecord();
 
@@ -128,6 +130,43 @@ public class LinkCreationProcessTest extends TestBase {
         Assert.assertEquals(1, o.size());
 
         cleanUp();
+    }
+
+    /**
+     * This test is created because a bug was found. The rank of the third
+     * material was wrong due to an unknown reason.
+     */
+    @Test
+    public void test003_createMultipleMaterialLinks() {
+        prepareLinkCreation();
+
+        linkCreationProcess.setLinkText("test003_M1");
+        triggerWizardStep();
+        linkCreationProcess.setMaterial(materialService.loadMaterialById(materialId));
+        experimentBean.getExpRecordController().actionSaveRecord();
+
+        experimentBean.actionEditRecord(experimentBean.getExpRecords().get(0));
+        linkCreationProcess.setLinkText("test003_M2");
+        triggerWizardStep();
+        linkCreationProcess.setMaterial(materialService.loadMaterialById(materialId2));
+        experimentBean.getExpRecordController().actionSaveRecord();
+
+        experimentBean.actionEditRecord(experimentBean.getExpRecords().get(0));
+        linkCreationProcess.setLinkText("test003_M3");
+        triggerWizardStep();
+        linkCreationProcess.setMaterial(materialService.loadMaterialById(materialId3));
+        experimentBean.getExpRecordController().actionSaveRecord();
+
+        Assert.assertEquals(1, experimentBean.getExpRecords().size());
+        Assert.assertEquals(3, experimentBean.getExpRecords().get(0).getLinkedData().size());
+        Assert.assertEquals(0, experimentBean.getExpRecords().get(0).getLinkedData().get(0).getRank());
+        Assert.assertEquals(1, experimentBean.getExpRecords().get(0).getLinkedData().get(1).getRank());
+        Assert.assertEquals(2, experimentBean.getExpRecords().get(0).getLinkedData().get(2).getRank());
+
+    }
+
+    private void triggerWizardStep() {
+        linkCreationProcess.onFlowProcess(new FlowEvent(new TestUIComponent(), "step1", "step2"));
     }
 
     @Deployment
