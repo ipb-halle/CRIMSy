@@ -61,15 +61,6 @@ public class MaterialHazardBuilder {
     private final int CUSTOM_STATEMENT_ID = 17;
     private final int GMO_STATEMENT_ID = 20;
 
-    public MaterialHazardBuilder(
-            HazardService hazardService,
-            MaterialType materialType,
-            boolean isEditable,
-            Map<HazardType, String> hazards) {
-        this(hazardService, materialType, isEditable, hazards, JsfMessagePresenter.getInstance());
-
-    }
-
     /**
      *
      * @param hazardService
@@ -129,10 +120,11 @@ public class MaterialHazardBuilder {
     }
 
     /**
-     * Adds a Hazard. If the hazard is a h- or p-statement, radioactivity, gmo
-     * or a custom statement the corresponding varable will be changed.
+     * Adds a Hazard.If the hazard is a h- or p-statement, radioactivity, gmo or
+     * a custom statement the corresponding varable will be changed.
      *
      * @param hazard
+     * @param remark
      */
     public void addHazardType(HazardType hazard, String remark) {
         for (int i = 0; i < BSL_IDS.length; i++) {
@@ -188,7 +180,7 @@ public class MaterialHazardBuilder {
     }
 
     public String getRadioactiveImageLocation() {
-        return getImageLocation(hazardService.getHazardById(16));
+        return getImageLocation(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID));
     }
 
     /**
@@ -233,15 +225,18 @@ public class MaterialHazardBuilder {
     }
 
     public String getLocalizedName(HazardType h) {
+        if (h == null) {
+            throw new IllegalArgumentException("Null was passed to getLocalizedName");
+        }
         return messagePresenter.presentMessage("hazard_" + h.getName());
     }
 
     public String getLocalizedRadioactiveLabel() {
-        return getLocalizedName(hazardService.getHazardById(16));
+        return getLocalizedName(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID));
     }
 
     public String getLocalizedCustomLabel() {
-        return getLocalizedName(hazardService.getHazardById(17));
+        return getLocalizedName(hazardService.getHazardById(CUSTOM_STATEMENT_ID));
     }
 
     public String getLocalizedStatements() {
@@ -337,11 +332,7 @@ public class MaterialHazardBuilder {
     public List<String> getPossibleBioSavetyLevels() {
         return possibleBioSavetyLevels;
     }
-
-    public void setMessagePresenter(MessagePresenter messagePresenter) {
-        this.messagePresenter = messagePresenter;
-    }
-
+    
     /**
      * Returns a biohazard image if riskgroup 2,3 or 4 is choosen. Returns a
      * empty image else

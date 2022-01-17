@@ -54,9 +54,6 @@ public class SequenceHistoryController implements HistoryController<SequenceDiff
         if (!Objects.equals(oldData.getSequenceString(), newData.getSequenceString())) {
             builder.sequenceString(newData.getSequenceString());
         }
-        if (!Objects.equals(oldData.getSequenceType(), newData.getSequenceType())) {
-            builder.sequenceType(newData.getSequenceType());
-        }
         if (!Objects.equals(oldData.isCircular(), newData.isCircular())) {
             builder.circular(newData.isCircular());
         }

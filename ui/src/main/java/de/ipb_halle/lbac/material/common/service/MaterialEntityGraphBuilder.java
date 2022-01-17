@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
+import de.ipb_halle.lbac.material.sequence.SequenceEntity;
 import de.ipb_halle.lbac.material.structure.MoleculeEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.project.ProjectEntity;
@@ -41,7 +42,6 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     public final static String COMPONENT_MATERIAL_SUBGRAPHNAME = "componentMaterials";
     protected ACListService aclistService;
     protected EntityGraph detailRightSubGraph;
-    private EntityGraph indexGraph;
     private EntityGraph componentIndexGraph;
     private EntityGraph materialsGraph;
     private EntityGraph componentsGraph;
@@ -63,11 +63,11 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
 
     }
 
-    protected void addIndex() {       
+    protected void addIndex() {
         componentIndexGraph = addJoinToChild(JoinType.LEFT, materialsGraph, MaterialIndexEntryEntity.class, "materialid", "materialid");
     }
 
-    protected void addOwner() {      
+    protected void addOwner() {
         addJoinToChildInherit(JoinType.INNER, materialsGraph, MemberEntity.class, "owner_id", "id");
     }
 
@@ -78,6 +78,11 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     protected void addStructure() {
         EntityGraph subGraph = addJoinToChild(JoinType.LEFT, materialsGraph, StructureEntity.class, "materialid", "id");
         addJoinToChild(JoinType.LEFT, subGraph, MoleculeEntity.class, "moleculeid", "id");
+    }
+
+    protected void addSequences() {
+        addJoinToChild(JoinType.LEFT, materialsGraph, SequenceEntity.class, "materialid", "id");
+
     }
 
     protected void addAcls() {
@@ -102,6 +107,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
         addIndex();
         addOwner();
         addStructure();
+        addSequences();
         addProject();
         addAcls();
         //addBioMaterial();

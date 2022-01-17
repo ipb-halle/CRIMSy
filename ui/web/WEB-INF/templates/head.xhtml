@@ -27,9 +27,9 @@
 <h:body>
     <ui:composition>
         <!-- CSP Header -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-        <meta http-equiv="X-WebKit-CSP" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; frame-src 'self' blob:;"/>
+        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; frame-src 'self' blob:;"/>
+        <meta http-equiv="X-WebKit-CSP" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; frame-src 'self' blob:;"/>
         <!-- -->
         <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
         <meta name="apple-mobile-web-app-capable" content="yes"/>

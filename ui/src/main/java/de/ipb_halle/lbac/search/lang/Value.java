@@ -87,39 +87,39 @@ public class Value {
      * @return a modified cast parameter to use the JSON object
      * from the parameter table
      */
-    public String getJsonParameter(String field) {
+    public String getJsonParameter(String aliasedField) {
         if (value == null) {
             throw new IllegalArgumentException("Value cannot be null");
         } else if (value instanceof Integer) {
-            return String.format("CAST(%s->>'%s' AS INTEGER)", field, this.argumentKey);
+            return String.format("CAST(%s->>'%s' AS INTEGER)", aliasedField, this.argumentKey);
         } else if (value instanceof Long) {
-            return String.format("CAST(%s->>'%s' AS BIGINT)", field, this.argumentKey);
+            return String.format("CAST(%s->>'%s' AS BIGINT)", aliasedField, this.argumentKey);
         } else if (value instanceof String) {
-            return String.format("CAST(%s->>'%s' AS VARCHAR)", field, this.argumentKey);
+            return String.format("CAST(%s->>'%s' AS VARCHAR)", aliasedField, this.argumentKey);
         } else if (value instanceof Double) {
-            return String.format("CAST(%s->>'%s' AS DOUBLE)", field, this.argumentKey);
+            return String.format("CAST(%s->>'%s' AS DOUBLE)", aliasedField, this.argumentKey);
         } else if (value instanceof Float) {
-            return String.format("CAST(%s->>'%s' AS FLOAT)", field, this.argumentKey);
+            return String.format("CAST(%s->>'%s' AS FLOAT)", aliasedField, this.argumentKey);
         } else if (value instanceof Boolean) {
-            return String.format("CAST(%s->>'%s' AS BOOLEAN)", field, this.argumentKey);
+            return String.format("CAST(%s->>'%s' AS BOOLEAN)", aliasedField, this.argumentKey);
         } else if (value instanceof Enum) {
             if (value.getClass().isAnnotationPresent(JsonEnumerateAsString.class)) {
-                return String.format("CAST(%s->>'%s' AS VARCHAR)", field, this.argumentKey);
+                return String.format("CAST(%s->>'%s' AS VARCHAR)", aliasedField, this.argumentKey);
             } else {
-                return String.format("CAST(%s->>'%s' AS INTEGER)", field, this.argumentKey);
+                return String.format("CAST(%s->>'%s' AS INTEGER)", aliasedField, this.argumentKey);
             }
         } else if (value instanceof UUID) {
-            return String.format("CAST(%s->>'%s' AS UUID)", field, this.argumentKey);    
+            return String.format("CAST(%s->>'%s' AS UUID)", aliasedField, this.argumentKey);    
         } else if (value instanceof Date) {
-            return String.format("CAST(%s->>'%s' AS INTEGER)", field, this.argumentKey);
+            return String.format("CAST(%s->>'%s' AS INTEGER)", aliasedField, this.argumentKey);
         } else if (value instanceof Collection) {
             Collection collection = (Collection) value;
             if(! collection.isEmpty()){
                 Object obj = collection.iterator().next();
                 if (obj instanceof Integer) {
-                    return String.format("convert_jsonb_to_int_array(%s->'%s')", field, this.argumentKey);
+                    return String.format("(SELECT jsonb_array_elements_text(%s->'%s')::INTEGER)", aliasedField, this.argumentKey);
                 } else if (obj instanceof String) {
-                    return String.format("convert_jsonb_to_varchar_array(%s->'%s')", field, this.argumentKey);
+                    return String.format("(SELECT jsonb_array_elements_text(%s->'%s'))", aliasedField, this.argumentKey);
                 } else {
                     throw new IllegalArgumentException("Illegal object type in collection");
                 }

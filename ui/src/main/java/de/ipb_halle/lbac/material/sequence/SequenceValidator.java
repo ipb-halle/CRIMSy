@@ -25,31 +25,34 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Validator for {@link Sequence} materials. A sequence is valid if its names
+ * are valid and its sequence type is selected.
  *
  * @author fmauz
  */
 public class SequenceValidator implements MaterialValidator {
-
-    MaterialNameValidator nameValidator;
-    Set<Invalidity> errors = new HashSet<>();
+    private Set<Invalidity> errors = new HashSet<>();
 
     @Override
     public boolean checkValidity(MaterialBean bean) {
-        nameValidator = new MaterialNameValidator();
-        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames(),errors);
-
-        boolean sequenzValide = true;
-        if (!bean.getSequenceInfos().isSequenceTypeSelected()) {
-            sequenzValide = false;
-            errors.add(Invalidity.NO_SEQUENCETYPE_CHOOSEN);
+        errors.clear();
+        MaterialNameValidator nameValidator = new MaterialNameValidator();
+        boolean namesValid = nameValidator.checkValidity(bean);
+        if (!namesValid) {
+            errors.addAll(nameValidator.getInvalidities());
         }
 
-        return namesValide && sequenzValide;
+        boolean sequenceValid = true;
+        if (!bean.getSequenceInfos().isSequenceTypeSelected()) {
+            sequenceValid = false;
+            errors.add(Invalidity.NO_SEQUENCETYPE_CHOSEN);
+        }
+
+        return namesValid && sequenceValid;
     }
 
     @Override
     public Set<Invalidity> getInvalidities() {
         return errors;
     }
-
 }

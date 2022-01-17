@@ -1,0 +1,120 @@
+# ./bin/fastx36 -m 10 -n seq/mgstm1.e05 seq/mgstm1.aa
+FASTX compares a DNA sequence to a protein sequence data bank
+ version 36.3.8i Nov, 2020
+Please cite:
+ Pearson et al, Genomics (1997) 46:24-36
+
+Query: seq/mgstm1.e05
+  1>>>pGT875 | 266 with an average of 5% of residues modified by mutr. - 1135 nt
+Library: seq/mgstm1.aa
+      218 residues in     1 sequences
+
+Statistics: (shuffled [219]) MLE statistics: Lambda= 0.1743;  K=0.002336
+ statistics sampled from 1 (1) to 218 sequences
+Algorithm: FASTX (3.8 June 2014) [optimized]
+Parameters: BL50 matrix (15:-5), open/ext: -12/-2, shift: -20
+ ktup: 2, E-join: 0.5 (0.5), E-opt: 0.1 (0.5), width:  16
+ Scan time:  0.030
+
+The best scores are:                                      opt bits E(1)
+sp|P10649|GSTM1_MOUSE Glutathione S-transferas ( 218) [f]  997 263.9 8.9e-75
+sp|P10649|GSTM1_MOUSE Glutathione S-transferas ( 218) [r]   33 21.5   0.078
+
+>>>pGT875, 1135 nt vs seq/mgstm1.aa library
+; pg_name: fastx36
+; pg_ver: 36.3.8i Nov, 2020
+; pg_argv:  ./bin/fastx36 -m 10 -n seq/mgstm1.e05 seq/mgstm1.aa; pg_name_alg: FASTX
+; pg_ver_rel: 3.8 June 2014
+; pg_matrix: BL50 (15:-5)
+; pg_open_ext: -12 -2
+; pg_ktup: 2
+; pg_join_E(): 0.5 (0.5)
+; pg_optcut_E(): 0.1 (0.5)
+; mp_extrap: 60000 218
+; mp_stats: (shuffled [219]) MLE statistics: Lambda= 0.1743;  K=0.002336
+; mp_KS: -0.0000 (N=0) at   0
+; mp_Algorithm: FASTX (3.8 June 2014) [optimized]
+; mp_Parameters: BL50 matrix (15:-5), open/ext: -12/-2, shift: -20  ktup: 2, E-join: 0.5 (0.5), E-opt: 0.1 (0.5), width:  16
+>>sp|P10649|GSTM1_MOUSE Glutathione S-transferase Mu 1; GST 1-1; GST class-mu 1; Glutathione S-transferase GT8.7; pmGT10
+; fx_frame: f
+; fx_initn: 693
+; fx_init1: 408
+; fx_opt: 997
+; fx_z-score: 1375.0
+; fx_bits: 263.9
+; fx_expect: 8.9e-75
+; sw_score: 997
+; sw_ident: 0.872
+; sw_sim: 0.927
+; sw_overlap: 219
+>pGT875 ..
+; sq_len: 1135
+; sq_offset: 1
+; sq_type: p
+; al_start: 40
+; al_stop: 697
+; al_display_start: 40
+MPMI/MGYWKVRGLTHPIRMLLEYTDPSYDEKRYTMGD\APDFDR-QWLN
+EK\FKLGLEFP\NLPYLIDGSHKITQ/ENAILRYLA/HKAHLEEMTEEER
+IRADIVENQIA\GNPLQXXMLS\YNLDFEKQKPEFLKTIPEKM/ELYSEF
+LGCKRPWFAWDK\VTYVDFFAYDILDQYRMFEP/KCLDAFPNLR\DFLAR
+FEGLKKISA\YMKSSRYIGTA\IFTKMAHWSNK
+>sp|P10649|GSTM1_MOUSE ..
+; sq_len: 218
+; sq_offset: 1
+; sq_type: p
+; al_start: 1
+; al_stop: 218
+; al_display_start: 1
+MPMI-LGYWNVRGLTHPIRMLLEYTDSSYDEKRYTMGD-APDFDRSQWLN
+EK-FKLGLDFP-NLPYLIDGSHKITQ-SNAILRYLA-RKHHLDGETEEER
+IRADIVENQVM-DTRMQLIMLC-YNPDFEKQKPEFLKTIPEKM-KLYSEF
+LG-KRPWFAGDK-VTYVDFLAYDILDQYRMFEP-KCLDAFPNLR-DFLAR
+FEGLKKISA-YMKSSRYIATP-IFSKMAHWSNK
+; al_cons:
+::::-.:::.:::::::::::::::: :::::::::::-::::::-::::
+::-:::::.::-::::::::::::::- ::::::::-.: ::.  :::::
+:::::::::. - . .:  :: -:: :::::::::::::::::-.:::::
+::-:::::: ::-::::::.:::::::::::::-::::::::::-:::::
+:::::::::-::::::::.: -::.::::::::
+>>sp|P10649|GSTM1_MOUSE Glutathione S-transferase Mu 1; GST 1-1; GST class-mu 1; Glutathione S-transferase GT8.7; pmGT10
+; fx_frame: r
+; fx_initn:  58
+; fx_init1:  33
+; fx_opt:  33
+; fx_z-score: 65.1
+; fx_bits: 21.5
+; fx_expect:  0.078
+; sw_score: 36
+; sw_ident: 0.298
+; sw_sim: 0.511
+; sw_overlap: 47
+>pGT875 ..
+; sq_len: 1135
+; sq_offset: 1136
+; sq_type: p
+; al_start: 477
+; al_stop: 352
+; al_display_start: 477
+GLLHPRNS--E*SSFSQGWSSRTLASA---SQSQGCNESMXXCSGFP
+>sp|P10649|GSTM1_MOUSE ..
+; sq_len: 218
+; sq_offset: 1
+; sq_type: p
+; al_start: 12
+; al_stop: 58
+; al_display_start: 12
+GLTHPIRMLLEYTDSSYDEKRYTMGDAPDFDRSQWLNEKFKLGLDFP
+; al_cons:
+:: ::   --: .. :   .  :...:---..::  ::..     ::
+
+>>><<<
+>>>///
+
+1135 residues in 1 query   sequences
+218 residues in 1 library sequences
+ Tcomplib [36.3.8i Nov, 2020] (8 proc in memory [0G])
+ start: Wed Sep  8 13:22:33 2021 done: Wed Sep  8 13:22:33 2021
+ Total Scan time:  0.030 Total Display time:  0.000
+
+Function used was FASTX [36.3.8i Nov, 2020]

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Biological sequence as material type.
  *
  * @author fmauz
  */
@@ -50,6 +51,10 @@ public class Sequence extends Material {
         this.type = MaterialType.SEQUENCE;
 
         this.sequenceData = sequenceData;
+    }
+
+    public Sequence(List<MaterialName> names, Integer projectId, SequenceData sequenceData) {
+        this(null, names, projectId, new HazardInformation(), new StorageInformation(), sequenceData);
     }
 
     public static Sequence fromEntities(MaterialEntity materialEntity, SequenceEntity sequenceEntity) {

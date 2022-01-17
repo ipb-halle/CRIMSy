@@ -27,109 +27,126 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
 
-    <composite:interface name="dlgMaterialEdit"
-                         displayName="material edit dialog"
-                         preferred="true"
-                         expert="false"
-                         shortDescription="material edit dialog">
-        <composite:attribute name="agent" required="true" />
-        <composite:attribute name="updateTarget" required="true" />
+    <composite:interface
+        name="dlgMaterialEdit"
+        displayName="material edit dialog"
+        preferred="true"
+        expert="false"
+        shortDescription="material edit dialog">
+        <composite:attribute
+            name="agent"
+            required="true" />
+        <composite:attribute
+            name="updateTarget"
+            required="true" />
     </composite:interface>
 
-    <composite:implementation >           
-                <p:panelGrid id="materialEdit" 
-                             styleClass="materialEdit borderless">
-                    <p:row styleClass="borderless">
-                        <p:column colspan="6" styleClass="borderless">
-                            <p:panelGrid id="search" styleClass="borderless">
-                                <p:row styleClass="borderless">
-                                    <p:column colspan="4" styleClass="borderless">
-                                        <p:outputLabel
-                                            id="nameSearchLabel"
-                                            for="nameSearch"
-                                            value="#{msgs.materialAgent_label_materialname}"/>
-                                    </p:column>
-                                    <p:column colspan="4" styleClass="borderless">
-                                        <p:inputText
-                                            id="nameSearch"
-                                            value="#{cc.attrs.agent.materialSearch}">
-                                        </p:inputText> 
-                                    </p:column>
-                                    <p:column colspan="4" styleClass="borderless">
-                                        <p:commandButton id="searchButton" 
-                                                         styleClass="materialDlgSearchButton"
-                                                         value="#{msgs.materialAgent_label_search}"
-                                                         onclick="$('body').addClass('waiting');"
-                                                         action="#{cc.attrs.agent.actionTriggerMaterialSearch()}"
-                                                         oncomplete="$('body').removeClass('waiting');"
-                                                         update="@(.materialEdit)" /> 
-                                    </p:column>
-                                </p:row>
-                                <p:row styleClass="borderless">
-                                    <p:column
-                                        colspan="12"
-                                        styleClass="borderless centeredText">
-                                        <h:outputLabel id="molEditorLabel" 
-                                                       for="molEditor" 
-                                                       value="#{msgs.materialAgent_label_substructure}"
-                                                       rendered="#{cc.attrs.agent.showMolEditor}"/>
-                                    </p:column>
-                                </p:row>
-                                <p:row styleClass="borderless">
-                                    <p:column colspan="12" styleClass="borderless">
-                                        <mol:molecule id="molEditor"
-                                                      rendered="true"
-                                                      value="#{cc.attrs.agent.moleculeSearch}" 
-                                                      pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                                      format="MDLV2000"
-                                                      border="true"
-                                                      readonly="false"
-                                                      widgetVar="dlg_createLink_panelMaterialEdit_molEditor"/>
-                                    </p:column>
-                                </p:row>
-                            </p:panelGrid>
-                        </p:column>
-                        <p:column
-                            colspan="6"
-                            styleClass="topAlign borderless">
-                            <!-- rendered attribute of table is irrelevant -->
-                            <h:panelGroup
-                                styleClass="borderless"
-                                id="materialTablePanelGrp">
+    <composite:implementation>           
+        <p:panelGrid
+            id="materialEdit"
+            styleClass="materialEdit borderless">
+            <p:row styleClass="borderless">
+                <p:column
+                    colspan="6"
+                    styleClass="borderless">
+                    <p:panelGrid
+                        id="search"
+                        styleClass="borderless">
+                        <p:row styleClass="borderless">
+                            <p:column
+                                colspan="4"
+                                styleClass="borderless">
                                 <p:outputLabel
-                                    id="materialTableLabel"
-                                    for="materialTable"
-                                    value=" #{msgs.materialAgent_table_availableMaterials}" />
-                                <p:dataTable id="materialTable" 
-                                             value="#{cc.attrs.agent.getMaterialList()}" 
-                                             var="material" >
-                                    <p:column 
-                                        id="col0"
-                                        width="80%">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.materialAgent_table_name}" />
-                                        </f:facet>
-                                        <h:outputText value="#{material.firstName}" />
-                                    </p:column>
-                                    <p:column 
-                                        id="col1"
-                                        width="20%">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.materialAgent_table_action}" />
-                                        </f:facet>
-                                        <p:commandButton
-                                            action="#{cc.attrs.agent.actionSetMaterial(material)}"
-                                            ajax="true"
-                                            value="#{msgs.materialAgent_table_insert}"
-                                            update="#{cc.attrs.updateTarget}"
-                                            oncomplete="PF('wiz').loadStep('step1', false);PF('dlg_createLink').hide();"
-                                            />
-                                    </p:column>
-                                </p:dataTable>
-                            </h:panelGroup>
-                        </p:column>
-                    </p:row>
-                </p:panelGrid>
+                                    id="nameSearchLabel"
+                                    for="nameSearch"
+                                    value="#{msgs.materialAgent_label_materialname}" />
+                            </p:column>
+                            <p:column
+                                colspan="4"
+                                styleClass="borderless">
+                                <p:inputText
+                                    id="nameSearch"
+                                    value="#{cc.attrs.agent.materialSearch}" />
+                            </p:column>
+                            <p:column
+                                colspan="4"
+                                styleClass="borderless">
+                                <p:commandButton
+                                    id="searchButton"
+                                    styleClass="materialDlgSearchButton"
+                                    value="#{msgs.materialAgent_label_search}"
+                                    onclick="$('body').addClass('waiting');"
+                                    action="#{cc.attrs.agent.actionTriggerMaterialSearch()}"
+                                    oncomplete="$('body').removeClass('waiting');"
+                                    update="@(.materialEdit)" />
+                            </p:column>
+                        </p:row>
+                        <p:row styleClass="borderless">
+                            <p:column
+                                colspan="12"
+                                styleClass="borderless centeredText">
+                                <h:outputLabel
+                                    id="molEditorLabel"
+                                    for="molEditor"
+                                    value="#{msgs.materialAgent_label_substructure}"
+                                    rendered="#{cc.attrs.agent.showMolEditor}" />
+                            </p:column>
+                        </p:row>
+                        <p:row styleClass="borderless">
+                            <p:column
+                                colspan="12"
+                                styleClass="borderless">
+                                <mol:molecule
+                                    id="molEditor"
+                                    value="#{cc.attrs.agent.moleculeSearch}"
+                                    pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                    format="MDLV2000"
+                                    border="true"
+                                    widgetVar="dlg_createLink_panelMaterialEdit_molEditor" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:column>
+                <p:column
+                    colspan="6"
+                    styleClass="topAlign borderless">
+                    <!-- rendered attribute of table is irrelevant -->
+                    <h:panelGroup
+                        styleClass="borderless"
+                        id="materialTablePanelGrp">
+                        <p:outputLabel
+                            id="materialTableLabel"
+                            for="materialTable"
+                            value="#{msgs.materialAgent_table_availableMaterials}" />
+                        <p:dataTable
+                            id="materialTable"
+                            value="#{cc.attrs.agent.materialList}"
+                            var="material">
+                            <p:column
+                                id="col0"
+                                width="80%">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.materialAgent_table_name}" />
+                                </f:facet>
+                                <h:outputText value="#{material.firstName}" />
+                            </p:column>
+                            <p:column
+                                id="col1"
+                                width="20%">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.materialAgent_table_action}" />
+                                </f:facet>
+                                <p:commandButton
+                                    action="#{cc.attrs.agent.actionSetMaterial(material)}"
+                                    ajax="true"
+                                    value="#{msgs.materialAgent_table_insert}"
+                                    update="#{cc.attrs.updateTarget}"
+                                    oncomplete="PF('wiz').loadStep('step1', false);PF('dlg_createLink').hide();" />
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
+                </p:column>
+            </p:row>
+        </p:panelGrid>
     </composite:implementation>
 </html>
-

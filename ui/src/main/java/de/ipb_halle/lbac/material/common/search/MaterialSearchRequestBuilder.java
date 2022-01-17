@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.common.search;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -40,6 +41,10 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private final Set<MaterialType> types = new HashSet<>();
     private String materialName;
     private Boolean deactivated;
+    private String sequenceQueryString;
+    private SequenceType sequenceQueryType;
+    private SequenceType sequenceLibraryType;
+    private Integer sequenceTranslationTable;
 
     public MaterialSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -56,6 +61,10 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         addProject();
         addMaterialName();
         addDeactivated();
+        addSequenceQueryString();
+        addSequenceQueryType();
+        addSequenceLibraryType();
+        addSequenceTranslationTable();
     }
 
     public void setSearchValues(MaterialSearchMaskValues values) {
@@ -65,10 +74,41 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         setId(String.valueOf(values.id));
         setUserName(values.userName);
         setDeactivated(values.deactivated);
+        if (values.sequenceInfos != null) {
+            setSequenceInformation(
+                    values.sequenceInfos.sequenceQuery,
+                    values.sequenceInfos.sequenceLibraryType,
+                    values.sequenceInfos.sequenceQueryType,
+                    values.sequenceInfos.translationTable);
+        }
         for (MaterialType t : values.type) {
             types.add(t);
         }
 
+    }
+
+    private void addSequenceLibraryType() {
+        if (sequenceLibraryType != null) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_LIBRARY_TYPE, new String[]{sequenceLibraryType.name()});
+        }
+    }
+
+    private void addSequenceQueryString() {
+        if (sequenceQueryString != null && !sequenceQueryString.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_QUERY_STRING, new String[]{sequenceQueryString});
+        }
+    }
+
+    private void addSequenceQueryType() {
+        if (sequenceQueryType != null) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_QUERY_TYPE, new String[]{sequenceQueryType.name()});
+        }
+    }
+
+    private void addSequenceTranslationTable() {
+        if (sequenceTranslationTable != null) {
+            request.addSearchCategory(SearchCategory.SEQUENCE_TRANSLATION_TABLE, new String[]{String.valueOf(sequenceTranslationTable)});
+        }
     }
 
     private void addDeactivated() {
@@ -160,4 +200,10 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
+    public void setSequenceInformation(String sequenceQueryString, SequenceType sequenceLibraryType, SequenceType sequenceQueryType, int translationTable) {
+        this.sequenceQueryString = sequenceQueryString;
+        this.sequenceLibraryType = sequenceLibraryType;
+        this.sequenceQueryType = sequenceQueryType;
+        this.sequenceTranslationTable = translationTable;
+    }
 }

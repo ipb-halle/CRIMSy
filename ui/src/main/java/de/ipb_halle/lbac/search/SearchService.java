@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -66,6 +67,8 @@ public class SearchService {
     private MemberService memberService;
     @Inject
     private NodeService nodeService;
+    @Inject
+    private SequenceSearchService sequenceSearchService;
 
     private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
 
@@ -84,7 +87,8 @@ public class SearchService {
                 documentService,
                 containerService,
                 memberService,
-                nodeService);
+                nodeService,
+                sequenceSearchService);
     }
 
     public SearchResult search(

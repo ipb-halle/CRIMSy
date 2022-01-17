@@ -45,7 +45,6 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.Invalidity;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.MaterialValidator;
 import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.common.service.HazardService;
@@ -127,10 +126,9 @@ public class MaterialBean implements Serializable {
     protected Mode mode;
     protected HazardInformation hazards;
 
-    protected StructureInformation structureInfos = new StructureInformation();
-    ;
+    protected StructureInformation structureInfos = new StructureInformation();    
 
-    private SequenceInformation sequenceInfos;
+    protected SequenceInformation sequenceInfos;
 
     protected List<String> errorMessages = new ArrayList<>();
 
@@ -521,22 +519,23 @@ public class MaterialBean implements Serializable {
     }
 
     public boolean checkInputValidity() {
+        errorMessages.clear();
         MaterialValidator validator = currentMaterialType
                 .getFactory()
                 .createValidator();
 
-        boolean valideMaterial = validator.checkValidity(this);
-        if (!valideMaterial) {
+        boolean validMaterial = validator.checkValidity(this);
+        if (!validMaterial) {
             for (Invalidity error : validator.getInvalidities()) {
-                errorMessages.add("materialCreation_error_" + messagePresenter.presentMessage(error.toString()));
+                errorMessages.add(messagePresenter.presentMessage("materialCreation_error_" + error.toString()));
             }
 
         }
-        return valideMaterial;
+        return validMaterial;
     }
 
-    public String getErrorMessages() {
-        return String.join(" ", errorMessages);
+    public List<String> getErrorMessages() {
+        return errorMessages;
     }
 
     public boolean isAutoCalcFormularAndMasses() {

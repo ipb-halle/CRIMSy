@@ -38,6 +38,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class Taxonomy extends Material {
 
+    private static final long serialVersionUID = 1L;
+
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private TaxonomyLevel level;

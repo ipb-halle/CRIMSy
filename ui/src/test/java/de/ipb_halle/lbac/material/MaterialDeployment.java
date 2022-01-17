@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material;
 
-import de.ipb_halle.lbac.material.biomaterial.BiomaterialService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -25,6 +24,9 @@ import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
+import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchService;
+import de.ipb_halle.lbac.material.sequence.search.service.SearchParameterService;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -42,9 +44,11 @@ public class MaterialDeployment {
                 .addClass(TissueService.class)
                 .addClass(MaterialService.class)
                 .addClass(IndexService.class)
+                .addClass(FastaRESTSearchService.class)
                 .addClass(MaterialCompositionBean.class)
-                .addClass(BiomaterialService.class)
                 .addClass(HazardService.class)
+                .addClass(SearchParameterService.class)
+                .addClass(SequenceSearchService.class)
                 .addClass(IndexService.class)
                 .addClass(TaxonomyNestingService.class);
     }

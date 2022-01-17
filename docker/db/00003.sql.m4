@@ -17,6 +17,16 @@ include(dist/etc/config_m4.inc)dnl
  * limitations under the License.
  *
  */
+ 
+ 
+/* Only postgres dbuser can create new dbusers */
+\connect lbac 
+\connect - postgres
+BEGIN TRANSACTION;
+CREATE USER fasta WITH PASSWORD 'fasta'; 
+ALTER USER fasta SET search_path to lbac;
+COMMIT TRANSACTION;
+ 
 
 \connect lbac 
 \connect - lbac
@@ -48,8 +58,6 @@ CREATE TABLE sequences_history(
     action VARCHAR NOT NULL,
     sequenceString_old VARCHAR,
     sequenceString_new VARCHAR,
-    sequenceType_old VARCHAR,
-    sequenceType_new VARCHAR,
     circular_old BOOLEAN,
     circular_new BOOLEAN,
     annotations_old VARCHAR,
@@ -57,31 +65,23 @@ CREATE TABLE sequences_history(
     PRIMARY KEY(id,actorid,mdate)
 );
 
-CREATE OR REPLACE FUNCTION convert_jsonb_to_int_array(input jsonb) 
-    returns INTEGER ARRAY 
-    language plpgsql
-    as 
-$$
-    declare
-        output INTEGER[];
-    begin
-        SELECT INTO output array_agg(value) FROM jsonb_array_elements_text(input);
-        RETURN output;
-    end;
-$$;
+CREATE TABLE temp_search_parameter (
+  id         SERIAL    NOT NULL PRIMARY KEY,
+  cdate      TIMESTAMP NOT NULL DEFAULT now(),
+  processid  UUID NOT NULL,
+  parameter  JSONB NOT NULL
+);
 
-CREATE OR REPLACE FUNCTION convert_jsonb_to_varchar_array(input jsonb)
-    returns VARCHAR ARRAY
-    language plpgsql
-    as
-$$
-    declare
-        output VARCHAR[];
-    begin
-        SELECT INTO output array_agg(value) FROM jsonb_array_elements_text(input);
-        RETURN output;
-    end;
-$$;
 
+GRANT SELECT ON sequences TO fasta;
+GRANT SELECT ON materials TO fasta;
+GRANT SELECT ON material_compositions TO fasta;
+GRANT SELECT ON acentries TO fasta;
+GRANT SELECT ON memberships TO fasta;
+GRANT SELECT ON temp_search_parameter TO fasta;
+GRANT SELECT ON material_indices TO fasta;
+GRANT SELECT ON usersgroups TO fasta;
+GRANT SELECT ON projects TO fasta;
+GRANT USAGE ON SCHEMA lbac TO fasta;
 
 COMMIT TRANSACTION;

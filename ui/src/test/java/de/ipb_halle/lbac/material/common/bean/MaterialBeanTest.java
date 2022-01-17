@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
@@ -59,6 +58,8 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.search.SearchResult;
+
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -424,7 +425,7 @@ public class MaterialBeanTest extends TestBase {
         instance.getMaterialNameBean().getNames().clear();
         instance.actionSaveMaterial();
 
-        Assert.assertEquals("materialCreation_error_NO_MATERIAL_NAME", instance.getErrorMessages());
+        Assert.assertEquals(Arrays.asList("materialCreation_error_NO_MATERIAL_NAME"), instance.getErrorMessages());
     }
 
     @Test

@@ -1,0 +1,2 @@
+## Result files from FASTA runs
+These files are copies from the [fasta-search-service](https://github.com/ipb-halle/fasta-search-service/tree/main/service/src/test/resources/de/ipb_halle/fasta_search_service/fastaresult) repository.

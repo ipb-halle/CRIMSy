@@ -23,40 +23,49 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+
 /**
+ * Validator for materials that is valid if the material's names are valid.
  *
  * @author fmauz
  */
-public class MaterialNameValidator {
-
+public class MaterialNameValidator implements MaterialValidator {
     private Set<Invalidity> errors = new HashSet<>();
-    private List<MaterialName> names;
 
-    public boolean areMaterialNamesValide(
-            List<MaterialName> names,
-            Set<Invalidity> errors) {
-        this.names = names;
-        this.errors=errors;
+    @Override
+    public boolean checkValidity(MaterialBean bean) {
+        errors.clear();
+        boolean namesValid = areMaterialNamesValid(bean.getMaterialNameBean().getNames());
 
-        return checkNameExistance() && areAllNamesNotEmpty();
+        return namesValid;
     }
 
-    private boolean checkNameExistance() {
-        if (names.isEmpty()) {
+    @Override
+    public Set<Invalidity> getInvalidities() {
+        return errors;
+    }
+
+    private boolean areMaterialNamesValid(List<MaterialName> names) {
+        return checkNameExistance(names) && areAllNamesNotEmpty(names);
+    }
+
+    private boolean checkNameExistance(List<MaterialName> names) {
+        if ((names == null) || names.isEmpty()) {
             errors.add(NO_MATERIAL_NAME);
             return false;
         }
         return true;
     }
 
-    private boolean areAllNamesNotEmpty() {
-        for (MaterialName mn : names) {
-            if (mn.getValue().isEmpty()) {
+    private boolean areAllNamesNotEmpty(List<MaterialName> names) {
+        for (MaterialName name : names) {
+            String value = name.getValue();
+            if ((value == null) || value.trim().isEmpty()) {
                 errors.add(EMPTY_MATERIAL_NAME);
                 return false;
             }
         }
         return true;
     }
-
 }

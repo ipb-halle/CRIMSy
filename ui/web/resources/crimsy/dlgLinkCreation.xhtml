@@ -26,64 +26,77 @@
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <composite:interface name="dlgLinkCreation"
-                         displayName="Link Creation"
-                         preferred="true"
-                         expert="false"
-                         shortDescription="xxx">
+    <composite:interface
+        name="dlgLinkCreation"
+        displayName="Link Creation"
+        preferred="true"
+        expert="false"
+        shortDescription="xxx">
     </composite:interface>
 
-    <composite:implementation >
-        
-            <p:dialog id="dlgCreateLink"
-                      header="#{msgs.linkCreation_dialogHeader}"
-                      styleClass="dlgMaterialEdit"
-                      widgetVar="dlg_createLink"
-                      modal="true" 
-                      width="1200"
-                      height="600">
-             <p:ajax event="close" 
-                     oncomplete="PF('wiz').loadStep('step1');"/>
-            <h:form 
-            id="dlgLinkCreationForm">
-                <p:panel
-                    styleClass="linkWizardPanel">
-                    <p:wizard 
+    <composite:implementation>
+        <p:dialog
+            id="dlgCreateLink"
+            header="#{msgs.linkCreation_dialogHeader}"
+            styleClass="dlgMaterialEdit"
+            widgetVar="dlg_createLink"
+            modal="true"
+            width="1200"
+            height="600">
+            <p:ajax
+                event="close"
+                oncomplete="PF('wiz').loadStep('step1');" />
+            <h:form id="dlgLinkCreationForm">
+                <p:panel styleClass="linkWizardPanel">
+                    <p:wizard
                         widgetVar="wiz"
                         flowListener="#{linkCreationProcess.onFlowProcess}">
                         <p:tab
                             id="step1"
                             title="#{msgs.linkCreation_step1_header}">
-                            <p:panelGrid
-                                styleClass="panelBorderless linkCreation_panelStep1">
+                            <p:panelGrid styleClass="panelBorderless linkCreation_panelStep1">
                                 <p:row>
                                     <p:column colspan="1">
-                                        <h:outputText 
-                                            value="#{msgs.linkCreation_step1_addLinkText}"/>
+                                        <h:outputText value="#{msgs.linkCreation_step1_addLinkText}" />
                                     </p:column>
                                     <p:column colspan="1">
                                         <p:inputText
-                                            
                                             placeholder="#{msgs.expAddRecord_addLink_placeHolder}"
                                             styleClass="linkWizardTextInput"
-                                            value="#{linkCreationProcess.linkText}"/>
+                                            value="#{linkCreationProcess.linkText}" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
                                     <p:column colspan="1">
-                                        <h:outputText 
-                                            value="#{msgs.linkCreation_step1_addLinkType}"/>
+                                        <h:outputText value="#{msgs.linkCreation_step1_addLinkType}" />
                                     </p:column>
                                     <p:column colspan="1">
                                         <p:selectOneMenu
                                             styleClass="linkWizardTypeSelect"
-                                            value="#{linkCreationProcess.type}">
+                                            value="#{linkCreationProcess.linkType}">
+                                            <p:ajax
+                                                event="change"
+                                                process="@this @(.linkWizardTextInput)"
+                                                update="@(.linkWizardPanel) step1MaterialTypeId" />
+                                            <f:selectItems value="#{linkCreationProcess.linkTypes}" />
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                                <p:row
+                                    id="step1MaterialTypeId"
+                                    rendered="#{linkCreationProcess.materialViewEnabled}">
+                                    <p:column colspan="1">
+                                        <h:outputText value="#{msgs.linkCreation_step1_addMaterialType}" />
+                                    </p:column>
+                                    <p:column colspan="1">
+                                        <p:selectOneMenu
+                                            styleClass="linkWizardTypeSelect"
+                                            value="#{linkCreationProcess.materialType}">
                                             <p:ajax
                                                 event="change"
                                                 update="@(.linkWizardPanel)"
-                                                process="@this @(.linkWizardTextInput)"/>
-                                            <f:selectItems
-                                                value="#{linkCreationProcess.types}"/>
+                                                process="@this @(.linkWizardTextInput)" />
+                                            <f:selectItems value="#{linkCreationProcess.choosableMaterialTypes}" />
                                         </p:selectOneMenu>
                                     </p:column>
                                 </p:row>
@@ -93,30 +106,28 @@
                                         styleClass="errorMessageText">
                                         <h:outputText
                                             styleClass="errorMessageText"
-                                            value="#{linkCreationProcess.errorMessage}"/>
+                                            value="#{linkCreationProcess.errorMessage}" />
                                     </p:column>
                                 </p:row>
                             </p:panelGrid>
                         </p:tab>
                         <p:tab
                             id="step2"
-                            title="#{linkCreationProcess.getStepTwoHeader()}">
+                            title="#{linkCreationProcess.stepTwoHeader}">
                             <crimsy:panelMaterialEdit
-                                rendered="#{linkCreationProcess.isMaterialViewEnabled()}" 
-                                id="ccDlgMaterialEdit" 
-                                agent="#{linkCreationProcess.materialAgent}" 
-                                updateTarget="@(.expLinks)"/>
+                                rendered="#{linkCreationProcess.materialViewEnabled}"
+                                id="ccDlgMaterialEdit"
+                                agent="#{linkCreationProcess.materialAgent}"
+                                updateTarget="@(.expLinks)" />
                             <crimsy:panelItemEdit
-                                rendered="#{linkCreationProcess.isItemViewEnabled()}" 
-                                id="ccDlgItemEdit" 
-                                agent="#{linkCreationProcess.itemAgent}" 
-                                updateTarget="@(.expLinks)"/>
+                                rendered="#{linkCreationProcess.itemViewEnabled}"
+                                id="ccDlgItemEdit"
+                                agent="#{linkCreationProcess.itemAgent}"
+                                updateTarget="@(.expLinks)" />
                         </p:tab>
                     </p:wizard>
                 </p:panel>
-              </h:form>
-            </p:dialog>
-      
+            </h:form>
+        </p:dialog>
     </composite:implementation>
 </html>
-

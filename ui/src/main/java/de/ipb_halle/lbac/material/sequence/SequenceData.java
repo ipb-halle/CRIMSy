@@ -24,11 +24,11 @@ import java.util.Objects;
  * @author flange
  */
 public class SequenceData {
-    private String sequenceString = null;
-    private SequenceType sequenceType = null;
-    private Boolean circular = null;
-//    private List<SequenceAnnotation> annotations;
-    private String annotations = null;
+    private final String sequenceString;
+    private final SequenceType sequenceType;
+    private final Boolean circular;
+//    private final List<SequenceAnnotation> annotations;
+    private final String annotations;
 
     public static Builder builder() {
         return new Builder();

@@ -36,4 +36,5 @@ public interface MaterialFactory extends Serializable {
     
     public MaterialValidator createValidator();
 
+    public MaterialUIInformation createUIInformation();
 }

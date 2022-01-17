@@ -28,69 +28,52 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
 
-    <composite:interface name="dlgMaterialView"
-                         displayName="Material view dialog"
-                         preferred="true"
-                         expert="false"
-                         shortDescription="material view dialog">
-        <composite:attribute name="agent" required="true" />
+    <composite:interface
+        name="dlgMaterialView"
+        displayName="Material view dialog"
+        preferred="true"
+        expert="false"
+        shortDescription="material view dialog">
+        <composite:attribute
+            name="agent"
+            type="de.ipb_halle.lbac.datalink.LinkedDataAgent"
+            required="true" />
     </composite:interface>
 
-    <composite:implementation >
+    <composite:implementation>
         <h:form id="dlgMaterialViewForm">
-            <p:dialog id="dlgMaterialView"
-                      header="#{cc.attrs.agent.material.firstName}"
-                      styleClass="dlgMaterialView"
-                      widgetVar="dlg_MaterialView"
-                      modal="true" 
-                      width="600"
-                      height="600">
+            <p:dialog 
+                id="dlgMaterialView"
+                header="#{cc.attrs.agent.material.firstName}"
+                styleClass="dlgMaterialView"
+                widgetVar="dlg_MaterialView"
+                modal="true"
+                width="600"
+                height="600">
+                <b:container
+                    id="materialView" 
+                    styleClass="materialView borderless">
 
-                <b:container id="materialView" 
-                             styleClass="materialView borderless">
+                    <!-- material-specific information -->
+                    <ui:include src="#{cc.attrs.agent.linkPreviewTemplate}">
+                        <ui:param
+                            name="agent"
+                            value="#{cc.attrs.agent}" />
+                    </ui:include>
+
+                    <!-- material-agnostic information -->
                     <b:row>
                         <b:column
-                            span="11"
-                            styleClass="dlgMaterialViewStructure">
-                            <mol:molecule id="dlgMaterialView_molViewer"
-                                          rendered="#{cc.attrs.agent.hasStructure}"
-                                          value="#{cc.attrs.agent.material.molecule.structureModel}"
-                                          border="true" 
-                                          pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                          format="MDLV2000"
-                                          readonly="true"
-                                          widgetVar="dlg_MaterialView_molViewer"/>
+                            span="6"
+                            styleClass="dlgMaterialViewHeader">
+                            <h:outputText value="#{msgs.dlgMaterialView_alternativeNames}" />
                         </b:column>
                         <b:column
-                            span="1"
-                            styleClass="dlgMaterialViewHazards dlgMaterialViewBorderLess">
-                            <p:panelGrid>
-                                <ui:repeat
-                                    var="hazard"
-                                    value="#{cc.attrs.agent.getHazards()}">
-                                    <p:row>
-                                        <p:column>
-                                            <b:image name="#{cc.attrs.agent.getImageIconOf(hazard)}"
-                                                     styleClass="img-hazard"/>
-                                        </p:column>
-                                    </p:row>
-                                </ui:repeat>
-                            </p:panelGrid>
-                        </b:column>
-                    </b:row>
-                    <b:row>
-                        <b:column span="6"
-                                  styleClass="dlgMaterialViewHeader">
-                            <h:outputText
-                                value="#{msgs.dlgMaterialView_alternativeNames}"/>
-                        </b:column>
-                        <b:column span="6"
-                                  styleClass="dlgMaterialViewHeader">
+                            span="6"
+                            styleClass="dlgMaterialViewHeader">
                             <b:column span="6">
-                                <h:outputText
-                                    value="#{msgs.dlgMaterialView_indices}" />
+                                <h:outputText value="#{msgs.dlgMaterialView_indices}" />
                             </b:column>
-
                         </b:column>
                     </b:row>
                     <b:row>
@@ -103,11 +86,9 @@
                                     value="#{cc.attrs.agent.getNamesOfMaterial(3)}">
                                     <p:row>
                                         <p:column>
-                                            <h:outputText
-                                                value="#{name}"/>
+                                            <h:outputText value="#{name}" />
                                         </p:column>
                                     </p:row>
-
                                 </ui:repeat>
                             </p:panelGrid>
                         </b:column>
@@ -119,63 +100,13 @@
                                     var="index"
                                     value="#{cc.attrs.agent.getIndices()}">
                                     <p:row>
-                                        <p:column
-                                            colspan="1">
-                                            <h:outputText
-                                                value="#{index[0]}"/>
+                                        <p:column colspan="1">
+                                            <h:outputText value="#{index[0]}" />
                                         </p:column>
-                                        <p:column
-                                            colspan="1">
-                                            <h:outputText
-                                                value="#{index[1]}"/>
+                                        <p:column colspan="1">
+                                            <h:outputText value="#{index[1]}" />
                                         </p:column>
                                     </p:row>
-                                </ui:repeat>
-                            </p:panelGrid>
-                        </b:column>
-                    </b:row>
-                    <b:row style="margin-top:30px">
-                        <h:outputText 
-                            value="#{msgs.dlgMaterialView_components}"
-                            style="text-align: center;
-                            width: 100%;
-                            display: inline-block;"/>
-                        <b:column>
-                            <p:panelGrid
-                                style="margin-left:auto">
-                                <p:row styleClass="borderless">
-                                    <p:column style="width:100%">
-                                        <h:outputText
-                                            styleClass="borderless"
-                                            value="Name"/>
-                                    </p:column>
-                                    <p:column styleClass="borderless">
-                                        <h:outputText
-                                            value="Typ"/>
-                                    </p:column>
-                                    <p:column styleClass="borderless">
-                                        <h:outputText
-                                            value="Concentration(%)"/>
-                                    </p:column>
-                                </p:row>
-                                <ui:repeat
-                                    var="concentration"
-                                    value="#{cc.attrs.agent.getComponentsOfMaterial()}">
-                                    <p:row styleClass="borderless">
-                                        <p:column style="width:100%" styleClass="borderless">
-                                            <h:outputText
-                                                value="#{concentration.getMaterial().getFirstName()}"/>
-                                        </p:column>
-                                        <p:column styleClass="borderless">
-                                            <h:outputText
-                                                value="#{cc.attrs.agent.getLocalizedMaterialTypeName(concentration.getMaterial())}"/>
-                                        </p:column>
-                                        <p:column styleClass="borderless">
-                                            <h:outputText
-                                                value="#{concentration.getConcentration()}"/>
-                                        </p:column>
-                                    </p:row>
-
                                 </ui:repeat>
                             </p:panelGrid>
                         </b:column>
@@ -185,4 +116,3 @@
         </h:form>
     </composite:implementation>
 </html>
-

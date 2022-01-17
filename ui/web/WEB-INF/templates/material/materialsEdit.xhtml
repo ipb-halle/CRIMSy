@@ -62,8 +62,7 @@
                                 onclick="ajax:materialBean.switchOneVersionBack();"
                                 process="@form"
                                 update="@form"
-                                ajax="true"
-                                oncomplete="addStateSaveBehavior();openDetailPanel();"
+                                ajax="true"                               
                                 icon-awesome="backward"
                                 />
                         </b:column>
@@ -93,8 +92,7 @@
                                 onclick="ajax:materialBean.switchOneVersionForward();"
                                 process="@form"
                                 update="@form"
-                                ajax="true"
-                                oncomplete="addStateSaveBehavior();openDetailPanel();"
+                                ajax="true"                                
                                 icon-awesome="forward"
                                 />
                         </b:column>
@@ -139,8 +137,19 @@
                                 value="#{materialBean.getMode()}"/>
                         </b:column>
                         <b:column span="4" offset="2">
-                            <h:outputText
-                                value="#{materialBean.getErrorMessages()}"/>
+                            <b:panel
+                                look="danger"
+                                rendered="#{not empty materialBean.errorMessages}">
+                                <ui:repeat
+                                    value="#{materialBean.errorMessages}"
+                                    var="errorMessage"
+                                    varStatus="status">
+                                    <h:outputText value="#{errorMessage}"/>
+                                    <ui:fragment rendered="#{!status.last}">
+                                        <br />
+                                    </ui:fragment>
+                                </ui:repeat>
+                            </b:panel>
                         </b:column>
                     </b:row>
 

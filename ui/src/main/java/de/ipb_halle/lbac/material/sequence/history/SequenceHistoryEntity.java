@@ -48,10 +48,6 @@ public class SequenceHistoryEntity implements Serializable {
     @Column
     private String sequenceString_new;
     @Column
-    private String sequenceType_old;
-    @Column
-    private String sequenceType_new;
-    @Column
     private Boolean circular_old;
     @Column
     private Boolean circular_new;
@@ -101,22 +97,6 @@ public class SequenceHistoryEntity implements Serializable {
 
     public void setSequenceString_new(String sequenceString_new) {
         this.sequenceString_new = sequenceString_new;
-    }
-
-    public String getSequenceType_old() {
-        return sequenceType_old;
-    }
-
-    public void setSequenceType_old(String sequenceType_old) {
-        this.sequenceType_old = sequenceType_old;
-    }
-
-    public String getSequenceType_new() {
-        return sequenceType_new;
-    }
-
-    public void setSequenceType_new(String sequenceType_new) {
-        this.sequenceType_new = sequenceType_new;
     }
 
     public Boolean isCircular_old() {

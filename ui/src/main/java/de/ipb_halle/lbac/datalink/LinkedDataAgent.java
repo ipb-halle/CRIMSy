@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.datalink;
 
+import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
@@ -37,9 +38,6 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Bean for interacting with the ui to present and manipulate a experiments
  *
@@ -47,7 +45,6 @@ import org.apache.logging.log4j.Logger;
  */
 @Dependent
 public class LinkedDataAgent implements Serializable {
-
     private final static long serialVersionUID = 1L;
 
     @Inject
@@ -55,8 +52,6 @@ public class LinkedDataAgent implements Serializable {
 
     private LinkedData linkedData;
     private Set<Integer> hazardsWithoutIcons = new HashSet<>();
-
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Material material;
 
     public LinkedDataAgent() {
@@ -65,6 +60,20 @@ public class LinkedDataAgent implements Serializable {
 
     public LinkedData getLinkedData() {
         return this.linkedData;
+    }
+
+    private boolean hasMaterialType() {
+        return (material != null) && (material.getType() != null);
+    }
+
+    public String getLinkPreviewTemplate() {
+        if (hasMaterialType()) {
+            return NavigationConstants.TEMPLATE_FOLDER
+                    + material.getType().getFactory().createUIInformation().getLinkPreviewTemplate();
+        } else {
+            return NavigationConstants.TEMPLATE_FOLDER + "material/components/linkPreview/noMaterial"
+                    + NavigationConstants.TEMPLATE_EXT;
+        }
     }
 
     public boolean getHasStructure() {

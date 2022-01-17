@@ -521,14 +521,8 @@
         <!-- Logging: log4j 2 -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.13.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.13.2</version>
+            <version>2.17.0</version>
         </dependency>
 
 
@@ -586,6 +580,15 @@
             <scope>test</scope>
             <version>2.44.0</version>
         </dependency>
+
+        <!-- Expression Language implementation (required by bean validation) -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b12</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
@@ -595,6 +598,12 @@
             <groupId>de.ipb_halle</groupId>
             <artifactId>tx</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-rt-rs-client</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- MolecularFaces -->
@@ -619,6 +628,13 @@
             <groupId>org.ocpsoft.prettytime</groupId>
             <artifactId>prettytime-integration-jsf</artifactId>
             <version>5.0.0.Final</version>
+        </dependency>
+
+        <!-- Model classes used by the sequence search REST API -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>fasta-search-service-models</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project> 

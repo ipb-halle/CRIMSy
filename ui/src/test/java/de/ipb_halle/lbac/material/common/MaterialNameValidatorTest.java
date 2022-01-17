@@ -17,57 +17,100 @@
  */
 package de.ipb_halle.lbac.material.common;
 
+import static de.ipb_halle.lbac.material.common.Invalidity.EMPTY_MATERIAL_NAME;
 import static de.ipb_halle.lbac.material.common.Invalidity.NO_MATERIAL_NAME;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.junit.Assert;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+
 /**
- *
  * @author fmauz
  */
 public class MaterialNameValidatorTest {
-
-    MaterialNameValidator validator;
+    private MateriaBeanMock materialBean;
+    private MaterialNameValidator validator;
 
     @Before
     public void init() {
+        materialBean = new MateriaBeanMock();
+        materialBean.setMaterialNameBean(new MaterialNameBean());
+
         validator = new MaterialNameValidator();
     }
 
     @Test
-    public void test001_checkNoExistingName() {
-        Set<Invalidity> errors = new HashSet<>();
-        boolean isValid = validator.areMaterialNamesValide(new ArrayList<>(), errors);
-        Assert.assertFalse(isValid);
-        Assert.assertEquals(1, errors.size());
-        Assert.assertTrue(errors.contains(NO_MATERIAL_NAME));
+    public void test001_noNames() {
+        // The loops make sure that checkValidity() is idempotent.
+        for (int i = 0; i < 5; i++) {
+            assertFalse(validator.checkValidity(materialBean));
+            assertThat(validator.getInvalidities(), hasSize(1));
+            assertThat(validator.getInvalidities(), containsInAnyOrder(NO_MATERIAL_NAME));
+        }
     }
 
     @Test
-    public void test002_checkNameWithEmptyString() {
-        Set<Invalidity> errors = new HashSet<>();
-        List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName("", "en", 0));
-        boolean isValid = validator.areMaterialNamesValide(names, errors);
-        Assert.assertFalse(isValid);
-        Assert.assertEquals(1, errors.size());
-        Assert.assertTrue(errors.contains(Invalidity.EMPTY_MATERIAL_NAME));
+    public void test002_nullNames() {
+        materialBean.getMaterialNameBean().setNames(null);
+        for (int i = 0; i < 7; i++) {
+            assertFalse(validator.checkValidity(materialBean));
+            assertThat(validator.getInvalidities(), hasSize(1));
+            assertThat(validator.getInvalidities(), containsInAnyOrder(NO_MATERIAL_NAME));
+        }
     }
 
     @Test
-    public void test003_allNamesValide() {
-        Set<Invalidity> errors = new HashSet<>();
-        List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName("test", "en", 0));
-        boolean isValid = validator.areMaterialNamesValide(names, errors);
-        Assert.assertTrue(isValid);
-        Assert.assertEquals(0, errors.size());
+    public void test003_nameWithEmptyString() {
+        materialBean.getMaterialNameBean().getNames().add(new MaterialName("", "de", 0));
+        materialBean.getMaterialNameBean().getNames().add(new MaterialName("name2", "en", 0));
 
+        for (int i = 0; i < 11; i++) {
+            assertFalse(validator.checkValidity(materialBean));
+            assertThat(validator.getInvalidities(), hasSize(1));
+            assertThat(validator.getInvalidities(), containsInAnyOrder(EMPTY_MATERIAL_NAME));
+        }
     }
 
+    @Test
+    public void test004_nameWithNullString() {
+        materialBean.getMaterialNameBean().getNames().add(new MaterialName(null, "de", 0));
+        materialBean.getMaterialNameBean().getNames().add(new MaterialName("name2", "en", 0));
+
+        for (int i = 0; i < 13; i++) {
+            assertFalse(validator.checkValidity(materialBean));
+            assertThat(validator.getInvalidities(), hasSize(1));
+            assertThat(validator.getInvalidities(), containsInAnyOrder(EMPTY_MATERIAL_NAME));
+        }
+    }
+
+    @Test
+    public void test005_nameWithWhitespacedString() {
+        materialBean.getMaterialNameBean().getNames().add(new MaterialName("   ", "de", 0));
+        materialBean.getMaterialNameBean().getNames().add(new MaterialName("name2", "en", 0));
+
+        for (int i = 0; i < 17; i++) {
+            assertFalse(validator.checkValidity(materialBean));
+            assertThat(validator.getInvalidities(), hasSize(1));
+            assertThat(validator.getInvalidities(), containsInAnyOrder(EMPTY_MATERIAL_NAME));
+        }
+    }
+
+    @Test
+    public void test006_validNames() {
+        materialBean.getMaterialNameBean().getNames().add(new MaterialName("name1", "de", 0));
+        materialBean.getMaterialNameBean().getNames().add(new MaterialName("name2", "en", 0));
+
+        for (int i = 0; i < 19; i++) {
+            assertTrue(validator.checkValidity(materialBean));
+            assertThat(validator.getInvalidities(), empty());
+        }
+    }
 }

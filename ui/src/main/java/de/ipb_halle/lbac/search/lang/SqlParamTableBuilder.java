@@ -17,27 +17,23 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
 /**
  * Builds a SELECT statement for an EntityGraph using given entity annotations
- * and Conditions. Query parameters are stored in a parameter table.
- * NOTE: The methods of this class are not thread safe.
+ * and Conditions. Query parameters are stored in a parameter table. NOTE: The
+ * methods of this class are not thread safe.
  *
  * @author fbroda
  */
 public class SqlParamTableBuilder extends SqlBuilder {
 
-    protected final static String paramTableNameQuery = "SELECT process_id, parameter FROM tmp_search_parameter";
-    private final static String paramTableId = "process_id";
+    protected final static String paramTableNameQuery = "SELECT processid, parameter FROM temp_search_parameter";
+    private final static String paramTableId = "processid";
     private final static String paramTableName = "param_table";
     private final static String paramFieldName = "parameter";
     private String processId;
@@ -61,14 +57,16 @@ public class SqlParamTableBuilder extends SqlBuilder {
         this(graph, subSelect, UUID.randomUUID().toString());
     }
 
-    private SqlParamTableBuilder(EntityGraph graph, boolean  subSelect, String processId) {
+    private SqlParamTableBuilder(EntityGraph graph, boolean subSelect, String processId) {
         super(graph, subSelect);
         this.paramGraph = new EntityGraph(paramTableNameQuery)
                 .setGraphName(paramTableName)
                 .addLinkField(new LinkField("'" + processId + "'", paramTableId, true));
+        this.paramGraph.addAttributeType(AttributeType.DIRECT);
         graph.addChild(paramGraph);
         this.processId = processId;
     }
+
     /**
      * add a leaf condition with a binary operator
      *
@@ -87,12 +85,12 @@ public class SqlParamTableBuilder extends SqlBuilder {
                 sb.append("(");
                 sb.append(field.getAliasedColumnName());
                 sb.append(",");
-                sb.append(value.getJsonParameter(paramFieldName));
+                sb.append(value.getJsonParameter(String.join(".", this.paramGraph.getAlias(), paramFieldName)));
                 sb.append(")");
             } else {
                 sb.append(field.getAliasedColumnName());
                 sb.append(operator.getSql());
-                sb.append(value.getJsonParameter(paramFieldName));
+                sb.append(value.getJsonParameter(String.join(".", this.paramGraph.getAlias(), paramFieldName)));
             }
             sep = " OR ";
         }
@@ -100,6 +98,7 @@ public class SqlParamTableBuilder extends SqlBuilder {
 
     /**
      * Always activate the parameter table
+     *
      * @param cond
      * @param context
      */
@@ -124,10 +123,5 @@ public class SqlParamTableBuilder extends SqlBuilder {
             obj.add(param.getArgumentKey(), param.getValueAsJsonElement());
         }
         return obj;
-    }
-
-    @Override
-    public List<Value> getValueList() {
-        return new ArrayList<> ();
     }
 }

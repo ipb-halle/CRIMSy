@@ -45,7 +45,7 @@ public class MaterialTableController implements TableController {
     private DataTableNavigationController tableController;
 
     private List<Material> shownMaterials;
-    private MaterialSearchMaskValues lastValues;
+    protected MaterialSearchMaskValues lastValues;
     private User lastUser;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -103,6 +103,10 @@ public class MaterialTableController implements TableController {
         }
         return materials;
 
+    }
+
+    public void setLastValues(MaterialSearchMaskValues lastValues) {
+        this.lastValues = lastValues;
     }
 
 }

@@ -17,12 +17,9 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-
-import de.ipb_halle.molecularfaces.component.openvectoreditor.OpenVectorEditorCore;
 
 /**
  * Controller for the material type sequence
@@ -33,18 +30,15 @@ public class SequenceInformation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private SequenceType sequenceType = null;
-    private String sequenceJson = "";
     private SequenceData sequenceData = SequenceData.builder().build();
 
     private static final List<SequenceType> POSSIBLE_SEQUENCE_TYPES = Arrays.asList(SequenceType.values());
-    private final OpenVectorEditorJsonConverter converter = new OpenVectorEditorJsonConverter();
 
+    /*
+     * Actions
+     */
     public void actionSelectSequenceType() {
-        if (sequenceType == SequenceType.PROTEIN) {
-            sequenceJson = OpenVectorEditorCore.EMPTY_PROTEIN_SEQUENCE_JSON;
-        } else {
-            sequenceJson = "";
-        }
+        sequenceData = SequenceData.builder().sequenceType(sequenceType).build();
     }
 
     /*
@@ -69,24 +63,6 @@ public class SequenceInformation implements Serializable {
     public void setSequenceData(SequenceData sequenceData) {
         this.sequenceData = sequenceData;
         this.sequenceType = sequenceData.getSequenceType();
-        try {
-            sequenceJson = converter.sequenceDataToJson(sequenceData);
-        } catch (IOException e) {
-            // TODO
-        }
-    }
-
-    public String getSequenceJson() {
-        return sequenceJson;
-    }
-
-    public void setSequenceJson(String sequenceJson) {
-        this.sequenceJson = sequenceJson;
-        try {
-            sequenceData = converter.jsonToSequenceData(sequenceJson, sequenceType);
-        } catch (OpenVectorEditorJsonConverterException | IOException e) {
-            // TODO
-        }
     }
 
     public List<SequenceType> getPossibleSequenceTypes() {

@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.material.common.MaterialNameValidator;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
 import de.ipb_halle.lbac.material.common.MaterialValidator;
 import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.common.service.MaterialUIInformation;
 
 /**
  *
@@ -48,7 +50,11 @@ public class TissueFactory implements MaterialFactory {
 
     @Override
     public MaterialValidator createValidator() {
-        return new TissueValidator();
+        return new MaterialNameValidator();
     }
 
+    @Override
+    public MaterialUIInformation createUIInformation() {
+        return new TissueUIInformation();
+    }
 }

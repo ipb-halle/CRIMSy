@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
@@ -25,33 +26,69 @@ import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceData;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
+import de.ipb_halle.lbac.material.sequence.search.SequenceAlignment;
+import de.ipb_halle.lbac.material.sequence.search.bean.SearchMode;
+import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchMaskValuesHolder;
+import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParser;
+import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParserException;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
+import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchServiceMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
+import de.ipb_halle.lbac.search.SearchCategory;
+import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.webclient.XmlSetWrapper;
+
+import static de.ipb_halle.fasta_search_service.models.search.TranslationTable.EUPLOTID_NUCLEAR;
+import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_LIBRARY_TYPE;
+import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_QUERY_STRING;
+import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_QUERY_TYPE;
+import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_TRANSLATION_TABLE;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.BehaviorBase;
@@ -60,14 +97,11 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.TabChangeEvent;
-
-
 
 /**
  *
@@ -75,33 +109,36 @@ import org.primefaces.event.TabChangeEvent;
  */
 @RunWith(Arquillian.class)
 public class MaterialCompositionBeanTest extends TestBase {
-
     private static final long serialVersionUID = 1L;
 
     @Inject
     private MaterialService materialService;
-    private Project project;
 
     @Inject
     private MaterialCompositionBean bean;
 
     @Inject
     private UserBeanMock userBeanMock;
-    private Project project1;
 
     @Inject
     private TaxonomyService taxonomyService;
 
     @Inject
     private SearchService searchService;
-    int publicAclId;
-    private int structureId1, structureId2, biomaterialId;
+
+    @Inject
+    private SequenceSearchServiceMock sequenceSearchService;
 
     @Inject
     private HazardService hazardService;
 
     @Inject
     MaterialBean materialBean;
+
+    private Project project, project1;
+    private int publicAclId;
+    private int structureId1, structureId2, biomaterialId;
+    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
     @Before
     public void init() {
@@ -116,6 +153,7 @@ public class MaterialCompositionBeanTest extends TestBase {
         projectService.saveProjectToDb(project);
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
 
+        messagePresenter.resetMessages();
     }
 
     @After
@@ -130,48 +168,48 @@ public class MaterialCompositionBeanTest extends TestBase {
 
     @Test
     public void test001_getCompositionTypes() {
-        Assert.assertEquals(3, bean.getCompositionTypes().size());
-        Assert.assertTrue(bean.getCompositionTypes().contains(CompositionType.EXTRACT));
-        Assert.assertTrue(bean.getCompositionTypes().contains(CompositionType.MIXTURE));
-        Assert.assertTrue(bean.getCompositionTypes().contains(CompositionType.PROTEIN));
+        assertEquals(3, bean.getCompositionTypes().size());
+        assertTrue(bean.getCompositionTypes().contains(CompositionType.EXTRACT));
+        assertTrue(bean.getCompositionTypes().contains(CompositionType.MIXTURE));
+        assertTrue(bean.getCompositionTypes().contains(CompositionType.PROTEIN));
     }
 
     @Test
     public void test002_setChoosenType() {
         bean.setChoosenType(CompositionType.MIXTURE);
-        Assert.assertEquals(CompositionType.MIXTURE, bean.getChoosenType());
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled("No valide name"));
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
-        Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
-        Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
+        assertEquals(CompositionType.MIXTURE, bean.getChoosenType());
+        assertFalse(bean.isMaterialTypePanelDisabled("No valide name"));
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
+        assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
+        assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
 
         bean.setChoosenType(CompositionType.PROTEIN);
-        Assert.assertEquals(CompositionType.PROTEIN, bean.getChoosenType());
-        Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
+        assertEquals(CompositionType.PROTEIN, bean.getChoosenType());
+        assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
 
         bean.setChoosenType(CompositionType.EXTRACT);
-        Assert.assertEquals(CompositionType.EXTRACT, bean.getChoosenType());
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
-        Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
-        Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
+        assertEquals(CompositionType.EXTRACT, bean.getChoosenType());
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
+        assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
+        assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
     }
 
     @Test
     public void test003_switchMaterialType() {
         bean.setChoosenType(CompositionType.MIXTURE);
         bean.actionSwitchMaterialType(MaterialType.STRUCTURE.toString());
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
         //Materialtype not allowed by Composition type
         bean.actionSwitchMaterialType(MaterialType.SEQUENCE.toString());
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
         //Materialtype not valide 
         bean.actionSwitchMaterialType("no valide type");
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
         //Materialtype null
         bean.actionSwitchMaterialType(null);
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
     }
 
     @Test
@@ -179,10 +217,10 @@ public class MaterialCompositionBeanTest extends TestBase {
         Structure dummyStructure1 = new Structure("", 0d, 0d, 1, new ArrayList<>(), 0);
         Structure dummyStructure2 = new Structure("", 0d, 0d, 2, new ArrayList<>(), 0);
 
-        Assert.assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
+        assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertTrue(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
-        Assert.assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure2.getId()));
+        assertTrue(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
+        assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure2.getId()));
     }
 
     @Test
@@ -193,15 +231,15 @@ public class MaterialCompositionBeanTest extends TestBase {
         bean.setChoosenType(CompositionType.MIXTURE);
 
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
+        assertEquals(1, bean.getConcentrationsInComposition().size());
         //Not the same material again
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
+        assertEquals(1, bean.getConcentrationsInComposition().size());
         // No biomaterial because compositionType is MIXTURE
         bean.actionAddMaterialToComposition(dummyBioMaterial3);
-        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
+        assertEquals(1, bean.getConcentrationsInComposition().size());
         bean.actionAddMaterialToComposition(dummyStructure2);
-        Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
+        assertEquals(2, bean.getConcentrationsInComposition().size());
     }
 
     @Test
@@ -216,15 +254,15 @@ public class MaterialCompositionBeanTest extends TestBase {
 
         // Only the two strcutures should be available because compositiontype is MIXTURE
         List<Integer> listOfIds = bean.getMaterialsThatCanBeAdded().stream().map(m -> m.getId()).collect(Collectors.toCollection(ArrayList::new));
-        Assert.assertEquals(2, listOfIds.size());
-        Assert.assertTrue(listOfIds.contains(1));
-        Assert.assertTrue(listOfIds.contains(2));
+        assertEquals(2, listOfIds.size());
+        assertTrue(listOfIds.contains(1));
+        assertTrue(listOfIds.contains(2));
 
         // Only one strcuture should be available because compositiontype is MIXTURE and the other structure is already in
         bean.getConcentrationsInComposition().add(new Concentration(dummyStructure1));
         listOfIds = bean.getMaterialsThatCanBeAdded().stream().map(m -> m.getId()).collect(Collectors.toCollection(ArrayList::new));
-        Assert.assertEquals(1, listOfIds.size());
-        Assert.assertTrue(listOfIds.contains(2));
+        assertEquals(1, listOfIds.size());
+        assertTrue(listOfIds.contains(2));
     }
 
     @Test
@@ -235,35 +273,35 @@ public class MaterialCompositionBeanTest extends TestBase {
         bean.setChoosenType(CompositionType.MIXTURE);
         bean.actionSwitchMaterialType("STRUCTURE");
         bean.actionStartSearch();
-        Assert.assertEquals(2, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(2, bean.getMaterialsThatCanBeAdded().size());
 
         bean.setMaterialName("l-002");
         bean.actionStartSearch();
-        Assert.assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
 
         bean.setSearchMolecule("H2O");
         bean.actionStartSearch();
-        Assert.assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
 
         bean.setChoosenType(CompositionType.EXTRACT);
         bean.actionSwitchMaterialType("BIOMATERIAL");
         bean.actionStartSearch();
-        Assert.assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
     }
 
     @Test
     public void test008_checkLocalizationOfMaterialType() {
         Structure dummyStructure1 = new Structure("", 0d, 0d, 1, new ArrayList<>(), 0);
-        Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedMaterialType(new Concentration(dummyStructure1)));
+        assertEquals("search_category_STRUCTURE", bean.getLocalizedMaterialType(new Concentration(dummyStructure1)));
     }
 
     @Test
     public void test009_onTabChange() {
         Tab structureTab = new Tab();
         structureTab.setTitle("search_category_STRUCTURE");
-        Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedTabTitle(MaterialType.STRUCTURE.toString()));
+        assertEquals("search_category_STRUCTURE", bean.getLocalizedTabTitle(MaterialType.STRUCTURE.toString()));
         bean.onTabChange(new TabChangeEvent(new UIViewRoot(), new BehaviorBase(), structureTab));
-        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
     }
 
     @Test
@@ -294,30 +332,144 @@ public class MaterialCompositionBeanTest extends TestBase {
         builder.setMaterialName("test-composition");
         SearchResult result = searchService.search(Arrays.asList(builder.build()), nodeService.getLocalNode());
         List<MaterialComposition> foundObjects = result.getAllFoundObjects(MaterialComposition.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, foundObjects.size());
+        assertEquals(1, foundObjects.size());
 
         MaterialComposition composition = foundObjects.get(0);
-        Assert.assertEquals(1, composition.getIndices().size());
-        Assert.assertEquals(2, composition.getComponents().size());
-        Assert.assertEquals(1, composition.getHazards().getHazards().size());
-        Assert.assertEquals(1, composition.getStorageInformation().getStorageClass().id, 0);
-        Assert.assertEquals(1, composition.getStorageInformation().getStorageConditions().size());
+        assertEquals(1, composition.getIndices().size());
+        assertEquals(2, composition.getComponents().size());
+        assertEquals(1, composition.getHazards().getHazards().size());
+        assertEquals(1, composition.getStorageInformation().getStorageClass().id, 0);
+        assertEquals(1, composition.getStorageInformation().getStorageConditions().size());
+    }
 
+    @Test
+    public void test011_sequenceSearch_normalResult() throws FastaResultParserException {
+        initSequenceSearchMaskValuesHolder();
+        bean.setChoosenType(CompositionType.PROTEIN);
+
+        Reader reader = readerForResourceFile("fastaresults/results7.txt");
+        // This list is ordered by the E-value.
+        List<FastaResult> parserResults = new FastaResultParser(reader).parse();
+
+        SequenceData data1 = SequenceData.builder().sequenceString("seq1").sequenceType(SequenceType.DNA).build();
+        SequenceData data2 = SequenceData.builder().sequenceString("seq2").sequenceType(SequenceType.PROTEIN).build();
+        SequenceData data3 = SequenceData.builder().sequenceString("seq3").sequenceType(SequenceType.DNA).build();
+
+        List<MaterialName> names1 = Arrays.asList(new MaterialName("firstName1", "en", 1));
+        List<MaterialName> names2 = Arrays.asList(new MaterialName("firstName2", "en", 1));
+        List<MaterialName> names3 = Arrays.asList(new MaterialName("firstName3", "en", 1));
+
+        Sequence sequence1 = new Sequence(names1, null, data1);
+        Sequence sequence2 = new Sequence(names2, null, data2);
+        Sequence sequence3 = new Sequence(names3, null, data3);
+
+        materialService.saveMaterialToDB(sequence1, context.getAdminOnlyACL().getId(), new HashMap<>(), publicUser);
+        materialService.saveMaterialToDB(sequence2, context.getAdminOnlyACL().getId(), new HashMap<>(), publicUser);
+        materialService.saveMaterialToDB(sequence3, context.getAdminOnlyACL().getId(), new HashMap<>(), publicUser);
+
+        FastaResult fastaResult1 = parserResults.get(0);
+        FastaResult fastaResult2 = parserResults.get(2);
+        FastaResult fastaResult3a = parserResults.get(1);
+        FastaResult fastaResult3b = parserResults.get(3);
+
+        fastaResult1.setSubjectSequenceName(Integer.toString(sequence1.getId()));
+        fastaResult2.setSubjectSequenceName(Integer.toString(sequence2.getId()));
+        fastaResult3a.setSubjectSequenceName(Integer.toString(sequence3.getId()));
+        fastaResult3b.setSubjectSequenceName(Integer.toString(sequence3.getId()));
+
+        SearchResult resultWithAlignments = new SearchResultImpl(new Node());
+        resultWithAlignments.addResult(new SequenceAlignment(sequence3, fastaResult3a));
+        resultWithAlignments.addResult(new SequenceAlignment(sequence1, fastaResult1));
+        resultWithAlignments.addResult(new SequenceAlignment(sequence2, fastaResult2));
+        resultWithAlignments.addResult(new SequenceAlignment(sequence3, fastaResult3b));
+
+        sequenceSearchService.setBehaviour(request -> resultWithAlignments);
+        bean.actionStartSearch();
+
+        List<Material> foundMaterials = bean.getMaterialsThatCanBeAdded();
+        // We have 3 distinct materials.
+        assertThat(foundMaterials, hasSize(3));
+
+        // check ordering
+        assertTrue(sequence1.isEqualTo(foundMaterials.get(0)));
+        assertTrue(sequence3.isEqualTo(foundMaterials.get(1)));
+        assertTrue(sequence2.isEqualTo(foundMaterials.get(2)));
+
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertNull("sequenceSearch_error", messagePresenter.getLastErrorMessage());
+    }
+
+    @Test
+    public void test012_sequenceSearch_resultWithError() {
+        initSequenceSearchMaskValuesHolder();
+        bean.setChoosenType(CompositionType.PROTEIN);
+        SearchResult resultWithError = new SearchResultImpl(new Node());
+        resultWithError.addErrorMessage("something went wrong");
+
+        sequenceSearchService.setBehaviour(request -> resultWithError);
+        bean.actionStartSearch();
+
+        assertThat(bean.getMaterialsThatCanBeAdded(), empty());
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertEquals("sequenceSearch_error", messagePresenter.getLastErrorMessage());
+    }
+
+    @Test
+    public void test013_sequenceSearch_emptyResult() {
+        initSequenceSearchMaskValuesHolder();
+        bean.setChoosenType(CompositionType.PROTEIN);
+        SearchResult emptyResult = new SearchResultImpl(new Node());
+
+        sequenceSearchService.setBehaviour(request -> emptyResult);
+        bean.actionStartSearch();
+
+        assertThat(bean.getMaterialsThatCanBeAdded(), empty());
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertNull("sequenceSearch_error", messagePresenter.getLastErrorMessage());
+    }
+
+    @Test
+    public void test014_sequenceSearch_checkSearchRequest() {
+        initSequenceSearchMaskValuesHolder();
+        bean.setChoosenType(CompositionType.PROTEIN);
+        SearchResult emptyResult = new SearchResultImpl(new Node());
+
+        // Need a wrapper object to set a local variable inside a lambda.
+        AtomicReference<SearchRequest> requestRef = new AtomicReference<>();
+
+        sequenceSearchService.setBehaviour(request -> {
+            requestRef.set(request);
+            return emptyResult;
+        });
+        bean.actionStartSearch();
+
+        Map<SearchCategory, XmlSetWrapper> searchValues = requestRef.get().getSearchValues();
+        assertThat(searchValues.get(SEQUENCE_QUERY_TYPE).getValues(), hasSize(1));
+        assertThat(searchValues.get(SEQUENCE_QUERY_TYPE).getValues(), contains("DNA"));
+        assertThat(searchValues.get(SEQUENCE_QUERY_STRING).getValues(), hasSize(1));
+        assertThat(searchValues.get(SEQUENCE_QUERY_STRING).getValues(), contains("AGT"));
+        assertThat(searchValues.get(SEQUENCE_TRANSLATION_TABLE).getValues(), hasSize(1));
+        assertThat(searchValues.get(SEQUENCE_TRANSLATION_TABLE).getValues(),
+                contains(Integer.toString(EUPLOTID_NUCLEAR.getId())));
+        assertThat(searchValues.get(SEQUENCE_LIBRARY_TYPE).getValues(), hasSize(1));
+        assertThat(searchValues.get(SEQUENCE_LIBRARY_TYPE).getValues(), contains("PROTEIN"));
+        assertEquals(25, requestRef.get().getMaxResults());
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment
-                = prepareDeployment("MaterialCompositionBeanTest.war");
-        deployment = ItemDeployment.add(deployment);
-        deployment = UserBeanDeployment.add(deployment);
-        deployment = MaterialBeanDeployment.add(deployment);
-        deployment = PrintBeanDeployment.add(deployment);
-        deployment = MaterialDeployment.add(deployment);
-        deployment.addClass(SearchService.class);
-        deployment.addClass(ExperimentService.class);
-        deployment.addClass(DocumentSearchService.class);
-        return deployment;
+        WebArchive deployment = prepareDeployment("MaterialCompositionBeanTest.war");
+        ItemDeployment.add(deployment);
+        UserBeanDeployment.add(deployment);
+        MaterialBeanDeployment.add(deployment);
+        PrintBeanDeployment.add(deployment);
+        MaterialDeployment.add(deployment);
+        return deployment
+                .addClass(SearchService.class)
+                .addClass(ExperimentService.class)
+                .addClass(DocumentSearchService.class)
+                .deleteClass(SequenceSearchService.class)
+                .addClass(SequenceSearchServiceMock.class);
     }
 
     private void createMaterials() {
@@ -350,4 +502,15 @@ public class MaterialCompositionBeanTest extends TestBase {
         project1 = projectCreator.createAndSaveProject(user);
     }
 
+    private Reader readerForResourceFile(String filename) {
+        return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));
+    }
+
+    private void initSequenceSearchMaskValuesHolder() {
+        SequenceSearchMaskValuesHolder valuesHolder = bean.getSequenceSearchMaskValuesHolder();
+        valuesHolder.setQuery("AGT");
+        valuesHolder.setSearchMode(SearchMode.DNA_PROTEIN);
+        valuesHolder.setTranslationTable(EUPLOTID_NUCLEAR);
+        valuesHolder.setMaxResults(4242); // not used in the request
+    }
 }

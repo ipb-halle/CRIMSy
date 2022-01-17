@@ -21,7 +21,7 @@ SET @TESTNODE = '986ad1be-9a3b-4a70-8600-c489c2a00da4';
 SET @SCHEMA_VERSION = '00001';
 
 
-CREATE DOMAIN IF NOT EXISTS jsonb AS other;
+CREATE DOMAIN IF NOT EXISTS jsonb AS VARCHAR;
 CREATE DOMAIN IF NOT EXISTS RawJsonb AS other;
 
 CREATE ALIAS SUBSTRUCTURE FOR "de.ipb_halle.h2.MockSubstructureMatch.substructure";
@@ -872,11 +872,16 @@ CREATE TABLE sequences_history(
     action VARCHAR NOT NULL,
     sequenceString_old VARCHAR,
     sequenceString_new VARCHAR,
-    sequenceType_old VARCHAR,
-    sequenceType_new VARCHAR,
     circular_old BOOLEAN,
     circular_new BOOLEAN,
     annotations_old VARCHAR,
     annotations_new VARCHAR,
     PRIMARY KEY(id,actorid,mdate)
+);
+
+CREATE TABLE temp_search_parameter (
+  id         SERIAL    NOT NULL PRIMARY KEY,
+  cdate      TIMESTAMP NOT NULL DEFAULT now(),
+  processid  UUID NOT NULL,
+  parameter  JSONB NOT NULL
 );

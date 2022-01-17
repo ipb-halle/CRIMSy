@@ -58,7 +58,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     private int revision;
     private transient boolean isEdit = false;
     private transient int index;
-    private transient int linkedDataMaxRank;
 
     public enum ValidationError {
         NO_TARGET,
@@ -70,8 +69,7 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         this.changetime = new Date();
         this.revision = 0;
         this.hasHiddenLinkedData = false;
-        this.linkedData = new ArrayList<LinkedData>(2);
-        this.linkedDataMaxRank = -1;
+        this.linkedData = new ArrayList<>(2);
     }
 
     public void activateEditModeForRecord(LinkedData recordToEdit) {
@@ -155,6 +153,8 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
 
     /**
      * name of the component for rendering
+     *
+     * @return
      */
     public String getFacelet() {
         return this.type.toString();
@@ -166,18 +166,16 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
 
     /**
      * the index in a list of ExpRecords
+     *
+     * @return
      */
     public int getIndex() {
         return this.index;
     }
 
+    @Override
     public List<LinkedData> getLinkedData() {
         return this.linkedData;
-    }
-
-    public int getLinkedDataNextRank() {
-        this.linkedDataMaxRank++;
-        return this.linkedDataMaxRank;
     }
 
     public Long getNext() {
@@ -266,10 +264,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
 
     public void setLinkedData(List<LinkedData> data) {
         this.linkedData = data;
-    }
-
-    public void setLinkedDataMaxRank(int rank) {
-        this.linkedDataMaxRank = rank;
     }
 
     public ExpRecord setNext(Long next) {

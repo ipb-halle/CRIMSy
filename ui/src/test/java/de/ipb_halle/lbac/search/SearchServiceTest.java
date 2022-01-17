@@ -54,6 +54,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.IndexEntry;
 
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
@@ -61,6 +62,9 @@ import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceData;
+import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -70,6 +74,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -282,8 +287,8 @@ public class SearchServiceTest extends TestBase {
                 project1.getId(),
                 new HazardInformation(),
                 new StorageInformation(), CompositionType.EXTRACT);
-        composition.addComponent(materialService.loadMaterialById(materialid1), 0d,null);
-        composition.addComponent(materialService.loadMaterialById(materialid2), 0d,null);
+        composition.addComponent(materialService.loadMaterialById(materialid1), 0d, null);
+        composition.addComponent(materialService.loadMaterialById(materialid2), 0d, null);
         materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(), publicUser);
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
@@ -474,9 +479,9 @@ public class SearchServiceTest extends TestBase {
     @Test
     public void test012_searchForComposition() {
         MaterialComposition composition = new MaterialComposition(null, project1.getId(), CompositionType.EXTRACT);
-        composition.addComponent(materialService.loadMaterialById(materialid1), 0.1d,null);
-        composition.addComponent(materialService.loadMaterialById(notReadableMaterialId), 0.2d,null);
-        composition.addComponent(bioMaterial, 0.3d,null);
+        composition.addComponent(materialService.loadMaterialById(materialid1), 0.1d, null);
+        composition.addComponent(materialService.loadMaterialById(notReadableMaterialId), 0.2d, null);
+        composition.addComponent(bioMaterial, 0.3d, null);
 
         materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), publicUser);
 
@@ -494,6 +499,45 @@ public class SearchServiceTest extends TestBase {
                 localNode);
         Assert.assertEquals(0, result.getAllFoundObjects().size());
 
+    }
+
+    @Test
+    public void test012_searchForSequence() {
+        createSequence();
+        //Search by name
+        MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.setMaterialName("SequenceX");
+        SearchResult result = searchService.search(
+                Arrays.asList(matRequestbuilder.build()),
+                localNode);
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+        //Search by index
+        matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.setIndex("IndexValue");
+        result = searchService.search(
+                Arrays.asList(matRequestbuilder.build()),
+                localNode);
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+
+    }
+
+    private Sequence createSequence() {
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("SequenceX", "en", 0));
+        Sequence seq = new Sequence(
+                null,
+                names,
+                project1.getId(),
+                new HazardInformation(),
+                new StorageInformation(),
+                SequenceData.builder()
+                        .sequenceType(SequenceType.DNA)
+                        .sequenceString("AAA")
+                        .build());
+        seq.getIndices().add(new IndexEntry(2, "IndexValue", "de"));
+
+        materialService.saveMaterialToDB(seq, publicAclId, new HashMap<>(), publicUser);
+        return seq;
     }
 
     private void uploadDocuments() {

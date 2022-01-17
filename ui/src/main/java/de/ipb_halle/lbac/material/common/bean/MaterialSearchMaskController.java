@@ -42,7 +42,7 @@ public class MaterialSearchMaskController implements Serializable {
     private boolean isIndexActive;
     private boolean isMaterialTypeActive;
     private Boolean deactivated = false;
-    private MaterialTableController tableController;
+    protected MaterialTableController tableController;
     private MaterialType materialType;
     private MaterialOverviewBean overviewBean;
     private String name;
@@ -127,7 +127,7 @@ public class MaterialSearchMaskController implements Serializable {
         tableController.getTableController().actionFirstResult();
     }
 
-    private MaterialSearchMaskValues getValues() {
+    protected MaterialSearchMaskValues getValues() {
         values = new MaterialSearchMaskValues();
         values.deactivated = deactivated;
         if (name != null && !name.trim().isEmpty()) {
@@ -249,6 +249,10 @@ public class MaterialSearchMaskController implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setValues(MaterialSearchMaskValues values) {
+        this.values = values;
     }
 
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <b:container styleClass="materialOverviewTableContainer">
+            <b:row>
+                <b:column span="3">
+                    <crimsy:materialSearchMask
+                        searchController="#{sequenceSearchBean.searchMaskController}"
+                        updateTargets="sequenceSearchResultsTableId growlMsg"
+                        materialTypeFieldRendered="false"
+                        moleditorRendered="false">
+                        <b:row>
+                            <h:outputText
+                                value="#{msgs.sequenceSearch_searchMask_title}"
+                                styleClass="materialFilterHeader" />
+                        </b:row>
+                        <crimsy:sequenceSearchMask valuesHolder="#{sequenceSearchBean.searchMaskController.valuesHolder}" />
+                    </crimsy:materialSearchMask>
+                </b:column>
+
+                <b:column span="9">
+                    <crimsy:sequenceSearchResultsTable
+                        id="sequenceSearchResultsTableId"
+                        resultsTableController="#{sequenceSearchBean.resultsTableController}" />
+                </b:column>
+            </b:row>
+        </b:container>
+    </h:body>
+</html>

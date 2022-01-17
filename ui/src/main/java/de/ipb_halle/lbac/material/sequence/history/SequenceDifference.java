@@ -80,10 +80,6 @@ public class SequenceDifference
             oldBuilder.sequenceString(original.getSequenceString());
             newBuilder.sequenceString(edited.getSequenceString());
         }
-        if (!Objects.equals(original.getSequenceType(), edited.getSequenceType())) {
-            oldBuilder.sequenceType(original.getSequenceType());
-            newBuilder.sequenceType(edited.getSequenceType());
-        }
         if (!Objects.equals(original.isCircular(), edited.isCircular())) {
             oldBuilder.circular(original.isCircular());
             newBuilder.circular(edited.isCircular());
