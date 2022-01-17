@@ -47,9 +47,9 @@ import org.primefaces.event.FlowEvent;
 public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHolder {
     private static final long serialVersionUID = 1L;
 
-    private final static Pattern LINKTEXT_PATTERN = Pattern.compile("[\\w]+");
+    private static final Pattern LINKTEXT_PATTERN = Pattern.compile("[\\w]+");
     private static final List<MaterialType> ALLOWED_MATERIAL_TYPES = Arrays.asList(MaterialType.STRUCTURE,
-            MaterialType.COMPOSITION);
+            MaterialType.COMPOSITION, MaterialType.SEQUENCE);
 
     private enum LinkType {
         MATERIAL,
@@ -110,10 +110,12 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
         linkText = "";
         linkType = LinkType.MATERIAL;
         materialType = ALLOWED_MATERIAL_TYPES.get(0);
+        materialAgent.clearAgent();
+        itemAgent.clearAgent();
     }
 
     public String onFlowProcess(FlowEvent e) {
-        if (e.getNewStep().equals("step2")) {
+        if ("step2".equals(e.getNewStep())) {
             if (!checkLinkTextValidity()) {
                 errorMessage = messagePresenter.presentMessage("expAddRecord_addLink_invalidLinkText");
                 return e.getOldStep();
@@ -139,7 +141,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     @Override
     public List<MaterialType> getMaterialTypes() {
-        return ALLOWED_MATERIAL_TYPES;
+        return Arrays.asList(materialType);
     }
 
     @Override
@@ -181,6 +183,10 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     public void setMaterialType(MaterialType materialType) {
         this.materialType = materialType;
+    }
+
+    public List<MaterialType> getChoosableMaterialTypes() {
+        return ALLOWED_MATERIAL_TYPES;
     }
 
     public boolean isMaterialViewEnabled() {

@@ -15,9 +15,8 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.link;
+package de.ipb_halle.lbac.datalink;
 
-import de.ipb_halle.lbac.datalink.LinkCreationProcess;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
@@ -25,7 +24,6 @@ import de.ipb_halle.lbac.exp.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.ItemDeployment;

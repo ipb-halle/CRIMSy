@@ -40,15 +40,15 @@
             header="#{msgs.linkCreation_dialogHeader}"
             styleClass="dlgMaterialEdit"
             widgetVar="dlg_createLink"
-            modal="true" 
+            modal="true"
             width="1200"
             height="600">
             <p:ajax
-                event="close" 
+                event="close"
                 oncomplete="PF('wiz').loadStep('step1');" />
             <h:form id="dlgLinkCreationForm">
                 <p:panel styleClass="linkWizardPanel">
-                    <p:wizard 
+                    <p:wizard
                         widgetVar="wiz"
                         flowListener="#{linkCreationProcess.onFlowProcess}">
                         <p:tab
@@ -96,7 +96,7 @@
                                                 event="change"
                                                 update="@(.linkWizardPanel)"
                                                 process="@this @(.linkWizardTextInput)" />
-                                            <f:selectItems value="#{linkCreationProcess.materialTypes}" />
+                                            <f:selectItems value="#{linkCreationProcess.choosableMaterialTypes}" />
                                         </p:selectOneMenu>
                                     </p:column>
                                 </p:row>
@@ -115,14 +115,14 @@
                             id="step2"
                             title="#{linkCreationProcess.stepTwoHeader}">
                             <crimsy:panelMaterialEdit
-                                rendered="#{linkCreationProcess.materialViewEnabled}" 
-                                id="ccDlgMaterialEdit" 
-                                agent="#{linkCreationProcess.materialAgent}" 
+                                rendered="#{linkCreationProcess.materialViewEnabled}"
+                                id="ccDlgMaterialEdit"
+                                agent="#{linkCreationProcess.materialAgent}"
                                 updateTarget="@(.expLinks)" />
                             <crimsy:panelItemEdit
-                                rendered="#{linkCreationProcess.itemViewEnabled}" 
-                                id="ccDlgItemEdit" 
-                                agent="#{linkCreationProcess.itemAgent}" 
+                                rendered="#{linkCreationProcess.itemViewEnabled}"
+                                id="ccDlgItemEdit"
+                                agent="#{linkCreationProcess.itemAgent}"
                                 updateTarget="@(.expLinks)" />
                         </p:tab>
                     </p:wizard>
