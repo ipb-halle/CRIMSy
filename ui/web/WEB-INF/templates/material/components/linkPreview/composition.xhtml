@@ -33,10 +33,10 @@
                 <b:column>
                     <p:panelGrid style="margin-left:auto">
                         <p:row styleClass="borderless">
-                            <p:column style="width:100%">
-                                <h:outputText
-                                    styleClass="borderless"
-                                    value="Name" />
+                            <p:column
+                                styleClass="borderless"
+                                style="width:100%">
+                                <h:outputText value="Name" />
                             </p:column>
                             <p:column styleClass="borderless">
                                 <h:outputText value="Typ" />
@@ -50,8 +50,8 @@
                             value="#{agent.getComponentsOfMaterial()}">
                             <p:row styleClass="borderless">
                                 <p:column
-                                    style="width:100%"
-                                    styleClass="borderless">
+                                    styleClass="borderless"
+                                    style="width:100%">
                                     <h:outputText value="#{concentration.getMaterial().getFirstName()}" />
                                 </p:column>
                                 <p:column styleClass="borderless">
