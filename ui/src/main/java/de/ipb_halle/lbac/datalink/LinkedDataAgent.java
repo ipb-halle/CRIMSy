@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.service.IndexService;
@@ -47,7 +48,8 @@ import javax.inject.Inject;
 @Dependent
 public class LinkedDataAgent implements Serializable {
 
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    @Inject
+    private MessagePresenter messagePresenter;
     private final static long serialVersionUID = 1L;
 
     @Inject
@@ -160,9 +162,8 @@ public class LinkedDataAgent implements Serializable {
         if (m == null) {
             return "";
         }
-        return Messages.getString(MESSAGE_BUNDLE,
-                "search_category_" + m.getType().toString(),
-                null);
+        return messagePresenter.presentMessage(
+                "search_category_" + m.getType().toString());
 
     }
 
