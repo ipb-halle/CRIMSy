@@ -29,7 +29,7 @@
 #   statements for the schema version
 #
 #
-CURRENT_SCHEMA_VERSION=00003
+CURRENT_SCHEMA_VERSION=00002
 cd /docker-entrypoint-initdb.d/
 
 function getSchemaVersion {
