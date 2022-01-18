@@ -7,10 +7,9 @@ _Cloud Resource & Information Management System_
 
 CRIMSy is the software which powers the **Leibniz Bioactives Cloud** and which will power the research network **Autonomy in Old Age**. Our goal is to provide a distributed research platform for the exchange and analysis of data. A second objective is to enable users to choose, whom they want to share their data with and to provide them with fine grained access control across institutional borders. Finally, we want to address the specific needs of scientists dealing with chemical structures, sequence information and other biochemical data. 
 
-Additional information is available on the website of the Leibniz Research Alliance "Bioactive Compounds and Biotechnology": [https://www.leibniz-wirkstoffe.de/projects/lbac_project/](https://www.leibniz-wirkstoffe.de/projects/lbac_project/). 
+Additional information is available on our project homepage: [https://crimsy.org/](https://crimsy.org/). 
 
-We took part in the Hackathon EUvsVirus Hackathon 2020.The homepage of the project can be found at: 
-https://devpost.com/software/crimsy-cloud-information-resource-management-system
+Watch CRIMSy in action: [https://www.youtube.com/watch?v=PDGm0_Wsly0](https://www.youtube.com/watch?v=PDGm0_Wsly0) (2:46 min, Jul 2021)
 
 ## Funding
 The [Leibniz Institute of Plant Biochemistry (IPB)](https://www.ipb-halle.de/) in Halle (Saale), Germany, has been supporting this project with a software developer position and finances most of the infrastructure required for software development.

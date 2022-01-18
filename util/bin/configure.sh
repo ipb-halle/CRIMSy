@@ -600,14 +600,23 @@ function checkSoftware {
 		exit 1
 	fi
 
+        NEXT_FORM="ERROR: curl nicht installiert."
+        curl --version > /dev/null || return
+        NEXT_FORM="ERROR: docker-compose nicht installiert."
+        docker-compose -v > /dev/null || return
+        NEXT_FORM="ERROR: ed nicht installiert."
+        echo "q" | ed > /dev/null || return
 	NEXT_FORM="ERROR: m4 nicht installiert."
 	echo TEST | m4 > /dev/null || return
-	NEXT_FORM="ERROR: uudecode nicht installiert."
-	echo $'begin-base64 644 -\nQQo=\n====' | uudecode > /dev/null || return
 	NEXT_FORM="ERROR: openssl nicht installiert."
 	echo TEST | openssl md5 > /dev/null || return
-	NEXT_FORM="ERROR: docker-compose nicht installiert."
-	docker-compose -v > /dev/null || return
+        NEXT_FORM="ERROR: sudo nicht installiert."
+        sudo -V >/dev/null || return
+        NEXT_FORM="ERROR: uudecode nicht installiert."
+        echo $'begin-base64 644 -\nQQo=\n====' | uudecode > /dev/null || return
+        NEXT_FORM="ERROR: uuidgen nicht installiert."
+        uuidgen > /dev/null || return
+
 	NEXT_FORM=DIALOG_START
 }
 
