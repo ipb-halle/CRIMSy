@@ -89,5 +89,12 @@ public class Concentration {
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
+    
+    public String getConcentrationWithUnit(String format){
+        if(concentration==null){
+            return "";
+        }
+        return String.format(format, concentration)+getUnitString();
+    }
 
 }

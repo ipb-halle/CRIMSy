@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.datalink;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
@@ -45,6 +46,8 @@ import javax.inject.Inject;
  */
 @Dependent
 public class LinkedDataAgent implements Serializable {
+
+    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private final static long serialVersionUID = 1L;
 
     @Inject
@@ -154,7 +157,13 @@ public class LinkedDataAgent implements Serializable {
     }
 
     public String getLocalizedMaterialTypeName(Material m) {
-        return m.getType().toString();
+        if (m == null) {
+            return "";
+        }
+        return Messages.getString(MESSAGE_BUNDLE,
+                "search_category_" + m.getType().toString(),
+                null);
+
     }
 
     public List<String[]> getIndices() {
