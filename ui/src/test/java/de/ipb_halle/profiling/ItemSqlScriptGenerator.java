@@ -100,7 +100,7 @@ public class ItemSqlScriptGenerator {
                 for (int j = 0; j < histories; j++) {
                     cal.add(Calendar.MILLISECOND, 10);
                     int newAmount = (int) oldAmount / 2;
-                    fw.append(String.format("INSERT INTO items_history(itemid,mdate,actorid,action,amount_old ,amount_new) "
+                    fw.append(String.format("INSERT INTO items_history(id,mdate,actorid,action,amount_old ,amount_new) "
                             + "Values(%d,to_timestamp('%s','YYYYMMDD HH24:MI:SS:MS'),cast('%s' as UUID),'EDIT',%d,%d );",
                             i + 1,
                             SDF.format(cal.getTime()),

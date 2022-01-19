@@ -1038,7 +1038,7 @@ export NCURSES_NO_UTF8_ACS=1
 
 umask 0077
 p=`dirname $0`
-GETOPT=$(getopt -o 'bc:d:e:hH:i:m:o:' --long 'batch,cloud:,director:,extension:,help,hash:,input:,mode:,output:' -n 'camgr.sh' -- "$@")
+GETOPT=$(getopt -o 'bc:d:e:hH:i:m:o:' --longoptions 'batch,cloud:,directory:,extension:,help,hash:,input:,mode:,output:' -n 'camgr.sh' -- "$@")
 
 if [ $? -ne 0 ]; then
         echo 'Error in commandline evaluation. Terminating...' >&2

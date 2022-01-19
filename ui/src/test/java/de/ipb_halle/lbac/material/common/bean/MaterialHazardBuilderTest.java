@@ -63,6 +63,13 @@ public class MaterialHazardBuilderTest extends TestBase {
     private Consumable consumable;
     private Project project;
 
+    private final int H_STATEMENT_ID = 10;
+    private final int P_STATEMENT_ID = 11;
+    private final int[] BSL_IDS = new int[]{12, 13, 14, 15};
+    private final int RADIOACTIVE_STATEMENT_ID = 16;
+    private final int CUSTOM_STATEMENT_ID = 17;
+    private final int GMO_STATEMENT_ID = 20;
+
     @Before
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
@@ -76,21 +83,21 @@ public class MaterialHazardBuilderTest extends TestBase {
     @Test
     public void test001_checkPossibleHazardCategories() {
         //Check Structure
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, structure.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, structure.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
         //Check Biomaterial
-        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
         //Check Consumable
-        builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
@@ -100,15 +107,17 @@ public class MaterialHazardBuilderTest extends TestBase {
 
     @Test
     public void test002_getImageLocation() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertEquals(
                 "img/hazards/GHS01.png",
                 builder.getImageLocation(new HazardType(1, true, "GHS01", 1)));
+
+        Assert.assertEquals("img/hazards/R1.png", builder.getRadioactiveImageLocation());
     }
 
     @Test
     public void test003_getHazardsOfType() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         List<HazardType> hazards = builder.getHazardsOfType(HazardType.Category.BSL.toString());
         Assert.assertEquals(4, hazards.size());
         Assert.assertEquals(12, hazards.get(0).getId());
@@ -138,7 +147,7 @@ public class MaterialHazardBuilderTest extends TestBase {
 
     @Test
     public void test004_createHazardMap() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertTrue(builder.buildHazardsMap().isEmpty());
         HazardType explosive = hazardService.getHazardOf(HazardType.Category.GHS).get(0);
         builder.setSelectedHazards(new HazardType[]{explosive});
@@ -156,6 +165,9 @@ public class MaterialHazardBuilderTest extends TestBase {
 
         builder.setCustomText("C-Statemnet");
         Assert.assertEquals(5, builder.buildHazardsMap().size());
+
+        builder.setGmo(true);
+        Assert.assertEquals(6, builder.buildHazardsMap().size());
     }
 
     @Test
@@ -165,14 +177,14 @@ public class MaterialHazardBuilderTest extends TestBase {
         types.put(hazardService.getHazardOf(HazardType.Category.GHS).get(0), null);
         types.put(hazardService.getHazardOf(HazardType.Category.CUSTOM).get(0), "customText");
         types.put(hazardService.getHazardOf(HazardType.Category.STATEMENTS).get(0), "h-statement");
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, types, new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, types, MessagePresenterMock.getInstance());
 
         Assert.assertEquals(3, builder.buildHazardsMap().size());
     }
 
     @Test
     public void test006_createHazardMapWithBioSavetyLevel() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Map<HazardType, String> hazards = builder.buildHazardsMap();
         Assert.assertEquals(0, hazards.size());
         //set level 0
@@ -205,32 +217,91 @@ public class MaterialHazardBuilderTest extends TestBase {
     public void test007_createBuilderWithSavetyLevel() {
         Map<HazardType, String> hazards = new HashMap<>();
         hazards.put(hazardService.getHazardById(12), null);
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
-        Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(1), builder.getBioSavetyLevel());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
+        Assert.assertEquals("hazard_S1", builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(13), null);
-        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
-        Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(2), builder.getBioSavetyLevel());
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
+        Assert.assertEquals("hazard_S2", builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(14), null);
-        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
-        Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(3), builder.getBioSavetyLevel());
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
+        Assert.assertEquals("hazard_S3", builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(15), null);
-        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
-        Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(4), builder.getBioSavetyLevel());
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
+        Assert.assertEquals("hazard_S4", builder.getBioSavetyLevel());
+
+        hazards.clear();
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
+        Assert.assertEquals("hazard_S0", builder.getBioSavetyLevel());
     }
 
     @Test
     public void test008_getImageLocationOfBls() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertEquals("img/hazards/Empty.png", builder.getImageLocationOfBls(0));
         Assert.assertEquals("img/hazards/BIOHAZARD.png", builder.getImageLocationOfBls(1));
         Assert.assertEquals("img/hazards/BIOHAZARD.png", builder.getImageLocationOfBls(2));
         Assert.assertEquals("img/hazards/BIOHAZARD.png", builder.getImageLocationOfBls(3));
+    }
+
+    @Test
+    public void test009_addHazardType() {
+
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
+        Assert.assertNull(builder.getCustomText());
+        builder.addHazardType(hazardService.getHazardById(CUSTOM_STATEMENT_ID), "Custom Text");
+        Assert.assertEquals("Custom Text", builder.getCustomText());
+
+        Assert.assertFalse(builder.isRadioctive());
+        builder.addHazardType(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID), null);
+        Assert.assertTrue(builder.isRadioctive());
+
+        Assert.assertFalse(builder.isGmo());
+        builder.addHazardType(hazardService.getHazardById(GMO_STATEMENT_ID), null);
+        Assert.assertTrue(builder.isGmo());
+        builder.setGmo(false);
+        Assert.assertFalse(builder.isGmo());
+
+        Assert.assertNull(builder.gethStatements());
+        builder.addHazardType(hazardService.getHazardById(H_STATEMENT_ID), "MyHStatement");
+        Assert.assertEquals("MyHStatement", builder.gethStatements());
+
+        Assert.assertNull(builder.getpStatements());
+        builder.addHazardType(hazardService.getHazardById(P_STATEMENT_ID), "MyPStatement");
+        Assert.assertEquals("MyPStatement", builder.getpStatements());
+
+        Assert.assertEquals(0, builder.getSelectedHazards().length);
+
+        HazardType[] hazards = new HazardType[2];
+        hazards[0] = hazardService.getHazardById(1);
+        hazards[1] = hazardService.getHazardById(2);
+        builder.setSelectedHazards(hazards);
+        Assert.assertEquals(2, builder.getSelectedHazards().length);
+    }
+
+    @Test
+    public void test010_isHazardEditable() {
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
+        Assert.assertTrue(builder.isHazardEditable());
+        builder.setEditable(false);
+        Assert.assertFalse(builder.isHazardEditable());
+    }
+
+    @Test
+    public void test011_getLocalizedName() {
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
+        Assert.assertEquals("hazard_R1", builder.getLocalizedName(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID)));
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            builder.getLocalizedName(null);
+        });
+        Assert.assertEquals("hazard_R1", builder.getLocalizedRadioactiveLabel());
+        Assert.assertEquals("hazard_C1", builder.getLocalizedCustomLabel());
+        Assert.assertEquals("hazard_Statements", builder.getLocalizedStatements());
     }
 
     @Deployment

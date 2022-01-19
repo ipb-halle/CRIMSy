@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -43,6 +44,9 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.scope.SessionScopeContext;
+import de.ipb_halle.scope.SessionScopeResetEvent;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,6 +56,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -69,7 +74,7 @@ import org.junit.Before;
  * @author fmauz
  */
 public class TestBase implements Serializable {
-
+    
     protected Logger logger;
     protected String LBAC_PROPERTIES_PATH = "target/test-classes/keystore/lbac_properties.xml";
     protected String TEST_ROOT = "target/test-classes/";
@@ -80,7 +85,7 @@ public class TestBase implements Serializable {
     // per convention (defined in init.sql) test node == local node
     public final static UUID TEST_NODE_ID = UUID.fromString("986ad1be-9a3b-4a70-8600-c489c2a00da4");
     public final static String TESTCLOUD = "TESTCLOUD";
-
+    
     protected String INSERT_TAXONOMY_MATERIAL_SQL = "INSERT INTO MATERIALS VALUES("
             + "%d,"
             + "7,"
@@ -88,53 +93,56 @@ public class TestBase implements Serializable {
             + "%d, "
             + "%d, "
             + "false,%d)";
-
+    
     @ArquillianResource
     protected URL baseUrl;
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
-
+    
     @Resource(name = "DefaultManagedExecutorService")
     protected ManagedExecutorService executor;
-
+    
     @Inject
     protected CloudService cloudService;
-
+    
     @Inject
     protected CloudNodeService cloudNodeService;
-
+    
     @Inject
     protected EntityManagerService entityManagerService;
-
+    
     @Inject
     protected NodeService nodeService;
-
+    
     @Inject
     protected TermVectorEntityService termVectorEntityService;
-
+    
     @Inject
     protected FileEntityService fileEntityService;
-
+    
     @Inject
     protected CollectionService collectionService;
-
+    
     @Inject
     protected MemberService memberService;
-
+    
     @Inject
     protected MembershipService membershipService;
-
+    
     @Inject
     protected GlobalAdmissionContext context;
-
+    
     @Inject
     protected ProjectService projectService;
-
+    
+    @Inject
+    private Event<SessionScopeResetEvent> event;
+    
     protected ACList acListReadable, acListNonReadable;
     protected User publicUser;
     protected User adminUser;
-
+    
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
                 .addClass(GlobalAdmissionContext.class)
@@ -154,16 +162,23 @@ public class TestBase implements Serializable {
                 .addClass(CollectionService.class)
                 .addClass(ProjectService.class)
                 .addClass(KeyStoreFactory.class)
+                .addClass(MessagePresenterMock.class)
+                .addClass(SessionScopeContext.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsResource("init.sql", "init.sql")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsResource("javax.enterprise.inject.spi.Extension",
+                        "META-INF/services/javax.enterprise.inject.spi.Extension");
         return archive;
     }
-
+    
     @Before
     public final void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
-
+        
+        resetSessionScope();
+        resetMessagePresenterMock();
+        
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
         cleanItemsFromDb();
         this.entityManagerService.doSqlUpdate("Delete from containers");
@@ -172,13 +187,15 @@ public class TestBase implements Serializable {
         itemCreator = new ItemCreator(entityManagerService);
         acListReadable = GlobalAdmissionContext.getPublicReadACL();
         this.logger = LogManager.getLogger(this.getClass().getName());
-
+        
         entityManagerService.doSqlUpdate("DELETE FROM PROJECTTEMPLATES");
         entityManagerService.doSqlUpdate("DELETE FROM projects");
-
+        
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE FROM termvectors");
         entityManagerService.doSqlUpdate("DELETE FROM files");
+        
+        entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
         context.setLBAC_PROPERTIES_PATH("target/test-classes/keystore/lbac_properties.xml");
         context.createAdminAccount();
         cleanExperimentsFromDB();
@@ -186,7 +203,7 @@ public class TestBase implements Serializable {
         adminUser = memberService.loadLocalAdminUser();
         creationTools = new CreationTools("", "", "", memberService, projectService);
     }
-
+    
     protected void createTaxanomy(int id, String name, int level, Integer userGroups, Integer ownerId, Integer... parents) {
         entityManagerService.doSqlUpdate(String.format(INSERT_TAXONOMY_MATERIAL_SQL, id, userGroups, ownerId, null));
         entityManagerService.doSqlUpdate(String.format("INSERT INTO taxonomy  VALUES(%d ,%d)", id, level));
@@ -213,17 +230,17 @@ public class TestBase implements Serializable {
         u.setNode(nodeService.getLocalNode());
         u.setSubSystemType(AdmissionSubSystemType.LOCAL);
         u = memberService.save(u);
-
+        
         Group g = new Group();
         g.setName("Group of user " + u.getLogin());
         g.setNode(nodeService.getLocalNode());
         g.setSubSystemData("L");
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
         g = memberService.save(g);
-
+        
         membershipService.addMembership(u, u);
         membershipService.addMembership(g, u);
-
+        
         return u;
     }
 
@@ -268,7 +285,7 @@ public class TestBase implements Serializable {
             String name,
             String description,
             CollectionService collectionService) {
-
+        
         List<Collection> collections = new ArrayList<>();
         Collection col = new Collection();
         col.setACList(acList);
@@ -328,7 +345,7 @@ public class TestBase implements Serializable {
         acList.addACE(u, permissions);
         return acList;
     }
-
+    
     protected void createTaxonomyTreeInDB(Integer userGroups, Integer ownerId) {
         createTaxanomy(1, "Leben", 1, userGroups, ownerId);
         createTaxanomy(2, "Pilze", 2, userGroups, ownerId, 1);
@@ -352,15 +369,15 @@ public class TestBase implements Serializable {
         createTaxanomy(20, "Euryale", 7, userGroups, ownerId, 1, 16, 17, 18);
         createTaxanomy(21, "Haarnixen", 7, userGroups, ownerId, 1, 16, 17);
     }
-
+    
     public void resetDB(MemberService memberService) {
         List<Collection> colls = collectionService.load(new HashMap<>());
         termVectorEntityService.deleteTermVectors();
         for (Collection c : colls) {
             fileEntityService.delete(c);
-        }   
+        }
     }
-
+    
     public void resetCollectionsInDb(CollectionService collectionService) {
         List<Collection> colls = collectionService.load(null);
         for (Collection c : colls) {
@@ -371,31 +388,31 @@ public class TestBase implements Serializable {
             }
         }
     }
-
+    
     protected Map<String, Object> nameCmap(String name) {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("name", name);
         return cmap;
     }
-
+    
     protected Node createNode(
             NodeService nodeService,
             String publicKey
     ) {
         Node newNode = new Node();
         newNode.setBaseUrl(this.baseUrl.toString());
-
+        
         newNode.setInstitution("Fake Institution");
         newNode.setLocal(false);
         return nodeService.save(newNode);
     }
-
+    
     protected void initializeBaseUrl() {
         Node n = this.nodeService.getLocalNode();
         n.setBaseUrl(this.baseUrl.toString());
         this.nodeService.save(n);
     }
-
+    
     protected void initializeKeyStoreFactory() {
         KeyStoreFactory.setLBAC_PROPERTIES_PATH(LBAC_PROPERTIES_PATH);
         KeyStoreFactory ksf = KeyStoreFactory
@@ -403,39 +420,45 @@ public class TestBase implements Serializable {
                 .setLOCAL_KEY_ALIAS("test")
                 .init();
     }
-
+    
     protected void cleanAllProjectsFromDb() {
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
         entityManagerService.doSqlUpdate("delete from projects");
     }
-
+    
     protected void cleanProjectFromDB(Project p, boolean deleteAcl) {
-
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
-        entityManagerService.doSqlUpdate("delete from projects where id=" + p.getId());
-        if (deleteAcl) {
-            entityManagerService.doSqlUpdate("delete from acentries where aclist_id='" + p.getUserGroups().getId().toString() + "'");
-            entityManagerService.doSqlUpdate("delete from aclists where id='" + p.getUserGroups().getId().toString() + "'");
+        
+        if (p != null) {
+            entityManagerService.doSqlUpdate("delete from projects where id=" + p.getId());
+            if (deleteAcl) {
+                entityManagerService.doSqlUpdate("delete from acentries where aclist_id='" + p.getUserGroups().getId().toString() + "'");
+                entityManagerService.doSqlUpdate("delete from aclists where id='" + p.getUserGroups().getId().toString() + "'");
+            }
         }
-
     }
-
+    
     public void cleanItemsFromDb() {
         entityManagerService.doSqlUpdate("delete from item_positions_history");
         entityManagerService.doSqlUpdate("delete from item_positions");
         entityManagerService.doSqlUpdate("delete from items_history");
         entityManagerService.doSqlUpdate("delete from items");
     }
-
+    
     protected void cleanMaterialsFromDB() {
+        entityManagerService.doSqlUpdate("DELETE FROM material_compositions");
         entityManagerService.doSqlUpdate("delete from biomaterial");
         entityManagerService.doSqlUpdate("DELETE FROM tissues");
         entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
-
+        entityManagerService.doSqlUpdate("DELETE FROM sequences_history");
+        entityManagerService.doSqlUpdate("DELETE FROM sequences");
+        
+        entityManagerService.doSqlUpdate("DELETE FROM compositions");
+        
         entityManagerService.doSqlUpdate("delete from storagesconditions_storages_hist");
         entityManagerService.doSqlUpdate("delete from material_hazards_hist");
         entityManagerService.doSqlUpdate("delete from storages_hist");
@@ -452,12 +475,20 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("delete from material_hazards");
         entityManagerService.doSqlUpdate("delete from materials");
     }
-
+    
     protected void cleanAcListFromDB(ACList acl) {
         entityManagerService.removeEntity(ACListEntity.class, acl.getId());
     }
-
+    
     protected void cleanExperimentsFromDB() {
         entityManagerService.doSqlUpdate("delete from experiments");
+    }
+    
+    protected void resetSessionScope() {
+        event.fire(new SessionScopeResetEvent());
+    }
+    
+    private void resetMessagePresenterMock() {
+        MessagePresenterMock.getInstance().resetMessages();
     }
 }

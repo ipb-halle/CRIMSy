@@ -32,6 +32,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -67,10 +68,7 @@ public class BiomaterialServiceTest extends TestBase {
     private TaxonomyService taxonomyService;
 
     @Inject
-    private MaterialService materialService;
-
-    @Inject
-    private BiomaterialService bioMaterialService;
+    private MaterialService materialService;   
 
     @Inject
     private ProjectService projectService;
@@ -106,7 +104,7 @@ public class BiomaterialServiceTest extends TestBase {
         materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>(), publicUser);
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(owner, 0, 100);
         requestBuilder.addMaterialType(MaterialType.BIOMATERIAL);
-        SearchResult result = materialService.getReadableMaterials(requestBuilder.build());
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
         List<BioMaterial> bioMaterials = result.getAllFoundObjects(BioMaterial.class, result.getNode());
         Assert.assertEquals(1, bioMaterials.size());
         BioMaterial bm = bioMaterials.get(0);
@@ -119,7 +117,6 @@ public class BiomaterialServiceTest extends TestBase {
         Assert.assertEquals(0, bm.getIndices().size());
         Assert.assertEquals(materialName, bm.getNameToDisplay());
         Assert.assertEquals(1, bm.getNames().size());
-        Assert.assertEquals("", bm.getNumber());
         Assert.assertEquals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, bm.getOwner().getId());
         Assert.assertEquals(project.getId(), bm.getProjectId(), 0);
         Assert.assertNotNull(bm.getStorageInformation());

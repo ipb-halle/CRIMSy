@@ -34,11 +34,7 @@ public class EntityManagerService {
 
     public void flush() {
         this.em.flush();
-    }
-
-    public EntityManager getEm() {
-        return em;
-    }
+    } 
 
     public void doSqlUpdate(String query) {
         em.createNativeQuery(query).executeUpdate();

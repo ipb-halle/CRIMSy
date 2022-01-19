@@ -97,7 +97,7 @@ public class ContainerServiceTest extends TestBase {
     public void init() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
 
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
@@ -441,7 +441,7 @@ public class ContainerServiceTest extends TestBase {
             for (int j = 0; j < 70; j++) {
                 Structure s = creationTools.createStructure(project);
                 s.setMolecule(null);
-                materialService.saveMaterialToDB(s, project.getACList().getId(), new HashMap(), publicUser);
+                materialService.saveMaterialToDB(s, project.getACList().getId(), new HashMap<>(), publicUser);
                 Item item = createAndSaveItem(wellPlate, project, s);
                 positionService.saveItemInContainer(item.getId(), wellPlate.getId(), i % 8, (i / 8));
             }

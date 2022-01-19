@@ -25,6 +25,8 @@ function buildDistServer {
     popd > /dev/null
 }
 
+#
+#
 # DANGER: remove installation without (almost) any trace
 function cleanup {
     dst=`echo $0 | cut -d' ' -f2`
@@ -32,6 +34,19 @@ function cleanup {
 }
 export -f cleanup
 
+#
+#
+#
+function copyNodeConfig {
+    cloud=`echo $0 | cut -d' ' -f1`
+    node=`echo $0 | cut -d' ' -f2`
+    cp $LBAC_REPO/config/nodes/$node.sh.asc $LBAC_REPO/config/$cloud/
+}
+export -f copyNodeConfig
+
+#
+#
+#
 function createNodeConfig {
     key=`echo $0 | cut -d' ' -f1`
     dst=`echo $0 | cut -d' ' -f2`
@@ -39,6 +54,8 @@ function createNodeConfig {
         cut -c9-18 | \
         sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
     url="http://`hostname -f`:8000/$cloud"
+
+    echo "executing createNodeConfig for host $dst ($key) ..."
 
     echo "copying configBatch.sh script ..."
     scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
@@ -51,17 +68,55 @@ function createNodeConfig {
 }
 export -f createNodeConfig
 
+#
+# preprocess Cypress test cases
+#
+function cypressPreprocess {
+        SRC=$0
+        DESTDIR=`dirname $SRC`
+        DESTFILE=`basename $SRC ".m4"`
+        pushd $LBAC_REPO >/dev/null
+        m4 $SRC > $DESTDIR/$DESTFILE
+        rm $SRC
+        popd > /dev/null
+
+}
+export -f cypressPreprocess
+
+#
+#
+#
 function error {
     echo $1
     exit 1
 }
 
+#
+#
+#
 function installNode {
     dst=`echo $0 | cut -d' ' -f2`
+    echo "installNode called for host: $dst"
     ssh -o "StrictHostKeyChecking no" $dst "./bin/install.sh"
 }
 export -f installNode
 
+#
+#
+#
+function restore {
+    if [ $NODE = "all" ] ; then
+        echo "Restoring snapshot '$RESTORE' on all nodes"
+        cat $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh restore $RESTORE
+    else 
+        echo "Restoring snapshot '$RESTORE' on node '$RESTORE'"
+        grep $NODE $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh restore $RESTORE
+    fi
+}
+
+#
+#
+#
 function runDistServer {
     cp docker/crimsyci/index.html target/integration/htdocs
     (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
@@ -73,6 +128,61 @@ function runDistServer {
         crimsyci
 }
 
+#
+# run Tests. 
+# NOTE: currently only runs on first node in HOSTLIST
+#
+function runTests {
+    # check prerequisites
+    echo "checking prerequsites"
+    (docker inspect dist_proxy_1 2>/dev/null | grep -q running ) \
+        || error "Service seems unavailable ..."
+
+    # initialize database with test data
+    HOST=`head -1 $HOSTLIST | cut -d' ' -f2`
+    docker cp $LBAC_REPO/util/test/etc/initial_data.sql dist_db_1:/tmp/
+    wget -o /dev/null -O /dev/null --no-check-certificate https://$HOST/ui/index.xhtml
+    echo "waiting 3 sec. for webapp to initialize database ..."
+    sleep 3
+    docker exec -ti dist_db_1 su - postgres /bin/sh -c "psql -Ulbac lbac -f /tmp/initial_data.sql"
+
+    # build test containers and set up environment
+    echo "checking / building test environment"
+    pushd $LBAC_REPO/util/test >/dev/null
+    docker inspect --type image cypress >/dev/null 2>/dev/null || docker build -f Dockerfile -t cypress .
+
+    sudo rm -r $LBAC_REPO/target/cypress
+    mkdir -p $LBAC_REPO/target/cypress
+    cp -r cypress $LBAC_REPO/target/cypress/
+    cat <<EOF >$LBAC_REPO/target/cypress/config_m4.inc
+dnl
+dnl Cypress test fixtures configuration
+dnl
+define(\`TESTBASE_HOSTNAME',\`$HOST')dnl
+EOF
+    find $LBAC_REPO/target/cypress -type f -name "*.m4" -exec /bin/bash -c cypressPreprocess {} \;
+
+    # run tests ...
+    echo "running tests"
+    docker run -v $LBAC_REPO/target/cypress/cypress:/app/cypress --name cy1 cypress --browser firefox --headless
+
+    # clean up
+    echo "removing test container"
+    docker rm cy1
+    popd >/dev/null
+
+    echo "*****************************************************************"
+    echo "*                                                               *"
+    echo "* TESTS FINISHED                                                *"
+    echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
+    echo "* and test outcomes in directory target/cypress/                *"
+    echo "*                                                               *"
+    echo "*****************************************************************"
+}
+
+#
+#
+#
 function safetyCheck {
     if [ -d config ] ; then
         if [ ! -f config/INTEGRATION_TEST ] ; then
@@ -107,11 +217,71 @@ EOF
 EOF
 }
 
+#
+#
+#
+function setup {
+    cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+        xargs -i /bin/bash -c setupTestCAconf "{}"
+
+    echo "=== Distribution Server ==="
+    buildDistServer
+    runDistServer
+
+    echo "=== Setup ROOT CA ==="
+    setupTestRootCA
+
+    echo "=== Setup Sub CAs ==="
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+        xargs -i /bin/bash -c setupTestSubCA "{}"
+
+    echo "=== create node configurations ==="
+    cat $HOSTLIST | xargs -i /bin/bash -c createNodeConfig "{}"
+
+    # package master nodes
+    echo "=== determine master nodes ==="
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+        cut -d: -f1 | \
+        xargs -i $LBAC_REPO/util/bin/package.sh "{}" MASTERBATCH
+
+    # package all other nodes
+    echo "=== package all nodes ==="
+    cat $LBAC_REPO/util/test/etc/cloudnodes.txt | xargs -i /bin/bash -c copyNodeConfig "{}"
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+        cut -d: -f1 | \
+        xargs -i $LBAC_REPO/util/bin/package.sh "{}" AUTOBATCH
+
+    # install node
+    echo "=== install nodes ==="
+    cat $HOSTLIST | xargs -i /bin/bash -c installNode "{}"
+
+    #
+    # ToDo: multiple cloud memberships 
+    #
+
+    #
+    echo "sleep 15 seconds to settle everything ..."
+    sleep 15
+
+    echo "*****************************************************************"
+    echo "*                                                               *"
+    echo "* SETUP FINISHED                                                *"
+    echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
+    echo "*                                                               *"
+    echo "*****************************************************************"
+}
+
+#
+#
+#
 function setupTestRootCA {
     $LBAC_REPO/util/bin/camgr.sh --batch --mode ca
     chmod -R go+rX $LBAC_REPO/target/integration/htdocs
 }
 
+#
+#
+#
 function setupTestSubCA {
     cloud=`echo $0 | cut -d: -f1`
 
@@ -142,6 +312,9 @@ function setupTestSubCA {
 }
 export -f setupTestSubCA
 
+#
+#
+#
 function setupTestCAconf {
     dist=`echo $0 | cut -d: -f1`
     superior=`echo $0 | cut -d: -f2`
@@ -184,163 +357,132 @@ EOF
 export -f setupTestCAconf
 
 #
-#==========================================================
+# 
 #
-function setup {
-    cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        xargs -l1 -i /bin/bash -c setupTestCAconf "{}"
-
-    echo "=== Distribution Server ==="
-    buildDistServer
-    runDistServer
-
-    echo "=== Setup ROOT CA ==="
-    setupTestRootCA
-
-    echo "=== Setup Sub CAs ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        xargs -l1 -i /bin/bash -c setupTestSubCA "{}"
-
-    echo "=== create node configurations ==="
-    cat $HOSTLIST | xargs -l1 -i /bin/bash -c createNodeConfig "{}"
-
-    # package master nodes
-    echo "=== determine master nodes ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        cut -d: -f1 | \
-        xargs -l1 -i $LBAC_REPO/util/bin/package.sh "{}" MASTERBATCH
-
-    # package all other nodes
-    echo "=== package all nodes ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        cut -d: -f1 | \
-        xargs -l1 -i $LBAC_REPO/util/bin/package.sh "{}" AUTOBATCH
-
-    # install node
-    echo "=== install nodes ==="
-    cat $HOSTLIST | xargs -l1 -i /bin/bash -c installNode "{}"
-
-    #
-    # ToDo: multiple cloud memberships 
-    #
-
-    #
-    echo "sleep 15 seconds to settle everything ..."
-    sleep 15
-
+function snapshot {
+    if [ $NODE = "all" ] ; then
+        echo "Taking snapshot '$SNAPSHOT' of all nodes"
+        cat $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+    else
+        echo "Taking snapshot '$SNAPSHOT' for node '$NODE'"
+        grep $NODE $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+    fi
 }
-#
-#==========================================================
-#
-function preprocess {
-        SRC=$0
-        DESTDIR=`dirname $SRC`
-        DESTFILE=`basename $SRC ".m4"`
-        pushd $LBAC_REPO >/dev/null
-        m4 $SRC > $DESTDIR/$DESTFILE
-        rm $SRC
-        popd > /dev/null
 
-}
-export -f preprocess
 #
-#==========================================================
 #
-function runTests {
-    # check prerequisites
-    echo "checking prerequsites"
-    (docker inspect dist_proxy_1 2>/dev/null | grep -q running ) \
-        || error "Service seems unavailable ..."
-
-    # initialize database with test data
-    HOST=`head -1 $HOSTLIST | cut -d' ' -f2`
-    docker cp $LBAC_REPO/util/test/etc/initial_data.sql dist_db_1:/tmp/
-    curl -s -o /dev/null --no-check-certificate https://$HOST/ui/index.xhtml
-    echo "waiting 3 sec. for webapp to initialize database ..."
-    sleep 3
-    docker exec -ti dist_db_1 su - postgres /bin/sh -c "psql -Ulbac lbac -f /tmp/initial_data.sql"
-
-    # build test containers and set up environment
-    echo "checking / building test environment"
-    pushd $LBAC_REPO/util/test >/dev/null
-    docker inspect --type image cypress >/dev/null 2>/dev/null || docker build -f Dockerfile -t cypress .
-
-    sudo rm -r $LBAC_REPO/target/cypress
-    mkdir -p $LBAC_REPO/target/cypress
-    cp -r cypress $LBAC_REPO/target/cypress/
-    cat <<EOF >$LBAC_REPO/target/cypress/config_m4.inc
-dnl
-dnl Cypress test fixtures configuration
-dnl
-define(\`TESTBASE_HOSTNAME',\`$HOST')dnl
-EOF
-    find $LBAC_REPO/target/cypress -type f -name "*.m4" -exec /bin/bash -c preprocess {} \;
-
-    # run tests ...
-    echo "running tests"
-    docker run -v $LBAC_REPO/target/cypress/cypress:/app/cypress --name cy1 cypress --browser firefox --headless
-
-    # clean up
-    echo "removing test container"
-    docker rm cy1
-    popd >/dev/null
-}
 #
-#==========================================================
-#
-function tearDown {
+function teardown {
 
     # tear down nodes
-    cat $HOSTLIST | xargs -l1 -i /bin/bash -c cleanup "{}"
+    cat $HOSTLIST | xargs -i /bin/bash -c cleanup "{}"
 
     # remove target directory (needs root privilege)
     sudo rm -r config/ target/
 
+    echo "*****************************************************************"
+    echo "*                                                               *"
+    echo "* TEARDOWN FINISHED                                             *"
+    echo "* Removed everything including logs.                            *"
+    echo "*                                                               *"
+    echo "*****************************************************************"
 }
 #
 #==========================================================
 #
+function printHelp {
+BOLD=$'\x1b[1m'
+REGULAR=$'\x1b[0m'
+cat <<EOF
+${BOLD}NAME${REGULAR}
+    testSetup.sh
+
+${BOLD}SYNOPSIS${REGULAR}
+    testSetup.sh [-H|hostlist HOSTLIST] [-h|--help] [-n|--node NODE] 
+        [-p|--pause] [-R|--restore LABEL] [-r|--runTests] [-S|--snapshot LABEL] 
+        [-s|--setup] [-t|--teardown] [-w|--wake]
+
+${BOLD}DESCRIPTION${REGULAR}
+    Set up, operate and clean up a test environment of CRIMSy. Setup includes 
+    compilation, setup of a PKI and installation one or more nodes. 
+    This script requires passwordless sudo and passwordless login on all 
+    involved hosts.
+
+${BOLD}OPTIONS${REGULAR}
+-H|--hostlist HOSTLIST
+    mapping of node names (node1, node2, ...) to real host names. Each line contains
+    the node name followed by the host name separated by a single space character.
+
+-h|--help
+    print this help text
+
+-n|--node NODE
+    operate on node NODE only (default all)
+
+-p|--pause
+    pause execution of node NODE
+
+-R|--restore LABEL
+    restore the snapshot with label LABEL
+
+-r|--runTests
+    run the Cypress integration tests
+
+-S|--snapshot LABEL
+    create a labelled snapshot of the database and the file storage 
+
+-s|--setup
+    do the full setup starting with compilation
+
+-t|--teardown
+    remove all nodes and clean up everything
+
+-w|--wake
+    resume execution of node NODE
+EOF
+
+}
+
 function mainFunc {
+    if [ -z "$HOSTLIST" ] ; then
+        error "Must provide HOSTLIST. Call testSetup.sh -h for help."
+    fi
 
-    for action  in $* ; do
-        case $action in
-            setup)
-                mvn --batch-mode -DskipTests clean install
-                setup
-                 echo "*****************************************************************"
-                 echo "*                                                               *"
-                 echo "* SETUP FINISHED                                                *"
-                 echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
-                 echo "*                                                               *"
-                 echo "*****************************************************************"
-                ;;
+    if [ -n "$PAUSE" ] ; then
+        echo "Pause not implemented"
+        exit 0
+    fi
 
-            test)
-                runTests
-                 echo "*****************************************************************"
-                 echo "*                                                               *"
-                 echo "* TEST FINISHED                                                 *"
-                 echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
-                 echo "* and test outcomes in directory target/cypress/                *"
-                 echo "*                                                               *"
-                 echo "*****************************************************************"
-                ;;
+    if [ -n "$WAKE" ] ; then
+        echo "Wake not implemented"
+        exit 0
+    fi
 
-            teardown)
-                tearDown
-                 echo "*****************************************************************"
-                 echo "*                                                               *"
-                 echo "* TEARDOWN FINISHED                                             *"
-                 echo "* Removed everything including logs.                            *"
-                 echo "*                                                               *"
-                 echo "*****************************************************************"
-                ;;
+    if [ -n "$SNAPSHOT" ] ; then
+        snapshot
+        exit 0
+    fi
 
-            *)
-                echo "WARNING: Ignoring unrecognized target."
-                ;;
-        esac
-    done
+    if [ -n "$RESTORE" ] ; then
+        restore
+        exit 0
+    fi
+
+    if [ -n "$SETUP" ] ; then
+        echo "setup"
+        mvn --batch-mode -DskipTests clean install
+        setup
+    fi
+
+    if [ -n "$RUNTESTS" ] ; then
+        echo "run tests"
+        runTests
+    fi
+
+    if [ -n "$TEARDOWN" ] ; then
+        echo "tear down"
+        teardown
+    fi
 }
 #
 #==========================================================
@@ -348,22 +490,92 @@ function mainFunc {
 p=`dirname $0`
 export LBAC_REPO=`realpath "$p/../.."`
 umask 0022
-
-if [ $# -lt 2 ] ; then
-    echo "usage: `basename $0` HOSTLIST TARGET [TARGET ...]"
-    echo
-    echo "HOSTLIST is a file containing one nodekey hostname pair per line"
-    echo
-    echo "TARGET must be one of 'setup', 'test' and 'teardown'"
-    exit 1
-fi
-HOSTLIST=`realpath $1`
-shift
-
-TEST_DATE=`date +%Y%m%d%H%M`
-
 cd $LBAC_REPO
 safetyCheck
+TEST_DATE=`date +%Y%m%d%H%M`
 
-mainFunc $* 2>&1 | tee $LBAC_REPO/config/logs/test.$TEST_DATE.log
+HOSTLIST=''
+NODE=all
+PAUSE=''
+RESTORE=''
+RUNTESTS=''
+SNAPSHOT=''
+SETUP=''
+TEARDOWN=''
+WAKE=''
+
+GETOPT=$(getopt -o 'H:hn:pR:rS:stw' --longoptions 'hostlist:,help,node:,pause,restore:,runTests:,snapshot:,setup,teardown:,wake' -n 'testSetup.sh' -- "$@")
+
+if [ $? -ne 0 ]; then
+        echo 'Error in commandline evaluation. Terminating...' >&2
+        exit 1
+fi
+
+eval set -- "$GETOPT"
+unset GETOPT
+
+while true ; do
+    case "$1" in
+    '-H'|'--hostlist')
+        HOSTLIST=`realpath "$2"`
+        shift 2
+        continue
+        ;;
+    '-h'|'--help')
+        printHelp
+        exit 0
+        ;;
+    '-n'|'--node')
+        NODE=$2
+        shift 2
+        continue
+        ;;
+    '-p'|'--pause')
+        PAUSE='pause'
+        shift
+        continue
+        ;;
+    '-R'|'--restore')
+        RESTORE=$2
+        shift 2
+        continue
+        ;;
+    '-r'|'--runTests')
+        RUNTESTS='runTests'
+        shift
+        continue
+        ;;
+    '-S'|'--snapshot')
+        SNAPSHOT=$2
+        shift 2
+        continue
+        ;;
+    '-s'|'--setup')
+        SETUP='setup'
+        shift
+        continue
+        ;;
+    '-t'|'--teardown')
+        TEARDOWN='teardown'
+        shift
+        continue
+        ;;
+    '-w'|'--wake')
+        WAKE='wake'
+        shift
+        continue
+        ;;
+    '--')
+        shift
+        break
+        ;;
+    *)
+        echo 'Internal error!' >&2
+        exit 1
+        ;;
+    esac
+done
+
+
+mainFunc 2>&1 | tee $LBAC_REPO/config/logs/test.$TEST_DATE.log
 

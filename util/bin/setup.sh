@@ -48,7 +48,7 @@ LBAC_SKIP_SNAPSHOT="OFF"
 function cleanDist {
     pushd dist > /dev/null
     # ToDo: remove folder pgchem in future revisions
-    rm -rf bin db extralib pgchem proxy ui
+    rm -rf bin db extralib fasta pgchem proxy ui
     popd > /dev/null
     
 }

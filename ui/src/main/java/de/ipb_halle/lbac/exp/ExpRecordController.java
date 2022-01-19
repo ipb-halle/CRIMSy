@@ -145,6 +145,7 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
 
     public List<MaterialType> getMaterialTypes() {
         return Arrays.asList(
+                MaterialType.COMPOSITION,
                 MaterialType.BIOMATERIAL,
                 MaterialType.STRUCTURE);
     }

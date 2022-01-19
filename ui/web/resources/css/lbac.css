@@ -26,6 +26,7 @@
     height: 200px;
 }
 
+
 /*
  * center logo
  */
@@ -604,5 +605,13 @@ body.waiting * {
 }
 .borderlessButtonTable tr{
      border-width: 0px !important;
+}
+
+.topAligned{
+    vertical-align: top !important;
+}
+
+.column1{
+    border-width: 0px !important;
 }
 

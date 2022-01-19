@@ -41,8 +41,6 @@ import org.apache.logging.log4j.LogManager;
 @Named("groupMgrBean")
 @SessionScoped
 public class GroupMgrBean implements Serializable {
-
-    private MessagePresenter messagePresenter;
     private String oldGroupName;
 
     private enum MODE {
@@ -52,6 +50,9 @@ public class GroupMgrBean implements Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     private final static Long serialVersionUID = 1L;
+
+    @Inject
+    private transient MessagePresenter messagePresenter;
 
     @Inject
     private NodeService nodeService;
@@ -85,37 +86,10 @@ public class GroupMgrBean implements Serializable {
     }
 
     /**
-     * Constructor for injecting the dependencies if class is instanciated not
-     * by container (via @Inject) but by new.(This happens in tests, because we
-     * have problems with starting @SessionScoped containers in the arquillian
-     * environment)
-     *
-     * @param nodeService
-     * @param memberService
-     * @param membershipService
-     * @param messagePresenter
-     */
-    public GroupMgrBean(
-            NodeService nodeService,
-            MemberService memberService,
-            MembershipService membershipService,
-            MessagePresenter messagePresenter) {
-        this();
-        this.nodeService = nodeService;
-        this.memberService = memberService;
-        this.membershipService = membershipService;
-        this.messagePresenter = messagePresenter;
-        this.groupNameValidator = new GroupNameValidator(memberService);
-        initGroup();
-
-    }
-
-    /**
      * Initialization depending on injected resources
      */
     @PostConstruct
     private void InitGroupMgrBean() {
-        this.messagePresenter = JsfMessagePresenter.getInstance();
         this.groupNameValidator = new GroupNameValidator(memberService);
         initGroup();
     }
@@ -361,9 +335,5 @@ public class GroupMgrBean implements Serializable {
 
     public boolean isDeactivationForbidden(Group g) {
         return !memberService.canGroupBeDeactivated(g);
-    }
-
-    public void setMessagePresenter(MessagePresenter messagePresenter) {
-        this.messagePresenter = messagePresenter;
     }
 }

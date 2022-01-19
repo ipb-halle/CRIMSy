@@ -323,7 +323,7 @@ public class ItemService {
         CriteriaQuery<ItemHistoryEntity> criteriaQuery = builder.createQuery(ItemHistoryEntity.class);
         Root<ItemHistoryEntity> itemHistoryRoot = criteriaQuery.from(ItemHistoryEntity.class);
         criteriaQuery.select(itemHistoryRoot);
-        Predicate predicate = builder.equal(itemHistoryRoot.get("id").get("itemid"), item.getId());
+        Predicate predicate = builder.equal(itemHistoryRoot.get("id").get("id"), item.getId());
         criteriaQuery.where(predicate).orderBy(builder.desc(itemHistoryRoot.get("id").get("mdate")));
         for (ItemHistoryEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
             User actor = memberService.loadUserById(e.getId().getActorid());

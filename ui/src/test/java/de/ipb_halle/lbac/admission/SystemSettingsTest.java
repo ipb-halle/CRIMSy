@@ -98,7 +98,7 @@ public class SystemSettingsTest extends TestBase {
     public void test005_save() {
         List<InfoObject> booleanInfoObjects = settings.getBoolSettings();
         booleanInfoObjects.get(0).setValue("False");
-        settings.messagePresenter = new MessagePresenterMock();
+        settings.messagePresenter = MessagePresenterMock.getInstance();
         settings.save();
         Assert.assertFalse(settings.getBoolean("SETTING_FORCE_LOGIN"));
         booleanInfoObjects.get(0).setValue("True");

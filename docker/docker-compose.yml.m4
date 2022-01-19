@@ -30,6 +30,17 @@ LBAC_PGSQL_PORT_ENABLE     - "5432:5432"
     volumes:
       - LBAC_DATASTORE/data/db:/data/db
 
+  fasta:
+    build:
+      context: .
+      dockerfile: ./fasta/Dockerfile
+    depends_on:
+      - db
+    labels:
+      de.ipb-halle.lbac.docker-container: "fasta"
+    networks:
+      - lbac_private
+
   ui:
     build: 
       context: .
@@ -57,4 +68,3 @@ LBAC_TOMEE_PORT_ENABLE     - "8080:8080"
       - "80:80"
       - "443:443"
       - "8443:8443"
-

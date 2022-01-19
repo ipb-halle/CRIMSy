@@ -42,6 +42,8 @@ public enum AttributeType {
     PROJECT_NAME,
     REACTION_EDUCT,
     REACTION_PRODUCT,
+    SEQUENCE_STRING,
+    SEQUENCE_TYPE,
     TEMPLATE,
     WORDROOT,
 

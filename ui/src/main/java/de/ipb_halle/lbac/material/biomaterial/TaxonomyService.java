@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
-import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
@@ -83,7 +82,7 @@ public class TaxonomyService implements Serializable {
             + "AND t2.level < t.level);";
 
     private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
-    protected MaterialComparator comparator;
+ 
 
     @Inject
     private MaterialService materialService;
@@ -96,7 +95,6 @@ public class TaxonomyService implements Serializable {
 
     @PostConstruct
     public void init() {
-        comparator = new MaterialComparator();
     }
 
     public Set<String> getSimilarTaxonomy(String name) {

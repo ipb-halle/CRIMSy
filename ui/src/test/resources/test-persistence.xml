@@ -46,7 +46,8 @@
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TissueEntity</class>
-        
+        <class>de.ipb_halle.lbac.material.composition.MaterialCompositionEntity</class>
+        <class>de.ipb_halle.lbac.material.composition.CompositionHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity</class>
@@ -60,6 +61,9 @@
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageEntity</class>
+        <class>de.ipb_halle.lbac.material.composition.CompositionEntity</class>
+        <class>de.ipb_halle.lbac.material.sequence.SequenceEntity</class>
+        <class>de.ipb_halle.lbac.material.sequence.history.SequenceHistoryEntity</class>                
         <class>de.ipb_halle.lbac.material.structure.StructureEntity</class>
         <class>de.ipb_halle.lbac.material.structure.StructureHistEntity</class>
         <class>de.ipb_halle.lbac.container.entity.ContainerEntity</class>
@@ -97,9 +101,8 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
-
             <property name="hibernate.archive.autodetection" value="class"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.dialect" value="de.ipb_halle.lbac.util.hibernatePG.dialect.H2JsonDialect"/>
             <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
 
             <!-- sql statements are logged by arguillian.xml -->

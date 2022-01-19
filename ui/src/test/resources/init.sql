@@ -21,7 +21,7 @@ SET @TESTNODE = '986ad1be-9a3b-4a70-8600-c489c2a00da4';
 SET @SCHEMA_VERSION = '00001';
 
 
-CREATE DOMAIN IF NOT EXISTS jsonb AS other;
+CREATE DOMAIN IF NOT EXISTS jsonb AS VARCHAR;
 CREATE DOMAIN IF NOT EXISTS RawJsonb AS other;
 
 CREATE ALIAS SUBSTRUCTURE FOR "de.ipb_halle.h2.MockSubstructureMatch.substructure";
@@ -282,6 +282,7 @@ INSERT INTO materialdetailtypes VALUES(3,'INDEX');
 INSERT INTO materialdetailtypes VALUES(4,'HAZARD_INFORMATION');
 INSERT INTO materialdetailtypes VALUES(5,'STORAGE_CLASSES');
 INSERT INTO materialdetailtypes VALUES(6,'TAXONOMY');
+INSERT INTO materialdetailtypes VALUES(7,'COMPOSITION');
 
 INSERT INTO materialInformations VALUES(1,1,1,false);
 INSERT INTO materialInformations VALUES(2,1,2,false);
@@ -338,7 +339,7 @@ CREATE TABLE structures (
 CREATE TABLE structures_hist (
         id INTEGER NOT NULL REFERENCES structures(id),
         actorId INTEGER NOT NULL REFERENCES usersgroups(id),
-        mtime TIMESTAMP  NOT NULL,
+        mdate TIMESTAMP NOT NULL,
         digest VARCHAR,
         sumformula_old VARCHAR,
         sumformula_new VARCHAR,
@@ -348,7 +349,7 @@ CREATE TABLE structures_hist (
         exactMolarMass_new FLOAT,
         moleculeId_old INTEGER REFERENCES molecules(id),
         moleculeId_new INTEGER REFERENCES molecules(id),
-        PRIMARY KEY (id,mtime));
+        PRIMARY KEY (id,actorid,mdate));
 
 CREATE TABLE  hazards (
         id INTEGER PRIMARY KEY,
@@ -450,7 +451,7 @@ insert into hazards(id,name,category,has_remarks)values(19,'GHS11',1,false);
 insert into hazards(id,name,category,has_remarks)values(20,'GMO',6,false);
 
 CREATE TABLE  materials_hist (
-        materialid INTEGER NOT NULL REFERENCES materials(materialid),
+        id INTEGER NOT NULL REFERENCES materials(materialid),
         actorId INTEGER NOT NULL REFERENCES usersgroups(id),
         mDate TIMESTAMP NOT NULL,
         digest VARCHAR,
@@ -461,7 +462,7 @@ CREATE TABLE  materials_hist (
         projectid_new INTEGER REFERENCES projects(id),
         ownerid_old INTEGER REFERENCES usersgroups(id),
         ownerid_new INTEGER REFERENCES usersgroups(id),
-        PRIMARY KEY(materialid,mDate));
+        PRIMARY KEY (id,actorId,mDate));
 
 CREATE TABLE  material_indices_hist (
     id SERIAL NOT NULL PRIMARY KEY,
@@ -489,7 +490,7 @@ CREATE TABLE  material_hazards_hist (
     remarks_new VARCHAR);
 
 CREATE TABLE  storages_hist (
-    materialid INTEGER NOT NULL REFERENCES materials(materialid),
+    id INTEGER NOT NULL REFERENCES materials(materialid),
     mdate TIMESTAMP NOT NULL,
     actorId INTEGER NOT NULL REFERENCES usersgroups(id),
     digest VARCHAR,
@@ -497,7 +498,7 @@ CREATE TABLE  storages_hist (
     description_new VARCHAR,
     storageclass_old INTEGER REFERENCES storageclasses(id),
     storageclass_new INTEGER REFERENCES storageclasses(id),
-    PRIMARY KEY(materialid,mdate));
+    PRIMARY KEY (id,actorId,mdate));
 
 CREATE TABLE  storagesconditions_storages_hist (
     id SERIAL NOT NULL PRIMARY KEY,
@@ -575,7 +576,7 @@ CREATE TABLE item_positions(
 );
 
 CREATE TABLE items_history(
-    itemid INTEGER NOT NULL REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    id INTEGER NOT NULL REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
     mdate TIMESTAMP NOT NULL,
     actorid INTEGER NOT NULL REFERENCES usersgroups(id),
     action VARCHAR NOT NULL,
@@ -595,7 +596,7 @@ CREATE TABLE items_history(
     parent_containerid_old INTEGER REFERENCES containers(id) ON UPDATE CASCADE ON DELETE CASCADE,
     aclistid_old INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
     aclistid_new INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY(itemid,actorid,mdate));
+    PRIMARY KEY(id,actorid,mdate));
 
 CREATE TABLE item_positions_history(
     id SERIAL PRIMARY KEY,
@@ -647,7 +648,7 @@ CREATE TABLE effective_taxonomy(
     parentid INTEGER NOT NULL REFERENCES taxonomy(id));
 
 CREATE TABLE taxonomy_history(
-    taxonomyid INTEGER NOT NULL REFERENCES materials(materialid),
+    id INTEGER NOT NULL REFERENCES materials(materialid),
     actorid INTEGER NOT NULL REFERENCES usersgroups(id),
     mdate TIMESTAMP NOT NULL,
     action VARCHAR NOT NULL,
@@ -656,7 +657,7 @@ CREATE TABLE taxonomy_history(
     level_new INTEGER,
     parentid_old INTEGER,
     parentid_new INTEGER,
-    PRIMARY KEY(taxonomyid,actorid,mdate));
+    PRIMARY KEY(id,actorid,mdate));
 
 INSERT INTO taxonomy_level VALUES(1,'domain',100);
 INSERT INTO taxonomy_level VALUES(2,'kingdom',200);
@@ -727,14 +728,14 @@ CREATE TABLE biomaterial(
 CREATE TABLE biomaterial_history(
     id INTEGER NOT NULL REFERENCES biomaterial(id) ON UPDATE CASCADE ON DELETE CASCADE,
     actorid INTEGER NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    mtime TIMESTAMP NOT NULL,
+    mdate TIMESTAMP NOT NULL,
     digest VARCHAR,
     action VARCHAR NOT NULL,
     tissueid_old INTEGER REFERENCES tissues(id)  ON UPDATE CASCADE ON DELETE CASCADE,
     tissueid_new INTEGER REFERENCES tissues(id)  ON UPDATE CASCADE ON DELETE CASCADE,
     taxoid_old INTEGER REFERENCES taxonomy(id)  ON UPDATE CASCADE ON DELETE CASCADE,
     taxoid_new INTEGER REFERENCES taxonomy(id)  ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY(id,actorid,mtime)
+    PRIMARY KEY(id,actorid,mdate)
 );
 
 CREATE TABLE folders (
@@ -826,4 +827,61 @@ CREATE TABLE images (
     owner_id    INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE compositions(
+    materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    type VARCHAR NOT NULL
+);
 
+CREATE TABLE material_compositions(
+    materialid  INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    componentid INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    concentration DOUBLE,
+    unit VARCHAR,
+    PRIMARY KEY (materialid, componentid)
+);
+
+CREATE TABLE components_history(
+    id SERIAL NOT NULL PRIMARY KEY,
+    materialid INTEGER NOT NULL REFERENCES materials(materialid),
+    mdate TIMESTAMP NOT NULL,
+    actorId INTEGER NOT NULL REFERENCES usersgroups(id),
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    materialid_old INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE, 
+    materialid_new INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    concentration_old FLOAT,
+    concentration_new FLOAT,
+    unit_old VARCHAR,
+    unit_new VARCHAR
+
+);
+
+CREATE TABLE sequences (
+    id INTEGER PRIMARY KEY NOT NULL REFERENCES materials(materialid),
+    sequenceString VARCHAR,
+    sequenceType VARCHAR,
+    circular BOOLEAN,
+    annotations VARCHAR
+);
+
+CREATE TABLE sequences_history(
+    id INTEGER NOT NULL REFERENCES sequences(id),
+    actorid INTEGER NOT NULL REFERENCES usersgroups(id),
+    mdate TIMESTAMP NOT NULL,
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    sequenceString_old VARCHAR,
+    sequenceString_new VARCHAR,
+    circular_old BOOLEAN,
+    circular_new BOOLEAN,
+    annotations_old VARCHAR,
+    annotations_new VARCHAR,
+    PRIMARY KEY(id,actorid,mdate)
+);
+
+CREATE TABLE temp_search_parameter (
+  id         SERIAL    NOT NULL PRIMARY KEY,
+  cdate      TIMESTAMP NOT NULL DEFAULT now(),
+  processid  UUID NOT NULL,
+  parameter  JSONB NOT NULL
+);

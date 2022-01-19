@@ -57,7 +57,7 @@ import org.primefaces.model.chart.ChartSeries;
  * @author fbroda
  */
 public class Assay extends ExpRecord implements DTO {
-
+    private final int RESERVED_PLACE_FOR_TARGET=0;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -98,7 +98,7 @@ public class Assay extends ExpRecord implements DTO {
         this.outcomeType = LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME;
         getLinkedData().add(new LinkedData(this,
                 LinkedDataType.ASSAY_TARGET,
-                getLinkedDataNextRank()));
+                RESERVED_PLACE_FOR_TARGET));
     }
 
     public Assay(AssayEntity entity) {

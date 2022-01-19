@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class SimpleTaxonomyLevelController extends TaxonomyLevelController {
 
+    private static final long serialVersionUID = 1L;
+
     public SimpleTaxonomyLevelController(List<TaxonomyLevel> levels) {
         super(null);
         this.levels = levels;
@@ -33,18 +35,5 @@ public class SimpleTaxonomyLevelController extends TaxonomyLevelController {
     @Override
     public List<TaxonomyLevel> getLevels() {
         return levels;
-    }
-
-    public int getLeastRank() {
-        return levels.get(levels.size() - 1).getRank();
-    }
-
-    public int getHighestRank() {
-        return levels.get(0).getRank();
-    }
-
-    public void setLevels(List<TaxonomyLevel> levels) {
-        this.levels = levels;
-    }
-
+    }     
 }

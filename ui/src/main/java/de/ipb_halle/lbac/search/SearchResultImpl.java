@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SearchResultImpl implements SearchResult, Serializable {
 
     private final static long serialVersionUID = 1L;
+    private List<String> errorMessages = new ArrayList<>();
 
     private Node node;
     protected List<Searchable> foundObjectsOfNode = new ArrayList<>();
@@ -47,7 +48,7 @@ public class SearchResultImpl implements SearchResult, Serializable {
     public SearchResultImpl(Node n) {
         this();
         node = n;
-        
+
     }
 
     @Override
@@ -56,7 +57,7 @@ public class SearchResultImpl implements SearchResult, Serializable {
     }
 
     @Override
-    public void addResults(List<Searchable> foundObjects) {
+    public void addResults(List<? extends Searchable> foundObjects) {
         foundObjectsOfNode.addAll(foundObjects);
     }
 
@@ -116,6 +117,21 @@ public class SearchResultImpl implements SearchResult, Serializable {
 
     public void setDocumentStatistic(DocumentStatistic documentStatistic) {
         this.documentStatistic = documentStatistic;
+    }
+
+    @Override
+    public void addErrorMessage(String errorMessage) {
+        this.errorMessages.add(errorMessage);
+    }
+
+    @Override
+    public List<String> getErrorMessages() {
+        return errorMessages;
+    }
+
+    @Override
+    public <T> List<T> getAllFoundObjectsAsSearchable(Class T) {
+        return getAllFoundObjects(T, node);
     }
 
 }

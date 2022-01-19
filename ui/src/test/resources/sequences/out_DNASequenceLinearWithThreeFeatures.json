@@ -1,0 +1,30 @@
+{
+  "features": {
+    "feature_1": {
+      "start": 3,
+      "end": 8,
+      "forward": true,
+      "type": "tag",
+      "name": "My Feature ABCDEF",
+      "color": "#E419DA"
+    },
+    "feature_2": {
+      "start": 6,
+      "end": 17,
+      "forward": false,
+      "type": "conserved",
+      "name": "Second feature that overlaps with the first feature",
+      "color": "#A3A5F0"
+    },
+    "feature_3": {
+      "start": 21,
+      "end": 23,
+      "forward": true,
+      "type": "stop",
+      "name": "Stop codon",
+      "color": "#D44FC9"
+    }
+  },
+  "sequence": "ATGGGCATCGCGTAAAGCGGTTGA",
+  "circular": false
+}

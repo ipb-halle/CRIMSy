@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +31,8 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class MaterialOverviewDifference implements MaterialDifference {
+
+    private static final long serialVersionUID = 1L;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -51,9 +54,9 @@ public class MaterialOverviewDifference implements MaterialDifference {
     public MaterialOverviewDifference(
             MaterialHistoryEntity dbentity,
             ACListService acService) {
-        materialID = dbentity.getId().getMaterialid();
-        actorID = dbentity.getActorid();
-        mDate = dbentity.getId().getmDate();
+        materialID = dbentity.getId().getId();
+        actorID = dbentity.getId().getActorid();
+        mDate = dbentity.getId().getMdate();
         action = ModificationType.valueOf(dbentity.getAction());
         acListOld = acService.loadById(dbentity.getAclistid_old());
         acListNew = acService.loadById(dbentity.getAclistid_new());
@@ -177,6 +180,11 @@ public class MaterialOverviewDifference implements MaterialDifference {
 
     public void setDigest(String digest) {
         this.digest = digest;
+    }
+
+    @Override
+    public OverviewHistoryController createHistoryController(MaterialBean bean) {
+        return new OverviewHistoryController(bean);
     }
 
 }

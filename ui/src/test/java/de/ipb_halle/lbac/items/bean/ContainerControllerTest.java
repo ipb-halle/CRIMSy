@@ -52,7 +52,7 @@ public class ContainerControllerTest {
         container.setItems(items);
         controller = new ContainerController(bean, container);
         bean.setContainerController(controller);
-        controller.setMessagePresenter(new MessagePresenterMock());
+        controller.setMessagePresenter(MessagePresenterMock.getInstance());
         
     }
     

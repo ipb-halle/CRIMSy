@@ -22,10 +22,8 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.biomaterial.Tissue;
-import de.ipb_halle.lbac.search.SearchTarget;
-import de.ipb_halle.lbac.search.bean.Type;
-import java.util.HashMap;
+import de.ipb_halle.lbac.util.Unit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,36 +33,94 @@ import java.util.Objects;
  */
 public class MaterialComposition extends Material {
 
-    protected HashMap<Integer, Material> rankedComponents = new HashMap<>();
+    private static final long serialVersionUID = 1L;
+    private final CompositionType compositionType;
+
+    protected List<Concentration> components
+            = new ArrayList<>();
+
+    public MaterialComposition(int projectId, CompositionType compositionType) {
+        super(null, new ArrayList<>(), projectId, new HazardInformation(), new StorageInformation());
+        type = MaterialType.COMPOSITION;
+        this.compositionType = compositionType;
+    }
+
+    public MaterialComposition(Integer materialId, int projectId, CompositionType compositionType) {
+        super(materialId, new ArrayList<>(), projectId, new HazardInformation(), new StorageInformation());
+        type = MaterialType.COMPOSITION;
+        this.compositionType = compositionType;
+    }
 
     public MaterialComposition(
-            int id,
+            Integer id,
             List<MaterialName> names,
             int projectId,
             HazardInformation hazards,
-            StorageInformation storageInfos) {
+            StorageInformation storageInfos,
+            CompositionType compositionType) {
         super(id, names, projectId, hazards, storageInfos);
         type = MaterialType.COMPOSITION;
+        this.compositionType = compositionType;
+
     }
 
-    public MaterialComposition addComponent(Material comp, int rank) {
-        rankedComponents.put(rank, comp);
+    public MaterialComposition addComponent(Material comp, Double concentration, Unit unit) {
+        if (!canHoldType(comp.getType())) {
+            throw new IllegalArgumentException("Composition " + compositionType + " must not hold material of type " + comp.getType());
+        }
+        components.add(new Concentration(comp, concentration, unit));
         return this;
     }
 
-    @Override
-    public String getNumber() {
-        return "";
+    public List<Concentration> getComponents() {
+        return components;
     }
 
     @Override
-    public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public MaterialComposition copyMaterial() {
+        MaterialComposition copy = new MaterialComposition(
+                id,
+                getCopiedNames(),
+                projectId,
+                hazards.copy(),
+                storageInformation.copy(),
+                compositionType);
+        copy.setOwner(this.getOwner());
+        copy.setACList(getACList());
+        copy.setCreationTime(creationTime);
+        copy.setHistory(history);
+        copy.setIndices(getCopiedIndices());
+
+        for (Concentration conc : components) {
+            copy.getComponents().add(new Concentration(conc.getMaterial(), conc.getConcentration(), conc.getUnit()));
+        }
+        return copy;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public CompositionEntity createEntity() {
+        CompositionEntity entity = new CompositionEntity();
+        entity.setMaterialid(id);
+        entity.setType(compositionType.toString());
+        return entity;
     }
 
     @Override
-    public Object createEntity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<MaterialCompositionEntity> createCompositionEntities() {
+        List<MaterialCompositionEntity> entities = new ArrayList<>();
+        for (Concentration m : components) {
+            MaterialCompositionEntity entity = new MaterialCompositionEntity()
+                    .setId(new MaterialCompositionId(id, m.getMaterialId()));
+            entity.setConcentration(m.getConcentration());
+            entity.setUnit(m.getUnitString());
+            entities.add(entity);
+        }
+        entities.addAll(super.createCompositionEntities());
+        return entities;
     }
 
     @Override
@@ -76,9 +132,16 @@ public class MaterialComposition extends Material {
         return Objects.equals(otherUser.getId(), this.getId());
     }
 
-    @Override
-    public Type getTypeToDisplay() {
-        return new Type(SearchTarget.MATERIAL, MaterialType.COMPOSITION);
+    public List<MaterialType> getPossibleTypesOfComponents() {
+        return compositionType.getAllowedTypes();
+    }
+
+    public boolean canHoldType(MaterialType type) {
+        return getPossibleTypesOfComponents().contains(type);
+    }
+
+    public CompositionType getCompositionType() {
+        return compositionType;
     }
 
 }

@@ -35,11 +35,14 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialSearchMaskController implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private String id;
     private String indexTypeName;
     private boolean isIndexActive;
     private boolean isMaterialTypeActive;
-    private MaterialTableController tableController;
+    private Boolean deactivated = false;
+    protected MaterialTableController tableController;
     private MaterialType materialType;
     private MaterialOverviewBean overviewBean;
     private String name;
@@ -119,13 +122,14 @@ public class MaterialSearchMaskController implements Serializable {
     }
 
     public void actionStartMaterialSearch() {
-       
+
         tableController.reloadShownMaterial(overviewBean.getCurrentUser(), getValues());
-         tableController.getTableController().actionFirstResult();
+        tableController.getTableController().actionFirstResult();
     }
 
-    private MaterialSearchMaskValues getValues() {
+    protected MaterialSearchMaskValues getValues() {
         values = new MaterialSearchMaskValues();
+        values.deactivated = deactivated;
         if (name != null && !name.trim().isEmpty()) {
             values.materialName = name;
         }
@@ -245,6 +249,10 @@ public class MaterialSearchMaskController implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setValues(MaterialSearchMaskValues values) {
+        this.values = values;
     }
 
 }

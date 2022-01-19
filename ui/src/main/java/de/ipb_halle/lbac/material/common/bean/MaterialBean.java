@@ -26,9 +26,9 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.structure.Molecule;
-import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
@@ -36,17 +36,23 @@ import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.common.Invalidity;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialValidator;
+import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.material.composition.Concentration;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
+import de.ipb_halle.lbac.material.structure.Molecule;
+import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -71,6 +77,8 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class MaterialBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     protected ProjectService projectService;
 
@@ -91,6 +99,9 @@ public class MaterialBean implements Serializable {
 
     @Inject
     protected MaterialOverviewBean overviewBean;
+
+    @Inject
+    protected MaterialCompositionBean compositionBean;
 
     @Inject
     protected MaterialNameBean materialNameBean;
@@ -115,26 +126,29 @@ public class MaterialBean implements Serializable {
     protected Mode mode;
     protected HazardInformation hazards;
 
-    protected StructureInformation structureInfos;
+    protected StructureInformation structureInfos = new StructureInformation();    
+
+    protected SequenceInformation sequenceInfos;
 
     protected List<String> errorMessages = new ArrayList<>();
 
     private boolean autoCalcFormularAndMasses = true;
 
-    private MaterialEditState materialEditState = new MaterialEditState();
-    private HistoryOperation historyOperation;
+    protected MaterialEditState materialEditState = new MaterialEditState();
+    protected HistoryOperation historyOperation;
 
     private MaterialEditPermission permission;
 
     private MaterialCreationSaver creationSaver;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
-    private TaxonomySelectionController taxonomyController;
+    protected TaxonomySelectionController taxonomyController;
     private TissueController tissueController;
-    private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+    @Inject
+    private transient MessagePresenter messagePresenter;
 
-    private MaterialHazardBuilder hazardController;
-    private StorageInformationBuilder storageInformationBuilder;
+    protected MaterialHazardBuilder hazardController;
+    protected StorageInformationBuilder storageInformationBuilder;
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -154,6 +168,7 @@ public class MaterialBean implements Serializable {
 
         try {
             initState();
+            compositionBean.clearBean();
             materialEditState = new MaterialEditState();
             mode = Mode.CREATE;
             possibleProjects.clear();
@@ -164,7 +179,7 @@ public class MaterialBean implements Serializable {
                     hazardService,
                     currentMaterialType,
                     true,
-                    new HashMap<>());
+                    new HashMap<>(), messagePresenter);
             storageInformationBuilder = new StorageInformationBuilder(
                     messagePresenter,
                     materialService
@@ -210,6 +225,14 @@ public class MaterialBean implements Serializable {
                 BioMaterial bm = (BioMaterial) m;
                 taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, bm.getTaxonomy());
             }
+            if (m.getType() == MaterialType.COMPOSITION) {
+                compositionBean.startCompositionEdit((MaterialComposition) m);
+            }
+            if (m.getType() == MaterialType.SEQUENCE) {
+                Sequence sequence = (Sequence) m;
+                sequenceInfos = new SequenceInformation();
+                sequenceInfos.setSequenceData(sequence.getSequenceData());
+            }
 
             storageInformationBuilder = new StorageInformationBuilder(
                     messagePresenter,
@@ -218,25 +241,21 @@ public class MaterialBean implements Serializable {
             );
             storageInformationBuilder.setAccessRightToEdit(acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()));
 
-            historyOperation = new HistoryOperation(
-                    materialEditState,
-                    projectBean,
-                    materialNameBean,
-                    materialIndexBean,
-                    structureInfos,
-                    storageInformationBuilder,
-                    taxonomyController,
-                    hazardService.getAllHazardTypes()
-            );
+            historyOperation = new HistoryOperation(this);
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
+    }
+
+    public List<HazardType> getAllPossibleHazards() {
+        return hazardService.getAllHazardTypes();
     }
 
     private void initState() {
         errorMessages = new ArrayList<>();
         hazards = new HazardInformation();
         structureInfos = new StructureInformation();
+        sequenceInfos = new SequenceInformation();
         materialNameBean.init();
         materialIndexBean.init();
         currentMaterialType = MaterialType.CONSUMABLE;
@@ -336,6 +355,28 @@ public class MaterialBean implements Serializable {
                         storageInformationBuilder.build(),
                         materialIndexBean.getIndices(),
                         userBean.getCurrentAccount());
+            } else if (currentMaterialType == MaterialType.COMPOSITION) {
+                MaterialComposition composition = new MaterialComposition(
+                        null,
+                        materialNameBean.getNames(),
+                        materialEditState.getCurrentProject().getId(),
+                        hazards,
+                        storageInformationBuilder.build(),
+                        compositionBean.getChoosenType());
+                composition.getIndices().addAll(materialIndexBean.getIndices());
+                for (Concentration c : compositionBean.getConcentrationsInComposition()) {
+                    composition.addComponent(c.getMaterial(), c.getConcentration(), c.getUnit());
+                }
+                materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
+            } else if (currentMaterialType == MaterialType.SEQUENCE) {
+                Sequence sequence = new Sequence(
+                        null,
+                        materialNameBean.getNames(),
+                        materialEditState.getCurrentProject().getId(),
+                        hazards,
+                        storageInformationBuilder.build(),
+                        sequenceInfos.getSequenceData());
+                materialService.saveMaterialToDB(sequence, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
             }
         } else {
             throw new Exception("Material not valide");
@@ -343,7 +384,6 @@ public class MaterialBean implements Serializable {
     }
 
     public void saveEditedMaterial() throws Exception {
-
         setBasicInfos();
         if (checkInputValidity()) {
             if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
@@ -352,11 +392,23 @@ public class MaterialBean implements Serializable {
             if (materialEditState.getMaterialToEdit().getType() == MaterialType.BIOMATERIAL) {
                 setTaxonomyToBioMaterial();
             }
+            if (materialEditState.getMaterialToEdit().getType() == MaterialType.COMPOSITION) {
+                MaterialComposition composition = (MaterialComposition) materialEditState.getMaterialToEdit();
+                composition.getComponents().clear();
+                for (Concentration c : compositionBean.getConcentrationsInComposition()) {
+                    composition.addComponent(c.getMaterial(), c.getConcentration(), c.getUnit());
+                }
+            }
+            if (materialEditState.getMaterialToEdit().getType() == MaterialType.SEQUENCE) {
+                Sequence sequence = (Sequence) materialEditState.getMaterialToEdit();
+                sequence.setSequenceData(sequenceInfos.getSequenceData());
+            }
             materialService.saveEditedMaterial(
                     materialEditState.getMaterialToEdit(),
                     materialEditState.getMaterialBeforeEdit(),
                     materialEditState.getCurrentProject().getUserGroups().getId(),
                     userBean.getCurrentAccount().getId());
+
         } else {
             throw new Exception("Material not valide");
         }
@@ -416,6 +468,7 @@ public class MaterialBean implements Serializable {
             overviewBean.getSearchController().actionStartMaterialSearch();
             navigator.navigate("/material/materials");
         } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
             messagePresenter.error("materialCreation_creation_error", getErrorMessages());
         }
     }
@@ -426,6 +479,10 @@ public class MaterialBean implements Serializable {
 
     public void setStructureInfos(StructureInformation structureInfos) {
         this.structureInfos = structureInfos;
+    }
+
+    public SequenceInformation getSequenceInfos() {
+        return sequenceInfos;
     }
 
     public MaterialNameBean getMaterialNameBean() {
@@ -462,25 +519,23 @@ public class MaterialBean implements Serializable {
     }
 
     public boolean checkInputValidity() {
-        boolean isValide = true;
         errorMessages.clear();
-        int count = 1;
-        if (materialNameBean.getNames().isEmpty()) {
-            isValide = false;
-            errorMessages.add("There must be at least one materialname");
-        }
-        for (MaterialName mn : materialNameBean.getNames()) {
-            if (mn.getValue().isEmpty()) {
-                isValide = false;
-                errorMessages.add("Materialname at position " + count + " must not be empty");
+        MaterialValidator validator = currentMaterialType
+                .getFactory()
+                .createValidator();
+
+        boolean validMaterial = validator.checkValidity(this);
+        if (!validMaterial) {
+            for (Invalidity error : validator.getInvalidities()) {
+                errorMessages.add(messagePresenter.presentMessage("materialCreation_error_" + error.toString()));
             }
-            count++;
+
         }
-        return isValide;
+        return validMaterial;
     }
 
-    public String getErrorMessages() {
-        return String.join(" ", errorMessages);
+    public List<String> getErrorMessages() {
+        return errorMessages;
     }
 
     public boolean isAutoCalcFormularAndMasses() {
@@ -576,7 +631,7 @@ public class MaterialBean implements Serializable {
     }
 
     public boolean hasDetailRight(ACPermission what, MaterialDetailType onWhat) {
-        ACList aclist = getMaterialEditState().getMaterialToEdit().getDetailRight(onWhat);
+        ACList aclist = getMaterialEditState().getMaterialToEdit().getACList();
         boolean userHasEditRight = aclist != null && getAcListService().isPermitted(what, aclist, getUserBean().getCurrentAccount());
         boolean userIsOwner = getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(getUserBean().getCurrentAccount().getId());
         return !(userIsOwner || userHasEditRight);
@@ -598,8 +653,25 @@ public class MaterialBean implements Serializable {
         this.taxonomyService = taxonomyService;
     }
 
+   
     public StorageInformationBuilder getStorageInformationBuilder() {
         return storageInformationBuilder;
+    }
+
+    public MaterialService getMaterialService() {
+        return materialService;
+    }
+
+    public MaterialCompositionBean getCompositionBean() {
+        return compositionBean;
+    }
+
+    public ProjectBean getProjectBean() {
+        return projectBean;
+    }
+
+    public boolean isInHistoryMode() {
+        return mode == Mode.HISTORY;
     }
 
 }

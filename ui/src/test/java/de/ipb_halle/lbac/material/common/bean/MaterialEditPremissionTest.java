@@ -72,12 +72,12 @@ public class MaterialEditPremissionTest extends TestBase {
 
     @Before
     public void init() {
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         materialBean = new MateriaBeanMock();
         materialBean.setAcListService(aclistService);
         materialBean.setHazardService(hazardService);
-        materialBean.setMessagePresenter(new MessagePresenterMock());
+        materialBean.setMessagePresenter(MessagePresenterMock.getInstance());
         permissionBean = new MaterialEditPermission(materialBean);
         materialBean.setMode(MaterialBean.Mode.CREATE);
         userBean = new UserBeanMock();

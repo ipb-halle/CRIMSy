@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ArticleService;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -56,6 +57,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class NetObjectPresenterTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
     private List<NetObject> netObjects;
 
     private NetObjectFactory netObjectFactory = new NetObjectFactory();
@@ -64,7 +67,7 @@ public class NetObjectPresenterTest extends TestBase {
     @Before
     public void init() {
         netObjects = netObjectFactory.createNetObjects();
-        presenter = new NetObjectPresenter(new User(), new MessagePresenterMock());
+        presenter = new NetObjectPresenter(new User(), MessagePresenterMock.getInstance());
     }
 
     @Test
@@ -202,7 +205,7 @@ public class NetObjectPresenterTest extends TestBase {
                 .addClass(TextService.class)
                 .addClass(ExperimentService.class)
                 .addClass(TaxonomyNestingService.class);
-        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
+        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(MaterialDeployment.add(deployment))));
     }
 
 }
