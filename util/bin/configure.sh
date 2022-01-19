@@ -33,8 +33,8 @@ CLOUD_NAME="CLOUDCONFIG_CLOUD_NAME"
 
 #
 LBAC_CONFIG=config.sh
-LBAC_CONFIG_VERSION=6
-LBAC_CURRENT_CONFIG_VERSION=6
+LBAC_CONFIG_VERSION=7
+LBAC_CURRENT_CONFIG_VERSION=7
 LBAC_INSTALLER=bin/install.sh
 
 LBAC_ADMIN_PWFILE=admin.passwd
@@ -254,6 +254,57 @@ function dialog_ADMIN_PASSWD {
         esac
 }
 
+function dialog_AUTO_UPDATE {
+        if test -z "$LBAC_UPDATE_CONTAINER" ; then
+                LBAC_UPDATE_CONTAINER=ON
+        fi
+        if test -z "$LBAC_UPDATE_PATCH" ; then
+                LBAC_UPDATE_PATCH=ON
+        fi
+        if test -z "$LBAC_UPDATE_MINOR" ; then
+                LBAC_UPDATE_MINOR=ON
+        fi
+        if test -z "$LBAC_UPDATE_MAJOR" ; then
+                LBAC_UPDATE_MAJOR=OFF
+        fi
+        dialog --backtitle "$CLOUD_NAME" \
+          --cancel-label "Abbrechen" \
+          --checklist "Bitte wählen Sie, welche Art von Updates Ihr System automatisch durchführen darf. Wir empfehlen, automatische Updates mindestens auf Container- und auf Patchlevel-Ebene zu aktivieren. Auf diesem Level sind nur Bugfixes und Sicherheitspatches eingeschlossen; die Stufen Minor und Major enthalten zusätzlich kleinere bzw. größere Funktionserweiterungen." 15 72 2 \
+          CONTAINER "Automatische Docker-Image und -Container Updates" $LBAC_UPDATE_CONTAINER \
+          PATCH "Automatische Patchlevel-Updates" $LBAC_UPDATE_PATCH \
+          MINOR "Automatische Minor-Level-Updates" $LBAC_UPDATE_MINOR \
+          MAJOR "Automatische Major-Level-Updates" $LBAC_UPDATE_MAJOR 2> $TMP_RESULT
+        case $? in
+                0)
+                        if grep -q CONTAINER $TMP_RESULT ; then
+                            echo "LBAC_UPDATE_CONTAINER=\"ON\"" >> $TMP_CONFIG
+                        else
+                            echo "LBAC_UPDATE_CONTAINER=\"OFF\"" >> $TMP_CONFIG
+                        fi
+                        if grep -q PATCH $TMP_RESULT ; then
+                            echo "LBAC_UPDATE_PATCH=\"ON\"" >> $TMP_CONFIG
+                        else
+                            echo "LBAC_UPDATE_PATCH=\"OFF\"" >> $TMP_CONFIG
+                        fi
+                        if grep -q MINOR $TMP_RESULT ; then
+                            echo "LBAC_UPDATE_MINOR=\"ON\"" >> $TMP_CONFIG
+                        else
+                            echo "LBAC_UPDATE_MINOR=\"OFF\"" >> $TMP_CONFIG
+                        fi
+                        if grep -q MAJOR $TMP_RESULT ; then
+                            echo "LBAC_UPDATE_MAJOR=\"ON\"" >> $TMP_CONFIG
+                        else
+                            echo "LBAC_UPDATE_MAJOR=\"OFF\"" >> $TMP_CONFIG
+                        fi
+
+                        NEXT_FORM=DIALOG_INIT_TYPE
+                        ;;
+                *)
+                        NEXT_FORM=DIALOG_ABORT
+                        ;;
+        esac
+}
+
 function dialog_INTRANET_FQHN {
 	dialog --colors --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
@@ -316,7 +367,7 @@ function dialog_PROXY_HSTS {
                         else
                             echo "LBAC_PROXY_HSTS=\"OFF\"" >> $TMP_CONFIG
                         fi
-			NEXT_FORM=DIALOG_INIT_TYPE
+			NEXT_FORM=DIALOG_AUTO_UPDATE
 			;;
 		*)
 			NEXT_FORM=DIALOG_ABORT
@@ -848,6 +899,9 @@ function runDialogs {
 		;;
         DIALOG_ADMIN_PASSWD)
                 dialog_ADMIN_PASSWD
+                ;;
+        DIALOT_AUTO_UPDATE)
+                dialog_AUTO_UPDATE
                 ;;
 	DIALOG_CERT_REQUEST)
 		dialog_CERT_REQUEST

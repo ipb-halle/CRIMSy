@@ -73,6 +73,10 @@ function createConfiguration {
     echo "LBAC_NODE_ID=\"$LBAC_NODE_ID\"" >> $TMP_CONFIG
 
     echo "LBAC_PROXY_HSTS=\"OFF\"" >> $TMP_CONFIG
+    echo "LBAC_UPDATE_CONTAINER=\"ON\"" >> $TMP_CONFIG
+    echo "LBAC_UPDATE_PATCH=\"ON\"" >> $TMP_CONFIG
+    echo "LBAC_UPDATE_MINOR=\"OFF\"" >> $TMP_CONFIG
+    echo "LBAC_UPDATE_MAJOR=\"OFF\"" >> $TMP_CONFIG
     echo "LBAC_INIT_TYPE=\"SYSTEMD\"" >> $TMP_CONFIG
     echo "LBAC_DOCKER_EXCLUSIVE=\"OFF\"" >> $TMP_CONFIG
 
