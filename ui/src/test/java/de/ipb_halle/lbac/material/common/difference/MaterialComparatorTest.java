@@ -44,8 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -56,23 +56,25 @@ public class MaterialComparatorTest {
     private MaterialComparator instance;
     private User user;
 
-    @Before
+    @BeforeEach
     public void init() {
         instance = new MaterialComparator();
         user = new User();
         user.setId(-1);
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void test001_compareMaterialWithDifferentType() throws Exception {
-        instance.compareMaterial(createEmptyStructure(user),
-                new BioMaterial(
-                        34,
-                        new ArrayList<>(),
-                        1,
-                        new HazardInformation(),
-                        new StorageInformation(),
-                        null, null)
+        Assert.assertThrows(Exception.class, () ->
+            instance.compareMaterial(createEmptyStructure(user),
+                    new BioMaterial(
+                            34,
+                            new ArrayList<>(),
+                            1,
+                            new HazardInformation(),
+                            new StorageInformation(),
+                            null, null)
+                    )
         );
     }
 

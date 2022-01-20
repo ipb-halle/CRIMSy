@@ -42,13 +42,13 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runners.MethodSorters;
 
 /**
@@ -56,7 +56,7 @@ import org.junit.runners.MethodSorters;
  * @author fmauz
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class TermVectorEntityServiceTest extends TestBase {
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -87,7 +87,7 @@ public class TermVectorEntityServiceTest extends TestBase {
                 .addClass(CollectionService.class);
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
 
         //entityManagerService.doSqlUpdate(String.format("DELETE FROM usersgroups WHERE name='%s'", user.getName()));

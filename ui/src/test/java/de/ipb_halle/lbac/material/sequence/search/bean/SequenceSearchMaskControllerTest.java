@@ -24,8 +24,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
@@ -53,7 +53,7 @@ public class SequenceSearchMaskControllerTest {
     private SequenceSearchServiceMock sequenceSearchServiceMock = new SequenceSearchServiceMock();
     private SequenceAlignment alignment;
 
-    @Before
+    @BeforeEach
     public void init() {
         Sequence sequence = new Sequence(42, null, 1, null, null, null);
         alignment = new SequenceAlignment(sequence, new FastaResult());

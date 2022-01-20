@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.collections;
 
 import java.util.Arrays;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

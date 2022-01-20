@@ -23,8 +23,8 @@ import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
 import de.ipb_halle.lbac.items.mocks.LabelServiceMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -40,7 +40,7 @@ public class ValidatorTest {
     private boolean isCustomLabel;
     private Validator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new Validator(containerServiceMock, labelServiceMock);
         validator.setMessagePresenter(MessagePresenterMock.getInstance());

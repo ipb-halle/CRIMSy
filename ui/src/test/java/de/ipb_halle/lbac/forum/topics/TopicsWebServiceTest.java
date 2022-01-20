@@ -36,18 +36,18 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class TopicsWebServiceTest extends TestBase {
 
     @Inject
@@ -79,7 +79,7 @@ public class TopicsWebServiceTest extends TestBase {
                 .addClass(KeyManager.class);
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();

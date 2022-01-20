@@ -40,10 +40,10 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.webservice.Updater;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
@@ -55,7 +55,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * This class will provide some test cases for the ACListService class.
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class InfoObjectServiceTest extends TestBase {
 
     private User[] users;

@@ -87,19 +87,19 @@ import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class SearchServiceTest extends TestBase {
 
     private User publicUser, anotherUser;
@@ -141,7 +141,7 @@ public class SearchServiceTest extends TestBase {
 
     private Container room, cupboard, rack;
 
-    @Before
+    @BeforeEach
     public void init() {
         localNode = nodeService.getLocalNode();
         cleanAllProjectsFromDb();
@@ -154,7 +154,7 @@ public class SearchServiceTest extends TestBase {
         createItems();
     }
 
-    @After
+    @AfterEach
     public void finish() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
@@ -178,18 +178,18 @@ public class SearchServiceTest extends TestBase {
         searchService.search(Arrays.asList(request), localNode);
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void test003_searchUser() {
         SearchRequest request = new SearchRequestImpl(publicUser, 0, 25);
         request.setSearchTarget(SearchTarget.USER);
-        searchService.search(Arrays.asList(request), localNode);
+        Assert.assertThrows(Exception.class, () -> searchService.search(Arrays.asList(request), localNode));
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void test004_searchContainer() {
         SearchRequest request = new SearchRequestImpl(publicUser, 0, 25);
         request.setSearchTarget(SearchTarget.CONTAINER);
-        searchService.search(Arrays.asList(request), localNode);
+        Assert.assertThrows(Exception.class, () -> searchService.search(Arrays.asList(request), localNode));
     }
 
     @Test

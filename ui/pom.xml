@@ -138,18 +138,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>2.17</version>
-                    </dependency>
-                </dependencies>             
-                <configuration>                     
-                    <groups>${testcase.include}</groups>
-                    <excludedGroups>${testcase.exclude}</excludedGroups>
-                </configuration>
+                <version>2.22.2</version>
             </plugin>
            
             <!-- A maven plugin to process annotation for jdk6 at compile time -->
@@ -515,9 +504,16 @@
         <!-- Dependencies for testing -->
         <!-- unit testing -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- keeps old JUnit4 tests functional -->
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -530,10 +526,15 @@
         </dependency>
 
         <!-- Arquillian -->
+        <!-- There seems to be a bug in Arquillian resulting in no execution of 
+             @BeforeEach and @AfterEach in our tests. This is known 
+             (https://github.com/arquillian/arquillian-core/issues/309).
+             1.7.0.Alpha6 is the last version where this works (tested until 
+             1.7.0.Alpha10).-->
         <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <version>1.6.0.Final</version>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container</artifactId>
+            <version>1.7.0.Alpha6</version>
             <scope>test</scope>
         </dependency>
 

@@ -31,7 +31,7 @@ import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import java.util.List;
 import java.util.Set;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

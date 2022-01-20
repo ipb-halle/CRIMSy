@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.util.chemistry.ChemistryParser;
 import java.io.IOException;
 import java.util.stream.StreamSupport;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 

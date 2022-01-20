@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -42,7 +42,7 @@ public class CredentialHandlerTest {
     private Map<String, String> credentials;
     private CredentialHandler handler;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.handler = new CredentialHandler().setDigestAlgorithm("SHA-256");
         this.credentials = new HashMap<>();

@@ -20,9 +20,9 @@ package de.ipb_halle.lbac.service;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.Node;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * This class will provide some test cases for the NodeService class.
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class NodeServiceTest extends TestBase {
 
     public final static String TEST_NODE_INSTITUTION = "TEST";

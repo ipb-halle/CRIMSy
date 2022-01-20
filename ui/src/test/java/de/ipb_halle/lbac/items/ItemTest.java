@@ -2,7 +2,7 @@ package de.ipb_halle.lbac.items;
 
 import de.ipb_halle.lbac.container.Container;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
