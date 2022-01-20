@@ -102,8 +102,8 @@
 
         <properties>
             <property name="hibernate.archive.autodetection" value="class"/>
-            <property name="hibernate.dialect" value="de.ipb_halle.lbac.util.hibernatePG.dialect.H2JsonDialect"/>
-            <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+            <property name="hibernate.dialect" value="de.ipb_halle.lbac.util.hibernatePG.dialect.PostgreSQL94JsonDialect"/>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
 
             <!-- sql statements are logged by arguillian.xml -->
             <property name="hibernate.show_sql" value="false"/>
