@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNull;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 

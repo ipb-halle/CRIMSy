@@ -34,10 +34,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
@@ -74,7 +74,7 @@ import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the data flow from the JSF backing bean layer down to the service layer
@@ -83,7 +83,7 @@ import org.junit.Test;
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class SequenceSearchIntegrationTest extends TestBase {
     private static final long serialVersionUID = 1L;
 
@@ -105,7 +105,7 @@ public class SequenceSearchIntegrationTest extends TestBase {
     private SequenceSearchResultsTableController tableController;
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
-    @Before
+    @BeforeEach
     public void init() throws FastaResultParserException {
         messagePresenter.resetMessages();
 

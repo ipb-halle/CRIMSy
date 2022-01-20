@@ -30,8 +30,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -50,7 +50,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
     private FacesContext context = null;
     private UIComponent component = null;
 
-    @Before
+    @BeforeEach
     public void init() {
         converter = new JsonSanitizingAndOVEJsonConverter();
     }

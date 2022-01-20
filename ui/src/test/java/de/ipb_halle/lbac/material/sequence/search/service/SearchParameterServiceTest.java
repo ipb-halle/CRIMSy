@@ -18,9 +18,9 @@
 package de.ipb_halle.lbac.material.sequence.search.service;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import static de.ipb_halle.lbac.base.JsonAssert.assertJsonEquals;
@@ -33,13 +33,13 @@ import java.util.List;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author flange
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class SearchParameterServiceTest extends TestBase {
 
     UUID processId;

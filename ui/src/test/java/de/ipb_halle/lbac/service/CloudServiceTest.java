@@ -20,9 +20,9 @@ package de.ipb_halle.lbac.service;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.Cloud;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * This class will provide some test cases for the CloudService class.
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class CloudServiceTest extends TestBase {
 
     @Deployment

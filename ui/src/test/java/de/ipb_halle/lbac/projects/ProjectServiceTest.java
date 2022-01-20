@@ -36,19 +36,19 @@ import de.ipb_halle.lbac.search.SearchResult;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class ProjectServiceTest extends TestBase {
 
     @Inject
@@ -59,7 +59,7 @@ public class ProjectServiceTest extends TestBase {
 
     private User publicUser;
 
-    @Before
+    @BeforeEach
     public void init() {
         cleanAllProjectsFromDb();
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);

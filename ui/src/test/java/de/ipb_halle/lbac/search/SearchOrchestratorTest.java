@@ -48,19 +48,19 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import static org.awaitility.Awaitility.await;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class SearchOrchestratorTest extends TestBase {
 
     @Inject
@@ -74,7 +74,7 @@ public class SearchOrchestratorTest extends TestBase {
 
     private Node node;
 
-    @Before
+    @BeforeEach
     public void init() {
         cleanAllProjectsFromDb();
         entityManagerService.doSqlUpdate("DELETE FROM nodes WHERE local=false AND publicnode=false");
@@ -86,7 +86,7 @@ public class SearchOrchestratorTest extends TestBase {
         cloudNodeService.save(new CloudNode(cloud, node));
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         entityManagerService.doSqlUpdate(
                 String.format(

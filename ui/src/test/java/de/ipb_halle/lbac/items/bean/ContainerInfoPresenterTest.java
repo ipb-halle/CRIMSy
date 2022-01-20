@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.mock.ContainerLocalizerMock;
 import de.ipb_halle.lbac.project.Project;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

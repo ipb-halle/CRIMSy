@@ -47,18 +47,18 @@ import de.ipb_halle.lbac.util.Unit;
 import java.util.HashMap;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class ItemBeanTest extends TestBase {
 
     private ItemBeanMock itemBean;
@@ -86,7 +86,7 @@ public class ItemBeanTest extends TestBase {
 
     protected ItemOverviewBean itemOverviewBean;
 
-    @Before
+    @BeforeEach
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = creationTools.createProject();

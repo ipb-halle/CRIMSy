@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.search.lang;
 
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.NodeEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
@@ -27,10 +26,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -42,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * This class will provide some test cases for the NodeService class.
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class SqlBuilderTest extends TestBase {
 
     @Deployment

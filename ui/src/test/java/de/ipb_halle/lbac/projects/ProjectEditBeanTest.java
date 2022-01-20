@@ -48,19 +48,19 @@ import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.util.HashMap;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class ProjectEditBeanTest extends TestBase {
 
     @Inject
@@ -72,7 +72,7 @@ public class ProjectEditBeanTest extends TestBase {
 
     private ProjectEditBean projectEditBean;
 
-    @Before
+    @BeforeEach
     public void init() {
         this.publicUser = context.getPublicAccount();
         group1 = createGroup("test02_removeAceFromProjectACL_group_1",
@@ -91,7 +91,7 @@ public class ProjectEditBeanTest extends TestBase {
         projectEditBean.setCurrentAccount(new LoginEvent(publicUser));
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + group1.getId());
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + group2.getId());

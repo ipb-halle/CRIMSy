@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the FacesConverter {@code jsonSanitizingConverter}.

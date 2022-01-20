@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.util.chemistry.ChemistryParser;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

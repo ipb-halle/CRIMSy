@@ -26,8 +26,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
@@ -39,7 +39,7 @@ public class MaterialNameValidatorTest {
     private MateriaBeanMock materialBean;
     private MaterialNameValidator validator;
 
-    @Before
+    @BeforeEach
     public void init() {
         materialBean = new MateriaBeanMock();
         materialBean.setMaterialNameBean(new MaterialNameBean());

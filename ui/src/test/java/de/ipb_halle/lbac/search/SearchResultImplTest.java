@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -37,7 +37,7 @@ public class SearchResultImplTest {
     private UUID idOfNode2 = UUID.fromString("5426ee2e-024c-11eb-adc1-0242ac120002");
     private Node node1, node2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         node1 = createNode(idOfNode1);
         node2 = createNode(idOfNode1);

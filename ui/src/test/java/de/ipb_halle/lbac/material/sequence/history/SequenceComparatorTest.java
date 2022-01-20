@@ -38,8 +38,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -58,7 +58,7 @@ public class SequenceComparatorTest {
     ACList aclist1;
     SequenceComparator comparator = new SequenceComparator();
 
-    @Before
+    @BeforeEach
     public void init() {
         diffs = new ArrayList<>();
         user1 = new User();

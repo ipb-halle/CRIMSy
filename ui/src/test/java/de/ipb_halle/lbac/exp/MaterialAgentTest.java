@@ -53,19 +53,19 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class MaterialAgentTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -107,7 +107,7 @@ public class MaterialAgentTest extends TestBase {
             + "  2  3  1  0  0  0  0\n" + "  3  4  2  0  0  0  0\n" + "  4  5  1  0  0  0  0\n"
             + "  5  6  2  0  0  0  0\n" + "  6  1  1  0  0  0  0\n" + "M  END";
 
-    @Before
+    @BeforeEach
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -209,7 +209,7 @@ public class MaterialAgentTest extends TestBase {
 
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
 
     }

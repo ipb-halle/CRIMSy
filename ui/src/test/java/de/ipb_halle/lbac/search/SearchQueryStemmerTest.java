@@ -24,7 +24,7 @@ package de.ipb_halle.lbac.search;
 import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.io.FileNotFoundException;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SearchQueryStemmerTest {
 

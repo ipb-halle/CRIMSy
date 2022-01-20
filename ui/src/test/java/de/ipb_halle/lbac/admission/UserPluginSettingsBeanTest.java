@@ -31,12 +31,12 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.base.TestBase;
@@ -44,7 +44,7 @@ import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType;
 
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class UserPluginSettingsBeanTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
@@ -62,7 +62,7 @@ public class UserPluginSettingsBeanTest extends TestBase {
 
     private User user;
 
-    @Before
+    @BeforeEach
     public void beforeTest() {
         this.user = createUser("ptester", "Preference Tester");
     }
@@ -249,7 +249,7 @@ public class UserPluginSettingsBeanTest extends TestBase {
         }
     }
 
-    @After
+    @AfterEach
     public void finish() {
         /*
          * deletion cascades to preferences table
