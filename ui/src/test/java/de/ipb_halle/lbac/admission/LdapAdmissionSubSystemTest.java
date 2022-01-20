@@ -59,6 +59,7 @@ public class LdapAdmissionSubSystemTest extends TestBase {
 
     @BeforeEach
     public final void init() {
+        cleanup();
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
         userBean.setLdapProperties(ldapProperties);
@@ -74,8 +75,11 @@ public class LdapAdmissionSubSystemTest extends TestBase {
 
     @AfterEach
     public void finish() {
-        entityManagerService.doSqlUpdate("DELETE FROM info");
+        cleanup();
+    }
 
+    private void cleanup() {
+        entityManagerService.doSqlUpdate("DELETE FROM info");
     }
 
     @Test
