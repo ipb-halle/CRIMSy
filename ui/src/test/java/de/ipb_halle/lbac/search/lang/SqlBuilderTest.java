@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.search.lang;
 
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.NodeEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
@@ -28,7 +27,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.jboss.arquillian.junit5.ArquillianExtension;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
