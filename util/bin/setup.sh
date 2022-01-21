@@ -21,7 +21,7 @@
 # 
 #==========================================================
 #
-LBAC_EXPECTED_CONFIG_VERSION=6
+LBAC_EXPECTED_CONFIG_VERSION=7
 LBAC_CONFIG=etc/config.sh
 
 LBAC_ADMIN_PWFILE=admin.passwd

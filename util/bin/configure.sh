@@ -255,48 +255,58 @@ function dialog_ADMIN_PASSWD {
 }
 
 function dialog_AUTO_UPDATE {
-        if test -z "$LBAC_UPDATE_CONTAINER" ; then
-                LBAC_UPDATE_CONTAINER=ON
-        fi
-        if test -z "$LBAC_UPDATE_PATCH" ; then
-                LBAC_UPDATE_PATCH=ON
-        fi
-        if test -z "$LBAC_UPDATE_MINOR" ; then
-                LBAC_UPDATE_MINOR=ON
-        fi
-        if test -z "$LBAC_UPDATE_MAJOR" ; then
-                LBAC_UPDATE_MAJOR=OFF
-        fi
+        case "$LBAC_UPDATE_LEVEL" in
+            NONE)
+                tmp_none=ON
+                tmp_patch=OFF
+                tmp_minor=OFF
+                tmp_major=OFF
+                ;;
+            PATCH)
+                tmp_none=OFF
+                tmp_patch=ON
+                tmp_minor=OFF
+                tmp_major=OFF
+                ;;
+            MINOR)
+                tmp_none=OFF
+                tmp_patch=OFF
+                tmp_minor=ON
+                tmp_major=OFF
+                ;;
+            MAJOR)
+                tmp_none=OFF
+                tmp_patch=OFF
+                tmp_minor=OFF
+                tmp_major=ON
+                ;;
+            *)
+                LBAC_UPDATE_LEVEL=PATCH
+                tmp_none=OFF
+                tmp_patch=ON
+                tmp_minor=OFF
+                tmp_major=OFF
+                ;;
+        esac
+
         dialog --backtitle "$CLOUD_NAME" \
           --cancel-label "Abbrechen" \
-          --checklist "Bitte wählen Sie, welche Art von Updates Ihr System automatisch durchführen darf. Wir empfehlen, automatische Updates mindestens auf Container- und auf Patchlevel-Ebene zu aktivieren. Auf diesem Level sind nur Bugfixes und Sicherheitspatches eingeschlossen; die Stufen Minor und Major enthalten zusätzlich kleinere bzw. größere Funktionserweiterungen." 15 72 2 \
-          CONTAINER "Automatische Docker-Image und -Container Updates" $LBAC_UPDATE_CONTAINER \
-          PATCH "Automatische Patchlevel-Updates" $LBAC_UPDATE_PATCH \
-          MINOR "Automatische Minor-Level-Updates" $LBAC_UPDATE_MINOR \
-          MAJOR "Automatische Major-Level-Updates" $LBAC_UPDATE_MAJOR 2> $TMP_RESULT
+          --radiolist "Bitte wählen Sie, welche Art von Updates Ihr System automatisch durchführen darf. Wir empfehlen, automatische Updates mindestens auf Patchlevel-Ebene zu aktivieren. Auf diesem Level sind nur Bugfixes und Sicherheitspatches eingeschlossen; die Stufen Minor und Major enthalten zusätzlich kleinere bzw. größere Funktionserweiterungen." 17 72 4 \
+          NONE "Keine automatischen Updates" $tmp_none \
+          PATCH "Automatische Patchlevel-Updates" $tmp_patch \
+          MINOR "Automatische Minor-Level-Updates" $tmp_minor \
+          MAJOR "Automatische Major-Level-Updates" $tmp_major 2> $TMP_RESULT
         case $? in
                 0)
-                        if grep -q CONTAINER $TMP_RESULT ; then
-                            echo "LBAC_UPDATE_CONTAINER=\"ON\"" >> $TMP_CONFIG
-                        else
-                            echo "LBAC_UPDATE_CONTAINER=\"OFF\"" >> $TMP_CONFIG
-                        fi
-                        if grep -q PATCH $TMP_RESULT ; then
-                            echo "LBAC_UPDATE_PATCH=\"ON\"" >> $TMP_CONFIG
-                        else
-                            echo "LBAC_UPDATE_PATCH=\"OFF\"" >> $TMP_CONFIG
-                        fi
-                        if grep -q MINOR $TMP_RESULT ; then
-                            echo "LBAC_UPDATE_MINOR=\"ON\"" >> $TMP_CONFIG
-                        else
-                            echo "LBAC_UPDATE_MINOR=\"OFF\"" >> $TMP_CONFIG
-                        fi
-                        if grep -q MAJOR $TMP_RESULT ; then
-                            echo "LBAC_UPDATE_MAJOR=\"ON\"" >> $TMP_CONFIG
-                        else
-                            echo "LBAC_UPDATE_MAJOR=\"OFF\"" >> $TMP_CONFIG
-                        fi
-
+                        LBAC_UPDATE_LEVEL=`cat $TMP_RESULT | head -1 | tr -d $'\n'`
+                        case "$LBAC_INIT_TYPE" in
+                            NONE|PATCH|MINOR|MAJOR)
+                                    echo "LBAC_UPDATE_LEVEL=\"$LBAC_UPDATE_LEVEL\"" >> $TMP_CONFIG
+                                    ;;
+                            *)
+                                    echo "LBAC_UPDATE_LEVEL=\"PATCH\"" >> $TMP_CONFIG
+                                    ;;
+                        esac
                         NEXT_FORM=DIALOG_INIT_TYPE
                         ;;
                 *)
@@ -900,7 +910,7 @@ function runDialogs {
         DIALOG_ADMIN_PASSWD)
                 dialog_ADMIN_PASSWD
                 ;;
-        DIALOT_AUTO_UPDATE)
+        DIALOG_AUTO_UPDATE)
                 dialog_AUTO_UPDATE
                 ;;
 	DIALOG_CERT_REQUEST)
