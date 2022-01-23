@@ -448,7 +448,8 @@ public class TestBase implements Serializable {
     
     protected void cleanMaterialsFromDB() {
         entityManagerService.doSqlUpdate("DELETE FROM material_compositions");
-        entityManagerService.doSqlUpdate("delete from biomaterial");
+        entityManagerService.doSqlUpdate("DELETE from biomaterial_history");
+        entityManagerService.doSqlUpdate("DELETE from biomaterial");
         entityManagerService.doSqlUpdate("DELETE FROM tissues");
         entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");

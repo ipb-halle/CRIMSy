@@ -77,7 +77,7 @@ public class SequenceSearchServiceTest extends TestBase {
 
     private Sequence sequence;
 
-    private final String SQL_LOAD_PARAMETER = "SELECT * from temp_search_parameter";
+    private final String SQL_LOAD_PARAMETER = "SELECT id from temp_search_parameter";
 
     @BeforeEach
     public void init() {
