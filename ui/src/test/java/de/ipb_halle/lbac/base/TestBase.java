@@ -165,7 +165,6 @@ public class TestBase implements Serializable {
                 .addClass(MessagePresenterMock.class)
                 .addClass(SessionScopeContext.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
-                .addAsResource("init.sql", "init.sql")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource("javax.enterprise.inject.spi.Extension",
                         "META-INF/services/javax.enterprise.inject.spi.Extension");
