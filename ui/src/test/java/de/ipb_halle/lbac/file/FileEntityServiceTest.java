@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -45,6 +46,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class FileEntityServiceTest extends TestBase {
 

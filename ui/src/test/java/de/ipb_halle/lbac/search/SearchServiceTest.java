@@ -72,6 +72,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -99,6 +100,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SearchServiceTest extends TestBase {
 

@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.entity.NodeEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,6 +41,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * This class will provide some test cases for the NodeService class.
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SqlBuilderTest extends TestBase {
 

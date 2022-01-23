@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.mocks.MaterialOverviewBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectType;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
@@ -56,6 +57,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialOverviewBeanTest extends TestBase {
 

@@ -45,11 +45,13 @@ import de.ipb_halle.lbac.exp.image.ImageController;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.util.WebXml;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
  * 
  * @author flange
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ImageControllerTest extends TestBase {
     @Deployment

@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.List;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -52,6 +53,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * This class will provide some test cases for the ACListService class.
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ACListServiceTest extends TestBase {
 

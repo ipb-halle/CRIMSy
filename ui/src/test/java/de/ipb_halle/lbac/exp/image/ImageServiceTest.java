@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.image.Image;
 import de.ipb_halle.lbac.exp.image.ImageService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +51,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ImageServiceTest extends TestBase {
 

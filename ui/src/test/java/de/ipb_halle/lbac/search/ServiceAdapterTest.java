@@ -39,6 +39,7 @@ import de.ipb_halle.lbac.search.mocks.ItemServiceMock;
 import de.ipb_halle.lbac.search.mocks.MaterialServiceMock;
 import de.ipb_halle.lbac.search.mocks.ProjectServiceMock;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -52,6 +53,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ServiceAdapterTest {
 

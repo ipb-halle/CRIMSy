@@ -52,6 +52,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
@@ -68,6 +69,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialEditSaverTest extends TestBase {
 

@@ -64,6 +64,7 @@ import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParserExcep
 import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchService;
 import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchServiceMock;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +84,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SequenceSearchIntegrationTest extends TestBase {
     private static final long serialVersionUID = 1L;

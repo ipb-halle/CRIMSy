@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.material.sequence.SequenceEntity;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchConditionBuilder;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -50,6 +51,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author fblocal
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SqlParamTableBuilderTest extends TestBase {
 

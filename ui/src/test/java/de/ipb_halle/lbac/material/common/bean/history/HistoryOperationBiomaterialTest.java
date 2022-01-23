@@ -47,6 +47,7 @@ import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -68,6 +69,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
 

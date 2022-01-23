@@ -43,7 +43,9 @@ import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class UserPluginSettingsBeanTest extends TestBase {
     @Deployment

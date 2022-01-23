@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
 import javax.faces.component.UIViewRoot;
@@ -50,6 +51,7 @@ import org.primefaces.model.TreeNode;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class TaxonomyBeanTest extends TestBase {
 

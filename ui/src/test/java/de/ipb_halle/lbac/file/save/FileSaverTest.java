@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +51,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class FileSaverTest extends TestBase {
     

@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -42,6 +43,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class HistoryOperationCompositionTest extends HistoryOperationTest {
 

@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
@@ -54,6 +53,8 @@ import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.material.sequence.history.SequenceDifference;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -73,6 +74,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialServiceTest extends TestBase {
 

@@ -23,6 +23,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class HazardServiceTest extends TestBase {
 

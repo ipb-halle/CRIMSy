@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.HttpServletResponseMock.WriterMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class UploadToColTest extends TestBase {
 

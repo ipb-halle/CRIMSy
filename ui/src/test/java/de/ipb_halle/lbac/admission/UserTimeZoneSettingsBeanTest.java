@@ -36,7 +36,9 @@ import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.timezone.TimeZonesBean;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class UserTimeZoneSettingsBeanTest extends TestBase {
     @Deployment
