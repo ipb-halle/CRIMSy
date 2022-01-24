@@ -221,8 +221,8 @@ public class MaterialServiceTest extends TestBase {
     @Test
     public void test002_updateStructure() throws Exception {
 
-        Project p = creationTools.createProject();
-        Project p2 = creationTools.createProject();
+        Project p = creationTools.createProject("project1");
+        Project p2 = creationTools.createProject("project2");
 
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
@@ -360,7 +360,7 @@ public class MaterialServiceTest extends TestBase {
         List hazardHists = entityManagerService.doSqlQuery(
                 "SELECT materialid,typeid_old,typeid_new ,remarks_old,remarks_new "
                 + "FROM material_hazards_hist "
-                + "ORDER BY typeid_old,typeid_new");
+                + "ORDER BY typeid_old ASC NULLS FIRST,typeid_new ASC NULLS FIRST");
         Assert.assertEquals(4, hazardHists.size());
 
         // Add poisonous hazard (GHS06)

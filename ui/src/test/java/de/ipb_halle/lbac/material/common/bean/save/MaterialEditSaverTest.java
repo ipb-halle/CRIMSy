@@ -193,7 +193,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertTrue("Testcase 002 - history of storageclass must  be empty", storageClassHist.isEmpty());
 
         // Check the history of the storage conditions
-        List<Object[]> storageConditionsHist = (List) entityManagerService.doSqlQuery("select conditionId_old,conditionId_new from storagesconditions_storages_hist where materialid=" + mNew.getId() + " order by conditionId_old,conditionId_new");
+        List<Object[]> storageConditionsHist = (List) entityManagerService.doSqlQuery("select conditionId_old,conditionId_new from storagesconditions_storages_hist where materialid=" + mNew.getId() + " order by conditionId_old ASC NULLS FIRST,conditionId_new ASC NULLS FIRST");
         Assert.assertEquals("Testcase 002 - One history entry in storageconditions must be found ", 2, storageConditionsHist.size());
         Assert.assertNull("Testcase 002 - Old storagecondition must be null ", storageConditionsHist.get(0)[0]);
         Assert.assertEquals("Testcase 002 - New storagecondition must be 3 ", StorageCondition.lightSensitive.getId(), storageConditionsHist.get(0)[1]);

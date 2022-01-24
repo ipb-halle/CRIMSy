@@ -234,7 +234,7 @@ public class ItemServiceTest extends TestBase {
         history2.setParentContainerOld(null);
         instance.saveItemHistory(history2);
         Thread.sleep(100);
-        Project project2 = creationTools.createProject();
+        Project project2 = creationTools.createProject("project2");
         ItemHistory history3 = new ItemHistory();
         history3.setActor(owner);
         history3.setItem(item);
