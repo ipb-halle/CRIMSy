@@ -367,6 +367,7 @@ public class TestBase implements Serializable {
         createTaxanomy(19, "Victoria", 7, userGroups, ownerId, 1, 16, 17, 18);
         createTaxanomy(20, "Euryale", 7, userGroups, ownerId, 1, 16, 17, 18);
         createTaxanomy(21, "Haarnixen", 7, userGroups, ownerId, 1, 16, 17);
+        entityManagerService.doSqlUpdate("ALTER SEQUENCE materials_materialid_seq RESTART WITH 22");
     }
     
     public void resetDB(MemberService memberService) {

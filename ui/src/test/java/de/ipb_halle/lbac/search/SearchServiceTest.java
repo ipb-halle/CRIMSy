@@ -600,7 +600,7 @@ public class SearchServiceTest extends TestBase {
                 context.getNoAccessACL().getId(),
                 project1.getId(),
                 "Testmaterial-003-notReadable");
-        createTaxanomy(1000, "Life", 1, publicAclId, publicUser.getId());
+        createTaxanomy(0, "Life", 1, publicAclId, publicUser.getId());
         bioMaterial = creationTools.createBioMaterial(project1, "BioMaterial001", taxonomyService.loadRootTaxonomy(), null);
         materialService.saveMaterialToDB(bioMaterial, publicAclId, new HashMap<>(), publicUser.getId());
     }
