@@ -258,7 +258,7 @@ public class MaterialBean implements Serializable {
         sequenceInfos = new SequenceInformation();
         materialNameBean.init();
         materialIndexBean.init();
-        currentMaterialType = MaterialType.CONSUMABLE;
+        currentMaterialType = MaterialType.STRUCTURE;
         creationSaver = new MaterialCreationSaver(
                 materialNameBean,
                 materialService);

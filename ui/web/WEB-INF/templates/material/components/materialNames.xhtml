@@ -45,16 +45,15 @@
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_name}"
                             styleClass="materialNameText">
-                            <b:inputText
-                                styleClass="tstMaterialNameInput"
-                                disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
+                            <p:inputText
                                 value="#{mName.value}"
-                                placeholder="#{msgs.materialCreation_panelNames_placeHolder}"
-                                onkeypress="if (event.keyCode === 13) {
-                                            return false;
-                                        }">
+                                styleClass="tstMaterialNameInput"
+                                style="width: 100%;"
+                                disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
+                                placeholder="#{msgs.materialCreation_panelNames_placeHolder}">
+                                <p:ajax process="@this" update="@none" />
                                 <f:converter converterId="InputConverter" />
-                            </b:inputText>
+                            </p:inputText>
 
                         </b:dataTableColumn>
                         <b:dataTableColumn
