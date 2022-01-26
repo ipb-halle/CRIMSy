@@ -264,10 +264,15 @@
 
         <!-- group memberships -->
 
-        <b:modal id="modalGroupDialog" title="#{msgs.userMgr_manage_memberships}: #{userMgrBean.user.name}" styleClass="modalGroupDialog"
-                 backdrop="false" size="modal-lg"
-                 close-on-escape="false">
-            <b:form id="frmModalGroupDialog" horizontal="true">
+        <p:dialog
+            id="modalGroupDialog"
+            widgetVar="groupMembershipsDialogWidgetVar"
+            header="#{msgs.userMgr_manage_memberships}: #{userMgrBean.user.name}"
+            modal="true"
+            resizable="false"
+            positionType="absolute"
+            width="900">
+            <b:form id="frmModalGroupDialog">
 
                 <b:row>#{msgs.userMgr_Memberships}</b:row>
                 <b:dataTable id="membershipList"
@@ -364,10 +369,10 @@
                 <b:fetchBeanInfos/>
 
                 <b:row styleClass="modal-footer">
-                    <b:button value="#{msgs.Close}" styleClass="tstUserMgrMembershipClose" dismiss="modal"/>
+                    <b:button value="#{msgs.Close}" styleClass="tstUserMgrMembershipClose" onclick="PF('groupMembershipsDialogWidgetVar').hide()" />
                 </b:row>
             </b:form>
-        </b:modal>
+        </p:dialog>
 
 
         <!-- user list -->
@@ -446,7 +451,7 @@
                                      type="button"
                                      update="modalGroupDialog frmModalGroupDialog"
                                      onclick="ajax:userMgrBean.setUser(user);" 
-                                     oncomplete="$('.modalGroupDialog').modal();"/>
+                                     oncomplete="PF('groupMembershipsDialogWidgetVar').show();"/>
                     <b:commandButton style="padding: 0 4px;"
                                      styleClass="tstUserMgrDeleteDlg"
                                      icon="trash"
