@@ -59,7 +59,8 @@ function cacrl {
 
     tar -C $LBAC_DATASTORE/dist/proxy/conf -cf /tmp/ca_update.tar crt/ crl/
     docker cp /tmp/ca_update.tar dist_proxy_1:/install/
-    docker exec dist_proxy_1 /usr/local/bin/ca_update.sh
+    # ToDo: xxxxx needs rework!
+
     rm "/tmp/ca_update.tar"
     chown -R --reference=$LBAC_DATASTORE/dist/proxy/conf/httpd.conf \
         $LBAC_DATASTORE/dist/proxy/conf/crt \

@@ -15,9 +15,7 @@ networks:
 
 services:
   db:
-    build: 
-      context: .
-      dockerfile: ./db/Dockerfile
+    image: ipbhalle/crimsydb:LBAC_VERSION
     environment:
       - PGDATA=/data/db/pgsql_12
       - POSTGRES_PASSWORD=LBAC_DB_PASSWD
@@ -31,7 +29,7 @@ LBAC_PGSQL_PORT_ENABLE     - "5432:5432"
       - LBAC_DATASTORE/data/db:/data/db
 
   fasta:
-    build:
+    image: ipbhalle/crimsyfasta:LBAC_VERSION
       context: .
       dockerfile: ./fasta/Dockerfile
     depends_on:
@@ -42,9 +40,7 @@ LBAC_PGSQL_PORT_ENABLE     - "5432:5432"
       - lbac_private
 
   ui:
-    build: 
-      context: .
-      dockerfile: ./ui/Dockerfile
+    image: ipbhalle/crimsyui:LBAC_VERSION
     depends_on:
       - db
     labels:
@@ -55,11 +51,12 @@ LBAC_TOMEE_PORT_ENABLE   ports:
 LBAC_TOMEE_PORT_ENABLE     - "8080:8080"
     volumes:
       - LBAC_DATASTORE/data/ui:/data/ui
+      - LBAC_DATASTORE/data/ui_etc:/install/etc
 
   proxy:
-    build:
-      context: .
-      dockerfile: ./proxy/Dockerfile
+    image: ipbhalle/crimsyproxy:LBAC_VERSION
+    environment:
+      - REDIRECT_FQHN=LBAC_INTRANET_FQHN
     labels:
       de.ipb-halle.lbac.docker-container: "proxy"
     networks:
@@ -68,3 +65,5 @@ LBAC_TOMEE_PORT_ENABLE     - "8080:8080"
       - "80:80"
       - "443:443"
       - "8443:8443"
+    volumes:
+      - LBAC_DATASTORE/data/proxy_conf:/usr/local/apache2/conf

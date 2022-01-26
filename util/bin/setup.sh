@@ -47,8 +47,8 @@ LBAC_SKIP_SNAPSHOT="OFF"
 #
 function cleanDist {
     pushd dist > /dev/null
-    # ToDo: remove folder pgchem in future revisions
-    rm -rf bin db extralib fasta pgchem proxy ui
+    # ToDo: remove everything except bin in revisions
+    rm -rf bin db extralib fasta proxy ui
     popd > /dev/null
     
 }
@@ -96,11 +96,11 @@ function createProperties {
 <!--
   Mutual ssl authentication
 -->
-<entry key="SecureWebClient.KEYSTORE_TYPE">JKS</entry>
-<entry key="SecureWebClient.KEYSTORE_PATH">/usr/local/tomee/conf</entry>
+<entry key="SecureWebClient.KEYSTORE_TYPE">PKCS12</entry>
+<entry key="SecureWebClient.KEYSTORE_PATH">/install/etc</entry>
 <entry key="SecureWebClient.KEYSTORE_PASSWORD">$LBAC_KEYSTORE_PASSWORD</entry>
-<entry key="SecureWebClient.TRUSTSTORE_TYPE">JKS</entry>
-<entry key="SecureWebClient.TRUSTSTORE_PATH">/usr/local/tomee/conf</entry>
+<entry key="SecureWebClient.TRUSTSTORE_TYPE">PKCS12</entry>
+<entry key="SecureWebClient.TRUSTSTORE_PATH">/install/etc</entry>
 <entry key="SecureWebClient.TRUSTSTORE_PASSWORD">$LBAC_TRUSTSTORE_PASSWORD</entry>
 <entry key="SecureWebClient.SSL_PROTOCOL">TLSv1.2</entry>
 <!-- key alias -->
@@ -133,9 +133,6 @@ function keySetup {
 	  -passin "file:$LBAC_DATASTORE/etc/$LBAC_SSL_PWFILE" \
 	  -passout "file:$LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.keypass" \
 	  -out "$LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.pkcs12"
-
-	# JKS will be set up inside Docker container
-	# because we do not want JRE on Docker host
 
 	#
 	# Primitive test for official certificate, private key and key password
@@ -190,6 +187,8 @@ function keySetup {
 function makeDataDir {
 	mkdir -p "$LBAC_DATASTORE/data/db"
 	mkdir -p "$LBAC_DATASTORE/data/ui"
+        mkdir -p "$LBAC_DATASTORE/data/ui_etc"
+        mkdir -p "$LBAC_DATASTORE/data/proxy_conf"
 }
 
 #
@@ -223,7 +222,6 @@ define(\`LBAC_INSTITUTION',\`$LBAC_INSTITUTION')dnl
 define(\`LBAC_INSTITUTION_MD5',\`$LBAC_INSTITUTION_MD5')dnl
 define(\`LBAC_INSTITUTION_SHORT',\`$LBAC_INSTITUTION_SHORT')dnl
 define(\`LBAC_MANAGER_EMAIL',\`$LBAC_MANAGER_EMAIL')dnl
-define(\`LBAC_GPG_IDENTITY',\`$LBAC_GPG_IDENTITY')dnl
 define(\`LBAC_INTRANET_FQHN',\`$LBAC_INTRANET_FQHN')dnl
 define(\`LBAC_INTERNET_FQHN',\`$LBAC_INTERNET_FQHN')dnl
 define(\`LBAC_MASTER_SKIP',\`$LBAC_MASTER_SKIP')dnl
@@ -237,6 +235,7 @@ define(\`LBAC_TOMEE_PORT_ENABLE',\`$LBAC_TOMEE_PORT_ENABLE')dnl
 define(\`LBAC_HSTS_ENABLE',\`$LBAC_HSTS_ENABLE')dnl
 define(\`LBAC_PRIMARY_CLOUD',\`$LBAC_CLOUD')dnl
 define(\`LBAC_DB_PASSWD',\``cat $LBAC_DATASTORE/etc/$LBAC_DB_PWFILE`')dnl
+define(\`LBAC_VERSION',\`$LBAC_VERSION')dnl
 EOF
 }
 

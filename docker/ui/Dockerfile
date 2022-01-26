@@ -21,22 +21,21 @@ FROM tomee:8-jre-7.1.4-plume
 
 #
 WORKDIR /install
+COPY setup.sh /
 
 #
-COPY ./etc /install/etc
-COPY ./extralib /install/extralib
-COPY ./ui/ui.war /install/ 
-COPY ./ui/setup.sh /install/
-COPY ./ui/importKeystores.sh /install/
-COPY ./ui/logpurge.sh /install/
-COPY ./ui/tomcat-users.xml /install/
-COPY ./ui/tomee.xml /install/
+COPY extralib /usr/local/tomee/extralib
+COPY ui.war /usr/local/tomee/webapps/
+COPY logpurge.sh /usr/local/bin/
+COPY tomcat-users.xml /usr/local/tomee/conf/
+COPY tomee.xml /usr/local/tomee/conf/
+
 
 #
 EXPOSE 8080 
 
 #
-RUN ["/bin/bash", "/install/setup.sh"]
+RUN ["/bin/bash", "/setup.sh"]
 
 #
 # switch to unprivileged user

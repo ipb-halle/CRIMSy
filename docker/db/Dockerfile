@@ -23,8 +23,8 @@
 FROM ipbhalle/crimsydb:bingo_pg12
 
 #
-COPY ./db/*.sql /docker-entrypoint-initdb.d/
-COPY ./db/*.sh /usr/local/bin/
+COPY *.sql /docker-entrypoint-initdb.d/
+COPY *.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/*.sh
 

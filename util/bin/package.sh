@@ -37,11 +37,6 @@
 # 
 #==========================================================
 #
-LBAC_UI="ui.war"
-
-#
-#==========================================================
-#
 
 function dialog_CHECK_CONFIG {
 	dialog --backtitle "$CLOUD_NAME" \
@@ -183,22 +178,10 @@ function copyCert {
         cp $LBAC_CA_DIR/truststore.passwd $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.trustpass
 }
 
-function copyDocker {
-	cp docker/docker-compose.yml.m4 target/dist
-	cp -r docker/db target/dist
-	cp -r docker/fasta target/dist
-	cp -r docker/proxy target/dist
-	cp -r docker/ui target/dist
-}
-
 function copyFiles {
 
-	# directories already created by function copyDocker
-	cp ui/target/$LBAC_UI target/dist/ui
-	cp -r $LBAC_REPO/config/extralib target/dist
-
-	#
-	cp $LBAC_REPO/config/$LBAC_CLOUD/master.sh target/dist/etc/$LBAC_CLOUD/
+    #
+    cp $LBAC_REPO/config/$LBAC_CLOUD/master.sh target/dist/etc/$LBAC_CLOUD/
     cp util/systemd/system/lbac.service.m4 target/dist/etc
 
     #
@@ -216,26 +199,12 @@ function error {
 
 function genPackage {
     cleanUp
-    copyDocker
     copyFiles
     masterConfig
-    makeTomcatUsers
     makeCert
     copyCert
     package
     cleanTmp
-}
-
-function makeTomcatUsers {
-	cat << EOF > target/dist/ui/tomcat-users.xml
-<?xml version='1.0' encoding='utf-8'?>
-<tomcat-users xmlns="http://tomcat.apache.org/xml"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
-              version="1.0">
-  <role rolename="admin"/>
-</tomcat-users>
-EOF
 }
 
 function masterConfig {

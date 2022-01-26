@@ -106,10 +106,7 @@ function installCloudCert {
     $LBAC_DATASTORE/dist/bin/updateCloud.sh cacrl
 
     # add certificate to truststore
-    docker cp $LBAC_CLOUD.truststore dist_ui_1:/install
-    docker cp $LBAC_CLOUD.trustpass dist_ui_1:/install
-    docker cp $LBAC_CLOUD.pkcs12 dist_ui_1:/install
-    docker cp $LBAC_CLOUD.keypass dist_ui_1:/install
+    # ToDo: xxxxxxxx
 }
 
 #
@@ -272,6 +269,8 @@ function setInstallDir {
 function setPermissions {
     chown 5432 "$LBAC_DATASTORE/data/db"
     chown 8080 "$LBAC_DATASTORE/data/ui"
+    chown 8080 "$LBAC_DATASTORE/data/ui_etc"
+    chown 80   "$LBAC_DATASTORE/data/proxy_conf"
 }
 
 #
