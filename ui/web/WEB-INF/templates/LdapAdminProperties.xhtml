@@ -22,16 +22,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
 >
 
 <h:body>
     <ui:composition>
-        <b:modal id="modalcheckLDAP" styleClass="modalcheckLDAP" close-on-escape="true">
+        <p:dialog
+            id="modalcheckLDAP"
+            widgetVar="checkLDAPDialogWidgetVar"
+            modal="true"
+            resizable="false"
+            positionType="absolute"
+            closeOnEscape="true">
+            <!-- Note on style="z-index: auto;" for the b:inputTexts:
+                 Putting an icon via the facet "prepend" or "append" in
+                 conjunction with p:dialog's modal="true" leads to an 
+                 unresponsive input field (not clickable, no keyboard inputs). -->
             <b:form id="checkLdapForm" method="post">
                 <b:panel title="#{msgs.admission_ldap_test}" collapsible="false" look="info">
-                    <b:inputText value="#{ldapTestBean.ldapLogin}" label="#{msgs.admission_loginForm_login}" required="true">
+                    <b:inputText
+                        value="#{ldapTestBean.ldapLogin}"
+                        label="#{msgs.admission_loginForm_login}"
+                        style="z-index: auto;"
+                        required="true">
                         <f:facet name="prepend">
                             <b:icon name="envelope"/>
                         </f:facet>
@@ -41,6 +56,7 @@
                     <b:inputSecret
                         value="#{ldapTestBean.ldapPassword}"
                         label="#{msgs.admission_loginForm_password}"
+                        style="z-index: auto;"
                         required="true"
                         converter="DummyConverter">
                         <f:facet name="prepend">
@@ -60,7 +76,7 @@
                     <b:message showSummary="true" showDetail="true" for="testresult"/>
                 </b:panel>
             </b:form>
-        </b:modal>
+        </p:dialog>
         <b:panelGrid colSpans="9,3" size="sm">
             <b:form id="ldapProperties" horizontal="true" method="post">
                 <b:panel title="#{msgs.admission_ldap_panelTitle}" collapsible="false" look="info">
@@ -95,7 +111,7 @@
                     </ui:repeat>
                     <b:column styleClass="text-center">
                         <b:commandButton type="button" iconAwesome="cogs" ajax="true"
-                                         onclick="$('.modalcheckLDAP').modal();"
+                                         onclick="PF('checkLDAPDialogWidgetVar').show();"
                                          disabled="#{!ldapProps.ldapEnabled}"
                                          style="margin-right:3px;"
                                          value="#{msgs.admission_ldap_test}"/>
