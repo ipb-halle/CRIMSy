@@ -66,3 +66,21 @@ function encodeFontAwesomeDocSymbol(docExt) {
     }
 }
 
+/*
+ * Adds the given linkText as tag to the text in the open Quill editor with the
+ * given PrimeFaces widget var.
+ */
+function insertLinkTagIntoQuillEditor(linkText, widgetVar) {
+    var linkTag = "#" + linkText + " ";
+    var quill = PF(widgetVar).editor;
+
+    // get cursor position
+    var pos = quill.getLength() - 1;
+    var selection = quill.getSelection(true);
+    if (selection != null) {
+        pos = selection.index;
+    }
+
+    // insert tag
+    quill.insertText(pos, linkTag);
+}
