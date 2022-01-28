@@ -70,7 +70,7 @@
                                  styleClass="tstGrpMgrNewName"
                                  label="#{msgs.Name}"
                                  style="z-index: auto;"
-                                 disabled="#{groupMgrBean.getGroup().getSubSystemType().toString() != 'LOCAL'}"
+                                 disabled="#{(groupMgrBean.getGroup().getSubSystemType().toString() != 'LOCAL') or (groupMgrBean.mode == 'DELETE')}"
                                  renderLabel="true"
                                  placeholder="#{msgs.Name}"
                                  required="true">
@@ -255,27 +255,31 @@
                     <f:facet name="header">
                         <tr>
                             <th colspan="4">
-                                <b:commandButton styleClass="pull-right tstGrpMgrNewGroup"
-                                                 style="margin:0 2px;"
-                                                 iconAwesome="fa-plus-circle"
-                                                 value="#{msgs.groupMgr_newGroup}"
-                                                 look="primary"
-                                                 ajax="true"
-                                                 type="button"
-                                                 update="modalGroupDialog frmModalGroupDialog"
-                                                 rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
-                                                 onclick="ajax:groupMgrBean.setModeCreate();"
-                                                 oncomplete="PF('groupEditDialogWidgetVar').show();"/>
-                                <b:commandButton styleClass="pull-right tstGrpMgrRefresh"
-                                                 style="margin:0 2px;"
-                                                 iconAwesome="refresh"
-                                                 value="#{msgs.Refresh}"
-                                                 look="default"
-                                                 ajax="true"
-                                                 type="button"
-                                                 update="@form"
-                                                 rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                                 onclick="ajax:groupMgrBean.refreshGroupList();"/>
+                                <b:commandButton
+                                    styleClass="pull-right tstGrpMgrNewGroup"
+                                    style="margin:0 2px;"
+                                    iconAwesome="fa-plus-circle"
+                                    value="#{msgs.groupMgr_newGroup}"
+                                    look="primary"
+                                    ajax="true"
+                                    type="button"
+                                    update="modalGroupDialog frmModalGroupDialog"
+                                    rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
+                                    onclick="ajax:groupMgrBean.setModeCreate();"
+                                    oncomplete="PF('groupEditDialogWidgetVar').show();">
+                                    <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                                </b:commandButton>
+                                <b:commandButton
+                                    styleClass="pull-right tstGrpMgrRefresh"
+                                    style="margin:0 2px;"
+                                    iconAwesome="refresh"
+                                    value="#{msgs.Refresh}"
+                                    look="default"
+                                    ajax="true"
+                                    type="button"
+                                    update="@form"
+                                    rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                    onclick="ajax:groupMgrBean.refreshGroupList();" />
                             </th>
                         </tr>
                         <tr>
@@ -289,38 +293,45 @@
                     <b:dataTableColumn value="#{group.getSubSystemType().toString()}"/>
                     <b:dataTableColumn value="#{group.node.institution}"/>
                     <b:dataTableColumn>
-                        <b:commandButton style="padding: 0 4px;"
-                                         styleClass="tstGrpMgrEditDlg"
-                                         icon="pencil"
-                                         look="link"
-                                         ajax="true"
-                                         type="button"
-                                         disabled="#{groupMgrBean.isOperationForbidden(group, 'edit')}"
-                                         update="modalGroupDialog frmModalGroupDialog"
-                                         onclick="ajax:groupMgrBean.setModeUpdate();groupMgrBean.setGroup(group);"
-                                         oncomplete="PF('groupEditDialogWidgetVar').show();"/>
+                        <b:commandButton
+                            style="padding: 0 4px;"
+                            styleClass="tstGrpMgrEditDlg"
+                            icon="pencil"
+                            look="link"
+                            ajax="true"
+                            type="button"
+                            disabled="#{groupMgrBean.isOperationForbidden(group, 'edit')}"
+                            update="modalGroupDialog frmModalGroupDialog"
+                            onclick="ajax:groupMgrBean.setModeUpdate();groupMgrBean.setGroup(group);"
+                            oncomplete="PF('groupEditDialogWidgetVar').show();">
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                        </b:commandButton>
                         <!-- possibly 'modalMembershipDialog.DataTable().responsive.recalc();' could be 
                              necessary for responsive tables within a modal form -->
-                        <b:commandButton style="padding: 0 4px;"
-                                         styleClass="tstGrpMgrMembershipDlg"
-                                         iconAwesome="users"
-                                         look="link"
-                                         ajax="true"
-                                         type="button"
-                                         disabled="#{groupMgrBean.isOperationForbidden(group, groupMgrBean.getOPERATIONNAME_MANAGE_MEMBERS())}"
-                                         update="modalMembershipDialog frmModalMembershipDialog"
-                                         onclick="ajax:groupMgrBean.setGroup(group);" 
-                                         oncomplete="PF('groupGroupMembershipsDialogWidgetVar').show();"/>
-                        <b:commandButton style="padding: 0 4px;"
-                                         styleClass="tstGrpMgrDeleteDlg"
-                                         icon="trash"
-                                         look="link"
-                                         ajax="true"
-                                         type="button"
-                                         disabled="#{groupMgrBean.isDeactivationForbidden(group)}"
-                                         update="modalGroupDialog frmModalGroupDialog"
-                                         onclick="ajax:groupMgrBean.setModeDelete();groupMgrBean.setGroup(group);"
-                                         oncomplete="PF('groupEditDialogWidgetVar').show();"/>
+                        <b:commandButton
+                            style="padding: 0 4px;"
+                            styleClass="tstGrpMgrMembershipDlg"
+                            iconAwesome="users"
+                            look="link"
+                            ajax="true"
+                            type="button"
+                            disabled="#{groupMgrBean.isOperationForbidden(group, groupMgrBean.getOPERATIONNAME_MANAGE_MEMBERS())}"
+                            update="modalMembershipDialog frmModalMembershipDialog"
+                            onclick="ajax:groupMgrBean.setGroup(group);" 
+                            oncomplete="PF('groupGroupMembershipsDialogWidgetVar').show();" />
+                        <b:commandButton
+                            style="padding: 0 4px;"
+                            styleClass="tstGrpMgrDeleteDlg"
+                            icon="trash"
+                            look="link"
+                            ajax="true"
+                            type="button"
+                            disabled="#{groupMgrBean.isDeactivationForbidden(group)}"
+                            update="modalGroupDialog frmModalGroupDialog"
+                            onclick="ajax:groupMgrBean.setModeDelete();groupMgrBean.setGroup(group);"
+                            oncomplete="PF('groupEditDialogWidgetVar').show();">
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                        </b:commandButton>
                     </b:dataTableColumn>
                 </b:dataTable>
             </b:form>
