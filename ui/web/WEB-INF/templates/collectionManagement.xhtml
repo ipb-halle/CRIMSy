@@ -84,7 +84,7 @@
                                  style="z-index: auto;"
                                  renderLabel="true"
                                  rendered="true"
-                                 disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR' or collectionBean.editMode == 'REINDEX' }"
+                                 disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR'}"
                                  placeholder="#{msgs.collMgr_modal_description_placeholder}"
                                  required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }">
                         <f:facet name="prepend">
@@ -154,14 +154,6 @@
                                          type="submit"
                                          ajax="true"
                                          onclick="ajax:collectionBean.actionClear();"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                        <b:commandButton value="#{msgs.collMgr_modal_button_reindex}"
-                                         rendered="#{collectionBean.getEditMode() == 'REINDEX'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         type="submit"
-                                         ajax="true"
-                                         onclick="ajax:collectionBean.actionReindex();"
                                          oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
                                          look="primary"/>
                         <b:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
@@ -285,18 +277,6 @@
                             type="button"
                             tooltip="#{msgs.collMgr_tooltip_clearCollection}"
                             onclick="ajax:collectionBean.setEditMode('CLEAR');collectionBean.setActiveCollection(collection);"
-                            oncomplete="PF('collectionDialogWidgetVar').show();" />
-                        <b:commandButton
-                            style="padding: 0 4px;"
-                            iconAwesome="fa-refresh"
-                            look="link"
-                            ajax="true"
-                            process="@this"
-                            tooltip="#{msgs.collMgr_tooltip_reindex}"
-                            update="growlMsg modalCollection frmModalCollection"
-                            disabled="#{!collectionBean.isReindexingAllowed(collection)}"
-                            type="button"
-                            onclick="ajax:collectionBean.setEditMode('REINDEX');collectionBean.setActiveCollection(collection);"
                             oncomplete="PF('collectionDialogWidgetVar').show();" />
                         <b:commandButton
                             style="padding: 0 4px;"
