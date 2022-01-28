@@ -83,7 +83,7 @@
                                                      process="@this"
                                                      update="modalNewTopic"
                                                      type="button"
-                                                     oncomplete="$('.modalNewTopicClass').modal()"/>
+                                                     oncomplete="PF('newTopicDialogWidgetVar').show()"/>
                                 </b:column>
                             </b:row>
                             <b:row>
@@ -204,13 +204,18 @@
                 </b:row>
             </b:container>
         </b:form>
-        <b:modal 
+        <p:dialog
             id="modalNewTopic"
-            styleClass="modalNewTopicClass"
-            backdrop="false"
-            close-on-escape="false"
-            title="#{msgs.forum_modalNewTopic_Header}">
-
+            widgetVar="newTopicDialogWidgetVar"
+            header="#{msgs.forum_modalNewTopic_Header}"
+            modal="true"
+            resizable="false"
+            positionType="absolute"
+            width="600">
+            <!-- Note on style="z-index: auto;" for the b:inputTexts:
+                 Putting an icon via the facet "prepend" or "append" in
+                 conjunction with p:dialog's modal="true" leads to an 
+                 unresponsive input field (not clickable, no keyboard inputs). -->
             <b:form id="modalNewTopicFormId">
                 <b:fetchBeanInfos/>
 
@@ -225,6 +230,7 @@
                     value="#{forumBean.newTopicName}"
                     renderLabel="true"
                     label="#{msgs.forum_modalNewTopic_NameLabel}"
+                    style="z-index: auto;"
                     placeholder="#{msgs.forum_modalNewTopic_PlaceHolder}"
                     required="true">
                     <f:facet name="prepend">
@@ -233,18 +239,18 @@
                 </b:inputText>
                 <b:message for="@previous"/>
                 <b:row styleClass="modal-footer">
-                    <b:button value="#{msgs.forum_modalNewTopic_Cancel}" dismiss="modal"/>
+                    <b:button value="#{msgs.forum_modalNewTopic_Cancel}" onclick="PF('newTopicDialogWidgetVar').hide()"/>
                     <b:commandButton
                         value="#{msgs.forum_modalNewTopic_Create}"
                         update="modalNewTopicFormId forumForm"
                         type="submit"
                         ajax="true"
                         onclick="ajax:forumBean.createNewTopic();"
-                        oncomplete="if (!validationFailed){ $('.modalNewTopicClass').modal('hide')}; return false;" 
+                        oncomplete="if (!validationFailed){PF('newTopicDialogWidgetVar').hide()}; return false;" 
                         look="primary"/>
                 </b:row>
             </b:form>
-        </b:modal>
+        </p:dialog>
     </h:body>
 
 </html>

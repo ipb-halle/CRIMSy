@@ -23,50 +23,56 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:tmpl="http://java.sun.com/jsf/composite/tmpl"
-      >
-
-
+      xmlns:tmpl="http://java.sun.com/jsf/composite/tmpl">
     <h:body>
-
         <ui:composition>
-
-            <h:outputStylesheet name="fine-uploader/fine-uploader-new.css" position="last"/>
-
-            <h:outputScript pt:type="text/template" pt:id="qq-template-manual-trigger" target="body">
-                <tmpl:fineUploaderMultiTemplate/>
+            <h:outputStylesheet
+                name="fine-uploader/fine-uploader-new.css"
+                position="last" />
+            <h:outputScript
+                pt:type="text/template"
+                pt:id="qq-template-manual-trigger" 
+                target="body">
+                <tmpl:fineUploaderMultiTemplate />
             </h:outputScript>
-
-            <b:modal
+ 
+            <p:dialog
                 id="fileUpload"
-                title="#{msgs.fileupload_modal_title}"
-                styleClass="modalFileUpload"
-                closable="true"
-                close-on-escape="false"
-                backdrop="false">
-
-                <div class="upload-collection-settings">#{msgs.fileupload_modal_uploadToCollectionText} 
-                    <b:selectOneMenu styleClass="upload-collection" >
-                        <f:selectItems value="#{collectionBean.getCreatableLocalCollections()}"
-                                       var="c"
-                                       itemLabel="#{c.name}"
-                                       itemValue="#{c.name}"/>
+                widgetVar="fileUploadModal"
+                header="#{msgs.fileupload_modal_title}"
+                modal="true"
+                resizable="false">
+                <div class="upload-collection-settings">
+                    <b:selectOneMenu
+                        label="#{msgs.fileupload_modal_uploadToCollectionText}"
+                        styleClass="upload-collection">
+                        <f:selectItems
+                            value="#{collectionBean.getCreatableLocalCollections()}"
+                            var="c"
+                            itemLabel="#{c.name}"
+                            itemValue="#{c.name}" />
                     </b:selectOneMenu>
                 </div>
-
-                <h:panelGroup layout="block" id="fine-uploader-manual-trigger">
-                </h:panelGroup>
+                <h:panelGroup
+                    id="fine-uploader-manual-trigger"
+                    layout="block" />
 
                 <f:facet name="footer">
-                    <b:button value="#{msgs.fileupload_modal_button_clear}" look="primary" onclick="$('#fine-uploader-manual-trigger').fineUploader('clearStoredFiles');"/>
-                    <b:button value="#{msgs.fileupload_modal_button_close}" look="primary" dismiss="modal"/>
+                    <b:button
+                        value="#{msgs.fileupload_modal_button_clear}"
+                        style="margin-bottom: 10px;"
+                        look="primary"
+                        onclick="$('#fine-uploader-manual-trigger').fineUploader('clearStoredFiles');" />
+                    <b:button
+                        value="#{msgs.fileupload_modal_button_close}"
+                        style="margin-bottom: 10px;"
+                        look="primary"
+                        onclick="PF('fileUploadModal').hide()" />
                 </f:facet>
-            </b:modal>
-
-
-
+            </p:dialog>
         </ui:composition>
     </h:body>
 </html>
