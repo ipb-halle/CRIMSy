@@ -98,25 +98,6 @@ public class CollectionPermissionAnalyser implements Serializable {
     }
 
     /**
-     * Reindexing is only allowed on local nodes.The owner of a collection has
-     * always the right of reindexing.
-     *
-     * @param col
-     * @param currentAccount
-     * @return
-     */
-    public boolean isReindexingAllowed(Collection col, User currentAccount) {
-        boolean permissionReindex = isOperationOnCollectionAllowed(
-                col,
-                ACPermission.permEDIT.toString(),
-                currentAccount);
-
-        return permissionReindex
-                && col.getNode().getLocal();
-
-    }
-
-    /**
      * Permission edit is only allowd on local nodes.The owner of a collection
      * has always the right of granting.
      *

@@ -66,3 +66,65 @@ function encodeFontAwesomeDocSymbol(docExt) {
     }
 }
 
+/**
+ * Adds the given linkText as tag to the text in the open Quill editor with the
+ * given PrimeFaces widgetVar.
+ */
+function insertLinkTagIntoQuillEditor(linkText, widgetVar) {
+    let quill = PF(widgetVar).editor;
+    let pos = _getCursorPosition(quill);
+    let linkTag = _getLinkTagWithSpaces(linkText, quill.getText(), pos);
+    quill.insertText(pos, linkTag);
+}
+
+function _getCursorPosition(quill) {
+    let pos = quill.getLength() - 1;
+    let selection = quill.getSelection(true);
+    if (selection != null) {
+        pos = selection.index;
+    }
+    return pos;
+}
+
+function _getLinkTagWithSpaces(linkText, textInQuill, pos) {
+    let linkTag = "#" + linkText;
+
+    /*
+     * Note:
+     * The text in Quill always ends with '\n'. Thus, textInQuill.length is always
+     * greater than 0.
+     */
+    // text in Quill is empty
+    if (textInQuill.length <= 1) {
+        return linkTag;
+    }
+    // insert at start of text and other text follows
+    else if ((pos == 0) && (textInQuill.length > 1)) {
+        let charAfter = textInQuill.charAt(pos);
+        if (charAfter != ' ') {
+            return linkTag + " ";
+        }
+        return linkTag;
+    }
+    // insert at end of text
+    else if (pos >= textInQuill.length - 1) {
+        let charBefore = textInQuill.charAt(pos - 1);
+        if (charBefore != ' ') {
+            return " " + linkTag;
+        }
+        return linkTag;
+    }
+    // insert in between
+    else {
+        let charBefore = textInQuill.charAt(pos - 1);
+        let charAfter = textInQuill.charAt(pos);
+        let result = linkTag;
+        if (charBefore != ' ') {
+            result = " " + result;
+        }
+        if (charAfter != ' ') {
+            result = result + " ";
+        }
+        return result;
+    }
+}
