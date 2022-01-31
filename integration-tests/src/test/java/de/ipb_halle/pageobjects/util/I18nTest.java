@@ -24,13 +24,13 @@ import static de.ipb_halle.pageobjects.util.I18n.isJSFMessage;
 import static de.ipb_halle.pageobjects.util.I18n.isUIMessage;
 import static java.util.Locale.ENGLISH;
 import static java.util.Locale.GERMAN;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author flange

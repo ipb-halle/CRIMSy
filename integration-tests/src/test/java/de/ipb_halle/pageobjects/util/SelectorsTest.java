@@ -21,9 +21,9 @@ import static de.ipb_halle.pageobjects.util.Selectors.cssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithAttribute;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author flange

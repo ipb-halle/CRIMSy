@@ -19,37 +19,24 @@ package de.ipb_halle.test;
 
 import static com.codeborne.selenide.Selenide.clearBrowserCookies;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
- * JUnit Rule that configures the Selenide default browser before running the
- * test(s) and clears the browser cookies afterwards.
+ * JUnit Extension that configures the Selenide default browser before running
+ * each test and clears the browser cookies afterwards.
  * 
  * @author flange
  */
-public class SelenideRule implements TestRule {
+public class SelenideExtension implements BeforeEachCallback, AfterEachCallback {
     @Override
-    public Statement apply(Statement base, Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                before();
-                try {
-                    base.evaluate();
-                } finally {
-                    after();
-                }
-            }
-        };
-    }
-
-    private void before() {
+    public void beforeEach(ExtensionContext context) throws Exception {
         new WebDriverConfig().configure();
     }
 
-    private void after() {
+    @Override
+    public void afterEach(ExtensionContext context) throws Exception {
         clearBrowserCookies();
     }
 }

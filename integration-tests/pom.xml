@@ -75,9 +75,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -88,21 +88,21 @@
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>selenide</artifactId>
-            <version>6.1.2</version>
+            <version>6.2.1</version>
         </dependency>
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>ui</artifactId>
             <!-- TODO: Make this a constant in the parent POM.
                        ... OOOPS! There is no parent POM ... -->
-            <version>2.0.2</version>
+            <version>2.1.0</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
             <!-- TODO: make this a constant in the parent -->
-            <version>2.2.12</version>
+            <version>2.2.14</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

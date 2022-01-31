@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
 
@@ -46,7 +46,7 @@ public class I18nAssert {
         String assertMessage = String.format(
                 "Test string \"%s\" does not match the JSF message with key \"%s\", which is \"%s\".",
                 test, key, I18n.getJSFMessage(key, locale));
-        assertTrue(assertMessage, I18n.isJSFMessage(test, key, locale));
+        assertTrue(I18n.isJSFMessage(test, key, locale), assertMessage);
     }
 
     /**
@@ -62,6 +62,6 @@ public class I18nAssert {
         String assertMessage = String.format(
                 "Test string \"%s\" does not match the UI message with key \"%s\", which is \"%s\".",
                 test, key, I18n.getUIMessage(key, locale));
-        assertTrue(assertMessage, I18n.isUIMessage(test, key, locale));
+        assertTrue(I18n.isUIMessage(test, key, locale), assertMessage);
     }
 }

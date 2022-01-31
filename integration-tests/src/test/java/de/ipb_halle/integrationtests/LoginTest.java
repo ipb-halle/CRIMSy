@@ -27,32 +27,30 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.pageobjects.components.growl.Growl;
 import de.ipb_halle.pageobjects.pages.LoginPage;
 import de.ipb_halle.pageobjects.pages.SearchPage;
-import de.ipb_halle.test.SelenideRule;
+import de.ipb_halle.test.SelenideExtension;
 
 /**
  * @author flange
  */
+@ExtendWith(SelenideExtension.class)
 public class LoginTest {
     private LoginPage loginPage;
     private Locale locale = Locale.ENGLISH;
 
-    @Rule
-    public SelenideRule selenideRule = new SelenideRule();
-
-    @Before
+    @BeforeEach
     public void before() {
         loginPage = open("/", LoginPage.class);
     }
