@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.search.lang;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

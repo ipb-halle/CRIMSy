@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -37,7 +37,7 @@ public class SortItemTest {
     private FastaResultDisplayWrapper wrapper1, wrapper2, wrapper3;
     private List<FastaResultDisplayWrapper> wrappers;
 
-    @Before
+    @BeforeEach
     public void init() {
         List<MaterialName> names1 = Arrays.asList(new MaterialName("firstName1", "en", 1),
                 new MaterialName("secondName1", "de", 100));

@@ -29,8 +29,8 @@
 #   statements for the schema version
 #
 #
-CURRENT_SCHEMA_VERSION=00003
- cd /docker-entrypoint-initdb.d/
+CURRENT_SCHEMA_VERSION=00002
+cd /docker-entrypoint-initdb.d/
 
 function getSchemaVersion {
     LBAC_SCHEMA_VERSION=`echo "\\pset tuples_only on
@@ -38,45 +38,25 @@ function getSchemaVersion {
         | psql lbac | head -1 | tr -d ' '`
 }
 
-function updatePre11 {
-    if [ ! -h /data/db/pgsql ] ; then
-        if [ -e /data/db/pgsql ] ; then
-            mv /data/db/pgsql /data/db/pgsql_96
-            ln -s /data/db/pgsql_96 /data/db/pgsql
-        fi
-    fi
-}
-
-updatePre11
 getSchemaVersion
 echo "Found schema of database             : $LBAC_SCHEMA_VERSION"
 echo "Found target schema in filedefinition: $CURRENT_SCHEMA_VERSION "
 
 while [ "$LBAC_SCHEMA_VERSION" != "$CURRENT_SCHEMA_VERSION" ] ; do
     OLD_SCHEMA_VERSION=$LBAC_SCHEMA_VERSION
+    NEXT_SCHEMA_VERSION=`printf '%05i' $(($LBAC_SCHEMA_VERSION + 1))`
 
-    case $LBAC_SCHEMA_VERSION in
-        00000)
-            echo "Applying 00001.sql ..."
-            cat 00001.sql | psql lbac
-            ;;
-        00002)
-            echo "Applying 00002.sql ..."
-            cat 00002.sql | psql lbac
-            ;;
-        00003)
-            echo "reached head of development"
-            ;;
-    esac
+    echo "Applying $NEXT_SCHEMA_VERSION.sql ..."
+    cat $NEXT_SCHEMA_VERSION.sql | psql lbac
 
     # detect if schema update has succeeded
     getSchemaVersion
-    if test $OLD_SCHEMA_VERSION = $LBAC_SCHEMA_VERSION ; then
+    if [ $OLD_SCHEMA_VERSION = $LBAC_SCHEMA_VERSION ] ; then
         echo "ERROR: Database update failed!"
-        echo "Found old schema: $OLD_SCHEMA_VERSION"
-        echo "Found new schema: $LBAC_SCHEMA_VERSION"
+        echo "Found schema: $OLD_SCHEMA_VERSION"
+        echo "Expected schema: $NEXT_SCHEMA_VERSION"
         exit 1
     fi
 
 done
-
+echo "SUCCESS: Database update succeeded!"

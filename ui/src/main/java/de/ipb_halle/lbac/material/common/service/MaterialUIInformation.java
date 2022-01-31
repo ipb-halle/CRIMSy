@@ -30,8 +30,9 @@ public interface MaterialUIInformation {
      * {@link NavigationConstants#TEMPLATE_FOLDER} that is {@code ui:include}d in
      * the link preview dialog for this material.
      * 
-     * @return path of the facelet template or {@code null} if such a template does
-     *         not exist
+     * @return path of the facelet template, not {@code null}
      */
-    public String getLinkPreviewTemplate();
+    public default String getLinkPreviewTemplate() {
+        return "material/components/linkPreview/noMaterial" + NavigationConstants.TEMPLATE_EXT;
+    }
 }

@@ -60,15 +60,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import javax.inject.Inject;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public abstract class HistoryOperationTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -103,7 +103,7 @@ public abstract class HistoryOperationTest extends TestBase {
     protected MaterialCompositionBean compositionBean;
     protected Taxonomy plantsTaxonomy, mushroomsTaxonomy;
 
-    @Before
+    @BeforeEach
     public void init() {
         setUpDates();
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");

@@ -18,13 +18,13 @@
 package de.ipb_halle.lbac.util.pref;
 
 import de.ipb_halle.lbac.admission.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * This class will provide some test cases around Preferences.
@@ -32,7 +32,7 @@ import org.junit.Before;
 public class PreferenceTest {
     private User user;
 
-    @Before
+    @BeforeEach
     public void beforeTest() {
         this.user = new User();
         user.setName("Preference Tester");

@@ -39,13 +39,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
@@ -55,7 +55,7 @@ import org.junit.runner.RunWith;
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class MaterialCreationSaverTest extends TestBase {
 
     @Inject
@@ -65,14 +65,14 @@ public class MaterialCreationSaverTest extends TestBase {
     @Inject
     private ProjectService projectService;
 
-    @Before
+    @BeforeEach
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         cleanItemsFromDb();
         cleanMaterialsFromDB();
     }
 
-    @After
+    @AfterEach
     public void after() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();

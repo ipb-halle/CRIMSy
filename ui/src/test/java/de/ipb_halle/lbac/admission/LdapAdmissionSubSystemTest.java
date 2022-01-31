@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.admission.mock.LdapHelperMock;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import java.util.HashMap;
 import java.util.List;
@@ -28,22 +27,21 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(Arquillian.class)
+@TestMethodOrder(MethodName.class)
+@ExtendWith(ArquillianExtension.class)
 public class LdapAdmissionSubSystemTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -57,8 +55,9 @@ public class LdapAdmissionSubSystemTest extends TestBase {
     LdapAdmissionSubSystem system;
     LdapHelperMock ldapHelper;
 
-    @Before
+    @BeforeEach
     public final void init() {
+        entityManagerService.doSqlUpdate("DELETE FROM info");
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
         userBean.setLdapProperties(ldapProperties);
@@ -70,12 +69,6 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         ldapHelper = new LdapHelperMock();
         system = new LdapAdmissionSubSystem(ldapHelper);
         ldapProperties.LdapBasicsInit();
-    }
-
-    @After
-    public void finish() {
-        entityManagerService.doSqlUpdate("DELETE FROM info");
-
     }
 
     @Test

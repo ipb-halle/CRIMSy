@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.project.Project;
 import java.util.Date;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

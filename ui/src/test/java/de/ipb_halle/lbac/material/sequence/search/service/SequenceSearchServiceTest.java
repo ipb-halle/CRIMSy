@@ -21,11 +21,11 @@ import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
@@ -50,15 +50,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import javax.ws.rs.core.Response;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
 
 /**
- *
  * @author flange
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class SequenceSearchServiceTest extends TestBase {
-
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -70,16 +70,17 @@ public class SequenceSearchServiceTest extends TestBase {
     @Inject
     private FastaRESTSearchServiceMock mock;
 
-    Project project;
-    int publicAclId;
+    private Project project;
+    private int publicAclId;
 
     private Sequence sequence;
 
     private final String SQL_LOAD_PARAMETER = "SELECT * from temp_search_parameter";
 
-    @Before
+    @BeforeEach
     public void init() {
-        entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
+        mock.setBehaviour(null);
+
         materialService.setStructureInformationSaver(
                 new StructureInformationSaverMock());
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
@@ -87,7 +88,11 @@ public class SequenceSearchServiceTest extends TestBase {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
         projectService.saveProjectToDb(project);
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
+    }
 
+    @AfterEach
+    public void cleanUp() {
+        entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
     }
 
     @Test
@@ -103,17 +108,15 @@ public class SequenceSearchServiceTest extends TestBase {
 
             return Response.ok(result).build();
         });
-
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
         builder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA, 1);
         builder.addMaterialType(MaterialType.SEQUENCE);
 
         SearchResult result = sequenceSearchService.searchSequences(builder.build());
+
         Assert.assertEquals(0, result.getErrorMessages().size());
         Assert.assertEquals(1, result.getAllFoundObjects().size());
-
         Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
-
     }
 
     @Test
@@ -126,25 +129,7 @@ public class SequenceSearchServiceTest extends TestBase {
         builder.addMaterialType(MaterialType.SEQUENCE);
 
         SearchResult result = sequenceSearchService.searchSequences(builder.build());
-        Assert.assertEquals(1, result.getErrorMessages().size());
-        Assert.assertEquals(0, result.getAllFoundObjects().size());
-        Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
-    }
 
-    @Test
-    public void test003_errorAtSqlBuild() {
-        mock.setBehaviour((e) -> {
-            FastaResult fastaResult = new FastaResult();
-            fastaResult.setQueryAlignmentLine("abc");
-            fastaResult.setSubjectSequenceName(String.valueOf(sequence.getId()));
-            FastaSearchResult result = new FastaSearchResult();
-            result.setProgramOutput("def");
-            result.setResults(Arrays.asList(fastaResult));
-
-            return Response.ok(result).build();
-        });
-
-        SearchResult result = sequenceSearchService.searchSequences(null);
         Assert.assertEquals(1, result.getErrorMessages().size());
         Assert.assertEquals(0, result.getAllFoundObjects().size());
         Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
@@ -160,7 +145,53 @@ public class SequenceSearchServiceTest extends TestBase {
         builder.addMaterialType(MaterialType.SEQUENCE);
 
         SearchResult result = sequenceSearchService.searchSequences(builder.build());
+
         Assert.assertEquals(1, result.getErrorMessages().size());
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
+        Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
+    }
+
+    @Test
+    public void test004_errorAtSqlBuild() {
+        SearchResult result = sequenceSearchService.searchSequences(null);
+
+        Assert.assertEquals(1, result.getErrorMessages().size());
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
+        Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
+    }
+
+    @Test
+    public void test005_error404withMessage() {
+        mock.setBehaviour((e) -> {
+            return Response.status(Response.Status.NOT_FOUND).entity("File not found").build();
+        });
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
+        builder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA, 1);
+        builder.addMaterialType(MaterialType.SEQUENCE);
+
+        SearchResult result = sequenceSearchService.searchSequences(builder.build());
+
+        Assert.assertEquals(1, result.getErrorMessages().size());
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
+        Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
+    }
+
+    @Test
+    public void test006_fastaResultsIsNull() {
+        mock.setBehaviour((e) -> {
+            FastaSearchResult result = new FastaSearchResult();
+            result.setProgramOutput("def");
+            result.setResults(null);
+
+            return Response.ok(result).build();
+        });
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
+        builder.setSequenceInformation("AAA", SequenceType.DNA, SequenceType.DNA, 1);
+        builder.addMaterialType(MaterialType.SEQUENCE);
+
+        SearchResult result = sequenceSearchService.searchSequences(builder.build());
+
+        Assert.assertEquals(0, result.getErrorMessages().size());
         Assert.assertEquals(0, result.getAllFoundObjects().size());
         Assert.assertEquals(0, entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER).size());
     }

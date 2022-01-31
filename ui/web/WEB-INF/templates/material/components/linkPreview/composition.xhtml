@@ -26,39 +26,36 @@
       xmlns:b="http://bootsfaces.net/ui">
     <h:body>
         <ui:composition>
-            <b:row style="margin-top:30px">
-                <h:outputText 
-                    value="#{msgs.dlgMaterialView_components}"
-                    style="text-align: center;width: 100%;display: inline-block;" />
+            <b:row style="margin-top:30px">                
                 <b:column>
                     <p:panelGrid style="margin-left:auto">
-                        <p:row styleClass="borderless">
-                            <p:column style="width:100%">
-                                <h:outputText
-                                    styleClass="borderless"
-                                    value="Name" />
+                        <p:row>
+                            <p:column                                 
+                                style="width:100%;font-weight: bold; ">
+                                <h:outputText value="#{msgs.expLink_Composition_tableHeader_name}" />
                             </p:column>
-                            <p:column styleClass="borderless">
-                                <h:outputText value="Typ" />
+                            <p:column
+                                style="font-weight: bold; ">
+                                <h:outputText value="#{msgs.expLink_Composition_tableHeader_type}" />
                             </p:column>
-                            <p:column styleClass="borderless">
-                                <h:outputText value="Concentration(%)" />
+                            <p:column
+                                style="font-weight: bold; ">
+                                <h:outputText value="#{msgs.expLink_Composition_tableHeader_concentration}" />
                             </p:column>
                         </p:row>
                         <ui:repeat
                             var="concentration"
                             value="#{agent.getComponentsOfMaterial()}">
-                            <p:row styleClass="borderless">
-                                <p:column
-                                    style="width:100%"
-                                    styleClass="borderless">
+                            <p:row >
+                                <p:column                                    
+                                    style="width:100%">
                                     <h:outputText value="#{concentration.getMaterial().getFirstName()}" />
                                 </p:column>
-                                <p:column styleClass="borderless">
+                                <p:column>
                                     <h:outputText value="#{agent.getLocalizedMaterialTypeName(concentration.getMaterial())}" />
                                 </p:column>
-                                <p:column styleClass="borderless">
-                                    <h:outputText value="#{concentration.getConcentration()}" />
+                                <p:column>
+                                    <h:outputText value="#{concentration.getConcentrationWithUnit('%.2f')}" />
                                 </p:column>
                             </p:row>
                         </ui:repeat>

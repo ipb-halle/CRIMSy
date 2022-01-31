@@ -37,10 +37,10 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -52,7 +52,7 @@ import static org.junit.Assert.assertEquals;
  * This test class covers substantial code portions of the job, label and
  * printing classes.
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class PrinterTest extends TestBase {
 
     @Inject
@@ -82,7 +82,7 @@ public class PrinterTest extends TestBase {
         return PrintBeanDeployment.add(deployment);
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(this.globalAdmissionContext.getPublicAccount());

@@ -17,7 +17,7 @@
 #
 #==========================================================
 #
-FROM tomee:8-jre-7.1.0-plume
+FROM tomee:8-jre-7.1.4-plume
 
 #
 WORKDIR /install

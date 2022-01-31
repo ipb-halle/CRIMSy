@@ -18,6 +18,15 @@ include(dist/etc/config_m4.inc)dnl
  *
  */
 
+/* Only postgres dbuser can create new dbusers */
+\connect lbac 
+\connect - postgres
+BEGIN TRANSACTION;
+CREATE USER fasta WITH PASSWORD 'fasta'; 
+ALTER USER fasta SET search_path to lbac;
+COMMIT TRANSACTION;
+
+
 \connect lbac 
 \connect - lbac
 \set LBAC_SCHEMA_VERSION '\'00002\''
@@ -69,5 +78,54 @@ ALTER TABLE materials_hist DROP CONSTRAINT materials_hist_pkey;
 ALTER TABLE materials_hist ADD PRIMARY KEY (id,actorid,mdate);
 ALTER TABLE storages_hist DROP CONSTRAINT storages_hist_pkey;
 ALTER TABLE storages_hist ADD PRIMARY KEY (id,actorid,mdate);
+
+
+INSERT INTO materialdetailtypes VALUES(8,'SEQUENCE_INFORMATION');
+
+INSERT INTO materialInformations VALUES(11,5,1,false);
+INSERT INTO materialInformations VALUES(12,5,3,false);
+INSERT INTO materialInformations VALUES(13,5,8,false);
+
+CREATE TABLE sequences (
+        id INTEGER PRIMARY KEY NOT NULL REFERENCES materials(materialid),
+        sequenceString VARCHAR,
+        sequenceType VARCHAR NOT NULL,
+        circular BOOLEAN,
+        annotations VARCHAR
+);
+
+CREATE TABLE sequences_history(
+    id INTEGER NOT NULL REFERENCES sequences(id),
+    actorid INTEGER NOT NULL REFERENCES usersgroups(id),
+    mdate TIMESTAMP NOT NULL,
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    sequenceString_old VARCHAR,
+    sequenceString_new VARCHAR,
+    circular_old BOOLEAN,
+    circular_new BOOLEAN,
+    annotations_old VARCHAR,
+    annotations_new VARCHAR,
+    PRIMARY KEY(id,actorid,mdate)
+);
+
+CREATE TABLE temp_search_parameter (
+  id         SERIAL    NOT NULL PRIMARY KEY,
+  cdate      TIMESTAMP NOT NULL DEFAULT now(),
+  processid  UUID NOT NULL,
+  parameter  JSONB NOT NULL
+);
+
+
+GRANT SELECT ON sequences TO fasta;
+GRANT SELECT ON materials TO fasta;
+GRANT SELECT ON material_compositions TO fasta;
+GRANT SELECT ON acentries TO fasta;
+GRANT SELECT ON memberships TO fasta;
+GRANT SELECT ON temp_search_parameter TO fasta;
+GRANT SELECT ON material_indices TO fasta;
+GRANT SELECT ON usersgroups TO fasta;
+GRANT SELECT ON projects TO fasta;
+GRANT USAGE ON SCHEMA lbac TO fasta;
 
 COMMIT TRANSACTION;

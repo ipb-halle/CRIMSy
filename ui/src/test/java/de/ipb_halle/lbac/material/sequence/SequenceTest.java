@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -44,7 +44,7 @@ public class SequenceTest {
     private SequenceData data;
     private Sequence sequence;
 
-    @Before
+    @BeforeEach
     public void init() {
         data = SequenceData.builder()
                 .sequenceString("AGTTAAGCGTGA")

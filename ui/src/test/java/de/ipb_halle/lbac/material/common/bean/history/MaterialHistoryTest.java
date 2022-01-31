@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.SortedMap;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

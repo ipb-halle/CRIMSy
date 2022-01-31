@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.search.SearchTarget;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

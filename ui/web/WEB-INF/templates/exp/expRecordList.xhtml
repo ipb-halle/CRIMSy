@@ -27,6 +27,7 @@
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:o="http://omnifaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:nwc="http://ipb-halle.de/nwc">
 
     <ui:composition>
@@ -187,14 +188,21 @@
                 </ui:fragment>
             </b:column>
         </b:row>
-        <p:panelGrid 
-                    styleClass="expLinks #{experimentBean.getRowStyle(recStatus.last)}"
-                    columns="10">
-                    <ui:repeat value="#{rec.getLinkNames()}" var="linkName">
-                        <b:badge
-                            styleClass="linkText"
-                            value="#{linkName}" style-class="tag-badge"/>
-                    </ui:repeat>
+        <p:panelGrid
+            styleClass="expLinks #{experimentBean.getRowStyle(recStatus.last)}"
+            columns="10">
+            <ui:repeat
+                value="#{rec.getLinkNames()}"
+                var="linkName">
+                <ui:fragment rendered="#{(rec.facelet eq 'TEXT') and rec.edit}">
+                    <b:badge
+                        value="#{linkName}"
+                        pt:onclick="insertLinkTagIntoQuillEditor('#{linkName}', 'textEditorWidgetVar');" />
+                </ui:fragment>
+                <ui:fragment rendered="#{not ((rec.facelet eq 'TEXT') and rec.edit)}">
+                    <b:badge value="#{linkName}" />
+                </ui:fragment>
+            </ui:repeat>
         </p:panelGrid>
     </b:container>
 </ui:repeat>

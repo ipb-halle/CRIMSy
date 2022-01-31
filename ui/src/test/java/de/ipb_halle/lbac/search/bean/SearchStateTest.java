@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.search.bean;
 import de.ipb_halle.lbac.search.NetObject;
 import java.util.List;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

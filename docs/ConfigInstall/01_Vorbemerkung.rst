@@ -57,7 +57,7 @@ Zusätzlich zu einem minimalen Linux-System erfordern Installation und Betrieb e
 *   tar
 *   sharutils (uuencode / uudecode)
 *   uuidgen
-*   wget (evtl. zukünftig curl)
+*   curl 
 
 Benutzer
 --------

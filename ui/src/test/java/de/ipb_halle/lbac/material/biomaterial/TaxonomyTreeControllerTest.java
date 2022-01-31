@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -36,7 +36,7 @@ public class TaxonomyTreeControllerTest {
 
     TaxonomyTreeController controller;
 
-    @Before
+    @BeforeEach
     public void init() {
         controller = new TaxonomyTreeController(
                 new Taxonomy(0, new ArrayList<>(), new HazardInformation(), new StorageInformation(), new ArrayList<>(), new User(), new Date()), null, null);

@@ -26,12 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * NOTE: This test runs NOT within an Arquillian context and therefore ignores
@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class LdapHelperTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -56,7 +56,7 @@ public class LdapHelperTest extends TestBase {
     public static final String DSF_FILE = "file";
     public static final String DEFAULT_DSF = DSF_FILE;
 
-    @Before
+    @BeforeEach
     public final void init() {
         saveInfo("LDAP_ENABLE", "True");
         saveInfo("LDAP_CONTEXT_PROVIDER_URL", "ldap://localhost:10389");

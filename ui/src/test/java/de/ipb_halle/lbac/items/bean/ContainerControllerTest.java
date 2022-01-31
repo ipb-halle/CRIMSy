@@ -24,8 +24,8 @@ import de.ipb_halle.lbac.items.mocks.ItemBeanContainerControllerMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import java.util.Set;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -39,7 +39,7 @@ public class ContainerControllerTest {
     Container container = new Container();
     ContainerController controller;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         item.setId(1);
         anotherItem.setId(2);

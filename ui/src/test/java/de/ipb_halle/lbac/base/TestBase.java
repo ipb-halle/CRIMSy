@@ -66,7 +66,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Basic Functionality to support specialized tests.
@@ -172,7 +172,7 @@ public class TestBase implements Serializable {
         return archive;
     }
     
-    @Before
+    @BeforeEach
     public final void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
         

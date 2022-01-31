@@ -1,13 +1,13 @@
-FROM cypress/included:5.6.0
+FROM cypress/included:9.1.1
 WORKDIR /app
 
 # dependencies will be installed only if the package files change
 COPY cypress.json .
 COPY package.json .
-COPY package-lock.json .
 
 # setting CI environment varialbe silences install messages on startup
 ENV CI=1
+RUN npm install
 RUN npm ci
 
 # verify correct Cypress installation

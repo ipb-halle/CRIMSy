@@ -26,8 +26,4 @@ import de.ipb_halle.lbac.material.common.service.MaterialUIInformation;
  * @author flange
  */
 public class TissueUIInformation implements MaterialUIInformation {
-    @Override
-    public String getLinkPreviewTemplate() {
-        return null;
-    }
 }

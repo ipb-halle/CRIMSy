@@ -41,19 +41,19 @@ import de.ipb_halle.lbac.project.ProjectService;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class LabelServiceTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -71,7 +71,7 @@ public class LabelServiceTest extends TestBase {
     private ACList publicACList;
     private int itemId;
 
-    @Before
+    @BeforeEach
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUser = context.getPublicAccount();
@@ -81,7 +81,7 @@ public class LabelServiceTest extends TestBase {
 
     }
 
-    @After
+    @AfterEach
     public void finish() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();

@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -45,7 +45,7 @@ public class TaxonomyTest {
     private User user;
     private Taxonomy taxonomy, anotherTaxonomy;
 
-    @Before
+    @BeforeEach
     public void before() {
         user = new User();
         user.setId(userId);

@@ -67,7 +67,23 @@ function cacrl {
 }
 
 #
-# do all the maintenance stuff for this node
+# Refresh the docker containers by forcing a pull from remote 
+# and rebuilding. Usually called once per week.
+#
+function refresh {
+    . $LBAC_DATASTORE/dist/etc/config.sh
+    cd $LBAC_DATASTORE/dist
+    docker-compose down --rmi all --volumes --remove-orphans
+    docker-compose build --pull
+    docker-compose up -d
+    if [ $LBAC_DOCKER_EXCLUSIVE = "ON" ] ; then
+        docker image prune -f
+    fi
+}
+
+#
+# Do the maintenance stuff for this node.
+# Usually called once hourly.
 #
 function update {
     cacrl
@@ -91,7 +107,11 @@ case "$1" in
             test `id -u` -eq 0 || error "The update function must be called as root"
             update
             ;;
+    refresh)
+            test `id -u` -eq 0 || error "The refresh function must be called as root"
+            refresh
+            ;;
     *)
-            error "Usage: updateCloud.sh install | cacrl | update"
+            error "Usage: updateCloud.sh install | cacrl | refresh | update"
 esac
 

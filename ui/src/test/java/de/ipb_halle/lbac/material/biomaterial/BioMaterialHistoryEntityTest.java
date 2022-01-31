@@ -18,10 +18,9 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
-import static de.ipb_halle.lbac.material.common.history.HistoryEntityId_.mdate;
 import java.util.Date;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
