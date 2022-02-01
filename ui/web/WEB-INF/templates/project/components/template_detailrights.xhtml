@@ -25,10 +25,11 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:panel 
+            <b:panel
                 collapsible="false"
                 styleClass="rolePanel"
                 title="#{projectEditBean.getMaterialDetailPanelHeader(action)}">
@@ -36,91 +37,93 @@
                     <b:row>
                         <b:column span="6">
                             <b:dataTable
-                                styleClass="#{action}"
-                                paginated="false"
+                                pt:data-test-id="projectEdit:ACETable"
                                 value="#{projectEditBean.getACEntriesForDetailRole(action)}"
                                 var="acEntry"
+                                styleClass="#{action}"
+                                paginated="false"
                                 saveState="false">
                                 <b:dataTableColumn
-                                    styleClass="projectEdit_aclTable_firstColumn"
                                     value="#{acEntry.getMember().getName()}"
                                     label="#{msgs.projectEdit_projectName}"
-                                    />
+                                    styleClass="projectEdit_aclTable_firstColumn" />
                                 <b:dataTableColumn
+                                    label="#{msgs.projectEdit_tableHeader_read}"
                                     styleClass="projectEdit_aclTable_column"
-                                    orderable="false"
-                                    label="#{msgs.projectEdit_tableHeader_read}">
-                                    <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permRead}"/>
+                                    orderable="false">
+                                    <b:selectBooleanCheckbox
+                                        value="#{acEntry.permRead}"
+                                        style="margin-left: 25px" />
                                 </b:dataTableColumn>
-
                                 <b:dataTableColumn
-                                    styleClass="projectEdit_aclTable_column"
                                     label="#{msgs.projectEdit_tableHeader_edit}"
+                                    styleClass="projectEdit_aclTable_column"
                                     orderable="false">
-                                    <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permEdit}"/>
+                                    <b:selectBooleanCheckbox
+                                        value="#{acEntry.permEdit}"
+                                        style="margin-left: 25px" />
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
+                                    label="#{msgs.projectEdit_tableHeader_delete}"
                                     styleClass="projectEdit_aclTable_column"
-                                    orderable="false"
-                                    label="#{msgs.projectEdit_tableHeader_delete}">
-                                    <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permDelete}"/>
+                                    orderable="false">
+                                    <b:selectBooleanCheckbox
+                                        value="#{acEntry.permDelete}"
+                                        style="margin-left: 25px" />
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
+                                    label="#{msgs.projectEdit_tableHeader_super}"
                                     styleClass="projectEdit_aclTable_column"
-                                    orderable="false"
-                                    label="#{msgs.projectEdit_tableHeader_super}">
-                                    <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permSuper}"/>
+                                    orderable="false">
+                                    <b:selectBooleanCheckbox
+                                        value="#{acEntry.permSuper}"
+                                        style="margin-left: 25px" />
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
-                                    styleClass="projectEdit_aclTable_column"
                                     label=""
+                                    styleClass="projectEdit_aclTable_column"
                                     orderable="false">
-                                    <b:commandButton style="padding: 0 4px;"
-                                                     icon="trash"
-                                                     look="link"
-                                                     ajax="true"
-                                                     process="@this"
-                                                     type="button"
-                                                     onclick="ajax:projectEditBean.removeAceFromRoleTemplateACL(acEntry, '#{action}');" 
-                                                     update="@(.possibleGroupsTable,.#{action})"
-                                                     />
+                                    <b:commandButton
+                                        style="padding: 0 4px;"
+                                        icon="trash"
+                                        look="link"
+                                        ajax="true"
+                                        process="@this"
+                                        type="button"
+                                        onclick="ajax:projectEditBean.removeAceFromRoleTemplateACL(acEntry, '#{action}');" 
+                                        update="@(.possibleGroupsTable,.#{action})" />
                                 </b:dataTableColumn>
                             </b:dataTable>
-
                         </b:column>
-
                         <b:column span="5">
                             <b:dataTable
-                                styleClass="possibleGroupsTable"
-                                paginated="false"
+                                pt:data-test-id="projectEdit:addableGroupsTable"
                                 value="#{projectEditBean.getAddableGroupsForRoleTemplates(action)}"
                                 var="group"
+                                styleClass="possibleGroupsTable"
+                                paginated="false"
                                 saveState="false">
-
                                 <b:dataTableColumn
-                                    styleClass="projectEdit_aclTable_groupsToAdd_firstColumn"
                                     value="#{group.getName()}"
                                     label="#{msgs.aclEdit_modal_table_groupname}"
-                                    />
+                                    styleClass="projectEdit_aclTable_groupsToAdd_firstColumn" />
                                 <b:dataTableColumn
-                                    styleClass="projectEdit_aclTable_column"
                                     value="#{group.getNode().getInstitution()}"
                                     label="#{msgs.aclEdit_modal_table_institution}"
-                                    />
-
-                                <b:dataTableColumn 
-                                    styleClass="projectEdit_aclTable_column"
+                                    styleClass="projectEdit_aclTable_column" />
+                                <b:dataTableColumn
                                     label=""
+                                    styleClass="projectEdit_aclTable_column"
                                     orderable="false">
-                                    <b:commandButton style="padding: 0 4px;"
-                                                     icon-awesome="fa-plus"
-                                                     look="link"
-                                                     ajax="true"
-                                                     process="@this"
-                                                     onclick="ajax:projectEditBean.addAceToRoleTemplate(group, '#{action}');" 
-                                                     type="button"
-                                                     update="@(.possibleGroupsTable,.#{action})"
-                                                     />
+                                    <b:commandButton
+                                        style="padding: 0 4px;"
+                                        icon-awesome="fa-plus"
+                                        look="link"
+                                        ajax="true"
+                                        process="@this"
+                                        onclick="ajax:projectEditBean.addAceToRoleTemplate(group, '#{action}');" 
+                                        type="button"
+                                        update="@(.possibleGroupsTable,.#{action})" />
                                 </b:dataTableColumn>
                             </b:dataTable>
                         </b:column>
@@ -129,5 +132,4 @@
             </b:panel>
         </ui:composition>
     </h:body>
-
 </html>

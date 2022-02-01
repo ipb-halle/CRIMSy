@@ -24,7 +24,9 @@ import java.util.function.Consumer;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.pages.NavigablePage;
+import de.ipb_halle.pageobjects.pages.materials.MaterialOverviewPage;
+import de.ipb_halle.pageobjects.pages.projects.ProjectOverviewPage;
 import de.ipb_halle.pageobjects.pages.SearchPage;
 
 /**
@@ -37,8 +39,8 @@ public enum Navigation {
     WORDCLOUD_SEARCH(Menu.BIOCLOUD, "navigation:wordCloudSearch", null),
     SEQUENCE_SEARCH(Menu.BIOCLOUD, "navigation:sequenceSearch", null),
     FORUM(Menu.BIOCLOUD, "navigation:forum", null),
-    MATERIALS_OVERVIEW(Menu.LIMS, "navigation:materials", null),
-    PROJECTS_OVERVIEW(Menu.LIMS, "navigation:projects", null),
+    MATERIALS_OVERVIEW(Menu.LIMS, "navigation:materials", MaterialOverviewPage.class),
+    PROJECTS_OVERVIEW(Menu.LIMS, "navigation:projects", ProjectOverviewPage.class),
     ITEMS_OVERVIEW(Menu.LIMS, "navigation:items", null),
     TAXONOMY(Menu.LIMS, "navigation:taxonomy", null),
     EXPERIMENTS(Menu.LIMS, "navigation:experiments", null),
@@ -75,10 +77,10 @@ public enum Navigation {
 
     private final Menu menu;
     private final SelenideElement navCmdLink;
-    private final Class<? extends AbstractPage> pageObjectClass;
+    private final Class<? extends NavigablePage> pageObjectClass;
 
     private Navigation(Menu menu, String navCmdLinkTestId,
-            Class<? extends AbstractPage> pageObjectClass) {
+            Class<? extends NavigablePage> pageObjectClass) {
         this.menu = menu;
         this.navCmdLink = $(testId(navCmdLinkTestId));
         this.pageObjectClass = pageObjectClass;
@@ -92,7 +94,7 @@ public enum Navigation {
         return navCmdLink;
     }
 
-    public Class<? extends AbstractPage> getPageObjectClass() {
+    public Class<? extends NavigablePage> getPageObjectClass() {
         return pageObjectClass;
     }
 }

@@ -23,6 +23,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
         <crimsy:acobjectModal
@@ -36,76 +37,70 @@
                     <b:column span="1">
                         <b:commandButton
                             id="newProjectButton"
+                            pt:data-test-id="projectOverview:newProject"
                             value="#{msgs.project_overview_button_new}"
-                            action="#{projectBean.actionStartNewProjectCreation()}"
-                            />
+                            action="#{projectBean.actionStartNewProjectCreation()}" />
                     </b:column>
                 </b:row>
                 <b:row>
                     <b:column span="12">
                         <b:dataTable
-                            styleClass="readableProjectTable"
-                            paginated="false"
                             id="projectTableId"
+                            pt:data-test-id="projectOverview:projectsTable"
                             value="#{projectBean.getReadableProjects()}"
                             var="project"
+                            styleClass="readableProjectTable"
+                            paginated="false"
                             saveState="false">
                             <b:dataTableColumn
                                 label="#{msgs.project_overview_header_name}"
-                                value="#{project.name}">
-                            </b:dataTableColumn>
+                                value="#{project.name}" />
                             <b:dataTableColumn
                                 label="#{msgs.project_overview_header_type}"
-                                value="#{project.projectType}">
-                            </b:dataTableColumn>
+                                value="#{project.projectType}" />
                             <b:dataTableColumn
                                 label="#{msgs.project_overview_header_owner}"
-                                value="#{project.getOwnerName()}">
-                            </b:dataTableColumn>
+                                value="#{project.getOwnerName()}" />
                             <b:dataTableColumn
                                 label=""
                                 orderable="false">
-                                <b:commandButton style="padding: 0 4px;"
-                                                 icon="pencil"
-                                                 look="link"
-                                                 type="submit"
-                                                 ajax="false"
-                                                 tooltip="#{msgs.project_overview_edit}"
-                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
-                                                 action="#{projectBean.actionStartProjectEdit(project)}"
-                                                 />
-                                <b:commandButton style="padding: 0 4px;"
-                                                 icon="glyphicon glyphicon-user"
-                                                 look="link"
-                                                 ajax="true"
-                                                 process="@this"
-                                                 tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                                                 update="@(.acoEditModal)"
-                                                 type="button"
-                                                 onclick="ajax:projectBean.actionStartAclChange(project)"
-                                                 oncomplete="PF('dlgAcl').show();"
-                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"/>
-
-                                <b:commandButton style="padding: 0 4px;"
-                                                 icon="trash"
-                                                 look="link"
-                                                 ajax="true"
-                                                 process="@this"
-                                                 update="@(.readableProjectTable)"
-                                                 type="button"
-                                                 action="#{projectBean.actionDeleteProject(project)}"
-                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
-                                                 tooltip="#{msgs.project_overview_deactivate}"
-                                                 />
+                                <b:commandButton
+                                    style="padding: 0 4px;"
+                                    icon="pencil"
+                                    look="link"
+                                    type="submit"
+                                    ajax="false"
+                                    tooltip="#{msgs.project_overview_edit}"
+                                    disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
+                                    action="#{projectBean.actionStartProjectEdit(project)}" />
+                                <b:commandButton
+                                    style="padding: 0 4px;"
+                                    icon="glyphicon glyphicon-user"
+                                    look="link"
+                                    ajax="true"
+                                    process="@this"
+                                    tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
+                                    update="@(.acoEditModal)"
+                                    type="button"
+                                    onclick="ajax:projectBean.actionStartAclChange(project)"
+                                    oncomplete="PF('dlgAcl').show();"
+                                    disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}" />
+                                <b:commandButton
+                                    style="padding: 0 4px;"
+                                    icon="trash"
+                                    look="link"
+                                    ajax="true"
+                                    process="@this"
+                                    update="@(.readableProjectTable)"
+                                    type="button"
+                                    action="#{projectBean.actionDeleteProject(project)}"
+                                    disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
+                                    tooltip="#{msgs.project_overview_deactivate}" />
                             </b:dataTableColumn>
                         </b:dataTable>
-
                     </b:column>
-
                 </b:row>
-
             </b:container>
         </b:form>
     </h:body>
-
 </html>

@@ -27,22 +27,21 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
-        <b:form 
-            styleClass="defaultFormat"
-            id="frmProject">
-            <ui:insert> 
-                <ui:include src="/WEB-INF/templates/project/components/commonProjectInformationContainer.xhtml"/>
+        <b:form
+            id="frmProject"
+            styleClass="defaultFormat">
+            <ui:insert>
+                <ui:include src="/WEB-INF/templates/project/components/commonProjectInformationContainer.xhtml" />
             </ui:insert>
-
             <p:tabView>
-                <p:tab
-                    title="#{msgs.projectEdit_materialRights_tabName}">
+                <p:tab title="#{msgs.projectEdit_materialRights_tabName}">
                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
-                        <ui:param name="action" value="COMMON_INFORMATION"/>
+                        <ui:param
+                            name="action"
+                            value="COMMON_INFORMATION" />
                     </ui:include>
                 </p:tab>
             </p:tabView>
         </b:form>
     </h:body>
-
 </html>

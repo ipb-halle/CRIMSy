@@ -25,24 +25,25 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
         <ui:composition>
-
             <crimsy:changeOwnerModal
                 acobject="#{projectEditBean.getProjectOwner()}"
                 bean="#{projectEditBean}"
-                updateTargetClass="projectOwnerClass"/>
+                updateTargetClass="projectOwnerClass" />
             <b:container>
                 <b:row>
                     <b:column span="2">
                         <h:outputText
-                            styleClass="projectTitleText"
-                            value="#{msgs.projectEdit_projectName}"/>
+                            value="#{msgs.projectEdit_projectName}"
+                            styleClass="projectTitleText" />
                     </b:column>
                     <b:column span="3">
                         <b:inputText
+                            pt:data-test-id="projectEdit:projectName"
                             value="#{projectEditBean.projectName}"
                             placeholder="#{msgs.projectEdit_projectName_placeHolder}">
                             <f:converter converterId="InputConverter" />
@@ -50,53 +51,53 @@
                     </b:column>
                     <b:column span="4">
                         <h:outputText
-                            styleClass="projectDescriptionTitle"
-                            value="#{msgs.projectEdit_projectDescription}">
-                        </h:outputText>
-                    </b:column>
-                    <b:column 
-                        span="1">
-                        <b:commandButton
-                            value="#{msgs.Cancel}"
-                            action="#{navigator.navigate('project/projectOverview')}"/>
+                            value="#{msgs.projectEdit_projectDescription}"
+                            styleClass="projectDescriptionTitle" />
                     </b:column>
                     <b:column span="1">
                         <b:commandButton
+                            pt:data-test-id="projectEdit:cancel"
+                            value="#{msgs.Cancel}"
+                            action="#{navigator.navigate('project/projectOverview')}" />
+                    </b:column>
+                    <b:column span="1">
+                        <b:commandButton
+                            pt:data-test-id="projectEdit:save"
                             value="#{msgs.Save}"
-                            action="#{projectEditBean.saveProject()}"/>
+                            action="#{projectEditBean.saveProject()}" />
                     </b:column>
                 </b:row> 
                 <b:row>
                     <b:column span="2">
                         <h:outputText
-                            styleClass="projectTitleText"
-                            value="#{msgs.projectEdit_type}"/>
+                            value="#{msgs.projectEdit_type}"
+                            styleClass="projectTitleText" />
                     </b:column>
                     <b:column span="3">
                         <b:selectOneMenu
+                            pt:data-test-id="projectEdit:projectType"
                             value="#{projectEditBean.currentProjectType}"
                             ajax="true"
                             process="@this"
                             update="@(.roleMainPanelClass)">
-                            <f:selectItems 
-                                value="#{projectEditBean.getProjectTypes()}"/>
+                            <f:selectItems value="#{projectEditBean.getProjectTypes()}" />
                         </b:selectOneMenu>
-                    </b:column> 
+                    </b:column>
                     <b:row>
-                        <b:column span="6" >
+                        <b:column span="6">
                             <h:inputTextarea
-                                styleClass="projectDescriptionInputArea"
-                                value="#{projectEditBean.projectDescription}">
+                                pt:data-test-id="projectEdit:projectDescription"
+                                value="#{projectEditBean.projectDescription}"
+                                styleClass="projectDescriptionInputArea">
                                 <f:converter converterId="InputConverter" />
                             </h:inputTextarea>
                         </b:column>
                     </b:row>
                 </b:row>
                 <b:row>
-
                     <b:column span="2">
-
                         <b:commandButton
+                            pt:data-test-id="projectEdit:projectOwnerButton"
                             ajax="true"
                             update="@(.acoEditModal)"
                             look="link"
@@ -105,16 +106,15 @@
                             type="button"
                             oncomplete="PF('dlgChangeOwner').show();"
                             icon-awesome="fa-pencil">
-                            <h:outputText
-                                value="#{msgs.projectEdit_projectOwner}"/>
+                            <h:outputText value="#{msgs.projectEdit_projectOwner}" />
                         </b:commandButton>
-
                     </b:column>
                     <b:column span="3"
                               styleClass="projectOwnerClass">
                         <b:inputText
-                            disabled="true"
-                            value="#{projectEditBean.getProjectOwner().getName()}">
+                            pt:data-test-id="projectEdit:projectOwner"
+                            value="#{projectEditBean.getProjectOwner().getName()}"
+                            disabled="true">
                             <f:converter converterId="InputConverter" />
                         </b:inputText>
                     </b:column>
@@ -122,5 +122,4 @@
             </b:container>
         </ui:composition>
     </h:body>
-
 </html>
