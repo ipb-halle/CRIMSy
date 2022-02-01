@@ -39,7 +39,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.pageobjects.components.growl.Growl;
 import de.ipb_halle.pageobjects.pages.LoginPage;
-import de.ipb_halle.pageobjects.pages.SearchPage;
+import de.ipb_halle.pageobjects.pages.search.SearchPage;
 import de.ipb_halle.test.SelenideExtension;
 
 /**

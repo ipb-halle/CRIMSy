@@ -24,8 +24,8 @@ import java.util.List;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.components.PrimeFacesSelectOneRadio;
 import de.ipb_halle.pageobjects.components.MolecularFacesOpenVectorEditor;
+import de.ipb_halle.pageobjects.components.PrimeFacesSelectOneRadio;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
 
 /**

@@ -22,6 +22,8 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
+import de.ipb_halle.pageobjects.pages.search.SearchPage;
+
 /**
  * Page object for /ui/web/WEB-INF/templates/login.xhtml
  * 

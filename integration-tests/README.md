@@ -7,16 +7,18 @@
 
 #### BootsFaces
 * `<b:commandButton>`: `$(testId("testId"))`
-* `<b:dataTable>`: use `DataTable.extract()` with `$(testId("testId"))`
+* `<b:dataTable>`: use class `DataTable`
 * `<b:inputText>`: `$(testId("input", "testId"))`
 * `<b:inputTextarea>`: `$(testId("textarea", "testId"))`
 * `<b:message>`: `$(testId("testId"))`
+* `<b:navLink>`: `$(testId("a", "testId"))`
 * `<b:selectBooleanCheckbox>`: `$(testId("input", "testId"))`
 * `<b:selectOneMenu>`: `$(testId("select", "testId"))`
 
 #### PrimeFaces
 * `<p:autoComplete>`: `$(testId("testId"))`; TODO: evaluate autocomplete suggestions
 * `<p:commandButton>`: `$(testId("testId"))`
+* `<p:dialog>`: too complex, use class `PrimeFacesDialog`
 * `<p:inputText>`: `$(testId("testId"))`
 * `<p:selectBooleanCheckbox>`: too complex, use class `PrimeFacesSelectBooleanCheckbox`
 * `<p:selectManyCheckbox>`: too complex, use class `PrimeFacesSelectManyCheckbox`

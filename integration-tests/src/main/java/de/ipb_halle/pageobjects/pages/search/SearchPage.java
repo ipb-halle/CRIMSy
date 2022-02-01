@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.pages;
+package de.ipb_halle.pageobjects.pages.search;
 
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
@@ -27,8 +27,8 @@ import java.util.Set;
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.MolecularFacesMolecule;
-import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.navigation.Navigation;
+import de.ipb_halle.pageobjects.pages.NavigablePage;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/default.xhtml
@@ -46,8 +46,8 @@ public class SearchPage extends NavigablePage {
             testId("search:numberOfNewDocumentsBadge"));
     private static final SelenideElement UPLOAD_DOCUMENT_BUTTON = $(
             testId("search:uploadDocumentButton"));
-    private static final SelenideElement SEARCH_RESULTS_TABLE = $(
-            testId("search:searchResultsTable"));
+    private static final SearchResultsTable SEARCH_RESULTS_TABLE = new SearchResultsTable(
+            "search:searchResultsTable");
     private static final SelenideElement TOGGLE_ADVANCED_SEARCH_BUTTON = $(
             testId("search:toggleAdvancedSearchButton"));
     private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule(
@@ -155,8 +155,8 @@ public class SearchPage extends NavigablePage {
     /**
      * @return page object of the results data table
      */
-    public DataTable getSearchResultsTable() {
-        return DataTable.extract(SEARCH_RESULTS_TABLE);
+    public SearchResultsTable getSearchResultsTable() {
+        return SEARCH_RESULTS_TABLE;
     }
 
     public SelenideElement getSearchText() {

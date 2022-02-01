@@ -27,7 +27,7 @@ import com.codeborne.selenide.SelenideElement;
 import de.ipb_halle.pageobjects.pages.NavigablePage;
 import de.ipb_halle.pageobjects.pages.materials.MaterialOverviewPage;
 import de.ipb_halle.pageobjects.pages.projects.ProjectOverviewPage;
-import de.ipb_halle.pageobjects.pages.SearchPage;
+import de.ipb_halle.pageobjects.pages.search.SearchPage;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/navigation.xhtml

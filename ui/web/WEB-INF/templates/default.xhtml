@@ -26,84 +26,88 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
-
-
     <h:body>
         <ui:composition>
             <ui:insert name="fileupload">
-                <ui:include src="/WEB-INF/templates/fileupload.xhtml"/>
+                <ui:include src="/WEB-INF/templates/fileupload.xhtml" />
             </ui:insert>
-            <b:form horizontal="true" id="form1">
+            <b:form
+                 id="form1"
+                horizontal="true">
                 <b:row>
                     <b:column span="10">
-                        <b:jumbotron id="jumboHeader" styleClass="defaultFormat">
+                        <b:jumbotron
+                            id="jumboHeader"
+                            styleClass="defaultFormat">
                             <b:row id="lbac_logo">
-                                <b:image name="img/cloudlogo.svg"
-                                         id="cloudlogo"
-                                         styleClass="img-responsive,centerPanel"/>
+                                <b:image
+                                    id="cloudlogo"
+                                    name="img/cloudlogo.svg"
+                                    styleClass="img-responsive,centerPanel" />
                             </b:row>
                         </b:jumbotron>
 
                         <b:row styleClass="defaultFormat">
-                            <b:column colMd="#{searchBean.getTextFieldLength()}"
-                                      colXs="#{searchBean.getTextFieldLength()}" 
-                                      offset="1">
-
-                                <b:poll id="searchPoll"
-                                        interval="#{searchBean.getPollIntervall()}" 
-                                        update="spinningIcon newDocumentsBadge searchPoll addDocumentButton"/>
-
-                                <b:inputText pt:data-test-id="search:searchText"
-                                             styleClass="searchRequest"
-                                             placeholder="#{msgs.searchMgr_searchtext_placeholder}"
-                                             required="false" label=""
-                                             value="#{searchBean.searchFilter.searchTerms}"
-                                             labelColXs="0" labelColMd="0">
-
+                            <b:column
+                                colMd="#{searchBean.getTextFieldLength()}"
+                                colXs="#{searchBean.getTextFieldLength()}" 
+                                offset="1">
+                                <b:poll
+                                    id="searchPoll"
+                                    interval="#{searchBean.getPollIntervall()}" 
+                                    update="spinningIcon newDocumentsBadge searchPoll addDocumentButton" />
+                                <b:inputText
+                                    pt:data-test-id="search:searchText"
+                                    value="#{searchBean.searchFilter.searchTerms}"
+                                    styleClass="searchRequest"
+                                    placeholder="#{msgs.searchMgr_searchtext_placeholder}"
+                                    required="false"
+                                    label=""
+                                    labelColXs="0" labelColMd="0">
                                     <f:facet name="prepend">
-                                        <b:iconAwesome name="cloud"/>
+                                        <b:iconAwesome name="cloud" />
                                     </f:facet>
                                     <f:facet name="append">
-                                        <b:commandButton pt:data-test-id="search:searchButton"
-                                                         look="primary"
-                                                         value=""
-                                                         style="margin-left: 8px"
-                                                         type="submit"
-                                                         action="#{searchBean.actionTriggerSearch()}"
-                                                         ajax="true"
-                                                         update="@form  spinningIcon newDocumentsBadge"
-                                                         icon="search"
-                                                         icon-align="left"/>
+                                        <b:commandButton
+                                            pt:data-test-id="search:searchButton"
+                                            look="primary"
+                                            value=""
+                                            style="margin-left: 8px"
+                                            type="submit"
+                                            action="#{searchBean.actionTriggerSearch()}"
+                                            ajax="true"
+                                            update="@form  spinningIcon newDocumentsBadge"
+                                            icon="search"
+                                            icon-align="left" />
                                     </f:facet>
                                 </b:inputText>
-
-
                             </b:column>
-                            <b:column  col-xs="1"
-                                       col-lg="1"
-                                       col-md="1"
-                                       col-sm="1">
-
-                                <b:commandButton pt:data-test-id="search:refreshResultsButton"
-                                                 look="primary"
-                                                 styleClass="#{searchBean.getActualizeButtonStyleClass()}"
-                                                 tooltip="#{msgs.searchMgr_refreshButton_tooltip}"
-                                                 id="addDocumentButton"
-                                                 type="button"
-                                                 action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
-                                                 ajax="true"
-                                                 update="foundObjectDataTableId newDocumentsBadge spinningIcon addDocumentButton"
-                                                 icon-align="right"
-                                                 process="@form"
-                                                 rendered="true"
-                                                 value="#{msgs.searchMgr_fetchButton}">
+                            <b:column
+                                col-xs="1"
+                                col-lg="1"
+                                col-md="1"
+                                col-sm="1">
+                                <b:commandButton
+                                    id="addDocumentButton"
+                                    pt:data-test-id="search:refreshResultsButton"
+                                    look="primary"
+                                    styleClass="#{searchBean.getActualizeButtonStyleClass()}"
+                                    tooltip="#{msgs.searchMgr_refreshButton_tooltip}"
+                                    type="button"
+                                    action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
+                                    ajax="true"
+                                    update="foundObjectDataTableId newDocumentsBadge spinningIcon addDocumentButton"
+                                    icon-align="right"
+                                    process="@form"
+                                    rendered="true"
+                                    value="#{msgs.searchMgr_fetchButton}">
                                     <b:badge
                                         id="newDocumentsBadge"
                                         pt:data-test-id="search:numberOfNewDocumentsBadge"
                                         value="#{searchBean.getAmountOfNotShownObjects()}"
                                         style="margin-left: 4px"
                                         styleClass="pc_badge" />
-                                    <b:iconAwesome 
+                                    <b:iconAwesome
                                         style="margin-left: 4px"
                                         styleClass="pc_icon"
                                         id="spinningIcon"
@@ -111,24 +115,24 @@
                                         spin="#{searchBean.isSearchActive()}"
                                         size="1x" />#{'   '}
                                 </b:commandButton>
-
                             </b:column>
-                            <b:column 
+                            <b:column
                                 offset="1"
                                 col-xs="3"
                                 col-lg="3"
                                 col-md="3"
                                 col-sm="3">
-                                <b:button pt:data-test-id="search:uploadDocumentButton"
-                                          icon="cloud-upload"
-                                          value="#{msgs.searchMgr_uploadbutton}"
-                                          update="@none"
-                                          icon-size="1x"
-                                          look="info"
-                                          onclick="$('tbody.files').find('tr').remove();
-                                              PF('fileUploadModal').show()"
-                                          styleClass="documentUploadButton" 
-                                          rendered="#{userBean.hasUploadPermission()}"/>
+                                <b:button
+                                    pt:data-test-id="search:uploadDocumentButton"
+                                    icon="cloud-upload"
+                                    value="#{msgs.searchMgr_uploadbutton}"
+                                    update="@none"
+                                    icon-size="1x"
+                                    look="info"
+                                    onclick="$('tbody.files').find('tr').remove();
+                                        PF('fileUploadModal').show()"
+                                    styleClass="documentUploadButton" 
+                                    rendered="#{userBean.hasUploadPermission()}" />
                             </b:column>
                         </b:row>
                         <b:row styleClass="defaultFormat">
@@ -139,42 +143,40 @@
                                 var="searchable"
                                 styleClass="foundObjectDataTable"
                                 saveState="false">
-                                <b:dataTableColumn
-                                    label="#{msgs.searchMgr_resulttable_name}">
+                                <b:dataTableColumn label="#{msgs.searchMgr_resulttable_name}">
                                     <b:navLink
-                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                                        pt:data-test-id="search:searchResultsTable:link"
+                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}"
                                         value="#{searchBean.netObjectPresenter.getName(searchable)}"
-                                        rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}"
-                                        />
+                                        rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}" />
                                     <b:commandLink
-                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                                        pt:data-test-id="search:searchResultsTable:link"
+                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}"
                                         action="#{searchBean.navigateToObject(searchable)}"
                                         value="#{searchBean.netObjectPresenter.getName(searchable)}"
-                                        rendered="#{searchBean.netObjectPresenter.isInternalLinkVisible(searchable)}"
-                                        />
+                                        rendered="#{searchBean.netObjectPresenter.isInternalLinkVisible(searchable)}" />
                                     <b:commandLink
+                                        pt:data-test-id="search:searchResultsTable:link"
                                         href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
                                         disabled="true"
                                         value="#{searchBean.netObjectPresenter.getName(searchable)}"
-                                        rendered="#{searchBean.netObjectPresenter.isExternalLinkVisible(searchable)}"
-                                        />
-
+                                        rendered="#{searchBean.netObjectPresenter.isExternalLinkVisible(searchable)}" />
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
-                                    label="#{msgs.searchMgr_resulttable_location}"
-                                    value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"/>
+                                    value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"
+                                    label="#{msgs.searchMgr_resulttable_location}" />
                                 <b:dataTableColumn
-                                    label="#{msgs.searchMgr_resulttable_type}"
-                                    value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"/>
+                                    value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"
+                                    label="#{msgs.searchMgr_resulttable_type}" />
                                 <b:dataTableColumn
-                                    label="#{msgs.searchMgr_resulttable_relevance}"
-                                    value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
+                                    value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"
+                                    label="#{msgs.searchMgr_resulttable_relevance}" />
                             </b:dataTable>
-
                         </b:row>
                     </b:column>
-                    <b:column span="2"
-                              styleClass="advancedSearchColumn">
+                    <b:column
+                        span="2"
+                        styleClass="advancedSearchColumn">
                         <b:row>
                             <b:column span="1">
                                 <b:commandButton
@@ -183,112 +185,118 @@
                                     ajax="true"
                                     update="@(.advancedSearchColumn)"
                                     action="#{searchBean.toogleAdvancedSearch()}"
-                                    icon-awesome="#{searchBean.getAdvancedSearchIcon()}"/>
+                                    icon-awesome="#{searchBean.getAdvancedSearchIcon()}" />
                             </b:column>
-                            <b:column span="9" offset="1">
+                            <b:column
+                                span="9"
+                                offset="1">
                                 <h:outputText
-                                    styleClass="advancedSearchHeaderTitle"
-                                    value="#{msgs.searchMgr_advancedSearch_title}"/>
+                                    value="#{msgs.searchMgr_advancedSearch_title}"
+                                    styleClass="advancedSearchHeaderTitle" />
                             </b:column>
                         </b:row>
                         <b:row>
                             <b:column span="12">
-                                <p:tabView
-                                    rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
+                                <p:tabView rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
                                     <p:tab title="#{msgs.searchMgr_advancedSearch_types}">
                                         <b:row>
-                                            <b:column span="1"
-                                                      styleClass="advancedSearchHeader">
-                                                <h:outputText
-                                                    value="#{msgs.searchMgr_advancedSearch_types}"/>
+                                            <b:column
+                                                span="1"
+                                                styleClass="advancedSearchHeader">
+                                                <h:outputText value="#{msgs.searchMgr_advancedSearch_types}" />
                                             </b:column>
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="advancedSearchHeader">
+                                            <b:column
+                                                span="1"
+                                                offset="4"
+                                                styleClass="advancedSearchHeader">
                                                 <h:outputText value="#{msgs.searchMgr_advancedSearch_material_types}" />
                                             </b:column>
                                         </b:row>
                                         <b:row>
-                                            <b:column span="1"
-                                                      styleClass="rightLabeledCbx">
+                                            <b:column
+                                                span="1"
+                                                styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
                                                     pt:data-test-id="search:filterDocumentCheckbox"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.documents}"
                                                     label="#{msgs.search_category_DOCUMENT}"
-                                                    ajax="true"
-                                                    value="#{searchBean.getSearchFilter().typeFilter.documents}"/>
+                                                    ajax="true" />
                                             </b:column>
-
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="rightLabeledCbx">
+                                            <b:column
+                                                span="1"
+                                                offset="4"
+                                                styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
                                                     pt:data-test-id="search:filterStructureCheckbox"
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
                                                     ajax="true"
-                                                    label="#{msgs.search_category_STRUCTURE}"/>
+                                                    label="#{msgs.search_category_STRUCTURE}" />
                                             </b:column>
                                         </b:row>
                                         <b:row>
-                                            <b:column span="1"
-                                                      styleClass="rightLabeledCbx">
+                                            <b:column
+                                                span="1"
+                                                styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
                                                     pt:data-test-id="search:filterMaterialCheckbox"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.materials}"
                                                     label="#{msgs.search_category_MATERIAL}"
                                                     ajax="true"
-                                                    update="@(.materialTypeFilter)"
-                                                    value="#{searchBean.getSearchFilter().typeFilter.materials}"/>
+                                                    update="@(.materialTypeFilter)" />
                                             </b:column>
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="rightLabeledCbx">
+                                            <b:column
+                                                span="1"
+                                                offset="4"
+                                                styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
                                                     pt:data-test-id="search:filterBioMaterialCheckbox"
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
                                                     ajax="true"
-                                                    label="#{msgs.search_category_BIOMATERIAL}"/>
+                                                    label="#{msgs.search_category_BIOMATERIAL}" />
                                             </b:column>
                                         </b:row>
                                         <b:row>
-                                            <b:column span="1"
-                                                      styleClass="rightLabeledCbx">
+                                            <b:column
+                                                span="1"
+                                                styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
                                                     pt:data-test-id="search:filterItemCheckbox"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.items}"
                                                     label="#{msgs.search_category_ITEM}"
-                                                    ajax="true"
-                                                    value="#{searchBean.getSearchFilter().typeFilter.items}"/>
+                                                    ajax="true" />
                                             </b:column>
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="rightLabeledCbx">
+                                            <b:column
+                                                span="1"
+                                                offset="4"
+                                                styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
                                                     pt:data-test-id="search:filterSequenceCheckbox"
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
                                                     ajax="true"
-                                                    label="#{msgs.search_category_SEQUENCE}"/>
+                                                    label="#{msgs.search_category_SEQUENCE}" />
                                             </b:column>
                                         </b:row>
                                         <b:row>
-                                            <b:column span="1"
-                                                      styleClass="rightLabeledCbx">
+                                            <b:column
+                                                span="1"
+                                                styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
                                                     pt:data-test-id="search:filterExperimentCheckbox"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.experiments}"
                                                     label="#{msgs.search_category_EXPERIMENT}"
-                                                    ajax="true"
-                                                    value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
+                                                    ajax="true" />
                                             </b:column>
-                                             <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="rightLabeledCbx">
+                                            <b:column
+                                                span="1"
+                                                offset="4"
+                                                styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
                                                     pt:data-test-id="search:filterCompositionCheckbox"
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.compositions}"
                                                     ajax="true"
-                                                    label="#{msgs.search_category_COMPOSITION}"/>
+                                                    label="#{msgs.search_category_COMPOSITION}" />
                                             </b:column>
                                         </b:row>
-
-
-
                                         <b:row>
                                             <b:column span="2">
                                                 <mol:molecule
@@ -309,7 +317,6 @@
                     </b:column>
                 </b:row>
             </b:form>
-
         </ui:composition>
     </h:body>
 </html>
