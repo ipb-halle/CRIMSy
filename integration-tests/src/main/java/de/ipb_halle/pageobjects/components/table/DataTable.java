@@ -17,10 +17,11 @@
  */
 package de.ipb_halle.pageobjects.components.table;
 
+import static com.codeborne.selenide.Selenide.$;
+import static de.ipb_halle.pageobjects.util.Selectors.testId;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
@@ -35,69 +36,101 @@ public class DataTable {
     private static final Condition EMPTY_CONDITION = new CssClass(
             "dataTables_empty");
 
-    private final List<String> columns;
-    private final Map<String, List<SelenideElement>> data;
+    private final SelenideElement table;
 
-    private DataTable(List<String> columns,
-            Map<String, List<SelenideElement>> data) {
-        this.columns = columns;
-        this.data = data;
+    public DataTable(String testId) {
+        table = $(testId(testId));
     }
 
-    /**
-     * Immediately extract all cells of the given table to a page object.
-     * 
-     * @param table
-     * @return page object
+    /*
+     * Getters
      */
-    public static DataTable extract(SelenideElement table) {
-        Map<String, List<SelenideElement>> data = new HashMap<>();
-        List<String> cols = table.$$("thead tr th").texts();
-        for (String col : cols) {
-            data.put(col, new ArrayList<>());
-        }
-
-        ElementsCollection rows = table.$$("tbody tr");
-        for (SelenideElement row : rows) {
-            ElementsCollection elements = row.$$("td");
-            for (int i = 0; i < elements.size(); i++) {
-                data.get(cols.get(i)).add(elements.get(i));
-            }
-        }
-
-        return new DataTable(cols, data);
-    }
-
     /**
      * @return {@code true} if the table is empty
      */
     public boolean isEmpty() {
-        return getCell(columns.get(0), 0).has(EMPTY_CONDITION);
+        return getCell(0, 0).has(EMPTY_CONDITION);
     }
 
     /**
      * @return all column names
      */
-    public List<String> getColumns() {
-        return columns;
+    public List<String> getColumnNames() {
+        return table.$$("thead tr th").texts();
     }
 
     /**
      * @param colName
-     * @return list with row elements (&lt;td&gt;) for the given column name or
-     *         {@code null} if the column does not exist.
+     * @return list with row elements (&lt;td&gt;) for the given column name
      */
     public List<SelenideElement> getCol(String colName) {
-        return data.get(colName);
+        int index = getIndexOfCol(colName);
+        return getCol(index);
+    }
+
+    /**
+     * @param colIndex
+     * @return list with row elements (&lt;td&gt;) for the given column index
+     */
+    public List<SelenideElement> getCol(int colIndex) {
+        List<SelenideElement> results = new ArrayList<>();
+
+        ElementsCollection rows = table.$$("tbody tr");
+        for (SelenideElement row : rows) {
+            results.add(row.$$("td").get(colIndex));
+        }
+        return results;
+    }
+
+    /**
+     * @param rowIndex
+     * @return list with column elements (&lt;td&gt;) for the given row index
+     */
+    public ElementsCollection getRow(int rowIndex) {
+        return table.$$("tbody tr").get(rowIndex).$$("td");
     }
 
     /**
      * @param colName
-     * @param row
-     * @return cell content for the given column name and row number (starting
-     *         with index 0)
+     * @param rowIndex
+     * @return cell content for the given column name and row index
      */
-    public SelenideElement getCell(String colName, int row) {
-        return data.get(colName).get(row);
+    public SelenideElement getCell(String colName, int rowIndex) {
+        int col = getIndexOfCol(colName);
+        return getCell(col, rowIndex);
+    }
+
+    /**
+     * @param colIndex
+     * @param rowIndex
+     * @return cell content for the given column and row indices
+     */
+    public SelenideElement getCell(int colIndex, int rowIndex) {
+        return getRow(rowIndex).get(colIndex);
+    }
+
+    private int getIndexOfCol(String colName) {
+        ElementsCollection cols = table.$$("thead tr th");
+        for (int i = 0; i < cols.size(); i++) {
+            String name = cols.get(i).text();
+            if (colName.equals(name)) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Column with name '" + colName
+                + "' does not exist in table " + table);
+    }
+
+    /*
+     * Fluent assertions
+     */
+    public DataTable shouldBeEmpty() {
+        getCell(0, 0).shouldBe(EMPTY_CONDITION);
+        return this;
+    }
+
+    public DataTable shouldNotBeEmpty() {
+        getCell(0, 0).shouldNotBe(EMPTY_CONDITION);
+        return this;
     }
 }
