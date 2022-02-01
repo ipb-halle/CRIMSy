@@ -171,24 +171,38 @@ function cleanUp {
 	popd >/dev/null
 }
 
-function copyCert {
-        cp $LBAC_CA_DIR/chain.txt         $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.chain
-        cp $LBAC_CA_DIR/addresses.txt $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/addresses.txt
-        cp $LBAC_CA_DIR/truststore        $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.truststore
-        cp $LBAC_CA_DIR/truststore.passwd $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.trustpass
+function copyConfig {
+    #
+    cp config/releases target/dist/etc
+    cp $LBAC_REPO/config/$LBAC_CLOUD/master.sh $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/
+    cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/devcert.pem
+    cp $LBAC_CA_DIR/chain.pem $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/chain.pem
+    cp $LBAC_CA_DIR/addresses.txt $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/addresses.txt
 }
 
 function copyFiles {
-
     #
-    cp $LBAC_REPO/config/$LBAC_CLOUD/master.sh target/dist/etc/$LBAC_CLOUD/
     cp util/systemd/system/lbac.service.m4 target/dist/etc
+    cp util/etc/docker-compose.yml.m4 target/dist/etc
+    cp -r util/etc/proxy_conf target/dist/etc
 
-    #
+    pushd $LBAC_REPO/ui >/dev/null
+    REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
+    MAJOR=`echo $REVISION | cut -d. -f1`
+    MINOR=`echo $REVISION | cut -d. -f2`
+    RELEASE="$MAJOR.$MINOR"
+    popd >/dev/null
+
+    sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
+    sed -e "s,CLOUDCONFIG_CURRENT_RELEASE,$RELEASE," | \
+    sed -e "s,CLOUDCONFIG_CLOUD_NAME,$LBAC_CLOUD," > target/dist/bin/configure.sh
+
+    cp util/bin/chainsplit.pl target/dist/bin
     cp util/bin/join.sh target/dist/bin
     cp util/bin/lbacInit.sh target/dist/bin
+    cp util/bin/setup.sh target/dist/bin
     cp util/bin/setupROOT.sh target/dist/bin
-    cp util/bin/updateCloud.sh target/dist/bin
+    cp util/bin/update.sh target/dist/bin
 }
 
 function error {
@@ -197,13 +211,19 @@ function error {
 	exit 1
 }
 
-function genPackage {
+function genDist {
     cleanUp
     copyFiles
+    packageBin
+    cleanTmp
+}
+
+function genPackage {
+    cleanUp
     masterConfig
     makeCert
-    copyCert
-    package
+    copyConfig
+    packageCfg
     cleanTmp
 }
 
@@ -221,33 +241,32 @@ function masterConfig {
 	echo "LBAC_NODE_RANK=\"$LBAC_NODE_RANK\"" >> target/dist/etc/$LBAC_CLOUD/master.sh
 }
 
-function package {
+function packageBin {
+	pushd target >/dev/null
+	tar -czf - dist/bin dist/etc | base64 | \
+        openssl smime -sign \
+          -signer $LBAC_CA_DIR/$DEV_CERT.pem \
+          -inkey $LBAC_CA_DIR/$DEV_CERT.key -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd \
+          -md sha256 -out dist-bin.tar.gz.asc.sig
+
+        echo "Upload signed binary package ..."
+        chmod go+r dist-bin.tar.gz.asc.sig
+        scp -p dist-bin.tar.gz.asc.sig $SCP_ADDR
+        popd >/dev/null
+}
+
+function packageCfg {
 	pushd target > /dev/null
-
-        #
-        # Standard installation package
-        #
-	tar -czf - dist | uuencode -m - | cat ../util/bin/setup.sh - | \
-	openssl smime -encrypt -binary -stream -outform PEM -aes-256-cbc \
-	  $LBAC_CA_DIR/cloud/$LBAC_CERT_IDENTIFIER.pem | openssl smime -sign \
-	  -signer $LBAC_CA_DIR/$DEV_CERT.pem -nocerts -stream \
-	  -inkey $LBAC_CA_DIR/$DEV_CERT.key -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd \
-	  -md sha256 -out $LBAC_INSTITUTION_MD5.asc.sig
-
-        #
-        # Package for joining additional cloud
-        #
         tar -czf - dist/etc/$LBAC_CLOUD | \
         openssl smime -encrypt -binary -stream -outform PEM -aes-256-cbc \
           $LBAC_CA_DIR/cloud/$LBAC_CERT_IDENTIFIER.pem | openssl smime -sign \
           -signer $LBAC_CA_DIR/$DEV_CERT.pem -nocerts -stream \
           -inkey $LBAC_CA_DIR/$DEV_CERT.key -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd \
-          -md sha256 -out $LBAC_INSTITUTION_MD5.$LBAC_CLOUD
+          -md sha256 -out $LBAC_INSTITUTION_MD5.asc.sig
 
-        echo "Die verschlüsselten Installationspakete stehen bereit. Starte upload ..."
-        chmod go+r $LBAC_INSTITUTION_MD5.* 
+        echo "Upload signed configuration and certificate files ..."
+        chmod go+r $LBAC_INSTITUTION_MD5.asc.sig
         scp -p $LBAC_INSTITUTION_MD5.asc.sig $SCP_ADDR
-        scp -p $LBAC_INSTITUTION_MD5.$LBAC_CLOUD $SCP_ADDR
 
 	popd >/dev/null
 }
@@ -275,6 +294,8 @@ cleanTmp
 mkdir -p target
 
 . config/$LBAC_CLOUD/CA/cloud.cfg
+
+genDist
 
 case $2 in
     MASTER)

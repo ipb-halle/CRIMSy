@@ -53,7 +53,7 @@ function createNodeConfig {
     cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | \
         cut -c9-18 | \
         sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    url="http://`hostname -f`:8000/$cloud"
+    crimsyhost="http://`hostname -f`"
 
     echo "executing createNodeConfig for host $dst ($key) ..."
 
@@ -61,7 +61,7 @@ function createNodeConfig {
     scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
 
     echo "executing configBatch.sh ..."
-    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $url $key"
+    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $crimsyhost $cloud $key"
 
     echo "fetching node configuration ..."
     scp -q -o "StrictHostKeyChecking no" $dst:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
@@ -125,7 +125,10 @@ function runDistServer {
         --mount type=bind,src=`realpath target/integration/htdocs`,dst=/usr/local/apache2/htdocs \
         --hostname `hostname -f` \
         --detach --name crimsyci_service \
-        crimsyci
+
+    (docker inspect crimsyreg_service | grep Status | grep -q running ) && docker stop crimsyreg_service
+    docker inspect crimsyreg_service >/dev/null 2>&1 && docker rm crimsyreg_service
+    docker run registry -p 5000:5000 --hostname `hostname -f` --detach --name crimsyreg_service
 }
 
 #
@@ -220,13 +223,16 @@ EOF
 #
 #
 #
-function setup {
+function setupFunc {
     cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
         xargs -i /bin/bash -c setupTestCAconf "{}"
 
     echo "=== Distribution Server ==="
     buildDistServer
     runDistServer
+
+    echo "=== Build Docker Images ==="
+    $LBAC_REPO/util/bin/buildDocker.sh http://`hostname -f`:5000
 
     echo "=== Setup ROOT CA ==="
     setupTestRootCA
@@ -380,6 +386,10 @@ function teardown {
     # remove target directory (needs root privilege)
     sudo rm -r config/ target/
 
+    docker stop crimsyci_service
+    docker stop crimsyreg_service
+    docker container prune -f
+
     echo "*****************************************************************"
     echo "*                                                               *"
     echo "* TEARDOWN FINISHED                                             *"
@@ -471,7 +481,7 @@ function mainFunc {
     if [ -n "$SETUP" ] ; then
         echo "setup"
         mvn --batch-mode -DskipTests clean install
-        setup
+        setupFunc
     fi
 
     if [ -n "$RUNTESTS" ] ; then

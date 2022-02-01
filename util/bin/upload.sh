@@ -30,8 +30,17 @@ export LBAC_CA_DIR="$LBAC_REPO/config/$CLOUD/CA"
 
 echo LBAC_REPO=$LBAC_REPO
 
+
+pushd $LBAC_REPO/ui >/dev/null
+REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
+MAJOR=`echo $REVISION | cut -d. -f1`
+MINOR=`echo $REVISION | cut -d. -f2`
+RELEASE="$MAJOR.$MINOR"
+popd >/dev/null
+
 mkdir -p $LBAC_REPO/target
 sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
+sed -e "s,CLOUDCONFIG_CURRENT_RELEASE,$RELEASE," | \
 sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
 openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
   -md sha256 -binary -out $LBAC_REPO/target/configure.sh.sig \
@@ -39,7 +48,7 @@ openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
   -inkey $LBAC_CA_DIR/$DEV_CERT.key \
   -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd 
 
-cp $LBAC_CA_DIR/chain.txt $LBAC_REPO/target/
+cp $LBAC_CA_DIR/chain.pem $LBAC_REPO/target/
 cp $LBAC_CA_DIR/$DEV_CERT.pem  $LBAC_REPO/target/devcert.pem
 
 pushd $LBAC_REPO/target > /dev/null
@@ -59,7 +68,7 @@ unserer <a href="https://github.com/ipb-halle/CRIMSy">Projektseite</a>.
 <ul>
 <li><a href="https://www.leibniz-wirkstoffe.de/CRIMSy/docu/CRIMSy.pdf">Handbücher</a> (PDF)</li>
 <li><a href="configure.sh.sig">configure.sh.sig</a> das PEM-kodierte und signierte Installationsskript</li>
-<li><a href="chain.txt">chain.txt</a> LBAC Zertifikatskette</li>
+<li><a href="chain.pem">chain.pem</a> LBAC Zertifikatskette</li>
 <li><a href="devcert.pem">devcert.pem</a> Code-Signing-Zertifikat</li>
 </ul>
 
@@ -69,11 +78,11 @@ Verwenden Sie am besten den folgenden Code-Schnipsel, der auch die Prüfung der 
 <div style="border-radius:25px ; padding: 20px; background: #d0ffd0">
 <pre>
 curl --output configure.sh.sig $DOWNLOAD_URL/configure.sh.sig
-curl --output chain.txt $DOWNLOAD_URL/chain.txt
+curl --output chain.pem $DOWNLOAD_URL/chain.pem
 curl --output devcert.pem $DOWNLOAD_URL/devcert.pem
-sha256sum chain.txt 
-openssl verify -CAfile chain.txt devcert.pem
-openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.txt -out configure.sh 
+sha256sum chain.pem 
+openssl verify -CAfile chain.pem devcert.pem
+openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.pem -out configure.sh 
 </pre></div></div>
 
 Idealerweise haben Sie die SHA-256 Prüfsumme der Zertifikatskette der <i>$CLOUD_NAME CA</i>
@@ -85,11 +94,11 @@ Sie bitte die Ausgaben der letzten drei Kommandos mit folgenden Werten (in Rot d
 <div style="border-radius:25px ; padding: 20px; background: #ffffd0">
 <pre>
 [...]
-~&gt; sha256sum chain.txt
-<span style="color: #ff0000; font-weight: bold">`sha256sum chain.txt`</span>
-~&gt; openssl verify -CAfile chain.txt devcert.pem
+~&gt; sha256sum chain.pem
+<span style="color: #ff0000; font-weight: bold">`sha256sum chain.pem`</span>
+~&gt; openssl verify -CAfile chain.pem devcert.pem
 <span style="color: #ff0000; font-weight: bold">devcert.pem: OK</span>
-~&gt; openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.txt -out configure.sh
+~&gt; openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.pem -out configure.sh
 <span style="color: #ff0000; font-weight: bold">Verification successful</span>
 </pre></div></div>
 
@@ -105,7 +114,7 @@ chmod +x configure.sh
 </body>
 EOF
 
-chmod go+r configure.sh.sig index.html chain.txt devcert.pem
+chmod go+r configure.sh.sig index.html chain.pem devcert.pem
 echo "Upload to: $SCP_ADDR"
 scp -p index.html configure.sh.sig devcert.pem $SCP_ADDR
 popd > /dev/null

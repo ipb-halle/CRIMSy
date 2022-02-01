@@ -28,13 +28,7 @@ compose="dist_"
 function check() {
     unit=$compose$1
     echo "Checking unit: $unit" 
-    image_id=`docker images -q ${unit}:latest`
-    if [ -z "$image_id" ] ; then
-        status="missing"
-    else
-        #  created, restarting, running, removing, paused, exited, or dead
-        status=`docker inspect ${unit}_1 | grep "Status" | cut -d: -f2 | cut -d\" -f2`
-    fi
+    status=`docker inspect ${unit}_1 | grep "Status" | cut -d: -f2 | cut -d\" -f2`
     echo $status
 }
 
@@ -68,18 +62,14 @@ function remove() {
         # clean up containers
         for i in `docker ps -a -q | tr -d $'\n'` ; do
             docker stop $i
-            docker rm -v -f $i
         done
+        docker container prune
 
         # clean up dangling images
-        for i in `docker images -q -f dangling=true | tr -d $'\n'` ; do
-            docker rmi $i
-        done
+        docker image prune
 
         # clean up dangling volumes
-        for i in `docker volume ls -q -f dangling=true | tr -d $'\n'` ; do
-            docker volume rm $i
-        done
+        docker volume prune
 
     fi
 }
@@ -126,9 +116,6 @@ function  startService() {
         check $service
         echo "CONTAINER STATUS: $status"
         case $status in
-            missing)
-                docker-compose up -d --build --remove-orphans $service
-                ;;
             restarting)
                 sleep 30
                 ;;
@@ -151,6 +138,7 @@ function  startService() {
                 cleanup $service
                 ;;
             *)
+                docker-compose up -d $service
                 ;;
         esac 
         repeat=$(($repeat + 1))
@@ -184,7 +172,7 @@ function stop() {
 test `id -u` -eq 0 || error "This script must be called as root"
 
 . $HOME/.lbac || error "Local cloud node not configured"
-. "$LBAC_DATASTORE/dist/etc/config.sh" || error "Could not load config file"
+. "$LBAC_DATASTORE/etc/config.sh" || error "Could not load config file"
 
 pushd $LBAC_DATASTORE/dist > /dev/null
 

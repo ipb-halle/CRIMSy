@@ -17,5 +17,6 @@
 #
 #==========================================================
 #
-cp $PGDATA/PG_VERSION /data/db/CURRENT_PG_VERSION
+# currently just a placeholder
+echo "Database Post-Restore Script ..."
 

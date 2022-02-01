@@ -21,13 +21,6 @@
 #
 #==========================================================
 #
-# Global settings
-#
-BACKUP_AGE=4
-
-#
-#==========================================================
-#
 #
 
 #
@@ -56,9 +49,9 @@ $CRON_ED_CMD
 # do not edit unless you know what you're doing
 #
 #Min Hour Day Month Week Cmd
-13 * * * * "$LBAC_DATASTORE/dist/bin/updateCloud.sh" update 2>/dev/null > /dev/null
-5 4 * * 1 "$LBAC_DATASTORE/dist/bin/updateCloud.sh" refresh 2>/dev/null > /dev/null
-8 1 * * * "$LBAC_DATASTORE/dist/bin/setupROOT.sh" backup 2>/dev/null > /dev/null
+13 * * * * "$LBAC_DATASTORE/dist/bin/update.sh" proxy 2>/dev/null > /dev/null
+5 4 * * 1 "$LBAC_DATASTORE/dist/bin/update.sh" container 2>/dev/null > /dev/null
+8 1 * * * "$LBAC_DATASTORE/dist/bin/update.sh" backup 2>/dev/null > /dev/null
 # LBAC CRON END
 .
 w
@@ -94,34 +87,6 @@ function installCron {
     rm $TMP_CRONTAB
 }
 
-
-#
-# Install a single additional CLOUD
-# first step: copy certificates and truststores
-#
-function installCloudCert {
-    pushd $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD > /dev/null
-
-    # add certificate and CRL to proxy 
-    $LBAC_DATASTORE/dist/bin/updateCloud.sh cacrl
-
-    # add certificate to truststore
-    # ToDo: xxxxxxxx
-}
-
-#
-# Install all CLOUDs
-# second step: import certificates and SQL for _all_ clouds
-#
-function installClouds {
-    pushd $LBAC_DATASTORE/dist/etc
-    docker exec dist_ui_1 /usr/local/bin/importKeystores.sh
-
-    # add database records
-    docker cp clouds.sql dist_db_1:/tmp
-    docker exec dist_db_1 /bin/bash -c \
-      "cat /tmp/clouds.sql | su -c 'psql -Ulbac lbac' postgres && rm /tmp/clouds.sql"
-}
 
 #
 # Setup / install the init scripts
@@ -199,30 +164,6 @@ EOF
 }
 
 #
-# execute database migrations
-#
-function postInstall {
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
-
-    echo "Waiting 15 sek. for database to come up ..."
-    sleep 15
-
-    docker exec -i dist_db_1 chown postgres /data/db
-    docker exec -i -u postgres dist_db_1 /usr/local/bin/getversion.sh
-
-    if [ -e "$LBAC_DATASTORE/tmp/OLD_PG_VERSION" ] ; then
-        OLD_PG_VERSION=`cat "$LBAC_DATASTORE/tmp/OLD_PG_VERSION"`
-        CURRENT_PG_VERSION=`cat "$LBAC_DATASTORE/data/db/CURRENT_PG_VERSION"`
-        if [ $CURRENT_PG_VERSION != $OLD_PG_VERSION ] ; then 
-            LABEL=latest
-            restoreDB
-        fi
-    fi
-
-    docker exec -i -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
-}
-
-#
 # remove containers
 #
 function removeFunc {
@@ -230,47 +171,10 @@ function removeFunc {
 }
 
 #
-# restore the entire system
-#
-function restoreFunc {
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" stopService ui
-
-    pushd "$LBAC_DATASTORE/backup/ui" > /dev/null
-    tar -C "$LBAC_DATASTORE/data" -xvf ui.$LABEL.tar.gz
-    popd > /dev/null
-
-    restoreDB
-
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService ui
-}
-
-#
-# restore a database snapshot only
-#
-function restoreDB {
-    echo "restoring database snapshot: $LABEL"
-    cat "$LBAC_DATASTORE/backup/db/dump.$LABEL.sql" |\
-        docker exec -i -u postgres dist_db_1 psql ||\
-        error "Error during database restore"
-
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" restartService ui
-}
-
-#
 # persists installation directory for user root
 #
 function setInstallDir {
     echo "LBAC_DATASTORE=\"$LBAC_DATASTORE\"" > /root/.lbac
-}
-
-#
-# set UID for data directories
-#
-function setPermissions {
-    chown 5432 "$LBAC_DATASTORE/data/db"
-    chown 8080 "$LBAC_DATASTORE/data/ui"
-    chown 8080 "$LBAC_DATASTORE/data/ui_etc"
-    chown 80   "$LBAC_DATASTORE/data/proxy_conf"
 }
 
 #
@@ -285,53 +189,6 @@ function shutdownFunc {
             /etc/init.d/lbac stop
             ;;
     esac
-}
-
-#
-#
-#
-function snapshotCleanup {
-        pushd "$LBAC_DATASTORE/backup" > /dev/null
-        find db/ ui/ -type f -mtime +$BACKUP_AGE -exec rm {} \; 
-        popd > /dev/null
-}
-
-#
-#
-#
-function snapshotDB {
-        mkdir -p "$LBAC_DATASTORE/backup/db"
-        pushd "$LBAC_DATASTORE/backup/db" > /dev/null
-        rm -f dump.latest.sql
-        docker exec dist_db_1 pg_dump --create --clean --if-exists \
-          -U lbac > "$LBAC_DATASTORE/backup/db/dump.$LABEL.sql" || \
-          error "Error during database dump"
-        ln -s dump.$LABEL.sql dump.latest.sql
-        popd > /dev/null
-}
-
-#
-# snapshot
-#
-function snapshotFunc {
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
-    snapshotDB
-    snapshotUI
-    snapshotCleanup
-    docker exec -i -u postgres dist_db_1 /usr/local/bin/getversion.sh
-    cp "$LBAC_DATASTORE/data/db/CURRENT_PG_VERSION" "$LBAC_DATASTORE/tmp/OLD_PG_VERSION"
-}
-
-#
-#
-#
-function snapshotUI {
-        mkdir -p "$LBAC_DATASTORE/backup/ui"
-        pushd "$LBAC_DATASTORE/backup/ui" > /dev/null
-        rm -f ui.latest.tar.gz
-        tar -C "$LBAC_DATASTORE/data" -czf ui.$LABEL.tar.gz ui
-        ln -s ui.$LABEL.tar.gz ui.latest.tar.gz
-        popd > /dev/null
 }
 
 #
@@ -396,60 +253,24 @@ if [ "$1" = "initROOT" ] ; then
 fi
 
 . /root/.lbac || error "configuration missing: /root/.lbac"
-. "$LBAC_DATASTORE/dist/etc/config.sh" || error "configuration missing: LBAC_DATASTORE/dist/etc/config.sh"
+. "$LBAC_DATASTORE/etc/config.sh" || error "configuration missing: LBAC_DATASTORE/etc/config.sh"
 
 case $1 in
-    backup)
-        LABEL=`date "+%Y%m%d%H%M"`
-        snapshotFunc
-        ;;
     installCron)
         echo "Setting up CRON"
         installCron
-        ;;
-    installCloudCert)
-        LBAC_CLOUD=$2
-        echo "Installing cloud: $LBAC_CLOUD"
-        installCloudCert
-        ;;
-    installClouds)
-        echo "Activate all clouds"
-        installClouds
         ;;
     installInit)
         echo "Installing Init Script"
         installInit
         ;;
-    postInstall)
-        echo "Running post-install tasks"
-        postInstall
-        ;;
     remove)
         echo "Removing existing images"
         removeFunc
         ;;
-    restore)
-        echo "restoring snapshot"
-        LABEL=$2
-        restoreFunc
-        ;;
-    restoreDB)
-        echo "restoring database snapshot"
-        LABEL=$2
-        restoreDB
-        ;;
-    setPermissions)
-        echo "Setting directory permissions"
-        setPermissions
-        ;;
     shutdown)
         echo "Shutting down containers"
         shutdownFunc
-        ;;
-    snapshot)
-        echo "Taking snapshot"
-        LABEL=$2
-        snapshotFunc
         ;;
     start)
         echo "Starting containers"

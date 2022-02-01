@@ -209,8 +209,8 @@ function createCA {
         mkdir -p revoked
 	touch index.txt
 	touch index.txt.attr
-        echo $CA_SUBJECT > chain.txt
-        cat cacert.pem >> chain.txt
+        echo $CA_SUBJECT > chain.pem
+        cat cacert.pem >> chain.pem
 
 	echo "01" > serial.txt
 
@@ -260,7 +260,7 @@ function createSubCA {
 	touch index.txt
 	touch index.txt.attr
 	echo "01" > serial.txt
-        echo $CA_SUBJECT > newchain.txt
+        echo $CA_SUBJECT > newchain.pem
 
 	writeConfig
 }
@@ -352,7 +352,7 @@ function dialogCA {
         if test -z "$CLOUD" ; then
             createCA
             scp cacert.pem $SCP_ADDR/cacert.pem
-            scp chain.txt $SCP_ADDR/chain.txt
+            scp chain.pem $SCP_ADDR/chain.pem
             scp addresses.txt $SCP_ADDR/addresses.txt
             genCRL
             sleep 10
@@ -361,7 +361,7 @@ function dialogCA {
                 dialogDownload '*superior*'
                 SUPERIOR_URL=$TMP_DOWNLOAD_URL
             fi
-            curl --silent --output chain.txt $SUPERIOR_URL/chain.txt
+            curl --silent --output chain.pem $SUPERIOR_URL/chain.pem
             curl --silent --output addresses.txt $SUPERIOR_URL/addresses.txt
             createSubCA
         fi
@@ -744,9 +744,9 @@ function genCRL {
 # copied during genCert step of superior CA!
 #
 function importSubCA {
-        cat cacert.pem | sed $'/BEGIN CERTIFICATE/,$p\nd' >> newchain.txt
-        cat chain.txt >> newchain.txt
-        mv newchain.txt chain.txt
+        cat cacert.pem | sed $'/BEGIN CERTIFICATE/,$p\nd' >> newchain.pem
+        cat chain.pem >> newchain.pem
+        mv newchain.pem chain.pem
 
         openssl ca -updatedb \
           -passin file:cacert.passwd -config ca.cfg
@@ -757,9 +757,9 @@ function importSubCA {
         tmp=`openssl x509 -in cacert.pem -fingerprint -noout | cut -d= -f2 | tr -d $':\n'`
         echo $tmp$'\t'$DOWNLOAD_URL/cacert.pem$'\t'$CA_CRL >> addresses.txt
 
-        chmod go+r cacert.pem chain.txt addresses.txt 
+        chmod go+r cacert.pem chain.pem addresses.txt 
         scp cacert.pem $SCP_ADDR/cacert.pem
-        scp chain.txt $SCP_ADDR/chain.txt
+        scp chain.pem $SCP_ADDR/chain.pem
         scp addresses.txt $SCP_ADDR/addresses.txt
         genCRL
 }

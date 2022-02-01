@@ -29,18 +29,20 @@
 
 #
 LBAC_DISTRIBUTION_POINT="CLOUDCONFIG_DOWNLOAD_URL"
+LBAC_CURRENT_RELEASE="CLOUDCONFIG_CURRENT_RELEASE"
 CLOUD_NAME="CLOUDCONFIG_CLOUD_NAME"
+LBAC_IMAGE_REGISTRY=""
 
 #
 LBAC_CONFIG=config.sh
-LBAC_CONFIG_VERSION=7
-LBAC_CURRENT_CONFIG_VERSION=7
+LBAC_CONFIG_VERSION=8
+LBAC_CURRENT_CONFIG_VERSION=8
 LBAC_INSTALLER=bin/install.sh
 
 LBAC_ADMIN_PWFILE=admin.passwd
 LBAC_DB_PWFILE=db.passwd
 LBAC_SSL_DEVCERT=devcert.pem
-LBAC_SSL_CHAIN=chain.txt
+LBAC_SSL_CHAIN=chain.pem
 LBAC_SSL_KEYFILE=lbac_cert.key
 LBAC_SSL_PWFILE=lbac_cert.passwd
 LBAC_SSL_REQ=lbac_cert.req
@@ -744,26 +746,33 @@ if test "!" "(" -n "\$LBAC_DATASTORE" -a -d "\$LBAC_DATASTORE" \
 fi
 . \$LBAC_DATASTORE/etc/config.sh > /dev/null
 cd \$LBAC_DATASTORE
+
+DATE=\`date "+%Y%m%d%H%M%S"\`
 CLOUD=`cat \$LBAC_DATASTORE/etc/primary.cfg`
 mkdir -p \$LBAC_DATASTORE/tmp 
 pushd \$LBAC_DATASTORE/tmp
 
-curl --silent --output configure.sh.sig \$LBAC_DISTRIBUTION_POINT/configure.sh.sig || (echo "Download fehlgeschlagen" && exit 1)
-openssl smime -verify -in configure.sh.sig -certfile ../etc/\$CLOUD/devcert.pem \
-  -CAfile ../etc/\$CLOUD/chain.txt -out configure.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
-  && rm configure.sh && exit 1)
+curl --silent --output dist-bin.tar.gz.asc.sig \$LBAC_DISTRIBUTION_POINT/dist-bin.tar.gz.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
+openssl smime -verify -in dist-bin.tar.gz.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
+  -CAfile ../etc/\$CLOUD/chain.pem -out dist-bin.tar.gz.asc || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
+  && rm dist-bin.tar.gz.asc && exit 1)
 
-curl --silent --output setup.asc.sig \$LBAC_DISTRIBUTION_POINT/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
-openssl smime -verify -in setup.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
- -CAfile ../etc/\$CLOUD/chain.txt | openssl smime -decrypt -inform PEM \
+curl --silent --output \$CLOUD.asc.sig \$LBAC_DISTRIBUTION_POINT/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
+openssl smime -verify -in \$CLOUD.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
+ -CAfile ../etc/\$CLOUD/chain.pem | openssl smime -decrypt -inform PEM \
  -inkey ../etc/lbac_cert.key -passin file:../etc/lbac_cert.passwd \
- -out setup.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" && rm setup.sh && exit 1)
-chmod +x setup.sh configure.sh
-mv configure.sh \$LBAC_DATASTORE/bin
-DATE=\`date "+%Y%m%d%H%M%S"\`
-./setup.sh \$* 2>&1 | tee "\$LBAC_DATASTORE/tmp/setup.\$DATE.log" \
- || ( echo "Setup abgebrochen" && exit 1)
+ -out \$CLOUD.tar.gz || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" && rm \$CLOUD.asc.sig \$CLOUD.tar.gz && exit 1)
+
 popd >/dev/null
+base64 -di tmp/dist-bin.tar.gz.asc | tar -xzf -
+tar -xzf tmp/\$CLOUD.tar.gz
+
+rm tmp/dist-bin.tar.gz.asc tmp/\$CLOUD.asc.sig tmp/\$CLOUD.tar.gz
+chmod +x dist/bin/configure.sh
+mv dist/bin/configure.sh bin/
+
+dist/bin/setup.sh \$* 2>&1 | tee "\$LBAC_DATASTORE/tmp/setup.\$DATE.log" \
+ || ( echo "Setup abgebrochen" && exit 1)
 echo "Setup-Log: \$LBAC_DATASTORE/tmp/setup.\$DATE.log"
 EOF
 chmod +x "$LBAC_DATASTORE/$LBAC_INSTALLER"
@@ -875,7 +884,9 @@ function makeTempConfig {
 # `date`
 #
 LBAC_CONFIG_VERSION="$LBAC_CURRENT_CONFIG_VERSION"
+LBAC_CURRENT_RELEASE="$LBAC_CURRENT_RELEASE"
 LBAC_DISTRIBUTION_POINT="$LBAC_DISTRIBUTION_POINT"
+LBAC_IMAGE_REGISTRY="$LBAC_IMAGE_REGISTRY"
 EOF
 }
 
@@ -988,8 +999,8 @@ function upgradeOldConfig {
                 # move certificates of primary cloud
                 test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/devcert.pem" && \
                     mv "$LBAC_DATASTORE/etc/devcert.pem" "$LBAC_DATASTORE/etc/$CLOUD_NAME/devcert.pem"
-                test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.txt" && \
-                    mv "$LBAC_DATASTORE/etc/chain.txt" "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.txt"
+                test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.pem" && \
+                    mv "$LBAC_DATASTORE/etc/chain.pem" "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.pem"
 
                 # remove old components
                 rm -rf "$LBAC_DATASTORE/dist/pgchem" 
@@ -1000,6 +1011,10 @@ function upgradeOldConfig {
                 # touch $LBAC_DATASTORE/dist/dirty
 
 	fi
+
+        if test $LBAC_CONFIG_VERSION -lt 7 ; then
+            find dist etc -type f -name "chain.txt" -exec bash -c 'x="{}"; mv $x `dirname $x`/chain.pem' \;
+        fi
 }
 #
 #==========================================================

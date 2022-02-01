@@ -21,50 +21,10 @@
 # 
 #==========================================================
 #
-function download {
-    NAME=`echo "$0" | cut -f1`
-    HASH=`echo "$0" | cut -f2`
-    FP=`echo "$0" | cut -f3`
-    CACERT=`echo "$0" | cut -f4`
-    CRL=`echo "$0" | cut -f5`
-
-    curl --silent --output $LBAC_DATASTORE/dist/proxy/conf/crl/$NAME.$FP.crl $CRL
-    curl --silent --output $LBAC_DATASTORE/dist/proxy/conf/crt/$NAME.$FP.pem $CACERT
-}
-export -f download
 
 function error {
         echo $1
         exit 1
-}
-
-#
-# Download CA certificates and CRLs, provide symlinks
-#
-function install {
-    rm -f $LBAC_DATASTORE/dist/proxy/conf/crt/*
-    rm -f $LBAC_DATASTORE/dist/proxy/conf/crl/*
-    cat $LBAC_DATASTORE/dist/etc/*/addresses.txt | sort | uniq -f2 -w41 | xargs -i /bin/bash -c download "{}"
-
-    c_rehash $LBAC_DATASTORE/dist/proxy/conf/crt/
-    c_rehash $LBAC_DATASTORE/dist/proxy/conf/crl/
-}
-
-#
-# Get new CACerts and CRLs and install them into proxy Container
-#
-function cacrl {
-    . $LBAC_DATASTORE/dist/etc/config.sh
-    install
-
-    tar -C $LBAC_DATASTORE/dist/proxy/conf -cf /tmp/ca_update.tar crt/ crl/
-    docker cp /tmp/ca_update.tar dist_proxy_1:/install/
-    # ToDo: xxxxx needs rework!
-
-    rm "/tmp/ca_update.tar"
-    chown -R --reference=$LBAC_DATASTORE/dist/proxy/conf/httpd.conf \
-        $LBAC_DATASTORE/dist/proxy/conf/crt \
-        $LBAC_DATASTORE/dist/proxy/conf/crl
 }
 
 #
@@ -87,7 +47,7 @@ function refresh {
 # Usually called once hourly.
 #
 function update {
-    cacrl
+    $LBAC_DATASTORE/dist/bin/setupProxy.sh
     docker exec dist_ui_1 /usr/local/bin/logpurge.sh
 }
 # 
@@ -102,7 +62,7 @@ case "$1" in
             ;;
     cacrl)
             test `id -u` -eq 0 || error "The cacrl function must be called as root"
-            cacrl
+            $LBAC_DATASTORE/dist/bin/setupProxy.sh
             ;;
     update)
             test `id -u` -eq 0 || error "The update function must be called as root"

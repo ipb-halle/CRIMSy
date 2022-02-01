@@ -7,8 +7,27 @@
 p=`dirname $0`
 DIR=`realpath "$p/../.."`
 
-cleanup() {
+TEST_REPOSITORY=$1
+
+function cleanup() {
     echo "build process has failed"
+}
+
+function pushImage() {
+    IMAGE_TAG=$1
+    if [ -z $TEST_REPOSITORY ] ; then
+        IMAGE_DST=$IMAGE_BASE:$IMAGE_TAG
+        if [ $IMAGE_DST != $IMAGE ] ; then
+            docker image tag $IMAGE $IMAGE_DST
+        fi
+        docker push $IMAGE_DST
+    else
+        IMAGE_DST=$TEST_REPOSITORY/$IMAGE_BASE:$IMAGE_TAG
+        if [ $IMAGE_DST != $IMAGE ] ; then
+            docker image tag $IMAGE $IMAGE_DST
+        fi
+        docker push $IMAGE_DST
+    fi
 }
 
 trap "cleanup; exit 1" ERR
@@ -26,26 +45,33 @@ MAJOR=`echo $REVISION | cut -d. -f1`
 MINOR=`echo $REVISION | cut -d. -f2`
 popd
 
+touch config/releases
 RELEASE=$MAJOR.$MINOR
+RELEASE_FLAGS=`grep "release_$RELEASE;" config/releases | cut -d';' -f3`
+(grep -v -s "release_$RELEASE;" config/releases || exit 0) > config/releases.tmp
+echo "release_$RELEASE;$BRANCH;$RELEASE_FLAGS" >> config/releases.tmp
+mv config/releases.tmp config/releases
 
-#
-# need some better mechanism to determine revisions for
-# MAJOR and LATEST tags
-#
 
+# force pull (refresh) of images from Docker Hub
 #grep --include Dockerfile -rhE "^FROM " . | \
 #   cut -d' ' -f2- | tr -d ' ' | sort | uniq | \
 #   xargs -l1 docker pull 
 
 for i in db proxy ui fasta ; do
     pushd target/docker/$i 
-    IMAGE=ipbhalle/crimsy$i:$RELEASE
+    IMAGE_BASE=ipbhalle/crimsy$i
+    IMAGE_TAG=$RELEASE
+    IMAGE=$IMAGE_BASE:$IMAGE_TAG
     echo "Building image '$IMAGE'"
     docker build -t $IMAGE .
-    if [ $BRANCH = 'master' ] ; then
-        docker image tag $IMAGE ipbhalle/crimsy$i:LATEST
+    pushImage  $IMAGE_TAG
+    if echo $RELEASE_FLAGS | grep -q LATEST  ; then
+        pushImage LATEST
     fi
-#   docker push ipbhalle/crimsyplugins
+    if echo $RELEASE_FLAGS | grep -q MAJOR ; then
+        pushImage $MAJOR
+    fi
     popd
 done
 
