@@ -54,30 +54,30 @@ function compile {
 function copyNodeConfig {
     cloud=`echo $1 | cut -d' ' -f1`
     node=`echo $1 | cut -d' ' -f2`
-    cp $LBAC_REPO/config/nodes/$node.sh.asc $LBAC_REPO/config/$cloud/
+    cp $LBAC_REPO/config/nodes/${node}_${cloud}.sh.asc $LBAC_REPO/config/$cloud/
 }
 
 #
 #
 #
 function createNodeConfig {
-    key=`echo $1 | cut -d' ' -f1`
+    node=`echo $1 | cut -d' ' -f1`
     dst=`echo $1 | cut -d' ' -f2`
-    cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | \
+    cloud=`grep $node "$LBAC_REPO/util/test/etc/nodeconfig.txt" | \
         cut -c9-18 | \
         sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
     crimsyhost=`hostname -f`
 
-    echo "executing createNodeConfig for host $dst ($key) ..."
+    echo "executing createNodeConfig for host $dst ($node) ..."
 
     echo "copying configBatch.sh script ..."
     scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
 
     echo "executing configBatch.sh ..."
-    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $crimsyhost $cloud $key"
+    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $crimsyhost $cloud $node"
 
     echo "fetching node configuration ..."
-    scp -q -o "StrictHostKeyChecking no" $dst:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
+    scp -q -o "StrictHostKeyChecking no" $dst:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/${node}_${cloud}.sh.asc"
 }
 
 #

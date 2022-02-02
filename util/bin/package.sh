@@ -306,7 +306,7 @@ case $2 in
     MASTERBATCH)
         BATCH="--batch"
         tmp=`grep $LBAC_CLOUD $LBAC_REPO/util/test/etc/cloudnodes.txt | grep MASTER | cut -d" " -f2`
-        tmp="$LBAC_REPO/config/nodes/$tmp.sh.asc"
+        tmp="$LBAC_REPO/config/nodes/${tmp}_${LBAC_CLOUD}.sh.asc"
         if [ -f $tmp ] ; then
             decryptConfig $tmp
             . $LBAC_CONFIG

@@ -118,7 +118,7 @@ function saveCloudInfo {
 }
 
 function saveCloudTmp {
-    echo "$CLOUD$;$DOWNLOAD_URL" > etc/$CLOUD/cloud.cfg
+    echo "$CLOUD;$DOWNLOAD_URL" > etc/$CLOUD/cloud.cfg
 }
 
 #
@@ -156,7 +156,7 @@ TMP_RESULT=`mktemp /tmp/lbac_join.XXXXXX`
                 if test -z $CLOUD ; then
                     error "Please provide cloud name"
                 fi
-                LBAC_DISTRIBUTION_POINT=`grep "$CLOUD$;" etc/$CLOUD/clouds.cfg | cut -d';' -f2`
+                LBAC_DISTRIBUTION_POINT=`grep "$CLOUD$;" etc/$CLOUD/cloud.cfg | cut -d';' -f2`
                 if test -n "$LBAC_DISTRIBUTION_POINT" ; then
                     saveCloudInfo
                     dist/bin/update.sh proxy
