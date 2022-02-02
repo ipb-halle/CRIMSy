@@ -1,4 +1,3 @@
-include(dist/etc/config_m4.inc)dnl
 /*
  * Cloud Resource & Information Management System (CRIMSy)
  * Initial data 

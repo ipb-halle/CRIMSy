@@ -220,9 +220,9 @@ function genDist {
 
 function genPackage {
     cleanUp
-    masterConfig
     makeCert
     copyConfig
+    masterConfig
     packageCfg
     cleanTmp
 }

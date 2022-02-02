@@ -1,4 +1,3 @@
-include(dist/etc/config_m4.inc)dnl
 /*
  * Cloud Resource & Information Management System (CRIMSy)
  * Init script for database postgres 12.6

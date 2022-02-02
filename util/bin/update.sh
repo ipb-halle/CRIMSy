@@ -43,13 +43,17 @@ define(\`LBAC_MASTER_URL', \`$LBAC_MASTER_URL')dnl
 define(\`LBAC_MASTER_INSTITUTION', \`$LBAC_MASTER_INSTITUTION')dnl
 define(\`LBAC_NODE_ID',\`$LBAC_NODE_ID')dnl
 define(\`LBAC_NODE_RANK',\`$LBAC_NODE_RANK')dnl
+define(\`LBAC_INTERNET_FQHN',\`$LBAC_INTERNET_FQHN')dnl
+define(\`LBAC_INSTITUTION_SHORT',\`$LBAC_INSTITUTION_SHORT')dnl
 dnl
 INSERT INTO clouds (name) VALUES ('LBAC_CLOUD') ON CONFLICT DO NOTHING;
 LBAC_MASTER_SKIP INSERT INTO nodes (id, baseurl, institution, local) VALUES 
 LBAC_MASTER_SKIP ('LBAC_MASTER_NODE_ID', 'LBAC_MASTER_URL', 'LBAC_MASTER_INSTITUTION', False) ON CONFLICT DO NOTHING;
+INSERT INTO nodes (id, baseUrl, institution, local) VALUES
+  ( 'LBAC_NODE_ID', 'https://LBAC_INTERNET_FQHN:8443/ui', 'LBAC_INSTITUTION_SHORT', True);
 LBAC_MASTER_SKIP INSERT INTO cloud_nodes (node_id, rank, cloud_id) SELECT 'LBAC_MASTER_NODE_ID'::UUID AS node_id, 10 AS rank, id AS cloud_id 
 LBAC_MASTER_SKIP FROM clouds WHERE name='LBAC_CLOUD' ON CONFLICT DO NOTHING;
-INSERT INTO cloud_nodes (node_id, rank, cloud_id) SELECT 'LBAC_NODE_ID'::UUID,LBAC_NODE_RANK, id AS cloud_id 
+INSERT INTO cloud_nodes (node_id, rank, cloud_id) SELECT 'LBAC_NODE_ID'::UUID, LBAC_NODE_RANK AS rank, id AS cloud_id 
 FROM clouds WHERE name='LBAC_CLOUD' ON CONFLICT DO NOTHING;
 EOF
 
@@ -240,7 +244,8 @@ function restoreDB {
             error "Error during database restore"
     fi
 
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" restartService ui
+    (docker inspect dist_ui_1 | grep Status | grep -q running ) && \
+        docker restart dist_ui_1
 }
 
 #
@@ -319,8 +324,9 @@ function superDoDb {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
     echo "Waiting 15 sek. for database to come up ..."
     sleep 15
-    docker exec -i dist_db_1 chown postgres /data/db
-    docker exec -i -u postgres dist_db_1 /usr/local/bin/getversion.sh
+
+    docker exec dist_db_1 chown postgres /data/db
+    docker exec -u postgres dist_db_1 /usr/local/bin/getversion.sh
 
     if [ -e "$LBAC_DATASTORE/tmp/OLD_PG_VERSION" ] ; then
         OLD_PG_VERSION=`cat "$LBAC_DATASTORE/tmp/OLD_PG_VERSION"`
@@ -332,7 +338,6 @@ function superDoDb {
         fi
     fi
 
-    (docker inspect dist_proxy_1 | grep Status | grep -q running ) || error "Database not running"
     docker exec -i -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
 
     cat $LBAC_DATASTORE/tmp/clouds.sql |

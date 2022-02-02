@@ -169,7 +169,7 @@ function runTests {
     wget -o /dev/null -O /dev/null --no-check-certificate https://$HOST/ui/index.xhtml
     echo "waiting 3 sec. for webapp to initialize database ..."
     sleep 3
-    docker exec -ti dist_db_1 su - postgres /bin/sh -c "psql -Ulbac lbac -f /tmp/initial_data.sql"
+    docker exec -i -u postgres dist_db_1 psql -Ulbac lbac -f /tmp/initial_data.sql
 
     # build test containers and set up environment
     echo "checking / building test environment"
