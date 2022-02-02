@@ -26,7 +26,7 @@
 # the current (PRIMARY) cloud.
 #
 
-CRIMSYCI_URL=$2:8000/$3 
+CRIMSYCI_URL=http://$2:8000/$3 
 CRIMSYREG_URL=$2:5000
 CLOUD=$3
 TEST_ID=$4
@@ -53,18 +53,17 @@ function getTestData {
 #==========================================================
 #
 function createConfiguration {
-    URL=$HOST:8000/$CLOUD
-    curl --silent --output configure.sh.sig $URL/configure.sh.sig
-    curl --silent --output chain.pem $URL/chain.pem
-    curl --silent --output devcert.pem $URL/devcert.pem
-    curl --silent --output nodeconfig.txt $URL/nodeconfig.txt
+    curl --silent --output configure.sh.sig $CRIMSYCI_URL/configure.sh.sig
+    curl --silent --output chain.pem $CRIMSYCI_URL/chain.pem
+    curl --silent --output devcert.pem $CRIMSYCI_URL/devcert.pem
+    curl --silent --output nodeconfig.txt $CRIMSYCI_URL/nodeconfig.txt
 
     openssl verify -CAfile chain.pem devcert.pem || exit 1
     openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.pem -out configure.sh || exit 1
     chmod +x configure.sh
 
     . configure.sh BATCH
-    LBAC_IMAGE_REGISTRY=CRIMSYREG_URL
+    LBAC_IMAGE_REGISTRY=$CRIMSYREG_URL
     makeTempConfig
 
     # dialog_DATASTORE

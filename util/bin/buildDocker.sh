@@ -60,7 +60,7 @@ mv config/releases.tmp config/releases
 
 for i in db proxy ui fasta ; do
     pushd target/docker/$i 
-    IMAGE_BASE=ipbhalle/crimsy$i
+    IMAGE_BASE=crimsy$i
     IMAGE_TAG=$RELEASE
     IMAGE=$IMAGE_BASE:$IMAGE_TAG
     echo "Building image '$IMAGE'"

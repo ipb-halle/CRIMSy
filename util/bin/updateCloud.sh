@@ -36,7 +36,7 @@ function refresh {
     cd $LBAC_DATASTORE/dist
     docker-compose down --rmi all --volumes --remove-orphans
     docker-compose build --pull
-    docker-compose up -d
+    docker-compose up -d --no-color
     if [ $LBAC_DOCKER_EXCLUSIVE = "ON" ] ; then
         docker image prune -f
     fi

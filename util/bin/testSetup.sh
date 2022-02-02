@@ -29,31 +29,44 @@ function buildDistServer {
 #
 # DANGER: remove installation without (almost) any trace
 function cleanup {
-    dst=`echo $0 | cut -d' ' -f2`
+    dst=`echo $1 | cut -d' ' -f2`
     ssh -o "StrictHostKeyChecking no" $dst "./configBatch.sh CLEANUP"
 }
-export -f cleanup
+
+#
+#
+#
+function compile {
+
+    mvn --batch-mode -DskipTests clean install
+
+    pushd $LBAC_REPO/ui >/dev/null
+    REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
+    MAJOR=`echo $REVISION | cut -d. -f1`
+    MINOR=`echo $REVISION | cut -d. -f2`
+    RELEASE="$MAJOR.$MINOR"
+    popd >/dev/null
+}
 
 #
 #
 #
 function copyNodeConfig {
-    cloud=`echo $0 | cut -d' ' -f1`
-    node=`echo $0 | cut -d' ' -f2`
+    cloud=`echo $1 | cut -d' ' -f1`
+    node=`echo $1 | cut -d' ' -f2`
     cp $LBAC_REPO/config/nodes/$node.sh.asc $LBAC_REPO/config/$cloud/
 }
-export -f copyNodeConfig
 
 #
 #
 #
 function createNodeConfig {
-    key=`echo $0 | cut -d' ' -f1`
-    dst=`echo $0 | cut -d' ' -f2`
+    key=`echo $1 | cut -d' ' -f1`
+    dst=`echo $1 | cut -d' ' -f2`
     cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | \
         cut -c9-18 | \
         sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    crimsyhost="http://`hostname -f`"
+    crimsyhost=`hostname -f`
 
     echo "executing createNodeConfig for host $dst ($key) ..."
 
@@ -66,7 +79,6 @@ function createNodeConfig {
     echo "fetching node configuration ..."
     scp -q -o "StrictHostKeyChecking no" $dst:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
 }
-export -f createNodeConfig
 
 #
 # preprocess Cypress test cases
@@ -95,11 +107,10 @@ function error {
 #
 #
 function installNode {
-    dst=`echo $0 | cut -d' ' -f2`
+    dst=`echo $1 | cut -d' ' -f2`
     echo "installNode called for host: $dst"
     ssh -o "StrictHostKeyChecking no" $dst "./bin/install.sh"
 }
-export -f installNode
 
 #
 #
@@ -107,10 +118,16 @@ export -f installNode
 function restore {
     if [ $NODE = "all" ] ; then
         echo "Restoring snapshot '$RESTORE' on all nodes"
-        cat $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh restore $RESTORE
+        cat $HOSTLIST | cut -d' ' -f2 |\
+            while read record ; do
+                ssh -o "StrictHostKeyChecking no" "$record" ./dist/bin/setupROOT.sh restore $RESTORE
+            done
     else 
         echo "Restoring snapshot '$RESTORE' on node '$RESTORE'"
-        grep $NODE $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh restore $RESTORE
+        grep $NODE $HOSTLIST | cut -d' ' -f2 |\
+            while read record ; do
+                ssh -o "StrictHostKeyChecking no" "$record" ./dist/bin/setupROOT.sh restore $RESTORE
+            done
     fi
 }
 
@@ -118,6 +135,7 @@ function restore {
 #
 #
 function runDistServer {
+    echo "Setting up distribution servers"
     cp docker/crimsyci/index.html target/integration/htdocs
     (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
     docker inspect crimsyci_service >/dev/null 2>&1 && docker rm crimsyci_service 
@@ -125,10 +143,14 @@ function runDistServer {
         --mount type=bind,src=`realpath target/integration/htdocs`,dst=/usr/local/apache2/htdocs \
         --hostname `hostname -f` \
         --detach --name crimsyci_service \
+        crimsyci
 
     (docker inspect crimsyreg_service | grep Status | grep -q running ) && docker stop crimsyreg_service
     docker inspect crimsyreg_service >/dev/null 2>&1 && docker rm crimsyreg_service
-    docker run registry -p 5000:5000 --hostname `hostname -f` --detach --name crimsyreg_service
+    docker run -p 5000:5000 \
+        --hostname `hostname -f` \
+        --detach --name crimsyreg_service \
+        registry
 }
 
 #
@@ -225,41 +247,53 @@ EOF
 #
 function setupFunc {
     cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        xargs -i /bin/bash -c setupTestCAconf "{}"
+        while read record ; do
+            setupTestCAconf "$record"
+        done
 
     echo "=== Distribution Server ==="
     buildDistServer
     runDistServer
 
     echo "=== Build Docker Images ==="
-    $LBAC_REPO/util/bin/buildDocker.sh http://`hostname -f`:5000
+    $LBAC_REPO/util/bin/buildDocker.sh `hostname -f`:5000
 
     echo "=== Setup ROOT CA ==="
     setupTestRootCA
 
     echo "=== Setup Sub CAs ==="
     tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        xargs -i /bin/bash -c setupTestSubCA "{}"
+        while read record ; do
+            setupTestSubCA "$record"
+            setupConfigure "$record"
+        done
 
     echo "=== create node configurations ==="
-    cat $HOSTLIST | xargs -i /bin/bash -c createNodeConfig "{}"
+    cat $HOSTLIST | while read record ; do createNodeConfig "$record" ; done
 
     # package master nodes
     echo "=== determine master nodes ==="
     tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
         cut -d: -f1 | \
-        xargs -i $LBAC_REPO/util/bin/package.sh "{}" MASTERBATCH
+        while read record ; do
+            $LBAC_REPO/util/bin/package.sh "$record" MASTERBATCH
+        done
 
     # package all other nodes
     echo "=== package all nodes ==="
-    cat $LBAC_REPO/util/test/etc/cloudnodes.txt | xargs -i /bin/bash -c copyNodeConfig "{}"
+    cat $LBAC_REPO/util/test/etc/cloudnodes.txt |\
+        while read record ; do
+            copyNodeConfig "$record"
+        done
     tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
         cut -d: -f1 | \
-        xargs -i $LBAC_REPO/util/bin/package.sh "{}" AUTOBATCH
+        while read record ; do
+            $LBAC_REPO/util/bin/package.sh "$record" AUTOBATCH
+        done
 
     # install node
     echo "=== install nodes ==="
-    cat $HOSTLIST | xargs -i /bin/bash -c installNode "{}"
+    cat $HOSTLIST | while read record ; do installNode "$record" ; done
 
     #
     # ToDo: multiple cloud memberships 
@@ -289,7 +323,7 @@ function setupTestRootCA {
 #
 #
 function setupTestSubCA {
-    cloud=`echo $0 | cut -d: -f1`
+    cloud=`echo $1 | cut -d: -f1`
 
     $LBAC_REPO/util/bin/camgr.sh --batch --mode ca --cloud $cloud
 
@@ -304,7 +338,16 @@ function setupTestSubCA {
     LBAC_CA_DIR=$LBAC_REPO/config/$cloud/CA
     . $LBAC_CA_DIR/cloud.cfg
 
+    cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/target/integration/htdocs/$cloud/devcert.pem
+}
+
+function setupConfigure {
+    cloud=`echo $1 | cut -d: -f1`
+    LBAC_CA_DIR=$LBAC_REPO/config/$cloud/CA
+    . $LBAC_CA_DIR/cloud.cfg
+
     sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
+    sed -e "s,CLOUDCONFIG_CURRENT_RELEASE,$RELEASE," |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
     openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
       -md sha256 -binary -out $LBAC_REPO/target/integration/htdocs/$cloud/configure.sh.sig \
@@ -312,20 +355,17 @@ function setupTestSubCA {
       -inkey $LBAC_CA_DIR/$DEV_CERT.key \
       -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd 
 
-    cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/target/integration/htdocs/$cloud/devcert.pem
-
     chmod -R go+rX $LBAC_REPO/target/integration/htdocs
 }
-export -f setupTestSubCA
 
 #
 #
 #
 function setupTestCAconf {
-    dist=`echo $0 | cut -d: -f1`
-    superior=`echo $0 | cut -d: -f2`
-    cloud=`echo $0 | cut -d: -f3`
-    name=`echo $0 | cut -d: -f4`
+    dist=`echo $1 | cut -d: -f1`
+    superior=`echo $1 | cut -d: -f2`
+    cloud=`echo $1 | cut -d: -f3`
+    name=`echo $1 | cut -d: -f4`
 
     mkdir -p "$LBAC_REPO/config/$cloud/CA"
     mkdir -p "$LBAC_REPO/target/integration/htdocs/$dist"
@@ -360,7 +400,6 @@ CLOUD_NAME="$name"
 EOF
 
 }
-export -f setupTestCAconf
 
 #
 # 
@@ -368,10 +407,16 @@ export -f setupTestCAconf
 function snapshot {
     if [ $NODE = "all" ] ; then
         echo "Taking snapshot '$SNAPSHOT' of all nodes"
-        cat $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+        cat $HOSTLIST | cut -d' ' -f2 |\
+            while read record ; do
+                ssh -o "StrictHostKeyChecking no" "$record" ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+            done
     else
         echo "Taking snapshot '$SNAPSHOT' for node '$NODE'"
-        grep $NODE $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+        grep $NODE $HOSTLIST | cut -d' ' -f2 |\
+            while read record ; do
+                ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+            done
     fi
 }
 
@@ -381,7 +426,7 @@ function snapshot {
 function teardown {
 
     # tear down nodes
-    cat $HOSTLIST | xargs -i /bin/bash -c cleanup "{}"
+    cat $HOSTLIST | while read record ; do cleanup "$record" ; done 
 
     # remove target directory (needs root privilege)
     sudo rm -r config/ target/
@@ -480,7 +525,7 @@ function mainFunc {
 
     if [ -n "$SETUP" ] ; then
         echo "setup"
-        mvn --batch-mode -DskipTests clean install
+        compile
         setupFunc
     fi
 

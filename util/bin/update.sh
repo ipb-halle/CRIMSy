@@ -26,7 +26,7 @@ BACKUP_AGE=4
 #
 function createDbConfig {
     # create database script
-    rm $LBAC_DATASTORE/tmp/clouds.sql
+    rm -f $LBAC_DATASTORE/tmp/clouds.sql
     CLOUDS=`cat $LBAC_DATASTORE/etc/clouds.cfg | cut -d';' -f1`
 
     for CLOUD in $CLOUDS ; do

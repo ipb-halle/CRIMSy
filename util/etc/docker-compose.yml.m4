@@ -15,7 +15,7 @@ networks:
 
 services:
   db:
-    image: LBAC_IMAGE_REGISTRY/ipbhalle/crimsydb:LBAC_VERSION
+    image: LBAC_IMAGE_REGISTRY/crimsydb:LBAC_VERSION
     environment:
       - PGDATA=/data/db/pgsql_12
       - POSTGRES_PASSWORD=LBAC_DB_PASSWD
@@ -29,7 +29,7 @@ LBAC_PGSQL_PORT_ENABLE     - "5432:5432"
       - LBAC_DATASTORE/data/db:/data/db
 
   fasta:
-    image: LBAC_IMAGE_REGISTRY/ipbhalle/crimsyfasta:LBAC_VERSION
+    image: LBAC_IMAGE_REGISTRY/crimsyfasta:LBAC_VERSION
     depends_on:
       - db
     labels:
@@ -38,7 +38,7 @@ LBAC_PGSQL_PORT_ENABLE     - "5432:5432"
       - lbac_private
 
   ui:
-    image: LBAC_IMAGE_REGISTRY/ipbhalle/crimsyui:LBAC_VERSION
+    image: LBAC_IMAGE_REGISTRY/crimsyui:LBAC_VERSION
     depends_on:
       - db
     labels:
@@ -52,7 +52,7 @@ LBAC_TOMEE_PORT_ENABLE     - "8080:8080"
       - LBAC_DATASTORE/data/ui_conf:/install/conf
 
   proxy:
-    image: LBAC_IMAGE_REGISTRY/ipbhalle/crimsyproxy:LBAC_VERSION
+    image: LBAC_IMAGE_REGISTRY/crimsyproxy:LBAC_VERSION
     environment:
       - REDIRECT_FQHN=LBAC_INTRANET_FQHN
     labels:

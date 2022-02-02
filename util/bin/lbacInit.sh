@@ -82,7 +82,7 @@ function restartService() {
     restarted=0
     while [ $repeat -lt $max_repeat ] ; do
         check $service
-        echo "CONTAINER STATUS: $status"
+        echo "Container status: $service --> $status"
         case $status in
             restarting)
                 sleep 10
@@ -114,16 +114,16 @@ function  startService() {
     repeat=0 
     while [ $repeat -lt $max_repeat ] ; do
         check $service
-        echo "CONTAINER STATUS: $status"
+        echo "Container status: $service --> $status"
         case $status in
             restarting)
                 sleep 30
                 ;;
             created)
-                docker-compose up -d $service
+                docker-compose up --no-color -d $service
                 ;;
             exited)
-                docker-compose start $service
+                docker-compose start --no-color -d $service
                 ;;
             paused)
                 docker-compose unpause $service
@@ -138,7 +138,7 @@ function  startService() {
                 cleanup $service
                 ;;
             *)
-                docker-compose up -d $service
+                docker-compose up --no-color -d $service
                 ;;
         esac 
         repeat=$(($repeat + 1))
