@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,8 @@ import java.util.Map;
 /**
  * @author fbroda
  */
-public class Unit {
+public class Unit implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /*  physical quantity */
     private Quality quality;

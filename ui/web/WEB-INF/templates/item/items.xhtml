@@ -269,6 +269,14 @@
                                                              onclick="ajax:itemOverviewBean.actionStartAclChange(item)"
                                                              oncomplete="PF('dlgAcl').show();"
                                                              disabled="false"/>
+                                            <b:commandButton
+                                                style="padding: 0 4px;"
+                                                iconAwesome="fa-flask"
+                                                look="link"
+                                                ajax="false"
+                                                disabled="#{itemOverviewBean.isItemNotSoluble(item)}"
+                                                action="#{itemOverviewBean.actionStartCreateSolution(item)}"
+                                                tooltip="#{msgs.itemOverview_tooltip_createSolution}" />
                                         </b:dataTableColumn>
                                     </b:dataTable>
                                 </b:column> 

@@ -35,6 +35,9 @@ import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.Quality;
+import de.ipb_halle.lbac.util.Unit;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,6 +66,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected ContainerService containerService;
     @Inject
     protected ItemBean itemBean;
+    @Inject
+    private CreateSolutionBean createSolutionBean;
     @Inject
     protected ItemService itemService;
     @Inject
@@ -119,6 +124,11 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     public void actionStartItemEdit(Item i) {
         itemBean.actionStartItemEdit(i);
         navigator.navigate("/item/itemEdit");
+    }
+
+    public void actionStartCreateSolution(Item item) {
+        createSolutionBean.actionStartCreateSolution(item);
+        navigator.navigate("/item/createSolution");
     }
 
     public List<Item> getItems() {
@@ -219,4 +229,19 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         return searchMaskValues;
     }
 
+    public boolean isItemNotSoluble(Item item) {
+        return !isItemSoluble(item);
+    }
+
+    private boolean isItemSoluble(Item item) {
+        boolean itemIsNotSolved = (item.getConcentration() == null) && (item.getConcentrationUnit() == null)
+                && (item.getSolvent() == null);
+        boolean itemHasMassUnit = false;
+        Unit unit = item.getUnit();
+        if (unit != null) {
+            itemHasMassUnit = Quality.MASS.equals(unit.getQuality());
+        }
+
+        return itemIsNotSolved && itemHasMassUnit;
+    }
 }
