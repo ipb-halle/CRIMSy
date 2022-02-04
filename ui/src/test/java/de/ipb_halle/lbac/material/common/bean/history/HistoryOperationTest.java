@@ -51,7 +51,8 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Unit;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

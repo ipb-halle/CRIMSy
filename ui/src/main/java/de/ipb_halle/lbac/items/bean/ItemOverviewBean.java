@@ -35,8 +35,8 @@ import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.util.Quality;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Quality;
+import de.ipb_halle.lbac.util.units.Unit;
 
 import java.io.Serializable;
 import java.util.ArrayList;

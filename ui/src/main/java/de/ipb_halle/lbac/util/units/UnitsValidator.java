@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.util;
+package de.ipb_halle.lbac.util.units;
 
 import de.ipb_halle.lbac.i18n.UIMessage;
 import java.io.Serializable;

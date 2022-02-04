@@ -33,8 +33,8 @@ import org.junit.jupiter.api.Test;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.util.Quality;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Quality;
+import de.ipb_halle.lbac.util.units.Unit;
 
 /**
  * 

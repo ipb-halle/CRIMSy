@@ -27,7 +27,8 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Unit;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

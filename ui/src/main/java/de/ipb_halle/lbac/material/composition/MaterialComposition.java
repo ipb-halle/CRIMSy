@@ -21,8 +21,9 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.util.Unit;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

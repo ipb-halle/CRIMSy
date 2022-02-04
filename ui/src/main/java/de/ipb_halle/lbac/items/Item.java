@@ -31,7 +31,8 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.bean.Type;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Unit;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

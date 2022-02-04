@@ -25,15 +25,14 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-
 import org.primefaces.event.FlowEvent;
 
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.util.Quality;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Quality;
+import de.ipb_halle.lbac.util.units.Unit;
 
 /**
  * 

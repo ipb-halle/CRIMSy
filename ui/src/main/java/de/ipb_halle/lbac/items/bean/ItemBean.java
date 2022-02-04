@@ -38,8 +38,9 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
-import de.ipb_halle.lbac.util.Quality;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Quality;
+import de.ipb_halle.lbac.util.units.Unit;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
