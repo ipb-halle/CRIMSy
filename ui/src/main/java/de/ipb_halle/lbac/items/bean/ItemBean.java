@@ -465,14 +465,14 @@ public class ItemBean implements Serializable {
     }
     
     private List<Unit> loadAmountUnits() {
-        return Unit.getUnitsOfQuality(
+        return Unit.getVisibleUnitsOfQuality(
                 Quality.MASS,
                 Quality.VOLUME,
                 Quality.PIECES);
     }
     
     private List<Unit> loadConcentrationUnits() {
-        return Unit.getUnitsOfQuality(
+        return Unit.getVisibleUnitsOfQuality(
                 Quality.MOLAR_CONCENTRATION,
                 Quality.MASS_CONCENTRATION,
                 Quality.PERCENT_CONCENTRATION);

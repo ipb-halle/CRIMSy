@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.util.units;
 
-
-
 /**
  * Physical quality of units of measurement
  *
@@ -32,11 +30,15 @@ public enum Quality {
     MASS("kg"),
     DENSITY("kg/m^3"),
     AMOUNT_OF_SUBSTANCE("mol"),
-    MOLAR_MASS("g/mol"),
-    MOLAR_CONCENTRATION("M"),
+    MOLAR_MASS("kg/mol"),
+    MOLAR_CONCENTRATION("mol/m^3"),
     PERCENT_CONCENTRATION("[1]"),
-    MASS_CONCENTRATION("g/l");
+    MASS_CONCENTRATION("kg/m^3");
 
+    /*
+     * Do not change this to Unit, because this will clash with the static block in
+     * Unit.
+     */
     private String baseUnit;
 
     private Quality(String baseUnit) {
@@ -44,6 +46,6 @@ public enum Quality {
     }
 
     public Unit getBaseUnit() {
-        return Unit.getUnit(this.baseUnit);
+        return Unit.getUnit(baseUnit);
     }
 }
