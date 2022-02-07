@@ -18,12 +18,17 @@
 package de.ipb_halle.lbac.util.units;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 class QuantityTest {
     private static final double DELTA = 1.0e-9;
+    private Quantity q1 = new Quantity(12.34, Unit.getUnit("mm"));
+    private Quantity q2 = new Quantity(5.67, Unit.getUnit("m"));
+    private Quantity q3 = new Quantity(8.9, Unit.getUnit("mol"));
 
     @Test
     void test_getters() {
@@ -53,8 +58,6 @@ class QuantityTest {
 
     @Test
     void test_add() {
-        Quantity q1 = new Quantity(12.34, Unit.getUnit("mm"));
-        Quantity q2 = new Quantity(5.67, Unit.getUnit("m"));
         Quantity sum;
 
         sum = q1.add(q1);
@@ -70,14 +73,11 @@ class QuantityTest {
         assertEquals("m", sum.getUnit().toString());
 
         assertThrows(NullPointerException.class, () -> q1.add(null));
-        Quantity wrongQuality = new Quantity(1.0, Unit.getUnit("mol"));
-        assertThrows(IllegalArgumentException.class, () -> q1.add(wrongQuality));
+        assertThrows(IllegalArgumentException.class, () -> q1.add(q3));
     }
 
     @Test
     void test_subtract() {
-        Quantity q1 = new Quantity(12.34, Unit.getUnit("mm"));
-        Quantity q2 = new Quantity(5.67, Unit.getUnit("m"));
         Quantity difference;
 
         difference = q1.subtract(q1);
@@ -93,14 +93,11 @@ class QuantityTest {
         assertEquals("m", difference.getUnit().toString());
 
         assertThrows(NullPointerException.class, () -> q1.subtract(null));
-        Quantity wrongQuality = new Quantity(1.0, Unit.getUnit("mol"));
-        assertThrows(IllegalArgumentException.class, () -> q1.subtract(wrongQuality));
+        assertThrows(IllegalArgumentException.class, () -> q1.subtract(q3));
     }
 
     @Test
     void test_multiply() {
-        Quantity q1 = new Quantity(12.34, Unit.getUnit("mm"));
-        Quantity q2 = new Quantity(5.67, Unit.getUnit("m"));
         Quantity product;
 
         product = q1.multiply(q1, Quality.AREA);
@@ -126,8 +123,6 @@ class QuantityTest {
 
     @Test
     void test_divide() {
-        Quantity q1 = new Quantity(12.34, Unit.getUnit("mm"));
-        Quantity q2 = new Quantity(5.67, Unit.getUnit("m"));
         Quantity quotient;
 
         quotient = q1.divide(q1, Quality.MASS);
@@ -149,5 +144,45 @@ class QuantityTest {
         assertThrows(NullPointerException.class, () -> q1.divide(null, Quality.AREA));
         assertThrows(NullPointerException.class, () -> q1.divide(q2, null));
         assertThrows(NullPointerException.class, () -> q1.divide(null, null));
+    }
+
+    @Test
+    void test_isGreaterThan() {
+        assertFalse(q1.isGreaterThan(q1));
+        assertFalse(q1.isGreaterThan(q2));
+        assertTrue(q2.isGreaterThan(q1));
+
+        assertThrows(NullPointerException.class, () -> q1.isGreaterThan(null));
+        assertThrows(IllegalArgumentException.class, () -> q1.isGreaterThan(q3));
+    }
+
+    @Test
+    void test_isGreaterThanOrEqualTo() {
+        assertTrue(q1.isGreaterThanOrEqualTo(q1));
+        assertFalse(q1.isGreaterThanOrEqualTo(q2));
+        assertTrue(q2.isGreaterThanOrEqualTo(q1));
+
+        assertThrows(NullPointerException.class, () -> q1.isGreaterThanOrEqualTo(null));
+        assertThrows(IllegalArgumentException.class, () -> q1.isGreaterThanOrEqualTo(q3));
+    }
+
+    @Test
+    void test_isLessThan() {
+        assertFalse(q1.isLessThan(q1));
+        assertTrue(q1.isLessThan(q2));
+        assertFalse(q2.isLessThan(q1));
+
+        assertThrows(NullPointerException.class, () -> q1.isLessThan(null));
+        assertThrows(IllegalArgumentException.class, () -> q1.isLessThan(q3));
+    }
+
+    @Test
+    void test_isLessThanOrEqualTo() {
+        assertTrue(q1.isLessThanOrEqualTo(q1));
+        assertTrue(q1.isLessThanOrEqualTo(q2));
+        assertFalse(q2.isLessThanOrEqualTo(q1));
+
+        assertThrows(NullPointerException.class, () -> q1.isLessThanOrEqualTo(null));
+        assertThrows(IllegalArgumentException.class, () -> q1.isLessThanOrEqualTo(q3));
     }
 }

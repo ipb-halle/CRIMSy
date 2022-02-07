@@ -134,4 +134,52 @@ public class Quantity {
         double newValue = thisInBaseUnit.getValue() / quantityInBaseUnit.getValue();
         return new Quantity(newValue, quality.getBaseUnit());
     }
+
+    /**
+     * @param quantity
+     * @return true if this quantity is greater than the given quantity
+     * @throws IllegalArgumentException if this quantity's unit and the given
+     *                                  quantity's unit do not have the same quality
+     * @throws NullPointerException     if quantity is null
+     */
+    public boolean isGreaterThan(Quantity quantity) {
+        Quantity quantityInMyUnit = quantity.to(unit);
+        return this.getValue() > quantityInMyUnit.getValue();
+    }
+
+    /**
+     * @param quantity
+     * @return true if this quantity is greater than or equal to the given quantity
+     * @throws IllegalArgumentException if this quantity's unit and the given
+     *                                  quantity's unit do not have the same quality
+     * @throws NullPointerException     if quantity is null
+     */
+    public boolean isGreaterThanOrEqualTo(Quantity quantity) {
+        Quantity quantityInMyUnit = quantity.to(unit);
+        return this.getValue() >= quantityInMyUnit.getValue();
+    }
+
+    /**
+     * @param quantity
+     * @return true if this quantity is less than the given quantity
+     * @throws IllegalArgumentException if this quantity's unit and the given
+     *                                  quantity's unit do not have the same quality
+     * @throws NullPointerException     if quantity is null
+     */
+    public boolean isLessThan(Quantity quantity) {
+        Quantity quantityInMyUnit = quantity.to(unit);
+        return this.getValue() < quantityInMyUnit.getValue();
+    }
+
+    /**
+     * @param quantity
+     * @return true if this quantity is less than or equal to the given quantity
+     * @throws IllegalArgumentException if this quantity's unit and the given
+     *                                  quantity's unit do not have the same quality
+     * @throws NullPointerException     if quantity is null
+     */
+    public boolean isLessThanOrEqualTo(Quantity quantity) {
+        Quantity quantityInMyUnit = quantity.to(unit);
+        return this.getValue() <= quantityInMyUnit.getValue();
+    }
 }
