@@ -86,7 +86,7 @@ public class Unit implements Serializable {
         addUnit(new Unit(Quality.AMOUNT_OF_SUBSTANCE, "µmol", 1.0e-6));
 
         addUnit(new Unit(Quality.MOLAR_MASS, "kg/mol", 1.0, false));
-        addUnit(new Unit(Quality.MOLAR_MASS, "g/mol", 1000.0));
+        addUnit(new Unit(Quality.MOLAR_MASS, "g/mol", 1.0e-3));
 
         addUnit(new Unit(Quality.MOLAR_CONCENTRATION, "mol/m^3", 1.0, false));
         addUnit(new Unit(Quality.MOLAR_CONCENTRATION, "M", 1000.0));
@@ -246,5 +246,17 @@ public class Unit implements Serializable {
     @Deprecated
     public double transform(Unit target, double propFactor, Unit propUnit) {
         throw new UnsupportedOperationException("transform() between different qualities is not yet implemented");
+    }
+
+    /**
+     * @param quality
+     * @throws IllegalArgumentException if the quality of this unit does not match
+     *                                  the given quality
+     */
+    public void require(Quality quality) {
+        if (this.quality != quality) {
+            throw new IllegalArgumentException(
+                    "Wrong physical quality: Expected " + quality + " but got " + this.quality);
+        }
     }
 }

@@ -21,25 +21,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
 
 class QuantityTest {
     private static final double DELTA = 1.0e-9;
-    private Quantity q1 = new Quantity(12.34, Unit.getUnit("mm"));
-    private Quantity q2 = new Quantity(5.67, Unit.getUnit("m"));
-    private Quantity q3 = new Quantity(8.9, Unit.getUnit("mol"));
+    private Quantity q1 = new Quantity(12.34, "mm");
+    private Quantity q2 = new Quantity(5.67, "m");
+    private Quantity q3 = new Quantity(8.9, "mol");
 
     @Test
-    void test_getters() {
-        Quantity quantity = new Quantity(42.123, Unit.getUnit("cm"));
+    public void test_getters() {
+        Quantity quantity = new Quantity(42.123, "cm");
         assertEquals(42.123, quantity.getValue(), DELTA);
         assertEquals("cm", quantity.getUnit().toString());
     }
 
     @Test
-    void test_to() {
-        Quantity quantity = new Quantity(42.123, Unit.getUnit("cm"));
+    public void test_to() {
+        Quantity quantity = new Quantity(42.123, "cm");
         Quantity newQuantity = quantity.to(Unit.getUnit("mm"));
         assertEquals(421.23, newQuantity.getValue(), DELTA);
         assertEquals("mm", newQuantity.getUnit().toString());
@@ -49,15 +50,15 @@ class QuantityTest {
     }
 
     @Test
-    void test_toBaseUnit() {
-        Quantity quantity = new Quantity(42.123, Unit.getUnit("cm"));
+    public void test_toBaseUnit() {
+        Quantity quantity = new Quantity(42.123, "cm");
         Quantity newQuantity = quantity.toBaseUnit();
         assertEquals(0.42123, newQuantity.getValue(), DELTA);
         assertEquals("m", newQuantity.getUnit().toString());
     }
 
     @Test
-    void test_add() {
+    public void test_add() {
         Quantity sum;
 
         sum = q1.add(q1);
@@ -77,7 +78,7 @@ class QuantityTest {
     }
 
     @Test
-    void test_subtract() {
+    public void test_subtract() {
         Quantity difference;
 
         difference = q1.subtract(q1);
@@ -97,7 +98,7 @@ class QuantityTest {
     }
 
     @Test
-    void test_multiply() {
+    public void test_multiply() {
         Quantity product;
 
         product = q1.multiply(q1, Quality.AREA);
@@ -122,7 +123,7 @@ class QuantityTest {
     }
 
     @Test
-    void test_divide() {
+    public void test_divide() {
         Quantity quotient;
 
         quotient = q1.divide(q1, Quality.MASS);
@@ -147,7 +148,7 @@ class QuantityTest {
     }
 
     @Test
-    void test_isGreaterThan() {
+    public void test_isGreaterThan() {
         assertFalse(q1.isGreaterThan(q1));
         assertFalse(q1.isGreaterThan(q2));
         assertTrue(q2.isGreaterThan(q1));
@@ -157,7 +158,7 @@ class QuantityTest {
     }
 
     @Test
-    void test_isGreaterThanOrEqualTo() {
+    public void test_isGreaterThanOrEqualTo() {
         assertTrue(q1.isGreaterThanOrEqualTo(q1));
         assertFalse(q1.isGreaterThanOrEqualTo(q2));
         assertTrue(q2.isGreaterThanOrEqualTo(q1));
@@ -167,7 +168,7 @@ class QuantityTest {
     }
 
     @Test
-    void test_isLessThan() {
+    public void test_isLessThan() {
         assertFalse(q1.isLessThan(q1));
         assertTrue(q1.isLessThan(q2));
         assertFalse(q2.isLessThan(q1));
@@ -177,12 +178,18 @@ class QuantityTest {
     }
 
     @Test
-    void test_isLessThanOrEqualTo() {
+    public void test_isLessThanOrEqualTo() {
         assertTrue(q1.isLessThanOrEqualTo(q1));
         assertTrue(q1.isLessThanOrEqualTo(q2));
         assertFalse(q2.isLessThanOrEqualTo(q1));
 
         assertThrows(NullPointerException.class, () -> q1.isLessThanOrEqualTo(null));
         assertThrows(IllegalArgumentException.class, () -> q1.isLessThanOrEqualTo(q3));
+    }
+
+    @Test
+    public void test_require() {
+        assertDoesNotThrow(() -> q1.require(Quality.LENGTH));
+        assertThrows(IllegalArgumentException.class, () -> q1.require(Quality.MASS));
     }
 }

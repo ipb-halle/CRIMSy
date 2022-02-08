@@ -31,6 +31,11 @@ public class Quantity {
         this.unit = unit;
     }
 
+    public Quantity(double value, String unit) {
+        this.value = value;
+        this.unit = Unit.getUnit(unit);
+    }
+
     /**
      * @return value of this quantity
      */
@@ -181,5 +186,18 @@ public class Quantity {
     public boolean isLessThanOrEqualTo(Quantity quantity) {
         Quantity quantityInMyUnit = quantity.to(unit);
         return this.getValue() <= quantityInMyUnit.getValue();
+    }
+
+    /**
+     * @param quality
+     * @throws IllegalArgumentException if the quality of this quantity's unit does
+     *                                  not match the given quality
+     */
+    public void require(Quality quality) {
+        Quality qualityFromUnit = unit.getQuality();
+        if (qualityFromUnit != quality) {
+            throw new IllegalArgumentException(
+                    "Wrong physical quality: Expected " + quality + " but got " + qualityFromUnit);
+        }
     }
 }

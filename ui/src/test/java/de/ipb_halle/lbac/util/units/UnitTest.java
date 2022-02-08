@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * @author fbroda
@@ -160,6 +161,16 @@ public class UnitTest {
         assertEquals(10.0, cm.transform(mm), DELTA);
         assertEquals(0.1, mm.transform(cm), DELTA);
 
+        Unit molar = Unit.getUnit("M");
+        Unit molesPerCubicMeter = Unit.getUnit("mol/m^3");
+        assertEquals(1000, molar.transform(molesPerCubicMeter), DELTA);
+        assertEquals(0.001, molesPerCubicMeter.transform(molar), DELTA);
+
+        Unit gramsPerMol = Unit.getUnit("g/mol");
+        Unit kilogramsPerMol = Unit.getUnit("kg/mol");
+        assertEquals(0.001, gramsPerMol.transform(kilogramsPerMol), DELTA);
+        assertEquals(1000, kilogramsPerMol.transform(gramsPerMol), DELTA);
+
         // all possible transformations
         for (Quality q : Quality.values()) {
             for (Unit u1 : Unit.getUnitsOfQuality(q)) {
@@ -169,5 +180,12 @@ public class UnitTest {
                 }
             }
         }
+    }
+
+    @Test
+    public void test_require() {
+        Unit mm = Unit.getUnit("mm");
+        assertDoesNotThrow(() -> mm.require(Quality.LENGTH));
+        assertThrows(IllegalArgumentException.class, () -> mm.require(Quality.MASS));
     }
 }
