@@ -107,6 +107,7 @@ public class CollectionBeanTest extends TestBase {
 
     @Test
     public void test003_getCreatableLocalCollections() {
+        entityManagerService.doSqlUpdate("DELETE FROM collections;");
         Collection col = new Collection();
         col.setName("ReadOnly");
         col.setOwner(adminUser);

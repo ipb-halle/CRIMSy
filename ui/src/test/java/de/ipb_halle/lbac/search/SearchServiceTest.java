@@ -777,7 +777,7 @@ public class SearchServiceTest extends TestBase {
 
     private Map<String, Object> createExperimentCMap(int id) {
         Map<String, Object> cmap = new HashMap<>();
-        cmap.put("EXPERIMENT_ID", String.valueOf(id));
+        cmap.put("EXPERIMENT_ID", id);
         return cmap;
     }
 

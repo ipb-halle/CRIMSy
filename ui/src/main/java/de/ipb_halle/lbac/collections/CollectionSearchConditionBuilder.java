@@ -63,9 +63,16 @@ public class CollectionSearchConditionBuilder extends SearchConditionBuilder {
      * @param conditions
      * @param values
      */
-    private void addCollectionCondition(List<Condition> conditions, Set<String> values) {
+    private void addCollectionCondition(List<Condition> conditions, Set<String> valuesIn) {
+        if (valuesIn == null) {
+            return;
+        }
+        Set<Integer> values = new HashSet<>();
+        for (String s : valuesIn) {
+            values.add(Integer.parseInt(s));
+        }
         Condition con;
-        if (values != null && !values.isEmpty()) {
+        if (!values.isEmpty()) {
             con = getBinaryLeafCondition(
                     Operator.IN,
                     values,
