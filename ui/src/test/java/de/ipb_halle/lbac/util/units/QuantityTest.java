@@ -17,11 +17,15 @@
  */
 package de.ipb_halle.lbac.util.units;
 
+import static de.ipb_halle.lbac.util.units.Quality.LENGTH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,6 +59,44 @@ class QuantityTest {
         Quantity newQuantity = quantity.toBaseUnit();
         assertEquals(0.42123, newQuantity.getValue(), DELTA);
         assertEquals("m", newQuantity.getUnit().toString());
+    }
+
+    @Test
+    public void test_toHumanReadableUnit() {
+        assertHumanReadability(0.01, "mm", 10.0, "µm");
+        assertHumanReadability(0.1, "mm", 0.1, "mm");
+        assertHumanReadability(1.0, "mm", 1.0, "mm");
+        assertHumanReadability(10.0, "mm", 1.0, "cm");
+        assertHumanReadability(100.0, "mm", 10, "cm");
+        assertHumanReadability(1000.0, "mm", 1.0, "m");
+        assertHumanReadability(10000.0, "mm", 10.0, "m");
+
+        // This works with the fudge factor -0.5, but it breaks the previous tests.
+        //assertHumanReadability(0.058, "mm", 58.0, "µm");
+
+        Quantity quantity;
+        Quantity humanReadableQuantity;
+        List<Unit> availableUnits;
+
+        quantity = new Quantity(1000.0, "mm");
+        availableUnits = Arrays.asList(Unit.getUnit("mol"), Unit.getUnit("m^2"));
+        humanReadableQuantity = quantity.toHumanReadableUnit(availableUnits);
+        // All available units are incompatible, so we get the original quantity.
+        assertEquals(1000.0, humanReadableQuantity.getValue(), DELTA);
+        assertEquals("mm", humanReadableQuantity.getUnit().toString());
+
+        quantity = new Quantity(1000.0, "mm");
+        availableUnits = Arrays.asList(Unit.getUnit("mol"), Unit.getUnit("µm"));
+        humanReadableQuantity = quantity.toHumanReadableUnit(availableUnits);
+        // Only one compatible unit, which has a worse score compared to the given unit.
+        assertEquals(1000.0, humanReadableQuantity.getValue(), DELTA);
+        assertEquals("mm", humanReadableQuantity.getUnit().toString());
+    }
+
+    private void assertHumanReadability(double value, String unit, double expectedValue, String expectedUnit) {
+        Quantity humanReadableQuantity = new Quantity(value, unit).toHumanReadableUnit(Unit.getUnitsOfQuality(LENGTH));
+        assertEquals(expectedValue, humanReadableQuantity.getValue(), DELTA);
+        assertEquals(expectedUnit, humanReadableQuantity.getUnit().toString());
     }
 
     @Test

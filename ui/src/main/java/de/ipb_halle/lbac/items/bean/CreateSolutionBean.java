@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import static de.ipb_halle.lbac.util.units.Quality.MASS;
 import static de.ipb_halle.lbac.util.units.Quality.MASS_CONCENTRATION;
 import static de.ipb_halle.lbac.util.units.Quality.MOLAR_CONCENTRATION;
 import static de.ipb_halle.lbac.util.units.Quality.VOLUME;
@@ -163,8 +164,10 @@ public class CreateSolutionBean implements Serializable {
             return;
         }
 
-        Quantity targetMassAsQuantity = calculateTargetMass(concentration, volume, targetMassUnit);
+        Quantity targetMassAsQuantity = calculateTargetMass(concentration, volume, targetMassUnit)
+                .toHumanReadableUnit(Unit.getVisibleUnitsOfQuality(MASS));
         targetMass = targetMassAsQuantity.getValue();
+        targetMassUnit = targetMassAsQuantity.getUnit();
 
         Quantity massFromItem = massFromItem();
         if (targetMassAsQuantity.isGreaterThanOrEqualTo(massFromItem)) {

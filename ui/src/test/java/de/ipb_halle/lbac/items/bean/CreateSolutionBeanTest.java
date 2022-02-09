@@ -268,8 +268,8 @@ class CreateSolutionBeanTest extends TestBase {
         bean.actionUpdateTargetMass();
 
         // assertions
-        assertEquals(1000d, bean.getTargetMass(), DELTA);
-        assertEquals(Unit.getUnit("g"), bean.getTargetMassUnit());
+        assertEquals(1.0, bean.getTargetMass(), DELTA);
+        assertEquals(Unit.getUnit("kg"), bean.getTargetMassUnit());
         assertNull(messagePresenter.getLastErrorMessage());
     }
 
@@ -294,8 +294,8 @@ class CreateSolutionBeanTest extends TestBase {
         bean.actionUpdateTargetMass();
 
         // assertions
-        assertEquals(1000d, bean.getTargetMass(), DELTA);
-        assertEquals(Unit.getUnit("g"), bean.getTargetMassUnit());
+        assertEquals(1.0, bean.getTargetMass(), DELTA);
+        assertEquals(Unit.getUnit("kg"), bean.getTargetMassUnit());
         assertNull(messagePresenter.getLastErrorMessage());
     }
 
@@ -320,8 +320,8 @@ class CreateSolutionBeanTest extends TestBase {
         bean.actionUpdateTargetMass();
 
         // assertions
-        assertEquals(1000d, bean.getTargetMass(), DELTA);
-        assertEquals(Unit.getUnit("g"), bean.getTargetMassUnit());
+        assertEquals(1.0, bean.getTargetMass(), DELTA);
+        assertEquals(Unit.getUnit("kg"), bean.getTargetMassUnit());
         assertEquals("itemCreateSolution_error_targetMassTooHigh", messagePresenter.getLastErrorMessage());
     }
 

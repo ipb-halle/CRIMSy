@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.util.units;
 
+import java.util.List;
+import java.util.TreeMap;
+
 /**
  * Physical quantity that unites value and unit.
  * 
@@ -49,6 +52,11 @@ public class Quantity {
         return unit;
     }
 
+    @Override
+    public String toString() {
+        return "Quantity [value=" + value + ", unit=" + unit + "]";
+    }
+
     /**
      * Converts this quantity to the given target unit.
      * 
@@ -71,6 +79,38 @@ public class Quantity {
     public Quantity toBaseUnit() {
         Unit baseUnit = unit.getQuality().getBaseUnit();
         return to(baseUnit);
+    }
+
+    /**
+     * Converts the unit of this quantity, so the numeric value has the best
+     * human-readability.
+     * 
+     * @param availableUnits
+     * @return new quantity with the best-suited unit
+     */
+    public Quantity toHumanReadableUnit(List<Unit> availableUnits) {
+        Quality myQuality = unit.getQuality();
+        Quantity chosenQuantity = this;
+        TreeMap<Double, Quantity> scoreMap = new TreeMap<>();
+
+        scoreMap.put(humanReadablityScore(this), this);
+        for (Unit unit : availableUnits) {
+            if (myQuality != unit.getQuality()) {
+                continue;
+            }
+
+            Quantity q = this.to(unit);
+            scoreMap.put(humanReadablityScore(q), q);
+        }
+        if (!scoreMap.isEmpty()) {
+            chosenQuantity = scoreMap.firstEntry().getValue();
+        }
+
+        return chosenQuantity;
+    }
+
+    private double humanReadablityScore(Quantity quantity) {
+        return Math.abs(Math.log10(quantity.getValue()) /* add fudge factor here */);
     }
 
     /**
