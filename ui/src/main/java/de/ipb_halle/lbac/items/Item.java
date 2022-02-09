@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.bean.Type;
+import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
 import java.io.Serializable;
@@ -378,4 +379,14 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.label = label;
     }
 
+    /**
+     * @return new quantity with the {@code amount} as value and the {@code unit} as
+     *         unit or null if one of those is null
+     */
+    public Quantity getAmountAsQuantity() {
+        if ((amount == null) || (unit == null)) {
+            return null;
+        }
+        return new Quantity(amount, unit);
+    }
 }

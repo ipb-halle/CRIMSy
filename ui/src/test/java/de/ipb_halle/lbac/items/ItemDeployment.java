@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.items;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.items.bean.CreateSolutionBean;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.label.LabelService;
@@ -42,7 +43,8 @@ public class ItemDeployment {
                 .addClass(ContainerNestingService.class)
                 .addClass(ContainerPositionService.class)
                 .addClass(LabelService.class)
-                .addClass(MaterialService.class);
+                .addClass(MaterialService.class)
+                .addClass(CreateSolutionBean.class);
         return MaterialDeployment.add(d);
     }
 }

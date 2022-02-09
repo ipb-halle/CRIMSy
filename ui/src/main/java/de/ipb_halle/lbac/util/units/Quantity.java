@@ -32,8 +32,7 @@ public class Quantity {
     }
 
     public Quantity(double value, String unit) {
-        this.value = value;
-        this.unit = Unit.getUnit(unit);
+        this(value, Unit.getUnit(unit));
     }
 
     /**

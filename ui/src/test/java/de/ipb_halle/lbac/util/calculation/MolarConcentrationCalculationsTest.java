@@ -20,8 +20,8 @@ package de.ipb_halle.lbac.util.calculation;
 import static de.ipb_halle.lbac.util.calculation.MolarConcentrationCalculations.calculateMass;
 import static de.ipb_halle.lbac.util.calculation.MolarConcentrationCalculations.calculateMolarConcentration;
 import static de.ipb_halle.lbac.util.calculation.MolarConcentrationCalculations.calculateVolume;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
