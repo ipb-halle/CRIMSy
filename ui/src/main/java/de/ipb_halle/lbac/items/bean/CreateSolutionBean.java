@@ -57,26 +57,20 @@ public class CreateSolutionBean implements Serializable {
 
     private Item parentItem;
     private Quantity molarMassFromItem;
-    private List<Unit> availableConcentrationUnits;
-    private List<Unit> availableVolumeUnits;
+    private List<Unit> availableConcentrationUnits; // r
+    private List<Unit> availableVolumeUnits = Unit.getVisibleUnitsOfQuality(VOLUME); // r
+    private List<Unit> availableMassUnits = Unit.getVisibleUnitsOfQuality(MASS); // r
 
-    /*
-     * User input (read/write)
-     */
     // step (1)
-    private Double targetConcentration;
-    private Unit targetConcentrationUnit;
-    private Double targetVolume;
-    private Unit targetVolumeUnit;
-
-    /*
-     * Output (read only)
-     */
-    // step (1)
-    private Double targetMass;
-    private Unit targetMassUnit;
-    private Double availableMassFromItem;
-    private Unit availableMassFromItemUnit;
+    private Double targetConcentration; // rw
+    private Unit targetConcentrationUnit; // rw
+    private Double targetVolume; // rw
+    private Unit targetVolumeUnit = Unit.getUnit("ml"); // rw
+    private Double targetMass; // r
+    private Unit targetMassUnit; // rw
+    private boolean userChangedMassUnit = false; // rw
+    private Double availableMassFromItem; // r
+    private Unit availableMassFromItemUnit; // r
 
     @PostConstruct
     public void init() {
@@ -87,15 +81,13 @@ public class CreateSolutionBean implements Serializable {
         parentItem = null;
         molarMassFromItem = null;
         availableConcentrationUnits = Collections.emptyList();
-        availableVolumeUnits = Collections.emptyList();
 
         targetConcentration = null;
         targetConcentrationUnit = null;
         targetVolume = null;
-        targetVolumeUnit = null;
-
         targetMass = null;
         targetMassUnit = null;
+        userChangedMassUnit = false;
         availableMassFromItem = null;
         availableMassFromItemUnit = null;
     }
@@ -109,7 +101,6 @@ public class CreateSolutionBean implements Serializable {
 
         setMolarMassFromParentItem();
         loadAvailableConcentrationUnits();
-        loadAvailableVolumeUnits();
 
         Quantity massFromItem = massFromItem();
         if (massFromItem != null) {
@@ -145,11 +136,6 @@ public class CreateSolutionBean implements Serializable {
         }
     }
 
-    private void loadAvailableVolumeUnits() {
-        availableVolumeUnits = Unit.getVisibleUnitsOfQuality(VOLUME);
-        targetVolumeUnit = Unit.getUnit("ml");
-    }
-
     private Quantity massFromItem() {
         return parentItem.getAmountAsQuantity();
     }
@@ -164,8 +150,10 @@ public class CreateSolutionBean implements Serializable {
             return;
         }
 
-        Quantity targetMassAsQuantity = calculateTargetMass(concentration, volume, targetMassUnit)
-                .toHumanReadableUnit(Unit.getVisibleUnitsOfQuality(MASS));
+        Quantity targetMassAsQuantity = calculateTargetMass(concentration, volume, targetMassUnit);
+        if (!userChangedMassUnit) {
+            targetMassAsQuantity = targetMassAsQuantity.toHumanReadableUnit(Unit.getVisibleUnitsOfQuality(MASS));
+        }
         targetMass = targetMassAsQuantity.getValue();
         targetMassUnit = targetMassAsQuantity.getUnit();
 
@@ -232,6 +220,10 @@ public class CreateSolutionBean implements Serializable {
         return availableVolumeUnits;
     }
 
+    public List<Unit> getAvailableMassUnits() {
+        return availableMassUnits;
+    }
+
     public Double getTargetConcentration() {
         return targetConcentration;
     }
@@ -270,6 +262,18 @@ public class CreateSolutionBean implements Serializable {
 
     public Unit getTargetMassUnit() {
         return targetMassUnit;
+    }
+
+    public void setTargetMassUnit(Unit targetMassUnit) {
+        this.targetMassUnit = targetMassUnit;
+    }
+
+    public boolean isUserChangedMassUnit() {
+        return userChangedMassUnit;
+    }
+
+    public void setUserChangedMassUnit(boolean userChangedMassUnit) {
+        this.userChangedMassUnit = userChangedMassUnit;
     }
 
     public Double getAvailableMassFromItem() {

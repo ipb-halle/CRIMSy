@@ -130,10 +130,20 @@
                                     </b:inputText>
                                 </b:column>
                                 <b:column span="2">
-                                    <b:inputText
+                                    <b:selectOneMenu
                                         value="#{createSolutionBean.targetMassUnit}"
                                         label="Unit"
-                                        readonly="true" />
+                                        required="true"
+                                        ajax="true"
+                                        process="@this"
+                                        update="targetMassId"
+                                        onchange="ajax:createSolutionBean.setUserChangedMassUnit(true);
+                                                  createSolutionBean.actionUpdateTargetMass()">
+                                        <f:selectItems
+                                            value="#{createSolutionBean.availableMassUnits}"
+                                            var="unit"
+                                            itemLabel="#{unit.unit}" />                                        
+                                    </b:selectOneMenu>
                                 </b:column>
                             </b:row>
                             <!-- Available mass from item -->

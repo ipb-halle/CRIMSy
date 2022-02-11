@@ -24,8 +24,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +64,9 @@ class CreateSolutionBeanTest extends TestBase {
     public void test_gettersSettersAndDefaults() {
         assertThat(bean.getAvailableConcentrationUnits(), empty());
 
-        assertThat(bean.getAvailableVolumeUnits(), empty());
+        assertNotNull(bean.getAvailableVolumeUnits());
+
+        assertNotNull(bean.getAvailableMassUnits());
 
         assertNull(bean.getTargetConcentration());
         bean.setTargetConcentration(42d);
@@ -76,13 +80,19 @@ class CreateSolutionBeanTest extends TestBase {
         bean.setTargetVolume(10d);
         assertEquals(10d, bean.getTargetVolume(), DELTA);
 
-        assertNull(bean.getTargetVolumeUnit());
-        bean.setTargetVolumeUnit(Unit.getUnit("ml"));
         assertEquals(Unit.getUnit("ml"), bean.getTargetVolumeUnit());
+        bean.setTargetVolumeUnit(Unit.getUnit("µl"));
+        assertEquals(Unit.getUnit("µl"), bean.getTargetVolumeUnit());
 
         assertNull(bean.getTargetMass());
 
         assertNull(bean.getTargetMassUnit());
+        bean.setTargetMassUnit(Unit.getUnit("mg"));
+        assertEquals(Unit.getUnit("mg"), bean.getTargetMassUnit());
+
+        assertFalse(bean.isUserChangedMassUnit());
+        bean.setUserChangedMassUnit(true);
+        assertTrue(bean.isUserChangedMassUnit());
 
         assertNull(bean.getAvailableMassFromItem());
 
@@ -98,16 +108,20 @@ class CreateSolutionBeanTest extends TestBase {
         bean.actionStartCreateSolution(new Item());
         bean.setTargetConcentration(42d);
         bean.setTargetVolume(10d);
+        bean.setTargetMassUnit(Unit.getUnit("mg"));
+        bean.setUserChangedMassUnit(true);
 
         // assumptions
         assertThat(bean.getAvailableConcentrationUnits(), not(empty()));
         assertThat(bean.getAvailableVolumeUnits(), not(empty()));
+        assertThat(bean.getAvailableMassUnits(), not(empty()));
         assertNotNull(bean.getTargetConcentration());
         assertNotNull(bean.getTargetConcentrationUnit());
         assertNotNull(bean.getTargetVolume());
         assertNotNull(bean.getTargetVolumeUnit());
         assertNull(bean.getTargetMass());
-        assertNull(bean.getTargetMassUnit());
+        assertNotNull(bean.getTargetMassUnit());
+        assertTrue(bean.isUserChangedMassUnit());
         assertNull(bean.getAvailableMassFromItem());
         assertNull(bean.getAvailableMassFromItemUnit());
 
@@ -116,13 +130,15 @@ class CreateSolutionBeanTest extends TestBase {
 
         // assertions
         assertThat(bean.getAvailableConcentrationUnits(), empty());
-        assertThat(bean.getAvailableVolumeUnits(), empty());
+        assertThat(bean.getAvailableVolumeUnits(), not(empty()));
+        assertThat(bean.getAvailableMassUnits(), not(empty()));
         assertNull(bean.getTargetConcentration());
         assertNull(bean.getTargetConcentrationUnit());
         assertNull(bean.getTargetVolume());
-        assertNull(bean.getTargetVolumeUnit());
+        assertNotNull(bean.getTargetVolumeUnit());
         assertNull(bean.getTargetMass());
         assertNull(bean.getTargetMassUnit());
+        assertFalse(bean.isUserChangedMassUnit());
         assertNull(bean.getAvailableMassFromItem());
         assertNull(bean.getAvailableMassFromItemUnit());
     }
@@ -323,6 +339,32 @@ class CreateSolutionBeanTest extends TestBase {
         assertEquals(1.0, bean.getTargetMass(), DELTA);
         assertEquals(Unit.getUnit("kg"), bean.getTargetMassUnit());
         assertEquals("itemCreateSolution_error_targetMassTooHigh", messagePresenter.getLastErrorMessage());
+    }
+    
+    @Test
+    public void test_actionUpdateTargetMass_afterUserChangedTheTargetUnit() {
+        // preparation
+        Structure s = new Structure(null, 100d, null, 1, null, null);
+        Item i = new Item();
+        i.setAmount(10000d);
+        i.setUnit(Unit.getUnit("g"));
+        i.setMaterial(s);
+        bean.actionStartCreateSolution(i);
+        bean.setTargetConcentration(1d);
+        bean.setTargetConcentrationUnit(Unit.getUnit("M"));
+        bean.setTargetVolume(10d);
+        bean.setTargetVolumeUnit(Unit.getUnit("l"));
+
+        // assumptions
+        assertNull(bean.getTargetMass());
+
+        // execution
+        bean.actionUpdateTargetMass();
+
+        // assertions
+        assertEquals(1.0, bean.getTargetMass(), DELTA);
+        assertEquals(Unit.getUnit("kg"), bean.getTargetMassUnit());
+        assertNull(messagePresenter.getLastErrorMessage());
     }
 
     @Deployment
