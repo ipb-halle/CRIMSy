@@ -26,9 +26,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
@@ -62,7 +59,7 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
     private Double availableMassFromItem; // r
     private Unit availableMassFromItemUnit; // r
 
-    private boolean userChangedMassUnit = false; // rw
+    private boolean userChangedMassUnit = false;
 
     public InputConcentrationAndVolumeStepController(Item parentItem, MessagePresenter messagePresenter) {
         this.parentItem = parentItem;
@@ -116,12 +113,11 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
 
         return ((Structure) materialOfItem).getAverageMolarMassAsQuantity();
     }
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+
     /*
      * Actions
      */
     public void actionUpdateTargetMass() {
-        logger.warn("actionUpdateTargetMass() start " + targetMass);
         targetMass = null;
 
         Quantity concentration = Quantity.create(targetConcentration, targetConcentrationUnit);
@@ -142,7 +138,11 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
         if (targetMassAsQuantity.isGreaterThanOrEqualTo(massFromItem)) {
             messagePresenter.error("itemCreateSolution_error_targetMassTooHigh");
         }
-        logger.warn("actionUpdateTargetMass() end " + targetMass);
+    }
+
+    public void actionOnChangeTargetMassUnit() {
+        userChangedMassUnit = true;
+        actionUpdateTargetMass();
     }
 
     private Quantity calculateTargetMass(Quantity concentration, Quantity volume, Unit targetMassUnit) {
@@ -150,8 +150,7 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
         if ((molarMass == null) || (MASS_CONCENTRATION == concentration.getUnit().getQuality())) {
             return MassConcentrationCalculations.calculateMass(concentration, volume, targetMassUnit);
         } else {
-            return MolarConcentrationCalculations.calculateMass(concentration, molarMass, volume,
-                    targetMassUnit);
+            return MolarConcentrationCalculations.calculateMass(concentration, molarMass, volume, targetMassUnit);
         }
     }
 
@@ -220,13 +219,5 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
 
     public Unit getAvailableMassFromItemUnit() {
         return availableMassFromItemUnit;
-    }
-
-    public boolean isUserChangedMassUnit() {
-        return userChangedMassUnit;
-    }
-
-    public void setUserChangedMassUnit(boolean userChangedMassUnit) {
-        this.userChangedMassUnit = userChangedMassUnit;
     }
 }

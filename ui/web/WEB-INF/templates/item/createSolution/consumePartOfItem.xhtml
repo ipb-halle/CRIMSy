@@ -43,11 +43,13 @@
                                         id="targetConcentrationInputId"
                                         value="#{controller.step1Controller.targetConcentration}"
                                         label="Target concentration"
-                                        required="true"
-                                        ajax="true"
-                                        process="@this"
-                                        update="targetMassId"
-                                        onchange="ajax:controller.step1Controller.actionUpdateTargetMass()">
+                                        required="true">
+                                        <!-- Workaround for BootsFaces issue #541 -->
+                                        <f:ajax
+                                            event="change"
+                                            listener="#{controller.step1Controller.actionUpdateTargetMass()}"
+                                            execute="@this"
+                                            render="targetMassId" />
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
@@ -59,15 +61,16 @@
                                     <b:selectOneMenu
                                         value="#{controller.step1Controller.targetConcentrationUnit}"
                                         label="Unit"
-                                        required="true"
-                                        ajax="true"
-                                        process="@this"
-                                        update="targetMassId"
-                                        onchange="ajax:controller.step1Controller.actionUpdateTargetMass()">
+                                        required="true">
                                         <f:selectItems
                                             value="#{controller.step1Controller.availableConcentrationUnits}"
                                             var="unit"
                                             itemLabel="#{unit.unit}" />
+                                        <f:ajax
+                                            event="change"
+                                            listener="#{controller.step1Controller.actionUpdateTargetMass()}"
+                                            execute="@this"
+                                            render="targetMassId" />
                                     </b:selectOneMenu>
                                 </b:column>
                                 <b:column span="6">
@@ -83,11 +86,12 @@
                                         id="targetVolumeInputId"
                                         value="#{controller.step1Controller.targetVolume}"
                                         label="Target volume"
-                                        required="true"
-                                        ajax="true"
-                                        process="@this"
-                                        update="targetMassId"
-                                        onchange="ajax:controller.step1Controller.actionUpdateTargetMass()">
+                                        required="true">
+                                        <f:ajax
+                                            event="change"
+                                            listener="#{controller.step1Controller.actionUpdateTargetMass()}"
+                                            execute="@this"
+                                            render="targetMassId" />
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
@@ -99,11 +103,12 @@
                                     <b:selectOneMenu
                                         value="#{controller.step1Controller.targetVolumeUnit}"
                                         label="Unit"
-                                        required="true"
-                                        ajax="true"
-                                        process="@this"
-                                        update="targetMassId"
-                                        onchange="ajax:controller.step1Controller.actionUpdateTargetMass()">
+                                        required="true">
+                                        <f:ajax
+                                            event="change"
+                                            listener="#{controller.step1Controller.actionUpdateTargetMass()}"
+                                            execute="@this"
+                                            render="targetMassId" />
                                         <f:selectItems
                                             value="#{controller.step1Controller.availableVolumeUnits}"
                                             var="unit"
@@ -114,7 +119,7 @@
                                     <b:message for="targetVolumeInputId" />
                                 </b:column>
                             </b:row>
-                            <!-- Target mass (autocalculated) -->
+                            <!-- Target mass -->
                             <b:row id="targetMassId">
                                 <b:column
                                     span="2"
@@ -133,12 +138,12 @@
                                     <b:selectOneMenu
                                         value="#{controller.step1Controller.targetMassUnit}"
                                         label="Unit"
-                                        required="true"
-                                        ajax="true"
-                                        process="@this"
-                                        update="targetMassId"
-                                        onchange="ajax:controller.step1Controller.setUserChangedMassUnit(true);
-                                                       controller.step1Controller.actionUpdateTargetMass()">
+                                        required="true">
+                                        <f:ajax
+                                            event="change"
+                                            listener="#{controller.step1Controller.actionOnChangeTargetMassUnit()}"
+                                            execute="@this"
+                                            render="targetMassId" />
                                         <f:selectItems
                                             value="#{controller.step1Controller.availableMassUnits}"
                                             var="unit"
