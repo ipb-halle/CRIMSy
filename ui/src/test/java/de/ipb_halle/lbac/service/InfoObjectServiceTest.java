@@ -39,6 +39,7 @@ import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -55,6 +56,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * This class will provide some test cases for the ACListService class.
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class InfoObjectServiceTest extends TestBase {
 

@@ -125,8 +125,8 @@ public class ExpRecordService implements Serializable {
         } else {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
-
-        return q.setParameter(EXPERIMENT_ID, cmap.getOrDefault(EXPERIMENT_ID, Integer.valueOf(-1)));
+        Integer id = (Integer) cmap.get(EXPERIMENT_ID);
+        return q.setParameter(EXPERIMENT_ID, id == null ? -1 : id);
     }
 
     public void deleteAssayRecord(long recordId) {
@@ -143,10 +143,10 @@ public class ExpRecordService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<ExpRecord> load(Map<String, Object> cmap, User user) {
-        List<ExpRecord> result = new ArrayList<ExpRecord>();
+        List<ExpRecord> result = new ArrayList<>();
 
         Query q = createExpRecordQuery(SQL_LOAD,
-                (cmap == null) ? new HashMap<String, Object>() : cmap,
+                (cmap == null) ? new HashMap<>() : cmap,
                 ExpRecordEntity.class);
         // q.setParameter("USERID", xxxxx);
         // q.setFirstResult();

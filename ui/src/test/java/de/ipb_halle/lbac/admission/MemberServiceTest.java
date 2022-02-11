@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ import static org.junit.Assert.assertTrue;
  * This class will provide some test cases for the MemberService and
  * MembershipService classes.
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MemberServiceTest extends TestBase {
 

@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * This class will provide some test cases for the CollectionService class.
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class CollectionBeanTest extends TestBase {
 
@@ -105,6 +107,7 @@ public class CollectionBeanTest extends TestBase {
 
     @Test
     public void test003_getCreatableLocalCollections() {
+        entityManagerService.doSqlUpdate("DELETE FROM collections;");
         Collection col = new Collection();
         col.setName("ReadOnly");
         col.setOwner(adminUser);

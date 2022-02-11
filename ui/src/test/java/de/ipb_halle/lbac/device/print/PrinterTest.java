@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.device.job.JobType;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.util.pref.Preference;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +53,7 @@ import static org.junit.Assert.assertEquals;
  * This test class covers substantial code portions of the job, label and
  * printing classes.
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class PrinterTest extends TestBase {
 

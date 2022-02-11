@@ -66,6 +66,7 @@ import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.webclient.XmlSetWrapper;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import static de.ipb_halle.fasta_search_service.models.search.TranslationTable.EUPLOTID_NUCLEAR;
 import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_LIBRARY_TYPE;
@@ -107,6 +108,7 @@ import org.primefaces.event.TabChangeEvent;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialCompositionBeanTest extends TestBase {
     private static final long serialVersionUID = 1L;

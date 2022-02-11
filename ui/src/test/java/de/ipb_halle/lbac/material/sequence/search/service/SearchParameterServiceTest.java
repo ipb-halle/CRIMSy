@@ -27,8 +27,8 @@ import static de.ipb_halle.lbac.base.JsonAssert.assertJsonEquals;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -39,17 +39,18 @@ import org.junit.jupiter.api.Test;
  *
  * @author flange
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SearchParameterServiceTest extends TestBase {
+    private static final String SQL_LOAD_PARAMETER = "SELECT id,cdate,CAST(processid as varchar),CAST(parameter as varchar)"
+            + " FROM temp_search_parameter WHERE processid=:processid ORDER BY parameter";
 
-    UUID processId;
-    UUID processId2;
-
-    private final String SQL_LOAD_PARAMETER = "SELECT id,cdate,cast(processid as varchar),parameter FROM temp_search_parameter WHERE processid=':processid' ORDER BY parameter";
     @Inject
     SearchParameterService searchParameter;
     private static final long serialVersionUID = 1L;
 
+    private UUID processId;
+    private UUID processId2;
     private String json1 = "{\"field0\":1,\"field2\":\"Hallo\"}";
     private String json2 = "{\"field3\":1}";
 
@@ -67,16 +68,15 @@ public class SearchParameterServiceTest extends TestBase {
         createAndSaveParameter();
 
         searchParameter.removeParameter(processId);
-        List parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId.toString()));
+        List parameter = (List) entityManagerService.getEntityManager().createNativeQuery(SQL_LOAD_PARAMETER).setParameter("processid", processId).getResultList();
         Assert.assertTrue(parameter.isEmpty());
-        parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId2.toString()));
+        parameter = (List) entityManagerService.getEntityManager().createNativeQuery(SQL_LOAD_PARAMETER).setParameter("processid", processId2).getResultList();
         Assert.assertEquals(1, parameter.size());
-
     }
 
     @SuppressWarnings("unchecked")
     private void checkParameterOfProcess(UUID processId, String expectedJson) {
-        List<Object[]> parameter = (List) entityManagerService.doSqlQuery(SQL_LOAD_PARAMETER.replace(":processid", processId.toString()));
+        List<Object[]> parameter = (List) entityManagerService.getEntityManager().createNativeQuery(SQL_LOAD_PARAMETER).setParameter("processid", processId).getResultList();
         Assert.assertEquals(1, parameter.size());
         Assert.assertEquals(processId, UUID.fromString((String) parameter.get(0)[2]));
         assertJsonEquals(expectedJson, (String) parameter.get(0)[3]);
@@ -87,7 +87,6 @@ public class SearchParameterServiceTest extends TestBase {
         processId2 = UUID.randomUUID();
         searchParameter.saveParameter(processId.toString(), json1);
         searchParameter.saveParameter(processId2.toString(), json2);
-
     }
 
     @Deployment

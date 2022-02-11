@@ -46,10 +46,12 @@ import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.webservice.RestApiHelper;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
  * @author flange
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class FastaRESTSearchServiceTest extends TestBase {
     private static final long serialVersionUID = 1L;

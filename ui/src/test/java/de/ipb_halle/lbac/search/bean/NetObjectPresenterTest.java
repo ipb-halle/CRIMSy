@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -54,6 +55,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class NetObjectPresenterTest extends TestBase {
 

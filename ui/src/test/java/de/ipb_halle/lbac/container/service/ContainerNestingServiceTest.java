@@ -23,6 +23,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ContainerNestingServiceTest extends TestBase {
 

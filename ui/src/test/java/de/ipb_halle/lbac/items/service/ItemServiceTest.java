@@ -44,6 +44,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -68,6 +69,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ItemServiceTest extends TestBase {
 
@@ -232,7 +234,7 @@ public class ItemServiceTest extends TestBase {
         history2.setParentContainerOld(null);
         instance.saveItemHistory(history2);
         Thread.sleep(100);
-        Project project2 = creationTools.createProject();
+        Project project2 = creationTools.createProject("project2");
         ItemHistory history3 = new ItemHistory();
         history3.setActor(owner);
         history3.setItem(item);

@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.List;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -26,26 +26,25 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class GlobalAdmissionContextTest extends TestBase {
-
     private static final long serialVersionUID = 1L;
 
     @Deployment
     public static WebArchive createDeployment() {
         return UserBeanDeployment
-                .add(prepareDeployment("GroupMgrBeanTest.war"));
+                .add(prepareDeployment("GlobalAdmissionContextTest.war"));
     }
 
     @Test
     public void test01_createNewGroup() {
         context.setLBAC_PROPERTIES_PATH("target/test-classes/keystore/lbac_properties.xml");
-        Object o = entityManagerService.doSqlQuery("Select * from usersgroups");
+        Object o = entityManagerService.doSqlQuery("Select id,name from usersgroups");
         for (Object oo : (List) o) {
             Object[] user = (Object[]) oo;
-            System.out.println(user[0] + " : " + user[7]);
+            System.out.println(user[0] + " : " + user[1]);
         }
         context.createAdminAccount();
     }
-
 }

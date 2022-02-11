@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Base64;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -49,6 +50,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class CollectionWebServiceTest
         extends TestBase {

@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,6 +53,7 @@ import org.primefaces.model.TreeNode;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class TaxonomyRenderControllerTest extends TestBase {
 

@@ -52,6 +52,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
@@ -68,6 +69,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialEditSaverTest extends TestBase {
 
@@ -191,7 +193,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertTrue("Testcase 002 - history of storageclass must  be empty", storageClassHist.isEmpty());
 
         // Check the history of the storage conditions
-        List<Object[]> storageConditionsHist = (List) entityManagerService.doSqlQuery("select conditionId_old,conditionId_new from storagesconditions_storages_hist where materialid=" + mNew.getId() + " order by conditionId_old,conditionId_new");
+        List<Object[]> storageConditionsHist = (List) entityManagerService.doSqlQuery("select conditionId_old,conditionId_new from storagesconditions_storages_hist where materialid=" + mNew.getId() + " order by conditionId_old ASC NULLS FIRST,conditionId_new ASC NULLS FIRST");
         Assert.assertEquals("Testcase 002 - One history entry in storageconditions must be found ", 2, storageConditionsHist.size());
         Assert.assertNull("Testcase 002 - Old storagecondition must be null ", storageConditionsHist.get(0)[0]);
         Assert.assertEquals("Testcase 002 - New storagecondition must be 3 ", StorageCondition.lightSensitive.getId(), storageConditionsHist.get(0)[1]);

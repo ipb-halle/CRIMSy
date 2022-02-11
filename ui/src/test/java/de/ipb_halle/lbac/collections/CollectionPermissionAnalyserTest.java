@@ -36,6 +36,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -52,6 +53,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class CollectionPermissionAnalyserTest extends TestBase {
 
