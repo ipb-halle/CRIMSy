@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.util.units;
 import static de.ipb_halle.lbac.util.units.Quality.LENGTH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -34,6 +35,25 @@ class QuantityTest {
     private Quantity q1 = new Quantity(12.34, "mm");
     private Quantity q2 = new Quantity(5.67, "m");
     private Quantity q3 = new Quantity(8.9, "mol");
+
+    @Test
+    public void test_create() {
+        Quantity quantity;
+
+        assertNull(Quantity.create(null, (Unit) null));
+        assertNull(Quantity.create(13.0, (Unit) null));
+        assertNull(Quantity.create(null, Unit.getUnit("m")));
+        quantity = Quantity.create(13.0, Unit.getUnit("m"));
+        assertEquals(13.0, quantity.getValue(), DELTA);
+        assertEquals("m", quantity.getUnit().toString());
+
+        assertNull(Quantity.create(null, (String) null));
+        assertNull(Quantity.create(13.0, (String) null));
+        assertNull(Quantity.create(null, "m"));
+        quantity = Quantity.create(13.0, "m");
+        assertEquals(13.0, quantity.getValue(), DELTA);
+        assertEquals("m", quantity.getUnit().toString());
+    }
 
     @Test
     public void test_getters() {

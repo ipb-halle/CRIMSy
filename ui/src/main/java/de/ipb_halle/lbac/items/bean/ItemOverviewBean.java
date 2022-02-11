@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
+import de.ipb_halle.lbac.items.bean.createsolution.CreateSolutionBean;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -128,7 +129,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
     public void actionStartCreateSolution(Item item) {
         createSolutionBean.actionStartCreateSolution(item);
-        navigator.navigate("/item/createSolution");
+        navigator.navigate("/item/createSolution/createSolution");
     }
 
     public List<Item> getItems() {

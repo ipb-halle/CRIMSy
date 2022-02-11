@@ -39,6 +39,34 @@ public class Quantity {
     }
 
     /**
+     * Factory method (null-safe)
+     * 
+     * @param value
+     * @param unit
+     * @return new quantity or null if value or unit are null
+     */
+    public static Quantity create(Double value, Unit unit) {
+        if ((value == null) || (unit == null)) {
+            return null;
+        }
+        return new Quantity(value, unit);
+    }
+
+    /**
+     * Factory method (null-safe)
+     * 
+     * @param value
+     * @param unit
+     * @return new quantity or null if value or unit are null
+     */
+    public static Quantity create(Double value, String unit) {
+        if ((value == null) || (unit == null)) {
+            return null;
+        }
+        return new Quantity(value, unit);
+    }
+
+    /**
      * @return value of this quantity
      */
     public double getValue() {

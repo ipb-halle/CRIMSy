@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean;
+package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
 
 import static de.ipb_halle.lbac.util.units.Quality.MASS;
 import static de.ipb_halle.lbac.util.units.Quality.MASS_CONCENTRATION;
@@ -24,14 +24,10 @@ import static de.ipb_halle.lbac.util.units.Quality.VOLUME;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.primefaces.event.FlowEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
@@ -47,86 +43,42 @@ import de.ipb_halle.lbac.util.units.Unit;
  * 
  * @author flange
  */
-@SessionScoped
-@Named
-public class CreateSolutionBean implements Serializable {
+public class InputConcentrationAndVolumeStepController implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private transient MessagePresenter messagePresenter;
+    private final MessagePresenter messagePresenter;
+    private final Item parentItem;
 
-    private Item parentItem;
-    private Quantity molarMassFromItem;
+    private List<Unit> availableVolumeUnits; // r
+    private List<Unit> availableMassUnits; // r
     private List<Unit> availableConcentrationUnits; // r
-    private List<Unit> availableVolumeUnits = Unit.getVisibleUnitsOfQuality(VOLUME); // r
-    private List<Unit> availableMassUnits = Unit.getVisibleUnitsOfQuality(MASS); // r
 
-    // step (1)
     private Double targetConcentration; // rw
     private Unit targetConcentrationUnit; // rw
     private Double targetVolume; // rw
-    private Unit targetVolumeUnit = Unit.getUnit("ml"); // rw
+    private Unit targetVolumeUnit; // rw
     private Double targetMass; // r
     private Unit targetMassUnit; // rw
-    private boolean userChangedMassUnit = false; // rw
     private Double availableMassFromItem; // r
     private Unit availableMassFromItemUnit; // r
 
-    @PostConstruct
-    public void init() {
-        resetValues();
+    private boolean userChangedMassUnit = false; // rw
+
+    public InputConcentrationAndVolumeStepController(Item parentItem, MessagePresenter messagePresenter) {
+        this.parentItem = parentItem;
+        this.messagePresenter = messagePresenter;
+
+        init();
     }
 
-    private void resetValues() {
-        parentItem = null;
-        molarMassFromItem = null;
-        availableConcentrationUnits = Collections.emptyList();
+    private void init() {
+        availableVolumeUnits = Unit.getVisibleUnitsOfQuality(VOLUME);
+        availableMassUnits = Unit.getVisibleUnitsOfQuality(MASS);
 
-        targetConcentration = null;
-        targetConcentrationUnit = null;
-        targetVolume = null;
-        targetMass = null;
-        targetMassUnit = null;
-        userChangedMassUnit = false;
-        availableMassFromItem = null;
-        availableMassFromItemUnit = null;
-    }
-
-    /*
-     * Actions
-     */
-    public void actionStartCreateSolution(Item item) {
-        resetValues();
-        parentItem = item;
-
-        setMolarMassFromParentItem();
-        loadAvailableConcentrationUnits();
-
-        Quantity massFromItem = massFromItem();
-        if (massFromItem != null) {
-            targetMassUnit = massFromItem.getUnit();
-            availableMassFromItem = massFromItem.getValue();
-            availableMassFromItemUnit = massFromItem.getUnit();
-        }
-    }
-
-    private void setMolarMassFromParentItem() {
-        Material materialOfItem = parentItem.getMaterial();
-        if (materialOfItem == null) {
-            return;
-        }
-        if (!MaterialType.STRUCTURE.equals(materialOfItem.getType())) {
-            return;
-        }
-        molarMassFromItem = ((Structure) materialOfItem).getAverageMolarMassAsQuantity();
-    }
-
-    private void loadAvailableConcentrationUnits() {
         List<Unit> massConcentrations = Unit.getVisibleUnitsOfQuality(MASS_CONCENTRATION);
         List<Unit> molarConcentrations = Unit.getVisibleUnitsOfQuality(MOLAR_CONCENTRATION);
-
         availableConcentrationUnits = new ArrayList<>();
-        if (molarMassFromItem != null) {
+        if (molarMassFromParentItem() != null) {
             availableConcentrationUnits.addAll(molarConcentrations);
             availableConcentrationUnits.addAll(massConcentrations);
             targetConcentrationUnit = Unit.getUnit("mM");
@@ -134,17 +86,46 @@ public class CreateSolutionBean implements Serializable {
             availableConcentrationUnits.addAll(massConcentrations);
             targetConcentrationUnit = Unit.getUnit("g/l");
         }
+
+        targetVolumeUnit = Unit.getUnit("ml");
+
+        Quantity massFromItem = massFromParentItem();
+        if (massFromItem != null) {
+            targetMassUnit = massFromItem.getUnit();
+            availableMassFromItem = massFromItem.getValue();
+            availableMassFromItemUnit = massFromItem.getUnit();
+        }
     }
 
-    private Quantity massFromItem() {
+    private Quantity massFromParentItem() {
         return parentItem.getAmountAsQuantity();
     }
 
+    /**
+     * @return quantity with molar mass or null if the item does not have a molar
+     *         mass
+     */
+    private Quantity molarMassFromParentItem() {
+        Material materialOfItem = parentItem.getMaterial();
+        if (materialOfItem == null) {
+            return null;
+        }
+        if (!MaterialType.STRUCTURE.equals(materialOfItem.getType())) {
+            return null;
+        }
+
+        return ((Structure) materialOfItem).getAverageMolarMassAsQuantity();
+    }
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    /*
+     * Actions
+     */
     public void actionUpdateTargetMass() {
+        logger.warn("actionUpdateTargetMass() start " + targetMass);
         targetMass = null;
 
-        Quantity concentration = targetConcentrationAsQuantity();
-        Quantity volume = targetVolumeAsQuantity();
+        Quantity concentration = Quantity.create(targetConcentration, targetConcentrationUnit);
+        Quantity volume = Quantity.create(targetVolume, targetVolumeUnit);
 
         if ((concentration == null) || (volume == null)) {
             return;
@@ -157,65 +138,26 @@ public class CreateSolutionBean implements Serializable {
         targetMass = targetMassAsQuantity.getValue();
         targetMassUnit = targetMassAsQuantity.getUnit();
 
-        Quantity massFromItem = massFromItem();
+        Quantity massFromItem = massFromParentItem();
         if (targetMassAsQuantity.isGreaterThanOrEqualTo(massFromItem)) {
             messagePresenter.error("itemCreateSolution_error_targetMassTooHigh");
         }
+        logger.warn("actionUpdateTargetMass() end " + targetMass);
     }
 
     private Quantity calculateTargetMass(Quantity concentration, Quantity volume, Unit targetMassUnit) {
-        if ((molarMassFromItem == null) || (MASS_CONCENTRATION == concentration.getUnit().getQuality())) {
+        Quantity molarMass = molarMassFromParentItem();
+        if ((molarMass == null) || (MASS_CONCENTRATION == concentration.getUnit().getQuality())) {
             return MassConcentrationCalculations.calculateMass(concentration, volume, targetMassUnit);
         } else {
-            return MolarConcentrationCalculations.calculateMass(concentration, molarMassFromItem, volume,
+            return MolarConcentrationCalculations.calculateMass(concentration, molarMass, volume,
                     targetMassUnit);
         }
-    }
-
-    private Quantity targetConcentrationAsQuantity() {
-        if ((targetConcentration == null) || (targetConcentrationUnit == null)) {
-            return null;
-        }
-        return new Quantity(targetConcentration, targetConcentrationUnit);
-    }
-
-    private Quantity targetVolumeAsQuantity() {
-        if ((targetVolume == null) || (targetVolumeUnit == null)) {
-            return null;
-        }
-        return new Quantity(targetVolume, targetVolumeUnit);
-    }
-
-    /*
-     * PrimeFaces wizard
-     */
-    static final String STEP1 = "step1_inputConcAndVol";
-    static final String STEP2 = "step2_weigh";
-
-    public String onFlowProcess(FlowEvent event) {
-        if (STEP2.equals(event.getNewStep())) {
-//            Quantity targetMass = calculateTargetMass();
-//            Quantity massFromItem = massFromItem();
-//
-//            if (massFromItem.isGreaterThanOrEqualTo(targetMass)) {
-//                // ok for step 2
-//                return STEP2;
-//            } else {
-//                // FacesMessage ...
-//                return STEP1;
-//            }
-        }
-
-        return event.getNewStep();
     }
 
     /*
      * Getters/setters
      */
-    public List<Unit> getAvailableConcentrationUnits() {
-        return availableConcentrationUnits;
-    }
-
     public List<Unit> getAvailableVolumeUnits() {
         return availableVolumeUnits;
     }
@@ -224,20 +166,24 @@ public class CreateSolutionBean implements Serializable {
         return availableMassUnits;
     }
 
+    public List<Unit> getAvailableConcentrationUnits() {
+        return availableConcentrationUnits;
+    }
+
     public Double getTargetConcentration() {
         return targetConcentration;
     }
 
-    public void setTargetConcentration(Double concentration) {
-        this.targetConcentration = concentration;
+    public void setTargetConcentration(Double targetConcentration) {
+        this.targetConcentration = targetConcentration;
     }
 
     public Unit getTargetConcentrationUnit() {
         return targetConcentrationUnit;
     }
 
-    public void setTargetConcentrationUnit(Unit concentrationUnit) {
-        this.targetConcentrationUnit = concentrationUnit;
+    public void setTargetConcentrationUnit(Unit targetConcentrationUnit) {
+        this.targetConcentrationUnit = targetConcentrationUnit;
     }
 
     public Double getTargetVolume() {
@@ -268,19 +214,19 @@ public class CreateSolutionBean implements Serializable {
         this.targetMassUnit = targetMassUnit;
     }
 
-    public boolean isUserChangedMassUnit() {
-        return userChangedMassUnit;
-    }
-
-    public void setUserChangedMassUnit(boolean userChangedMassUnit) {
-        this.userChangedMassUnit = userChangedMassUnit;
-    }
-
     public Double getAvailableMassFromItem() {
         return availableMassFromItem;
     }
 
     public Unit getAvailableMassFromItemUnit() {
         return availableMassFromItemUnit;
+    }
+
+    public boolean isUserChangedMassUnit() {
+        return userChangedMassUnit;
+    }
+
+    public void setUserChangedMassUnit(boolean userChangedMassUnit) {
+        this.userChangedMassUnit = userChangedMassUnit;
     }
 }

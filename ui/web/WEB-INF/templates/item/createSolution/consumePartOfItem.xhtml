@@ -28,8 +28,8 @@
     <h:body>
         <ui:composition>
             <b:form>
-                <!-- TODO: info on item (label/id, amount) and material (firstname, molecular weight) -->
-                <p:wizard flowListener="#{createSolutionBean.onFlowProcess}">
+                <!-- TODO: info on parent item (label/id, amount) and material (firstname, molecular weight) -->
+                <p:wizard flowListener="#{controller.onFlowProcess}">
                     <p:tab
                         id="step1_inputConcAndVol"
                         title="Concentration and volume">
@@ -41,13 +41,13 @@
                                     offset="1">
                                     <b:inputText
                                         id="targetConcentrationInputId"
-                                        value="#{createSolutionBean.targetConcentration}"
+                                        value="#{controller.step1Controller.targetConcentration}"
                                         label="Target concentration"
                                         required="true"
                                         ajax="true"
                                         process="@this"
                                         update="targetMassId"
-                                        onchange="ajax:createSolutionBean.actionUpdateTargetMass()">
+                                        onchange="ajax:controller.step1Controller.actionUpdateTargetMass()">
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
@@ -57,15 +57,15 @@
                                 </b:column>
                                 <b:column span="2">
                                     <b:selectOneMenu
-                                        value="#{createSolutionBean.targetConcentrationUnit}"
+                                        value="#{controller.step1Controller.targetConcentrationUnit}"
                                         label="Unit"
                                         required="true"
                                         ajax="true"
                                         process="@this"
                                         update="targetMassId"
-                                        onchange="ajax:createSolutionBean.actionUpdateTargetMass()">
+                                        onchange="ajax:controller.step1Controller.actionUpdateTargetMass()">
                                         <f:selectItems
-                                            value="#{createSolutionBean.availableConcentrationUnits}"
+                                            value="#{controller.step1Controller.availableConcentrationUnits}"
                                             var="unit"
                                             itemLabel="#{unit.unit}" />
                                     </b:selectOneMenu>
@@ -81,13 +81,13 @@
                                     offset="1">
                                     <b:inputText
                                         id="targetVolumeInputId"
-                                        value="#{createSolutionBean.targetVolume}"
+                                        value="#{controller.step1Controller.targetVolume}"
                                         label="Target volume"
                                         required="true"
                                         ajax="true"
                                         process="@this"
                                         update="targetMassId"
-                                        onchange="ajax:createSolutionBean.actionUpdateTargetMass()">
+                                        onchange="ajax:controller.step1Controller.actionUpdateTargetMass()">
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
@@ -97,15 +97,15 @@
                                 </b:column>
                                 <b:column span="2">
                                     <b:selectOneMenu
-                                        value="#{createSolutionBean.targetVolumeUnit}"
+                                        value="#{controller.step1Controller.targetVolumeUnit}"
                                         label="Unit"
                                         required="true"
                                         ajax="true"
                                         process="@this"
                                         update="targetMassId"
-                                        onchange="ajax:createSolutionBean.actionUpdateTargetMass()">
+                                        onchange="ajax:controller.step1Controller.actionUpdateTargetMass()">
                                         <f:selectItems
-                                            value="#{createSolutionBean.availableVolumeUnits}"
+                                            value="#{controller.step1Controller.availableVolumeUnits}"
                                             var="unit"
                                             itemLabel="#{unit.unit}" />
                                     </b:selectOneMenu>
@@ -120,7 +120,7 @@
                                     span="2"
                                     offset="1">
                                     <b:inputText
-                                        value="#{createSolutionBean.targetMass}"
+                                        value="#{controller.step1Controller.targetMass}"
                                         label="Target mass"
                                         readonly="true">
                                         <f:convertNumber
@@ -131,16 +131,16 @@
                                 </b:column>
                                 <b:column span="2">
                                     <b:selectOneMenu
-                                        value="#{createSolutionBean.targetMassUnit}"
+                                        value="#{controller.step1Controller.targetMassUnit}"
                                         label="Unit"
                                         required="true"
                                         ajax="true"
                                         process="@this"
                                         update="targetMassId"
-                                        onchange="ajax:createSolutionBean.setUserChangedMassUnit(true);
-                                                  createSolutionBean.actionUpdateTargetMass()">
+                                        onchange="ajax:controller.step1Controller.setUserChangedMassUnit(true);
+                                                       controller.step1Controller.actionUpdateTargetMass()">
                                         <f:selectItems
-                                            value="#{createSolutionBean.availableMassUnits}"
+                                            value="#{controller.step1Controller.availableMassUnits}"
                                             var="unit"
                                             itemLabel="#{unit.unit}" />                                        
                                     </b:selectOneMenu>
@@ -152,7 +152,7 @@
                                     span="2"
                                     offset="1">
                                     <b:inputText
-                                        value="#{createSolutionBean.availableMassFromItem}"
+                                        value="#{controller.step1Controller.availableMassFromItem}"
                                         label="Available mass"
                                         readonly="true">
                                         <f:convertNumber
@@ -163,7 +163,7 @@
                                 </b:column>
                                 <b:column span="2">
                                     <b:inputText
-                                        value="#{createSolutionBean.availableMassFromItemUnit}"
+                                        value="#{controller.step1Controller.availableMassFromItemUnit}"
                                         label="Unit"
                                         readonly="true" />
                                 </b:column>
