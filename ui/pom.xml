@@ -139,6 +139,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
+                <configuration>
+                    <runOrder>random</runOrder>
+                </configuration>
             </plugin>
            
             <!-- A maven plugin to process annotation for jdk6 at compile time -->
@@ -469,7 +472,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.16</version>
+            <version>42.3.2</version>
         </dependency>
         
         <!--hibernate support for postgres json, jsonb field types -->
@@ -517,11 +520,17 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- in memory db for testing -->
+        <!-- db for testing -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.200</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.16.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.16.3</version>
             <scope>test</scope>
         </dependency>
 

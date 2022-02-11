@@ -58,6 +58,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -83,6 +84,7 @@ import org.primefaces.model.TreeNode;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialBeanTest extends TestBase {
 

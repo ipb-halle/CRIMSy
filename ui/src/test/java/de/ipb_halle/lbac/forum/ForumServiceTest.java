@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +49,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @author fmauz
  */
 @TestMethodOrder(MethodName.class)
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ForumServiceTest extends TestBase {
 

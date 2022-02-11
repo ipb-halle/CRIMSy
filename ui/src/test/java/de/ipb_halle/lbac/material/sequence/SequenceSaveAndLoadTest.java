@@ -43,11 +43,13 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
  * 
  * @author flange
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SequenceSaveAndLoadTest extends TestBase {
     private static final long serialVersionUID = 1L;

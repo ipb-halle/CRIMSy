@@ -46,6 +46,7 @@ import static de.ipb_halle.lbac.material.sequence.SequenceType.PROTEIN;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,6 +58,7 @@ import org.junit.Assert;
 /**
  * @author flange
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SequenceSearchServiceTest extends TestBase {
     private static final long serialVersionUID = 1L;
@@ -75,7 +77,7 @@ public class SequenceSearchServiceTest extends TestBase {
 
     private Sequence sequence;
 
-    private final String SQL_LOAD_PARAMETER = "SELECT * from temp_search_parameter";
+    private final String SQL_LOAD_PARAMETER = "SELECT id from temp_search_parameter";
 
     @BeforeEach
     public void init() {
