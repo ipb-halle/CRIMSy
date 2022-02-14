@@ -26,10 +26,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
  * @author flange
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 class CreateSolutionBeanTest extends TestBase {
     private static final long serialVersionUID = 1L;

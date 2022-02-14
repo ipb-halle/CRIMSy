@@ -31,30 +31,28 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 public class ConsumePartOfItemStrategyController implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private final MessagePresenter messagePresenter;
     private final InputConcentrationAndVolumeStepController step1Controller;
 
     public ConsumePartOfItemStrategyController(Item parentItem, MessagePresenter messagePresenter) {
+        this.messagePresenter = messagePresenter;
         step1Controller = new InputConcentrationAndVolumeStepController(parentItem, messagePresenter);
     }
 
     /*
      * PrimeFaces wizard
      */
-    static final String STEP1 = "step1_inputConcAndVol";
-    static final String STEP2 = "step2_weigh";
+    private static final String STEP1 = "step1_inputConcAndVol";
+    private static final String STEP2 = "step2_weigh";
 
     public String onFlowProcess(FlowEvent event) {
         if (STEP2.equals(event.getNewStep())) {
-//            Quantity targetMass = calculateTargetMass();
-//            Quantity massFromItem = massFromItem();
-//
-//            if (massFromItem.isGreaterThanOrEqualTo(targetMass)) {
-//                // ok for step 2
-//                return STEP2;
-//            } else {
-//                // FacesMessage ...
-//                return STEP1;
-//            }
+            if (step1Controller.isTargetMassGreaterThanItemMass()) {
+                messagePresenter.error("itemCreateSolution_error_targetMassTooHigh");
+                return STEP1;
+            } else {
+                return STEP2;
+            }
         }
 
         return event.getNewStep();

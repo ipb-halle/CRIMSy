@@ -134,8 +134,7 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
         targetMass = targetMassAsQuantity.getValue();
         targetMassUnit = targetMassAsQuantity.getUnit();
 
-        Quantity massFromItem = massFromParentItem();
-        if (targetMassAsQuantity.isGreaterThanOrEqualTo(massFromItem)) {
+        if (isTargetMassGreaterThanItemMass()) {
             messagePresenter.error("itemCreateSolution_error_targetMassTooHigh");
         }
     }
@@ -151,6 +150,17 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
             return MassConcentrationCalculations.calculateMass(concentration, volume, targetMassUnit);
         } else {
             return MolarConcentrationCalculations.calculateMass(concentration, molarMass, volume, targetMassUnit);
+        }
+    }
+
+    public boolean isTargetMassGreaterThanItemMass() {
+        Quantity massFromItem = massFromParentItem();
+        Quantity targetMassAsQuantity = new Quantity(targetMass, targetMassUnit);
+
+        if (targetMassAsQuantity.isGreaterThanOrEqualTo(massFromItem)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

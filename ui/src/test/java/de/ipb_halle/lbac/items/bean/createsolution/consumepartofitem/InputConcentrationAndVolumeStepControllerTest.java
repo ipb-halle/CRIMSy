@@ -22,7 +22,10 @@ import static de.ipb_halle.lbac.util.units.Quality.MASS_CONCENTRATION;
 import static de.ipb_halle.lbac.util.units.Quality.MOLAR_CONCENTRATION;
 import static de.ipb_halle.lbac.util.units.Quality.VOLUME;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -335,5 +338,31 @@ class InputConcentrationAndVolumeStepControllerTest {
         assertEquals(1e6, controller.getTargetMass(), DELTA);
         assertEquals(Unit.getUnit("mg"), controller.getTargetMassUnit());
         assertNull(messagePresenter.getLastErrorMessage());
+    }
+
+    /*
+     * Tests for isTargetMassGreaterThanItemMass()
+     */
+    @Test
+    public void test_isTargetMassGreaterThanItemMass() {
+        Structure s = new Structure(null, 100.0, null, 1, null, null);
+        Item item = new Item();
+        item.setAmount(100.0);
+        item.setUnit(Unit.getUnit("g"));
+        item.setMaterial(s);
+
+        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
+                messagePresenter);
+
+        controller.setTargetConcentration(1.0);
+        controller.setTargetConcentrationUnit(Unit.getUnit("M"));
+        controller.setTargetVolume(10.0);
+        controller.setTargetVolumeUnit(Unit.getUnit("l"));
+        controller.actionUpdateTargetMass();
+        assertTrue(controller.isTargetMassGreaterThanItemMass());
+
+        controller.setTargetConcentrationUnit(Unit.getUnit("mM"));
+        controller.actionUpdateTargetMass();
+        assertFalse(controller.isTargetMassGreaterThanItemMass());
     }
 }
