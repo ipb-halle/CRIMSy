@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <h:body>
+        <ui:composition>
+            <b:container>
+                <b:row>
+                    <!-- Target mass -->
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:inputText
+                            value="#{controller.step1Controller.targetMass}"
+                            label="Target mass"
+                            readonly="true">
+                            <f:facet name="append">
+                                <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
+                            </f:facet>
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                        </b:inputText>
+                    </b:column>
+                    <!-- Error margin -->
+                    <b:column span="2">
+                        <!-- Bug: BootsFaces'/JSF's AJAX handlers are not able to update DOM elements inside the 
+                                  tabs of PF's wizard. This works for PF components (<p:inputText> with <p:ajax>).
+                             Workaround: Invoke PF's JS AJAX handler onchange. -->
+                        <b:inputText
+                            id="errorMarginInputId"
+                            value="#{controller.step2Controller.errorMargin}"
+                            label="Error Margin"
+                            type="number"
+                            pt:min="0"
+                            pt:max="100"
+                            onchange="PrimeFaces.ajax.Request.handle({
+                                formId:'createSolutionFormId',
+                                source:'createSolutionFormId:errorMarginInputId',
+                                process:'createSolutionFormId:errorMarginInputId',
+                                update:'createSolutionFormId:targetMassWithMarginsId'});">
+                            <f:facet name="append">
+                                <h:outputText value="%" />
+                            </f:facet>
+                            <f:validateLongRange
+                                minimum="0"
+                                maximum="100" />
+                        </b:inputText>
+                    </b:column>
+                </b:row>
+                <b:row id="targetMassWithMarginsId">
+                    <!-- Target mass +margin -->
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:inputText
+                            value="#{controller.step2Controller.targetMassPlusMargin}"
+                            label="Target mass"
+                            readonly="true">
+                            <f:facet name="append">
+                                <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
+                            </f:facet>
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                        </b:inputText>
+                    </b:column>
+                    <!-- Target mass -margin -->
+                    <b:column span="2">
+                        <b:inputText
+                            value="#{controller.step2Controller.targetMassMinusMargin}"
+                            label="Target mass"
+                            readonly="true">
+                            <f:facet name="append">
+                                <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
+                            </f:facet>
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                        </b:inputText>
+                    </b:column>
+                </b:row>
+                <b:messages auto-update="true" />
+            </b:container>
+        </ui:composition>
+    </h:body>
+</html>

@@ -27,164 +27,23 @@
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:form>
-                <!-- TODO: info on parent item (label/id, amount) and material (firstname, molecular weight) -->
-                <p:wizard flowListener="#{controller.onFlowProcess}">
-                    <p:tab
-                        id="step1_inputConcAndVol"
-                        title="Concentration and volume">
-                        <b:container>
-                            <!-- Target concentration -->
-                            <b:row>
-                                <b:column
-                                    span="2"
-                                    offset="1">
-                                    <b:inputText
-                                        id="targetConcentrationInputId"
-                                        value="#{controller.step1Controller.targetConcentration}"
-                                        label="Target concentration"
-                                        required="true">
-                                        <!-- Workaround for BootsFaces issue #541 -->
-                                        <f:ajax
-                                            event="change"
-                                            listener="#{controller.step1Controller.actionUpdateTargetMass()}"
-                                            execute="@this"
-                                            render="targetMassId" />
-                                        <f:convertNumber
-                                            type="number"
-                                            groupingUsed="false"
-                                            locale="#{globalLocaleBean.numberConverterLocale}" />
-                                        <f:validateDoubleRange minimum="0" />
-                                    </b:inputText>
-                                </b:column>
-                                <b:column span="2">
-                                    <b:selectOneMenu
-                                        value="#{controller.step1Controller.targetConcentrationUnit}"
-                                        label="Unit"
-                                        required="true">
-                                        <f:selectItems
-                                            value="#{controller.step1Controller.availableConcentrationUnits}"
-                                            var="unit"
-                                            itemLabel="#{unit.unit}" />
-                                        <f:ajax
-                                            event="change"
-                                            listener="#{controller.step1Controller.actionUpdateTargetMass()}"
-                                            execute="@this"
-                                            render="targetMassId" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                                <b:column span="6">
-                                    <b:message for="targetConcentrationInputId" />
-                                </b:column>
-                            </b:row>
-                            <!-- Target volume -->
-                            <b:row>
-                                <b:column
-                                    span="2"
-                                    offset="1">
-                                    <b:inputText
-                                        id="targetVolumeInputId"
-                                        value="#{controller.step1Controller.targetVolume}"
-                                        label="Target volume"
-                                        required="true">
-                                        <f:ajax
-                                            event="change"
-                                            listener="#{controller.step1Controller.actionUpdateTargetMass()}"
-                                            execute="@this"
-                                            render="targetMassId" />
-                                        <f:convertNumber
-                                            type="number"
-                                            groupingUsed="false"
-                                            locale="#{globalLocaleBean.numberConverterLocale}" />
-                                        <f:validateDoubleRange minimum="0" />
-                                    </b:inputText>
-                                </b:column>
-                                <b:column span="2">
-                                    <b:selectOneMenu
-                                        value="#{controller.step1Controller.targetVolumeUnit}"
-                                        label="Unit"
-                                        required="true">
-                                        <f:ajax
-                                            event="change"
-                                            listener="#{controller.step1Controller.actionUpdateTargetMass()}"
-                                            execute="@this"
-                                            render="targetMassId" />
-                                        <f:selectItems
-                                            value="#{controller.step1Controller.availableVolumeUnits}"
-                                            var="unit"
-                                            itemLabel="#{unit.unit}" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                                <b:column span="6">
-                                    <b:message for="targetVolumeInputId" />
-                                </b:column>
-                            </b:row>
-                            <!-- Target mass -->
-                            <b:row id="targetMassId">
-                                <b:column
-                                    span="2"
-                                    offset="1">
-                                    <b:inputText
-                                        value="#{controller.step1Controller.targetMass}"
-                                        label="Target mass"
-                                        readonly="true">
-                                        <f:convertNumber
-                                            type="number"
-                                            groupingUsed="false"
-                                            locale="#{globalLocaleBean.numberConverterLocale}" />
-                                    </b:inputText>
-                                </b:column>
-                                <b:column span="2">
-                                    <b:selectOneMenu
-                                        value="#{controller.step1Controller.targetMassUnit}"
-                                        label="Unit"
-                                        required="true">
-                                        <f:ajax
-                                            event="change"
-                                            listener="#{controller.step1Controller.actionOnChangeTargetMassUnit()}"
-                                            execute="@this"
-                                            render="targetMassId" />
-                                        <f:selectItems
-                                            value="#{controller.step1Controller.availableMassUnits}"
-                                            var="unit"
-                                            itemLabel="#{unit.unit}" />                                        
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </b:row>
-                            <!-- Available mass from item -->
-                            <b:row>
-                                <b:column
-                                    span="2"
-                                    offset="1">
-                                    <b:inputText
-                                        value="#{controller.step1Controller.availableMassFromItem}"
-                                        label="Available mass"
-                                        readonly="true">
-                                        <f:convertNumber
-                                            type="number"
-                                            groupingUsed="false"
-                                            locale="#{globalLocaleBean.numberConverterLocale}" />
-                                    </b:inputText>
-                                </b:column>
-                                <b:column span="2">
-                                    <b:inputText
-                                        value="#{controller.step1Controller.availableMassFromItemUnit}"
-                                        label="Unit"
-                                        readonly="true" />
-                                </b:column>
-                                <b:column span="6">
-                                    <b:messages auto-update="true" />
-                                </b:column>
-                            </b:row>
-                        </b:container>
-                    </p:tab>
-                    <p:tab
-                        id="step2_weigh"
-                        title="Weigh">
-                        
-                    </p:tab>
-                </p:wizard>
-            </b:form>
+            <!-- TODO: info on parent item (label/id, amount) and material (firstname, molecular weight) -->
+            <p:wizard flowListener="#{controller.onFlowProcess}" id="wizzardId">
+                <p:tab
+                    id="step1_inputConcAndVol"
+                    title="Concentration and volume">
+                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep1.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    id="step2_weigh"
+                    title="Weigh">
+                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep2.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+            </p:wizard>
         </ui:composition>
     </h:body>
 </html>

@@ -26,7 +26,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:body>
         <ui:composition>
-            <b:form>
+            <b:form id="createSolutionFormId">
                 <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItem.xhtml">
                     <ui:param name="controller" value="#{createSolutionBean.consumePartOfItemStrategyController}" />
                 </ui:include>

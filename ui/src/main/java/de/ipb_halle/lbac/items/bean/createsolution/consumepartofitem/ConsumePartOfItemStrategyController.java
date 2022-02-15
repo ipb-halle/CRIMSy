@@ -33,10 +33,12 @@ public class ConsumePartOfItemStrategyController implements Serializable {
 
     private final MessagePresenter messagePresenter;
     private final InputConcentrationAndVolumeStepController step1Controller;
+    private final InputWeightStepController step2Controller;
 
     public ConsumePartOfItemStrategyController(Item parentItem, MessagePresenter messagePresenter) {
         this.messagePresenter = messagePresenter;
         step1Controller = new InputConcentrationAndVolumeStepController(parentItem, messagePresenter);
+        step2Controller = new InputWeightStepController(step1Controller);
     }
 
     /*
@@ -63,5 +65,9 @@ public class ConsumePartOfItemStrategyController implements Serializable {
      */
     public InputConcentrationAndVolumeStepController getStep1Controller() {
         return step1Controller;
+    }
+
+    public InputWeightStepController getStep2Controller() {
+        return step2Controller;
     }
 }
