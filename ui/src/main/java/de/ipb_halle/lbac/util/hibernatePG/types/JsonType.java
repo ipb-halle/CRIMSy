@@ -39,6 +39,7 @@ import java.io.IOException;
  * @author Loic Petit
  */
 public class JsonType extends RawJsonType {
+
     public static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {
@@ -46,12 +47,13 @@ public class JsonType extends RawJsonType {
     }
 
     private ObjectWriter writer;
-    private JavaType     type;
+    private JavaType type;
     private ObjectReader reader;
 
     protected JsonType() {
     }
 
+    @SuppressWarnings("unchecked")
     public JsonType(Class clazz, boolean isBinary) {
         this(SimpleType.construct(clazz), isBinary);
     }
@@ -60,6 +62,7 @@ public class JsonType extends RawJsonType {
         init(type, isBinary);
     }
 
+    @SuppressWarnings("unchecked")
     protected void init(JavaType type, boolean isBinary) {
         super.init(isBinary);
         this.type = type;

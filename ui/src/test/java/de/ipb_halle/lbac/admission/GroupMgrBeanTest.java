@@ -52,7 +52,7 @@ public class GroupMgrBeanTest extends TestBase {
 
     @Test
     public void test01_createNewGroup() {
-        int groupsBeforeCreation = memberService.loadGroups(new HashMap()).size();
+        int groupsBeforeCreation = memberService.loadGroups(new HashMap<>()).size();
 
         // Try to create group with invalid name.
         groupMgrBean.actionCreate();
@@ -65,13 +65,13 @@ public class GroupMgrBeanTest extends TestBase {
         groupMgrBean.actionCreate();
         Group g = loadGroupByName("GroupMgrBeanTest:test01_createNewGroup");
         Assert.assertNotNull(g);
-        Assert.assertEquals(groupsBeforeCreation + 1, memberService.loadGroups(new HashMap()).size());
+        Assert.assertEquals(groupsBeforeCreation + 1, memberService.loadGroups(new HashMap<>()).size());
 
         // Try to create the same group again - should not create the group
         groupMgrBean.getGroup().setName(("GroupMgrBeanTest:test01_createNewGroup"));
         groupMgrBean.actionCreate();
         Assert.assertEquals("groupMgr_no_valide_name", presenterMock.getLastErrorMessage());
-        Assert.assertEquals(groupsBeforeCreation + 1, memberService.loadGroups(new HashMap()).size());
+        Assert.assertEquals(groupsBeforeCreation + 1, memberService.loadGroups(new HashMap<>()).size());
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + g.getId());
     }
 

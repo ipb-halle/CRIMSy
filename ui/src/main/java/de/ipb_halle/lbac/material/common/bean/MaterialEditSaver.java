@@ -255,7 +255,7 @@ public class MaterialEditSaver implements Serializable {
                     newMol.setId(structureSaver.saveMolecule(newMol.getStructureModel(), materialService.getEm()));
                 }
             }
-            saveMaterialStrcutureDifferences(strucDiff);
+            saveMaterialStructureDifferences(strucDiff);
             updateStructureOverview(structure);
         }
     }
@@ -386,7 +386,7 @@ public class MaterialEditSaver implements Serializable {
         }
     }
 
-    protected void saveMaterialStrcutureDifferences(MaterialStructureDifference diff) {
+    protected void saveMaterialStructureDifferences(MaterialStructureDifference diff) {
         this.materialService.getEm().persist(diff.createDbInstance());
     }
 

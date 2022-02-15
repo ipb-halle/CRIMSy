@@ -411,6 +411,7 @@ public class MaterialServiceTest extends TestBase {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test005_saveTaxonomy() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
@@ -442,10 +443,10 @@ public class MaterialServiceTest extends TestBase {
         t3.getTaxHierachy().add(t2);
         t3.setLevel(levels.get(2));
         instance.saveMaterialToDB(t3, p.getUserGroups().getId(), new HashMap<>(), publicUser);
-
+        @SuppressWarnings("unchecked")
         List<Integer> results = (List) entityManagerService.doSqlQuery("SELECT parentid FROM effective_taxonomy WHERE taxoid=0");
         Assert.assertTrue(results.isEmpty());
-
+        
         results = (List) entityManagerService.doSqlQuery(String.format("SELECT parentid FROM effective_taxonomy WHERE taxoid=%d", t2.getId()));
         Assert.assertEquals(1, results.size());
 

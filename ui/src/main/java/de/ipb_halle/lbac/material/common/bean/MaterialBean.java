@@ -126,7 +126,7 @@ public class MaterialBean implements Serializable {
     protected Mode mode;
     protected HazardInformation hazards;
 
-    protected StructureInformation structureInfos = new StructureInformation();    
+    protected StructureInformation structureInfos = new StructureInformation();
 
     protected SequenceInformation sequenceInfos;
 
@@ -427,7 +427,12 @@ public class MaterialBean implements Serializable {
 
     private void saveEditedStructure() {
         Structure s = (Structure) materialEditState.getMaterialToEdit();
-        Molecule m = new Molecule(structureInfos.getStructureModel(), 0);
+        Structure originalStruc = (Structure) materialEditState.getMaterialBeforeEdit();
+        int newMoleculeId = 0;
+        if (originalStruc.getMolecule() != null) {
+            newMoleculeId = originalStruc.getMolecule().getId();
+        }
+        Molecule m = new Molecule(structureInfos.getStructureModel(), newMoleculeId);
         if (m.isEmptyMolecule()) {
             s.setMolecule(null);
             if (autoCalcFormularAndMasses) {
@@ -653,7 +658,6 @@ public class MaterialBean implements Serializable {
         this.taxonomyService = taxonomyService;
     }
 
-   
     public StorageInformationBuilder getStorageInformationBuilder() {
         return storageInformationBuilder;
     }

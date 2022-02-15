@@ -74,6 +74,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.primefaces.event.NodeExpandEvent;
@@ -115,6 +116,17 @@ public class MaterialBeanTest extends TestBase {
 
     @Inject
     private MaterialCompositionBean compositionBean;
+    
+     String benzene = "\n" + "Actelion Java MolfileCreator 1.0\n" + "\n"
+            + "  6  6  0  0  0  0  0  0  0  0999 V2000\n"
+            + "    5.9375  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    5.9375  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    7.2365  -12.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    8.5356  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    8.5356  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    7.2365   -9.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n" + "  1  2  2  0  0  0  0\n"
+            + "  2  3  1  0  0  0  0\n" + "  3  4  2  0  0  0  0\n" + "  4  5  1  0  0  0  0\n"
+            + "  5  6  2  0  0  0  0\n" + "  6  1  1  0  0  0  0\n" + "M  END";
 
     CreationTools creationTools;
     User publicUser;
@@ -525,6 +537,40 @@ public class MaterialBeanTest extends TestBase {
         Structure loadedStruc = foundObjects.get(0);
 
         Assert.assertEquals(1, loadedStruc.getIndices().size());
+    }
+    @DisplayName("Issue-based (#156) - Disappeared molecule")
+    @Test
+    public void test_011_bug_disappeared_molecule_156(){
+        //Create new Structure
+        project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        projectService.saveEditedProjectToDb(project);
+        instance.startMaterialCreation();
+        instance.getMaterialEditState().setCurrentProject(project);
+        instance.getMaterialNameBean().getNames().get(0).setValue("test_011-structure");         
+        instance.setAutoCalcFormularAndMasses(true);
+        instance.getStructureInfos().setStructureModel(benzene);
+        instance.actionSaveMaterial();
+         
+        //Load structure
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("test_011-structure");
+        requestBuilder.addMaterialType(MaterialType.STRUCTURE);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+
+        //Edit structure
+        Structure originalStruc=(Structure) result.getAllFoundObjects().get(0).getSearchable();
+        instance.startMaterialEdit(originalStruc);         
+        instance.setAutoCalcFormularAndMasses(false);
+        instance.getStructureInfos().setAverageMolarMass(null);        
+        instance.actionSaveMaterial();
+        
+        //Check if the molecule still exists but without  molar mass
+        result = materialService.loadReadableMaterials(requestBuilder.build());
+        Structure editedStruc=(Structure) result.getAllFoundObjects().get(0).getSearchable();
+        Assert.assertEquals(benzene, editedStruc.getMolecule().getStructureModel());
+        Assert.assertNull(editedStruc.getAverageMolarMass());
+        
+        
     }
 
     @Deployment

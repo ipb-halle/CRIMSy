@@ -128,6 +128,7 @@ public class BioMaterialDifference implements Serializable, MaterialDifference, 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public BioMaterialHistoryController createHistoryController(MaterialBean bean) {
         return new BioMaterialHistoryController(bean);
     }

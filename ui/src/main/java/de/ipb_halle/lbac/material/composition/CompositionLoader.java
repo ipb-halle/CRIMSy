@@ -46,6 +46,7 @@ public class CompositionLoader implements MaterialLoader {
     private static final long serialVersionUID = 1L;
 
     @Override
+    @SuppressWarnings("unchecked")
     public Material loadMaterial(
             MaterialEntity entity,
             EntityManager em,

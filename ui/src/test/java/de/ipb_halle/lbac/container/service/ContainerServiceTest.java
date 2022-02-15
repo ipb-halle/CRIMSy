@@ -395,6 +395,7 @@ public class ContainerServiceTest extends TestBase {
     // *    |- c3
     // */
     @Test
+    @SuppressWarnings("unchecked")
     public void test009_removeParent() {
         String CHECK_SQL = "SELECT sourceid,targetid,nested FROM nested_containers order by sourceid ASC, targetid DESC";
 
