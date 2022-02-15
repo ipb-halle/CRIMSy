@@ -101,15 +101,16 @@ public class MaterialCreationSaverTest extends TestBase {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test002_saveConsumable() {
         MaterialNameBean nameBean = new MaterialNameBean();
         MaterialCreationSaver saver = new MaterialCreationSaver(nameBean, materialService);
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-       
+
         Project p = creationTools.createProject();
         StorageInformation sci = new StorageInformation();
-        saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList(),publicUser);
+        saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList<>(), publicUser);
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
         Assert.assertEquals(1, o.size());
 
@@ -117,8 +118,6 @@ public class MaterialCreationSaverTest extends TestBase {
         b.addMaterialType(MaterialType.CONSUMABLE);
 
         List<Consumable> c = materialService.loadReadableMaterials(b.build()).getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
-
-
 
         c.get(0);
     }

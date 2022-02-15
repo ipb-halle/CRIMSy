@@ -56,7 +56,6 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
             units_new.add(entity.getUnit_new());
         }
     }
-    
 
     public CompositionDifference(String action) {
         this.action = action;
@@ -164,6 +163,7 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
      * @return
      */
     @Override
+    @SuppressWarnings("unchecked")
     public CompositionHistoryController createHistoryController(MaterialBean bean) {
         return new CompositionHistoryController(bean);
     }

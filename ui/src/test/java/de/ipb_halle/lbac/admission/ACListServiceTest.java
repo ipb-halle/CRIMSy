@@ -312,9 +312,10 @@ public class ACListServiceTest extends TestBase {
 
         areBasicFourACListsUnchanged(getAllAcLists());
     }
-
+    
     private List<ACList> getAllAcLists() {
         List<ACList> aclists = new ArrayList<>();
+        @SuppressWarnings("unchecked")
         List<Integer> o = (List) entityManagerService.doSqlQuery("SELECT id from aclists");
         for (int i : o) {
             aclists.add(acListService.loadById(i));

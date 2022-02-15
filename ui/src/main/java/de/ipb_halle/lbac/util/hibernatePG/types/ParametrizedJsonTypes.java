@@ -36,20 +36,21 @@ import java.util.Properties;
 
 @MappedSuperclass
 @TypeDefs({
-        @TypeDef(typeClass = ParametrizedJsonTypes.JsonCollection.class, name = "JsonCollection"),
-        @TypeDef(typeClass = ParametrizedJsonTypes.JsonList.class, name = "JsonList"),
-        @TypeDef(typeClass = ParametrizedJsonTypes.JsonSet.class, name = "JsonSet"),
-        @TypeDef(typeClass = ParametrizedJsonTypes.Json.class, name = "Json"),
-        @TypeDef(typeClass = ParametrizedJsonTypes.JsonMap.class, name = "JsonMap"),
-        @TypeDef(typeClass = ParametrizedJsonTypes.RawJson.class, name = "RawJson"),
-        @TypeDef(typeClass = ParametrizedJsonTypes.RawJsonb.class, name = "RawJsonb")
+    @TypeDef(typeClass = ParametrizedJsonTypes.JsonCollection.class, name = "JsonCollection"),
+    @TypeDef(typeClass = ParametrizedJsonTypes.JsonList.class, name = "JsonList"),
+    @TypeDef(typeClass = ParametrizedJsonTypes.JsonSet.class, name = "JsonSet"),
+    @TypeDef(typeClass = ParametrizedJsonTypes.Json.class, name = "Json"),
+    @TypeDef(typeClass = ParametrizedJsonTypes.JsonMap.class, name = "JsonMap"),
+    @TypeDef(typeClass = ParametrizedJsonTypes.RawJson.class, name = "RawJson"),
+    @TypeDef(typeClass = ParametrizedJsonTypes.RawJsonb.class, name = "RawJsonb")
 })
 
 @SuppressWarnings("unchecked")
 public class ParametrizedJsonTypes {
+
     private static <E> Class<? extends E> getClassParameter(String parameter, Properties parameters, String defaultPrefix, Class<E> mustExtend) {
         Class<?> clazz;
-        String   type = (String) parameters.get(parameter);
+        String type = (String) parameters.get(parameter);
         if (type == null) {
             throw new IllegalArgumentException("You forgot to put a @Parameter with name=" + parameter + " for this json type");
         }
@@ -77,30 +78,34 @@ public class ParametrizedJsonTypes {
     }
 
     public static class RawJson extends RawJsonType {
+
         public RawJson() {
             super(false);
         }
     }
 
     public static class RawJsonb extends RawJsonType {
+
         public RawJsonb() {
             super(true);
         }
     }
 
     public static class JsonCollection extends JsonType implements ParameterizedType {
+
         public JsonCollection() {
         }
 
         public void setParameterValues(Properties parameters) {
-            Class<?>                    clazz          = ParametrizedJsonTypes.getClassParameter("type", parameters, "java.lang.", Object.class);
+            Class<?> clazz = ParametrizedJsonTypes.getClassParameter("type", parameters, "java.lang.", Object.class);
             Class<? extends Collection> containerClass = ParametrizedJsonTypes.getClassParameter("container", parameters, "java.util.", Collection.class);
-            boolean                     binary         = !"false".equals(parameters.get("binary"));
+            boolean binary = !"false".equals(parameters.get("binary"));
             init(MAPPER.getTypeFactory().constructCollectionType(containerClass, clazz), binary);
         }
     }
 
     public static class JsonList extends JsonCollection {
+
         @Override
         public void setParameterValues(Properties parameters) {
             parameters.setProperty("container", "java.util.List");
@@ -109,6 +114,7 @@ public class ParametrizedJsonTypes {
     }
 
     public static class JsonSet extends JsonCollection {
+
         @Override
         public void setParameterValues(Properties parameters) {
             parameters.setProperty("container", "java.util.Set");
@@ -116,25 +122,28 @@ public class ParametrizedJsonTypes {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static class Json extends JsonType implements ParameterizedType {
+
         public Json() {
         }
 
         public void setParameterValues(Properties parameters) {
-            Class<?> clazz  = ParametrizedJsonTypes.getClassParameter("type", parameters, "java.lang.", Object.class);
-            boolean  binary = !"false".equals(parameters.get("binary"));
+            Class<?> clazz = ParametrizedJsonTypes.getClassParameter("type", parameters, "java.lang.", Object.class);
+            boolean binary = !"false".equals(parameters.get("binary"));
             init(SimpleType.construct(clazz), binary);
         }
     }
 
     public static class JsonMap extends JsonType implements ParameterizedType {
+
         public JsonMap() {
         }
 
         public void setParameterValues(Properties parameters) {
-            Class<?> keyClass   = ParametrizedJsonTypes.getClassParameter("key", parameters, "java.lang.", Object.class);
+            Class<?> keyClass = ParametrizedJsonTypes.getClassParameter("key", parameters, "java.lang.", Object.class);
             Class<?> valueClass = ParametrizedJsonTypes.getClassParameter("value", parameters, "java.lang.", Object.class);
-            boolean  binary     = !"false".equals(parameters.get("binary"));
+            boolean binary = !"false".equals(parameters.get("binary"));
             init(MAPPER.getTypeFactory().constructMapType(HashMap.class, keyClass, valueClass), binary);
         }
     }
