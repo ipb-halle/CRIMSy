@@ -153,11 +153,14 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
         }
     }
 
+    /*
+     * Getters with logic
+     */
     public boolean isTargetMassGreaterThanItemMass() {
         Quantity massFromItem = massFromParentItem();
         Quantity targetMassAsQuantity = new Quantity(targetMass, targetMassUnit);
 
-        if (targetMassAsQuantity.isGreaterThanOrEqualTo(massFromItem)) {
+        if (targetMassAsQuantity.isGreaterThan(massFromItem)) {
             return true;
         } else {
             return false;

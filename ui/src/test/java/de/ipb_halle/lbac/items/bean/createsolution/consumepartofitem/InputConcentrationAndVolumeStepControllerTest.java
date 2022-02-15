@@ -354,6 +354,7 @@ class InputConcentrationAndVolumeStepControllerTest {
         InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
                 messagePresenter);
 
+        // gives 1kg as target mass
         controller.setTargetConcentration(1.0);
         controller.setTargetConcentrationUnit(Unit.getUnit("M"));
         controller.setTargetVolume(10.0);
@@ -361,6 +362,12 @@ class InputConcentrationAndVolumeStepControllerTest {
         controller.actionUpdateTargetMass();
         assertTrue(controller.isTargetMassGreaterThanItemMass());
 
+        // gives 100g as target mass
+        controller.setTargetVolume(1.0);
+        controller.actionUpdateTargetMass();
+        assertFalse(controller.isTargetMassGreaterThanItemMass()); // could be strange?
+
+        // gives 1g as target mass
         controller.setTargetConcentrationUnit(Unit.getUnit("mM"));
         controller.actionUpdateTargetMass();
         assertFalse(controller.isTargetMassGreaterThanItemMass());

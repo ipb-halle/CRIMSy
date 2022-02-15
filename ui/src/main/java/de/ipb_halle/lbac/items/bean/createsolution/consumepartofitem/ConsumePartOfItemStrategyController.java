@@ -38,7 +38,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     public ConsumePartOfItemStrategyController(Item parentItem, MessagePresenter messagePresenter) {
         this.messagePresenter = messagePresenter;
         step1Controller = new InputConcentrationAndVolumeStepController(parentItem, messagePresenter);
-        step2Controller = new InputWeightStepController(step1Controller);
+        step2Controller = new InputWeightStepController(step1Controller, parentItem, messagePresenter);
     }
 
     /*
@@ -53,6 +53,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
                 messagePresenter.error("itemCreateSolution_error_targetMassTooHigh");
                 return STEP1;
             } else {
+                step2Controller.init();
                 return STEP2;
             }
         }
