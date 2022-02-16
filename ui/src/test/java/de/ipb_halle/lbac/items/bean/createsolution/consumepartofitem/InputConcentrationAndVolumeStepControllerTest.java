@@ -36,12 +36,13 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
 /**
  * @author flange
  */
-class InputConcentrationAndVolumeStepControllerTest {
+public class InputConcentrationAndVolumeStepControllerTest {
     private static final double DELTA = 1e-6;
 
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
@@ -371,5 +372,36 @@ class InputConcentrationAndVolumeStepControllerTest {
         controller.setTargetConcentrationUnit(Unit.getUnit("mM"));
         controller.actionUpdateTargetMass();
         assertFalse(controller.isTargetMassGreaterThanItemMass());
+    }
+
+    /*
+     * Tests for getTargetConcentrationAsQuantity()
+     */
+    @Test
+    public void test_getTargetConcentrationAsQuantity() {
+        Sequence seq = new Sequence(null, null, null);
+        Item item = new Item();
+        item.setMaterial(seq);
+
+        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
+                null);
+
+        controller.setTargetConcentration(null);
+        controller.setTargetConcentrationUnit(null);
+        assertNull(controller.getTargetConcentrationAsQuantity());
+
+        controller.setTargetConcentration(10.0);
+        controller.setTargetConcentrationUnit(null);
+        assertNull(controller.getTargetConcentrationAsQuantity());
+
+        controller.setTargetConcentration(null);
+        controller.setTargetConcentrationUnit(Unit.getUnit("g/l"));
+        assertNull(controller.getTargetConcentrationAsQuantity());
+
+        controller.setTargetConcentration(10.0);
+        controller.setTargetConcentrationUnit(Unit.getUnit("g/l"));
+        Quantity q = controller.getTargetConcentrationAsQuantity();
+        assertEquals(10.0, q.getValue(), DELTA);
+        assertEquals("g/l", q.getUnit().toString());
     }
 }

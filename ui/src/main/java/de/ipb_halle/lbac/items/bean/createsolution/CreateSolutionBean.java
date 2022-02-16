@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
+import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 /**
@@ -34,6 +35,9 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 @Named
 public class CreateSolutionBean implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private ItemService itemService;
 
     @Inject
     private transient MessagePresenter messagePresenter;
@@ -48,7 +52,7 @@ public class CreateSolutionBean implements Serializable {
      * Actions
      */
     public void actionStartCreateSolution(Item item) {
-        consumePartOfItemStrategyController = new ConsumePartOfItemStrategyController(item, messagePresenter);
+        consumePartOfItemStrategyController = new ConsumePartOfItemStrategyController(item, itemService, messagePresenter);
     }
 
     /*

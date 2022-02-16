@@ -33,7 +33,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
  */
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
-class CreateSolutionBeanTest extends TestBase {
+public class CreateSolutionBeanTest extends TestBase {
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -50,5 +50,6 @@ class CreateSolutionBeanTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("CreateSolutionBeanTest.war").addClass(CreateSolutionBean.class);
+        // TODO: add ItemService (probably via ItemDeployment)
     }
 }

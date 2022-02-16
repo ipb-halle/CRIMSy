@@ -18,10 +18,13 @@
 package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.primefaces.event.FlowEvent;
 
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.Solvent;
+import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 /**
@@ -31,21 +34,37 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 public class ConsumePartOfItemStrategyController implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private final ItemService itemService;
     private final MessagePresenter messagePresenter;
-    private final InputConcentrationAndVolumeStepController step1Controller;
-    private final InputWeightStepController step2Controller;
 
-    public ConsumePartOfItemStrategyController(Item parentItem, MessagePresenter messagePresenter) {
+    private final InputConcentrationAndVolumeStepController step1Controller; // r
+    private final InputWeightStepController step2Controller; // r
+    private final InputVolumeAndSolventStepController step3Controller; // r
+
+    private final List<Solvent> solvents; // r
+
+    public ConsumePartOfItemStrategyController(Item parentItem, ItemService itemService,
+            MessagePresenter messagePresenter) {
+        this.itemService = itemService;
         this.messagePresenter = messagePresenter;
+
         step1Controller = new InputConcentrationAndVolumeStepController(parentItem, messagePresenter);
         step2Controller = new InputWeightStepController(step1Controller, parentItem, messagePresenter);
+        step3Controller = new InputVolumeAndSolventStepController(step1Controller, step2Controller, parentItem);
+
+        solvents = loadSolvents();
+    }
+
+    private List<Solvent> loadSolvents() {
+        return itemService.loadSolvents();
     }
 
     /*
      * PrimeFaces wizard
      */
-    private static final String STEP1 = "step1_inputConcAndVol";
+    private static final String STEP1 = "step1_targetConcAndVol";
     private static final String STEP2 = "step2_weigh";
+    private static final String STEP3 = "step3_volumeAndSolvent";
 
     public String onFlowProcess(FlowEvent event) {
         if (STEP2.equals(event.getNewStep())) {
@@ -55,6 +74,16 @@ public class ConsumePartOfItemStrategyController implements Serializable {
             } else {
                 step2Controller.init();
                 return STEP2;
+            }
+        }
+
+        if (STEP3.equals(event.getNewStep())) {
+            if (step2Controller.isWeighGreaterThanItemMass()) {
+                messagePresenter.error("itemCreateSolution_error_weighTooHigh");
+                return STEP2;
+            } else {
+                step3Controller.init();
+                return STEP3;
             }
         }
 
@@ -70,5 +99,13 @@ public class ConsumePartOfItemStrategyController implements Serializable {
 
     public InputWeightStepController getStep2Controller() {
         return step2Controller;
+    }
+
+    public InputVolumeAndSolventStepController getStep3Controller() {
+        return step3Controller;
+    }
+
+    public List<Solvent> getSolvents() {
+        return solvents;
     }
 }

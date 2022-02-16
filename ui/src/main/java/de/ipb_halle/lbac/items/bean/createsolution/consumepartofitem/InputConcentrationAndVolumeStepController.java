@@ -27,10 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
-import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.util.calculation.MassConcentrationCalculations;
 import de.ipb_halle.lbac.util.calculation.MolarConcentrationCalculations;
 import de.ipb_halle.lbac.util.units.Quantity;
@@ -75,7 +72,7 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
         List<Unit> massConcentrations = Unit.getVisibleUnitsOfQuality(MASS_CONCENTRATION);
         List<Unit> molarConcentrations = Unit.getVisibleUnitsOfQuality(MOLAR_CONCENTRATION);
         availableConcentrationUnits = new ArrayList<>();
-        if (molarMassFromParentItem() != null) {
+        if (ItemUtils.molarMassFromItem(parentItem) != null) {
             availableConcentrationUnits.addAll(molarConcentrations);
             availableConcentrationUnits.addAll(massConcentrations);
             targetConcentrationUnit = Unit.getUnit("mM");
@@ -96,22 +93,6 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
 
     private Quantity massFromParentItem() {
         return parentItem.getAmountAsQuantity();
-    }
-
-    /**
-     * @return quantity with molar mass or null if the item does not have a molar
-     *         mass
-     */
-    private Quantity molarMassFromParentItem() {
-        Material materialOfItem = parentItem.getMaterial();
-        if (materialOfItem == null) {
-            return null;
-        }
-        if (!MaterialType.STRUCTURE.equals(materialOfItem.getType())) {
-            return null;
-        }
-
-        return ((Structure) materialOfItem).getAverageMolarMassAsQuantity();
     }
 
     /*
@@ -145,7 +126,7 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
     }
 
     private Quantity calculateTargetMass(Quantity concentration, Quantity volume, Unit targetMassUnit) {
-        Quantity molarMass = molarMassFromParentItem();
+        Quantity molarMass = ItemUtils.molarMassFromItem(parentItem);
         if ((molarMass == null) || (MASS_CONCENTRATION == concentration.getUnit().getQuality())) {
             return MassConcentrationCalculations.calculateMass(concentration, volume, targetMassUnit);
         } else {
@@ -165,6 +146,10 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
         } else {
             return false;
         }
+    }
+
+    public Quantity getTargetConcentrationAsQuantity() {
+        return Quantity.create(targetConcentration, targetConcentrationUnit);
     }
 
     /*

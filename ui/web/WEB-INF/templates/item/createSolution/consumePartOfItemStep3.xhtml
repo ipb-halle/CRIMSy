@@ -30,16 +30,16 @@
         <ui:composition>
             <b:container>
                 <b:row>
-                    <!-- Target mass -->
+                    <!-- Target concentration -->
                     <b:column
                         span="2"
                         offset="1">
                         <b:inputText
-                            value="#{controller.step1Controller.targetMass}"
-                            label="Target mass"
+                            value="#{controller.step1Controller.targetConcentration}"
+                            label="Target concentration"
                             readonly="true">
                             <f:facet name="append">
-                                <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
+                                <h:outputText value="#{controller.step1Controller.targetConcentrationUnit}" />
                             </f:facet>
                             <f:convertNumber
                                 type="number"
@@ -47,82 +47,34 @@
                                 locale="#{globalLocaleBean.numberConverterLocale}" />
                         </b:inputText>
                     </b:column>
-                    <!-- Error margin -->
-                    <b:column span="2">
-                        <!-- Bug: BootsFaces'/JSF's AJAX handlers are not able to update DOM elements inside the 
-                                  tabs of PF's wizard. This works for PF components (<p:inputText> with <p:ajax>).
-                             Workaround: Invoke a PF remoteCommand onchange. -->
-                        <b:inputText
-                            id="errorMarginInputId"
-                            value="#{controller.step2Controller.errorMargin}"
-                            label="Error Margin"
-                            type="number"
-                            pt:min="0"
-                            pt:max="100"
-                            onchange="createSolution_step2_errorMarginChange();">
-                            <f:facet name="append">
-                                <h:outputText value="%" />
-                            </f:facet>
-                            <f:validateLongRange
-                                minimum="0"
-                                maximum="100" />
-                        </b:inputText>
-                        <p:remoteCommand
-                            name="createSolution_step2_errorMarginChange"
-                            process="errorMarginInputId"
-                            update="targetMassWithMarginsId" />
-                    </b:column>
-                </b:row>
-                <b:row id="targetMassWithMarginsId">
-                    <!-- Target mass +margin -->
-                    <b:column
-                        span="2"
-                        offset="1">
-                        <b:inputText
-                            value="#{controller.step2Controller.targetMassPlusMargin}"
-                            label="Target mass +#{controller.step2Controller.errorMargin}%"
-                            readonly="true">
-                            <f:facet name="append">
-                                <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
-                            </f:facet>
-                            <f:convertNumber
-                                type="number"
-                                groupingUsed="false"
-                                locale="#{globalLocaleBean.numberConverterLocale}" />
-                        </b:inputText>
-                    </b:column>
-                    <!-- Target mass -margin -->
+                    <!-- Weigh -->
                     <b:column span="2">
                         <b:inputText
-                            value="#{controller.step2Controller.targetMassMinusMargin}"
-                            label="Target mass -#{controller.step2Controller.errorMargin}%"
-                            readonly="true">
-                            <f:facet name="append">
-                                <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
-                            </f:facet>
-                            <f:convertNumber
-                                type="number"
-                                groupingUsed="false"
-                                locale="#{globalLocaleBean.numberConverterLocale}" />
-                        </b:inputText>
-                    </b:column>
-                </b:row>
-                <!-- Weighed mass -->
-                <b:row>
-                    <p:remoteCommand
-                            name="createSolution_step2_weighChange"
-                            process="weighInputId weighUnitSelectionId"
-                            update="@none"
-                            action="#{controller.step2Controller.actionWeighChange()}" />
-                    <b:column
-                        span="2"
-                        offset="1">
-                        <b:inputText
-                            id="weighInputId"
                             value="#{controller.step2Controller.weigh}"
                             label="Weigh"
-                            required="true"
-                            onchange="createSolution_step2_weighChange();">
+                            readonly="true">
+                            <f:facet name="append">
+                                <h:outputText value="#{controller.step2Controller.weighUnit}" />
+                            </f:facet>
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                        </b:inputText>
+                    </b:column>
+                </b:row>
+                <!--  Volume to dispense -->
+                <b:row>
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:inputText
+                            value="#{controller.step3Controller.volumeToDispense}"
+                            label="Volume to dispense"
+                            readonly="true">
+                            <f:facet name="append">
+                                <h:outputText value="#{controller.step1Controller.targetVolumeUnit}" />
+                            </f:facet>
                             <f:convertNumber
                                 type="number"
                                 groupingUsed="false"
@@ -130,17 +82,62 @@
                             <f:validateDoubleRange minimum="0" />
                         </b:inputText>
                     </b:column>
+                    <!--  Dispensed volume -->
                     <b:column span="2">
-                        <b:selectOneMenu
-                            id="weighUnitSelectionId"
-                            value="#{controller.step2Controller.weighUnit}"
-                            label="Unit"
+                        <p:remoteCommand
+                            name="createSolution_step3_dispensedVolumeChange"
+                            process="dispensedVolumeInputId"
+                            update="finalConcentrationInputId" />
+                        <b:inputText
+                            id="dispensedVolumeInputId"
+                            value="#{controller.step3Controller.dispensedVolume}"
+                            label="Dispensed volume"
                             required="true"
-                            onchange="createSolution_step2_weighChange();">
+                            onchange="createSolution_step3_dispensedVolumeChange();">
+                            <f:facet name="append">
+                                <h:outputText value="#{controller.step1Controller.targetVolumeUnit}" />
+                            </f:facet>
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                            <f:validateDoubleRange minimum="0" />
+                        </b:inputText>
+                    </b:column>
+                </b:row>
+                <!-- Final concentration -->
+                <b:row>
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:inputText
+                            id="finalConcentrationInputId"
+                            value="#{controller.step3Controller.finalConcentration}"
+                            label="Final concentration"
+                            readonly="true">
+                            <f:facet name="append">
+                                <h:outputText value="#{controller.step1Controller.targetConcentrationUnit}" />
+                            </f:facet>
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                        </b:inputText>
+                    </b:column>
+                </b:row>
+                <!-- Solvent -->
+                <b:row>
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:selectOneMenu
+                            value="#{controller.step3Controller.solvent}"
+                            label="Solvent"
+                            required="true">
                             <f:selectItems
-                                value="#{controller.step1Controller.availableMassUnits}"
-                                var="unit"
-                                itemLabel="#{unit.unit}" />
+                                value="#{controller.solvents}"
+                                var="solvent"
+                                itemLabel="#{solvent.localizedName}" />
                         </b:selectOneMenu>
                     </b:column>
                 </b:row>

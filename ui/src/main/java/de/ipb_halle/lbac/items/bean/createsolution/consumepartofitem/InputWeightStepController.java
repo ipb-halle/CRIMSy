@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
 
+import java.io.Serializable;
+
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.util.units.Quantity;
@@ -26,7 +28,9 @@ import de.ipb_halle.lbac.util.units.Unit;
  * 
  * @author flange
  */
-public class InputWeightStepController {
+public class InputWeightStepController implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final InputConcentrationAndVolumeStepController step1Controller;
     private final Item parentItem;
     private final MessagePresenter messagePresenter;
@@ -45,15 +49,15 @@ public class InputWeightStepController {
     /*
      * Actions
      */
-    public void actionWeighChange() {
-        if (isWeighGreaterThanItemMass()) {
-            messagePresenter.error("itemCreateSolution_error_weighTooHigh");
-        }
-    }
-
     public void init() {
         if (weighUnit == null) {
             weighUnit = step1Controller.getTargetMassUnit();
+        }
+    }
+
+    public void actionWeighChange() {
+        if (isWeighGreaterThanItemMass()) {
+            messagePresenter.error("itemCreateSolution_error_weighTooHigh");
         }
     }
 
@@ -85,6 +89,10 @@ public class InputWeightStepController {
         } else {
             return false;
         }
+    }
+
+    public Quantity getWeighAsQuantity() {
+        return Quantity.create(weigh, weighUnit);
     }
 
     /*

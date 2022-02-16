@@ -30,8 +30,8 @@
             <!-- TODO: info on parent item (label/id, amount) and material (firstname, molecular weight) -->
             <p:wizard flowListener="#{controller.onFlowProcess}" id="wizzardId">
                 <p:tab
-                    id="step1_inputConcAndVol"
-                    title="Concentration and volume">
+                    id="step1_targetConcAndVol"
+                    title="Target concentration and volume">
                     <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep1.xhtml">
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
@@ -40,6 +40,13 @@
                     id="step2_weigh"
                     title="Weigh">
                     <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep2.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    id="step3_volumeAndSolvent"
+                    title="Volume and solvent">
+                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep3.xhtml">
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>

@@ -27,9 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
-class InputWeightStepControllerTest {
+public class InputWeightStepControllerTest {
     private static final double DELTA = 1e-6;
 
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
@@ -49,6 +50,24 @@ class InputWeightStepControllerTest {
         assertEquals(5, controller.getErrorMargin());
         assertNull(controller.getWeigh());
         assertNull(controller.getWeighUnit());
+    }
+
+    /*
+     * Tests for init()
+     */
+    @Test
+    public void test_init() {
+        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(
+                new Item(), messagePresenter);
+        step1Controller.setTargetMassUnit(Unit.getUnit("µg"));
+        InputWeightStepController controller = new InputWeightStepController(step1Controller, null, null);
+
+        controller.init();
+        assertEquals("µg", controller.getWeighUnit().toString());
+
+        controller.setWeighUnit(Unit.getUnit("g"));
+        controller.init();
+        assertEquals("g", controller.getWeighUnit().toString());
     }
 
     /*
@@ -79,24 +98,6 @@ class InputWeightStepControllerTest {
         controller.setWeighUnit(Unit.getUnit("kg"));
         controller.actionWeighChange();
         assertEquals("itemCreateSolution_error_weighTooHigh", messagePresenter.getLastErrorMessage());
-    }
-
-    /*
-     * Tests for init()
-     */
-    @Test
-    public void test_init() {
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(
-                new Item(), messagePresenter);
-        step1Controller.setTargetMassUnit(Unit.getUnit("µg"));
-        InputWeightStepController controller = new InputWeightStepController(step1Controller, null, null);
-
-        controller.init();
-        assertEquals("µg", controller.getWeighUnit().toString());
-
-        controller.setWeighUnit(Unit.getUnit("g"));
-        controller.init();
-        assertEquals("g", controller.getWeighUnit().toString());
     }
 
     /*
@@ -192,5 +193,31 @@ class InputWeightStepControllerTest {
         controller.setWeigh(10.0);
         controller.setWeighUnit(Unit.getUnit("mg"));
         assertFalse(controller.isWeighGreaterThanItemMass());
+    }
+
+    /*
+     * Tests for getWeighAsQuantity()
+     */
+    @Test
+    public void test_getWeighAsQuantity() {
+        InputWeightStepController controller = new InputWeightStepController(null, null, null);
+
+        controller.setWeigh(null);
+        controller.setWeighUnit(null);
+        assertNull(controller.getWeighAsQuantity());
+
+        controller.setWeigh(10.0);
+        controller.setWeighUnit(null);
+        assertNull(controller.getWeighAsQuantity());
+
+        controller.setWeigh(null);
+        controller.setWeighUnit(Unit.getUnit("mg"));
+        assertNull(controller.getWeighAsQuantity());
+
+        controller.setWeigh(10.0);
+        controller.setWeighUnit(Unit.getUnit("mg"));
+        Quantity q = controller.getWeighAsQuantity();
+        assertEquals(10.0, q.getValue(), DELTA);
+        assertEquals("mg", q.getUnit().toString());
     }
 }
