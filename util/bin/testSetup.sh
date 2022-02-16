@@ -29,8 +29,9 @@ function buildDistServer {
 #
 # DANGER: remove installation without (almost) any trace
 function cleanup {
-    dst=`echo $1 | cut -d' ' -f2`
-    ssh -o "StrictHostKeyChecking no" $dst "./configBatch.sh CLEANUP"
+    remote=`echo $1 | cut -d' ' -f2`
+    login=`echo $1 | cut -d' ' -f3`
+    ssh -o "StrictHostKeyChecking no" $login@$remote "./configBatch.sh CLEANUP"
 }
 
 #
@@ -62,22 +63,23 @@ function copyNodeConfig {
 #
 function createNodeConfig {
     node=`echo $1 | cut -d' ' -f1`
-    dst=`echo $1 | cut -d' ' -f2`
+    remote=`echo $1 | cut -d' ' -f2`
+    login=`echo $1 | cut -d' ' -f3`
     cloud=`grep $node "$LBAC_REPO/util/test/etc/nodeconfig.txt" | \
         cut -c9-18 | \
         sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
     crimsyhost=`hostname -f`
 
-    echo "executing createNodeConfig for host $dst ($node) ..."
+    echo "executing createNodeConfig for host $login@$remote ($node) ..."
 
     echo "copying configBatch.sh script ..."
-    scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
+    scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $login@$remote:
 
     echo "executing configBatch.sh ..."
-    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $crimsyhost $cloud $node"
+    ssh -o "StrictHostKeyChecking no" $login@$remote "chmod +x configBatch.sh && ./configBatch.sh CONFIG $crimsyhost $cloud $node"
 
     echo "fetching node configuration ..."
-    scp -q -o "StrictHostKeyChecking no" $dst:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/${node}_${cloud}.sh.asc"
+    scp -q -o "StrictHostKeyChecking no" $login@$remote:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/${node}_${cloud}.sh.asc"
 }
 
 #
@@ -107,9 +109,10 @@ function error {
 #
 #
 function installNode {
-    dst=`echo $1 | cut -d' ' -f2`
-    echo "installNode called for host: $dst"
-    ssh -o "StrictHostKeyChecking no" $dst "./bin/install.sh"
+    remote=`echo $1 | cut -d' ' -f2`
+    login=`echo $1 | cut -d' ' -f3`
+    echo "installNode called for host: $login@$remote"
+    ssh -o "StrictHostKeyChecking no" $login@$remote "./bin/install.sh"
 }
 
 #
@@ -118,15 +121,19 @@ function installNode {
 function restore {
     if [ $NODE = "all" ] ; then
         echo "Restoring snapshot '$RESTORE' on all nodes"
-        cat $HOSTLIST | cut -d' ' -f2 |\
+        cat $HOSTLIST | \
             while read record ; do
-                ssh -o "StrictHostKeyChecking no" "$record" ./dist/bin/setupROOT.sh restore $RESTORE
+                remote=`echo $record | cut -d' ' -f2`
+                login=`echo $record | cut -d' ' -f3`
+                ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/setupROOT.sh restore $RESTORE
             done
     else 
         echo "Restoring snapshot '$RESTORE' on node '$RESTORE'"
-        grep $NODE $HOSTLIST | cut -d' ' -f2 |\
+        grep $NODE $HOSTLIST | \
             while read record ; do
-                ssh -o "StrictHostKeyChecking no" "$record" ./dist/bin/setupROOT.sh restore $RESTORE
+                remote=`echo $record | cut -d' ' -f2`
+                login=`echo $record | cut -d' ' -f3`
+                ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/setupROOT.sh restore $RESTORE
             done
     fi
 }
@@ -407,15 +414,19 @@ EOF
 function snapshot {
     if [ $NODE = "all" ] ; then
         echo "Taking snapshot '$SNAPSHOT' of all nodes"
-        cat $HOSTLIST | cut -d' ' -f2 |\
+        cat $HOSTLIST | \
             while read record ; do
-                ssh -o "StrictHostKeyChecking no" "$record" ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+                remote=`echo $record | cut -d' ' -f2`
+                login=`echo $record | cut -d' ' -f3`
+                ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
             done
     else
         echo "Taking snapshot '$SNAPSHOT' for node '$NODE'"
-        grep $NODE $HOSTLIST | cut -d' ' -f2 |\
+        grep $NODE $HOSTLIST | \
             while read record ; do
-                ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+                remote=`echo $record | cut -d' ' -f2`
+                login=`echo $record | cut -d' ' -f3`
+                ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
             done
     fi
 }
@@ -428,8 +439,8 @@ function teardown {
     # tear down nodes
     cat $HOSTLIST | while read record ; do cleanup "$record" ; done 
 
-    # remove target directory (needs root privilege)
-    sudo rm -r config/ target/
+    # remove target directory (may need root privilege?)
+    rm -rf config/ target/
 
     docker stop crimsyci_service
     docker stop crimsyreg_service

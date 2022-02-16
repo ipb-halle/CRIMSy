@@ -13,8 +13,15 @@ function cleanup() {
     echo "build process has failed"
 }
 
+#
+# push image to registry; apply additional tags (e.g. "LATEST";
+# if supplied) 
+#
+# note: in test setup, the TEST_REPOSITORY must be registered in 
+# "insecure-registries" in daemon.json 
 function pushImage() {
     IMAGE_TAG=$1
+    echo "pushImage $IMAGE_BASE --> $IMAGE_TAG"
     if [ -z $TEST_REPOSITORY ] ; then
         IMAGE_DST=$IMAGE_BASE:$IMAGE_TAG
         if [ $IMAGE_DST != $IMAGE ] ; then

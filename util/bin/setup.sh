@@ -198,13 +198,13 @@ function setup {
 
         echo "Configuring root access,  please provide authorization ..."
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" initROOT "$LBAC_DATASTORE" "$USER"
+        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" remove 
 
         dist/bin/update.sh proxy
         dist/bin/update.sh ui
         dist/bin/update.sh db
 
         echo "Doing superuser actions ..."
-        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" remove 
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" installInit
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" installCron
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" start
@@ -217,7 +217,7 @@ function setup {
 # and make a full backup 
 #
 function snapshot {
-    if [ -f "$LBAC_DATASTORE/dist/bin/update.sh" ] ;then
+    if [ -d "$LBAC_DATASTORE/data/db" ] ;then
         echo "  scheduling snapshot / backup ..." 
         sudo "$LBAC_DATASTORE/dist/bin/update.sh" snapshot INSTALL
     else

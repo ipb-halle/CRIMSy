@@ -21,6 +21,7 @@ FROM tomee:8-jre-7.1.4-plume
 
 #
 WORKDIR /install
+COPY createTruststores.sh /usr/local/bin
 COPY setup.sh /
 
 #

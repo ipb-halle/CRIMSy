@@ -64,9 +64,11 @@ cat <<EOF > $TOMCAT_HOME/bin/setenv.sh
 #
 export CATALINA_HOME=$TOMCAT_HOME
 export JRE_HOME=/usr/local/openjdk-8
+/usr/local/bin/createTruststores.sh
 EOF
 
 chmod +x $TOMCAT_HOME/bin/setenv.sh
+chmod +x /usr/local/bin/createTruststores.sh
 
 #
 # remove this install script

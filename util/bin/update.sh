@@ -90,6 +90,7 @@ function createUiConfig {
     uuidgen -r | tr -d $'\n' > $LBAC_DATASTORE/tmp/ui_conf/keypass
     uuidgen -r | tr -d $'\n' > $LBAC_DATASTORE/tmp/ui_conf/trustpass
 
+    cp $LBAC_DATASTORE/etc/clouds.cfg $LBAC_DATASTORE/tmp/ui_conf
     CLOUDS=`cat $LBAC_DATASTORE/etc/clouds.cfg | cut -d';' -f1`
     for c in $CLOUDS ; do
         downloadCloudPackages $c
@@ -114,7 +115,7 @@ function createUiConfig {
 <entry key="SecureWebClient.KEYSTORE_TYPE">PKCS12</entry>
 <entry key="SecureWebClient.KEYSTORE_PATH">/install/conf</entry>
 <entry key="SecureWebClient.KEYSTORE_PASSWORD">$LBAC_KEYSTORE_PASSWORD</entry>
-<entry key="SecureWebClient.TRUSTSTORE_TYPE">PKCS12</entry>
+<entry key="SecureWebClient.TRUSTSTORE_TYPE">JKS</entry>
 <entry key="SecureWebClient.TRUSTSTORE_PATH">/install/conf</entry>
 <entry key="SecureWebClient.TRUSTSTORE_PASSWORD">$LBAC_TRUSTSTORE_PASSWORD</entry>
 <entry key="SecureWebClient.SSL_PROTOCOL">TLSv1.2</entry>
@@ -180,11 +181,19 @@ function downloadCloudPackages {
     rm tmp/$CLOUD.asc.sig tmp/$CLOUD.tar.gz
 
     # set up PKCS12 truststore
-    openssl pkcs12 -export -in $LBAC_DATASTORE/dist/etc/$CLOUD/$CLOUD.cert \
-        -certfile $LBAC_DATASTORE/dist/etc/$CLOUD/chain.pem \
-        -out $LBAC_DATASTORE/tmp/ui_conf/$CLOUD.truststore \
-        -passout file:$LBAC_DATASTORE/tmp/ui_conf/trustpass \
-        -nokeys
+#   openssl pkcs12 -export -in $LBAC_DATASTORE/dist/etc/$CLOUD/$CLOUD.cert \
+#       -certfile $LBAC_DATASTORE/dist/etc/$CLOUD/chain.pem \
+#       -out $LBAC_DATASTORE/tmp/ui_conf/$CLOUD.truststore \
+#       -passout file:$LBAC_DATASTORE/tmp/ui_conf/trustpass \
+#       -nokeys
+
+    mkdir -p $LBAC_DATASTORE/tmp/ui_conf/$CLOUD
+    cp $LBAC_DATASTORE/dist/etc/$CLOUD/chain.pem $LBAC_DATASTORE/tmp/ui_conf/$CLOUD
+    cp $LBAC_DATASTORE/dist/etc/$CLOUD/$CLOUD.cert $LBAC_DATASTORE/tmp/ui_conf/$CLOUD/$LBAC_INTERNET_FQHN.pem
+    pushd $LBAC_DATASTORE/tmp/ui_conf/$CLOUD >/dev/null
+    $LBAC_DATASTORE/dist/bin/chainsplit.pl $CLOUD chain.pem
+    rm chain.pem
+    popd > /dev/null
 
 
     # set up PKCS12 keystore
@@ -194,7 +203,7 @@ function downloadCloudPackages {
         -out $LBAC_DATASTORE/tmp/ui_conf/$CLOUD.keystore \
         -passin file:$LBAC_DATASTORE/etc/lbac_cert.passwd \
         -passout file:$LBAC_DATASTORE/tmp/ui_conf/keypass \
-        -name nwc04170.ipb-halle.de 
+        -name $LBAC_INTERNET_FQHN 
 }
 
 function error {
@@ -287,7 +296,7 @@ function snapshotFunc {
     snapshotDB
     snapshotUI
     snapshotCleanup
-    docker exec -i -u postgres dist_db_1 /usr/local/bin/getversion.sh
+    docker exec -i dist_db_1 /usr/local/bin/getversion.sh
     cp "$LBAC_DATASTORE/data/db/CURRENT_PG_VERSION" "$LBAC_DATASTORE/tmp/OLD_PG_VERSION"
 }
 
@@ -322,24 +331,26 @@ function superDoContainer {
 
 function superDoDb {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
-    echo "Waiting 15 sek. for database to come up ..."
-    sleep 15
+    echo "Waiting 40 sek. for database to come up ..."
+    sleep 40
 
-    docker exec dist_db_1 chown postgres /data/db
     docker exec -u postgres dist_db_1 /usr/local/bin/getversion.sh
 
     if [ -e "$LBAC_DATASTORE/tmp/OLD_PG_VERSION" ] ; then
         OLD_PG_VERSION=`cat "$LBAC_DATASTORE/tmp/OLD_PG_VERSION"`
         CURRENT_PG_VERSION=`cat "$LBAC_DATASTORE/data/db/CURRENT_PG_VERSION"`
         if [ $CURRENT_PG_VERSION != $OLD_PG_VERSION ] ; then
+            echo "Restoring snapshot ..."
             LABEL=latest
             restoreDB
             docker exec dist_db_1 /usr/local/bin/post-restore.sh || error "Error during post-restore script"
         fi
     fi
 
+    echo "Performing schema updates ..."
     docker exec -i -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
 
+    echo "Installing cloud information ..."
     cat $LBAC_DATASTORE/tmp/clouds.sql |
         docker exec -i -u postgres dist_db_1 psql -Ulbac lbac
 }
@@ -355,6 +366,7 @@ function superDoProxy {
 
 function superDoUI {
     chown -R 8080:8080 $LBAC_DATASTORE/tmp/ui_conf
+    chown 8080:8080 $LBAC_DATASTORE/data/ui
     rsync -a --del $LBAC_DATASTORE/tmp/ui_conf/ $LBAC_DATASTORE/data/ui_conf
     rm -rf $LBAC_DATASTORE/tmp/ui_conf
 }
