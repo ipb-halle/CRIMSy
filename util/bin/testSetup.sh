@@ -477,7 +477,8 @@ ${BOLD}DESCRIPTION${REGULAR}
 ${BOLD}OPTIONS${REGULAR}
 -H|--hostlist HOSTLIST
     mapping of node names (node1, node2, ...) to real host names. Each line contains
-    the node name followed by the host name separated by a single space character.
+    the node name followed by the host name and the user account separated by a single 
+    space character.
 
 -h|--help
     print this help text
