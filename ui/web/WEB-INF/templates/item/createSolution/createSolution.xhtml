@@ -23,10 +23,45 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
         <ui:composition>
-            <b:form id="createSolutionFormId">
+            <b:form>
+                <b:panel>
+                    <b:container>
+                        <b:row styleClass="itemEditMaterialName">
+                            <b:column span="8">
+                                <h:outputFormat
+                                    value="#{msgs.itemCreateSolution_materialNameFormat_withMolarMass}"
+                                    rendered="#{createSolutionBean.parentItemHasMolarMass}">
+                                    <f:param value="#{createSolutionBean.parentItem.material.firstName}" />
+                                    <f:param value="#{nwc:formatNumberInEnglish(createSolutionBean.molarMassFromParentItem.value, '0.0##')}" />
+                                    <f:param value="#{createSolutionBean.molarMassFromParentItem.unit.unit}"/>
+                                </h:outputFormat>
+                                <h:outputFormat
+                                    value="#{msgs.itemCreateSolution_materialNameFormat_withoutMolarMass}"
+                                    rendered="#{!createSolutionBean.parentItemHasMolarMass}">
+                                    <f:param value="#{createSolutionBean.parentItem.material.firstName}" />
+                                </h:outputFormat>
+                            </b:column>
+                            <b:column span="2">
+                                <h:outputFormat
+                                    value="#{msgs.itemCreateSolution_itemLabelFormat}">
+                                    <f:param value="#{createSolutionBean.parentItem.label}" />
+                                </h:outputFormat>
+                            </b:column>
+                            <b:column span="2">
+                                <h:outputFormat
+                                    value="#{msgs.itemCreateSolution_itemAmountFormat}">
+                                    <f:param value="#{nwc:formatNumberInEnglish(createSolutionBean.parentItem.amount, '0.0##')}" />
+                                    <f:param value="#{createSolutionBean.parentItem.unit.unit}" />
+                                </h:outputFormat>
+                            </b:column>
+                        </b:row>
+                    </b:container>
+                </b:panel>
+
                 <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItem.xhtml">
                     <ui:param name="controller" value="#{createSolutionBean.consumePartOfItemStrategyController}" />
                 </ui:include>

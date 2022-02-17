@@ -24,8 +24,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
+import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ItemUtils;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.util.units.Quantity;
 
 /**
  * 
@@ -42,7 +44,9 @@ public class CreateSolutionBean implements Serializable {
     @Inject
     private transient MessagePresenter messagePresenter;
 
-    private ConsumePartOfItemStrategyController consumePartOfItemStrategyController;
+    private Item parentItem; // r
+    private Quantity molarMassFromParentItem; // r
+    private ConsumePartOfItemStrategyController consumePartOfItemStrategyController; // r
 
     @PostConstruct
     public void init() {
@@ -51,13 +55,31 @@ public class CreateSolutionBean implements Serializable {
     /*
      * Actions
      */
-    public void actionStartCreateSolution(Item item) {
-        consumePartOfItemStrategyController = new ConsumePartOfItemStrategyController(item, itemService, messagePresenter);
+    public void actionStartCreateSolution(Item parentItem) {
+        this.parentItem = parentItem;
+        molarMassFromParentItem = ItemUtils.molarMassFromItem(parentItem);
+        consumePartOfItemStrategyController = new ConsumePartOfItemStrategyController(parentItem, itemService,
+                messagePresenter);
+    }
+
+    /*
+     * Getters with logic
+     */
+    public boolean isParentItemHasMolarMass() {
+        return molarMassFromParentItem != null;
     }
 
     /*
      * Getters/setters
      */
+    public Item getParentItem() {
+        return parentItem;
+    }
+
+    public Quantity getMolarMassFromParentItem() {
+        return molarMassFromParentItem;
+    }
+
     public ConsumePartOfItemStrategyController getConsumePartOfItemStrategyController() {
         return consumePartOfItemStrategyController;
     }
