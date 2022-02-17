@@ -54,7 +54,12 @@ function getVersion {
             LBAC_VERSION=$MAJOR
             ;;
         MAJOR)
-            LBAC_VERSION=LATEST
+            # At this stage, we do NOT support automatic major 
+            # level updates. Major level updates often come with 
+            # changes in configuration or even incompatibilities.
+            # The setting LBAC_VERSION=LATEST is therefore downgraded 
+            # (restricted) to minor level updates.
+            LBAC_VERSION=$MAJOR
             ;;
         *)
             error "Undefined update level"

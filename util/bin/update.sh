@@ -180,7 +180,11 @@ function downloadCloudPackages {
     tar -xzf tmp/$CLOUD.tar.gz
     rm tmp/$CLOUD.asc.sig tmp/$CLOUD.tar.gz
 
-    # set up PKCS12 truststore
+    #
+    # note: JDK 8 does not support PKCS12 truststores!
+    # --> see workaround for JKS truststore creation below;
+    #     refer also to docker/ui/setup.sh, .../createTruststores.sh
+    #
 #   openssl pkcs12 -export -in $LBAC_DATASTORE/dist/etc/$CLOUD/$CLOUD.cert \
 #       -certfile $LBAC_DATASTORE/dist/etc/$CLOUD/chain.pem \
 #       -out $LBAC_DATASTORE/tmp/ui_conf/$CLOUD.truststore \

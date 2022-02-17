@@ -29,8 +29,10 @@ function buildDistServer {
 #
 # DANGER: remove installation without (almost) any trace
 function cleanup {
+    node=`echo $1 | cut -d' ' -f1`
     remote=`echo $1 | cut -d' ' -f2`
     login=`echo $1 | cut -d' ' -f3`
+    echo "performing teardown at $login@remote ($node) ..."
     ssh -o "StrictHostKeyChecking no" $login@$remote "./configBatch.sh CLEANUP"
 }
 
@@ -276,7 +278,9 @@ function setupFunc {
         done
 
     echo "=== create node configurations ==="
-    cat $HOSTLIST | while read record ; do createNodeConfig "$record" ; done
+    cat $HOSTLIST | while read record ; do
+        echo | createNodeConfig "$record"
+    done
 
     # package master nodes
     echo "=== determine master nodes ==="
@@ -300,7 +304,9 @@ function setupFunc {
 
     # install node
     echo "=== install nodes ==="
-    cat $HOSTLIST | while read record ; do installNode "$record" ; done
+    cat $HOSTLIST | while read record ; do
+        echo | installNode "$record"
+    done
 
     #
     # ToDo: multiple cloud memberships 
@@ -437,7 +443,9 @@ function snapshot {
 function teardown {
 
     # tear down nodes
-    cat $HOSTLIST | while read record ; do cleanup "$record" ; done 
+    cat $HOSTLIST | while read record ; do
+        echo | cleanup "$record"
+    done
 
     # remove target directory (may need root privilege?)
     rm -rf config/ target/
