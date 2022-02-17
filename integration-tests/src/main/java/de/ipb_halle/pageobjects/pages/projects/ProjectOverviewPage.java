@@ -23,7 +23,6 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.navigation.Navigation;
 import de.ipb_halle.pageobjects.pages.NavigablePage;
 
@@ -33,10 +32,8 @@ import de.ipb_halle.pageobjects.pages.NavigablePage;
  * @author flange
  */
 public class ProjectOverviewPage extends NavigablePage {
-    private static final SelenideElement NEW_PROJECT_BUTTON = $(
-            testId("projectOverview:newProject"));
-    private static final SelenideElement PROJECTS_TABLE = $(
-            testId("projectOverview:projectsTable"));
+    private static final SelenideElement NEW_PROJECT_BUTTON = $(testId("projectOverview:newProject"));
+    private static final ProjectsTable PROJECTS_TABLE = new ProjectsTable("projectOverview:projectsTable");
 
     @Override
     public Navigation getNavigationItem() {
@@ -54,7 +51,10 @@ public class ProjectOverviewPage extends NavigablePage {
     /*
      * Getters
      */
-    public DataTable getProjectsTable() {
-        return DataTable.extract(PROJECTS_TABLE);
+    /**
+     * @return page object of the projects data table
+     */
+    public ProjectsTable getProjectsTable() {
+        return PROJECTS_TABLE;
     }
 }

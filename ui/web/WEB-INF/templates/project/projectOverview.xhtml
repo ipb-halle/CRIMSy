@@ -65,6 +65,7 @@
                                 label=""
                                 orderable="false">
                                 <b:commandButton
+                                    pt:data-test-id="projectOverview:editProject"
                                     style="padding: 0 4px;"
                                     icon="pencil"
                                     look="link"
@@ -74,6 +75,7 @@
                                     disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
                                     action="#{projectBean.actionStartProjectEdit(project)}" />
                                 <b:commandButton
+                                    pt:data-test-id="projectOverview:changePermissions"
                                     style="padding: 0 4px;"
                                     icon="glyphicon glyphicon-user"
                                     look="link"
@@ -86,6 +88,7 @@
                                     oncomplete="PF('dlgAcl').show();"
                                     disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}" />
                                 <b:commandButton
+                                    pt:data-test-id="projectOverview:deactivateProject"
                                     style="padding: 0 4px;"
                                     icon="trash"
                                     look="link"

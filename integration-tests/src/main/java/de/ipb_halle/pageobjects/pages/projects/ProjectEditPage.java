@@ -23,7 +23,6 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
 import de.ipb_halle.pageobjects.pages.composite.ChangeOwnerModalPage;
 
@@ -38,23 +37,16 @@ import de.ipb_halle.pageobjects.pages.composite.ChangeOwnerModalPage;
  * @author flange
  */
 public class ProjectEditPage extends AbstractPage {
-    private static final SelenideElement PROJECT_NAME_INPUT = $(
-            testId("input", "projectEdit:projectName"));
-    private static final SelenideElement CANCEL_BUTTON = $(
-            testId("projectEdit:cancel"));
-    private static final SelenideElement SAVE_BUTTON = $(
-            testId("projectEdit:save"));
-    private static final SelenideElement PROJECT_TYPE_SELECTION = $(
-            testId("select", "projectEdit:projectType"));
+    private static final SelenideElement PROJECT_NAME_INPUT = $(testId("input", "projectEdit:projectName"));
+    private static final SelenideElement CANCEL_BUTTON = $(testId("projectEdit:cancel"));
+    private static final SelenideElement SAVE_BUTTON = $(testId("projectEdit:save"));
+    private static final SelenideElement PROJECT_TYPE_SELECTION = $(testId("select", "projectEdit:projectType"));
     private static final SelenideElement PROJECT_DESCRIPTION_INPUT = $(
             testId("textarea", "projectEdit:projectDescription"));
-    private static final SelenideElement PROJECT_OWNER_BUTTON = $(
-            testId("projectEdit:projectOwnerButton"));
-    private static final SelenideElement PROJECT_OWNER_INPUT = $(
-            testId("input", "projectEdit:projectOwner"));
-    private static final SelenideElement ACE_TABLE = $(
-            testId("projectEdit:ACETable"));
-    private static final SelenideElement ADDABLE_GROUPS_TABLE = $(
+    private static final SelenideElement PROJECT_OWNER_BUTTON = $(testId("projectEdit:projectOwnerButton"));
+    private static final SelenideElement PROJECT_OWNER_INPUT = $(testId("input", "projectEdit:projectOwner"));
+    private static final ProjectACETable ACE_TABLE = new ProjectACETable(testId("projectEdit:ACETable"));
+    private static final AddableGroupsTable ADDABLE_GROUPS_TABLE = new AddableGroupsTable(
             testId("projectEdit:addableGroupsTable"));
 
     /*
@@ -103,11 +95,11 @@ public class ProjectEditPage extends AbstractPage {
         return PROJECT_OWNER_INPUT;
     }
 
-    public DataTable getAceTable() {
-        return DataTable.extract(ACE_TABLE);
+    public ProjectACETable getAceTable() {
+        return ACE_TABLE;
     }
 
-    public DataTable getAddableGroupsTable() {
-        return DataTable.extract(ADDABLE_GROUPS_TABLE);
+    public AddableGroupsTable getAddableGroupsTable() {
+        return ADDABLE_GROUPS_TABLE;
     }
 }

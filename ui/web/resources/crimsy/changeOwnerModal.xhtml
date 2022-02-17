@@ -66,6 +66,7 @@
                         label="#{msgs.ownerDialog_tableHeader_email}" />
                     <b:dataTableColumn label="">
                         <p:commandButton
+                            pt:data-test-id="changeOwnerModal:usersTable:selectUser"
                             ajax="true"
                             value="#{msgs.ownerDialog_button_choose}"
                             update="@(.#{cc.attrs.updateTargetClass})"

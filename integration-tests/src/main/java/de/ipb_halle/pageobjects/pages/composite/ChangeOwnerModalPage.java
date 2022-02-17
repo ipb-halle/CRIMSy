@@ -17,10 +17,7 @@
  */
 package de.ipb_halle.pageobjects.pages.composite;
 
-import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
-
-import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.PrimeFacesDialog;
 import de.ipb_halle.pageobjects.components.table.DataTable;
@@ -31,13 +28,42 @@ import de.ipb_halle.pageobjects.components.table.DataTable;
  * @author flange
  */
 public class ChangeOwnerModalPage extends PrimeFacesDialog {
-    private static final SelenideElement USERS_TABLE = $(
-            testId("changeOwnerModal:usersTable"));
+    private static final UsersTable USERS_TABLE = new UsersTable(testId("changeOwnerModal:usersTable"));
 
     /*
      * Getters
      */
-    public DataTable getUsersTable() {
-        return DataTable.extract(USERS_TABLE);
+    public UsersTable getUsersTable() {
+        return USERS_TABLE;
+    }
+
+    public static class UsersTable extends DataTable {
+        private static final String SELECT_USER_BUTTON = testId("changeOwnerModal:usersTable:selectUser");
+
+        public UsersTable(String testId) {
+            super(testId);
+        }
+
+        /*
+         * Actions
+         */
+        public void selectUser(int rowIndex) {
+            getCell(3, rowIndex).$(SELECT_USER_BUTTON).click();
+        }
+
+        /*
+         * Getters
+         */
+        public String getUserName(int rowIndex) {
+            return getCell(0, rowIndex).text();
+        }
+
+        public String getPhone(int rowIndex) {
+            return getCell(1, rowIndex).text();
+        }
+
+        public String getEmail(int rowIndex) {
+            return getCell(2, rowIndex).text();
+        }
     }
 }

@@ -52,6 +52,7 @@
                                     styleClass="projectEdit_aclTable_column"
                                     orderable="false">
                                     <b:selectBooleanCheckbox
+                                        pt:data-test-id="projectEdit:ACETable:permRead"
                                         value="#{acEntry.permRead}"
                                         style="margin-left: 25px" />
                                 </b:dataTableColumn>
@@ -60,6 +61,7 @@
                                     styleClass="projectEdit_aclTable_column"
                                     orderable="false">
                                     <b:selectBooleanCheckbox
+                                        pt:data-test-id="projectEdit:ACETable:permEdit"
                                         value="#{acEntry.permEdit}"
                                         style="margin-left: 25px" />
                                 </b:dataTableColumn>
@@ -68,6 +70,7 @@
                                     styleClass="projectEdit_aclTable_column"
                                     orderable="false">
                                     <b:selectBooleanCheckbox
+                                        pt:data-test-id="projectEdit:ACETable:permDelete"
                                         value="#{acEntry.permDelete}"
                                         style="margin-left: 25px" />
                                 </b:dataTableColumn>
@@ -76,6 +79,7 @@
                                     styleClass="projectEdit_aclTable_column"
                                     orderable="false">
                                     <b:selectBooleanCheckbox
+                                        pt:data-test-id="projectEdit:ACETable:permSuper"
                                         value="#{acEntry.permSuper}"
                                         style="margin-left: 25px" />
                                 </b:dataTableColumn>
@@ -84,6 +88,7 @@
                                     styleClass="projectEdit_aclTable_column"
                                     orderable="false">
                                     <b:commandButton
+                                        pt:data-test-id="projectEdit:ACETable:removeGroup"
                                         style="padding: 0 4px;"
                                         icon="trash"
                                         look="link"
@@ -116,6 +121,7 @@
                                     styleClass="projectEdit_aclTable_column"
                                     orderable="false">
                                     <b:commandButton
+                                        pt:data-test-id="projectEdit:addableGroupsTable:addGroup"
                                         style="padding: 0 4px;"
                                         icon-awesome="fa-plus"
                                         look="link"
