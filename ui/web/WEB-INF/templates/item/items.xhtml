@@ -217,14 +217,8 @@
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_amount}">
-                                            <!-- Number format "0.0##": 10000      -> 10000.0
-                                                                        10000.1    -> 10000.1 
-                                                                        10000.01   -> 10000.01
-                                                                        10000.001  -> 10000.001
-                                                                        10000.0001 -> 10000.0
-                                                                            0.001  ->     0.001 -->
                                             <h:outputFormat value="{0} {1}">
-                                                <f:param value="#{nwc:formatNumberInEnglish(item.amount, '0.0##')}" />
+                                                <f:param value="#{nwc:formatAmount(item.amount)}" />
                                                 <f:param value="#{item.unit.unit}" />
                                             </h:outputFormat>
                                         </b:dataTableColumn>

@@ -31,12 +31,12 @@
                 <b:panel>
                     <b:container>
                         <b:row styleClass="itemEditMaterialName">
-                            <b:column span="8">
+                            <b:column span="7">
                                 <h:outputFormat
                                     value="#{msgs.itemCreateSolution_materialNameFormat_withMolarMass}"
                                     rendered="#{createSolutionBean.parentItemHasMolarMass}">
                                     <f:param value="#{createSolutionBean.parentItem.material.firstName}" />
-                                    <f:param value="#{nwc:formatNumberInEnglish(createSolutionBean.molarMassFromParentItem.value, '0.0##')}" />
+                                    <f:param value="#{nwc:formatAmount(createSolutionBean.molarMassFromParentItem.value)}" />
                                     <f:param value="#{createSolutionBean.molarMassFromParentItem.unit.unit}"/>
                                 </h:outputFormat>
                                 <h:outputFormat
@@ -45,7 +45,7 @@
                                     <f:param value="#{createSolutionBean.parentItem.material.firstName}" />
                                 </h:outputFormat>
                             </b:column>
-                            <b:column span="2">
+                            <b:column span="3">
                                 <h:outputFormat
                                     value="#{msgs.itemCreateSolution_itemLabelFormat}">
                                     <f:param value="#{createSolutionBean.parentItem.label}" />
@@ -54,7 +54,7 @@
                             <b:column span="2">
                                 <h:outputFormat
                                     value="#{msgs.itemCreateSolution_itemAmountFormat}">
-                                    <f:param value="#{nwc:formatNumberInEnglish(createSolutionBean.parentItem.amount, '0.0##')}" />
+                                    <f:param value="#{nwc:formatAmount(createSolutionBean.parentItem.amount)}" />
                                     <f:param value="#{createSolutionBean.parentItem.unit.unit}" />
                                 </h:outputFormat>
                             </b:column>
