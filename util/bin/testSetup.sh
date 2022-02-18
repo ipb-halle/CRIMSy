@@ -180,12 +180,12 @@ function runDistServer {
     echo "=== Distribution Servers ===" 
     buildDistServer
 
-    mkdir -p "$LBAC_REPO/target/integration/htdocs/$dist"
-    cp docker/crimsyci/index.html target/integration/htdocs
+    mkdir -p "$LBAC_REPO/config/integration/htdocs"
+    cp docker/crimsyci/index.html config/integration/htdocs
     (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
     docker inspect crimsyci_service >/dev/null 2>&1 && docker rm crimsyci_service 
     docker run -p 8000:80 \
-        --mount type=bind,src=`realpath target/integration/htdocs`,dst=/usr/local/apache2/htdocs \
+        --mount type=bind,src=`realpath config/integration/htdocs`,dst=/usr/local/apache2/htdocs \
         --hostname `hostname -f` \
         --detach --name crimsyci_service \
         crimsyci
@@ -402,7 +402,7 @@ function setupFunc {
 #
 function setupTestRootCA {
     $LBAC_REPO/util/bin/camgr.sh --batch --mode ca
-    chmod -R go+rX $LBAC_REPO/target/integration/htdocs
+    chmod -R go+rX $LBAC_REPO/config/integration/htdocs
 }
 
 #
@@ -424,7 +424,7 @@ function setupTestSubCA {
     LBAC_CA_DIR=$LBAC_REPO/config/$cloud/CA
     . $LBAC_CA_DIR/cloud.cfg
 
-    cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/target/integration/htdocs/$cloud/devcert.pem
+    cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/config/integration/htdocs/$cloud/devcert.pem
 }
 
 function setupConfigure {
@@ -438,12 +438,12 @@ function setupConfigure {
     sed -e "s,CLOUDCONFIG_CURRENT_RELEASE,$revision," |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
     openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
-      -md sha256 -binary -out $LBAC_REPO/target/integration/htdocs/$cloud/configure.sh.sig \
+      -md sha256 -binary -out $LBAC_REPO/config/integration/htdocs/$cloud/configure.sh.sig \
       -stream -nodetach \
       -inkey $LBAC_CA_DIR/$DEV_CERT.key \
       -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd 
 
-    chmod -R go+rX $LBAC_REPO/target/integration/htdocs
+    chmod -R go+rX $LBAC_REPO/config/integration/htdocs
 }
 
 #
@@ -456,6 +456,7 @@ function setupTestCAconf {
     name=`echo $1 | cut -d';' -f4`
 
     mkdir -p "$LBAC_REPO/config/$cloud/CA"
+    mkdir -p "$LBAC_REPO/config/integration/htdocs/$dist"
 
     cat > "$LBAC_REPO/config/$cloud/CA/cloud.cfg" <<EOF
 #
@@ -480,7 +481,7 @@ DEV_CN="Developer Name"
 DEV_CERT=""
 DOWNLOAD_URL="http://`hostname -f`:8000/$dist"
 SUPERIOR_URL="http://`hostname -f`:8000/$superior"
-SCP_ADDR="$LBAC_REPO/target/integration/htdocs/$dist"
+SCP_ADDR="$LBAC_REPO/config/integration/htdocs/$dist"
 CLOUD="$cloud"
 CLOUD_NAME="$name"
 EOF
