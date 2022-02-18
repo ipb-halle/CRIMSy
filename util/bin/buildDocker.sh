@@ -30,10 +30,6 @@ function cleanup {
 function compile {
     branch="$1"
     flags="$2"
-    rm -rf target/docker
-    cp -r docker target/
-    cp -r target/extralib target/docker/ui/
-    cp ui/target/ui.war target/docker/ui/
 
     mvn --batch-mode -DskipTests clean install
     pushd ui
@@ -41,6 +37,12 @@ function compile {
     MAJOR=`echo $REVISION | cut -d. -f1`
     MINOR=`echo $REVISION | cut -d. -f2`
     popd
+
+    rm -rf target/docker
+    cp -r docker target/
+    cp -r target/extralib target/docker/ui/
+    cp ui/target/ui.war target/docker/ui/
+
     if [ -n $STAGE_LABEL ] ; then
         flags="$flags,$STAGE_LABEL"
     fi
