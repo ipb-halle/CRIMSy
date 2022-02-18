@@ -45,21 +45,25 @@ LBAC_SKIP_SNAPSHOT="OFF"
 #
 
 function getVersion {
+    #
+    # Note: not all levels of automatic updates are 
+    # fully implemented yet. Major level updates will 
+    # certainly require manual intervention.
+    #
     MAJOR=`echo $LBAC_CURRENT_RELEASE | cut -d. -f1`
+    MINOR=`echo $LBAC_CURRENT_RELEASE | cut -d. -f2`
     case $LBAC_UPDATE_LEVEL in
-        NONE|PATCH)
+        NONE)
             LBAC_VERSION=$LBAC_CURRENT_RELEASE
+            ;;
+        PATCH)
+            LBAC_VERSION=$MAJOR.$MINOR
             ;;
         MINOR)
             LBAC_VERSION=$MAJOR
             ;;
         MAJOR)
-            # At this stage, we do NOT support automatic major 
-            # level updates. Major level updates often come with 
-            # changes in configuration or even incompatibilities.
-            # The setting LBAC_VERSION=LATEST is therefore downgraded 
-            # (restricted) to minor level updates.
-            LBAC_VERSION=$MAJOR
+            LBAC_VERSION=LATEST 
             ;;
         *)
             error "Undefined update level"

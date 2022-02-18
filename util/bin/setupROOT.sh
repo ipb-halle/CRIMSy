@@ -120,13 +120,13 @@ EOF
 #
 # Installs Init-Scripts
 #
-function installSystemd() {
+function installSystemd {
     cp "$LBAC_DATASTORE/dist/etc/lbac.service" /etc/systemd/system
     systemctl daemon-reload
     systemctl enable lbac.service
 }
 
-function installSysVInit() {
+function installSysVInit {
 cat << EOF > /etc/init.d/lbac
 #!/bin/bash
 #
@@ -224,7 +224,7 @@ EOF
     shutdownFunc
     sleep 15
     removeFunc
-    rm -rf data/ dist/ etc/ tmp/ nodeconfig.txt configBatch.sh
+    rm -rf data/ dist/ etc/ tmp/ nodeconfig.cfg configBatch.sh
 
     popd > /dev/null
 }

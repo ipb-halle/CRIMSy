@@ -859,7 +859,7 @@ function selectDialog {
 #
 # Perform basic CA setup
 #
-function setup() {
+function setup {
 
         mkdir -p $CONFIG_DIR/nodes
         tmp=$CONFIG_DIR/$CLOUD/CA

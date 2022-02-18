@@ -28,26 +28,18 @@
 
 CRIMSYCI_URL=http://$2:8000/$3 
 CRIMSYREG_URL=$2:5000
-CLOUD=$3
-TEST_ID=$4
 p=`dirname $0`
 LBAC_DATASTORE=`realpath $p`
 
 #
 #==========================================================
 #
-# Provide test data (from nodeconfig.txt file) 
+# Provide test data (from nodeconfig.cfg file) 
 #
 function getTestData {
 
-    data=`grep $TEST_ID nodeconfig.txt`
-    PRIMARY_CLOUD=`echo "$data" | cut -c9-18 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    LBAC_CITY=`echo "$data" | cut -c20-35 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    LBAC_INSTITUTION=`echo "$data" | cut -c36-59 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    LBAC_INSTITUTION_SHORT=`echo "$data" | cut -c50-68 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+    . nodeconfig.cfg
     LBAC_INSTITUTION_MD5=`echo -n $LBAC_INSTITUTION | md5sum | cut -c1-32`
-    LBAC_MANAGER_EMAIL=`echo "$data" | cut -c70-105 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-
 }
 #
 #==========================================================
@@ -56,7 +48,6 @@ function createConfiguration {
     curl --silent --output configure.sh.sig $CRIMSYCI_URL/configure.sh.sig
     curl --silent --output chain.pem $CRIMSYCI_URL/chain.pem
     curl --silent --output devcert.pem $CRIMSYCI_URL/devcert.pem
-    curl --silent --output nodeconfig.txt $CRIMSYCI_URL/nodeconfig.txt
 
     openssl verify -CAfile chain.pem devcert.pem || exit 1
     openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.pem -out configure.sh || exit 1
@@ -76,7 +67,6 @@ function createConfiguration {
     echo "LBAC_NODE_ID=\"$LBAC_NODE_ID\"" >> $TMP_CONFIG
 
     echo "LBAC_PROXY_HSTS=\"OFF\"" >> $TMP_CONFIG
-    echo "LBAC_UPDATE_LEVEL=\"PATCH\"" >> $TMP_CONFIG
     echo "LBAC_INIT_TYPE=\"SYSTEMD\"" >> $TMP_CONFIG
     echo "LBAC_DOCKER_EXCLUSIVE=\"OFF\"" >> $TMP_CONFIG
 
@@ -87,6 +77,7 @@ function createConfiguration {
     LBAC_INTRANET_FQHN=`hostname -f`
     LBAC_INTERNET_FQHN=$LBAC_INTRANET_FQHN
 
+    echo "LBAC_UPDATE_LEVEL=\"$LBAC_UPDATE_LEVEL\"" >> $TMP_CONFIG
     echo "LBAC_INSTITUTION=\"$LBAC_INSTITUTION\"" >> $TMP_CONFIG
     echo "LBAC_INSTITUTION_SHORT=\"$LBAC_INSTITUTION_SHORT\"" >> $TMP_CONFIG
     echo "LBAC_INSTITUTION_MD5=\"$LBAC_INSTITUTION_MD5\"" >> $TMP_CONFIG
@@ -113,9 +104,27 @@ function createConfiguration {
     mv configure.sh $LBAC_DATASTORE/bin
 }
 
+#
+#==========================================================
+#
+function loadData {
+    # initialize database with test data
+    wget -o /dev/null -O /dev/null --no-check-certificate https://`hostname -f`/ui/index.xhtml
+    echo "waiting 5 sec. for webapp to initialize database ..."
+    sleep 5
+    docker cp tmp/initial_data.sql dist_db_1:/tmp
+    docker exec -i -u postgres dist_db_1 psql -Ulbac lbac -f /tmp/initial_data.sql
+}
+#
+#==========================================================
+#
 case $1 in 
     CONFIG)
         createConfiguration
+        exit 0
+        ;;
+    LOAD_DATA)
+        loadData
         exit 0
         ;;
     CLEANUP)

@@ -143,6 +143,7 @@ function downloadCRL {
 }
 export -f downloadCRL
 
+#
 # prepare the certificates for the entire CA chain 
 # of a single cloud, download and verify CRLs 
 function downloadCloud {
@@ -327,7 +328,7 @@ function superDoContainer {
         docker-compose up -d
         if [ $LBAC_DOCKER_EXCLUSIVE = "ON" ] ; then
             echo "pruning images ..."
-#           docker image prune -f
+            docker image prune -f
         fi
     fi
     popd >/dev/null

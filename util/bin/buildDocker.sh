@@ -1,35 +1,121 @@
 #!/bin/bash
 #
-# - refresh base images by pulling from docker hub
-# - build and tag images locally
-# - push built images  to docker hub
 #
-p=`dirname $0`
-DIR=`realpath "$p/../.."`
+function buildFunc {
+    for i in db proxy ui fasta ; do
+        pushd target/docker/$i 
+        IMAGE_BASE=crimsy$i
+        IMAGE_TAG=$REVISION
+        IMAGE=$IMAGE_BASE:$IMAGE_TAG
+        echo "Building image '$IMAGE'"
+        docker build $PULL_FLAG -t $IMAGE .
+        pushImage  $IMAGE_TAG
+        if echo $RELEASE_FLAGS | grep -q LATEST  ; then
+            pushImage LATEST
+        fi
+        if echo $RELEASE_FLAGS | grep -q MINOR ; then
+            pushImage $MAJOR.$MINOR
+        fi
+        if echo $RELEASE_FLAGS | grep -q MAJOR ; then
+            pushImage $MAJOR
+        fi
+        popd
+    done
+}
 
-TEST_REPOSITORY=$1
-
-function cleanup() {
+function cleanup {
     echo "build process has failed"
 }
 
+function compile {
+    branch="$1"
+    flags="$2"
+    rm -rf target/docker
+    cp -r docker target/
+    cp -r target/extralib target/docker/ui/
+    cp ui/target/ui.war target/docker/ui/
+
+    mvn --batch-mode -DskipTests clean install
+    pushd ui
+    REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
+    MAJOR=`echo $REVISION | cut -d. -f1`
+    MINOR=`echo $REVISION | cut -d. -f2`
+    popd
+    if [ -n $STAGE_LABEL ] ; then
+        flags="$flags,$STAGE_LABEL"
+    fi
+    echo "$REVISION;$branch;$flags" >> config/revision_info.txt
+
+}
+
+
+function printHelp {
+BOLD=$'\x1b[1m'
+REGULAR=$'\x1b[0m'
+cat <<EOF
+${BOLD}NAME${REGULAR}
+    buildDocker.sh
+
+${BOLD}SYNOPSIS${REGULAR}
+    buildDocker.sh [-b|branch-file FILE] [-h|--help] [-p|--pull] 
+        [-s|--stage-label LABEL] [-t|--test_registry REGISTRY] 
+
+${BOLD}DESCRIPTION${REGULAR}
+    Compile CRIMSy source code, build Docker containers and push them
+    to a registry. The action can be performed on multiple branches
+    upon request. 
+
+-b|--branch-file FILE
+    A file containing the stages label, branches and respective flags 
+    for tagging the images of a respective branch. Stages can be 
+    filtered (used by testSetup.sh). Flags can be "MINOR", "MAJOR" 
+    and "LATEST" to to tag containers accordingly. 
+
+      Format: 
+        STAGE:BRANCH;FLAG[,FLAG] 
+
+      Example file: 
+        stage1:production_3;MINOR
+        stage1:production_31;MAJOR,LATEST
+        stage1:testing;
+        stage2:production_3;MINOR
+        stage2:production_31;MINOR
+        stage2:testing;MAJOR,LATEST
+
+-h|--help
+    Print this help text.
+
+-p|--pull
+    Always attempt to pull a newer version of the image during build 
+
+-s|--stage-label LABEL
+    Limit build to a given stage label. Note: testSetup.sh executes stages in 
+    alphabetic order. The stage label is reproduced in the flag section of 
+    the file config/revision_info.txt.
+
+-t|--test-registry REGISTRY
+    Instead of the official docker registry (hub.docker.com), the resulting 
+    Docker images will be pushed to the specified registry. 
+EOF
+}
+
 #
-# push image to registry; apply additional tags (e.g. "LATEST";
+# push image to registry; apply additional tags (e.g. "LATEST" 
 # if supplied) 
 #
-# note: in test setup, the TEST_REPOSITORY must be registered in 
+# note: in test setup, the TEST_REGISTRY must be registered in 
 # "insecure-registries" in daemon.json 
-function pushImage() {
+function pushImage {
     IMAGE_TAG=$1
     echo "pushImage $IMAGE_BASE --> $IMAGE_TAG"
-    if [ -z $TEST_REPOSITORY ] ; then
+    if [ -z $TEST_REGISTRY ] ; then
         IMAGE_DST=$IMAGE_BASE:$IMAGE_TAG
         if [ $IMAGE_DST != $IMAGE ] ; then
             docker image tag $IMAGE $IMAGE_DST
         fi
         docker push $IMAGE_DST
     else
-        IMAGE_DST=$TEST_REPOSITORY/$IMAGE_BASE:$IMAGE_TAG
+        IMAGE_DST=$TEST_REGISTRY/$IMAGE_BASE:$IMAGE_TAG
         if [ $IMAGE_DST != $IMAGE ] ; then
             docker image tag $IMAGE $IMAGE_DST
         fi
@@ -37,48 +123,87 @@ function pushImage() {
     fi
 }
 
+function buildDocker {
+
+    CURRENT_BRANCH=`git status --branch --porcelain=2 | grep "branch.head" | cut -d' ' -f3`
+    if [ -r $BRANCH_FILE ] ; then
+        git stash push -u
+        cat $BRANCH_FILE |\
+        if [ -z $STAGE_LABEL ] ; then cat ; else grep $STAGE_LABEL ; fi |\
+        while read record ; do
+            echo "$record"
+            BRANCH=`echo $record | cut -d';' -f2`
+            RELEASE_FLAGS=`echo $record | cut -d';' -f3`
+            git checkout $BRANCH
+            compile "$BRANCH" "$RELEASE_FLAGS" 
+            buildFunc
+        done
+        git checkout "$CURRENT_BRANCH"
+        git stash pop
+    else 
+        # just compile the current branch and tag it latest
+        RELEASE_FLAGS='LATEST,CURRENT,MINOR,MAJOR'
+        compile "$CURRENT_BRANCH" "$RELEASE_FLAGS"
+        buildFunc
+    fi
+}
+
 trap "cleanup; exit 1" ERR
+p=`dirname $0`
+export LBAC_REPO=`realpath "$p/../.."`
+umask 0022
+cd $LBAC_REPO
 
-cd $DIR
-rm -rf target/docker
-cp -r docker target/
-cp -r config/extralib target/docker/ui/
-cp ui/target/ui.war target/docker/ui/
+BRANCH_FILE=''
+PULL_FLAG=''
+STAGE_LABEL=''
+TEST_REGISTRY=''
 
-BRANCH=`git status | grep "On branch" | cut -d' ' -f3`
-pushd ui
-REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
-MAJOR=`echo $REVISION | cut -d. -f1`
-MINOR=`echo $REVISION | cut -d. -f2`
-popd
+GETOPT=$(getopt -o 'b:hps:t:' --longoptions 'branch-file:,help,pull,stage-label:,test-registry:' -n 'buildDocker.sh' -- "$@")
 
-touch config/releases
-RELEASE=$MAJOR.$MINOR
-RELEASE_FLAGS=`grep "release_$RELEASE;" config/releases | cut -d';' -f3`
-(grep -v -s "release_$RELEASE;" config/releases || exit 0) > config/releases.tmp
-echo "release_$RELEASE;$BRANCH;$RELEASE_FLAGS" >> config/releases.tmp
-mv config/releases.tmp config/releases
+if [ $? -ne 0 ]; then
+        echo 'Error in commandline evaluation. Terminating...' >&2
+        exit 1
+fi
 
+eval set -- "$GETOPT"
+unset GETOPT
 
-# force pull (refresh) of images from Docker Hub
-#grep --include Dockerfile -rhE "^FROM " . | \
-#   cut -d' ' -f2- | tr -d ' ' | sort | uniq | \
-#   xargs -l1 docker pull 
-
-for i in db proxy ui fasta ; do
-    pushd target/docker/$i 
-    IMAGE_BASE=crimsy$i
-    IMAGE_TAG=$RELEASE
-    IMAGE=$IMAGE_BASE:$IMAGE_TAG
-    echo "Building image '$IMAGE'"
-    docker build -t $IMAGE .
-    pushImage  $IMAGE_TAG
-    if echo $RELEASE_FLAGS | grep -q LATEST  ; then
-        pushImage LATEST
-    fi
-    if echo $RELEASE_FLAGS | grep -q MAJOR ; then
-        pushImage $MAJOR
-    fi
-    popd
+while true ; do
+    case "$1" in
+    '-b'|'--branch-file')
+        BRANCH_FILE="$2"
+        shift 2
+        continue
+        ;;
+    '-h'|'--help')
+        printHelp
+        exit 0
+        ;;
+    '-p'|'--pull')
+        PULL_FLAG="--pull"
+        shift
+        continue
+        ;;
+    '-s'|'--stage-label')
+        STAGE_LABEL="$2"
+        shift 2
+        continue
+        ;;
+    '-t'|'--test-registry')
+        TEST_REGISTRY="$2"
+        shift 2
+        continue
+        ;;
+    '--')
+        shift
+        break
+        ;;
+    *)
+        echo 'Internal error!' >&2
+        exit 1
+        ;;
+    esac
 done
 
+buildDocker

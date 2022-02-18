@@ -25,7 +25,7 @@ compose="dist_"
 #
 #==========================================================
 #
-function check() {
+function check {
     unit=$compose$1
     echo "Checking unit: $unit" 
     status=`docker inspect ${unit}_1 | grep "Status" | cut -d: -f2 | cut -d\" -f2`
@@ -37,7 +37,7 @@ function check() {
 #
 # specifically remove dead containers
 #
-function cleanup() {
+function cleanup {
     unit=$1
     docker rm -v -f $compose${unit}_1
 }
@@ -53,7 +53,7 @@ function error {
 #
 #==========================================================
 #
-function remove() {
+function remove {
 
     docker-compose down --rmi local --remove-orphans 2>/dev/null
 
@@ -76,7 +76,7 @@ function remove() {
 #
 #==========================================================
 #
-function restartService() {
+function restartService {
     service=$1
     repeat=0
     restarted=0
@@ -109,7 +109,7 @@ function restartService() {
 #
 #==========================================================
 #
-function  startService() {
+function  startService {
     service=$1
     repeat=0 
     while [ $repeat -lt $max_repeat ] ; do
@@ -146,7 +146,7 @@ function  startService() {
     return 1
 }
 
-function start() {
+function start {
     startService db || error "Starting database container failed"
     startService fasta || error "Starting fasta container failed"
     startService ui || error "Starting ui container failed"
@@ -155,12 +155,12 @@ function start() {
 #
 #==========================================================
 #
-function stopService() {
+function stopService {
     service=$1
     docker-compose stop $service
 }
 
-function stop() {
+function stop {
     stopService proxy
     stopService ui
     stopService fasta
