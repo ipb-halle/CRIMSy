@@ -133,15 +133,15 @@ function buildDocker {
         cat $BRANCH_FILE |\
         if [ -z $STAGE_LABEL ] ; then cat ; else grep $STAGE_LABEL ; fi |\
         while read record ; do
-            echo "$record"
             BRANCH=`echo $record | cut -d';' -f2`
             RELEASE_FLAGS=`echo $record | cut -d';' -f3`
+            echo "processing branch file entry: $record"
             git checkout $BRANCH
             compile "$BRANCH" "$RELEASE_FLAGS" 
             buildFunc
         done
         git checkout "$CURRENT_BRANCH"
-        git stash pop
+        git stash pop || echo "git stash returned with an error: ignored"
     else 
         # just compile the current branch and tag it latest
         RELEASE_FLAGS='LATEST,CURRENT,MINOR,MAJOR'
