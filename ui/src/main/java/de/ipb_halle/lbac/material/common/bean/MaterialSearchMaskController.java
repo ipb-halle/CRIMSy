@@ -161,7 +161,7 @@ public class MaterialSearchMaskController implements Serializable {
                 values.molecule = molecule;
             }
         } catch (Exception e) {
-            logger.error("Could not parse molecule", ExceptionUtils.getStackTrace(e));
+            logger.error("Could not parse molecule"+ ExceptionUtils.getStackTrace(e));
         }
 
         return values;

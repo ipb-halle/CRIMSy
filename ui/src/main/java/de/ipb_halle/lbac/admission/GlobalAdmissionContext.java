@@ -132,7 +132,7 @@ public class GlobalAdmissionContext implements Serializable {
             createInfoEntity("LDAP_ENABLE", "false", this.adminOnlyACL);
             createInfoEntity(CollectionBean.getCollectionsPermKey(), "don't care", this.adminOnlyACL);
         } catch (Exception e) {
-            logger.error("Error at initialisiing", ExceptionUtils.getStackTrace(e));
+            logger.error("Error at initialisiing {}", e);
         }
 
     }
