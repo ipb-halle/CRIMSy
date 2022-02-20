@@ -64,11 +64,13 @@
                                     <b:dataTableColumn label="#{msgs.materialOverview_tableheader_name}">
                                         <h:outputText
                                             id="materialNames"
+                                            pt:data-test-id="materialOverview:resultsTable:names"
                                             value="#{materialOverviewBean.getWrappedNames(material, 3)}"
                                             escape="false">
                                             <f:converter converterId="RichTextConverter" />
                                         </h:outputText>
                                         <p:tooltip
+                                            pt:data-test-id="materialOverview:resultsTable:namesTooltip"
                                             for="materialNames"
                                             position="right">
                                             <h:outputText 
@@ -108,7 +110,8 @@
                                         </ui:fragment>
                                     </b:dataTableColumn>
                                     <b:dataTableColumn label="#{msgs.materialOverview_tableheader_actions}">
-                                        <b:commandButton 
+                                        <b:commandButton
+                                            pt:data-test-id="materialOverview:resultsTable:editMaterial"
                                             style="padding: 0 4px;"
                                             icon="pencil"
                                             look="link"
@@ -117,6 +120,7 @@
                                             action="#{materialOverviewBean.actionEditMaterial(material)}"                                                       
                                             tooltip="#{msgs.materialOverview_actions_edit}" />
                                         <b:commandButton
+                                            pt:data-test-id="materialOverview:resultsTable:createItem"
                                             style="padding: 0 4px;"
                                             icon-awesome="fa-eyedropper"
                                             look="link"
@@ -126,6 +130,7 @@
                                             action="#{materialOverviewBean.actionCreateNewItem(material)}"
                                             tooltip="#{msgs.materialOverview_actions_createItem}" />
                                         <b:commandButton
+                                            pt:data-test-id="materialOverview:resultsTable:changePermissions"
                                             style="padding: 0 4px;"
                                             icon="glyphicon glyphicon-user"
                                             look="link"
@@ -138,6 +143,7 @@
                                             oncomplete="PF('dlgAcl').show();"
                                             disabled="#{!materialOverviewBean.hasAccessRight(material,'permGRANT')}" />
                                         <b:commandButton
+                                            pt:data-test-id="materialOverview:resultsTable:deactivateMaterial"
                                             style="padding: 0 4px;"
                                             icon="trash"
                                             look="link"

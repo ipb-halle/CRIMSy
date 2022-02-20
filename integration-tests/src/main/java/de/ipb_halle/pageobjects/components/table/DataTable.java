@@ -33,8 +33,7 @@ import com.codeborne.selenide.conditions.CssClass;
  * @author flange
  */
 public class DataTable {
-    private static final Condition EMPTY_CONDITION = new CssClass(
-            "dataTables_empty");
+    private static final Condition EMPTY_CONDITION = new CssClass("dataTables_empty");
 
     private final SelenideElement table;
 
@@ -117,8 +116,7 @@ public class DataTable {
                 return i;
             }
         }
-        throw new RuntimeException("Column with name '" + colName
-                + "' does not exist in table " + table);
+        throw new RuntimeException("Column with name '" + colName + "' does not exist in table " + table);
     }
 
     /*

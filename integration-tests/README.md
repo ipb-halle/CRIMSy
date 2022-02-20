@@ -18,12 +18,13 @@
 #### PrimeFaces
 * `<p:autoComplete>`: `$(testId("testId"))`; TODO: evaluate autocomplete suggestions
 * `<p:commandButton>`: `$(testId("testId"))`
-* `<p:dialog>`: too complex, use class `PrimeFacesDialog`
+* `<p:dialog>`: use class `PrimeFacesDialog`
 * `<p:inputText>`: `$(testId("testId"))`
-* `<p:selectBooleanCheckbox>`: too complex, use class `PrimeFacesSelectBooleanCheckbox`
-* `<p:selectManyCheckbox>`: too complex, use class `PrimeFacesSelectManyCheckbox`
-* `<p:selectOneRadio>`: too complex, use class `PrimeFacesSelectOneRadio`
+* `<p:selectBooleanCheckbox>`: use class `PrimeFacesSelectBooleanCheckbox`
+* `<p:selectManyCheckbox>`: use class `PrimeFacesSelectManyCheckbox`
+* `<p:selectOneRadio>`: use class `PrimeFacesSelectOneRadio`
 * `<p:tab>` inside `<p:tabView>`: `$(testId("testId"))`
+* `<p:tooltip>`: use class `PrimeFacesTooltip`
 
 #### MolecularFaces
 * `<mol:molecule>`: use class `MolecularFacesMolecule`

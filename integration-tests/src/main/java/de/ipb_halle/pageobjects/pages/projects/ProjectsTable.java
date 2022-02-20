@@ -53,8 +53,9 @@ public class ProjectsTable extends DataTable {
         return page(ACObjectModalPage.class);
     }
 
-    public void deactivateProject(int rowIndex) {
+    public ProjectsTable deactivateProject(int rowIndex) {
         getCell(3, rowIndex).$(DEACTIVATE_PROJECT_BUTTON).click();
+        return this;
     }
 
     /*

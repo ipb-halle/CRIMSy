@@ -45,7 +45,7 @@ public class ProjectEditPage extends AbstractPage {
             testId("textarea", "projectEdit:projectDescription"));
     private static final SelenideElement PROJECT_OWNER_BUTTON = $(testId("projectEdit:projectOwnerButton"));
     private static final SelenideElement PROJECT_OWNER_INPUT = $(testId("input", "projectEdit:projectOwner"));
-    private static final ProjectACETable ACE_TABLE = new ProjectACETable(testId("projectEdit:ACETable"));
+    private static final ProjectACETable ACE_TABLE = new ProjectACETable("projectEdit:ACETable");
     private static final AddableGroupsTable ADDABLE_GROUPS_TABLE = new AddableGroupsTable(
             testId("projectEdit:addableGroupsTable"));
 

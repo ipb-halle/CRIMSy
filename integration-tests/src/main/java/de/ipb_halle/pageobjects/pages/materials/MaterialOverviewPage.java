@@ -23,7 +23,6 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.navigation.Navigation;
 import de.ipb_halle.pageobjects.pages.NavigablePage;
 import de.ipb_halle.pageobjects.pages.composite.MaterialSearchMaskModel;
@@ -35,20 +34,14 @@ import de.ipb_halle.pageobjects.pages.composite.MaterialSearchMaskPage;
  * @author flange
  */
 public class MaterialOverviewPage extends NavigablePage {
-    private static final SelenideElement NEW_MATERIAL_BUTTON = $(
-            testId("materialOverview:newMaterial"));
-    private static final SelenideElement RESULTS_TABLE = $(
-            testId("materialOverview:resultsTable"));
-    private static final SelenideElement FIRST_PAGE_BUTTON = $(
-            testId("materialOverview:firstPageButton"));
-    private static final SelenideElement PREV_PAGE_BUTTON = $(
-            testId("materialOverview:prevPageButton"));
-    private static final SelenideElement NEXT_PAGE_BUTTON = $(
-            testId("materialOverview:nextPageButton"));
-    private static final SelenideElement LAST_PAGE_BUTTON = $(
-            testId("materialOverview:lastPageButton"));
-    private static final SelenideElement PAGINATION_INFO_TEXT = $(
-            testId("materialOverview:paginationInfoText"));
+    private static final SelenideElement NEW_MATERIAL_BUTTON = $(testId("materialOverview:newMaterial"));
+    private static final MaterialSearchResultsTable RESULTS_TABLE = new MaterialSearchResultsTable(
+            "materialOverview:resultsTable");
+    private static final SelenideElement FIRST_PAGE_BUTTON = $(testId("materialOverview:firstPageButton"));
+    private static final SelenideElement PREV_PAGE_BUTTON = $(testId("materialOverview:prevPageButton"));
+    private static final SelenideElement NEXT_PAGE_BUTTON = $(testId("materialOverview:nextPageButton"));
+    private static final SelenideElement LAST_PAGE_BUTTON = $(testId("materialOverview:lastPageButton"));
+    private static final SelenideElement PAGINATION_INFO_TEXT = $(testId("materialOverview:paginationInfoText"));
 
     @Override
     public Navigation getNavigationItem() {
@@ -100,8 +93,8 @@ public class MaterialOverviewPage extends NavigablePage {
         return page(MaterialSearchMaskPage.class);
     }
 
-    public DataTable getResultsTable() {
-        return DataTable.extract(RESULTS_TABLE);
+    public MaterialSearchResultsTable getResultsTable() {
+        return RESULTS_TABLE;
     }
 
     public SelenideElement getPaginationInfoText() {
