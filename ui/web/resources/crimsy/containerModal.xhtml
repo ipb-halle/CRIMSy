@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <!--
   
-  Leibniz Bioactives Cloud
-  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,47 +22,50 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-    <h:body>
-        <ui:composition>
-            <p:dialog 
-                id="containerModalId"
+    <composite:interface>
+        <composite:attribute name="containerOwner" required="true" />
+        <composite:attribute name="updateTargetClass" required="false" />
+    </composite:interface>
+
+    <composite:implementation>
+        <b:form id="containerModalFormId">
+            <p:dialog
+                id="containerModalDialogId"
                 styleClass="containerModal"
                 widgetVar="dlgcontainerSearch"
-                modal="true" 
+                modal="true"
                 closable="true"
-                header="#{msgs.container_dialog_title}"
-                >
-                
+                header="#{msgs.container_dialog_title}">
                 <b:dataTable
-                    value="#{containerModalBean.container}"
+                    value="#{containerModalBean.containers}"
+                    var="container"
                     select="true"
-                    update="growlMsg @(.containerPseudoClass)"
-                    onselect="ajax:itemBean.actionChangeContainer(container);"
+                    update="growlMsg @(.#{cc.attrs.updateTargetClass})"
+                    onselect="ajax:cc.attrs.containerOwner.actionChangeContainer(container);"
                     oncomplete="PF('dlgcontainerSearch').hide();"
-                    var ="container"
                     saveState="false">
+                    <b:dataTableColumn value="#{container.id}" />
                     <b:dataTableColumn
-                        value="#{container.id}" />
-                    <b:dataTableColumn
-                        value="#{container.label}" 
-                        label="#{msgs.container_dialog_label}"/>
-                    <b:dataTableColumn 
-                        label="#{msgs.container_dialog_location}">
-                        <h:outputText escape="false" value="#{container.getLocation(true,true)}">
+                        value="#{container.label}"
+                        label="#{msgs.container_dialog_label}" />
+                    <b:dataTableColumn label="#{msgs.container_dialog_location}">
+                        <h:outputText
+                            value="#{container.getLocation(true,true)}"
+                            escape="false">
                             <f:converter converterId="RichTextConverter" />
                         </h:outputText>
                     </b:dataTableColumn>
-                    <b:dataTableColumn 
+                    <b:dataTableColumn
                         value="#{container.type.getLocalizedName()}"
-                        label="#{msgs.container_dialog_type}"/>
+                        label="#{msgs.container_dialog_type}" />
                     <b:dataTableColumn
                         value="#{containerModalBean.getDimensionString(container)}"
-                        label="#{msgs.container_dialog_size}"/>
+                        label="#{msgs.container_dialog_size}" />
                 </b:dataTable>
-                
             </p:dialog>
-        </ui:composition>
-    </h:body>
+        </b:form>
+    </composite:implementation>
 </html>

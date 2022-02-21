@@ -368,16 +368,14 @@ public class ItemBean implements Serializable {
         containerController = new ContainerController(this, c);
         containerInfoPresenter = new ContainerInfoPresenter(c);
         this.containerName = c.getLabel();
-        
     }
-    
+
     public void onItemSelect(SelectEvent event) {
         containerName = (String) event.getObject();
         int containerId = Integer.parseInt(containerName.split("-")[0]);
         containerService.loadContainerById(containerId);
         Container c = containerService.loadContainerById(containerId);
         actionChangeContainer(c);
-        
     }
     
     public List<String> nameSuggestions(String enteredValue) {

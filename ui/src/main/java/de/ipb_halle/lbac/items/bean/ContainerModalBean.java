@@ -25,7 +25,8 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.SessionScoped;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -33,37 +34,42 @@ import javax.inject.Named;
  *
  * @author fmauz
  */
-@SessionScoped
+@RequestScoped
 @Named
 public class ContainerModalBean implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+
     @Inject
     private ContainerService service;
 
     @Inject
     private UserBean userBean;
 
-    private List<Container> container = new ArrayList<>();
+    private int adjacentPlacesNeeded = 1;
 
-    private List<ContainerType> blackList = new ArrayList<>();
+    public List<Container> getContainers() {
+        List<Container> containers = new ArrayList<>();
+        List<ContainerType> blackList = new ArrayList<>();
 
-    public List<Container> getContainer() {
-        container = service.loadContainersWithoutItems(userBean.getCurrentAccount());
+        containers = service.loadContainersWithoutItems(userBean.getCurrentAccount());
 
-        for (int i = container.size() - 1; i >= 0; i--) {
-            if (blackList.contains(container.get(i).getType())) {
-                container.remove(i);
+        for (int i = containers.size() - 1; i >= 0; i--) {
+            if (blackList.contains(containers.get(i).getType())) {
+                containers.remove(i);
             }
         }
 
-        for (Container c : container) {
-            c.getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
+        for (Container c : containers) {
+            c.getType().setLocalizedName(
+                    Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
             for (Container c2 : c.getContainerHierarchy()) {
-                c2.getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + c2.getType().getName(), null));
+                c2.getType().setLocalizedName(
+                        Messages.getString(MESSAGE_BUNDLE, "container_type_" + c2.getType().getName(), null));
             }
         }
-        return container;
+        return containers;
     }
 
     public String getDimensionString(Container c) {
@@ -71,5 +77,13 @@ public class ContainerModalBean implements Serializable {
             return String.format("%d x %d", c.getItems().length, c.getItems()[0].length);
         }
         return "-";
+    }
+
+    public int getAdjacentPlacesNeeded() {
+        return adjacentPlacesNeeded;
+    }
+
+    public void setAdjacentPlacesNeeded(int adjacentPlacesNeeded) {
+        this.adjacentPlacesNeeded = adjacentPlacesNeeded;
     }
 }
