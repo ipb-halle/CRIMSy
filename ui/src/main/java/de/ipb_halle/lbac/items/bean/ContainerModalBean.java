@@ -66,7 +66,8 @@ public class ContainerModalBean {
      * @return
      */
     public String getDimensionString(Container c) {
-        if (c.getItems() != null && c.getItems().length > 0) {
+        if (c.getRows() != null && c.getRows() > 0
+                && c.getColumns() != null && c.getColumns() > 0) {
             return String.format("%d x %d", c.getItems().length, c.getItems()[0].length);
         }
         return "-";
