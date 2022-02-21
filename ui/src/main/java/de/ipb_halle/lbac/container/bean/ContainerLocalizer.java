@@ -28,7 +28,7 @@ import java.io.Serializable;
 public class ContainerLocalizer implements Serializable {
     private final static long serialVersionUID = 1L;
 
-    private MessagePresenter messagePresenter;
+    private final MessagePresenter messagePresenter;
 
     public ContainerLocalizer(MessagePresenter messagePresenter) {
         this.messagePresenter = messagePresenter;

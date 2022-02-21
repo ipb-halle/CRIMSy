@@ -26,8 +26,13 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <composite:interface>
-        <composite:attribute name="containerOwner" required="true" />
-        <composite:attribute name="updateTargetClass" required="false" />
+        <composite:attribute
+            name="controller"
+            type="de.ipb_halle.lbac.items.bean.ContainerSelectionDialogController"
+            required="true" />
+        <composite:attribute
+            name="updateTargetClass"
+            required="false" />
     </composite:interface>
 
     <composite:implementation>
@@ -40,11 +45,11 @@
                 closable="true"
                 header="#{msgs.container_dialog_title}">
                 <b:dataTable
-                    value="#{containerModalBean.containers}"
+                    value="#{cc.attrs.controller.availableContainers}"
                     var="container"
                     select="true"
                     update="growlMsg @(.#{cc.attrs.updateTargetClass})"
-                    onselect="ajax:cc.attrs.containerOwner.actionChangeContainer(container);"
+                    onselect="ajax:cc.attrs.controller.actionOnSelect(container)"
                     oncomplete="PF('dlgcontainerSearch').hide();"
                     saveState="false">
                     <b:dataTableColumn value="#{container.id}" />
@@ -62,7 +67,7 @@
                         value="#{container.type.getLocalizedName()}"
                         label="#{msgs.container_dialog_type}" />
                     <b:dataTableColumn
-                        value="#{containerModalBean.getDimensionString(container)}"
+                        value="#{cc.attrs.controller.getDimensionString(container)}"
                         label="#{msgs.container_dialog_size}" />
                 </b:dataTable>
             </p:dialog>

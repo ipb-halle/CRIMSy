@@ -116,7 +116,7 @@ public class ItemBean implements Serializable {
     protected Mode mode;
     private String customLabelValue;
     
-    protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+    protected transient MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
     
     public enum Mode {
         CREATE, EDIT, HISTORY

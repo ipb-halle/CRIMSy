@@ -20,30 +20,45 @@ package de.ipb_halle.lbac.items.bean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
- *
+ * Controller for the composite component containerModal.xhtml.
+ * 
  * @author fmauz
  */
 public class ContainerSelectionDialogController {
     private static final String TYPE_PREFIX = "container_type_";
 
     private final List<Container> availableContainers;
+    private final Consumer<Container> onSelectCallback;
     private final MessagePresenter messagePresenter;
 
-    public ContainerSelectionDialogController(List<Container> availableContainers, MessagePresenter messagePresenter) {
+    /**
+     * 
+     * @param availableContainers
+     * @param onSelectCallback    function to call when the datatable's onselect
+     *                            event is fired
+     * @param messagePresenter
+     */
+    public ContainerSelectionDialogController(List<Container> availableContainers, Consumer<Container> onSelectCallback,
+            MessagePresenter messagePresenter) {
         this.availableContainers = availableContainers;
+        this.onSelectCallback = onSelectCallback;
         this.messagePresenter = messagePresenter;
 
         localizeContainerTypes(availableContainers);
     }
 
-    /**
-     * Loads the containers available to the user without the included items
-     *
-     * @return
-     */
-    public List<Container> getContainers() {
+    private void localizeContainerTypes(List<Container> containersToLocalize) {
+        for (Container container : containersToLocalize) {
+            container.getType()
+                    .setLocalizedName(messagePresenter.presentMessage(TYPE_PREFIX + container.getType().getName()));
+            localizeContainerTypes(container.getContainerHierarchy());
+        }
+    }
+
+    public List<Container> getAvailableContainers() {
         return availableContainers;
     }
 
@@ -61,11 +76,7 @@ public class ContainerSelectionDialogController {
         return "-";
     }
 
-    private void localizeContainerTypes(List<Container> containersToLocalize) {
-        for (Container container : containersToLocalize) {
-            container.getType()
-                    .setLocalizedName(messagePresenter.presentMessage(TYPE_PREFIX + container.getType().getName()));
-            localizeContainerTypes(container.getContainerHierarchy());
-        }
+    public void actionOnSelect(Container c) {
+        onSelectCallback.accept(c);
     }
 }

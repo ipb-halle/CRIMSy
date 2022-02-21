@@ -29,9 +29,6 @@
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
         <ui:composition>
-            <crimsy:containerModal
-                containerOwner="#{itemBean}"
-                updateTargetClass="containerPseudoClass" />
             <b:form id="itemEditForm">
                 <b:panel>
                     <b:container>
@@ -300,6 +297,7 @@
                             </b:row>
                         </b:container>
                     </p:tab>
+                    <!-- Project -->
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_project}">
                         <o:massAttribute name="disabled" value="#{itemBean.historyMode}">
                             <b:container>
@@ -320,84 +318,10 @@
                             </b:container>
                         </o:massAttribute>
                     </p:tab>
+                    <!-- Container location -->
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_location}">
                         <o:massAttribute name="disabled" value="#{itemBean.historyMode}">
-                            <b:container>
-                                <b:row>
-                                    <b:column span="4" styleClass="containerPseudoClass">
-                                        <b:container>
-                                            <b:row>
-                                                <b:column
-                                                    styleClass="itemEditLocationHeader"
-                                                    span="2">
-                                                    <h:outputText
-                                                        value="#{msgs.itemEdit_containerPanel_current_location}"/>
-                                                </b:column>
-                                                <b:column span="1">
-                                                    <b:commandButton
-                                                        styleClass="itemEditContainerRemoveButton"
-                                                        ajax="true"
-                                                        action="#{itemBean.actionRemoveContainer()}"
-                                                        update="@(.containerPseudoClass)"
-                                                        value="remove"/>
-                                                </b:column>
-                                            </b:row>
-                                            <crimsy:containerInfos containerInfoPresenter="#{itemBean.containerInfoPresenter}" />
-                                            <b:row>
-                                                <b:column 
-                                                    span="3"
-                                                    styleClass="itemEditLocationHeader">
-                                                    <h:outputText value=""/>
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column
-                                                    span="3"
-                                                    styleClass="itemEditLocationHeader">
-                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_locationSearch}" />
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column span="1">
-                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_quickSearch}" />
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column
-                                                    span="2"
-                                                    styleClass="containerPseudoClass">
-                                                    <p:autoComplete
-                                                        value=""
-                                                        maxResults="15"
-                                                        forceSelection="true"
-                                                        completeMethod="#{itemBean.nameSuggestions}">
-                                                        <p:ajax
-                                                            event="itemSelect" 
-                                                            listener="#{itemBean.onItemSelect}"
-                                                            update="@(.containerPseudoClass)" />
-                                                    </p:autoComplete>
-                                                </b:column>
-                                                <b:column span="1">
-                                                    <b:commandButton
-                                                        styleClass="itemEditcontainerAdvancedSearch"
-                                                        ajax="true"
-                                                        process="@this"
-                                                        update="@(.containerModal)"
-                                                        oncomplete="PF('dlgcontainerSearch').show();"
-                                                        value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}" />
-                                                </b:column>
-                                            </b:row>
-                                        </b:container>
-                                    </b:column>
-                                    <b:column 
-                                        span="4"
-                                        styleClass="containerPseudoClass">
-                                        <crimsy:container2d
-                                            container="#{itemBean.container}"
-                                            rendered="#{itemBean.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"/>
-                                    </b:column>
-                                </b:row>
-                            </b:container>
+                            <crimsy:containerSelectionAndInfos containerController="#{itemBean.containerController}"/>
                         </o:massAttribute>
                     </p:tab>
                     <p:tab title="Print">

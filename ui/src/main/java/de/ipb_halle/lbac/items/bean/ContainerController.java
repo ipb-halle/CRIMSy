@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.Container.DimensionType;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,6 +49,7 @@ public class ContainerController {
     private List<Container> availableContainers = new ArrayList<>();
     private List<Integer> columnsList = new ArrayList<>();
     private List<Integer> rowsList = new ArrayList<>();
+    private final ContainerSelectionDialogController containerSelectionDialogController;
     private final MessagePresenter messagePresenter;
 
     /**
@@ -60,9 +60,11 @@ public class ContainerController {
         this.originalItem = originalItem.copy();
         this.containerService = containerService;
         availableContainers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
-        setNewContainer(originalItem.getContainer());
-
+        containerSelectionDialogController = new ContainerSelectionDialogController(availableContainers,
+                (c) -> this.actionChangeContainer(c), messagePresenter);
         this.messagePresenter = messagePresenter;
+
+        setNewContainer(originalItem.getContainer());
     }
 
     private void createInitialPositionMatrix() {
@@ -328,5 +330,9 @@ public class ContainerController {
 
     public void actionRemoveContainer() {
         setNewContainer(null);
+    }
+
+    public ContainerSelectionDialogController getContainerSelectionDialogController() {
+        return containerSelectionDialogController;
     }
 }
