@@ -17,8 +17,10 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.Container.DimensionType;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
@@ -29,6 +31,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.event.SelectEvent;
 
 /**
  * Handles the rendering and the actions for manipulating the container of an
@@ -40,22 +43,26 @@ public class ContainerController {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private boolean[][] itemPositions;
-    private ItemBean itemBean;
+    private final Item originalItem;
+    private final ContainerService containerService;
     private Container container;
+    private ContainerInfoPresenter containerInfoPresenter;
+    private List<Container> availableContainers = new ArrayList<>();
     private List<Integer> columnsList = new ArrayList<>();
     private List<Integer> rowsList = new ArrayList<>();
-    private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+    private final MessagePresenter messagePresenter;
 
     /**
      * Sets the container and creates the boolean position matrix (for the
      * checkBoxes), and the index lists for rows and cols(for ui:repeat) .
-     *
-     * @param itemBean
-     * @param container
      */
-    public ContainerController(ItemBean itemBean, Container container) {
-        this.itemBean = itemBean;
-        setNewContainer(container);
+    public ContainerController(Item originalItem, ContainerService containerService, UserBean userBean, MessagePresenter messagePresenter) {
+        this.originalItem = originalItem.copy();
+        this.containerService = containerService;
+        availableContainers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
+        setNewContainer(originalItem.getContainer());
+
+        this.messagePresenter = messagePresenter;
     }
 
     private void createInitialPositionMatrix() {
@@ -70,8 +77,8 @@ public class ContainerController {
 
     private boolean isCurrentItemAtPosition(Item[][] items, int x, int y) {
         Integer currentItemId = null;
-        if (itemBean.getState().getOriginalItem() != null) {
-            currentItemId = itemBean.getState().getOriginalItem().getId();
+        if (originalItem != null) {
+            currentItemId = originalItem.getId();
         }
         return (items[x][y] != null && items[x][y].getId().equals(currentItemId));
     }
@@ -95,7 +102,7 @@ public class ContainerController {
             rowsList.clear();
             columnsList.clear();
         }
-        itemBean.setContainerInfoPresenter(new ContainerInfoPresenter(container, messagePresenter));
+        containerInfoPresenter = new ContainerInfoPresenter(container, messagePresenter);
     }
 
     /**
@@ -143,11 +150,11 @@ public class ContainerController {
 
     public boolean isContainerSubComponentRendered(String typename) {
         if (typename == null) {
-            return itemBean.getContainer() == null;
+            return container == null;
         }
         DimensionType type = DimensionType.valueOf(typename);
         if (null != type) {
-            return itemBean.getContainer() != null && itemBean.getContainer().getDimensionType() == type;
+            return container != null && container.getDimensionType() == type;
         }
         return false;
     }
@@ -223,9 +230,10 @@ public class ContainerController {
      * @return true if another item blocks the slot
      */
     public boolean isContainerPlaceDisabled(int x, int y) {
-        if (itemBean.isHistoryMode()) {
-            return true;
-        }
+// TODO
+//        if (itemBean.isHistoryMode()) {
+//            return true;
+//        }
         if (container.getItemAtPos(x, y) == null) {
             return false;
         }
@@ -268,10 +276,10 @@ public class ContainerController {
      * @return
      */
     private boolean isOriginalItem(Item item) {
-        if (itemBean.getState().getOriginalItem() == null || item == null) {
+        if (originalItem == null || item == null) {
             return false;
         }
-        return Objects.equals(item.getId(), itemBean.getState().getOriginalItem().getId());
+        return Objects.equals(item.getId(), originalItem.getId());
     }
 
     public void setItemAtPosition(int y, int x) {
@@ -288,8 +296,40 @@ public class ContainerController {
         return container;
     }
 
-    public void setMessagePresenter(MessagePresenter messagePresenter) {
-        this.messagePresenter = messagePresenter;
+    public ContainerInfoPresenter getContainerInfoPresenter() {
+        return containerInfoPresenter;
     }
 
+    public void actionChangeContainer(Container c) {
+        c.setItems(containerService.loadItemIdsOfContainer(c));
+        containerController = new ContainerController(this, c);
+        containerInfoPresenter = new ContainerInfoPresenter(c, messagePresenter);
+        this.containerName = c.getLabel();
+    }
+
+    public void onItemSelect(SelectEvent event) {
+        containerName = (String) event.getObject();
+        int containerId = Integer.parseInt(containerName.split("-")[0]);
+        containerService.loadContainerById(containerId);
+        Container c = containerService.loadContainerById(containerId);
+        actionChangeContainer(c);
+    }
+
+    public List<String> nameSuggestions(String enteredValue) {
+        List<String> matches = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        for (Container c : availableContainers) {
+            names.add(c.getAutoCompleteString());
+        }
+        for (String s : names) {
+            if (enteredValue != null && (enteredValue.trim().isEmpty() || s.toLowerCase().contains(enteredValue.toLowerCase()))) {
+                matches.add(s);
+            }
+        }
+        return matches;
+    }
+
+    public void actionRemoveContainer() {
+        setNewContainer(null);
+    }
 }

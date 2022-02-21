@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.material.MessagePresenter;
  */
 public class ContainerInfoPresenter {
     private final Container container;
-    private ContainerLocalizer containerLocalizer;
+    private final ContainerLocalizer containerLocalizer;
 
     public ContainerInfoPresenter(Container container, MessagePresenter messagePresenter) {
         this.container = container;
@@ -79,9 +79,5 @@ public class ContainerInfoPresenter {
 
     public void setContainerName(String containerName) {
 
-    }
-
-    public void setContainerLocalizer(ContainerLocalizer containerLocalizer) {
-        this.containerLocalizer = containerLocalizer;
     }
 }

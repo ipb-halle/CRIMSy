@@ -339,7 +339,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         copiedItem.setArticle(getArticle());
         copiedItem.setConcentration(getConcentration());
         copiedItem.setConcentrationUnit(getConcentrationUnit());
-        copiedItem.setContainer(getContainer());
+        copiedItem.setContainer(getContainer().copy());
         copiedItem.setContainerSize(getContainerSize());
         copiedItem.setContainerType(getContainerType());
         copiedItem.setDescription(getDescription());

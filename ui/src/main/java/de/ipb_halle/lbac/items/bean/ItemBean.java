@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.device.print.PrintBean;
@@ -57,7 +56,6 @@ import javax.inject.Named;
 import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -66,7 +64,6 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 @Named
 public class ItemBean implements Serializable {
-
     private static final long serialVersionUID = 1L;
     
     private ItemState state;
@@ -98,10 +95,8 @@ public class ItemBean implements Serializable {
     protected LabelService labelService;
     
     private ContainerController containerController;
-    private ContainerInfoPresenter containerInfoPresenter;
     
     private List<Project> projects = new ArrayList<>();
-    private List<Container> containers = new ArrayList<>();
     private List<Solvent> availableSolvents = new ArrayList<>();
     private List<String> availablePurities = new ArrayList<>();
     private List<Unit> availableAmountUnits = new ArrayList<>();
@@ -118,7 +113,6 @@ public class ItemBean implements Serializable {
     private boolean solved;
     private boolean directContainer;
     
-    private String containerName;
     protected Mode mode;
     private String customLabelValue;
     
@@ -164,7 +158,7 @@ public class ItemBean implements Serializable {
         return containerController;
     }
     
-    public void setContainerController(ContainerController containerController) {
+    void setContainerController(ContainerController containerController) {
         this.containerController = containerController;
     }
     
@@ -295,44 +289,35 @@ public class ItemBean implements Serializable {
         return solved;
     }
     
-    public void actionStartItemEdit(Item i) {
-        if (i.getContainer() != null) {
-            i.setContainer(containerService.loadContainerById(i.getContainer().getId()));
+    public void actionStartItemEdit(Item originalItem) {
+        if (originalItem.getContainer() != null) {
+            originalItem.setContainer(containerService.loadContainerById(originalItem.getContainer().getId()));
         }
         mode = Mode.EDIT;
-        directContainer = i.getContainerType() != null;
-        state = new ItemState(i);
-        solved = i.getSolvent() != null;
-        containerController = new ContainerController(this, i.getContainer());
+        directContainer = originalItem.getContainerType() != null;
+        state = new ItemState(originalItem);
+        solved = originalItem.getSolvent() != null;
+        containerController = new ContainerController(originalItem, containerService, userBean, messagePresenter);
         historyOperation = new HistoryOperation(state, containerController);
-        customLabelValue = i.getLabel();
+        customLabelValue = originalItem.getLabel();
         customLabel = false;
         initData();
     }
     
     private void initData() {
         projects = loadReadableProjects(userBean.getCurrentAccount());
-        containers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
         this.printBean.setLabelDataObject(state.getEditedItem());
-        this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer(), messagePresenter);
-    }
-    
-    public void setContainerInfoPresenter(ContainerInfoPresenter containerInfoPresenter) {
-        this.containerInfoPresenter = containerInfoPresenter;
-    }
-    
-    public ContainerInfoPresenter getContainerInfoPresenter() {
-        return containerInfoPresenter;
     }
     
     public void actionStartItemCreation(Material m) {
         mode = Mode.CREATE;
         state = new ItemState();
-        state.getEditedItem().setUnit(availableAmountUnits.get(0));
-        state.getEditedItem().setMaterial(m);
+        Item editedItem = state.getEditedItem();
+        editedItem.setUnit(availableAmountUnits.get(0));
+        editedItem.setMaterial(m);
         directContainer = true;
         solved = false;
-        containerController = new ContainerController(this, null);
+        containerController = new ContainerController(editedItem, containerService, userBean, messagePresenter);
         customLabel = false;
         customLabelValue = "";
         initData();
@@ -356,40 +341,6 @@ public class ItemBean implements Serializable {
     public void setCommercialMaterial(boolean commercialMaterial) {
         this.commercialMaterial = commercialMaterial;
     }
-    
-    public void actionChangeContainer(Container c) {
-        c.setItems(containerService.loadItemIdsOfContainer(c));
-        containerController = new ContainerController(this, c);
-        containerInfoPresenter = new ContainerInfoPresenter(c, messagePresenter);
-        this.containerName = c.getLabel();
-    }
-
-    public void onItemSelect(SelectEvent event) {
-        containerName = (String) event.getObject();
-        int containerId = Integer.parseInt(containerName.split("-")[0]);
-        containerService.loadContainerById(containerId);
-        Container c = containerService.loadContainerById(containerId);
-        actionChangeContainer(c);
-    }
-
-    public List<String> nameSuggestions(String enteredValue) {
-        List<String> matches = new ArrayList<>();
-        List<String> names = new ArrayList<>();
-        for (Container c : containers) {
-            names.add(c.getAutoCompleteString());
-        }
-        for (String s : names) {
-            if (enteredValue != null && (enteredValue.trim().isEmpty() || s.toLowerCase().contains(enteredValue.toLowerCase()))) {
-                matches.add(s);
-            }
-        }
-        return matches;
-    }
-
-    public void actionRemoveContainer() {
-        containerController = new ContainerController(this, null);
-        containerInfoPresenter = new ContainerInfoPresenter(null, null);
-    }
 
     public String getMaterialName() {
         return state.getEditedItem().getMaterial().getFirstName();
@@ -397,22 +348,6 @@ public class ItemBean implements Serializable {
     
     public List<Project> getProjects() {
         return projects;
-    }
-    
-    public Container getContainer() {
-        return containerController.getContainer();
-    }
-    
-    public void setContainer(Container container) {
-        containerController = new ContainerController(this, container);
-    }
-    
-    public List<Container> getContainers() {
-        return containers;
-    }
-    
-    public void setContainerName(String containerName) {
-        this.containerName = containerName;
     }
     
     public List<Unit> getAvailableAmountUnits() {
