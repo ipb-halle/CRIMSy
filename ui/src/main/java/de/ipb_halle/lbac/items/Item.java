@@ -339,7 +339,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         copiedItem.setArticle(getArticle());
         copiedItem.setConcentration(getConcentration());
         copiedItem.setConcentrationUnit(getConcentrationUnit());
-        copiedItem.setContainer(getContainer().copy());
+        copiedItem.setContainer(getContainer() == null ? null : getContainer().copy());
         copiedItem.setContainerSize(getContainerSize());
         copiedItem.setContainerType(getContainerType());
         copiedItem.setDescription(getDescription());
@@ -380,8 +380,8 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
     }
 
     /**
-     * @return new quantity with the {@code amount} as value and the {@code unit} as
-     *         unit or null if one of those is null
+     * @return new quantity with the {@code amount} as value and the
+     * {@code unit} as unit or null if one of those is null
      */
     public Quantity getAmountAsQuantity() {
         if ((amount == null) || (unit == null)) {

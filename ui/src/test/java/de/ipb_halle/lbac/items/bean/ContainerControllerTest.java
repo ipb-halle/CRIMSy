@@ -17,130 +17,157 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
+import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
-import static de.ipb_halle.lbac.container.Container.DimensionType.NONE;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.mocks.ItemBeanContainerControllerMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Set;
+import javax.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerControllerTest {
-    
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
+public class ContainerControllerTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private ContainerService containerService;
+
+    @Inject
+    private UserBeanMock userBean;
+
     Item item = new Item();
-    Item anotherItem = new Item();
-    ItemBean bean;
+    Item anotherItem = new Item();  
     Container container = new Container();
-    ContainerController controller;
-    
+    ContainerController containerController;
+
     @BeforeEach
-    public void setUp() {
+    public void init() {
         item.setId(1);
         anotherItem.setId(2);
-        bean = new ItemBeanContainerControllerMock(item);
+
+        userBean.setCurrentAccount(publicUser);
         container.setRows(4);
+        container.setId(10);
         container.setColumns(3);
         Item[][] items = new Item[4][3];
         items[1][0] = item;
         items[0][1] = anotherItem;
+        item.setContainer(container);
         container.setItems(items);
-        controller = new ContainerController(bean, container);
-        bean.setContainerController(controller);
-        controller.setMessagePresenter(MessagePresenterMock.getInstance());
-        
+        containerController = new ContainerController(item, containerService, userBean, MessagePresenterMock.getInstance());
+
     }
-    
+
     @Test
     public void test001_getStyleOfContainerPlace() {
-        Assert.assertEquals("possible-place", controller.getStyleOfContainerPlace(0, 0));
-        Assert.assertEquals("own-place", controller.getStyleOfContainerPlace(1, 0));
-        Assert.assertEquals("occupied-place", controller.getStyleOfContainerPlace(0, 1));
-         bean.mode=ItemBean.Mode.HISTORY;
-         Assert.assertEquals("possible-place", controller.getStyleOfContainerPlace(0, 0));
+        Assert.assertEquals("possible-place", containerController.getStyleOfContainerPlace(0, 0));
+        Assert.assertEquals("own-place", containerController.getStyleOfContainerPlace(1, 0));
+        Assert.assertEquals("occupied-place", containerController.getStyleOfContainerPlace(0, 1));       
     }
-    
+
     @Test
     public void test002_getToolTipForContainerPlace() {
-        Assert.assertEquals("container_slot_free_place", controller.getToolTipForContainerPlace(0, 0));
-        Assert.assertEquals("ID: 1", controller.getToolTipForContainerPlace(1, 0));
-        Assert.assertEquals("ID: 2", controller.getToolTipForContainerPlace(0, 1));
+        Assert.assertEquals("container_slot_free_place", containerController.getToolTipForContainerPlace(0, 0));
+        Assert.assertEquals("ID: 1", containerController.getToolTipForContainerPlace(1, 0));
+        Assert.assertEquals("ID: 2", containerController.getToolTipForContainerPlace(0, 1));
     }
-    
+
     @Test
     public void test003_clickCheckBox() {
-        controller.actionClickCheckBox(0, 0);
-        Assert.assertFalse(controller.getItemPositions()[0][0]);
-        controller.setItemAtPosition(0, 0);
-        controller.actionClickCheckBox(0, 0);
-        Assert.assertTrue(controller.getItemPositions()[0][0]);
-        controller.removeItemFromPosition();
-        Assert.assertFalse(controller.getItemPositions()[0][0]);
+        containerController.actionClickCheckBox(0, 0);
+        Assert.assertFalse(containerController.getItemPositions()[0][0]);
+        containerController.setItemAtPosition(0, 0);
+        containerController.actionClickCheckBox(0, 0);
+        Assert.assertTrue(containerController.getItemPositions()[0][0]);
+        containerController.removeItemFromPosition();
+        Assert.assertFalse(containerController.getItemPositions()[0][0]);
     }
-    
+
     @Test
     public void test004_isContainerPlaceDisabled() {
-        Assert.assertFalse(controller.isContainerPlaceDisabled(0, 0)); //empty slot
-        Assert.assertFalse(controller.isContainerPlaceDisabled(1, 0)); //own item
-        Assert.assertTrue(controller.isContainerPlaceDisabled(0, 1));  // another item
-        bean.mode=ItemBean.Mode.HISTORY;
-        Assert.assertTrue(controller.isContainerPlaceDisabled(0, 0));
+        Assert.assertFalse(containerController.isContainerPlaceDisabled(0, 0)); //empty slot
+        Assert.assertFalse(containerController.isContainerPlaceDisabled(1, 0)); //own item
+        Assert.assertTrue(containerController.isContainerPlaceDisabled(0, 1));  // another item
     }
-    
+
     @Test
     public void test004_resolveItemPositions() {
-        controller.setItemAtPosition(0, 0);
-        Set<int[]> positions = controller.resolveItemPositions();
+        containerController.setItemAtPosition(0, 0);
+        Set<int[]> positions = containerController.resolveItemPositions();
         Assert.assertEquals(2, positions.size());
     }
-    
+
     @Test
     public void test005_resolveItemPositions() {
         // default: not swapped --> dimension 1 is labeled with letters 
-        Assert.assertEquals("A", controller.getDimensionLabel(1, 0));
+        Assert.assertEquals("A", containerController.getDimensionLabel(1, 0));
     }
-    
+
     @Test
     public void test006_checkRowAndColLists() {
-        Assert.assertEquals(4, controller.getRows().size());
-        Assert.assertEquals(3, controller.getColumns().size());
-        
-        container.setRows(null);
-        container.setColumns(null);
-        container.setItems(null);
-        controller = new ContainerController(bean, container);
-        
-        Assert.assertEquals(0, controller.getRows().size());
-        Assert.assertEquals(0, controller.getColumns().size());
-        
-        container.setRows(10);
-        container.setColumns(null);
-        container.setItems(new Item[10][1]);
-        controller = new ContainerController(bean, container);
-        
-        Assert.assertEquals(10, controller.getRows().size());
-        Assert.assertEquals(1, controller.getColumns().size());
+        Assert.assertEquals(4, containerController.getRows().size());
+        Assert.assertEquals(3, containerController.getColumns().size());
+
+        item.getContainer().setRows(null);
+        item.getContainer().setColumns(null);
+        item.getContainer().setItems(null);
+        containerController = new ContainerController(item, containerService, userBean, MessagePresenterMock.getInstance());
+
+        Assert.assertEquals(0, containerController.getRows().size());
+        Assert.assertEquals(0, containerController.getColumns().size());
+
+        item.getContainer().setRows(10);
+        item.getContainer().setColumns(null);
+        item.getContainer().setItems(new Item[10][1]);
+        containerController = new ContainerController(item, containerService, userBean, MessagePresenterMock.getInstance());
+
+        Assert.assertEquals(10, containerController.getRows().size());
+        Assert.assertEquals(1, containerController.getColumns().size());
     }
-    
+
     @Test
     public void test007_isContainerSubComponentRendered() {
-        Assert.assertTrue(controller.isContainerSubComponentRendered(Container.DimensionType.TWO_DIMENSION.toString()));
-        Assert.assertFalse(controller.isContainerSubComponentRendered(Container.DimensionType.ONE_DIMENSION.toString()));
-        
+        Assert.assertTrue(containerController.isContainerSubComponentRendered(Container.DimensionType.TWO_DIMENSION.toString()));
+        Assert.assertFalse(containerController.isContainerSubComponentRendered(Container.DimensionType.ONE_DIMENSION.toString()));
+
     }
-    
+
     @Test
     public void test008_isContainerSubComponentRendered() {
-        Assert.assertFalse(controller.isContainerSubComponentRendered(null));
-        Assert.assertFalse(controller.isContainerSubComponentRendered("NONE"));
-        Assert.assertFalse(controller.isContainerSubComponentRendered("ZERO_DIMENSION"));
-        Assert.assertFalse(controller.isContainerSubComponentRendered("ONE_DIMENSION"));
-        Assert.assertTrue(controller.isContainerSubComponentRendered("TWO_DIMENSION"));
+        Assert.assertFalse(containerController.isContainerSubComponentRendered(null));
+        Assert.assertFalse(containerController.isContainerSubComponentRendered("NONE"));
+        Assert.assertFalse(containerController.isContainerSubComponentRendered("ZERO_DIMENSION"));
+        Assert.assertFalse(containerController.isContainerSubComponentRendered("ONE_DIMENSION"));
+        Assert.assertTrue(containerController.isContainerSubComponentRendered("TWO_DIMENSION"));
     }
-    
+
+    @Deployment
+    public static WebArchive createDeployment() {
+        WebArchive deployment = prepareDeployment("ContainerControllerTest.war")
+                .addClass(Navigator.class)
+                .addClass(ProjectService.class);
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
+    }
+
 }

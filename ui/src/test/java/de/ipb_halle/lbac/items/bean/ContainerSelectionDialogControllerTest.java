@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -44,15 +45,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
-public class ContainerModalBeanTest extends TestBase {
+public class ContainerSelectionDialogControllerTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
     private UserBeanMock userBean;
 
-    @Inject
-    private ContainerModalBean modalBean;
+    private ContainerSelectionDialogController dialogController;
 
     @Inject
     private ContainerService containerService;
@@ -63,12 +63,15 @@ public class ContainerModalBeanTest extends TestBase {
     public void init() {
         createContainers();
         userBean.setCurrentAccount(publicUser);
+        dialogController = new ContainerSelectionDialogController(
+                containerService.loadContainersWithoutItems(adminUser),
+                MessagePresenterMock.getInstance());
     }
 
     @Test
     public void test001_getContainers() {
 
-        List<Container> containers = modalBean.getContainers();
+        List<Container> containers = dialogController.getContainers();
         Assert.assertEquals(3, containers.size());
         Assert.assertEquals("container_type_ROOM", containers.get(0).getType().getLocalizedName());
         Assert.assertEquals("container_type_CUPBOARD", containers.get(1).getType().getLocalizedName());
@@ -80,16 +83,15 @@ public class ContainerModalBeanTest extends TestBase {
         c0.setItems(containerService.loadItemIdsOfContainer(c0));
         c1.setItems(containerService.loadItemIdsOfContainer(c1));
         c2.setItems(containerService.loadItemIdsOfContainer(c2));
-        Assert.assertEquals("3 x 3", modalBean.getDimensionString(c0));
-        Assert.assertEquals("-", modalBean.getDimensionString(c1));
-        Assert.assertEquals("-", modalBean.getDimensionString(c2));
+        Assert.assertEquals("3 x 3", dialogController.getDimensionString(c0));
+        Assert.assertEquals("-", dialogController.getDimensionString(c1));
+        Assert.assertEquals("-", dialogController.getDimensionString(c2));
     }
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ContainerModalBeanTest.war")
                 .addClass(Navigator.class)
-                .addClass(ContainerModalBean.class)
                 .addClass(ProjectService.class);
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
