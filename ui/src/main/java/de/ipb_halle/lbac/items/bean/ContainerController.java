@@ -95,7 +95,7 @@ public class ContainerController {
             rowsList.clear();
             columnsList.clear();
         }
-        itemBean.setContainerInfoPresenter(new ContainerInfoPresenter(container));
+        itemBean.setContainerInfoPresenter(new ContainerInfoPresenter(container, messagePresenter));
     }
 
     /**

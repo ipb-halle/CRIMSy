@@ -342,43 +342,7 @@
                                                         value="remove"/>
                                                 </b:column>
                                             </b:row>
-                                            <b:row>
-                                                <b:column span="1" >
-                                                    <h:outputText
-                                                        value="#{msgs.itemEdit_containerPanel_container_name}"/>
-                                                </b:column>
-                                                <b:column span="2" >
-                                                    <h:outputText value="#{itemBean.getContainerInfoPresenter().getContainerName()}"/> 
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column span="1" >
-                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_type}"/>
-                                                </b:column>
-                                                <b:column  span="2" >
-                                                    <h:outputText value="#{itemBean.getContainerInfoPresenter().getContainerType()}"/> 
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column  span="1">
-                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_project}"/>
-                                                </b:column>
-                                                <b:column  span="2" >
-                                                    <h:outputText value="#{itemBean.getContainerInfoPresenter().getContainerProject()}"/> 
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column span="1" >
-                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_location}"/>
-                                                </b:column>
-                                                <b:column span="2" >
-                                                    <h:outputText 
-                                                        escape="false"
-                                                        value="#{itemBean.getContainerInfoPresenter().getContainerLocation()}">
-                                                        <f:converter converterId="RichTextConverter" />
-                                                    </h:outputText>
-                                                </b:column>
-                                            </b:row>
+                                            <crimsy:containerInfos containerInfoPresenter="#{itemBean.containerInfoPresenter}" />
                                             <b:row>
                                                 <b:column 
                                                     span="3"

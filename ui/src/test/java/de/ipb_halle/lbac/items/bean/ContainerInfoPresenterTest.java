@@ -32,7 +32,7 @@ public class ContainerInfoPresenterTest {
 
     @Test
     public void test001_noContainerSet() {
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null);
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null, null);
         Assert.assertEquals("", presenter.getContainerLocation());
         Assert.assertEquals("", presenter.getContainerName());
         Assert.assertEquals("", presenter.getContainerProject());
@@ -42,7 +42,7 @@ public class ContainerInfoPresenterTest {
     @Test
     public void test002_noContainerWithoutProjectAndContainer() {
         Container container = createContainer("testContainer");
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container);
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container, null);
         presenter.setContainerLocalizer(new ContainerLocalizerMock());
 
         Assert.assertEquals("", presenter.getContainerLocation());
@@ -58,7 +58,7 @@ public class ContainerInfoPresenterTest {
                 createProject("testProject"),
                 createContainer("testContainer2"));
 
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container);
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container, null);
         presenter.setContainerLocalizer(new ContainerLocalizerMock());
         Assert.assertEquals("testContainer2", presenter.getContainerLocation());
         Assert.assertEquals("testContainer", presenter.getContainerName());

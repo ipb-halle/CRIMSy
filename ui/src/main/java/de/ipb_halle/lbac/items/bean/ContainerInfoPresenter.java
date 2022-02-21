@@ -17,23 +17,21 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
-import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.bean.ContainerLocalizer;
+import de.ipb_halle.lbac.material.MessagePresenter;
 
 /**
  *
  * @author fmauz
  */
 public class ContainerInfoPresenter {
-
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private final Container container;
     private ContainerLocalizer containerLocalizer;
 
-    public ContainerInfoPresenter(Container container) {
+    public ContainerInfoPresenter(Container container, MessagePresenter messagePresenter) {
         this.container = container;
-        this.containerLocalizer = new ContainerLocalizer();
+        this.containerLocalizer = new ContainerLocalizer(messagePresenter);
     }
 
     public String getContainerName() {
@@ -86,5 +84,4 @@ public class ContainerInfoPresenter {
     public void setContainerLocalizer(ContainerLocalizer containerLocalizer) {
         this.containerLocalizer = containerLocalizer;
     }
-
 }

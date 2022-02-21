@@ -316,7 +316,7 @@ public class ItemBean implements Serializable {
         containers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
         this.printBean.setLabelDataObject(state.getEditedItem());
         this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
-        this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer());
+        this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer(), messagePresenter);
     }
     
     public void setContainerInfoPresenter(ContainerInfoPresenter containerInfoPresenter) {
@@ -366,7 +366,7 @@ public class ItemBean implements Serializable {
     public void actionChangeContainer(Container c) {
         c.setItems(containerService.loadItemIdsOfContainer(c));
         containerController = new ContainerController(this, c);
-        containerInfoPresenter = new ContainerInfoPresenter(c);
+        containerInfoPresenter = new ContainerInfoPresenter(c, messagePresenter);
         this.containerName = c.getLabel();
     }
 

@@ -74,6 +74,6 @@ public class ContainerPresenter {
     public void removeContainer() {
         ContainerController newController = new ContainerController(itemBean, null);
         itemBean.setContainerController(newController);
-        itemBean.setContainerInfoPresenter(new ContainerInfoPresenter(null));
+        itemBean.setContainerInfoPresenter(new ContainerInfoPresenter(null, null));
     }
 }
