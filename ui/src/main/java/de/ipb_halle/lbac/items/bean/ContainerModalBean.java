@@ -45,9 +45,7 @@ public class ContainerModalBean implements Serializable {
     private ContainerService service;
 
     @Inject
-    private UserBean userBean;
-
-    private int adjacentPlacesNeeded = 1;
+    private UserBean userBean;    
 
     public List<Container> getContainers() {
         List<Container> containers = new ArrayList<>();
@@ -77,13 +75,5 @@ public class ContainerModalBean implements Serializable {
             return String.format("%d x %d", c.getItems().length, c.getItems()[0].length);
         }
         return "-";
-    }
-
-    public int getAdjacentPlacesNeeded() {
-        return adjacentPlacesNeeded;
-    }
-
-    public void setAdjacentPlacesNeeded(int adjacentPlacesNeeded) {
-        this.adjacentPlacesNeeded = adjacentPlacesNeeded;
-    }
+    }   
 }
