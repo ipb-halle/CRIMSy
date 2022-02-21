@@ -17,34 +17,26 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
-import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  *
  * @author fmauz
  */
-@RequestScoped
-@Named
-public class ContainerModalBean {
+public class ContainerSelectionDialogController {
+    private static final String TYPE_PREFIX = "container_type_";
 
-    private final String TYPE_PREFIX = "container_type_";
+    private final List<Container> availableContainers;
+    private final MessagePresenter messagePresenter;
 
-    @Inject
-    private ContainerService service;
+    public ContainerSelectionDialogController(List<Container> availableContainers, MessagePresenter messagePresenter) {
+        this.availableContainers = availableContainers;
+        this.messagePresenter = messagePresenter;
 
-    @Inject
-    private MessagePresenter messagePresenter;
-
-    @Inject
-    private UserBean userBean;
+        localizeContainerTypes(availableContainers);
+    }
 
     /**
      * Loads the containers available to the user without the included items
@@ -52,22 +44,18 @@ public class ContainerModalBean {
      * @return
      */
     public List<Container> getContainers() {
-        List<Container> containers = service.loadContainersWithoutItems(
-                userBean.getCurrentAccount());
-        localizeContainerTypes(containers);
-        return containers;
+        return availableContainers;
     }
 
     /**
-     * Generates a string of container size of the form 'h x b' . Container
-     * without size return '-'
+     * Generates a string of container size of the form 'h x b' . Container without
+     * size return '-'
      *
      * @param c
      * @return
      */
     public String getDimensionString(Container c) {
-        if (c.getRows() != null && c.getRows() > 0
-                && c.getColumns() != null && c.getColumns() > 0) {
+        if (c.getRows() != null && c.getRows() > 0 && c.getColumns() != null && c.getColumns() > 0) {
             return String.format("%d x %d", c.getItems().length, c.getItems()[0].length);
         }
         return "-";
@@ -75,11 +63,9 @@ public class ContainerModalBean {
 
     private void localizeContainerTypes(List<Container> containersToLocalize) {
         for (Container container : containersToLocalize) {
-            container.getType().setLocalizedName(
-                    messagePresenter.presentMessage(
-                            TYPE_PREFIX + container.getType().getName()));
+            container.getType()
+                    .setLocalizedName(messagePresenter.presentMessage(TYPE_PREFIX + container.getType().getName()));
             localizeContainerTypes(container.getContainerHierarchy());
         }
     }
-
 }

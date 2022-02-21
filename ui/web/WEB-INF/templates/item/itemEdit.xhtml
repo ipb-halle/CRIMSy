@@ -367,7 +367,7 @@
                                                     span="2"
                                                     styleClass="containerPseudoClass">
                                                     <p:autoComplete
-                                                        value="#{itemBean.getContainerInfoPresenter().containerName}"
+                                                        value=""
                                                         maxResults="15"
                                                         forceSelection="true"
                                                         completeMethod="#{itemBean.nameSuggestions}">
@@ -392,7 +392,7 @@
                                     <b:column 
                                         span="4"
                                         styleClass="containerPseudoClass">
-                                        <crimsy:container2d 
+                                        <crimsy:container2d
                                             container="#{itemBean.container}"
                                             rendered="#{itemBean.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"/>
                                     </b:column>

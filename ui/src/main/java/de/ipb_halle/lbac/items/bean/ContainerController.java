@@ -301,16 +301,12 @@ public class ContainerController {
     }
 
     public void actionChangeContainer(Container c) {
-        c.setItems(containerService.loadItemIdsOfContainer(c));
-        containerController = new ContainerController(this, c);
-        containerInfoPresenter = new ContainerInfoPresenter(c, messagePresenter);
-        this.containerName = c.getLabel();
+        setNewContainer(c);
     }
 
     public void onItemSelect(SelectEvent event) {
-        containerName = (String) event.getObject();
-        int containerId = Integer.parseInt(containerName.split("-")[0]);
-        containerService.loadContainerById(containerId);
+        String selectedContainerName = (String) event.getObject();
+        int containerId = Integer.parseInt(selectedContainerName.split("-")[0]);
         Container c = containerService.loadContainerById(containerId);
         actionChangeContainer(c);
     }
@@ -318,6 +314,7 @@ public class ContainerController {
     public List<String> nameSuggestions(String enteredValue) {
         List<String> matches = new ArrayList<>();
         List<String> names = new ArrayList<>();
+        // TODO: cache the list of lowercase names
         for (Container c : availableContainers) {
             names.add(c.getAutoCompleteString());
         }
