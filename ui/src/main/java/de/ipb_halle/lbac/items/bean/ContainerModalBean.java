@@ -17,13 +17,10 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
-import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerService;
-import java.io.Serializable;
-import java.util.ArrayList;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -36,44 +33,52 @@ import javax.inject.Named;
  */
 @RequestScoped
 @Named
-public class ContainerModalBean implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class ContainerModalBean {
 
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private final String TYPE_PREFIX = "container_type_";
 
     @Inject
     private ContainerService service;
 
     @Inject
-    private UserBean userBean;    
+    private MessagePresenter messagePresenter;
 
+    @Inject
+    private UserBean userBean;
+
+    /**
+     * Loads the containers available to the user without the included items
+     *
+     * @return
+     */
     public List<Container> getContainers() {
-        List<Container> containers = new ArrayList<>();
-        List<ContainerType> blackList = new ArrayList<>();
-
-        containers = service.loadContainersWithoutItems(userBean.getCurrentAccount());
-
-        for (int i = containers.size() - 1; i >= 0; i--) {
-            if (blackList.contains(containers.get(i).getType())) {
-                containers.remove(i);
-            }
-        }
-
-        for (Container c : containers) {
-            c.getType().setLocalizedName(
-                    Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
-            for (Container c2 : c.getContainerHierarchy()) {
-                c2.getType().setLocalizedName(
-                        Messages.getString(MESSAGE_BUNDLE, "container_type_" + c2.getType().getName(), null));
-            }
-        }
+        List<Container> containers = service.loadContainersWithoutItems(
+                userBean.getCurrentAccount());
+        localizeContainerTypes(containers);
         return containers;
     }
 
+    /**
+     * Generates a string of container size of the form 'h x b' . Container
+     * without size return '-'
+     *
+     * @param c
+     * @return
+     */
     public String getDimensionString(Container c) {
-        if (c.getItems() != null) {
+        if (c.getItems() != null && c.getItems().length > 0) {
             return String.format("%d x %d", c.getItems().length, c.getItems()[0].length);
         }
         return "-";
-    }   
+    }
+
+    private void localizeContainerTypes(List<Container> containersToLocalize) {
+        for (Container container : containersToLocalize) {
+            container.getType().setLocalizedName(
+                    messagePresenter.presentMessage(
+                            TYPE_PREFIX + container.getType().getName()));
+            localizeContainerTypes(container.getContainerHierarchy());
+        }
+    }
+
 }
