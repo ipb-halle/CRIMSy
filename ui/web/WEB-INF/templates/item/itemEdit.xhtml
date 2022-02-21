@@ -337,7 +337,7 @@
                                                     <b:commandButton
                                                         styleClass="itemEditContainerRemoveButton"
                                                         ajax="true"
-                                                        action="#{itemBean.getContainerPresenter().removeContainer()}"
+                                                        action="#{itemBean.actionRemoveContainer()}"
                                                         update="@(.containerPseudoClass)"
                                                         value="remove"/>
                                                 </b:column>
@@ -351,40 +351,40 @@
                                                 </b:column>
                                             </b:row>
                                             <b:row>
-                                                <b:column 
+                                                <b:column
                                                     span="3"
                                                     styleClass="itemEditLocationHeader">
-                                                    <h:outputText
-                                                        value="#{msgs.itemEdit_containerPanel_locationSearch}"/>
+                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_locationSearch}" />
                                                 </b:column>
                                             </b:row>
                                             <b:row>
                                                 <b:column span="1">
-                                                    <h:outputText
-                                                        value="#{msgs.itemEdit_containerPanel_quickSearch}"/>
+                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_quickSearch}" />
                                                 </b:column>
                                             </b:row>
                                             <b:row>
-                                                <b:column span="2"
-                                                          styleClass="containerPseudoClass">
-                                                    <p:autoComplete value="#{itemBean.getContainerInfoPresenter().containerName}"
-                                                                    maxResults="15"
-                                                                    forceSelection="true"
-                                                                    completeMethod="#{itemBean.nameSuggestions}">
-                                                        <p:ajax 
+                                                <b:column
+                                                    span="2"
+                                                    styleClass="containerPseudoClass">
+                                                    <p:autoComplete
+                                                        value="#{itemBean.getContainerInfoPresenter().containerName}"
+                                                        maxResults="15"
+                                                        forceSelection="true"
+                                                        completeMethod="#{itemBean.nameSuggestions}">
+                                                        <p:ajax
                                                             event="itemSelect" 
                                                             listener="#{itemBean.onItemSelect}"
-                                                            update="@(.containerPseudoClass)"/>
+                                                            update="@(.containerPseudoClass)" />
                                                     </p:autoComplete>
                                                 </b:column>
-                                                <b:column span="1" >
+                                                <b:column span="1">
                                                     <b:commandButton
                                                         styleClass="itemEditcontainerAdvancedSearch"
                                                         ajax="true"
                                                         process="@this"
                                                         update="@(.containerModal)"
                                                         oncomplete="PF('dlgcontainerSearch').show();"
-                                                        value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}"/>
+                                                        value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}" />
                                                 </b:column>
                                             </b:row>
                                         </b:container>

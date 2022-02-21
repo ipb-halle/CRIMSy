@@ -121,7 +121,6 @@ public class ItemBean implements Serializable {
     private String containerName;
     protected Mode mode;
     private String customLabelValue;
-    private ContainerPresenter containerPresenter;
     
     protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
     
@@ -315,7 +314,6 @@ public class ItemBean implements Serializable {
         projects = loadReadableProjects(userBean.getCurrentAccount());
         containers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
         this.printBean.setLabelDataObject(state.getEditedItem());
-        this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
         this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer(), messagePresenter);
     }
     
@@ -347,10 +345,6 @@ public class ItemBean implements Serializable {
         return response.getAllFoundObjects(Project.class, response.getNode());
     }
     
-    public ContainerPresenter getContainerPresenter() {
-        return containerPresenter;
-    }
-    
     public List<ContainerType> getAvailableContainerTypes() {
         return availableContainerTypes;
     }
@@ -377,7 +371,7 @@ public class ItemBean implements Serializable {
         Container c = containerService.loadContainerById(containerId);
         actionChangeContainer(c);
     }
-    
+
     public List<String> nameSuggestions(String enteredValue) {
         List<String> matches = new ArrayList<>();
         List<String> names = new ArrayList<>();
@@ -391,7 +385,12 @@ public class ItemBean implements Serializable {
         }
         return matches;
     }
-    
+
+    public void actionRemoveContainer() {
+        containerController = new ContainerController(this, null);
+        containerInfoPresenter = new ContainerInfoPresenter(null, null);
+    }
+
     public String getMaterialName() {
         return state.getEditedItem().getMaterial().getFirstName();
     }
