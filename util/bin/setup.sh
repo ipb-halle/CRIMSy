@@ -50,11 +50,11 @@ function getVersion {
     # fully implemented yet. Major level updates will 
     # certainly require manual intervention.
     #
-    MAJOR=`echo $LBAC_CURRENT_RELEASE | cut -d. -f1`
-    MINOR=`echo $LBAC_CURRENT_RELEASE | cut -d. -f2`
+    MAJOR=`echo $LBAC_CURRENT_REVISION | cut -d. -f1`
+    MINOR=`echo $LBAC_CURRENT_REVISION | cut -d. -f2`
     case $LBAC_UPDATE_LEVEL in
         NONE)
-            LBAC_VERSION=$LBAC_CURRENT_RELEASE
+            LBAC_VERSION=$LBAC_CURRENT_REVISION
             ;;
         PATCH)
             LBAC_VERSION=$MAJOR.$MINOR

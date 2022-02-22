@@ -186,15 +186,11 @@ function copyFiles {
     cp util/etc/docker-compose.yml.m4 target/dist/etc
     cp -r util/etc/proxy_conf target/dist/etc
 
-    pushd $LBAC_REPO/ui >/dev/null
-    REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
-    MAJOR=`echo $REVISION | cut -d. -f1`
-    MINOR=`echo $REVISION | cut -d. -f2`
-    RELEASE="$MAJOR.$MINOR"
-    popd >/dev/null
+    REVISION=`grep CURRENT config/revision_info.txt | cut -d';' -f1`
+    if [ -z $REVISION ] ; then error "Could not obtain revision info" ; fi
 
     sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
-    sed -e "s,CLOUDCONFIG_CURRENT_RELEASE,$RELEASE," | \
+    sed -e "s,CLOUDCONFIG_CURRENT_REVISION,$REVISION," | \
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$LBAC_CLOUD," > target/dist/bin/configure.sh
 
     cp util/bin/chainsplit.pl target/dist/bin

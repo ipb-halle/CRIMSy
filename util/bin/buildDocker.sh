@@ -28,8 +28,7 @@ function cleanup {
 }
 
 function compile {
-    branch="$1"
-    flags="$2"
+    flags="$1"
 
     mvn --batch-mode -DskipTests clean install
     pushd ui
@@ -46,7 +45,9 @@ function compile {
     if [ -n $STAGE_LABEL ] ; then
         flags="$flags,$STAGE_LABEL"
     fi
-    echo "$REVISION;$branch;$flags" >> config/revision_info.txt
+    grep -v ";$BRANCH;" config/revision_info.txt > config/revision_info.tmp
+    echo "$REVISION;$BRANCH;$flags" >> config/revision_info.tmp
+    mv config/revision_info.tmp config/revision_info.txt
 
 }
 
@@ -137,7 +138,7 @@ function buildDocker {
             RELEASE_FLAGS=`echo $record | cut -d';' -f3`
             echo "processing branch file entry: $record"
             git checkout $BRANCH
-            compile "$BRANCH" "$RELEASE_FLAGS" 
+            compile "$RELEASE_FLAGS" 
             buildFunc
         done
         git checkout "$CURRENT_BRANCH"
@@ -145,7 +146,8 @@ function buildDocker {
     else 
         # just compile the current branch and tag it latest
         RELEASE_FLAGS='LATEST,CURRENT,MINOR,MAJOR'
-        compile "$CURRENT_BRANCH" "$RELEASE_FLAGS"
+        BRANCH=$CURRENT_BRANCH
+        compile "$RELEASE_FLAGS"
         buildFunc
     fi
 }

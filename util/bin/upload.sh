@@ -30,17 +30,13 @@ export LBAC_CA_DIR="$LBAC_REPO/config/$CLOUD/CA"
 
 echo LBAC_REPO=$LBAC_REPO
 
+REVISION=`grep CURRENT config/revision_info.txt | cut -d';' -f1`
+if [ -z $REVISION ] ; then echo "Could not obtain revision info"; exit 1 ; fi
 
-pushd $LBAC_REPO/ui >/dev/null
-REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
-MAJOR=`echo $REVISION | cut -d. -f1`
-MINOR=`echo $REVISION | cut -d. -f2`
-RELEASE="$MAJOR.$MINOR"
-popd >/dev/null
 
 mkdir -p $LBAC_REPO/target
 sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
-sed -e "s,CLOUDCONFIG_CURRENT_RELEASE,$RELEASE," | \
+sed -e "s,CLOUDCONFIG_CURRENT_REVISION,$REVISION," | \
 sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
 openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
   -md sha256 -binary -out $LBAC_REPO/target/configure.sh.sig \

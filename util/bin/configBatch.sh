@@ -26,10 +26,9 @@
 # the current (PRIMARY) cloud.
 #
 
-CRIMSYCI_URL=http://$2:8000/$3 
-CRIMSYREG_URL=$2:5000
 p=`dirname $0`
 LBAC_DATASTORE=`realpath $p`
+CRIMSY_HOST=$2
 
 #
 #==========================================================
@@ -40,11 +39,16 @@ function getTestData {
 
     . nodeconfig.cfg
     LBAC_INSTITUTION_MD5=`echo -n $LBAC_INSTITUTION | md5sum | cut -c1-32`
+    CRIMSYCI_URL=http://$CRIMSY_HOST:8000/$PRIMARY_CLOUD
+    CRIMSYREG_URL=$CRIMSY_HOST:5000
+
 }
 #
 #==========================================================
 #
 function createConfiguration {
+    getTestData
+
     curl --silent --output configure.sh.sig $CRIMSYCI_URL/configure.sh.sig
     curl --silent --output chain.pem $CRIMSYCI_URL/chain.pem
     curl --silent --output devcert.pem $CRIMSYCI_URL/devcert.pem
@@ -54,6 +58,9 @@ function createConfiguration {
     chmod +x configure.sh
 
     . configure.sh BATCH
+
+    # call getTestData 2nd time
+    getTestData
     LBAC_IMAGE_REGISTRY=$CRIMSYREG_URL
     makeTempConfig
 
@@ -73,7 +80,6 @@ function createConfiguration {
     # set default admin password (not for production use!)
     echo -n "admin" > "$LBAC_DATASTORE/etc/$LBAC_ADMIN_PWFILE"
 
-    getTestData
     LBAC_INTRANET_FQHN=`hostname -f`
     LBAC_INTERNET_FQHN=$LBAC_INTRANET_FQHN
 

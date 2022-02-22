@@ -133,7 +133,7 @@ function installFunc {
     # install node
     echo "=== install nodes ==="
     cat $HOSTLIST |\
-    if [$NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
+    if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
      while read record ; do
         echo | installNode "$record"
     done
@@ -203,15 +203,19 @@ function runDistServer {
 #
 function runSetup {
     runDistServer
+    rm -f config/revision_info.txt
+
     if [ -n $BRANCH_FILE ] ; then
         initial_stage=`cut -d';' -f1 $BRANCH_FILE | sort | uniq | head -1`
+        initial_revision=`grep $initial_stage config/revision_info.txt | cut -d';' -f1`
         echo "Executing initial setup stage $initial_stage"
     else 
         echo "Executing direct setup"
         initial_stage=''
+        initial_revision=`grep CURRENT config/revision_info.txt | cut -d';' -f1`
     fi
     compile $initial_stage
-    setupFunc
+    setupFunc $initial_revision
     installFunc
 
     # ToDo: multiple cloud memberships 
@@ -432,10 +436,9 @@ function setupConfigure {
     LBAC_CA_DIR=$LBAC_REPO/config/$cloud/CA
     . $LBAC_CA_DIR/cloud.cfg
 
-    revision=`grep "CURRENT" $LBAC_REPO/config/revision_info.txt |\
-        cut -d';' -f1`
+    # initial revision defined in runSetup
     sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
-    sed -e "s,CLOUDCONFIG_CURRENT_RELEASE,$revision," |\
+    sed -e "s,CLOUDCONFIG_CURRENT_REVISION,$initial_revision," |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
     openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
       -md sha256 -binary -out $LBAC_REPO/config/integration/htdocs/$cloud/configure.sh.sig \
