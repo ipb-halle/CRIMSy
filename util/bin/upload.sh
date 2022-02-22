@@ -30,7 +30,7 @@ export LBAC_CA_DIR="$LBAC_REPO/config/$CLOUD/CA"
 
 echo LBAC_REPO=$LBAC_REPO
 
-REVISION=`grep CURRENT config/revision_info.txt | cut -d';' -f1`
+REVISION=`grep LATEST config/revision_info.txt | tail -1 | cut -d';' -f1`
 if [ -z $REVISION ] ; then echo "Could not obtain revision info"; exit 1 ; fi
 
 

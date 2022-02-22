@@ -207,15 +207,16 @@ function runSetup {
 
     if [ -n $BRANCH_FILE ] ; then
         initial_stage=`cut -d';' -f1 $BRANCH_FILE | sort | uniq | head -1`
-        initial_revision=`grep $initial_stage config/revision_info.txt | cut -d';' -f1`
+        initial_revision="LATEST"
         echo "Executing initial setup stage $initial_stage"
     else 
         echo "Executing direct setup"
         initial_stage=''
-        initial_revision=`grep CURRENT config/revision_info.txt | cut -d';' -f1`
+        initial_revision="CURRENT" 
     fi
     compile $initial_stage
-    setupFunc $initial_revision
+    initial_revision=`grep $initial_revision config/revision_info.txt | tail -1 | cut -d';' -f1`
+    setupFunc 
     installFunc
 
     # ToDo: multiple cloud memberships 

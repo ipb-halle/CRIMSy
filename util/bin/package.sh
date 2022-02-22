@@ -173,7 +173,6 @@ function cleanUp {
 
 function copyConfig {
     #
-    cp config/releases target/dist/etc
     cp $LBAC_REPO/config/$LBAC_CLOUD/master.sh $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/
     cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/devcert.pem
     cp $LBAC_CA_DIR/chain.pem $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/chain.pem
@@ -186,7 +185,7 @@ function copyFiles {
     cp util/etc/docker-compose.yml.m4 target/dist/etc
     cp -r util/etc/proxy_conf target/dist/etc
 
-    REVISION=`grep CURRENT config/revision_info.txt | cut -d';' -f1`
+    REVISION=`grep LATEST config/revision_info.txt | tail -1 | cut -d';' -f1`
     if [ -z $REVISION ] ; then error "Could not obtain revision info" ; fi
 
     sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
