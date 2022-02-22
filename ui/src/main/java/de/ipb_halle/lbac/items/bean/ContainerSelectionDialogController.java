@@ -38,7 +38,7 @@ public class ContainerSelectionDialogController {
      * 
      * @param availableContainers
      * @param onSelectCallback    function to call when the datatable's onselect
-     *                            event is fired
+     *                            AJAX event is fired
      * @param messagePresenter
      */
     public ContainerSelectionDialogController(List<Container> availableContainers, Consumer<Container> onSelectCallback,
@@ -58,10 +58,16 @@ public class ContainerSelectionDialogController {
         }
     }
 
-    public List<Container> getAvailableContainers() {
-        return availableContainers;
+    /*
+     * Actions
+     */
+    public void actionOnSelect(Container c) {
+        onSelectCallback.accept(c);
     }
 
+    /*
+     * Getters with logic
+     */
     /**
      * Generates a string of container size of the form 'h x b' . Container without
      * size return '-'
@@ -76,7 +82,10 @@ public class ContainerSelectionDialogController {
         return "-";
     }
 
-    public void actionOnSelect(Container c) {
-        onSelectCallback.accept(c);
+    /*
+     * Getters
+     */
+    public List<Container> getAvailableContainers() {
+        return availableContainers;
     }
 }
