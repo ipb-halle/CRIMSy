@@ -17,22 +17,36 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.mock.ContainerLocalizerMock;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerInfoPresenterTest {
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
+public class ContainerInfoPresenterTest extends TestBase {
 
     @Test
     public void test001_noContainerSet() {
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null, null);
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null, MessagePresenterMock.getInstance());
         Assert.assertEquals("", presenter.getContainerLocation());
         Assert.assertEquals("", presenter.getContainerName());
         Assert.assertEquals("", presenter.getContainerProject());
@@ -42,8 +56,7 @@ public class ContainerInfoPresenterTest {
     @Test
     public void test002_noContainerWithoutProjectAndContainer() {
         Container container = createContainer("testContainer");
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container, null);
-        presenter.setContainerLocalizer(new ContainerLocalizerMock());
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container, MessagePresenterMock.getInstance());
 
         Assert.assertEquals("", presenter.getContainerLocation());
         Assert.assertEquals("testContainer", presenter.getContainerName());
@@ -58,8 +71,7 @@ public class ContainerInfoPresenterTest {
                 createProject("testProject"),
                 createContainer("testContainer2"));
 
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container, null);
-        presenter.setContainerLocalizer(new ContainerLocalizerMock());
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container, MessagePresenterMock.getInstance());
         Assert.assertEquals("testContainer2", presenter.getContainerLocation());
         Assert.assertEquals("testContainer", presenter.getContainerName());
         Assert.assertEquals("testProject", presenter.getContainerProject());
@@ -88,5 +100,13 @@ public class ContainerInfoPresenterTest {
         p.setName(name);
         return p;
 
+    }
+
+    @Deployment
+    public static WebArchive createDeployment() {
+        WebArchive deployment = prepareDeployment("ContainerInfoPresenterTest.war")
+                .addClass(Navigator.class)
+                .addClass(ProjectService.class);
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
 }
