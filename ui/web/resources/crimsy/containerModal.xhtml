@@ -31,6 +31,9 @@
             type="de.ipb_halle.lbac.items.bean.ContainerSelectionDialogController"
             required="true" />
         <composite:attribute
+            name="widgetVar"
+            required="true" />
+        <composite:attribute
             name="updateTargetClass"
             required="false" />
     </composite:interface>
@@ -39,7 +42,7 @@
         <p:dialog
             id="containerModalDialogId"
             styleClass="containerModal"
-            widgetVar="dlgcontainerSearch"
+            widgetVar="#{cc.attrs.widgetVar}"
             modal="true"
             closable="true"
             header="#{msgs.container_dialog_title}">
@@ -50,7 +53,7 @@
                 process="@this"
                 update="growlMsg @(.#{cc.attrs.updateTargetClass})"
                 onselect="ajax:cc.attrs.controller.actionOnSelect(container)"
-                oncomplete="PF('dlgcontainerSearch').hide();"
+                oncomplete="PF('#{cc.attrs.widgetVar}').hide();"
                 saveState="false">
                 <b:dataTableColumn value="#{container.id}" />
                 <b:dataTableColumn

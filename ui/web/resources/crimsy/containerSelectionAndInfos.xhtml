@@ -35,6 +35,7 @@
     <composite:implementation>
         <crimsy:containerModal
             controller="#{cc.attrs.containerController.containerSelectionDialogController}"
+            widgetVar="dlgcontainerSearch"
             updateTargetClass="containerPseudoClass" />
         <b:container>
             <b:row>
@@ -56,7 +57,7 @@
                                     update="@(.containerPseudoClass)"
                                     action="#{cc.attrs.containerController.actionRemoveContainer()}"
                                     value="remove" />
-                                </b:column>
+                            </b:column>
                         </b:row>
                         <crimsy:containerInfos containerInfoPresenter="#{cc.attrs.containerController.containerInfoPresenter}" />
                         <b:row>
