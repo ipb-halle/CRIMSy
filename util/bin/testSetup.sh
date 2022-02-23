@@ -203,19 +203,16 @@ function runDistServer {
 #
 function runSetup {
     runDistServer
-    rm -f config/revision_info.txt
+    rm -f config/revision_info.cfg
 
     if [ -n $BRANCH_FILE ] ; then
         initial_stage=`cut -d';' -f1 $BRANCH_FILE | sort | uniq | head -1`
-        initial_revision="LATEST"
         echo "Executing initial setup stage $initial_stage"
     else 
         echo "Executing direct setup"
         initial_stage=''
-        initial_revision="CURRENT" 
     fi
     compile $initial_stage
-    initial_revision=`grep $initial_revision config/revision_info.txt | tail -1 | cut -d';' -f1`
     setupFunc 
     installFunc
 
@@ -439,7 +436,6 @@ function setupConfigure {
 
     # initial revision defined in runSetup
     sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
-    sed -e "s,CLOUDCONFIG_CURRENT_REVISION,$initial_revision," |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
     openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
       -md sha256 -binary -out $LBAC_REPO/config/integration/htdocs/$cloud/configure.sh.sig \

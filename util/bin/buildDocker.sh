@@ -45,9 +45,9 @@ function compile {
     if [ -n $STAGE_LABEL ] ; then
         flags="$flags,$STAGE_LABEL"
     fi
-    grep -v ";$BRANCH;" config/revision_info.txt > config/revision_info.tmp
+    grep -v ";$BRANCH;" config/revision_info.cfg > config/revision_info.tmp
     echo "$REVISION;$BRANCH;$flags" >> config/revision_info.tmp
-    mv config/revision_info.tmp config/revision_info.txt
+    mv config/revision_info.tmp config/revision_info.cfg
 
 }
 
@@ -94,7 +94,7 @@ ${BOLD}DESCRIPTION${REGULAR}
 -s|--stage-label LABEL
     Limit build to a given stage label. Note: testSetup.sh executes stages in 
     alphabetic order. The stage label is reproduced in the flag section of 
-    the file config/revision_info.txt.
+    the file config/revision_info.cfg.
 
 -t|--test-registry REGISTRY
     Instead of the official docker registry (hub.docker.com), the resulting 
@@ -145,7 +145,7 @@ function buildDocker {
         git stash pop || echo "git stash returned with an error: ignored"
     else 
         # just compile the current branch and tag it latest
-        RELEASE_FLAGS='LATEST,CURRENT,MINOR,MAJOR'
+        RELEASE_FLAGS='LATEST,MINOR,MAJOR'
         BRANCH=$CURRENT_BRANCH
         compile "$RELEASE_FLAGS"
         buildFunc
