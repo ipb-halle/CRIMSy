@@ -18,6 +18,7 @@
 #### PrimeFaces
 * `<p:autoComplete>`: `$(testId("testId"))`; TODO: evaluate autocomplete suggestions
 * `<p:commandButton>`: `$(testId("testId"))`
+* `<p:dataTable>`: use class `PrimeFacesDataTable`
 * `<p:dialog>`: use class `PrimeFacesDialog`
 * `<p:inputText>`: `$(testId("testId"))`
 * `<p:selectBooleanCheckbox>`: use class `PrimeFacesSelectBooleanCheckbox`

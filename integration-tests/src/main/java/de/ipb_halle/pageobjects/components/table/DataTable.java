@@ -41,6 +41,10 @@ public class DataTable {
         table = $(testId(testId));
     }
 
+    protected DataTable(SelenideElement table) {
+        this.table = table;
+    }
+
     /*
      * Getters
      */
@@ -55,7 +59,7 @@ public class DataTable {
      * @return all column names
      */
     public List<String> getColumnNames() {
-        return table.$$("thead tr th").texts();
+        return table.$$("thead > tr > th").texts();
     }
 
     /**
@@ -74,7 +78,7 @@ public class DataTable {
     public List<SelenideElement> getCol(int colIndex) {
         List<SelenideElement> results = new ArrayList<>();
 
-        ElementsCollection rows = table.$$("tbody tr");
+        ElementsCollection rows = table.$$("tbody > tr");
         for (SelenideElement row : rows) {
             results.add(row.$$("td").get(colIndex));
         }
@@ -86,7 +90,7 @@ public class DataTable {
      * @return list with column elements (&lt;td&gt;) for the given row index
      */
     public ElementsCollection getRow(int rowIndex) {
-        return table.$$("tbody tr").get(rowIndex).$$("td");
+        return table.$$("tbody > tr").get(rowIndex).$$("td");
     }
 
     /**
@@ -109,7 +113,7 @@ public class DataTable {
     }
 
     private int getIndexOfCol(String colName) {
-        ElementsCollection cols = table.$$("thead tr th");
+        ElementsCollection cols = table.$$("thead > tr > th");
         for (int i = 0; i < cols.size(); i++) {
             String name = cols.get(i).text();
             if (colName.equals(name)) {
