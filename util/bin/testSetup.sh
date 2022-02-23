@@ -160,7 +160,7 @@ function restore {
             while read record ; do
                 remote=`echo $record | cut -d';' -f2`
                 login=`echo $record | cut -d';' -f3`
-                ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/setupROOT.sh restore $RESTORE
+                ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh restore $RESTORE
             done
     else 
         echo "Restoring snapshot '$RESTORE' on node '$RESTORE'"
@@ -168,7 +168,7 @@ function restore {
             while read record ; do
                 remote=`echo $record | cut -d';' -f2`
                 login=`echo $record | cut -d';' -f3`
-                ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/setupROOT.sh restore $RESTORE
+                ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh restore $RESTORE
             done
     fi
 }
@@ -227,7 +227,6 @@ function runSetup {
         while read record ; do
             echo "compiling for stage $record"
             compile $record
-            UPDATE_CMD=""
             runUpdate 
             echo "sleep 15 seconds to settle everything ..."
             sleep 15
@@ -311,7 +310,7 @@ function runUpdate {
         login=`echo $record | cut -d';' -f3`
 
         echo "updating node $node with $UPDATE_CMD"
-        echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/update.sh $UPDATE_CMD
+        echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh $UPDATE_CMD
     done
 }
 
@@ -498,7 +497,7 @@ function snapshot {
             while read record ; do
                 remote=`echo $record | cut -d';' -f2`
                 login=`echo $record | cut -d';' -f3`
-                ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+                ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh snapshot $SNAPSHOT
             done
     else
         echo "Taking snapshot '$SNAPSHOT' for node '$NODE'"
@@ -506,7 +505,7 @@ function snapshot {
             while read record ; do
                 remote=`echo $record | cut -d';' -f2`
                 login=`echo $record | cut -d';' -f3`
-                ssh -o "StrictHostKeyChecking no" "$login@$remote" ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
+                ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh snapshot $SNAPSHOT
             done
     fi
 }
@@ -681,7 +680,7 @@ SNAPSHOT=''
 SETUP=''
 TEARDOWN=''
 UPDATE=''
-UPDATE_CMD=''
+UPDATE_CMD='container'
 WAKE=''
 
 GETOPT=$(getopt -o 'b:H:hn:p:R:rS:stu:w:' --longoptions 'branch-file:hostlist:,help,node:,pause:,restore:,runTests,snapshot:,setup,teardown,update:wake:' -n 'testSetup.sh' -- "$@")

@@ -382,11 +382,13 @@ function superDoUI {
 . $HOME/.lbac || error "Local cloud node is configured properly"
 . $LBAC_DATASTORE/etc/config.sh
 export LBAC_DATASTORE
+export LC_ALL=C
 
 cd $LBAC_DATASTORE
 
 case $1 in
     backup)
+        test `id -u` -eq 0 || error "'update.sh backup' function must be called as root"
         LABEL=`date "+%Y%m%d%H%M"`
         snapshotFunc
         ;;
@@ -407,6 +409,7 @@ case $1 in
         sudo dist/bin/update.sh superUI
         ;;
     restore)
+        test `id -u` -eq 0 || error "'update.sh restore' function must be called as root"
         echo "restoring snapshot"
         LABEL=$2
         restoreFunc
@@ -417,6 +420,7 @@ case $1 in
         restoreDB
         ;;
     snapshot)
+        test `id -u` -eq 0 || error "'update.sh snapshot' function must be called as root"
         echo "Taking snapshot"
         LABEL=$2
         snapshotFunc
@@ -434,7 +438,8 @@ case $1 in
         superDoUI
         ;;
     *)
-        echo "Usage update.sh container|db|proxy|ui|superDb|superProxy|superUI"
+        echo "Usage: update.sh backup|container|db|proxy|restore|restoreDB|"
+        echo "                 snapshot|ui|superDb|superProxy|superUI"
         ;;
 esac
 
