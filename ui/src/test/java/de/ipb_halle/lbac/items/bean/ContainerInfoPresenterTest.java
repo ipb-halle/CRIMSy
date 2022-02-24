@@ -17,96 +17,84 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
-import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import static de.ipb_halle.lbac.project.ProjectType.DUMMY_PROJECT;
+
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
-import de.ipb_halle.lbac.container.mock.ContainerLocalizerMock;
-import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
-import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- *
  * @author fmauz
  */
-@ExtendWith(PostgresqlContainerExtension.class)
-@ExtendWith(ArquillianExtension.class)
-public class ContainerInfoPresenterTest extends TestBase {
+public class ContainerInfoPresenterTest {
+    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
     @Test
-    public void test001_noContainerSet() {
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null, MessagePresenterMock.getInstance());
-        Assert.assertEquals("", presenter.getContainerLocation());
-        Assert.assertEquals("", presenter.getContainerName());
-        Assert.assertEquals("", presenter.getContainerProject());
-        Assert.assertEquals("", presenter.getContainerType());
-    }
+    public void test_getContainerName() {
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null, messagePresenter);
+        assertEquals("", presenter.getContainerName());
 
-    @Test
-    public void test002_noContainerWithoutProjectAndContainer() {
-        Container container = createContainer("testContainer");
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container, MessagePresenterMock.getInstance());
-
-        Assert.assertEquals("", presenter.getContainerLocation());
-        Assert.assertEquals("testContainer", presenter.getContainerName());
-        Assert.assertEquals("", presenter.getContainerProject());
-        Assert.assertEquals("container_type_GLASS_FLASK", presenter.getContainerType());
-    }
-
-    @Test
-    public void test003_noContainerWithProjectAndContainer() {
-        Container container = createContainer(
-                "testContainer",
-                createProject("testProject"),
-                createContainer("testContainer2"));
-
-        ContainerInfoPresenter presenter = new ContainerInfoPresenter(container, MessagePresenterMock.getInstance());
-        Assert.assertEquals("testContainer2", presenter.getContainerLocation());
-        Assert.assertEquals("testContainer", presenter.getContainerName());
-        Assert.assertEquals("testProject", presenter.getContainerProject());
-        Assert.assertEquals("container_type_GLASS_FLASK", presenter.getContainerType());
-    }
-
-    private Container createContainer(String name, Project p, Container c) {
         Container container = new Container();
-        container.setType(new ContainerType("GLASS_FLASK", 0, true, false));
-        container.setId(1);
-        container.setLabel(name);
-        container.setProject(p);
-        if (c != null) {
-            container.getContainerHierarchy().add(c);
-        }
-        return container;
+        container.setLabel(null);
+        presenter = new ContainerInfoPresenter(container, messagePresenter);
+        assertEquals("", presenter.getContainerName());
+
+        container.setLabel("abc");
+        assertEquals("abc", presenter.getContainerName());
     }
 
-    private Container createContainer(String name) {
-        return createContainer(name, null, null);
+    @Test
+    public void test_getContainerType() {
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null, messagePresenter);
+        assertEquals("", presenter.getContainerType());
+
+        Container container = new Container();
+        container.setType(null);
+        presenter = new ContainerInfoPresenter(container, messagePresenter);
+        assertEquals("", presenter.getContainerType());
+
+        container.setType(new ContainerType("TYPENAME", 0, false, false));
+        assertEquals("container_type_TYPENAME", presenter.getContainerType());
     }
 
-    private Project createProject(String name) {
-        Project p = new Project();
-        p.setId(1);
-        p.setName(name);
-        return p;
+    @Test
+    public void test_getContainerProject() {
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null, messagePresenter);
+        assertEquals("", presenter.getContainerProject());
 
+        Container container = new Container();
+        container.setProject(null);
+        presenter = new ContainerInfoPresenter(container, messagePresenter);
+        assertEquals("", presenter.getContainerProject());
+
+        container.setProject(new Project(DUMMY_PROJECT, "Rocket Science Project"));
+        assertEquals("Rocket Science Project", presenter.getContainerProject());
     }
 
-    @Deployment
-    public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ContainerInfoPresenterTest.war")
-                .addClass(Navigator.class)
-                .addClass(ProjectService.class);
-        return ItemDeployment.add(UserBeanDeployment.add(deployment));
+    @Test
+    public void test_getContainerLocation() {
+        ContainerInfoPresenter presenter = new ContainerInfoPresenter(null, messagePresenter);
+        assertEquals("", presenter.getContainerLocation());
+
+        Container container = new Container();
+        presenter = new ContainerInfoPresenter(container, messagePresenter);
+        assertEquals("", presenter.getContainerLocation());
+
+        // build a container hierarchy
+        Container parent = new Container();
+        parent.setLabel("parent");
+        Container parentsParent = new Container();
+        parentsParent.setLabel("parent's parent");
+        // not the right way
+        // parent.setParentContainer(parentsParent);
+        // container.setParentContainer(parent);
+
+        container.getContainerHierarchy().add(parent);
+        container.getContainerHierarchy().add(parentsParent);
+        assertEquals("parent's parent-><br>parent", presenter.getContainerLocation());
     }
 }

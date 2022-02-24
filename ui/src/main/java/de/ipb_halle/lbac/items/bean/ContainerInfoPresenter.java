@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.bean.ContainerLocalizer;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
@@ -37,20 +38,20 @@ public class ContainerInfoPresenter {
     public String getContainerName() {
         if (container == null || container.getLabel() == null) {
             return "";
-        } else {
-            return container.getLabel();
         }
+        return container.getLabel();
     }
 
     public String getContainerType() {
         if (container == null) {
             return "";
-        } else {
-            container.getType().setLocalizedName(
-                    containerLocalizer.localizeString(
-                            "container_type_" + container.getType().getName()));
-            return container.getType().getLocalizedName();
         }
+        ContainerType type = container.getType();
+        if (type == null) {
+            return "";
+        }
+        container.getType().setLocalizedName(containerLocalizer.localizeString("container_type_" + type.getName()));
+        return container.getType().getLocalizedName();
     }
 
     public String getContainerProject() {
@@ -77,7 +78,10 @@ public class ContainerInfoPresenter {
         }
     }
 
+    /*
+     * This empty setter is used to trick the p:autoComplete component in
+     * containerSelectionAndInfos.xhtml.
+     */
     public void setContainerName(String containerName) {
-
     }
 }
