@@ -5,7 +5,9 @@ import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +33,27 @@ public class ItemTest {
         item.getNestedLocation();
 
         assertEquals("Room->Shelf->Bottle", item.getNestedLocation());
+    }
+
+    @Test
+    public void test_isEqualTo() {
+        Item item1 = new Item();
+        item1.setId(42);
+
+        assertFalse(item1.isEqualTo(null));
+        assertFalse(item1.isEqualTo("not an Item object"));
+
+        Item item2 = new Item();
+        assertFalse(item1.isEqualTo(item2));
+        assertFalse(item2.isEqualTo(item1));
+
+        item2.setId(1);
+        assertFalse(item1.isEqualTo(item2));
+        assertFalse(item2.isEqualTo(item1));
+
+        item2.setId(42);
+        assertTrue(item1.isEqualTo(item2));
+        assertTrue(item2.isEqualTo(item1));
     }
 
     @Test

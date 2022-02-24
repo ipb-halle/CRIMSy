@@ -20,67 +20,64 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy">
-
-    <composite:interface name="container2d"
-                         displayName="Container-2D"
-                         preferred="true"
-                         expert="false"
-                         shortDescription="view and edit two dimensional container">
-        <composite:attribute name="container" required="true" >
-
-        </composite:attribute>
-
+    <composite:interface
+        name="container2d"
+        displayName="Container-2D"
+        preferred="true"
+        expert="false"
+        shortDescription="view and edit two dimensional container">
+        <composite:attribute
+            name="controller"
+            type="de.ipb_halle.lbac.items.bean.Container2dController"
+            required="true" />
     </composite:interface>
 
-    <composite:implementation >
-
-
+    <composite:implementation>
         <p:panelGrid styleClass="containerCheckBoxes">
+            <!-- x-axis labels -->
             <p:row>
                 <p:column>
-                    <p:repeat 
-                        value="#{itemBean.containerController.columns}"
+                    <p:repeat
+                        value="#{cc.attrs.controller.columns}"
                         var="x">
                         <p:column>
-                            #{itemBean.containerController.getDimensionLabel(0, x)}
+                            <h:outputText value="#{cc.attrs.controller.getDimensionLabel(0, x)}" />
                         </p:column>
                     </p:repeat>
-
                 </p:column>
             </p:row>
 
-            <p:repeat 
-                value="#{itemBean.containerController.rows}"
+            <p:repeat
+                value="#{cc.attrs.controller.rows}"
                 var="y">
                 <p:row>
+                    <!-- y-axis label -->
                     <p:column>
-                        #{itemBean.containerController.getDimensionLabel(1, y)}
+                        <h:outputText value="#{cc.attrs.controller.getDimensionLabel(1, y)}" />
                     </p:column>
-                
-                    <p:repeat 
-                        value="#{itemBean.containerController.columns}"
+
+                    <p:repeat
+                        value="#{cc.attrs.controller.columns}"
                         var="x">
-                        <p:column
-                             styleClass="#{itemBean.containerController.getStyleOfContainerPlace(y,x)}"
-                            >
+                        <p:column styleClass="#{cc.attrs.controller.getStyleOfContainerPlace(y,x)}">
                             <p:selectBooleanCheckbox
-                                title="#{itemBean.containerController.getToolTipForContainerPlace(y, x)}"
+                                value="#{cc.attrs.controller.itemPositions[y][x]}"
+                                title="#{cc.attrs.controller.getToolTipForContainerPlace(y, x)}"
                                 styleClass="checkbox-round"
-                                value="#{itemBean.containerController.itemPositions[y][x]}"
-                                 disabled="#{itemBean.containerController.isContainerPlaceDisabled(y, x)}"
-                               >
-                                <p:ajax update="@(.containerCheckBoxes)" listener="#{itemBean.containerController.actionClickCheckBox(y, x)}" />
+                                disabled="#{cc.attrs.controller.isContainerPlaceDisabled(y, x)}">
+                                <p:ajax
+                                    process="@this"
+                                    update="@(.containerCheckBoxes)"
+                                    listener="#{cc.attrs.controller.actionClickCheckBox(y, x)}" />
                             </p:selectBooleanCheckbox>
                         </p:column>
                     </p:repeat>
-                
                 </p:row>
             </p:repeat>
-
         </p:panelGrid>
-
-    </composite:implementation >
+    </composite:implementation>
 </html>

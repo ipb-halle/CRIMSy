@@ -90,7 +90,7 @@
                                     completeMethod="#{cc.attrs.containerController.nameSuggestions}">
                                     <p:ajax
                                         event="itemSelect" 
-                                        listener="#{cc.attrs.containerController.onItemSelect}"
+                                        listener="#{cc.attrs.containerController.actionOnItemSelect}"
                                         update="@(.containerPseudoClass)" />
                                 </p:autoComplete>
                             </b:column>
@@ -110,8 +110,8 @@
                     span="4"
                     styleClass="containerPseudoClass">
                     <crimsy:container2d
-                        container="#{cc.attrs.containerController.container}"
-                        rendered="#{cc.attrs.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"/>
+                        controller="#{cc.attrs.containerController.container2dController}"
+                        rendered="#{cc.attrs.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}" />
                 </b:column>
             </b:row>
         </b:container>
