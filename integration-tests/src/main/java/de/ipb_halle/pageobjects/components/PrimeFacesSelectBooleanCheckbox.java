@@ -36,7 +36,17 @@ public class PrimeFacesSelectBooleanCheckbox {
     private final SelenideElement label;
 
     public PrimeFacesSelectBooleanCheckbox(String testId) {
-        SelenideElement element = $(testId(testId));
+        this(null, testId);
+    }
+
+    public PrimeFacesSelectBooleanCheckbox(SelenideElement parent, String testId) {
+        SelenideElement element;
+        if (parent != null) {
+            element = parent.$(testId(testId));
+        } else {
+            element = $(testId(testId));
+        }
+
         clickableDiv = element.$(elementWithCssClasses("div", "ui-chkbox-box"));
         input = element.$(By.tagName("input"));
         label = element.$(By.tagName("label"));

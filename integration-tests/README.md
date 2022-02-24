@@ -1,6 +1,7 @@
 ## Dev cheat sheet
 ### Rules of thumb for element selectors of JSF components using `pt:data-test-id="testId"`
 #### native JSF
+* `<h:inputText>`: `$(testId("testId"))`
 * `<h:outputText>` ([rendering depends on other component attributes](https://docs.oracle.com/javaee/7/javaserver-faces-2-2/vdldocs-facelets/h/outputText.html)): `$(testId("testId"))`
   * rendered as `<span>`: attach `pt:data-test-id` to `<h:outputText>`
   * rendered as inline text: attach `pt:data-test-id` to parent component or embed it into a `<div data-test-id="testId">`

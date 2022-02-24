@@ -17,13 +17,11 @@
  */
 package de.ipb_halle.pageobjects.pages.projects;
 
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
-import com.codeborne.selenide.SelenideElement;
-
 import de.ipb_halle.pageobjects.components.table.DataTable;
+import de.ipb_halle.pageobjects.pages.composite.acobjectmodal.ACObjectModalPage;
 
 /**
  * Page object for the projects table in

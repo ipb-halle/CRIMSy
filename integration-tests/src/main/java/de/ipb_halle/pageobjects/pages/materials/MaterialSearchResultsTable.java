@@ -25,6 +25,7 @@ import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.PrimeFacesTooltip;
 import de.ipb_halle.pageobjects.components.table.DataTable;
+import de.ipb_halle.pageobjects.pages.composite.acobjectmodal.ACObjectModalPage;
 
 /**
  * Page object for the search results table in

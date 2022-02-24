@@ -24,179 +24,196 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
-      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-    <composite:interface name="acobjectModal"
-                         displayName="acobject modal"
-                         preferred="true"
-                         expert="false"
-                         shortDescription="modal for editing an aclist of an acobject">
-        <composite:attribute name="acobjectController" required="true" >
-
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <composite:interface
+        name="acobjectModal"
+        displayName="acobject modal"
+        preferred="true"
+        expert="false"
+        shortDescription="modal for editing an aclist of an acobject">
+        <composite:attribute
+            name="acobjectController"
+            required="true">
             <composite:editableValueHolder name="possibleGroupsToAdd" />
         </composite:attribute>
-        <composite:attribute name="updateTargetClass" required="true" />
-        <composite:attribute name="groupsAgent" required="true" />
-
-
-
+        <composite:attribute
+            name="updateTargetClass"
+            required="true" />
+        <composite:attribute
+            name="groupsAgent"
+            required="true" />
     </composite:interface>
 
-    <composite:implementation >
-
-        <p:dialog 
+    <composite:implementation>
+        <p:dialog
             header="#{cc.attrs.acobjectController.getTitleOfModal()}"
             widgetVar="dlgAcl"
-            modal="true" 
+            modal="true"
             styleClass="acoEditModal"
             width="66%">
-            <p:ajax event="close"  listener="#{cc.attrs.acobjectController.handleClose}" />
+            <p:ajax
+                event="close"
+                listener="#{cc.attrs.acobjectController.handleClose}" />
             <center>
-                <p:panelGrid  styleClass="mainPanel">
+                <p:panelGrid styleClass="mainPanel">
                     <p:row styleClass="mainPanelEntry">
                         <p:column styleClass="mainPanelEntry">
                             <h:form styleClass="acoEditModalForm">
                                 <p:dataTable
+                                    pt:data-test-id="acObjectModal:acEntriesTable"
+                                    value="#{cc.attrs.acobjectController.getAcEntries()}"
                                     var="ace"
                                     scrollable="true"
                                     scrollHeight="200"
-                                    styleClass="acEntriesTableClass"
-                                    value="#{cc.attrs.acobjectController.getAcEntries()}">
+                                    styleClass="acEntriesTableClass">
                                     <p:column
                                         styleClass="textTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_groupname}"
-                                        >
-                                        <h:outputText value="#{ace.getMember().getName()}"/>
+                                        headerText="#{msgs.aclEdit_modal_table_groupname}">
+                                        <h:outputText value="#{ace.getMember().getName()}" />
                                     </p:column>
                                     <p:column
                                         styleClass="textTableColumn"
-                                        headerText="#{aclEdit_modal_table_institution}">
-                                        <h:outputText value="#{ace.getMember().getNode().institution}"/>
+                                        headerText="#{msgs.aclEdit_modal_table_institution}">
+                                        <h:outputText value="#{ace.getMember().getNode().institution}" />
                                     </p:column>
                                     <p:column
                                         styleClass="checkBoxTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_read}">
-                                        <p:selectBooleanCheckbox 
-                                            value="#{ace.permRead}" >
-                                            <p:ajax /> 
+                                        <p:selectBooleanCheckbox
+                                            pt:data-test-id="acObjectModal:acEntriesTable:permRead"
+                                            value="#{ace.permRead}">
+                                            <p:ajax />
                                         </p:selectBooleanCheckbox>
                                     </p:column>
                                     <p:column
                                         styleClass="checkBoxTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_edit}">
-                                        <p:selectBooleanCheckbox 
+                                        <p:selectBooleanCheckbox
+                                            pt:data-test-id="acObjectModal:acEntriesTable:permEdit"
                                             value="#{ace.permEdit}">
-                                            <p:ajax /> 
+                                            <p:ajax />
                                         </p:selectBooleanCheckbox>
                                     </p:column>
                                     <p:column
                                         styleClass="checkBoxTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_create}">
-                                        <p:selectBooleanCheckbox 
+                                        <p:selectBooleanCheckbox
+                                            pt:data-test-id="acObjectModal:acEntriesTable:permCreate"
                                             value="#{ace.permCreate}">
-                                            <p:ajax /> 
+                                            <p:ajax />
                                         </p:selectBooleanCheckbox>
                                     </p:column>
                                     <p:column
                                         styleClass="checkBoxTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_delete}">
-                                        <p:selectBooleanCheckbox 
+                                        <p:selectBooleanCheckbox
+                                            pt:data-test-id="acObjectModal:acEntriesTable:permDelete"
                                             value="#{ace.permDelete}">
-                                            <p:ajax /> 
+                                            <p:ajax />
                                         </p:selectBooleanCheckbox>
                                     </p:column>
                                     <p:column
                                         styleClass="checkBoxTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_chown}">
-                                        <p:selectBooleanCheckbox 
+                                        <p:selectBooleanCheckbox
+                                            pt:data-test-id="acObjectModal:acEntriesTable:permChown"
                                             value="#{ace.permChown}">
-                                            <p:ajax /> 
+                                            <p:ajax />
                                         </p:selectBooleanCheckbox>
                                     </p:column>
                                     <p:column
                                         styleClass="checkBoxTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_grant}">
-                                        <p:selectBooleanCheckbox 
+                                        <p:selectBooleanCheckbox
+                                            pt:data-test-id="acObjectModal:acEntriesTable:permGrant"
                                             value="#{ace.permGrant}">
-                                            <p:ajax /> 
+                                            <p:ajax />
                                         </p:selectBooleanCheckbox>
                                     </p:column>
                                     <p:column
                                         styleClass="checkBoxTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_super}">
-                                        <p:selectBooleanCheckbox 
+                                        <p:selectBooleanCheckbox
+                                            pt:data-test-id="acObjectModal:acEntriesTable:permSuper"
                                             value="#{ace.permSuper}">
-                                            <p:ajax /> 
+                                            <p:ajax />
                                         </p:selectBooleanCheckbox>
                                     </p:column>
                                     <p:column
                                         styleClass="toolsTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_tools}">
                                         <b:commandButton
+                                            pt:data-test-id="acObjectModal:acEntriesTable:removeGroup"
                                             icon-awesome="fa-user-times"
                                             ajax="true"
                                             onclick="ajax:cc.attrs.acobjectController.removeGroupFromAcList(ace)"
                                             style="padding: 0 4px;"
                                             look="link"
-                                            update="@(.mainPanel)"/>
+                                            update="@(.mainPanel)" />
                                     </p:column>
                                 </p:dataTable>
                             </h:form>
                         </p:column>
 
                         <p:column styleClass="mainPanelEntry">
-                            <h:form 
+                            <h:form
                                 id="searchMask"
                                 styleClass="searchMaskClass">
-                                <h:outputText 
-                                    styleClass="groupSearchFilterHeader groupFilterRow groupFilterInputfield"
-                                    value="#{msgs.aclEdit_modal_search_title}"/>
-                                <br/>
-                                <h:outputText 
-                                    styleClass="groupFilterRow"
-                                    value="#{msgs.aclEdit_modal_table_institution}"/>
-                                <h:inputText 
-                                    styleClass="groupFilterInputfield groupFilterRow"
-                                    value="#{cc.attrs.groupsAgent.institute}"/>
                                 <h:outputText
-                                    styleClass="groupFilterRow"
-                                    value="#{msgs.aclEdit_modal_table_groupname}"/>
-                                <h:inputText 
-                                    styleClass="groupFilterInputfield groupFilterRow"
-                                    value="#{cc.attrs.groupsAgent.name}"/>
-                                <p:commandButton value="#{msgs.aclEdit_modal_search_clear}"
-                                                 ajax="true"
-                                                 update="@(.mainPanel)"
-                                                 action="#{cc.attrs.groupsAgent.clear()}"
-                                                 styleClass="groupFilterButton groupFilterButtonColumn acoCancelButton"
-                                                 />
-                                <p:commandButton 
+                                    value="#{msgs.aclEdit_modal_search_title}"
+                                    styleClass="groupSearchFilterHeader groupFilterRow groupFilterInputfield" />
+                                <br/>
+                                <h:outputText
+                                    value="#{msgs.aclEdit_modal_table_institution}"
+                                    styleClass="groupFilterRow" />
+                                <h:inputText
+                                    pt:data-test-id="acObjectModal:searchFilter:institution"
+                                    value="#{cc.attrs.groupsAgent.institute}"
+                                    styleClass="groupFilterInputfield groupFilterRow" />
+                                <h:outputText
+                                    value="#{msgs.aclEdit_modal_table_groupname}"
+                                    styleClass="groupFilterRow" />
+                                <h:inputText
+                                    pt:data-test-id="acObjectModal:searchFilter:groupName"
+                                    value="#{cc.attrs.groupsAgent.name}"
+                                    styleClass="groupFilterInputfield groupFilterRow" />
+                                <p:commandButton
+                                    pt:data-test-id="acObjectModal:searchFilter:clear"
+                                    value="#{msgs.aclEdit_modal_search_clear}"
+                                    ajax="true"
+                                    update="@(.mainPanel)"
+                                    action="#{cc.attrs.groupsAgent.clear()}"
+                                    styleClass="groupFilterButton groupFilterButtonColumn acoCancelButton" />
+                                <p:commandButton
+                                    pt:data-test-id="acObjectModal:searchFilter:search"
                                     styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn"
                                     value="#{msgs.aclEdit_modal_search_apply}"
                                     ajax="true"
                                     update="@(.mainPanel)">
-                                    <f:setPropertyActionListener 
+                                    <f:setPropertyActionListener
                                         value="#{cc.attrs.groupsAgent.loadGroups()}"
-                                        target="#{cc.attrs.acobjectController.possibleGroupsToAdd}"/>
+                                        target="#{cc.attrs.acobjectController.possibleGroupsToAdd}" />
                                 </p:commandButton>
                             </h:form>
                         </p:column>
                     </p:row>
+
                     <p:row styleClass="mainPanelEntry">
                         <p:column styleClass="mainPanelEntry">
                             <p:dataTable
-                                styleClass="groupsToAddTable"
+                                pt:data-test-id="acObjectModal:addableGroupsTable"
+                                value="#{cc.attrs.acobjectController.getGroupsNotInAcList()}"
                                 var="group"
+                                styleClass="groupsToAddTable"
                                 scrollable="true"
-                                scrollHeight="200"
-                                value="#{cc.attrs.acobjectController.getGroupsNotInAcList()}">
+                                scrollHeight="200">
                                 <p:column
                                     styleClass="textTableColumn"
                                     headerText="#{msgs.aclEdit_modal_table_groupname}">
                                     <h:outputText value="#{group.name}" />
                                 </p:column>
-                                <p:column 
+                                <p:column
                                     styleClass="textTableColumn"
                                     headerText="#{msgs.aclEdit_modal_table_institution}">
                                     <h:outputText value="#{group.getNode().institution}" />
@@ -204,34 +221,39 @@
                                 <p:column headerText="Tools">
                                     <h:form>
                                         <b:commandButton
-                                            icon-awesome="fa-user-plus "
+                                            pt:data-test-id="acObjectModal:addableGroupsTable:addGroup"
+                                            icon-awesome="fa-user-plus"
                                             ajax="true"
                                             onclick="ajax:cc.attrs.acobjectController.addGroupToAcList(group)"
                                             style="padding: 0 4px; float:right; margin-right: 3px"
                                             look="link"
-                                            update="@(.mainPanel)"/>
+                                            update="@(.mainPanel)" />
                                     </h:form>
                                 </p:column>
                             </p:dataTable>
                         </p:column>
+
                         <p:column styleClass="mainPanelEntry">
-                            <h:form id ="acoInnerFormId" styleClass="acoInnerFormClass">
+                            <h:form
+                                id ="acoInnerFormId"
+                                styleClass="acoInnerFormClass">
                                 <p:commandButton
+                                    pt:data-test-id="acObjectModal:cancel"
                                     styleClass="groupFilterButton groupFilterButtonColumn"
                                     value="#{msgs.aclEdit_modal_cancel}"
-                                    oncomplete="PF('dlgAcl').hide();"
-                                    />
-                                <p:commandButton 
+                                    oncomplete="PF('dlgAcl').hide();" />
+                                <p:commandButton
+                                    pt:data-test-id="acObjectModal:save"
                                     value="#{msgs.aclEdit_modal_save}"
                                     update="@(.#{cc.attrs.updateTargetClass})"
                                     styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn"
                                     action="#{cc.attrs.acobjectController.saveNewAcList}"
-                                    oncomplete="PF('dlgAcl').hide();"/>
+                                    oncomplete="PF('dlgAcl').hide();" />
                             </h:form>
                         </p:column>
                     </p:row>
                 </p:panelGrid>
             </center>
         </p:dialog>
-    </composite:implementation >
+    </composite:implementation>
 </html>

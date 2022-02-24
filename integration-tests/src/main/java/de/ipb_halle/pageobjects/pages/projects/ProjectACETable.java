@@ -44,7 +44,7 @@ public class ProjectACETable extends DataTable {
      * Actions
      */
     public void removeGroup(int rowIndex) {
-        getCell(3, rowIndex).$(REMOVE_GROUP_BUTTON).click();
+        getCell(5, rowIndex).$(REMOVE_GROUP_BUTTON).click();
     }
 
     /*
