@@ -17,140 +17,82 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
-import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.mock.UserBeanMock;
-import de.ipb_halle.lbac.base.TestBase;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
-import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
-import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import javax.inject.Inject;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@ExtendWith(PostgresqlContainerExtension.class)
-@ExtendWith(ArquillianExtension.class)
-public class ContainerSelectionDialogControllerTest extends TestBase {
-    private static final long serialVersionUID = 1L;
+public class ContainerSelectionDialogControllerTest {
+    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
-    @Inject
-    private UserBeanMock userBean;
+    @Test
+    public void test_actionOnSelect() {
+        AtomicReference<Container> containerFromCallback = new AtomicReference<>();
+        Consumer<Container> callback = (c) -> containerFromCallback.set(c);
+        ContainerSelectionDialogController controller = new ContainerSelectionDialogController(new ArrayList<>(),
+                callback, messagePresenter);
+        Container container = new Container();
+        container.setId(42);
 
-    private ContainerSelectionDialogController dialogController;
-
-    @Inject
-    private ContainerService containerService;
-
-    MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
-
-    private Container c0, c1, c2;
-
-    @BeforeEach
-    public void init() {
-        createContainers();
-        userBean.setCurrentAccount(publicUser);
-        dialogController = new ContainerSelectionDialogController(
-                containerService.loadContainersWithoutItems(adminUser), null, messagePresenter);
+        controller.actionOnSelect(container);
+        assertTrue(container.isEqualTo(containerFromCallback.get()));
     }
 
     @Test
-    public void test001_getAvailableContainers_checkLocalizedNames() {
-        List<Container> containers = dialogController.getAvailableContainers();
+    public void test_getDimensionString() {
+        ContainerSelectionDialogController controller = new ContainerSelectionDialogController(new ArrayList<>(), null,
+                messagePresenter);
+        Container container = new Container();
+        assertEquals("-", controller.getDimensionString(container));
 
-        assertEquals(3, containers.size());
-        assertTrue(containers.get(0).isEqualTo(c0));
-        assertTrue(containers.get(1).isEqualTo(c1));
-        assertTrue(containers.get(2).isEqualTo(c2));
-
-        assertEquals("container_type_ROOM", containers.get(0).getType().getLocalizedName());
-        assertEquals("container_type_CUPBOARD", containers.get(1).getType().getLocalizedName());
-        assertEquals("container_type_CARTON", containers.get(2).getType().getLocalizedName());
+        container.setRows(4);
+        container.setColumns(10);
+        container.setItems(new Item[4][10]);
+        assertEquals("4 x 10", controller.getDimensionString(container));
     }
 
     @Test
-    public void test002_getDimensionString() {
-        c0.setItems(containerService.loadItemIdsOfContainer(c0));
-        c1.setItems(containerService.loadItemIdsOfContainer(c1));
-        c2.setItems(containerService.loadItemIdsOfContainer(c2));
+    public void test_getAvailableContainers_checkLocalizedNames() {
+        Container c1 = new Container();
+        Container c2 = new Container();
+        Container parent = new Container();
+        c1.setId(42);
+        c2.setId(99);
+        parent.setId(123);
+        c1.setLabel("Container1");
+        c2.setLabel("Container2");
+        parent.setLabel("parent");
+        c1.setType(new ContainerType("FREEZER", 90, false, false));
+        c2.setType(new ContainerType("FRIDGE", 90, false, false));
+        parent.setType(new ContainerType("ROOM", 100, false, false));
+        c1.setParentContainer(parent);
+        List<Container> availableContainers = Arrays.asList(c1, c2);
 
-        assertEquals("3 x 3", dialogController.getDimensionString(c0));
-        assertEquals("2 x 1", dialogController.getDimensionString(c1));
-        assertEquals("-", dialogController.getDimensionString(c2));
-    }
+        assertEquals("FREEZER", c1.getType().getLocalizedName());
+        assertEquals("FRIDGE", c2.getType().getLocalizedName());
+        assertEquals("ROOM", parent.getType().getLocalizedName());
 
-    @Test
-    public void test003_actionOnSelect() {
-        AtomicBoolean wasCalledCorrectly = new AtomicBoolean(false);
-        Consumer<Container> callback = (c) -> {
-            if (c.isEqualTo(c2)) {
-                wasCalledCorrectly.set(true);
-            } else {
-                wasCalledCorrectly.set(false);
-            }
-        };
-        ContainerSelectionDialogController controller = new ContainerSelectionDialogController(
-                containerService.loadContainersWithoutItems(adminUser), callback, messagePresenter);
+        ContainerSelectionDialogController controller = new ContainerSelectionDialogController(availableContainers,
+                null, messagePresenter);
+        List<Container> containers = controller.getAvailableContainers();
 
-        controller.actionOnSelect(c2);
-        assertTrue(wasCalledCorrectly.get());
-
-        controller.actionOnSelect(c0);
-        assertFalse(wasCalledCorrectly.get());
-    }
-
-    @Deployment
-    public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ContainerModalBeanTest.war");
-        return ItemDeployment.add(UserBeanDeployment.add(deployment));
-    }
-
-    private void createContainers() {
-        c0 = new Container();
-        c0.setBarCode(null);
-        c0.setColumns(3);
-        c0.setRows(3);
-        c0.setFireArea("F1");
-        c0.setGmoSafetyLevel("S0");
-        c0.setLabel("R302");
-        c0.setType(new ContainerType("ROOM", 90, false, true));
-        containerService.saveContainer(c0);
-
-        c1 = new Container();
-        c1.setBarCode("9845893457");
-        c1.setColumns(1);
-        c1.setRows(2);
-        c1.setFireArea(c0.getFireArea());
-        c1.setGmoSafetyLevel(c0.getGmoSafetyLevel());
-        c1.setLabel("Schrank1");
-        c1.setParentContainer(c0);
-        c1.setType(new ContainerType("CUPBOARD", 90, true, false));
-        containerService.saveContainer(c1);
-
-        c2 = new Container();
-        c2.setBarCode("43753456");
-        c2.setFireArea(c1.getFireArea());
-        c2.setGmoSafetyLevel(c1.getGmoSafetyLevel());
-        c2.setLabel("Karton3");
-        c2.setParentContainer(c1);
-        c2.setType(new ContainerType("CARTON", 90, true, false));
-        containerService.saveContainer(c2);
+        assertEquals(containers, availableContainers);
+        assertEquals("container_type_FREEZER", containers.get(0).getType().getLocalizedName());
+        assertEquals("container_type_FRIDGE", containers.get(1).getType().getLocalizedName());
+        assertEquals("container_type_ROOM", containers.get(0).getParentContainer().getType().getLocalizedName());
     }
 }
