@@ -152,6 +152,25 @@ public class Container2dControllerTest {
     }
 
     @Test
+    public void test_setItemAtPosition() {
+        Container2dController controller = new Container2dController(container, item, messagePresenter);
+        assertThatItemIsAt(2, 4, controller.getItemPositions());
+
+        controller.removeItemFromPosition();
+        controller.setItemAtPosition(1, 0);
+        assertThatItemIsAt(0, 1, controller.getItemPositions());
+    }
+
+    @Test
+    public void test_removeItemFromPosition() {
+        Container2dController controller = new Container2dController(container, item, messagePresenter);
+        assertThatItemIsAt(2, 4, controller.getItemPositions());
+
+        controller.removeItemFromPosition();
+        assertThatItemIsAt(-1, -1, controller.getItemPositions()); // matrix is false everywhere
+    }
+
+    @Test
     public void test_getDimensionLabel() {
         Container2dController controller = new Container2dController(container, item, messagePresenter);
 

@@ -35,6 +35,7 @@ import static de.ipb_halle.lbac.container.Container.DimensionType.NONE;
 import static de.ipb_halle.lbac.container.Container.DimensionType.ONE_DIMENSION;
 import static de.ipb_halle.lbac.container.Container.DimensionType.TWO_DIMENSION;
 import static de.ipb_halle.lbac.container.Container.DimensionType.ZERO_DIMENSION;
+import static de.ipb_halle.lbac.items.bean.Container2dControllerTest.assertThatItemIsAt;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -79,6 +80,8 @@ public class ContainerControllerTest extends TestBase {
     private Item item;
     private Container c1;
     private Container c2;
+    private Item itemForPositionTests;
+    private Container containerForPositionTests;
 
     @BeforeEach
     public void init() {
@@ -100,6 +103,17 @@ public class ContainerControllerTest extends TestBase {
         // only loading sets the autocomplete string
         c1 = containerService.loadContainerById(c1.getId());
         c2 = containerService.loadContainerById(c2.getId());
+
+        itemForPositionTests = new Item();
+        itemForPositionTests.setId(2);
+        containerForPositionTests = new Container();
+        containerForPositionTests.setId(42);
+        containerForPositionTests.setRows(4);
+        containerForPositionTests.setColumns(4);
+        itemForPositionTests.setContainer(containerForPositionTests);
+        Item[][] items = new Item[4][4];
+        items[2][1] = itemForPositionTests;
+        containerForPositionTests.setItems(items);
     }
 
     @Test
@@ -216,34 +230,39 @@ public class ContainerControllerTest extends TestBase {
 
     @Test
     public void test_getItemPositions() {
-        Container container = new Container();
-        container.setId(42);
-        container.setRows(4);
-        container.setColumns(4);
-        item.setContainer(container);
-        Item[][] items = new Item[4][4];
-        items[2][1] = item;
-        container.setItems(items);
-
-        ContainerController controller = new ContainerController(item, containerService, userBean, messagePresenter);
-        Container2dControllerTest.assertThatItemIsAt(2, 1, controller.getItemPositions());
+        ContainerController controller = new ContainerController(itemForPositionTests, containerService, userBean,
+                messagePresenter);
+        assertThatItemIsAt(2, 1, controller.getItemPositions());
     }
 
     @Test
     public void test_resolveItemPositions() {
-        Container container = new Container();
-        container.setId(42);
-        container.setRows(4);
-        container.setColumns(4);
-        item.setContainer(container);
-        Item[][] items = new Item[4][4];
-        items[2][1] = item;
-        container.setItems(items);
-
-        ContainerController controller = new ContainerController(item, containerService, userBean, messagePresenter);
+        ContainerController controller = new ContainerController(itemForPositionTests, containerService, userBean,
+                messagePresenter);
         Set<int[]> positions = controller.resolveItemPositions();
         assertThat(positions, hasSize(1));
         assertArrayEquals(new int[] { 2, 1 }, positions.iterator().next());
+    }
+
+    @Test
+    public void test_setItemAtPosition() {
+        ContainerController controller = new ContainerController(itemForPositionTests, containerService, userBean,
+                messagePresenter);
+        assertThatItemIsAt(2, 1, controller.getItemPositions());
+
+        controller.removeItemFromPosition();
+        controller.setItemAtPosition(1, 0);
+        assertThatItemIsAt(0, 1, controller.getItemPositions());
+    }
+
+    @Test
+    public void test_removeItemFromPosition() {
+        ContainerController controller = new ContainerController(itemForPositionTests, containerService, userBean,
+                messagePresenter);
+        assertThatItemIsAt(2, 1, controller.getItemPositions());
+
+        controller.removeItemFromPosition();
+        assertThatItemIsAt(-1, -1, controller.getItemPositions()); // matrix is false everywhere
     }
 
     @Deployment

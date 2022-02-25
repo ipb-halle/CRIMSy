@@ -116,6 +116,16 @@ public class Container2dController {
         }
     }
 
+    public void setItemAtPosition(int y, int x) {
+        itemPositions[x][y] = true;
+    }
+
+    public void removeItemFromPosition() {
+        if (itemPositions != null) {
+            itemPositions = new boolean[itemPositions.length][itemPositions[0].length];
+        }
+    }
+
     /*
      * Getters with logic
      */

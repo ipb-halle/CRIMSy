@@ -75,17 +75,17 @@ public class HistoryOperation {
     }
 
     private void applyPositivePositionDiff(ItemPositionHistoryList diffs) {
-//        containerController.removeItemFromPosition();
-//        for (ItemPositionsHistory diff : diffs.getPositionAdds()) {
-//            containerController.setItemAtPosition(diff.getRowNew(), diff.getColNew());
-//        }
+        containerController.removeItemFromPosition();
+        for (ItemPositionsHistory diff : diffs.getPositionAdds()) {
+            containerController.setItemAtPosition(diff.getRowNew(), diff.getColNew());
+        }
     }
 
     private void applyNegativePositionDiff(ItemPositionHistoryList diffs) {
-//        containerController.removeItemFromPosition();
-//        for (ItemPositionsHistory diff : diffs.getPositionRemoves()) {
-//            containerController.setItemAtPosition(diff.getRowOld(), diff.getColOld());
-//        }
+        containerController.removeItemFromPosition();
+        for (ItemPositionsHistory diff : diffs.getPositionRemoves()) {
+            containerController.setItemAtPosition(diff.getRowOld(), diff.getColOld());
+        }
     }
 
     private void applyPositiveItemHistory(ItemHistory history) {

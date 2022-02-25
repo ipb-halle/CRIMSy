@@ -133,6 +133,14 @@ public class ContainerController {
         return container2dController.resolveItemPositions();
     }
 
+    public void setItemAtPosition(int y, int x) {
+        container2dController.setItemAtPosition(y, x);
+    }
+
+    public void removeItemFromPosition() {
+        container2dController.removeItemFromPosition();
+    }
+
     /*
      * Getters
      */
