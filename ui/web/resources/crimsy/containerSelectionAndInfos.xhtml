@@ -31,13 +31,18 @@
             name="containerController"
             type="de.ipb_halle.lbac.items.bean.ContainerController"
             required="true" />
+        <composite:attribute
+            name="historyMode"
+            required="false"
+            default="false" />
     </composite:interface>
 
     <composite:implementation>
         <crimsy:containerModal
             controller="#{cc.attrs.containerController.containerSelectionDialogController}"
             widgetVar="dlgcontainerSearch"
-            updateTargetClass="containerPseudoClass" />
+            updateTargetClass="containerPseudoClass"
+            rendered="#{not cc.attrs.historyMode}" />
         <b:container>
             <b:row>
                 <b:column
@@ -57,7 +62,8 @@
                                     process="@this"
                                     update="@(.containerPseudoClass)"
                                     action="#{cc.attrs.containerController.actionRemoveContainer()}"
-                                    value="remove" />
+                                    value="remove"
+                                    disabled="#{cc.attrs.historyMode}" />
                             </b:column>
                         </b:row>
                         <crimsy:containerInfos containerInfoPresenter="#{cc.attrs.containerController.containerInfoPresenter}" />
@@ -88,7 +94,8 @@
                                     value="#{cc.attrs.containerController.containerInfoPresenter.containerName}"
                                     maxResults="15"
                                     forceSelection="true"
-                                    completeMethod="#{cc.attrs.containerController.nameSuggestions}">
+                                    completeMethod="#{cc.attrs.containerController.nameSuggestions}"
+                                    disabled="#{cc.attrs.historyMode}">
                                     <p:ajax
                                         event="itemSelect" 
                                         listener="#{cc.attrs.containerController.actionOnItemSelect}"
@@ -102,7 +109,8 @@
                                     process="@this"
                                     update="@(.containerModal)"
                                     oncomplete="PF('dlgcontainerSearch').show();"
-                                    value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}" />
+                                    value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}"
+                                    disabled="#{cc.attrs.historyMode}" />
                             </b:column>
                         </b:row>
                     </b:container>
@@ -112,7 +120,8 @@
                     styleClass="containerPseudoClass">
                     <crimsy:container2d
                         controller="#{cc.attrs.containerController.container2dController}"
-                        rendered="#{cc.attrs.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}" />
+                        rendered="#{cc.attrs.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"
+                        disabled="#{cc.attrs.historyMode}" />
                 </b:column>
             </b:row>
         </b:container>

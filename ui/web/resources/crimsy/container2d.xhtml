@@ -34,6 +34,10 @@
             name="controller"
             type="de.ipb_halle.lbac.items.bean.Container2dController"
             required="true" />
+        <composite:attribute
+            name="disabled"
+            required="false"
+            default="false" />
     </composite:interface>
 
     <composite:implementation>
@@ -68,7 +72,7 @@
                                 value="#{cc.attrs.controller.itemPositions[y][x]}"
                                 title="#{cc.attrs.controller.getToolTipForContainerPlace(y, x)}"
                                 styleClass="checkbox-round"
-                                disabled="#{cc.attrs.controller.isContainerPlaceDisabled(y, x)}">
+                                disabled="#{cc.attrs.disabled or cc.attrs.controller.isContainerPlaceDisabled(y, x)}">
                                 <p:ajax
                                     process="@this"
                                     update="@(.containerCheckBoxes)"

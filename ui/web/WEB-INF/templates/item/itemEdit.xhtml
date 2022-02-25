@@ -320,9 +320,9 @@
                     </p:tab>
                     <!-- Container location -->
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_location}">
-                        <o:massAttribute name="disabled" value="#{itemBean.historyMode}">
-                            <crimsy:containerSelectionAndInfos containerController="#{itemBean.containerController}"/>
-                        </o:massAttribute>
+                        <crimsy:containerSelectionAndInfos
+                            containerController="#{itemBean.containerController}"
+                            historyMode="#{itemBean.historyMode}" />
                     </p:tab>
                     <p:tab title="Print">
                         <b:container>
