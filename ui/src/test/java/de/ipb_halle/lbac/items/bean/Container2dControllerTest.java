@@ -97,7 +97,7 @@ public class Container2dControllerTest {
         assertThatItemIsAt(-1, -1, controller.getItemPositions()); // matrix is false everywhere
     }
 
-    private void assertThatItemIsAt(int x, int y, boolean[][] itemPositions) {
+    public static void assertThatItemIsAt(int x, int y, boolean[][] itemPositions) {
         for (int i = 0; i < itemPositions.length; i++) {
             for (int j = 0; j < itemPositions[i].length; j++) {
                 if ((x == i) && (y == j)) {

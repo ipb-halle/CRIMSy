@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -38,18 +36,15 @@ import org.primefaces.event.SelectEvent;
  * @author fmauz
  */
 public class ContainerController {
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
-
     private final Item originalItem;
     private final ContainerService containerService;
     private final MessagePresenter messagePresenter;
 
-    private final List<Container> availableContainers;
     private final ContainerSelectionDialogController containerSelectionDialogController;
     private Container2dController container2dController;
-
     private Container container;
     private ContainerInfoPresenter containerInfoPresenter;
+    private List<String> namesForAutocomplete;
 
     public ContainerController(Item originalItem, ContainerService containerService, UserBean userBean,
             MessagePresenter messagePresenter) {
@@ -57,21 +52,40 @@ public class ContainerController {
         this.containerService = containerService;
         this.messagePresenter = messagePresenter;
 
-        availableContainers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
+        List<Container> availableContainers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
         containerSelectionDialogController = new ContainerSelectionDialogController(availableContainers,
                 (c) -> this.actionChangeContainer(c), messagePresenter);
 
+        loadNamesForAutoComplete(availableContainers);
         actionChangeContainer(this.originalItem.getContainer());
+    }
+
+    private void loadNamesForAutoComplete(List<Container> availableContainers) {
+        namesForAutocomplete = new ArrayList<>();
+        for (Container c : availableContainers) {
+            namesForAutocomplete.add(c.getAutoCompleteString());
+        }
     }
 
     /*
      * Actions
      */
+    /**
+     * Called when the user selects a container in the p:autoComplete.
+     * 
+     * @param event
+     */
     public void actionOnItemSelect(SelectEvent event) {
         String selectedContainerName = (String) event.getObject();
-        int containerId = Integer.parseInt(selectedContainerName.split("-")[0]);
-        Container c = containerService.loadContainerById(containerId);
 
+        int containerId;
+        try {
+            containerId = Integer.parseInt(selectedContainerName.split("-")[0]);
+        } catch (NumberFormatException e) {
+            return;
+        }
+
+        Container c = containerService.loadContainerById(containerId);
         actionChangeContainer(c);
     }
 
@@ -79,12 +93,6 @@ public class ContainerController {
         actionChangeContainer(null);
     }
 
-    /**
-     * Creates a new container with empty itemPositions (default false) and creates
-     * the index lists for rows and cols(for ui:repeat) .
-     *
-     * @param c
-     */
     public void actionChangeContainer(Container c) {
         container = c;
 
@@ -97,14 +105,12 @@ public class ContainerController {
      */
     public List<String> nameSuggestions(String enteredValue) {
         List<String> matches = new ArrayList<>();
-        List<String> names = new ArrayList<>();
-        // TODO: cache the list of lowercase names
-        for (Container c : availableContainers) {
-            names.add(c.getAutoCompleteString());
+
+        if ((enteredValue == null) || (enteredValue.trim().isEmpty())) {
+            return matches;
         }
-        for (String s : names) {
-            if (enteredValue != null
-                    && (enteredValue.trim().isEmpty() || s.toLowerCase().contains(enteredValue.toLowerCase()))) {
+        for (String s : namesForAutocomplete) {
+            if (s.toLowerCase().contains(enteredValue.toLowerCase())) {
                 matches.add(s);
             }
         }
@@ -128,7 +134,7 @@ public class ContainerController {
     }
 
     /*
-     * Getters/setters
+     * Getters
      */
     public Container getContainer() {
         return container;
