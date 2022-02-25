@@ -18,6 +18,9 @@
 package de.ipb_halle.pageobjects.navigation;
 
 import static com.codeborne.selenide.Selenide.$;
+import static de.ipb_halle.pageobjects.navigation.Navigation.Menu.BIOCLOUD;
+import static de.ipb_halle.pageobjects.navigation.Navigation.Menu.LIMS;
+import static de.ipb_halle.pageobjects.navigation.Navigation.Menu.SETTINGS;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import java.util.function.Consumer;
@@ -28,6 +31,7 @@ import de.ipb_halle.pageobjects.pages.NavigablePage;
 import de.ipb_halle.pageobjects.pages.materials.MaterialOverviewPage;
 import de.ipb_halle.pageobjects.pages.projects.ProjectOverviewPage;
 import de.ipb_halle.pageobjects.pages.search.SearchPage;
+import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserManagementPage;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/navigation.xhtml
@@ -35,24 +39,24 @@ import de.ipb_halle.pageobjects.pages.search.SearchPage;
  * @author flange
  */
 public enum Navigation {
-    SEARCH(Menu.BIOCLOUD, "navigation:search", SearchPage.class),
-    WORDCLOUD_SEARCH(Menu.BIOCLOUD, "navigation:wordCloudSearch", null),
-    SEQUENCE_SEARCH(Menu.BIOCLOUD, "navigation:sequenceSearch", null),
-    FORUM(Menu.BIOCLOUD, "navigation:forum", null),
-    MATERIALS_OVERVIEW(Menu.LIMS, "navigation:materials", MaterialOverviewPage.class),
-    PROJECTS_OVERVIEW(Menu.LIMS, "navigation:projects", ProjectOverviewPage.class),
-    ITEMS_OVERVIEW(Menu.LIMS, "navigation:items", null),
-    TAXONOMY(Menu.LIMS, "navigation:taxonomy", null),
-    EXPERIMENTS(Menu.LIMS, "navigation:experiments", null),
-    CONTAINERS_OVERVIEW(Menu.LIMS, "navigation:containers", null),
-    MY_ACCOUNT(Menu.SETTINGS, "navigation:myAccount", null),
-    USER_MANAGEMENT(Menu.SETTINGS, "navigation:userManagement", null),
-    GROUP_MANAGEMENT(Menu.SETTINGS, "navigation:groupManagement", null),
-    LDAP_CONNECTION(Menu.SETTINGS, "navigation:ldapSettings", null),
-    PRINTER_SETTINGS(Menu.SETTINGS, "navigation:printerSettings", null),
-    SYSTEM_SETTINGS(Menu.SETTINGS, "navigation:systemSettings", null),
-    CLOUD_NODE_MANAGEMENT(Menu.SETTINGS, "navigation:cloudNodeManagement", null),
-    COLLECTION_MANAGEMENT(Menu.SETTINGS, "navigation:collectionManagement", null);
+    SEARCH(BIOCLOUD, "navigation:search", SearchPage.class),
+    WORDCLOUD_SEARCH(BIOCLOUD, "navigation:wordCloudSearch", null),
+    SEQUENCE_SEARCH(BIOCLOUD, "navigation:sequenceSearch", null),
+    FORUM(BIOCLOUD, "navigation:forum", null),
+    MATERIALS_OVERVIEW(LIMS, "navigation:materials", MaterialOverviewPage.class),
+    PROJECTS_OVERVIEW(LIMS, "navigation:projects", ProjectOverviewPage.class),
+    ITEMS_OVERVIEW(LIMS, "navigation:items", null),
+    TAXONOMY(LIMS, "navigation:taxonomy", null),
+    EXPERIMENTS(LIMS, "navigation:experiments", null),
+    CONTAINERS_OVERVIEW(LIMS, "navigation:containers", null),
+    MY_ACCOUNT(SETTINGS, "navigation:myAccount", null),
+    USER_MANAGEMENT(SETTINGS, "navigation:userManagement", UserManagementPage.class),
+    GROUP_MANAGEMENT(SETTINGS, "navigation:groupManagement", null),
+    LDAP_CONNECTION(SETTINGS, "navigation:ldapSettings", null),
+    PRINTER_SETTINGS(SETTINGS, "navigation:printerSettings", null),
+    SYSTEM_SETTINGS(SETTINGS, "navigation:systemSettings", null),
+    CLOUD_NODE_MANAGEMENT(SETTINGS, "navigation:cloudNodeManagement", null),
+    COLLECTION_MANAGEMENT(SETTINGS, "navigation:collectionManagement", null);
 
     public enum Menu {
         BIOCLOUD("navigation:bioCloud", e -> e.hover()),
@@ -79,8 +83,7 @@ public enum Navigation {
     private final SelenideElement navCmdLink;
     private final Class<? extends NavigablePage> pageObjectClass;
 
-    private Navigation(Menu menu, String navCmdLinkTestId,
-            Class<? extends NavigablePage> pageObjectClass) {
+    private Navigation(Menu menu, String navCmdLinkTestId, Class<? extends NavigablePage> pageObjectClass) {
         this.menu = menu;
         this.navCmdLink = $(testId(navCmdLinkTestId));
         this.pageObjectClass = pageObjectClass;

@@ -8,7 +8,8 @@
 
 #### BootsFaces
 * `<b:commandButton>`: `$(testId("testId"))`
-* `<b:dataTable>`: use class `DataTable`
+* `<b:dataTable>`: use class `DataTable`; TODO: evaluate search and pagination
+* `<b:inputSecret>`: `$(testId("input", "testId"))`
 * `<b:inputText>`: `$(testId("input", "testId"))`
 * `<b:inputTextarea>`: `$(testId("textarea", "testId"))`
 * `<b:message>`: `$(testId("testId"))`

@@ -24,7 +24,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 <h:body>
     <ui:composition>
         <h2>
@@ -43,91 +44,114 @@
                  Putting an icon via the facet "prepend" or "append" in
                  conjunction with p:dialog's modal="true" leads to an 
                  unresponsive input field (not clickable, no keyboard inputs). -->
-
             <b:panelGrid colSpans='#{((userMgrBean.mode == "UPDATE") and (userMgrBean.user.getSubSystemType().toString() == "LOCAL")) ? "6,6" : "12" }'>
-
                 <!-- user details -->
                 <b:form id="frmModalUserDialog"> 
-
-                    <b:panel  title="#{msgs.userMgr_UserData}" collapsible="false" look="info">
-
+                    <b:panel
+                        title="#{msgs.userMgr_UserData}"
+                        collapsible="false"
+                        look="info">
                         <h:outputText
-                                value="#{msgs.userMgr_viewOnly}" 
-                                rendered="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}"/>
+                            value="#{msgs.userMgr_viewOnly}" 
+                            rendered="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}" />
+                        <b:inputText
+                            id="id"
+                            pt:data-test-id="userManagement:userDialog:id"
+                            value="#{userMgrBean.user.id}"
+                            label="Id"
+                            style="z-index: auto;"
+                            renderLabel="true"
+                            disabled="true"
+                            required="false">
+                            <f:facet name="prepend">
+                                <b:icon name="cloud" />
+                            </f:facet>
+                        </b:inputText>
+                        <b:message
+                            pt:data-test-id="userManagement:userDialog:idMessage"
+                            for="@previous" />
 
-                        <b:inputText id="id"
-                                     value="#{userMgrBean.user.id}"
-                                     label="Id"
-                                     style="z-index: auto;"
-                                     renderLabel="true"
-                                     disabled="true"
-                                     required="false">
+                        <b:inputText
+                            id="name"
+                            pt:data-test-id="userManagement:userDialog:name"
+                            value="#{userMgrBean.user.name}"
+                            styleClass="tstUserMgrName"
+                            label="#{msgs.Name}"
+                            style="z-index: auto;"
+                            disabled="#{(userMgrBean.user.getSubSystemType().toString() != 'LOCAL') or (userMgrBean.mode == 'DELETE')}"
+                            renderLabel="true"
+                            placeholder="#{msgs.userMgr_UsernamePlaceholder}"
+                            required="true">
                             <f:facet name="prepend">
-                                <b:icon name="cloud"/>
+                                <b:icon name="user" />
                             </f:facet>
                         </b:inputText>
-                        <b:message for="@previous"/>
-                        <b:inputText id="name"
-                                     value="#{userMgrBean.user.name}"
-                                     styleClass="tstUserMgrName"
-                                     label="#{msgs.Name}"
-                                     style="z-index: auto;"
-                                     disabled="#{(userMgrBean.user.getSubSystemType().toString() != 'LOCAL') or (userMgrBean.mode == 'DELETE')}"
-                                     renderLabel="true"
-                                     placeholder="#{msgs.userMgr_UsernamePlaceholder}"
-                                     required="true">
-                            <f:facet name="prepend">
-                                <b:icon name="user"/>
-                            </f:facet>
-                        </b:inputText>
-                        <b:message for="@previous"/>
-                        <b:inputText id="login"
-                                     value="#{userMgrBean.user.login}"
-                                     styleClass="tstUserMgrLogin"
-                                     label="#{msgs.userMgr_Login}"
-                                     style="z-index: auto;"
-                                     disabled="#{(userMgrBean.user.getSubSystemType().toString() != 'LOCAL') or (userMgrBean.mode == 'DELETE')}"
-                                     renderLabel="true"
-                                     placeholder="#{msgs.userMgr_LoginPlaceholder}"
-                                     required="true">
+                        <b:message
+                            pt:data-test-id="userManagement:userDialog:nameMessage"
+                            for="@previous" />
+
+                        <b:inputText
+                            id="login"
+                            pt:data-test-id="userManagement:userDialog:login"
+                            value="#{userMgrBean.user.login}"
+                            styleClass="tstUserMgrLogin"
+                            label="#{msgs.userMgr_Login}"
+                            style="z-index: auto;"
+                            disabled="#{(userMgrBean.user.getSubSystemType().toString() != 'LOCAL') or (userMgrBean.mode == 'DELETE')}"
+                            renderLabel="true"
+                            placeholder="#{msgs.userMgr_LoginPlaceholder}"
+                            required="true">
                             <f:validator validatorId="AccountValidator" /> 
                             <f:facet name="prepend">
-                                <b:icon name="star"/>
+                                <b:icon name="star" />
                             </f:facet>
                         </b:inputText>
-                        <b:message for="@previous"/>
-                        <b:inputText id="shortcut"
-                                     value="#{userMgrBean.user.shortcut}"
-                                     styleClass="tstUserMgrShortcut"
-                                     label="#{msgs.userMgr_shortcut}"
-                                     style="z-index: auto;"
-                                     disabled="#{(!userBean.isAdminAccount()) or (userMgrBean.mode == 'DELETE')}"
-                                     renderLabel="true"
-                                     placeholder="#{msgs.userMgr_shortcut_placeholder}">
+                        <b:message
+                            pt:data-test-id="userManagement:userDialog:loginMessage"
+                            for="@previous" />
+
+                        <b:inputText
+                            id="shortcut"
+                            pt:data-test-id="userManagement:userDialog:shortcut"
+                            value="#{userMgrBean.user.shortcut}"
+                            styleClass="tstUserMgrShortcut"
+                            label="#{msgs.userMgr_shortcut}"
+                            style="z-index: auto;"
+                            disabled="#{(!userBean.isAdminAccount()) or (userMgrBean.mode == 'DELETE')}"
+                            renderLabel="true"
+                            placeholder="#{msgs.userMgr_shortcut_placeholder}">
                             <f:validator validatorId="ShortcutValidator" /> 
                             <f:facet name="prepend">
-                                <b:icon name="star"/>
+                                <b:icon name="star" />
                             </f:facet>
                         </b:inputText>
-                        <b:message for="@previous"/>
-                        <b:inputText id="email"
-                                     value="#{userMgrBean.user.email}"
-                                     styleClass="tstUserMgrEmail"
-                                     label="#{msgs.Email}"
-                                     style="z-index: auto;"
-                                     disabled="#{(userMgrBean.user.getSubSystemType().toString() != 'LOCAL') or (userMgrBean.mode == 'DELETE')}"
-                                     renderLabel="true"
-                                     type="email"
-                                     placeholder="#{msgs.EmailPlaceholder}"
-                                     required="false">
+                        <b:message
+                            pt:data-test-id="userManagement:userDialog:shortcutMessage"
+                            for="@previous" />
+ 
+                        <b:inputText
+                            id="email"
+                            pt:data-test-id="userManagement:userDialog:email"
+                            value="#{userMgrBean.user.email}"
+                            styleClass="tstUserMgrEmail"
+                            label="#{msgs.Email}"
+                            style="z-index: auto;"
+                            disabled="#{(userMgrBean.user.getSubSystemType().toString() != 'LOCAL') or (userMgrBean.mode == 'DELETE')}"
+                            renderLabel="true"
+                            type="email"
+                            placeholder="#{msgs.EmailPlaceholder}"
+                            required="false">
                             <f:validator validatorId="EmailAddressValidator" /> 
                             <f:facet name="prepend">
-                                <b:icon name="envelope"/>
+                                <b:icon name="envelope" />
                             </f:facet>
                         </b:inputText>
-                        <b:message for="@previous"/>
+                        <b:message
+                            pt:data-test-id="userManagement:userDialog:emailMessage"
+                            for="@previous" />
 
                         <b:inputSecret
+                            pt:data-test-id="userManagement:userDialog:password"
                             value="#{userMgrBean.tempPassword}"
                             styleClass="tstUserMgrPassword"
                             label="#{msgs.Password}"
@@ -139,14 +163,17 @@
                             converter="DummyConverter">
                             <f:validator validatorId="PasswordValidator" /> 
                             <f:facet name="prepend">
-                                <b:iconAwesome name="fa-key"/>
+                                <b:iconAwesome name="fa-key" />
                             </f:facet>
                         </b:inputSecret>
-                        <b:message for="@previous"/>
+                        <b:message
+                            pt:data-test-id="userManagement:userDialog:passwordMessage"
+                            for="@previous" />
 
                         <!-- value="" -->
                         <b:inputSecret
                             id="tempPasswordRepeat"
+                            pt:data-test-id="userManagement:userDialog:passwordRepeat"
                             label="#{msgs.userMgr_Repeat}"
                             style="z-index: auto;"
                             styleClass="tstUserMgrPasswordRepeat"
@@ -156,62 +183,74 @@
                             required="true"
                             converter="DummyConverter">
                             <f:facet name="prepend">
-                                <b:iconAwesome name="fa-key"/>
+                                <b:iconAwesome name="fa-key" />
                             </f:facet>
                         </b:inputSecret>
 
-                        <b:inputText id="phone"
-                                     value="#{userMgrBean.user.phone}"
-                                     styleClass="tstUserMgrPhone"
-                                     disabled="#{(userMgrBean.user.getSubSystemType().toString() != 'LOCAL') or (userMgrBean.mode == 'DELETE')}"
-                                     label="#{msgs.Phone}"
-                                     style="z-index: auto;"
-                                     renderLabel="true"
-                                     type="tel"
-                                     placeholder="#{msgs.PhonePlaceholder}"
-                                     required="false">
+                        <b:inputText
+                            id="phone"
+                            pt:data-test-id="userManagement:userDialog:phone"
+                            value="#{userMgrBean.user.phone}"
+                            styleClass="tstUserMgrPhone"
+                            disabled="#{(userMgrBean.user.getSubSystemType().toString() != 'LOCAL') or (userMgrBean.mode == 'DELETE')}"
+                            label="#{msgs.Phone}"
+                            style="z-index: auto;"
+                            renderLabel="true"
+                            type="tel"
+                            placeholder="#{msgs.PhonePlaceholder}"
+                            required="false">
                             <f:facet name="prepend">
-                                <b:icon name="phone"/>
+                                <b:icon name="phone" />
                             </f:facet>
                         </b:inputText>
-                        <b:message for="@previous"/>
+                        <b:message
+                            pt:data-test-id="userManagement:userDialog:phoneMessage"
+                            for="@previous" />
 
                         <b:fetchBeanInfos/>
 
                         <b:column styleClass="text-center"> 
-                            <p:commandButton value="#{msgs.Save}"
-                                             styleClass="tstUserMgrCreate"
-                                             rendered="#{userMgrBean.mode == 'CREATE'}"
-                                             ajax="true"
-                                             update="@form frmUserList:userList growlMsg"
-                                             action="#{userMgrBean.actionCreate()}"
-                                             oncomplete="javascript:if(!validationFailed&amp;&amp;args.success){PF('userDialogWidgetVar').hide()};return false;"
-                                             />
-                            <p:commandButton value="#{msgs.Edit}"
-                                             styleClass="tstUserMgrEdit"
-                                             rendered="#{userMgrBean.mode == 'UPDATE'}"
-                                             ajax="true"
-                                             update="@form frmUserList:userList growlMsg"
-                                             action="#{userMgrBean.actionUpdate()}"
-                                             oncomplete="if(!validationFailed&amp;&amp;args.success){PF('userDialogWidgetVar').hide()};return false;"
-                                             />
-                            <p:commandButton value="#{msgs.Delete}"
-                                             styleClass="tstUserMgrDelete"
-                                             rendered="#{userMgrBean.mode == 'DELETE'}"
-                                             update="frmUserList:userList"
-                                             ajax="true"
-                                             action="#{userMgrBean.actionDeactivateUser()}"
-                                             oncomplete="PF('userDialogWidgetVar').hide();"
-                                             />
-
+                            <p:commandButton
+                                pt:data-test-id="userManagement:userDialog:confirm"
+                                value="#{msgs.Save}"
+                                styleClass="tstUserMgrCreate"
+                                rendered="#{userMgrBean.mode == 'CREATE'}"
+                                ajax="true"
+                                update="@form frmUserList:userList growlMsg"
+                                action="#{userMgrBean.actionCreate()}"
+                                oncomplete="javascript:if(!validationFailed&amp;&amp;args.success){PF('userDialogWidgetVar').hide()};return false;" />
+                            <p:commandButton
+                                pt:data-test-id="userManagement:userDialog:confirm"
+                                value="#{msgs.Edit}"
+                                styleClass="tstUserMgrEdit"
+                                rendered="#{userMgrBean.mode == 'UPDATE'}"
+                                ajax="true"
+                                update="@form frmUserList:userList growlMsg"
+                                action="#{userMgrBean.actionUpdate()}"
+                                oncomplete="if(!validationFailed&amp;&amp;args.success){PF('userDialogWidgetVar').hide()};return false;" />
+                            <p:commandButton
+                                pt:data-test-id="userManagement:userDialog:confirm"
+                                value="#{msgs.Delete}"
+                                styleClass="tstUserMgrDelete"
+                                rendered="#{userMgrBean.mode == 'DELETE'}"
+                                update="frmUserList:userList"
+                                ajax="true"
+                                action="#{userMgrBean.actionDeactivateUser()}"
+                                oncomplete="PF('userDialogWidgetVar').hide();" />
                         </b:column>
                     </b:panel>
                 </b:form>
-                <!-- password -->
-                <b:form id="frmModalPassword" rendered="#{((userMgrBean.mode == 'UPDATE') and (userMgrBean.user.getSubSystemType().toString() == 'LOCAL'))}">
-                    <b:panel title="#{msgs.userMgr_ChangePassword}" collapsible="false" look="primary">
 
+                <!-- password -->
+                <b:form
+                    id="frmModalPassword"
+                    rendered="#{((userMgrBean.mode == 'UPDATE') and (userMgrBean.user.getSubSystemType().toString() == 'LOCAL'))}">
+                    <b:panel
+                        title="#{msgs.userMgr_ChangePassword}"
+                        collapsible="false"
+                        look="primary">
                         <b:inputSecret
+                            pt:data-test-id="userManagement:userDialog:newPassword"
                             value="#{userMgrBean.tempPassword}"
                             label="#{msgs.userMgr_NewPassword}"
                             style="z-index: auto;"
@@ -222,13 +261,16 @@
                             converter="DummyConverter">
                             <f:validator validatorId="PasswordValidator" />
                             <f:facet name="prepend">
-                                <b:iconAwesome name="fa-key"/>
+                                <b:iconAwesome name="fa-key" />
                             </f:facet>
                         </b:inputSecret>
-                        <b:message for="@previous"/>
+                        <b:message
+                            pt:data-test-id="userManagement:userDialog:newPasswordMessage"
+                            for="@previous" />
 
                         <b:inputSecret
-                            id="tempPasswordRepeat" 
+                            id="tempPasswordRepeat"
+                            pt:data-test-id="userManagement:userDialog:newPasswordRepeat"
                             value="#{tempPasswordRepeat}"
                             styleClass="tstUserMgrChgPasswd2"
                             label="#{msgs.userMgr_Repeat}"
@@ -238,32 +280,37 @@
                             required="true"
                             converter="DummyConverter">
                             <f:facet name="prepend">
-                                <b:iconAwesome name="fa-key"/>
+                                <b:iconAwesome name="fa-key" />
                             </f:facet>
                         </b:inputSecret>
 
-                        <b:fetchBeanInfos/> 
+                        <b:fetchBeanInfos /> 
 
                         <b:column styleClass="text-center">
-                            <b:commandButton value="#{msgs.userMgr_ChangePassword}"
-                                             styleClass="tstUserMgrChgPasswdCmd"
-                                             type="submit"
-                                             ajax="true"
-                                             update="@form frmUserList:userList growlMsg"
-                                             onclick="ajax:userMgrBean.actionChangePassword();"
-                                             oncomplete="if(!validationFailed){PF('userDialogWidgetVar').hide()};return false;"
-                                             look="primary"/>
+                            <b:commandButton
+                                pt:data-test-id="userManagement:userDialog:changePassword"
+                                value="#{msgs.userMgr_ChangePassword}"
+                                styleClass="tstUserMgrChgPasswdCmd"
+                                type="submit"
+                                ajax="true"
+                                update="@form frmUserList:userList growlMsg"
+                                onclick="ajax:userMgrBean.actionChangePassword();"
+                                oncomplete="if(!validationFailed){PF('userDialogWidgetVar').hide()};return false;"
+                                look="primary" />
                         </b:column>
                     </b:panel>
                 </b:form>
             </b:panelGrid>
             <center>
-              <b:button value="#{msgs.Close}" styleClass="tstUserMgrEditClose" onclick="PF('userDialogWidgetVar').hide()"/>
+                <b:button
+                    pt:data-test-id="userManagement:userDialog:close"
+                    value="#{msgs.Close}"
+                    styleClass="tstUserMgrEditClose"
+                    onclick="PF('userDialogWidgetVar').hide()" />
             </center>
         </p:dialog>
 
         <!-- group memberships -->
-
         <p:dialog
             id="modalGroupDialog"
             widgetVar="groupMembershipsDialogWidgetVar"
@@ -273,124 +320,141 @@
             positionType="absolute"
             width="900">
             <b:form id="frmModalGroupDialog">
-
-                <b:row>#{msgs.userMgr_Memberships}</b:row>
-                <b:dataTable id="membershipList"
-                         value="#{userMgrBean.membershipList}"
-                         styleClass="membershipList"
-                         striped="true"
-                         responsive="false"
-                         page-length="5"
-                         page-length-menu="5,7,10,15"
-                         customOptions="autoWidth:true"
-                         fixedHeader="true"
-                         var="ms"
-                         csv="false"
-                         columnVisibility="false"
-                         saveState="false">
-                <f:facet name="header">
-                    <tr>
-                        <th colspan="5">
-                          <b:commandButton style="padding: 0 4px;"
-                             value="#{msgs.userMgr_showNested}"
-                             iconAwesome="#{userMgrBean.nestedFlag ? 'toggle-on' : 'toggle-off'}"
-                             ajax="true"
-                             type="link"
-                             update="frmModalGroupDialog"
-                             onclick="ajax:userMgrBean.actionToggleNestedFlag();" />
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.Name}</th>
-                        <th>#{msgs.Institution}</th>
-                        <th>#{msgs.Type}</th>
-                        <th>#{msgs.userMgr_nested}</th>
-                        <th style="min-width:30px">#{msgs.Tools}</th>
-                    </tr>
-                </f:facet>
-
-                <b:dataTableColumn value="#{ms.getGroup().getName()}" order="asc"/>
-                <b:dataTableColumn value="#{ms.getGroup().getNode().getInstitution()}"/>
-                <b:dataTableColumn value="#{ms.getGroup().getSubSystemType().toString()}"/>
-                <b:dataTableColumn value="#{ms.nested ? msgs.YES : msgs.NO}"/>
-                <b:dataTableColumn>
-                    <b:commandButton style="padding: 0 4px;"
-                                     styleClass="tstUserMgrMembershipDelete"
-                                     icon="trash"
-                                     look="link"
-                                     ajax="true"
-                                     type="button"
-                                     update="frmModalGroupDialog"
-                                     disabled="#{ms.nested || (ms.getGroup().getSubSystemType().toString() != 'LOCAL')}"
-                                     onclick="ajax:userMgrBean.actionDeleteMembership(ms);" />
-                </b:dataTableColumn>
+                <b:row>
+                    <h:outputText value="#{msgs.userMgr_Memberships}" />
+                </b:row>
+                <b:dataTable
+                    id="membershipList"
+                    pt:data-test-id="userManagement:groupDialog:membershipTable"
+                    value="#{userMgrBean.membershipList}"
+                    styleClass="membershipList"
+                    striped="true"
+                    responsive="false"
+                    page-length="5"
+                    page-length-menu="5,7,10,15"
+                    customOptions="autoWidth:true"
+                    fixedHeader="true"
+                    var="ms"
+                    csv="false"
+                    columnVisibility="false"
+                    saveState="false">
+                    <f:facet name="header">
+                        <tr>
+                            <th colspan="5">
+                                <b:commandButton
+                                    pt:data-test-id="userManagement:groupDialog:toggleNested"
+                                    style="padding: 0 4px;"
+                                    value="#{msgs.userMgr_showNested}"
+                                    iconAwesome="#{userMgrBean.nestedFlag ? 'toggle-on' : 'toggle-off'}"
+                                    ajax="true"
+                                    type="link"
+                                    update="frmModalGroupDialog"
+                                    onclick="ajax:userMgrBean.actionToggleNestedFlag();" />
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>#{msgs.Name}</th>
+                            <th>#{msgs.Institution}</th>
+                            <th>#{msgs.Type}</th>
+                            <th>#{msgs.userMgr_nested}</th>
+                            <th style="min-width:30px">#{msgs.Tools}</th>
+                        </tr>
+                    </f:facet>
+                    <b:dataTableColumn
+                        value="#{ms.getGroup().getName()}"
+                        order="asc" />
+                    <b:dataTableColumn value="#{ms.getGroup().getNode().getInstitution()}" />
+                    <b:dataTableColumn value="#{ms.getGroup().getSubSystemType().toString()}" />
+                    <b:dataTableColumn value="#{ms.nested ? msgs.YES : msgs.NO}" />
+                    <b:dataTableColumn>
+                        <b:commandButton
+                            pt:data-test-id="userManagement:groupDialog:delete"
+                            style="padding: 0 4px;"
+                            styleClass="tstUserMgrMembershipDelete"
+                            icon="trash"
+                            look="link"
+                            ajax="true"
+                            type="button"
+                            update="frmModalGroupDialog"
+                            disabled="#{ms.nested || (ms.getGroup().getSubSystemType().toString() != 'LOCAL')}"
+                            onclick="ajax:userMgrBean.actionDeleteMembership(ms);" />
+                    </b:dataTableColumn>
                 </b:dataTable>
 
-
-                <b:row>#{msgs.userMgr_AvailableGroups}</b:row>
-                <b:dataTable id="groupList"
-                         value="#{userMgrBean.groupList}"
-                         styleClass="groupListClass"
-                         striped="true"
-                         responsive="false"
-                         page-length="5"
-                         page-length-menu="5,7,10,15"
-                         customOptions="autoWidth:true"
-                         fixedHeader="true"
-                         var="group"
-                         csv="false"
-                         columnVisibility="false"
-                         saveState="false">
-                <f:facet name="header">
-                    <tr>
-                        <th>#{msgs.Name}</th>
-                        <th>#{msgs.Institution}</th>
-                        <th style="min-width:30px">#{msgs.Tools}</th>
-                    </tr>
-                </f:facet>
-
-                <b:dataTableColumn value="#{group.getName()}" order="asc"/>
-                <b:dataTableColumn value="#{group.getNode().getInstitution()}"/>
-                <b:dataTableColumn>
-                    <b:commandButton style="padding: 0 4px;"
-                                     styleClass="tstUserMgrMembershipAdd"
-                                     iconAwesome="user-plus"
-                                     look="link"
-                                     ajax="true"
-                                     type="button"
-                                     update="frmModalGroupDialog"
-                                     onclick="ajax:userMgrBean.actionAddMembership(group)" />
-                </b:dataTableColumn>
+                <b:row>
+                    <h:outputText value="#{msgs.userMgr_AvailableGroups}" />
+                </b:row>
+                <b:dataTable
+                    id="groupList"
+                    pt:data-test-id="userManagement:groupDialog:availableGroupsTable"
+                    value="#{userMgrBean.groupList}"
+                    styleClass="groupListClass"
+                    striped="true"
+                    responsive="false"
+                    page-length="5"
+                    page-length-menu="5,7,10,15"
+                    customOptions="autoWidth:true"
+                    fixedHeader="true"
+                    var="group"
+                    csv="false"
+                    columnVisibility="false"
+                    saveState="false">
+                    <f:facet name="header">
+                        <tr>
+                            <th>#{msgs.Name}</th>
+                            <th>#{msgs.Institution}</th>
+                            <th style="min-width:30px">#{msgs.Tools}</th>
+                        </tr>
+                    </f:facet>
+                    <b:dataTableColumn
+                        value="#{group.getName()}"
+                        order="asc" />
+                    <b:dataTableColumn value="#{group.getNode().getInstitution()}" />
+                    <b:dataTableColumn>
+                        <b:commandButton
+                            pt:data-test-id="userManagement:groupDialog:add"
+                            style="padding: 0 4px;"
+                            styleClass="tstUserMgrMembershipAdd"
+                            iconAwesome="user-plus"
+                            look="link"
+                            ajax="true"
+                            type="button"
+                            update="frmModalGroupDialog"
+                            onclick="ajax:userMgrBean.actionAddMembership(group)" />
+                    </b:dataTableColumn>
                 </b:dataTable>
-
-
                 <b:message for="@previous"/>
 
                 <b:fetchBeanInfos/>
 
                 <b:row styleClass="modal-footer">
-                    <b:button value="#{msgs.Close}" styleClass="tstUserMgrMembershipClose" onclick="PF('groupMembershipsDialogWidgetVar').hide()" />
+                    <b:button
+                        pt:data-test-id="userManagement:groupDialog:close"
+                        value="#{msgs.Close}"
+                        styleClass="tstUserMgrMembershipClose"
+                        onclick="PF('groupMembershipsDialogWidgetVar').hide()" />
                 </b:row>
             </b:form>
         </p:dialog>
 
-
         <!-- user list -->
-
         <b:form id="frmUserList">
-            <b:dataTable id="userList"
-                         value="#{userMgrBean.userList}"
-                         styleClass="userList"
-                         striped="true"
-                         responsive="false"
-                         customOptions="autoWidth:true"
-                         fixedHeader="true"
-                         var="user"
-                         saveState="false">
+            <b:dataTable
+                id="userList"
+                pt:data-test-id="userManagement:usersTable"
+                value="#{userMgrBean.userList}"
+                var="user"
+                styleClass="userList"
+                striped="true"
+                responsive="false"
+                customOptions="autoWidth:true"
+                fixedHeader="true"
+                saveState="false">
                 <f:facet name="header">
                     <tr>
                         <th colspan="9">
                             <b:commandButton
+                                pt:data-test-id="userManagement:createUser"
                                 styleClass="pull-right tstUserMgrCreateDlg"
                                 style="margin:0 2px;"
                                 iconAwesome="fa-plus-circle"
@@ -405,6 +469,7 @@
                                 <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                             </b:commandButton>
                             <b:commandButton
+                                pt:data-test-id="userManagement:refresh"
                                 styleClass="pull-right tstUserMgrRefresh"
                                 style="margin:0 2px;"
                                 iconAwesome="refresh"
@@ -428,15 +493,18 @@
                         <th style="min-width:50px">#{msgs.Tools}</th>
                     </tr>
                 </f:facet>
-                <b:dataTableColumn value="#{user.name}" order="asc"/>
-                <b:dataTableColumn value="#{user.login}"/>
-                <b:dataTableColumn value="#{user.shortcut}"/>
-                <b:dataTableColumn value="#{user.email}"/>
-                <b:dataTableColumn value="#{user.phone}"/>
-                <b:dataTableColumn value="#{user.getSubSystemType().toString()}"/>
-                <b:dataTableColumn value="#{user.node.institution}"/>
+                <b:dataTableColumn
+                    value="#{user.name}"
+                    order="asc" />
+                <b:dataTableColumn value="#{user.login}" />
+                <b:dataTableColumn value="#{user.shortcut}" />
+                <b:dataTableColumn value="#{user.email}" />
+                <b:dataTableColumn value="#{user.phone}" />
+                <b:dataTableColumn value="#{user.getSubSystemType().toString()}" />
+                <b:dataTableColumn value="#{user.node.institution}" />
                 <b:dataTableColumn>
                     <b:commandButton
+                        pt:data-test-id="userManagement:editUser"
                         style="padding: 0 4px;"
                         styleClass="tstUserMgrEditDlg"
                         icon="pencil"
@@ -451,6 +519,7 @@
                     <!-- possibly 'modalGroupDialog.DataTable().responsive.recalc();' could be 
                          necessary for responsive tables within a modal form -->
                     <b:commandButton
+                        pt:data-test-id="userManagement:editMemberships"
                         style="padding: 0 4px;"
                         styleClass="tstUserMgrMembershipDlg"
                         iconAwesome="users"
@@ -461,6 +530,7 @@
                         onclick="ajax:userMgrBean.setUser(user);" 
                         oncomplete="PF('groupMembershipsDialogWidgetVar').show();" />
                     <b:commandButton
+                        pt:data-test-id="userManagement:deleteUser"
                         style="padding: 0 4px;"
                         styleClass="tstUserMgrDeleteDlg"
                         icon="trash"
