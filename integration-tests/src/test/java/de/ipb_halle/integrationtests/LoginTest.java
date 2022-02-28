@@ -21,6 +21,8 @@ import static com.codeborne.selenide.Selenide.open;
 import static de.ipb_halle.pageobjects.components.growl.Severity.INFO;
 import static de.ipb_halle.pageobjects.components.growl.Severity.WARN;
 import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY;
+import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_PASSWORD;
+import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_USER;
 import static de.ipb_halle.test.GrowlAssert.assertGrowlI18n;
 import static de.ipb_halle.test.I18nAssert.assertJSFMessage;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -57,7 +59,7 @@ public class LoginTest {
 
     @Test
     public void test_sucessfulLogin() {
-        SearchPage searchPage = (SearchPage) loginPage.login("admin", "admin");
+        SearchPage searchPage = (SearchPage) loginPage.login(ADMIN_USER, ADMIN_PASSWORD);
 
         assertTrue(searchPage.isLoggedIn());
         List<Growl> growls = Growl.getGrowls();

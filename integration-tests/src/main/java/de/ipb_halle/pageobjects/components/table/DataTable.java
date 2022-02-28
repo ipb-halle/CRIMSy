@@ -21,11 +21,16 @@ import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.conditions.CssClass;
+
+import de.ipb_halle.pageobjects.util.Selectors;
 
 /**
  * Page object representing a BootsFaces DataTable.
@@ -121,6 +126,15 @@ public class DataTable {
             }
         }
         throw new RuntimeException("Column with name '" + colName + "' does not exist in table " + table);
+    }
+
+    public SelenideElement getSearchInput() {
+        String idOfTable = table.getAttribute("id");
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("type", "search");
+        attributes.put("aria-controls", idOfTable);
+        String selector = Selectors.elementWithAttributes("input", attributes);
+        return $(selector);
     }
 
     /*

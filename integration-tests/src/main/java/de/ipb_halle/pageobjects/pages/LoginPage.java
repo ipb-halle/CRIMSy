@@ -19,6 +19,8 @@ package de.ipb_halle.pageobjects.pages;
 
 import static com.codeborne.selenide.Selenide.*;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
+import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_PASSWORD;
+import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_USER;
 
 import com.codeborne.selenide.SelenideElement;
 
@@ -30,21 +32,15 @@ import de.ipb_halle.pageobjects.pages.search.SearchPage;
  * @author flange
  */
 public class LoginPage extends AbstractPage {
-    private static final SelenideElement LOGINNAME_INPUT = $(
-            testId("input", "login:loginName_input"));
-    private static final SelenideElement LOGINNAME_MESSAGE = $(
-            testId("login:loginName_message"));
-    private static final SelenideElement PASSWORD_INPUT = $(
-            testId("input", "login:password_input"));
-    private static final SelenideElement PASSWORD_MESSAGE = $(
-            testId("login:password_message"));
-    private static final SelenideElement LOGIN_BUTTON = $(
-            testId("login:loginButton"));
+    private static final SelenideElement LOGINNAME_INPUT = $(testId("input", "login:loginName_input"));
+    private static final SelenideElement LOGINNAME_MESSAGE = $(testId("login:loginName_message"));
+    private static final SelenideElement PASSWORD_INPUT = $(testId("input", "login:password_input"));
+    private static final SelenideElement PASSWORD_MESSAGE = $(testId("login:password_message"));
+    private static final SelenideElement LOGIN_BUTTON = $(testId("login:loginButton"));
 
     public void navigate() {
         if (isLoggedIn()) {
-            throw new RuntimeException(
-                    "I am already logged in! Log out first to reach this page.");
+            throw new RuntimeException("I am already logged in! Log out first to reach this page.");
         }
         LOGIN_CMDLINK.click();
     }
@@ -62,6 +58,10 @@ public class LoginPage extends AbstractPage {
         } else {
             return this;
         }
+    }
+
+    public AbstractPage loginAsAdmin() {
+        return login(ADMIN_USER, ADMIN_PASSWORD);
     }
 
     /*

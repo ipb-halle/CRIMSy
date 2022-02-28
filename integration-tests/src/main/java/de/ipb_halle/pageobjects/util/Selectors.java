@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.pageobjects.util;
 
+import java.util.Map;
+import java.util.StringJoiner;
+
 /**
  * Utility class for DOM element selectors
  * 
@@ -30,8 +33,8 @@ public class Selectors {
 
     /**
      * @param testId
-     * @return CSS selector that selects {@code testId} in the DOM element
-     *         attribute {@code data-test-id}
+     * @return CSS selector that selects {@code testId} in the DOM element attribute
+     *         {@code data-test-id}
      */
     public static String testId(String testId) {
         return String.format("[%s='%s']", TEST_ATTRIBUTE_NAME, testId);
@@ -63,11 +66,10 @@ public class Selectors {
     /**
      * @param htmlElement
      * @param classes
-     * @return CSS selector that selects for the given CSS classes in DOM
-     *         elements of type {@code htmlElement}
+     * @return CSS selector that selects for the given CSS classes in DOM elements
+     *         of type {@code htmlElement}
      */
-    public static String elementWithCssClasses(String htmlElement,
-            String... classes) {
+    public static String elementWithCssClasses(String htmlElement, String... classes) {
         StringBuilder sb = new StringBuilder();
         sb.append(htmlElement);
         for (String c : classes) {
@@ -81,12 +83,26 @@ public class Selectors {
      * @param htmlElement
      * @param attributeName
      * @param attributeValue
-     * @return CSS selector that selects for the attribute in DOM elements of
+     * @return CSS selector that selects for the attribute in DOM elements of type
+     *         {@code htmlElement}
+     */
+    public static String elementWithAttribute(String htmlElement, String attributeName, String attributeValue) {
+        return String.format("%s[%s='%s']", htmlElement, attributeName, attributeValue);
+    }
+
+    /**
+     * @param htmlElement
+     * @param attributes
+     * @return CSS selector that selects for the attributes in the DOM elements of
      *         type {@code htmlElement}
      */
-    public static String elementWithAttribute(String htmlElement,
-            String attributeName, String attributeValue) {
-        return String.format("%s[%s='%s']", htmlElement, attributeName,
-                attributeValue);
+    public static String elementWithAttributes(String htmlElement, Map<String, String> attributes) {
+        StringJoiner sj = new StringJoiner("");
+        sj.add(htmlElement);
+        if (attributes != null) {
+            attributes.forEach((key, value) -> sj.add(String.format("[%s='%s']", key, value)));
+        }
+
+        return sj.toString();
     }
 }

@@ -20,8 +20,13 @@ package de.ipb_halle.pageobjects.util;
 import static de.ipb_halle.pageobjects.util.Selectors.cssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithAttribute;
+import static de.ipb_halle.pageobjects.util.Selectors.elementWithAttributes;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.jupiter.api.Test;
 
@@ -45,13 +50,24 @@ public class SelectorsTest {
     public void test_elementWithCssClasses() {
         assertEquals("div", elementWithCssClasses("div"));
         assertEquals("div.class1", elementWithCssClasses("div", "class1"));
-        assertEquals("div.class1.class2",
-                elementWithCssClasses("div", "class1", "class2"));
+        assertEquals("div.class1.class2", elementWithCssClasses("div", "class1", "class2"));
     }
 
     @Test
     public void test_elementWithAttribute() {
-        assertEquals("div[myAttribute='value']",
-                elementWithAttribute("div", "myAttribute", "value"));
+        assertEquals("div[myAttribute='value']", elementWithAttribute("div", "myAttribute", "value"));
+    }
+
+    @Test
+    public void test_elementWithAttributes() {
+        assertEquals("div", elementWithAttributes("div", null));
+        assertEquals("div", elementWithAttributes("div", new HashMap<>()));
+
+        Map<String, String> attributes = new TreeMap<>();
+        attributes.put("attribute1", "value1");
+        attributes.put("attribute2", "value2");
+        attributes.put("attribute3", "value3");
+        assertEquals("div[attribute1='value1'][attribute2='value2'][attribute3='value3']",
+                elementWithAttributes("div", attributes));
     }
 }
