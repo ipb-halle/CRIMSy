@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemUtils;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.util.calculation.MassConcentrationCalculations;
 import de.ipb_halle.lbac.util.calculation.MolarConcentrationCalculations;
@@ -34,10 +35,13 @@ import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
 /**
+ * Controls the first step of the create solution wizard: The user inputs the
+ * target concentration and target volume, the target mass is automatically
+ * calculated.
  * 
  * @author flange
  */
-public class InputConcentrationAndVolumeStepController implements Serializable {
+public class ConsumePartOfItemStep1Controller implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final MessagePresenter messagePresenter;
@@ -58,7 +62,7 @@ public class InputConcentrationAndVolumeStepController implements Serializable {
 
     private boolean userChangedMassUnit = false;
 
-    public InputConcentrationAndVolumeStepController(Item parentItem, MessagePresenter messagePresenter) {
+    public ConsumePartOfItemStep1Controller(Item parentItem, MessagePresenter messagePresenter) {
         this.parentItem = parentItem;
         this.messagePresenter = messagePresenter;
 

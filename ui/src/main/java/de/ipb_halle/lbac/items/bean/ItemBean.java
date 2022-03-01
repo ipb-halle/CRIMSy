@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.items.bean;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.container.ContainerUtils;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.device.print.PrintBean;
 import de.ipb_halle.lbac.items.Item;
@@ -42,7 +43,6 @@ import de.ipb_halle.lbac.util.units.Unit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -131,7 +131,7 @@ public class ItemBean implements Serializable {
         availableSolvents = loadAndI18nSolvents();
         availablePurities = loadPurities();
         availableContainerTypes = containerService.loadContainerTypes();
-        filterLocalizeAndSortAvailableContainerTypes();
+        ContainerUtils.filterLocalizeAndSortContainerTypes(availableContainerTypes, messagePresenter);
     }
 
     public void actionApplyNextPositiveDifference() {
@@ -409,31 +409,6 @@ public class ItemBean implements Serializable {
                 Quality.MOLAR_CONCENTRATION,
                 Quality.MASS_CONCENTRATION,
                 Quality.PERCENT_CONCENTRATION);
-    }
-
-    /**
-     * Removes all containers with a rank greater than zero in the list of
-     * available container types, sets the localized name for the remaining
-     * containers and sorts the list.
-     */
-    private void filterLocalizeAndSortAvailableContainerTypes() {
-        for (int i = availableContainerTypes.size() - 1; i >= 0; i--) {
-            ContainerType type = availableContainerTypes.get(i);
-            if (type.getRank() > 0) {
-                availableContainerTypes.remove(i);
-            } else {
-                type.setLocalizedName(messagePresenter.presentMessage("container_type_" + type.getName()));
-
-                if ((type.getLocalizedName() == null) || type.getLocalizedName().isEmpty()) {
-                    logger.error("Could not set localized containerTypeName for " + type.getName());
-
-                    // fallback to name of the entity or sorting will fail with a NPE
-                    type.setLocalizedName(type.getName());
-                }
-            }
-        }
-
-        availableContainerTypes.sort(Comparator.comparing(ContainerType::getLocalizedName));
     }
 
     /**

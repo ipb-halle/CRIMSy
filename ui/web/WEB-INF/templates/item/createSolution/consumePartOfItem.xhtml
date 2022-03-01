@@ -50,6 +50,13 @@
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
+                <p:tab
+                    id="step4_directContainerAndLabel"
+                    title="Container and label">
+                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep4.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
             </p:wizard>
         </ui:composition>
     </h:body>

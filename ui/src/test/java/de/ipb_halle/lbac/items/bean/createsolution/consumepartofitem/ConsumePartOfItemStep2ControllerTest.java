@@ -30,7 +30,10 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
-public class InputWeightStepControllerTest {
+/**
+ * @author flange
+ */
+public class ConsumePartOfItemStep2ControllerTest {
     private static final double DELTA = 1e-6;
 
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
@@ -45,7 +48,7 @@ public class InputWeightStepControllerTest {
      */
     @Test
     public void test_initialValues() {
-        InputWeightStepController controller = new InputWeightStepController(null, null, null);
+        ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(null, null, null);
 
         assertEquals(5, controller.getErrorMargin());
         assertNull(controller.getWeigh());
@@ -57,10 +60,10 @@ public class InputWeightStepControllerTest {
      */
     @Test
     public void test_init() {
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(
-                new Item(), messagePresenter);
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(new Item(),
+                messagePresenter);
         step1Controller.setTargetMassUnit(Unit.getUnit("µg"));
-        InputWeightStepController controller = new InputWeightStepController(step1Controller, null, null);
+        ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(step1Controller, null, null);
 
         controller.init();
         assertEquals("µg", controller.getWeighUnit().toString());
@@ -79,7 +82,8 @@ public class InputWeightStepControllerTest {
         item.setAmount(100.0);
         item.setUnit(Unit.getUnit("g"));
 
-        InputWeightStepController controller = new InputWeightStepController(null, item, messagePresenter);
+        ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(null, item,
+                messagePresenter);
 
         // weigh is lower than item amount
         controller.setWeigh(10000.0);
@@ -109,9 +113,8 @@ public class InputWeightStepControllerTest {
         item.setAmount(100.0);
         item.setUnit(Unit.getUnit("g"));
 
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
-        InputWeightStepController controller = new InputWeightStepController(step1Controller, null, null);
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
+        ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(step1Controller, null, null);
 
         // Without target mass, there can't be any margin.
         assertNull(step1Controller.getTargetMass());
@@ -143,9 +146,8 @@ public class InputWeightStepControllerTest {
         item.setAmount(100.0);
         item.setUnit(Unit.getUnit("g"));
 
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
-        InputWeightStepController controller = new InputWeightStepController(step1Controller, null, null);
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
+        ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(step1Controller, null, null);
 
         // Without target mass, there can't be any margin.
         assertNull(step1Controller.getTargetMass());
@@ -177,7 +179,7 @@ public class InputWeightStepControllerTest {
         item.setAmount(100.0);
         item.setUnit(Unit.getUnit("g"));
 
-        InputWeightStepController controller = new InputWeightStepController(null, item, null);
+        ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(null, item, null);
 
         // greater
         controller.setWeigh(10.0);
@@ -200,7 +202,7 @@ public class InputWeightStepControllerTest {
      */
     @Test
     public void test_getWeighAsQuantity() {
-        InputWeightStepController controller = new InputWeightStepController(null, null, null);
+        ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(null, null, null);
 
         controller.setWeigh(null);
         controller.setWeighUnit(null);

@@ -15,18 +15,20 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
+package de.ipb_halle.lbac.items;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.util.units.Quantity;
 
+/**
+ * @author flange
+ */
 public class ItemUtilsTest {
     private static final double DELTA = 1e-6;
 

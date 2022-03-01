@@ -22,6 +22,9 @@ import java.util.List;
 
 import org.primefaces.event.FlowEvent;
 
+import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.container.ContainerUtils;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.service.ItemService;
@@ -35,28 +38,40 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final ItemService itemService;
+    private final ContainerService containerService;
     private final MessagePresenter messagePresenter;
 
-    private final InputConcentrationAndVolumeStepController step1Controller; // r
-    private final InputWeightStepController step2Controller; // r
-    private final InputVolumeAndSolventStepController step3Controller; // r
+    private final ConsumePartOfItemStep1Controller step1Controller; // r
+    private final ConsumePartOfItemStep2Controller step2Controller; // r
+    private final ConsumePartOfItemStep3Controller step3Controller; // r
+    private final ConsumePartOfItemStep4Controller step4Controller; // r
 
     private final List<Solvent> solvents; // r
+    private final List<ContainerType> availableContainerTypes; // r
 
     public ConsumePartOfItemStrategyController(Item parentItem, ItemService itemService,
-            MessagePresenter messagePresenter) {
+            ContainerService containerService, MessagePresenter messagePresenter) {
         this.itemService = itemService;
+        this.containerService = containerService;
         this.messagePresenter = messagePresenter;
 
-        step1Controller = new InputConcentrationAndVolumeStepController(parentItem, messagePresenter);
-        step2Controller = new InputWeightStepController(step1Controller, parentItem, messagePresenter);
-        step3Controller = new InputVolumeAndSolventStepController(step1Controller, step2Controller, parentItem);
+        step1Controller = new ConsumePartOfItemStep1Controller(parentItem, messagePresenter);
+        step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, parentItem, messagePresenter);
+        step3Controller = new ConsumePartOfItemStep3Controller(step1Controller, step2Controller, parentItem);
+        step4Controller = new ConsumePartOfItemStep4Controller(step1Controller, step3Controller, messagePresenter);
 
         solvents = loadSolvents();
+        availableContainerTypes = loadAvailableContainerTypes();
     }
 
     private List<Solvent> loadSolvents() {
         return itemService.loadSolvents();
+    }
+
+    private List<ContainerType> loadAvailableContainerTypes() {
+        List<ContainerType> types = containerService.loadContainerTypes();
+        ContainerUtils.filterLocalizeAndSortContainerTypes(types, messagePresenter);
+        return types;
     }
 
     /*
@@ -65,6 +80,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     private static final String STEP1 = "step1_targetConcAndVol";
     private static final String STEP2 = "step2_weigh";
     private static final String STEP3 = "step3_volumeAndSolvent";
+    private static final String STEP4 = "step4_directContainerAndLabel";
 
     public String onFlowProcess(FlowEvent event) {
         if (STEP2.equals(event.getNewStep())) {
@@ -87,25 +103,42 @@ public class ConsumePartOfItemStrategyController implements Serializable {
             }
         }
 
+        if (STEP4.equals(event.getNewStep())) {
+            step4Controller.init();
+            return STEP4;
+        }
+
+//        if (STEP5.equals(event.getNewStep())) {
+//            check if volume from step4 is less or equal than volume available in container
+//        }
+
         return event.getNewStep();
     }
 
     /*
      * Getters/setters
      */
-    public InputConcentrationAndVolumeStepController getStep1Controller() {
+    public ConsumePartOfItemStep1Controller getStep1Controller() {
         return step1Controller;
     }
 
-    public InputWeightStepController getStep2Controller() {
+    public ConsumePartOfItemStep2Controller getStep2Controller() {
         return step2Controller;
     }
 
-    public InputVolumeAndSolventStepController getStep3Controller() {
+    public ConsumePartOfItemStep3Controller getStep3Controller() {
         return step3Controller;
+    }
+
+    public ConsumePartOfItemStep4Controller getStep4Controller() {
+        return step4Controller;
     }
 
     public List<Solvent> getSolvents() {
         return solvents;
+    }
+
+    public List<ContainerType> getAvailableContainerTypes() {
+        return availableContainerTypes;
     }
 }

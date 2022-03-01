@@ -25,13 +25,15 @@ import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
 /**
+ * Controls the second step of the create solution wizard: The target mass is
+ * shown with a user-defined margin and the user inputs the weigh.
  * 
  * @author flange
  */
-public class InputWeightStepController implements Serializable {
+public class ConsumePartOfItemStep2Controller implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final InputConcentrationAndVolumeStepController step1Controller;
+    private final ConsumePartOfItemStep1Controller step1Controller;
     private final Item parentItem;
     private final MessagePresenter messagePresenter;
 
@@ -39,7 +41,7 @@ public class InputWeightStepController implements Serializable {
     private Double weigh; // rw
     private Unit weighUnit; // rw
 
-    public InputWeightStepController(InputConcentrationAndVolumeStepController step1Controller, Item parentItem,
+    public ConsumePartOfItemStep2Controller(ConsumePartOfItemStep1Controller step1Controller, Item parentItem,
             MessagePresenter messagePresenter) {
         this.step1Controller = step1Controller;
         this.parentItem = parentItem;

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition>
+            <b:container>
+                <!-- (direct) container -->
+                <b:row>
+                    <b:column
+                        span="2"
+                        offset="1"
+                        styleClass="boldSelectBooleanCheckboxCaption">
+                        <p:remoteCommand
+                            name="createSolution_step4_directContainerRenderedChange"
+                            process="directContainerCheckboxId"
+                            update="@(.directContainerClass)" />
+                        <b:selectBooleanCheckbox
+                            id="directContainerCheckboxId"
+                            value="#{controller.step4Controller.directContainer}"
+                            caption="#{msgs.itemEdit_itemPanel_directContainer}"
+                            onchange="createSolution_step4_directContainerRenderedChange();" />
+                    </b:column>
+                    <b:column
+                        span="2"
+                        styleClass="directContainerClass">
+                        <ui:fragment rendered="#{controller.step4Controller.directContainer}">
+                            <p:remoteCommand
+                                name="createSolution_step4_directContainerSizeChange"
+                                process="directContainerSizeInputId directContainerUnitSelectionId"
+                                update="@none"
+                                action="#{controller.step4Controller.actionOnChangeDirectContainerSize()}" />
+                            <b:inputText
+                                id="directContainerSizeInputId"
+                                value="#{controller.step4Controller.directContainerSize}"
+                                label="Container size"
+                                required="true"
+                                onchange="createSolution_step4_directContainerSizeChange();">
+                                <f:convertNumber
+                                    type="number"
+                                    groupingUsed="false"
+                                    locale="#{globalLocaleBean.numberConverterLocale}" />
+                                <f:validateDoubleRange minimum="0" />
+                            </b:inputText>
+                        </ui:fragment>
+                    </b:column>
+                    <b:column
+                        span="2"
+                        styleClass="directContainerClass">
+                        <ui:fragment rendered="#{controller.step4Controller.directContainer}">
+                            <p:remoteCommand
+                                name="createSolution_step4_directContainerUnitChange"
+                                process="directContainerSizeInputId directContainerUnitSelectionId"
+                                update="@none"
+                                action="#{controller.step4Controller.actionOnChangeContainerSizeUnit()}" />
+                            <b:selectOneMenu
+                                id="directContainerUnitSelectionId"
+                                value="#{controller.step4Controller.directContainerUnit}"
+                                label="Unit"
+                                required="true"
+                                onchange="createSolution_step4_directContainerUnitChange();">
+                                <f:selectItems
+                                    value="#{controller.step1Controller.availableVolumeUnits}"
+                                    var="unit"
+                                    itemLabel="#{unit.unit}" />
+                            </b:selectOneMenu>
+                        </ui:fragment>
+                    </b:column>
+                    <b:column
+                        span="3"
+                        styleClass="directContainerClass">
+                        <ui:fragment rendered="#{controller.step4Controller.directContainer}">
+                            <b:selectOneMenu
+                                value="#{controller.step4Controller.directContainerType}"
+                                label="#{msgs.itemEdit_itemPanel_container_type}"
+                                required="true">
+                                <f:selectItems
+                                    value="#{controller.availableContainerTypes}"
+                                    var="type"
+                                    itemLabel="#{type.localizedName}" />
+                            </b:selectOneMenu>
+                        </ui:fragment>
+                    </b:column>
+                </b:row>
+                <!-- Label -->
+                <b:row>
+                    <b:column
+                        span="2"
+                        offset="1"
+                        styleClass="boldSelectBooleanCheckboxCaption">
+                        <p:remoteCommand
+                            name="createSolution_step4_customLabelRenderedChange"
+                            process="customLabelCheckboxId"
+                            update="@(.customLabelText)" />
+                        <b:selectBooleanCheckbox
+                            id="customLabelCheckboxId"
+                            value="#{controller.step4Controller.customLabel}"
+                            caption="#{msgs.itemEdit_itemPanel_label_customLabel}"
+                            onchange="createSolution_step4_customLabelRenderedChange();" />
+                    </b:column>
+                    <b:column
+                        span="2" 
+                        styleClass="customLabelText">
+                        <ui:fragment rendered="#{controller.step4Controller.customLabel}">
+                            <b:inputText
+                                value="#{controller.step4Controller.customLabelValue}"
+                                label="#{msgs.itemEdit_itemPanel_label}">
+                                <f:converter converterId="InputConverter" />
+                            </b:inputText>
+                        </ui:fragment>
+                    </b:column>
+                </b:row>
+                <b:messages auto-update="true" />
+            </b:container>
+        </ui:composition>
+    </h:body>
+</html>

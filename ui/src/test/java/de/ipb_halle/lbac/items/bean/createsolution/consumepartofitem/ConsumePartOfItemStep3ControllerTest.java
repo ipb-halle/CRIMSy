@@ -28,7 +28,10 @@ import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.util.units.Unit;
 
-public class InputVolumeAndSolventStepControllerTest {
+/**
+ * @author flange
+ */
+public class ConsumePartOfItemStep3ControllerTest {
     private static final double DELTA = 1e-6;
 
     /*
@@ -36,14 +39,14 @@ public class InputVolumeAndSolventStepControllerTest {
      */
     @Test
     public void test_gettersAndSettersAndDefaults() {
-        InputVolumeAndSolventStepController controller = new InputVolumeAndSolventStepController(null, null, null);
-        
+        ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(null, null, null);
+
         assertNull(controller.getDispensedVolume());
         assertNull(controller.getSolvent());
-        
+
         controller.setDispensedVolume(42.0);
         assertEquals(42.0, controller.getDispensedVolume(), DELTA);
-        
+
         Solvent solvent = new Solvent();
         controller.setSolvent(solvent);
         assertSame(solvent, controller.getSolvent());
@@ -56,10 +59,10 @@ public class InputVolumeAndSolventStepControllerTest {
     public void test_init_itemWithoutMolarMass() {
         // preparation
         Item item = new Item();
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(item,
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
+        ConsumePartOfItemStep2Controller step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, item,
                 null);
-        InputWeightStepController step2Controller = new InputWeightStepController(step1Controller, item, null);
-        InputVolumeAndSolventStepController controller = new InputVolumeAndSolventStepController(step1Controller,
+        ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller,
                 step2Controller, item);
 
         step1Controller.setTargetConcentration(10.0);
@@ -84,10 +87,10 @@ public class InputVolumeAndSolventStepControllerTest {
         Structure s = new Structure(null, 200.0, null, 1, null, null);
         Item item = new Item();
         item.setMaterial(s);
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(item,
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
+        ConsumePartOfItemStep2Controller step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, item,
                 null);
-        InputWeightStepController step2Controller = new InputWeightStepController(step1Controller, item, null);
-        InputVolumeAndSolventStepController controller = new InputVolumeAndSolventStepController(step1Controller,
+        ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller,
                 step2Controller, item);
 
         step1Controller.setTargetConcentration(10.0);
@@ -112,10 +115,10 @@ public class InputVolumeAndSolventStepControllerTest {
     @Test
     public void test_getVolumeToDispense_itemWithoutMolarMass() {
         Item item = new Item();
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(item,
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
+        ConsumePartOfItemStep2Controller step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, item,
                 null);
-        InputWeightStepController step2Controller = new InputWeightStepController(step1Controller, item, null);
-        InputVolumeAndSolventStepController controller = new InputVolumeAndSolventStepController(step1Controller,
+        ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller,
                 step2Controller, item);
 
         step1Controller.setTargetConcentration(10.0);
@@ -132,10 +135,10 @@ public class InputVolumeAndSolventStepControllerTest {
         Structure s = new Structure(null, 200.0, null, 1, null, null);
         Item item = new Item();
         item.setMaterial(s);
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(item,
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
+        ConsumePartOfItemStep2Controller step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, item,
                 null);
-        InputWeightStepController step2Controller = new InputWeightStepController(step1Controller, item, null);
-        InputVolumeAndSolventStepController controller = new InputVolumeAndSolventStepController(step1Controller,
+        ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller,
                 step2Controller, item);
 
         step1Controller.setTargetConcentration(10.0);
@@ -154,10 +157,10 @@ public class InputVolumeAndSolventStepControllerTest {
     @Test
     public void test_getFinalConcentration_itemWithoutMolarMass() {
         Item item = new Item();
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(item,
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
+        ConsumePartOfItemStep2Controller step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, item,
                 null);
-        InputWeightStepController step2Controller = new InputWeightStepController(step1Controller, item, null);
-        InputVolumeAndSolventStepController controller = new InputVolumeAndSolventStepController(step1Controller,
+        ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller,
                 step2Controller, item);
 
         step2Controller.setWeigh(5.0);
@@ -174,10 +177,10 @@ public class InputVolumeAndSolventStepControllerTest {
         Structure s = new Structure(null, 200.0, null, 1, null, null);
         Item item = new Item();
         item.setMaterial(s);
-        InputConcentrationAndVolumeStepController step1Controller = new InputConcentrationAndVolumeStepController(item,
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
+        ConsumePartOfItemStep2Controller step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, item,
                 null);
-        InputWeightStepController step2Controller = new InputWeightStepController(step1Controller, item, null);
-        InputVolumeAndSolventStepController controller = new InputVolumeAndSolventStepController(step1Controller,
+        ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller,
                 step2Controller, item);
 
         step2Controller.setWeigh(5.0);

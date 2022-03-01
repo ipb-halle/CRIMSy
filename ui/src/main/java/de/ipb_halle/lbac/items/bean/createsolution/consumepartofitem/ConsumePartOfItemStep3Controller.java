@@ -22,24 +22,33 @@ import static de.ipb_halle.lbac.util.units.Quality.MASS_CONCENTRATION;
 import java.io.Serializable;
 
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemUtils;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.util.calculation.MassConcentrationCalculations;
 import de.ipb_halle.lbac.util.calculation.MolarConcentrationCalculations;
 import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
-public class InputVolumeAndSolventStepController implements Serializable {
+/**
+ * Controls the third step of the create solution wizard: The volume to dispense
+ * is shown and the user inputs the dispensed volume. The controller calculates
+ * the final concentration from the previously defined weight and the dispensed
+ * volume. The solvent is also stored here.
+ * 
+ * @author flange
+ */
+public class ConsumePartOfItemStep3Controller implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final InputConcentrationAndVolumeStepController step1Controller;
-    private final InputWeightStepController step2Controller;
+    private final ConsumePartOfItemStep1Controller step1Controller;
+    private final ConsumePartOfItemStep2Controller step2Controller;
     private final Item parentItem;
 
     private Double dispensedVolume; // rw
     private Solvent solvent; // rw
 
-    public InputVolumeAndSolventStepController(InputConcentrationAndVolumeStepController step1Controller,
-            InputWeightStepController step2Controller, Item parentItem) {
+    public ConsumePartOfItemStep3Controller(ConsumePartOfItemStep1Controller step1Controller,
+            ConsumePartOfItemStep2Controller step2Controller, Item parentItem) {
         this.step1Controller = step1Controller;
         this.step2Controller = step2Controller;
         this.parentItem = parentItem;
@@ -90,6 +99,10 @@ public class InputVolumeAndSolventStepController implements Serializable {
         }
     }
 
+    public Quantity getDispensedVolumeAsQuantity() {
+        return Quantity.create(dispensedVolume, step1Controller.getTargetVolumeUnit());
+    }
+
     /*
      * Getters/setters
      */
@@ -97,8 +110,8 @@ public class InputVolumeAndSolventStepController implements Serializable {
         return dispensedVolume;
     }
 
-    public void setDispensedVolume(Double finalVolume) {
-        this.dispensedVolume = finalVolume;
+    public void setDispensedVolume(Double dispensedVolume) {
+        this.dispensedVolume = dispensedVolume;
     }
 
     public Solvent getSolvent() {

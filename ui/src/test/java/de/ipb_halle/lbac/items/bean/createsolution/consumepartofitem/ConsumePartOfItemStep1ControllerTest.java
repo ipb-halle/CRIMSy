@@ -42,7 +42,7 @@ import de.ipb_halle.lbac.util.units.Unit;
 /**
  * @author flange
  */
-public class InputConcentrationAndVolumeStepControllerTest {
+public class ConsumePartOfItemStep1ControllerTest {
     private static final double DELTA = 1e-6;
 
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
@@ -61,8 +61,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         Item item = new Item();
         item.setMaterial(seq);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                null);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, null);
 
         assertEquals(Unit.getVisibleUnitsOfQuality(VOLUME), controller.getAvailableVolumeUnits());
         assertEquals(Unit.getVisibleUnitsOfQuality(MASS), controller.getAvailableMassUnits());
@@ -86,8 +85,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("g"));
         item.setMaterial(seq);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                null);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, null);
 
         assertEquals(Unit.getVisibleUnitsOfQuality(VOLUME), controller.getAvailableVolumeUnits());
         assertEquals(Unit.getVisibleUnitsOfQuality(MASS), controller.getAvailableMassUnits());
@@ -111,8 +109,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("mg"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                null);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, null);
 
         assertEquals(Unit.getVisibleUnitsOfQuality(VOLUME), controller.getAvailableVolumeUnits());
         assertEquals(Unit.getVisibleUnitsOfQuality(MASS), controller.getAvailableMassUnits());
@@ -136,8 +133,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("kg"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                null);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, null);
 
         assertEquals(Unit.getVisibleUnitsOfQuality(VOLUME), controller.getAvailableVolumeUnits());
         assertEquals(Unit.getVisibleUnitsOfQuality(MASS), controller.getAvailableMassUnits());
@@ -168,8 +164,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("g"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
 
         controller.setTargetConcentration(null);
         controller.setTargetConcentrationUnit(Unit.getUnit("mM"));
@@ -198,8 +193,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("kg"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
 
         controller.setTargetConcentration(100.0);
         controller.setTargetConcentrationUnit(Unit.getUnit("mM"));
@@ -228,8 +222,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("g"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
 
         controller.setTargetConcentration(100.0);
         controller.setTargetConcentrationUnit(Unit.getUnit("g/l"));
@@ -258,8 +251,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("g"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
 
         controller.setTargetConcentration(1.0);
         controller.setTargetConcentrationUnit(Unit.getUnit("M"));
@@ -288,8 +280,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("g"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
 
         controller.setTargetConcentration(1.0);
         controller.setTargetConcentrationUnit(Unit.getUnit("M"));
@@ -318,8 +309,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("g"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
 
         controller.setTargetConcentration(1.0);
         controller.setTargetConcentrationUnit(Unit.getUnit("M"));
@@ -352,8 +342,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         item.setUnit(Unit.getUnit("g"));
         item.setMaterial(s);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                messagePresenter);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, messagePresenter);
 
         // gives 1kg as target mass
         controller.setTargetConcentration(1.0);
@@ -383,8 +372,7 @@ public class InputConcentrationAndVolumeStepControllerTest {
         Item item = new Item();
         item.setMaterial(seq);
 
-        InputConcentrationAndVolumeStepController controller = new InputConcentrationAndVolumeStepController(item,
-                null);
+        ConsumePartOfItemStep1Controller controller = new ConsumePartOfItemStep1Controller(item, null);
 
         controller.setTargetConcentration(null);
         controller.setTargetConcentrationUnit(null);

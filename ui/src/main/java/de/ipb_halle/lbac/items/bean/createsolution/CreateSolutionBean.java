@@ -22,9 +22,11 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemUtils;
 import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
-import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ItemUtils;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.util.units.Quantity;
@@ -40,6 +42,9 @@ public class CreateSolutionBean implements Serializable {
 
     @Inject
     private ItemService itemService;
+
+    @Inject
+    private ContainerService containerService;
 
     @Inject
     private transient MessagePresenter messagePresenter;
@@ -59,7 +64,7 @@ public class CreateSolutionBean implements Serializable {
         this.parentItem = parentItem;
         molarMassFromParentItem = ItemUtils.molarMassFromItem(parentItem);
         consumePartOfItemStrategyController = new ConsumePartOfItemStrategyController(parentItem, itemService,
-                messagePresenter);
+                containerService, messagePresenter);
     }
 
     /*
