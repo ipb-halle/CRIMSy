@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 
 /**
@@ -191,5 +192,25 @@ public class ConsumePartOfItemStep3ControllerTest {
 
         // assertions
         assertEquals(250.0, controller.getFinalConcentration(), DELTA);
+    }
+
+    /*
+     * Tests for getDispensedVolumeAsQuantity()
+     */
+    @Test
+    public void test_getDispensedVolumeAsQuantity() {
+        Item item = new Item();
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
+        ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller, null, null);
+
+        controller.setDispensedVolume(null);
+        step1Controller.setTargetVolumeUnit(null);
+        assertNull(controller.getDispensedVolumeAsQuantity());
+
+        controller.setDispensedVolume(42.0);
+        step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
+        Quantity dispensedVolume = controller.getDispensedVolumeAsQuantity();
+        assertEquals(42.0, dispensedVolume.getValue(), DELTA);
+        assertEquals("ml", dispensedVolume.getUnit().toString());
     }
 }
