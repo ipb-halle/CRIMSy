@@ -748,15 +748,16 @@ cd \$LBAC_DATASTORE
 
 DATE=\`date "+%Y%m%d%H%M%S"\`
 CLOUD=`cat \$LBAC_DATASTORE/etc/primary.cfg`
+URL=`cat \$LBAC_DATASTORE/etc/\$CLOUD/cloud.cfg | cut -d';' -f2`
 mkdir -p \$LBAC_DATASTORE/tmp 
 pushd \$LBAC_DATASTORE/tmp
 
-curl --silent --output dist-bin.tar.gz.asc.sig \$LBAC_DISTRIBUTION_POINT/dist-bin.tar.gz.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
+curl --silent --output dist-bin.tar.gz.asc.sig \$URL/dist-bin.tar.gz.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
 openssl smime -verify -in dist-bin.tar.gz.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
   -CAfile ../etc/\$CLOUD/chain.pem -out dist-bin.tar.gz.asc || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
   && rm dist-bin.tar.gz.asc && exit 1)
 
-curl --silent --output \$CLOUD.asc.sig \$LBAC_DISTRIBUTION_POINT/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
+curl --silent --output \$CLOUD.asc.sig \$URL/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
 openssl smime -verify -in \$CLOUD.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
  -CAfile ../etc/\$CLOUD/chain.pem | openssl smime -decrypt -inform PEM \
  -inkey ../etc/lbac_cert.key -passin file:../etc/lbac_cert.passwd \
@@ -859,7 +860,7 @@ function makeDirectories {
             uuidgen -r | tr -d $'\n' > "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE"
         fi
 
-        echo /$CLOUD_NAME$'\t/d\ni\n'$CLOUD_NAME$';'$LBAC_DISTRIBUTION_POINT$'\n.\nw\nq\n' | \
+        echo /$CLOUD_NAME$';/d\ni\n'$CLOUD_NAME$';'$LBAC_DISTRIBUTION_POINT$'\n.\nw\nq\n' | \
             ed $LBAC_DATASTORE/etc/clouds.cfg
 
         echo "$CLOUD_NAME;$LBAC_DISTRIBUTION_POINT" > $LBAC_DATASTORE/etc/clouds.cfg
@@ -883,7 +884,6 @@ function makeTempConfig {
 # `date`
 #
 LBAC_CONFIG_VERSION="$LBAC_CURRENT_CONFIG_VERSION"
-LBAC_DISTRIBUTION_POINT="$LBAC_DISTRIBUTION_POINT"
 LBAC_IMAGE_REGISTRY="$LBAC_IMAGE_REGISTRY"
 EOF
 }

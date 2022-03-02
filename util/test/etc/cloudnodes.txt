@@ -1,7 +1,6 @@
 cloudONE;node1;MASTER
 cloudONE;node2;
-cloudONE;node3;
-cloudONE;node4;
 cloudTWO;node3;MASTER
+cloudTWO;node2;
 cloudTWO;node4;
-cloudTWO;node5;
+cloudONE;node5;

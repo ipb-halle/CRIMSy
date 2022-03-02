@@ -198,6 +198,85 @@ function runDistServer {
         registry
 }
 
+
+#
+#
+#
+function runJobs {
+    runDistServer
+    cat $JOB_FILE |\
+    while read job; do
+        j=`echo '$job' | cut -d';' -f1`
+        case $j in
+            compile)
+                stage=`echo '$job' | cut -d';' -f2`
+                compile $stage
+                ;;
+            install)
+                NODE=`echo '$job' | cut -d';' -f2`
+                installFunc
+                echo "sleep 15 seconds to settle everything ..."
+                sleep 15
+                ;;
+            join)
+                NODE=`echo '$job' | cut -d';' -f2`
+                CLOUD=`echo '$job' | cut -d';' -f3`
+                runJoin
+                ;;
+            pause)
+                echo "PAUSE not implemented"
+                ;;
+            restore)
+                echo "RESTORE not implemented"
+                ;;
+            setup)
+                NODE="all"
+                setupFunc
+                ;;
+            snapshot)
+                echo "SNAPSHOT not implemented"
+                ;;
+            teardown)
+                NODE="all"
+                tearDown
+                ;;
+            test)
+                NODE=`echo '$job' | cut -d';' -f2`
+                runTests
+                ;;
+            update)
+                NODE=`echo '$job' | cut -d';' -f2`
+                CMD=`echo '$job' | cut -d';' -f2`
+                runUpdate
+                echo "sleep 15 seconds to settle everything ..."
+                ;;
+            wake)
+                echo "WAKE not implemented"
+                ;;
+            *)
+                echo "ignored: $j"
+                ;;
+        esac
+    done
+}
+
+#
+#
+#
+function runJoin {
+    url="http://`hostname -f`:8000/$CLOUD"
+    remote=`grep $NODE $HOSTLIST | cut -d';' -f2`
+    login=`grep $NODE $HOSTLIST | cut -d';' -f3`
+
+    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+        dist/bin/join.sh --request $CLOUD --url $url 
+
+    scp -q -o "StrictHostKeyChecking no" $login@$remote:etc/$CLOUD/config.sh.asc "$LBAC_REPO/config/nodes/${NODE}_${CLOUD}.sh.asc"
+
+    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+        dist/bin/join.sh --join $CLOUD
+}
+
 #
 #
 #
@@ -553,7 +632,7 @@ ${BOLD}NAME${REGULAR}
     testSetup.sh
 
 ${BOLD}SYNOPSIS${REGULAR}
-    testSetup.sh [-H|hostlist HOSTLIST] [-h|--help] [-n|--node NODE] 
+    testSetup.sh [-H|hostlist HOSTLIST] [-h|--help] [-j|--jobs JOBFILE] [-n|--node NODE] 
         [-p|--pause NODE] [-R|--restore LABEL] [-r|--runTests] [-S|--snapshot LABEL] 
         [-s|--setup] [-t|--teardown] [-u|--update CMD] [-w|--wake NODE]
 
@@ -577,6 +656,10 @@ ${BOLD}OPTIONS${REGULAR}
 -h|--help
     print this help text
 
+-j|--jobs JOBFILE
+    run a set of jobs (compile, setup, install, join, test, teardown, update).
+    Requires a file with job parameters (e.g. update command, node or cloud name, etc.)
+
 -n|--node NODE
     operate on node NODE only (default all)
 
@@ -599,7 +682,8 @@ ${BOLD}OPTIONS${REGULAR}
     remove all nodes and clean up everything
 
 -u|--update CMD
-    run update.sh with argument
+    run update.sh on remote node with argument. If used with --branch-file, CMD defaults 
+    to 'container'
 
 -w|--wake NODE
     resume execution of node NODE
@@ -610,6 +694,12 @@ EOF
 function mainFunc {
     if [ -z "$HOSTLIST" ] ; then
         error "Must provide HOSTLIST. Call testSetup.sh -h for help."
+    fi
+
+    if [ -n "$JOBFILE" ] ; then
+        runJobs
+        infoLog "JOB EXECUTION"
+        exit 0
     fi
 
     if [ -n "$PAUSE" ] ; then
@@ -672,6 +762,7 @@ TEST_DATE=`date +%Y%m%d%H%M`
 
 BRANCH_FILE=''
 HOSTLIST=''
+JOBFILE=''
 NODE=all
 PAUSE=''
 RESTORE=''
@@ -683,7 +774,7 @@ UPDATE=''
 UPDATE_CMD='container'
 WAKE=''
 
-GETOPT=$(getopt -o 'b:H:hn:p:R:rS:stu:w:' --longoptions 'branch-file:hostlist:,help,node:,pause:,restore:,runTests,snapshot:,setup,teardown,update:wake:' -n 'testSetup.sh' -- "$@")
+GETOPT=$(getopt -o 'b:H:hj:n:p:R:rS:stu:w:' --longoptions 'branch-file:hostlist:,help,jobs:,node:,pause:,restore:,runTests,snapshot:,setup,teardown,update:wake:' -n 'testSetup.sh' -- "$@")
 
 if [ $? -ne 0 ]; then
         echo 'Error in commandline evaluation. Terminating...' >&2
@@ -708,6 +799,11 @@ while true ; do
     '-h'|'--help')
         printHelp
         exit 0
+        ;;
+    '-j'|'--jobs')
+        JOBFILE=$2
+        shift 2
+        continue
         ;;
     '-n'|'--node')
         NODE=$2

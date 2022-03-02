@@ -59,9 +59,7 @@ function dialogDownload {
           --inputbox "Please specify download address for additional cloud" \
           15 72 "URL" 2>$TMP_RESULT || error "Aborted"
         DOWNLOAD_URL=`cat $TMP_RESULT`
-        curl --silent --output etc/$CLOUD/chain.pem $DOWNLOAD_URL/chain.pem
-        curl --silent --output etc/$CLOUD/devcert.pem $DOWNLOAD_URL/devcert.pem
-        curl --silent --output etc/$CLOUD/$CLOUD.crl $DOWNLOAD_URL/crl.pem
+        downloadFunc
 }
 
 #
@@ -86,6 +84,12 @@ function dialogEncrypt {
                         ;;
         esac
 
+}
+
+function downloadFunc {
+        curl --silent --output etc/$CLOUD/chain.pem $DOWNLOAD_URL/chain.pem
+        curl --silent --output etc/$CLOUD/devcert.pem $DOWNLOAD_URL/devcert.pem
+        curl --silent --output etc/$CLOUD/$CLOUD.crl $DOWNLOAD_URL/crl.pem
 }
 
 function encrypt {
@@ -121,6 +125,46 @@ function saveCloudTmp {
     echo "$CLOUD;$DOWNLOAD_URL" > etc/$CLOUD/cloud.cfg
 }
 
+function joinFunc {
+
+    if [ -n "$REQUEST" ] ; then
+        CLOUD="$REQUEST"
+        mkdir -p etc/$CLOUD
+        if [ -z "$DOWNLOAD_URL" ] ; then
+                dialogDownload
+                dialogCheckCert
+                dialogEncrypt
+                saveCloudTmp
+                cleanUp
+        else 
+            downloadFunc
+            encrypt
+            saveCloudTmp
+            cleanUp
+        fi
+        exit 0
+    fi
+
+    if [ -n "$JOIN" ] ; then
+        CLOUD="$JOIN"
+        url=`cat etc/$CLOUD/cloud.cfg | cut -d';' -f2`
+        if [ -n "$url" ] ; then
+            saveCloudInfo
+            dist/bin/update.sh proxy
+            dist/bin/update.sh ui
+            dist/bin/update.sh db
+            cleanUp
+        else 
+            error "Please run 'join.sh --request $CLOUD' first."
+        fi
+        exit 0
+    fi
+
+    if [ -n "$LEAVE" ] ; then
+        CLOUD="$LEAVE"
+        error "Leaving not implemented"
+    fi
+}
 #
 #==========================================================
 #
@@ -137,45 +181,55 @@ fi
 
 pushd $LBAC_DATASTORE >/dev/null
 
+
 TMP_RESULT=`mktemp /tmp/lbac_join.XXXXXX`
-        case "$1" in
-            --request)
-                CLOUD=$2
-                if test -z $CLOUD ; then
-                    error "Please provide cloud name"
-                fi
-                mkdir -p etc/$CLOUD
-                dialogDownload
-                dialogCheckCert
-                dialogEncrypt
-                saveCloudTmp
-                cleanUp
-                ;;
-            --join)
-                CLOUD=$2
-                if test -z $CLOUD ; then
-                    error "Please provide cloud name"
-                fi
-                LBAC_DISTRIBUTION_POINT=`grep "$CLOUD$;" etc/$CLOUD/cloud.cfg | cut -d';' -f2`
-                if test -n "$LBAC_DISTRIBUTION_POINT" ; then
-                    saveCloudInfo
-                    dist/bin/update.sh proxy
-                    dist/bin/update.sh ui
-                    dist/bin/update.sh db
-                    cleanUp
-                else 
-                    error "Please run 'join.sh --request $CLOUD' first."
-                fi
-                ;;
-            --leave)
-                CLOUD=$2
-                if test -z $CLOUD ; then
-                    error "Please provide cloud name"
-                fi
-                error "Leaving not implemented"
-                ;;
-            *)
-                error "Usage: join.sh [--request|--join|] CLOUD"
-                ;;
-        esac
+
+REQUEST=''
+JOIN=''
+LEAVE=''
+DOWNLOAD_URL=''
+
+GETOPT=$(getopt -o 'hj:l:r:u:' --longoptions 'help,join:,leave:,request:,url:' -n 'testSetup.sh' -- "$@")
+if [ $? -ne 0 ]; then
+        echo 'Error in commandline evaluation. Terminating...' >&2
+        exit 1
+fi
+
+eval set -- "$GETOPT"
+unset GETOPT
+
+while true ; do
+    case "$1" in
+        '-h'|'--help')
+            printHelp
+            exit 0
+            ;;
+        '-j'|'--join')
+            JOIN="$2"
+            shift 2
+            continue
+            ;;
+        '-l'|'--leave')
+            LEAVE="$2"
+            shift 2
+            continue
+            ;;
+        '-r'|'--request')
+            REQUEST="$2"
+            shift 2
+            continue
+            ;;
+        '-u'|'--url')
+            DOWNLOAD_URL="$2"
+            shift 2
+            continue
+            ;;
+        *)
+            error
+    esac
+done
+
+joinFunc
+
 popd > /dev/null
+
