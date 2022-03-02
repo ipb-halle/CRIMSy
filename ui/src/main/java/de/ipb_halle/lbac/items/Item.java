@@ -362,8 +362,8 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         if (!(other instanceof Item)) {
             return false;
         }
-        Item otherUser = (Item) other;
-        return Objects.equals(otherUser.getId(), this.getId());
+        Item otherItem = (Item) other;
+        return Objects.equals(otherItem.getId(), this.getId());
     }
 
     @Override

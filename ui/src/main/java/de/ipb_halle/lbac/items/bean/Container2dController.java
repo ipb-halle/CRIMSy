@@ -197,10 +197,6 @@ public class Container2dController {
      * @return
      */
     public boolean isContainerPlaceDisabled(int x, int y) {
-// TODO
-//        if (itemBean.isHistoryMode()) {
-//            return true;
-//        }
         Item itemAtPosition = container.getItemAtPos(x, y);
         if (itemAtPosition == null) {
             return false;
