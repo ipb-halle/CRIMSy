@@ -748,7 +748,7 @@ cd \$LBAC_DATASTORE
 
 DATE=\`date "+%Y%m%d%H%M%S"\`
 CLOUD=`cat \$LBAC_DATASTORE/etc/primary.cfg`
-URL=`cat \$LBAC_DATASTORE/etc/\$CLOUD/cloud.cfg | cut -d';' -f2`
+URL=\`grep "\$CLOUD;" \$LBAC_DATASTORE/etc/clouds.cfg | cut -d';' -f2\`
 mkdir -p \$LBAC_DATASTORE/tmp 
 pushd \$LBAC_DATASTORE/tmp
 

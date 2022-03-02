@@ -115,14 +115,37 @@ function error {
         exit 1
 }
 
+function printHelp {
+BOLD=$'\x1b[1m'
+REGULAR=$'\x1b[0m'
+cat <<EOF
+${BOLD}NAME${REGULAR}
+    join.sh
+
+${BOLD}SYNOPSIS${REGULAR}
+    testSetup.sh [-r|request CLOUD] [-h|--help] [-j|--join CLOUD] 
+        [-l|--leave CLOUD] [-u|--url URL] 
+
+${BOLD}DESCRIPTION${REGULAR}
+    no description available
+
+${BOLD}OPTIONS${REGULAR}
+-j|--join CLOUD
+    no description available
+
+EOF
+
+}
+
 function saveCloudInfo {
 
         echo /$CLOUD$';/d\ni\n'$CLOUD$';'$DOWNLOAD_URL$'\n.\nw\nq\n' | \
             ed etc/clouds.cfg
+        rm etc/$CLOUD/cloud.tmp
 }
 
 function saveCloudTmp {
-    echo "$CLOUD;$DOWNLOAD_URL" > etc/$CLOUD/cloud.cfg
+    echo "$CLOUD;$DOWNLOAD_URL" > etc/$CLOUD/cloud.tmp
 }
 
 function joinFunc {
@@ -147,7 +170,7 @@ function joinFunc {
 
     if [ -n "$JOIN" ] ; then
         CLOUD="$JOIN"
-        url=`cat etc/$CLOUD/cloud.cfg | cut -d';' -f2`
+        url=`cat etc/$CLOUD/cloud.tmp | cut -d';' -f2`
         if [ -n "$url" ] ; then
             saveCloudInfo
             dist/bin/update.sh proxy
@@ -223,6 +246,10 @@ while true ; do
             DOWNLOAD_URL="$2"
             shift 2
             continue
+            ;;
+        '--')
+            shift
+            break;
             ;;
         *)
             error

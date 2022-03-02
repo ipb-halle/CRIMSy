@@ -168,7 +168,7 @@ function downloadCloud {
 function downloadCloudPackages {
     CLOUD=$1
     . $LBAC_DATASTORE/dist/etc/$CLOUD/master.sh
-    url=`cat $LBAC_DATASTORE/etc/$CLOUD/cloud.cfg | cut -d';' -f2`
+    url=`grep "$CLOUD;" $LBAC_DATASTORE/etc/clouds.cfg | cut -d';' -f2`
 
     pushd $LBAC_DATASTORE/tmp >/dev/null
     curl --silent --output $CLOUD.asc.sig $url/$LBAC_INSTITUTION_MD5.asc.sig || \

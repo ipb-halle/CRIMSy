@@ -206,21 +206,22 @@ function runJobs {
     runDistServer
     cat $JOB_FILE |\
     while read job; do
-        j=`echo '$job' | cut -d';' -f1`
+        echo "executing: $job"
+        j=`echo "$job" | cut -d';' -f1`
         case $j in
             compile)
-                stage=`echo '$job' | cut -d';' -f2`
+                stage=`echo "$job" | cut -d';' -f2`
                 compile $stage
                 ;;
             install)
-                NODE=`echo '$job' | cut -d';' -f2`
+                NODE=`echo "$job" | cut -d';' -f2`
                 installFunc
                 echo "sleep 15 seconds to settle everything ..."
                 sleep 15
                 ;;
             join)
-                NODE=`echo '$job' | cut -d';' -f2`
-                CLOUD=`echo '$job' | cut -d';' -f3`
+                NODE=`echo "$job" | cut -d';' -f2`
+                CLOUD=`echo "$job" | cut -d';' -f3`
                 runJoin
                 ;;
             pause)
@@ -241,12 +242,12 @@ function runJobs {
                 tearDown
                 ;;
             test)
-                NODE=`echo '$job' | cut -d';' -f2`
+                NODE=`echo "$job" | cut -d';' -f2`
                 runTests
                 ;;
             update)
-                NODE=`echo '$job' | cut -d';' -f2`
-                CMD=`echo '$job' | cut -d';' -f2`
+                NODE=`echo "$job" | cut -d';' -f2`
+                CMD=`echo "$job" | cut -d';' -f2`
                 runUpdate
                 echo "sleep 15 seconds to settle everything ..."
                 ;;
@@ -272,6 +273,9 @@ function runJoin {
         dist/bin/join.sh --request $CLOUD --url $url 
 
     scp -q -o "StrictHostKeyChecking no" $login@$remote:etc/$CLOUD/config.sh.asc "$LBAC_REPO/config/nodes/${NODE}_${CLOUD}.sh.asc"
+
+    copyNodeConfig "$CLOUD;$NODE"
+    $LBAC_REPO/util/bin/package.sh "$CLOUD" AUTOBATCH
 
     echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
         dist/bin/join.sh --join $CLOUD
@@ -696,7 +700,7 @@ function mainFunc {
         error "Must provide HOSTLIST. Call testSetup.sh -h for help."
     fi
 
-    if [ -n "$JOBFILE" ] ; then
+    if [ -n "$JOB_FILE" ] ; then
         runJobs
         infoLog "JOB EXECUTION"
         exit 0
@@ -762,7 +766,7 @@ TEST_DATE=`date +%Y%m%d%H%M`
 
 BRANCH_FILE=''
 HOSTLIST=''
-JOBFILE=''
+JOB_FILE=''
 NODE=all
 PAUSE=''
 RESTORE=''
@@ -801,7 +805,7 @@ while true ; do
         exit 0
         ;;
     '-j'|'--jobs')
-        JOBFILE=$2
+        JOB_FILE=$2
         shift 2
         continue
         ;;
