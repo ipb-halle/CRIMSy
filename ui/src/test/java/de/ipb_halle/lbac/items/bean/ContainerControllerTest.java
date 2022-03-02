@@ -171,6 +171,12 @@ public class ContainerControllerTest extends TestBase {
         assertEquals("abc", controller.getContainerInfoPresenter().getContainerName());
         assertThat(controller.getContainer2dController().getColumns(), hasSize(3));
         assertThat(controller.getContainer2dController().getRows(), hasSize(5));
+
+        controller.actionChangeContainer(null);
+        assertNull(controller.getContainer());
+        assertEquals("", controller.getContainerInfoPresenter().getContainerName());
+        assertThat(controller.getContainer2dController().getColumns(), is(empty()));
+        assertThat(controller.getContainer2dController().getRows(), is(empty()));
     }
 
     @Test

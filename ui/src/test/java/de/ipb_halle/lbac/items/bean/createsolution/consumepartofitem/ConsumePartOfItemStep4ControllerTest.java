@@ -31,6 +31,9 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.util.units.Unit;
 
+/**
+ * @author flange
+ */
 public class ConsumePartOfItemStep4ControllerTest {
     private static final double DELTA = 1e-6;
 

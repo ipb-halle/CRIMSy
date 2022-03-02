@@ -57,7 +57,12 @@ public class ContainerController {
                 (c) -> this.actionChangeContainer(c), messagePresenter);
 
         loadNamesForAutoComplete(availableContainers);
-        actionChangeContainer(this.originalItem.getContainer());
+
+        Container containerFromItem = null;
+        if (originalItem != null) {
+            containerFromItem = originalItem.getContainer();
+        }
+        actionChangeContainer(containerFromItem);
     }
 
     private void loadNamesForAutoComplete(List<Container> availableContainers) {

@@ -60,6 +60,20 @@
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
+                <p:tab
+                    id="step5_project"
+                    title="Project">
+                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep5.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    id="step6_location"
+                    title="Location">
+                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep6.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
             </p:wizard>
         </ui:composition>
     </h:body>

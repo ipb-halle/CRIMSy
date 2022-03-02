@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.primefaces.event.FlowEvent;
 
+import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.ContainerUtils;
 import de.ipb_halle.lbac.container.service.ContainerService;
@@ -29,6 +30,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.project.ProjectService;
 
 /**
  * 
@@ -45,12 +47,15 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     private final ConsumePartOfItemStep2Controller step2Controller; // r
     private final ConsumePartOfItemStep3Controller step3Controller; // r
     private final ConsumePartOfItemStep4Controller step4Controller; // r
+    private final ConsumePartOfItemStep5Controller step5Controller; // r
+    private final ConsumePartOfItemStep6Controller step6Controller; // r
 
     private final List<Solvent> solvents; // r
     private final List<ContainerType> availableContainerTypes; // r
 
     public ConsumePartOfItemStrategyController(Item parentItem, ItemService itemService,
-            ContainerService containerService, MessagePresenter messagePresenter) {
+            ContainerService containerService, ProjectService projectService, UserBean userBean,
+            MessagePresenter messagePresenter) {
         this.itemService = itemService;
         this.containerService = containerService;
         this.messagePresenter = messagePresenter;
@@ -59,6 +64,8 @@ public class ConsumePartOfItemStrategyController implements Serializable {
         step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, parentItem, messagePresenter);
         step3Controller = new ConsumePartOfItemStep3Controller(step1Controller, step2Controller, parentItem);
         step4Controller = new ConsumePartOfItemStep4Controller(step1Controller, step3Controller, messagePresenter);
+        step5Controller = new ConsumePartOfItemStep5Controller(parentItem, projectService, userBean);
+        step6Controller = new ConsumePartOfItemStep6Controller(containerService, userBean, messagePresenter);
 
         solvents = loadSolvents();
         availableContainerTypes = loadAvailableContainerTypes();
@@ -81,6 +88,8 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     private static final String STEP2 = "step2_weigh";
     private static final String STEP3 = "step3_volumeAndSolvent";
     private static final String STEP4 = "step4_directContainerAndLabel";
+    private static final String STEP5 = "step5_project";
+    private static final String STEP6 = "step6_location";
 
     public String onFlowProcess(FlowEvent event) {
         if (STEP2.equals(event.getNewStep())) {
@@ -132,6 +141,14 @@ public class ConsumePartOfItemStrategyController implements Serializable {
 
     public ConsumePartOfItemStep4Controller getStep4Controller() {
         return step4Controller;
+    }
+
+    public ConsumePartOfItemStep5Controller getStep5Controller() {
+        return step5Controller;
+    }
+
+    public ConsumePartOfItemStep6Controller getStep6Controller() {
+        return step6Controller;
     }
 
     public List<Solvent> getSolvents() {
