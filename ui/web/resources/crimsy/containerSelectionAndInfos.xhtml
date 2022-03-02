@@ -37,6 +37,8 @@
             default="false" />
     </composite:interface>
 
+    <!-- Note: p:remoteCommand is invoked by all non-PrimeFaces components that have AJAX-activity.
+               This is due a bug in p:wizard (see comment in consumePartOfItem.xhtml). -->
     <composite:implementation>
         <crimsy:containerModal
             controller="#{cc.attrs.containerController.containerSelectionDialogController}"
@@ -56,12 +58,15 @@
                                 <h:outputText value="#{msgs.itemEdit_containerPanel_current_location}" />
                             </b:column>
                             <b:column span="1">
-                                <b:commandButton
-                                    styleClass="itemEditContainerRemoveButton"
-                                    ajax="true"
+                                <p:remoteCommand
+                                    name="containerSelectionAndInfos_actionRemoveContainer"
                                     process="@this"
                                     update="@(.containerPseudoClass)"
                                     action="#{cc.attrs.containerController.actionRemoveContainer()}"
+                                    rendered="#{not cc.attrs.historyMode}" />
+                                <b:button
+                                    styleClass="itemEditContainerRemoveButton"
+                                    onclick="containerSelectionAndInfos_actionRemoveContainer();"
                                     value="remove"
                                     disabled="#{cc.attrs.historyMode}" />
                             </b:column>
@@ -103,12 +108,15 @@
                                 </p:autoComplete>
                             </b:column>
                             <b:column span="1">
-                                <b:commandButton
-                                    styleClass="itemEditcontainerAdvancedSearch"
-                                    ajax="true"
+                                <p:remoteCommand
+                                    name="containerSelectionAndInfos_actionOpenContainerSearchDialog"
                                     process="@this"
                                     update="@(.containerModal)"
                                     oncomplete="PF('dlgcontainerSearch').show();"
+                                    rendered="#{not cc.attrs.historyMode}" />
+                                <b:button
+                                    styleClass="itemEditcontainerAdvancedSearch"
+                                    onclick="containerSelectionAndInfos_actionOpenContainerSearchDialog();"
                                     value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}"
                                     disabled="#{cc.attrs.historyMode}" />
                             </b:column>

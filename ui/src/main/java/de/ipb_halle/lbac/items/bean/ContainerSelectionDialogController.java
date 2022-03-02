@@ -22,6 +22,8 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import java.util.List;
 import java.util.function.Consumer;
 
+import javax.faces.context.FacesContext;
+
 /**
  * Controller for the composite component containerModal.xhtml.
  * 
@@ -61,8 +63,22 @@ public class ContainerSelectionDialogController {
     /*
      * Actions
      */
-    public void actionOnSelect(Container c) {
-        onSelectCallback.accept(c);
+    public void actionOnSelect() {
+        String indexAsString = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+                .get("selectedRow");
+        int index = -1;
+
+        try {
+            index = Integer.parseInt(indexAsString);
+        } catch (NumberFormatException e) {
+            return;
+        }
+        if ((index < 0) || index >= availableContainers.size()) {
+            return;
+        }
+
+        Container selectedContainer = availableContainers.get(index);
+        onSelectCallback.accept(selectedContainer);
     }
 
     /*

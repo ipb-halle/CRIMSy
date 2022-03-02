@@ -49,9 +49,6 @@
                     </b:column>
                     <!-- Error margin -->
                     <b:column span="2">
-                        <!-- Bug: BootsFaces'/JSF's AJAX handlers are not able to update DOM elements inside the 
-                                  tabs of PF's wizard. This works for PF components (<p:inputText> with <p:ajax>).
-                             Workaround: Invoke a PF remoteCommand onchange. -->
                         <b:inputText
                             id="errorMarginInputId"
                             value="#{controller.step2Controller.errorMargin}"

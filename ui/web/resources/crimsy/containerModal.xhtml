@@ -38,6 +38,8 @@
             required="false" />
     </composite:interface>
 
+    <!-- Note: p:remoteCommand is invoked by all non-PrimeFaces components that have AJAX-activity.
+               This is due a bug in p:wizard (see comment in consumePartOfItem.xhtml). -->
     <composite:implementation>
         <p:dialog
             id="containerModalDialogId"
@@ -46,14 +48,19 @@
             modal="true"
             closable="true"
             header="#{msgs.container_dialog_title}">
+            <!-- The selected row index is used in the action method, see
+                 https://github.com/primefaces/primefaces/blob/master/docs/11_0_0/components/remotecommand.md#passing-parameters -->
+            <p:remoteCommand
+                name="containerModal_actionOnSelect"
+                process="@this"
+                update="growlMsg @(.#{cc.attrs.updateTargetClass})"
+                action="#{cc.attrs.controller.actionOnSelect()}"
+                oncomplete="PF('#{cc.attrs.widgetVar}').hide();" />
             <b:dataTable
                 value="#{cc.attrs.controller.availableContainers}"
                 var="container"
                 select="true"
-                process="@this"
-                update="growlMsg @(.#{cc.attrs.updateTargetClass})"
-                onselect="ajax:cc.attrs.controller.actionOnSelect(container)"
-                oncomplete="PF('#{cc.attrs.widgetVar}').hide();"
+                onselect="containerModal_actionOnSelect([{name:'selectedRow', value:indexes}]);"
                 saveState="false">
                 <b:dataTableColumn value="#{container.id}" />
                 <b:dataTableColumn

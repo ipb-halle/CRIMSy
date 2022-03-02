@@ -18,8 +18,6 @@
 package de.ipb_halle.lbac.items.bean;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
@@ -27,9 +25,6 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,19 +33,6 @@ import org.junit.jupiter.api.Test;
  */
 public class ContainerSelectionDialogControllerTest {
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
-
-    @Test
-    public void test_actionOnSelect() {
-        AtomicReference<Container> containerFromCallback = new AtomicReference<>();
-        Consumer<Container> callback = (c) -> containerFromCallback.set(c);
-        ContainerSelectionDialogController controller = new ContainerSelectionDialogController(new ArrayList<>(),
-                callback, messagePresenter);
-        Container container = new Container();
-        container.setId(42);
-
-        controller.actionOnSelect(container);
-        assertTrue(container.isEqualTo(containerFromCallback.get()));
-    }
 
     @Test
     public void test_getDimensionString() {
