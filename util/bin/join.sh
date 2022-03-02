@@ -170,8 +170,8 @@ function joinFunc {
 
     if [ -n "$JOIN" ] ; then
         CLOUD="$JOIN"
-        url=`cat etc/$CLOUD/cloud.tmp | cut -d';' -f2`
-        if [ -n "$url" ] ; then
+        DOWNLOAD_URL=`cat etc/$CLOUD/cloud.tmp | cut -d';' -f2`
+        if [ -n "$DOWNLOAD_URL" ] ; then
             saveCloudInfo
             dist/bin/update.sh proxy
             dist/bin/update.sh ui
