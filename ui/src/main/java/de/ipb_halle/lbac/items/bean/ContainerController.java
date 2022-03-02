@@ -90,7 +90,7 @@ public class ContainerController {
             return;
         }
 
-        Container c = containerService.loadContainerById(containerId);
+        Container c = containerService.loadContainerWithoutItemsById(containerId);
         actionChangeContainer(c);
     }
 
@@ -100,6 +100,10 @@ public class ContainerController {
 
     public void actionChangeContainer(Container c) {
         container = c;
+
+        if (container != null) {
+            container.setItems(containerService.loadItemIdsOfContainer(container));
+        }
 
         containerInfoPresenter = new ContainerInfoPresenter(container, messagePresenter);
         container2dController = new Container2dController(container, originalItem, messagePresenter);
