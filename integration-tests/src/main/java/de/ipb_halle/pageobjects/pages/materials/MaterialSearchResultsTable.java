@@ -77,8 +77,8 @@ public class MaterialSearchResultsTable extends DataTable<MaterialSearchResultsT
     /*
      * Getters
      */
-    public String getMaterialNames(int rowIndex) {
-        return getCell(0, rowIndex).text();
+    public SelenideElement getMaterialNames(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
     /**
@@ -87,12 +87,12 @@ public class MaterialSearchResultsTable extends DataTable<MaterialSearchResultsT
      * 
      * @return tooltip text
      */
-    public String getMaterialNamesTooltipText() {
-        return MATERIAL_NAMES_TOOLTIP.getText();
+    public PrimeFacesTooltip getMaterialNamesTooltip() {
+        return MATERIAL_NAMES_TOOLTIP;
     }
 
-    public String getMaterialType(int rowIndex) {
-        return getCell(1, rowIndex).text();
+    public SelenideElement getMaterialType(int rowIndex) {
+        return getCell(1, rowIndex);
     }
 
     // TODO: 3rd column, which can be text, images and what not

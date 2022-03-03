@@ -37,6 +37,7 @@ import de.ipb_halle.pageobjects.pages.search.SearchPage;
 import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserDialog;
 import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserManagementPage;
 import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserModel;
+import de.ipb_halle.pageobjects.pages.settings.usermanagement.UsersTable;
 import de.ipb_halle.test.SelenideEachExtension;
 
 /**
@@ -69,34 +70,34 @@ public class CreateUserTest {
     @Test
     @DisplayName("If the password is too short, a validation error should appear and no new user should be created.")
     public void test_createUserDialog_tooShortPassword_producesValidationErrorWhenTryingToSave() {
-        String username = "test-001";
-        UserModel user = validUser(username, "1234567").passwordRepeat(null);
+        String login = "test-001";
+        UserModel user = validUser(login, "1234567").passwordRepeat(null);
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
 
         dialog.passwordMessage().shouldBe(visible).shouldHave(uiMessage("PASSWORD_ERROR_TOO_SHORT", locale));
         dialog.close();
-        userManagementPage.getUsersTable().search(username).shouldBeEmpty();
+        userManagementPage.getUsersTable().search(login).shouldBeEmpty();
     }
 
     @Test
     @DisplayName("If the password and repeat do not match, a validation error should appear and new no user should be created.")
     public void test_createUserDialog_wrongPasswordRepeat_producesValidationErrorWhenTryingToSave() {
-        String username = "test-002";
-        UserModel user = validUser(username, "12345678").passwordRepeat("123456789");
+        String login = "test-002";
+        UserModel user = validUser(login, "12345678").passwordRepeat("123456789");
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
 
         dialog.passwordMessage().shouldBe(visible).shouldHave(uiMessage("PASSWORD_ERROR__MISMATCH", locale));
         dialog.close();
-        userManagementPage.getUsersTable().search(username).shouldBeEmpty();
+        userManagementPage.getUsersTable().search(login).shouldBeEmpty();
     }
 
     @Test
     @DisplayName("If the login already exists, a validation error should appear and no new user should be created.")
     public void test_createUserDialog_createUserWithAlreadyExistingLogin_producesValidationErrorWhenTryingToSave() {
-        String username = "test-003";
-        UserModel user = validUser(username, "12345678");
+        String login = "test-003";
+        UserModel user = validUser(login, "12345678");
         // create a user
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
@@ -111,21 +112,21 @@ public class CreateUserTest {
 
         dialog.close();
         // delete existing user
-        userManagementPage.getUsersTable().search(username).deleteUser(0).confirm();
+        userManagementPage.getUsersTable().search(login).deleteUser(0).confirm();
     }
 
     @Test
     @DisplayName("If the shortcut already exists, a validation error should appear and no new user should be created.")
     public void test_createUserDialog_createUserWithAlreadyExistingShortcut_producesValidationErrorWhenTryingToSave() {
-        String username = "test-004";
-        String newUsername = "test-004-1";
-        UserModel user = validUser(username, "12345678").shortcut("XYZ");
+        String login = "test-004";
+        String newLogin = "test-004-1";
+        UserModel user = validUser(login, "12345678").shortcut("XYZ");
         // create a user
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
 
         // try to create a user with the same shortcut
-        user.login(newUsername);
+        user.login(newLogin);
         dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
 
@@ -133,17 +134,81 @@ public class CreateUserTest {
                 + getUIMessage("admission_non_unique_shortcut_detail", locale);
         dialog.shortcutMessage().shouldBe(visible).shouldHave(exactTextCaseSensitive(expectedText));
         dialog.close();
-        userManagementPage.getUsersTable().search(newUsername).shouldBeEmpty();
+        userManagementPage.getUsersTable().search(newLogin).shouldBeEmpty();
 
         /*
          * Remove shortcut for the existing user, so we don't run into trouble the next
          * time this test is executed.
          */
-        dialog = userManagementPage.getUsersTable().search(username).editUser(0);
+        dialog = userManagementPage.getUsersTable().search(login).editUser(0);
         dialog.shortcutInput().setValue("");
         dialog.confirm();
         // delete existing user
-        userManagementPage.getUsersTable().search(username).deleteUser(0).confirm();
+        userManagementPage.getUsersTable().search(login).deleteUser(0).confirm();
+    }
+
+    @Test
+    @DisplayName("If the shortcut does not only contain letters, a validation error should appear and no new user should be created.")
+    public void test_createUserDialog_nonAlphabeticShortcut_producesValidationErrorWhenTryingToSave() {
+        String login = "test-005";
+        UserModel user = validUser(login, "12345678").shortcut("ABC123");
+        UserDialog dialog = userManagementPage.createUser();
+        dialog.applyModel(user).confirm();
+
+        String expectedText = getUIMessage("admission_shortcut_wrongpattern", locale) + "\n"
+                + getUIMessage("admission_shortcut_wrongpattern_detail", locale);
+        dialog.shortcutMessage().shouldBe(visible).shouldHave(exactTextCaseSensitive(expectedText));
+        dialog.close();
+        userManagementPage.getUsersTable().search(login).shouldBeEmpty();
+    }
+
+    @Test
+    @DisplayName("After successful creation of a user, the users table should show its data.")
+    public void test_createUser_and_checkItsData() {
+        String login = "test-006";
+        String name = "test user XYZ";
+        String shortcut = "ABCDEF";
+        String email = "user@test.example";
+        String password = "12345678";
+        String phone = "CALL-911";
+
+        UserModel user = new UserModel().name(name).login(login).shortcut(shortcut).email(email).password(password)
+                .passwordRepeat(password).phone(phone);
+        UserDialog dialog = userManagementPage.createUser();
+        dialog.applyModel(user).confirm();
+
+        UsersTable table = userManagementPage.getUsersTable().search(login);
+        table.shouldNotBeEmpty();
+        table.getName(0).shouldHave(exactTextCaseSensitive(name));
+        table.getLogin(0).shouldHave(exactTextCaseSensitive(login));
+        table.getShortcut(0).shouldHave(exactTextCaseSensitive(shortcut));
+        table.getEmail(0).shouldHave(exactTextCaseSensitive(email));
+        table.getPhone(0).shouldHave(exactTextCaseSensitive(phone));
+        table.getType(0).shouldHave(exactTextCaseSensitive("LOCAL"));
+//        table.getInstitute(0).shouldHave(exactTextCaseSensitive("???"));
+
+        /*
+         * Remove shortcut for the user, so we don't run into trouble the next time this
+         * test is executed.
+         */
+        table.editUser(0);
+        dialog.shortcutInput().setValue("");
+        dialog.confirm();
+        // delete user
+        userManagementPage.getUsersTable().search(login).deleteUser(0).confirm();
+    }
+
+    @Test
+    @DisplayName("If the email is invalid, a validation error should appear and no new user should be created.")
+    public void test_createUserDialog_invalidEmail_producesValidationErrorWhenTryingToSave() {
+        String login = "test-007";
+        UserModel user = validUser(login, "12345678").email("user@test");
+        UserDialog dialog = userManagementPage.createUser();
+        dialog.applyModel(user).confirm();
+
+        dialog.emailMessage().shouldBe(visible).shouldHave(uiMessage("admission_invalid_email", locale));
+        dialog.close();
+        userManagementPage.getUsersTable().search(login).shouldBeEmpty();
     }
 
     private UserModel validUser(String login, String password) {

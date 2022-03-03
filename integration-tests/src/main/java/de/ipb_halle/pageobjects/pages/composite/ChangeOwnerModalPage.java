@@ -19,6 +19,8 @@ package de.ipb_halle.pageobjects.pages.composite;
 
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
+import com.codeborne.selenide.SelenideElement;
+
 import de.ipb_halle.pageobjects.components.PrimeFacesDialog;
 import de.ipb_halle.pageobjects.components.table.DataTable;
 
@@ -54,16 +56,16 @@ public class ChangeOwnerModalPage extends PrimeFacesDialog {
         /*
          * Getters
          */
-        public String getUserName(int rowIndex) {
-            return getCell(0, rowIndex).text();
+        public SelenideElement getUserName(int rowIndex) {
+            return getCell(0, rowIndex);
         }
 
-        public String getPhone(int rowIndex) {
-            return getCell(1, rowIndex).text();
+        public SelenideElement getPhone(int rowIndex) {
+            return getCell(1, rowIndex);
         }
 
-        public String getEmail(int rowIndex) {
-            return getCell(2, rowIndex).text();
+        public SelenideElement getEmail(int rowIndex) {
+            return getCell(2, rowIndex);
         }
     }
 }

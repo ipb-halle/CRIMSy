@@ -19,6 +19,8 @@ package de.ipb_halle.pageobjects.pages.composite.acobjectmodal;
 
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
+import com.codeborne.selenide.SelenideElement;
+
 import de.ipb_halle.pageobjects.components.table.PrimeFacesDataTable;
 
 /**
@@ -45,11 +47,11 @@ public class AddableGroupsTable extends PrimeFacesDataTable<AddableGroupsTable> 
     /*
      * Getters
      */
-    public String getGroupName(int rowIndex) {
-        return getCell(0, rowIndex).text();
+    public SelenideElement getGroupName(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
-    public String getInstitution(int rowIndex) {
-        return getCell(1, rowIndex).text();
+    public SelenideElement getInstitution(int rowIndex) {
+        return getCell(1, rowIndex);
     }
 }

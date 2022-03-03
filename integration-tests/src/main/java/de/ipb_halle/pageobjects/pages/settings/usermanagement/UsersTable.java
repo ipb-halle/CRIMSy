@@ -20,6 +20,8 @@ package de.ipb_halle.pageobjects.pages.settings.usermanagement;
 import static com.codeborne.selenide.Selenide.page;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
+import com.codeborne.selenide.SelenideElement;
+
 import de.ipb_halle.pageobjects.components.table.DataTable;
 
 /**
@@ -58,31 +60,31 @@ public class UsersTable extends DataTable<UsersTable> {
     /*
      * Getters
      */
-    public String getName(int rowIndex) {
-        return getCell(0, rowIndex).text();
+    public SelenideElement getName(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
-    public String getLogin(int rowIndex) {
-        return getCell(1, rowIndex).text();
+    public SelenideElement getLogin(int rowIndex) {
+        return getCell(1, rowIndex);
     }
 
-    public String getShortcut(int rowIndex) {
-        return getCell(2, rowIndex).text();
+    public SelenideElement getShortcut(int rowIndex) {
+        return getCell(2, rowIndex);
     }
 
-    public String getEmail(int rowIndex) {
-        return getCell(3, rowIndex).text();
+    public SelenideElement getEmail(int rowIndex) {
+        return getCell(3, rowIndex);
     }
 
-    public String getPhone(int rowIndex) {
-        return getCell(4, rowIndex).text();
+    public SelenideElement getPhone(int rowIndex) {
+        return getCell(4, rowIndex);
     }
 
-    public String getType(int rowIndex) {
-        return getCell(5, rowIndex).text();
+    public SelenideElement getType(int rowIndex) {
+        return getCell(5, rowIndex);
     }
 
-    public String getInstitute(int rowIndex) {
-        return getCell(6, rowIndex).text();
+    public SelenideElement getInstitute(int rowIndex) {
+        return getCell(6, rowIndex);
     }
 }

@@ -20,6 +20,8 @@ package de.ipb_halle.pageobjects.pages.projects;
 import static com.codeborne.selenide.Selenide.page;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
+import com.codeborne.selenide.SelenideElement;
+
 import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.pages.composite.acobjectmodal.ACObjectModalPage;
 
@@ -59,15 +61,15 @@ public class ProjectsTable extends DataTable<ProjectsTable> {
     /*
      * Getters
      */
-    public String getProjectName(int rowIndex) {
-        return getCell(0, rowIndex).text();
+    public SelenideElement getProjectName(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
-    public String getProjectType(int rowIndex) {
-        return getCell(1, rowIndex).text();
+    public SelenideElement getProjectType(int rowIndex) {
+        return getCell(1, rowIndex);
     }
 
-    public String getProjectOwner(int rowIndex) {
-        return getCell(2, rowIndex).text();
+    public SelenideElement getProjectOwner(int rowIndex) {
+        return getCell(2, rowIndex);
     }
 }

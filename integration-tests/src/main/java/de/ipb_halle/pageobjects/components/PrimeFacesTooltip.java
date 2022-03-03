@@ -35,7 +35,7 @@ public class PrimeFacesTooltip {
         visibleDiv = $(selector);
     }
 
-    public String getText() {
-        return visibleDiv.text();
+    public SelenideElement text() {
+        return visibleDiv;
     }
 }

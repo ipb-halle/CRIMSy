@@ -22,6 +22,8 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.codeborne.selenide.SelenideElement;
+
 import de.ipb_halle.pageobjects.components.table.DataTable;
 
 /**
@@ -56,19 +58,19 @@ public class SearchResultsTable extends DataTable<SearchResultsTable> {
     /*
      * Getters
      */
-    public String getName(int rowIndex) {
-        return getCell(0, rowIndex).text();
+    public SelenideElement getName(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
-    public String getLocation(int rowIndex) {
-        return getCell(1, rowIndex).text();
+    public SelenideElement getLocation(int rowIndex) {
+        return getCell(1, rowIndex);
     }
 
-    public String getType(int rowIndex) {
-        return getCell(2, rowIndex).text();
+    public SelenideElement getType(int rowIndex) {
+        return getCell(2, rowIndex);
     }
 
-    public String getRelevance(int rowIndex) {
-        return getCell(3, rowIndex).text();
+    public SelenideElement getRelevance(int rowIndex) {
+        return getCell(3, rowIndex);
     }
 }

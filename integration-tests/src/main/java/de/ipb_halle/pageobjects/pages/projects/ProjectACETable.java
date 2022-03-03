@@ -50,8 +50,8 @@ public class ProjectACETable extends DataTable<ProjectACETable> {
     /*
      * Getters
      */
-    public String getGroupName(int rowIndex) {
-        return getCell(0, rowIndex).text();
+    public SelenideElement getGroupName(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
     public SelenideElement getPermReadCheckbox(int rowIndex) {

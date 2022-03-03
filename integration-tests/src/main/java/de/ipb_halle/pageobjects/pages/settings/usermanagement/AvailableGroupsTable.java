@@ -19,6 +19,8 @@ package de.ipb_halle.pageobjects.pages.settings.usermanagement;
 
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
+import com.codeborne.selenide.SelenideElement;
+
 import de.ipb_halle.pageobjects.components.table.DataTable;
 
 /**
@@ -45,11 +47,11 @@ public class AvailableGroupsTable extends DataTable<AvailableGroupsTable> {
     /*
      * Getters
      */
-    public String getName(int rowIndex) {
-        return getCell(0, rowIndex).text();
+    public SelenideElement getName(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
-    public String getInstitution(int rowIndex) {
-        return getCell(1, rowIndex).text();
+    public SelenideElement getInstitution(int rowIndex) {
+        return getCell(1, rowIndex);
     }
 }
