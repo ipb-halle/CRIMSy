@@ -15,13 +15,13 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.components.growl;
+package de.ipb_halle.pageobjects.components;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.conditions.CssClass;
 
 /**
- * Severity levels
+ * Severity levels in BootsFaces.
  * 
  * @author flange
  */

@@ -21,7 +21,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.conditions.Text;
+import com.codeborne.selenide.conditions.ExactTextCaseSensitive;
 
 /**
  * Page object representing a PrimeFaces DataTable.
@@ -33,7 +33,7 @@ import com.codeborne.selenide.conditions.Text;
  * repeated several times in the same table.
  */
 public class PrimeFacesDataTable extends DataTable {
-    private static final Condition EMPTY_CONDITION = new Text("No records found.");
+    private static final Condition EMPTY_CONDITION = new ExactTextCaseSensitive("No records found.");
 
     public PrimeFacesDataTable(String testId) {
         super($(testId(testId)).$("table", 1));

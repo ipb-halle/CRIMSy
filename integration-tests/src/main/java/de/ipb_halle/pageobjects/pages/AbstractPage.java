@@ -17,9 +17,14 @@
  */
 package de.ipb_halle.pageobjects.pages;
 
+import static com.codeborne.selenide.Condition.exactTextCaseSensitive;
+import static com.codeborne.selenide.Condition.not;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
+import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.navigation.Navigation;
@@ -30,12 +35,15 @@ import de.ipb_halle.pageobjects.navigation.Navigation;
  * @author flange
  */
 public abstract class AbstractPage {
-    protected static final SelenideElement LOGIN_CMDLINK = $(
-            testId("navigation:login"));
-    protected static final SelenideElement LOGOUT_CMDLINK = $(
-            testId("navigation:logout"));
-    private static final SelenideElement CURRENT_USERNAME = $(
-            testId("navigation:username"));
+    protected static final SelenideElement LOGIN_CMDLINK = $(testId("navigation:login"));
+    protected static final SelenideElement LOGOUT_CMDLINK = $(testId("navigation:logout"));
+    private static final SelenideElement CURRENT_USERNAME = $(testId("navigation:username"));
+
+    /*
+     * BootsFaces does not support JSF passthrough attributes in growls at the
+     * moment. The CSS class is a workaround.
+     */
+    private static final ElementsCollection GROWL_DIVS = $$(elementWithCssClasses("div", "growlMessages"));
 
     /*
      * Actions
@@ -44,69 +52,80 @@ public abstract class AbstractPage {
      * Navigate to the given target page.
      * 
      * @param <T>
-     * @param target
-     * @return page object of target page
+     * @param clazz class of the target page
+     * @return page object of the target page
      */
-    @SuppressWarnings("unchecked")
-    public <T extends AbstractPage> T navigateTo(Navigation target) {
-        target.getMenu().activate();
-        target.getNavCmdLink().click();
-        return (T) page(target.getPageObjectClass());
-    }
-
-    public <T extends AbstractPage> T navigateTo(Navigation target,
-            Class<T> clazz) {
-        target.getMenu().activate();
-        target.getNavCmdLink().click();
-        return page(clazz);
-    }
-
     public <T extends NavigablePage> T navigateTo(Class<T> clazz) {
         T page = page(clazz);
-        Navigation target = page.getNavigationItem();
-        target.getMenu().activate();
-        target.getNavCmdLink().click();
+        page.getNavigationItem().navigate();
         return page;
     }
 
     /**
-     * Log out
+     * Log out.
+     * <p>
+     * Should direct the browser either to the login page or the search page
+     * depending on CRIMSy's settings, thus only {@link LoginPage} or
+     * {@link SearchPage} are useful page object classes to be supplied in the
+     * {@code clazz} parameter.
      * 
-     * @return page object for the login page or the default search page
+     * @param <T>
+     * @param clazz expected page
+     * @return page object of expected page
      */
-    public AbstractPage logout() {
-        if (!isLoggedIn()) {
-            throw new RuntimeException("I am already logged out");
-        }
+    public <T extends AbstractPage> T logout(Class<T> clazz) {
         LOGOUT_CMDLINK.click();
-        // TODO: can also be the search page
-        return page(LoginPage.class);
+        return page(clazz);
     }
 
     /*
      * Getters
      */
     /**
-     * @return {@code true} if the user is logged in
-     */
-    public boolean isLoggedIn() {
-        boolean loginDisplayed = LOGIN_CMDLINK.isDisplayed();
-        boolean logoutDisplayed = LOGOUT_CMDLINK.isDisplayed();
-
-        if (logoutDisplayed && !loginDisplayed) {
-            return true;
-        }
-        if (!logoutDisplayed && loginDisplayed) {
-            return false;
-        }
-        throw new RuntimeException("Ambiguous login state");
-    }
-
-    /**
      * @return name of the currently logged in user
      */
     public String getCurrentUsername() {
-        Navigation.Menu.SETTINGS.activate();
-        return CURRENT_USERNAME.getText();
+        boolean settingMenuWasNotActive = false;
+        if (CURRENT_USERNAME.is(not(visible))) {
+            settingMenuWasNotActive = true;
+            Navigation.Menu.SETTINGS.activate();
+        }
+        String username = CURRENT_USERNAME.getText();
+        if (settingMenuWasNotActive) {
+            Navigation.Menu.SETTINGS.activate();
+        }
+        return username;
+    }
+
+    public ElementsCollection growls() {
+        return GROWL_DIVS;
+    }
+
+    /*
+     * Fluent assertions
+     */
+    public AbstractPage shouldBeLoggedIn() {
+        LOGIN_CMDLINK.shouldNotBe(visible);
+        LOGOUT_CMDLINK.shouldBe(visible);
+        return this;
+    }
+
+    public AbstractPage shouldNotBeLoggedIn() {
+        LOGIN_CMDLINK.shouldBe(visible);
+        LOGOUT_CMDLINK.shouldNotBe(visible);
+        return this;
+    }
+
+    public AbstractPage userNameShouldBe(String name) {
+        boolean settingMenuWasNotActive = false;
+        if (CURRENT_USERNAME.is(not(visible))) {
+            settingMenuWasNotActive = true;
+            Navigation.Menu.SETTINGS.activate();
+        }
+        CURRENT_USERNAME.shouldBe(exactTextCaseSensitive(name));
+        if (settingMenuWasNotActive) {
+            Navigation.Menu.SETTINGS.activate();
+        }
+        return this;
     }
 }

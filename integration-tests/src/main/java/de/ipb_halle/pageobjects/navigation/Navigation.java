@@ -27,36 +27,30 @@ import java.util.function.Consumer;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.pages.NavigablePage;
-import de.ipb_halle.pageobjects.pages.materials.MaterialOverviewPage;
-import de.ipb_halle.pageobjects.pages.projects.ProjectOverviewPage;
-import de.ipb_halle.pageobjects.pages.search.SearchPage;
-import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserManagementPage;
-
 /**
  * Page object for /ui/web/WEB-INF/templates/navigation.xhtml
  * 
  * @author flange
  */
 public enum Navigation {
-    SEARCH(BIOCLOUD, "navigation:search", SearchPage.class),
-    WORDCLOUD_SEARCH(BIOCLOUD, "navigation:wordCloudSearch", null),
-    SEQUENCE_SEARCH(BIOCLOUD, "navigation:sequenceSearch", null),
-    FORUM(BIOCLOUD, "navigation:forum", null),
-    MATERIALS_OVERVIEW(LIMS, "navigation:materials", MaterialOverviewPage.class),
-    PROJECTS_OVERVIEW(LIMS, "navigation:projects", ProjectOverviewPage.class),
-    ITEMS_OVERVIEW(LIMS, "navigation:items", null),
-    TAXONOMY(LIMS, "navigation:taxonomy", null),
-    EXPERIMENTS(LIMS, "navigation:experiments", null),
-    CONTAINERS_OVERVIEW(LIMS, "navigation:containers", null),
-    MY_ACCOUNT(SETTINGS, "navigation:myAccount", null),
-    USER_MANAGEMENT(SETTINGS, "navigation:userManagement", UserManagementPage.class),
-    GROUP_MANAGEMENT(SETTINGS, "navigation:groupManagement", null),
-    LDAP_CONNECTION(SETTINGS, "navigation:ldapSettings", null),
-    PRINTER_SETTINGS(SETTINGS, "navigation:printerSettings", null),
-    SYSTEM_SETTINGS(SETTINGS, "navigation:systemSettings", null),
-    CLOUD_NODE_MANAGEMENT(SETTINGS, "navigation:cloudNodeManagement", null),
-    COLLECTION_MANAGEMENT(SETTINGS, "navigation:collectionManagement", null);
+    SEARCH(BIOCLOUD, "navigation:search"),
+    WORDCLOUD_SEARCH(BIOCLOUD, "navigation:wordCloudSearch"),
+    SEQUENCE_SEARCH(BIOCLOUD, "navigation:sequenceSearch"),
+    FORUM(BIOCLOUD, "navigation:forum"),
+    MATERIALS_OVERVIEW(LIMS, "navigation:materials"),
+    PROJECTS_OVERVIEW(LIMS, "navigation:projects"),
+    ITEMS_OVERVIEW(LIMS, "navigation:items"),
+    TAXONOMY(LIMS, "navigation:taxonomy"),
+    EXPERIMENTS(LIMS, "navigation:experiments"),
+    CONTAINERS_OVERVIEW(LIMS, "navigation:containers"),
+    MY_ACCOUNT(SETTINGS, "navigation:myAccount"),
+    USER_MANAGEMENT(SETTINGS, "navigation:userManagement"),
+    GROUP_MANAGEMENT(SETTINGS, "navigation:groupManagement"),
+    LDAP_CONNECTION(SETTINGS, "navigation:ldapSettings"),
+    PRINTER_SETTINGS(SETTINGS, "navigation:printerSettings"),
+    SYSTEM_SETTINGS(SETTINGS, "navigation:systemSettings"),
+    CLOUD_NODE_MANAGEMENT(SETTINGS, "navigation:cloudNodeManagement"),
+    COLLECTION_MANAGEMENT(SETTINGS, "navigation:collectionManagement");
 
     public enum Menu {
         BIOCLOUD("navigation:bioCloud", e -> e.hover()),
@@ -81,23 +75,14 @@ public enum Navigation {
 
     private final Menu menu;
     private final SelenideElement navCmdLink;
-    private final Class<? extends NavigablePage> pageObjectClass;
 
-    private Navigation(Menu menu, String navCmdLinkTestId, Class<? extends NavigablePage> pageObjectClass) {
+    private Navigation(Menu menu, String navCmdLinkTestId) {
         this.menu = menu;
         this.navCmdLink = $(testId(navCmdLinkTestId));
-        this.pageObjectClass = pageObjectClass;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public SelenideElement getNavCmdLink() {
-        return navCmdLink;
-    }
-
-    public Class<? extends NavigablePage> getPageObjectClass() {
-        return pageObjectClass;
+    public void navigate() {
+        menu.activate();
+        navCmdLink.click();
     }
 }

@@ -21,8 +21,9 @@ package de.ipb_halle.pageobjects.util;
  * @author flange
  */
 public class TestConstants {
-    public static final String ADMIN_USER = "admin";
+    public static final String ADMIN_LOGIN = "admin";
     public static final String ADMIN_PASSWORD = "admin";
+    public static final String ADMIN_NAME = "Admin";
     public static final String PULBIC_GROUP = "Public Group";
     public static final String ADMIN_GROUP = "Admin Group";
 

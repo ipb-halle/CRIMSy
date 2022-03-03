@@ -17,37 +17,32 @@
  */
 package de.ipb_halle.integrationtests;
 
+import static com.codeborne.selenide.CollectionCondition.empty;
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Selenide.open;
-import static de.ipb_halle.pageobjects.components.growl.Severity.INFO;
-import static de.ipb_halle.pageobjects.components.growl.Severity.WARN;
+import static de.ipb_halle.pageobjects.components.Severity.INFO;
+import static de.ipb_halle.pageobjects.components.Severity.WARN;
 import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY;
 import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_PASSWORD;
-import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_USER;
-import static de.ipb_halle.test.GrowlAssert.assertGrowlI18n;
-import static de.ipb_halle.test.I18nAssert.assertJSFMessage;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
+import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_LOGIN;
+import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_NAME;
+import static de.ipb_halle.test.Conditions.growlI18nText;
+import static de.ipb_halle.test.Conditions.growlSeverity;
+import static de.ipb_halle.test.Conditions.jsfMessage;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import de.ipb_halle.pageobjects.components.growl.Growl;
 import de.ipb_halle.pageobjects.pages.LoginPage;
 import de.ipb_halle.pageobjects.pages.search.SearchPage;
-import de.ipb_halle.test.SelenideExtension;
+import de.ipb_halle.test.SelenideEachExtension;
 
 /**
  * @author flange
  */
-@ExtendWith(SelenideExtension.class)
+@ExtendWith(SelenideEachExtension.class)
 public class LoginTest {
     private LoginPage loginPage;
     private Locale locale = Locale.ENGLISH;
@@ -59,31 +54,22 @@ public class LoginTest {
 
     @Test
     public void test_sucessfulLogin() {
-        SearchPage searchPage = (SearchPage) loginPage.login(ADMIN_USER, ADMIN_PASSWORD);
-
-        assertTrue(searchPage.isLoggedIn());
-        List<Growl> growls = Growl.getGrowls();
-        assertThat(growls, hasSize(1));
-        assertGrowlI18n("admission_login_succeeded_detail", locale, INFO,
-                growls.get(0));
+        loginPage.login(ADMIN_LOGIN, ADMIN_PASSWORD, SearchPage.class).shouldBeLoggedIn().userNameShouldBe(ADMIN_NAME)
+                .growls().shouldHave(size(1)).get(0)
+                .shouldHave(growlI18nText("admission_login_succeeded_detail", locale)).shouldHave(growlSeverity(INFO));
     }
 
     // Don't run too frequent/often or you'll run into the intruder lockout.
     @Test
     public void test_failedLogin() {
-        assertFalse(loginPage.login("nonexistinguser", "pw").isLoggedIn());
-        List<Growl> growls = Growl.getGrowls();
-        assertThat(growls, hasSize(1));
-        assertGrowlI18n("admission_login_failure", locale, WARN, growls.get(0));
+        loginPage.login("nonexistinguser", "pw", LoginPage.class).shouldNotBeLoggedIn().growls().shouldHave(size(1))
+                .get(0).shouldHave(growlI18nText("admission_login_failure", locale)).shouldHave(growlSeverity(WARN));
     }
 
     @Test
     public void test_emptyInputs_validationErrors() {
-        assertFalse(loginPage.login("", "").isLoggedIn());
-        assertThat(Growl.getGrowls(), is(empty()));
-        assertJSFMessage(loginPage.getLoginNameMessage().getText(),
-                JSF_REQUIRED_VALIDATION_ERROR_KEY, locale);
-        assertJSFMessage(loginPage.getPasswordMessage().getText(),
-                JSF_REQUIRED_VALIDATION_ERROR_KEY, locale);
+        loginPage.login("", "", LoginPage.class).shouldNotBeLoggedIn().growls().shouldBe(empty);
+        loginPage.loginNameMessage().shouldHave(jsfMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
+        loginPage.passwordMessage().shouldHave(jsfMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
     }
 }

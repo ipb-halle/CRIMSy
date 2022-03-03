@@ -20,7 +20,7 @@ package de.ipb_halle.pageobjects.pages;
 import static com.codeborne.selenide.Selenide.*;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_PASSWORD;
-import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_USER;
+import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_LOGIN;
 
 import com.codeborne.selenide.SelenideElement;
 
@@ -38,40 +38,53 @@ public class LoginPage extends AbstractPage {
     private static final SelenideElement PASSWORD_MESSAGE = $(testId("login:password_message"));
     private static final SelenideElement LOGIN_BUTTON = $(testId("login:loginButton"));
 
-    public void navigate() {
-        if (isLoggedIn()) {
-            throw new RuntimeException("I am already logged in! Log out first to reach this page.");
-        }
-        LOGIN_CMDLINK.click();
-    }
-
     /*
      * Actions
      */
-    public AbstractPage login(String loginName, String password) {
+    /**
+     * Log in.
+     * <p>
+     * Should direct the browser either to the search page (successful login) the
+     * login page (failed login), thus only {@link SearchPage} or {@link LoginPage}
+     * are useful page object classes to be supplied in the {@code clazz} parameter.
+     * 
+     * @param <T>
+     * @param loginName
+     * @param password
+     * @param clazz     expected page
+     * @return page object of expected page
+     */
+    public <T extends AbstractPage> T login(String loginName, String password, Class<T> clazz) {
         LOGINNAME_INPUT.setValue(loginName);
         PASSWORD_INPUT.setValue(password);
         LOGIN_BUTTON.click();
 
-        if (isLoggedIn() && loginName.equals(getCurrentUsername())) {
-            return page(SearchPage.class);
-        } else {
-            return this;
-        }
+        return page(clazz);
     }
 
-    public AbstractPage loginAsAdmin() {
-        return login(ADMIN_USER, ADMIN_PASSWORD);
+    /**
+     * Log in.
+     * <p>
+     * Should direct the browser either to the search page (successful login) the
+     * login page (failed login), thus only {@link SearchPage} or {@link LoginPage}
+     * are useful page object classes to be supplied in the {@code clazz} parameter.
+     * 
+     * @param <T>
+     * @param clazz expected page
+     * @return page object of expected page
+     */
+    public <T extends AbstractPage> T loginAsAdmin(Class<T> clazz) {
+        return login(ADMIN_LOGIN, ADMIN_PASSWORD, clazz);
     }
 
     /*
      * Getters
      */
-    public SelenideElement getLoginNameMessage() {
+    public SelenideElement loginNameMessage() {
         return LOGINNAME_MESSAGE;
     }
 
-    public SelenideElement getPasswordMessage() {
+    public SelenideElement passwordMessage() {
         return PASSWORD_MESSAGE;
     }
 }

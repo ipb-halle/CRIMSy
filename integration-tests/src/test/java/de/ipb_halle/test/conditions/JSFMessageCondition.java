@@ -15,28 +15,32 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.test;
+package de.ipb_halle.test.conditions;
 
-import static com.codeborne.selenide.Selenide.clearBrowserCookies;
+import java.util.Locale;
 
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import com.codeborne.selenide.conditions.TextCondition;
+
+import de.ipb_halle.pageobjects.util.I18n;
 
 /**
- * JUnit Extension that configures the Selenide default browser before running
- * each test and clears the browser cookies afterwards.
+ * Condition that checks if the test string matches the given entry in the JSF
+ * resource bundle. It also accounts for format strings in the entry.
  * 
  * @author flange
  */
-public class SelenideExtension implements BeforeEachCallback, AfterEachCallback {
-    @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-        new WebDriverConfig().configure();
+public class JSFMessageCondition extends TextCondition {
+    private Locale locale;
+    private String key;
+
+    public JSFMessageCondition(String key, Locale locale) {
+        super("JSF message", I18n.getJSFMessage(key, locale));
+        this.locale = locale;
+        this.key = key;
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-        clearBrowserCookies();
+    protected boolean match(String test, String expectedText) {
+        return I18n.isJSFMessage(test, key, locale);
     }
 }
