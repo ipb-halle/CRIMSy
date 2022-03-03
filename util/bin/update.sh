@@ -77,7 +77,7 @@ function createProxyConfig {
 
     CLOUDS=`cat $LBAC_DATASTORE/etc/clouds.cfg | cut -d';' -f1`
     for c in $CLOUDS ; do
-        downloadCloud $c
+        proxyProcessCloud $c
     done
 
     c_rehash $LBAC_DATASTORE/tmp/proxy_conf/crl/
@@ -143,31 +143,9 @@ function downloadCRL {
 }
 export -f downloadCRL
 
-#
-# prepare the certificates for the entire CA chain 
-# of a single cloud, download and verify CRLs 
-function downloadCloud {
-    CLOUD=$1
-
-    # get the certificates
-    cp $LBAC_DATASTORE/dist/etc/$CLOUD/chain.pem $LBAC_DATASTORE/tmp/proxy_conf/crt/
-
-    pushd $LBAC_DATASTORE/tmp/proxy_conf/crt >/dev/null
-    $LBAC_DATASTORE/dist/bin/chainsplit.pl $CLOUD chain.pem
-    rm chain.pem
-    c_rehash .
-    popd >/dev/null
-
-    # get the CRLs
-    cat $LBAC_DATASTORE/dist/etc/$CLOUD/addresses.txt | \
-        sort | uniq -f2 -w41 | \
-        xargs -i /bin/bash -c "downloadCRL '{}'" || error "CRL verification failed"
-}
-
 # download cloud certificates for UI
 function downloadCloudPackages {
     CLOUD=$1
-    . $LBAC_DATASTORE/dist/etc/$CLOUD/master.sh
     url=`grep "$CLOUD;" $LBAC_DATASTORE/etc/clouds.cfg | cut -d';' -f2`
 
     pushd $LBAC_DATASTORE/tmp >/dev/null
@@ -176,7 +154,8 @@ function downloadCloudPackages {
     openssl smime -verify -in $CLOUD.asc.sig -certfile ../etc/$CLOUD/devcert.pem \
         -CAfile ../etc/$CLOUD/chain.pem | openssl smime -decrypt -inform PEM \
         -inkey ../etc/lbac_cert.key -passin file:../etc/lbac_cert.passwd \
-        -out $CLOUD.tar.gz || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" && rm \$CLOUD.asc.sig \$CLOUD.tar.gz && exit 1)
+        -out $CLOUD.tar.gz || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" && \
+        rm $CLOUD.asc.sig $CLOUD.tar.gz && exit 1)
 
     popd >/dev/null
     tar -xzf tmp/$CLOUD.tar.gz
@@ -229,6 +208,27 @@ function preprocess {
 
 }
 export -f preprocess
+
+#
+# prepare the certificates for the entire CA chain 
+# of a single cloud, download and verify CRLs 
+function proxyProcessCloud {
+    CLOUD=$1
+
+    # get the certificates
+    cp $LBAC_DATASTORE/dist/etc/$CLOUD/chain.pem $LBAC_DATASTORE/tmp/proxy_conf/crt/
+
+    pushd $LBAC_DATASTORE/tmp/proxy_conf/crt >/dev/null
+    $LBAC_DATASTORE/dist/bin/chainsplit.pl $CLOUD chain.pem
+    rm chain.pem
+    c_rehash .
+    popd >/dev/null
+
+    # get the CRLs
+    cat $LBAC_DATASTORE/dist/etc/$CLOUD/addresses.txt | \
+        sort | uniq -f2 -w41 | \
+        xargs -i /bin/bash -c "downloadCRL '{}'" || error "CRL verification failed"
+}
 
 #
 # restore the entire system

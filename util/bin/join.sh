@@ -173,8 +173,8 @@ function joinFunc {
         DOWNLOAD_URL=`cat etc/$CLOUD/cloud.tmp | cut -d';' -f2`
         if [ -n "$DOWNLOAD_URL" ] ; then
             saveCloudInfo
-            dist/bin/update.sh proxy
             dist/bin/update.sh ui
+            dist/bin/update.sh proxy
             dist/bin/update.sh db
             cleanUp
         else 

@@ -210,8 +210,8 @@ function setup {
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" initROOT "$LBAC_DATASTORE" "$USER"
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" remove 
 
-        dist/bin/update.sh proxy
         dist/bin/update.sh ui
+        dist/bin/update.sh proxy
         dist/bin/update.sh db
 
         echo "Doing superuser actions ..."
