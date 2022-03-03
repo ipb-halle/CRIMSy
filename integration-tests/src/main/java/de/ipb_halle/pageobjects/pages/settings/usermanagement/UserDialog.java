@@ -57,6 +57,17 @@ public class UserDialog extends PrimeFacesDialog {
     /*
      * Actions
      */
+    public UserDialog applyModel(UserModel model) {
+        NAME_INPUT.setValue(model.getName());
+        LOGIN_INPUT.setValue(model.getLogin());
+        SHORTCUT_INPUT.setValue(model.getShortcut());
+        EMAIL_INPUT.setValue(model.getEmail());
+        PASSWORD_INPUT.setValue(model.getPassword());
+        PASSWORD_REPEAT_INPUT.setValue(model.getPasswordRepeat());
+        PHONE_INPUT.setValue(model.getPhone());
+        return this;
+    }
+
     public UserManagementPage confirm() {
         CONFIRM_BUTTON.click();
         return page(UserManagementPage.class);
@@ -75,43 +86,43 @@ public class UserDialog extends PrimeFacesDialog {
     /*
      * Getters
      */
-    public SelenideElement getIdInput() {
+    public SelenideElement idInput() {
         return ID_INPUT;
     }
 
-    public SelenideElement getIdMessage() {
+    public SelenideElement idMessage() {
         return ID_MESSAGE;
     }
 
-    public SelenideElement getNameInput() {
+    public SelenideElement nameInput() {
         return NAME_INPUT;
     }
 
-    public SelenideElement getNameMessage() {
+    public SelenideElement nameMessage() {
         return NAME_MESSAGE;
     }
 
-    public SelenideElement getLoginInput() {
+    public SelenideElement loginInput() {
         return LOGIN_INPUT;
     }
 
-    public SelenideElement getLoginMessage() {
+    public SelenideElement loginMessage() {
         return LOGIN_MESSAGE;
     }
 
-    public SelenideElement getShortcutInput() {
+    public SelenideElement shortcutInput() {
         return SHORTCUT_INPUT;
     }
 
-    public SelenideElement getShortcutMessage() {
+    public SelenideElement shortcutMessage() {
         return SHORTCUT_MESSAGE;
     }
 
-    public SelenideElement getEmailInput() {
+    public SelenideElement emailInput() {
         return EMAIL_INPUT;
     }
 
-    public SelenideElement getEmailMessage() {
+    public SelenideElement emailMessage() {
         return EMAIL_MESSAGE;
     }
 
@@ -119,31 +130,31 @@ public class UserDialog extends PrimeFacesDialog {
         return PASSWORD_INPUT;
     }
 
-    public SelenideElement getPasswordMessage() {
+    public SelenideElement passwordMessage() {
         return PASSWORD_MESSAGE;
     }
 
-    public SelenideElement getPasswordRepeatInput() {
+    public SelenideElement passwordRepeatInput() {
         return PASSWORD_REPEAT_INPUT;
     }
 
-    public SelenideElement getPhoneInput() {
+    public SelenideElement phoneInput() {
         return PHONE_INPUT;
     }
 
-    public SelenideElement getPhoneMessage() {
+    public SelenideElement phoneMessage() {
         return PHONE_MESSAGE;
     }
 
-    public SelenideElement getNewPasswordInput() {
+    public SelenideElement newPasswordInput() {
         return NEW_PASSWORD_INPUT;
     }
 
-    public SelenideElement getNewPasswordMessage() {
+    public SelenideElement newPasswordMessage() {
         return NEW_PASSWORD_MESSAGE;
     }
 
-    public SelenideElement getNewPasswordRepeatInput() {
+    public SelenideElement newPasswordRepeatInput() {
         return NEW_PASSWORD_REPEAT_INPUT;
     }
 }

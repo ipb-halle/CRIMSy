@@ -32,7 +32,7 @@ import com.codeborne.selenide.conditions.ExactTextCaseSensitive;
  * This is a quick-and-dirty solution. Column names are broken, because thead is
  * repeated several times in the same table.
  */
-public class PrimeFacesDataTable<T extends PrimeFacesDataTable<T>> extends DataTable<T> {
+public class PrimeFacesDataTable<SELF extends PrimeFacesDataTable<SELF>> extends DataTable<SELF> {
     private static final Condition EMPTY_CONDITION = new ExactTextCaseSensitive("No records found.");
 
     public PrimeFacesDataTable(String testId) {
@@ -51,14 +51,14 @@ public class PrimeFacesDataTable<T extends PrimeFacesDataTable<T>> extends DataT
      * Fluent assertions
      */
     @Override
-    public PrimeFacesDataTable<T> shouldBeEmpty() {
+    public SELF shouldBeEmpty() {
         getCell(0, 0).shouldBe(EMPTY_CONDITION);
-        return this;
+        return self();
     }
 
     @Override
-    public PrimeFacesDataTable<T> shouldNotBeEmpty() {
+    public SELF shouldNotBeEmpty() {
         getCell(0, 0).shouldNotBe(EMPTY_CONDITION);
-        return this;
+        return self();
     }
 }

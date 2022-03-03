@@ -35,12 +35,12 @@ public class UserManagementPage extends NavigablePage {
     private static final UsersTable USERS_TABLE = new UsersTable("userManagement:usersTable");
     private static final SelenideElement CREATE_USER_BUTTON = $(testId("userManagement:createUser"));
     private static final SelenideElement REFRESH_BUTTON = $(testId("userManagement:refresh"));
-    
+
     @Override
     public Navigation getNavigationItem() {
         return Navigation.USER_MANAGEMENT;
     }
-    
+
     /*
      * Actions
      */
@@ -48,12 +48,12 @@ public class UserManagementPage extends NavigablePage {
         CREATE_USER_BUTTON.click();
         return page(UserDialog.class);
     }
-    
+
     public UserManagementPage refresh() {
         REFRESH_BUTTON.click();
         return this;
     }
-    
+
     /*
      * Getters
      */

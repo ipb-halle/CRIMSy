@@ -37,7 +37,7 @@ import de.ipb_halle.pageobjects.util.Selectors;
  * 
  * @author flange
  */
-public class DataTable<T extends DataTable<T>> {
+public class DataTable<SELF extends DataTable<SELF>> {
     private static final Condition EMPTY_CONDITION = new CssClass("dataTables_empty");
 
     private final SelenideElement table;
@@ -50,12 +50,17 @@ public class DataTable<T extends DataTable<T>> {
         this.table = table;
     }
 
+    @SuppressWarnings("unchecked")
+    protected SELF self() {
+        return (SELF) this;
+    }
+
     /*
      * Actions
      */
-    public DataTable<T> search(String searchString) {
+    public SELF search(String searchString) {
         getSearchInput().setValue(searchString);
-        return this;
+        return self();
     }
 
     /*
@@ -148,13 +153,13 @@ public class DataTable<T extends DataTable<T>> {
     /*
      * Fluent assertions
      */
-    public DataTable<T> shouldBeEmpty() {
+    public SELF shouldBeEmpty() {
         getCell(0, 0).shouldBe(EMPTY_CONDITION);
-        return this;
+        return self();
     }
 
-    public DataTable<T> shouldNotBeEmpty() {
+    public SELF shouldNotBeEmpty() {
         getCell(0, 0).shouldNotBe(EMPTY_CONDITION);
-        return this;
+        return self();
     }
 }

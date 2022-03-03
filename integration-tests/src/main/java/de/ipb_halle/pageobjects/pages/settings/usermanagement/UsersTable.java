@@ -50,9 +50,9 @@ public class UsersTable extends DataTable<UsersTable> {
         return page(GroupDialog.class);
     }
 
-    public UsersTable deleteUser(int rowIndex) {
+    public UserDialog deleteUser(int rowIndex) {
         getCell(7, rowIndex).$(DELETE_USER_BUTTON).click();
-        return this;
+        return page(UserDialog.class);
     }
 
     /*
