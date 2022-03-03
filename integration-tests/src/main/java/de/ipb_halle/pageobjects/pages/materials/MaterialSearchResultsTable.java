@@ -33,7 +33,7 @@ import de.ipb_halle.pageobjects.pages.composite.acobjectmodal.ACObjectModalPage;
  * 
  * @author flange
  */
-public class MaterialSearchResultsTable extends DataTable {
+public class MaterialSearchResultsTable extends DataTable<MaterialSearchResultsTable> {
     private static final String MATERIAL_NAMES_TEXT = testId("materialOverview:resultsTable:names");
     private static final PrimeFacesTooltip MATERIAL_NAMES_TOOLTIP = new PrimeFacesTooltip(
             "materialOverview:resultsTable:namesTooltip");

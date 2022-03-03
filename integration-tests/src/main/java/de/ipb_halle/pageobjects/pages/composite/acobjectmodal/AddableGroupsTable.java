@@ -27,7 +27,7 @@ import de.ipb_halle.pageobjects.components.table.PrimeFacesDataTable;
  * 
  * @author flange
  */
-public class AddableGroupsTable extends PrimeFacesDataTable {
+public class AddableGroupsTable extends PrimeFacesDataTable<AddableGroupsTable> {
     private static final String ADD_GROUP_BUTTON = testId("acObjectModal:addableGroupsTable:addGroup");
 
     public AddableGroupsTable(String testId) {

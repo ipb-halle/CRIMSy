@@ -28,7 +28,7 @@ import de.ipb_halle.pageobjects.components.table.PrimeFacesDataTable;
  * 
  * @author flange
  */
-public class ACEntriesTable extends PrimeFacesDataTable {
+public class ACEntriesTable extends PrimeFacesDataTable<ACEntriesTable> {
     private static final String PERM_READ_CHECKBOX = "acObjectModal:acEntriesTable:permRead";
     private static final String PERM_EDIT_CHECKBOX = "acObjectModal:acEntriesTable:permEdit";
     private static final String PERM_CREATE_CHECKBOX = "acObjectModal:acEntriesTable:permCreate";

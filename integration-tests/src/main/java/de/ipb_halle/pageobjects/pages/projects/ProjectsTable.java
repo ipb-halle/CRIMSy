@@ -29,7 +29,7 @@ import de.ipb_halle.pageobjects.pages.composite.acobjectmodal.ACObjectModalPage;
  * 
  * @author flange
  */
-public class ProjectsTable extends DataTable {
+public class ProjectsTable extends DataTable<ProjectsTable> {
     private static final String EDIT_PROJECT_BUTTON = testId("projectOverview:editProject");
     private static final String CHANGE_PERMISSIONS_BUTTON = testId("projectOverview:changePermissions");
     private static final String DEACTIVATE_PROJECT_BUTTON = testId("projectOverview:deactivateProject");

@@ -37,7 +37,7 @@ public class ChangeOwnerModalPage extends PrimeFacesDialog {
         return USERS_TABLE;
     }
 
-    public static class UsersTable extends DataTable {
+    public static class UsersTable extends DataTable<UsersTable> {
         private static final String SELECT_USER_BUTTON = testId("changeOwnerModal:usersTable:selectUser");
 
         public UsersTable(String testId) {

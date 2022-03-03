@@ -27,7 +27,7 @@ import de.ipb_halle.pageobjects.components.table.DataTable;
  * 
  * @author flange
  */
-public class AvailableGroupsTable extends DataTable {
+public class AvailableGroupsTable extends DataTable<AvailableGroupsTable> {
     private static final String ADD_BUTTON = testId("userManagement:groupDialog:add");
 
     public AvailableGroupsTable(String testId) {

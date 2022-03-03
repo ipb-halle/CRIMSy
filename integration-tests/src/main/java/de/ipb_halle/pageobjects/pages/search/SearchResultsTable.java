@@ -30,10 +30,9 @@ import de.ipb_halle.pageobjects.components.table.DataTable;
  * 
  * @author flange
  */
-public class SearchResultsTable extends DataTable {
+public class SearchResultsTable extends DataTable<SearchResultsTable> {
     private static final String LINK = testId("search:searchResultsTable:link");
-    private static final String DOWNLOAD = testId("a",
-            "search:searchResultsTable:link");
+    private static final String DOWNLOAD = testId("a", "search:searchResultsTable:link");
 
     public SearchResultsTable(String testId) {
         super(testId);

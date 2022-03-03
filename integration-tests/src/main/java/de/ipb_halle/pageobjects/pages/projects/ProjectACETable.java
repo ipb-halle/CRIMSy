@@ -29,7 +29,7 @@ import de.ipb_halle.pageobjects.components.table.DataTable;
  * 
  * @author flange
  */
-public class ProjectACETable extends DataTable {
+public class ProjectACETable extends DataTable<ProjectACETable> {
     private static final String PERM_READ_CHECKBOX = testId("input", "projectEdit:ACETable:permRead");
     private static final String PERM_EDIT_CHECKBOX = testId("input", "projectEdit:ACETable:permEdit");
     private static final String PERM_DELETE_CHECKBOX = testId("input", "projectEdit:ACETable:permDelete");

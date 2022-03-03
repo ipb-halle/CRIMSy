@@ -27,7 +27,7 @@ import de.ipb_halle.pageobjects.components.table.DataTable;
  * 
  * @author flange
  */
-public class MembershipTable extends DataTable {
+public class MembershipTable extends DataTable<MembershipTable> {
     private static final String DELETE_BUTTON = testId("userManagement:groupDialog:delete");
 
     public MembershipTable(String testId) {

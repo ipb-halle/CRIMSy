@@ -28,7 +28,7 @@ import de.ipb_halle.pageobjects.components.table.DataTable;
  * 
  * @author flange
  */
-public class UsersTable extends DataTable {
+public class UsersTable extends DataTable<UsersTable> {
     private static final String EDIT_USER_BUTTON = testId("userManagement:editUser");
     private static final String EDIT_MEMBERSHIPS_BUTTON = testId("userManagement:editMemberships");
     private static final String DELETE_USER_BUTTON = testId("userManagement:deleteUser");

@@ -37,7 +37,7 @@ import de.ipb_halle.pageobjects.util.Selectors;
  * 
  * @author flange
  */
-public class DataTable {
+public class DataTable<T extends DataTable<T>> {
     private static final Condition EMPTY_CONDITION = new CssClass("dataTables_empty");
 
     private final SelenideElement table;
@@ -48,6 +48,14 @@ public class DataTable {
 
     protected DataTable(SelenideElement table) {
         this.table = table;
+    }
+
+    /*
+     * Actions
+     */
+    public DataTable<T> search(String searchString) {
+        getSearchInput().setValue(searchString);
+        return this;
     }
 
     /*
@@ -140,12 +148,12 @@ public class DataTable {
     /*
      * Fluent assertions
      */
-    public DataTable shouldBeEmpty() {
+    public DataTable<T> shouldBeEmpty() {
         getCell(0, 0).shouldBe(EMPTY_CONDITION);
         return this;
     }
 
-    public DataTable shouldNotBeEmpty() {
+    public DataTable<T> shouldNotBeEmpty() {
         getCell(0, 0).shouldNotBe(EMPTY_CONDITION);
         return this;
     }
