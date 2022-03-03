@@ -33,8 +33,8 @@ public class I18n {
     }
 
     /*
-     * Resource bundle keys for the JSF messages. Add keys if necessary, the
-     * bundle can be found in the myfaces-api package.
+     * Resource bundle keys for the JSF messages. Add keys if necessary, the bundle
+     * can be found in the myfaces-api package.
      */
     public static final String JSF_REQUIRED_VALIDATION_ERROR_KEY = "javax.faces.component.UIInput.REQUIRED";
 
@@ -48,22 +48,20 @@ public class I18n {
      * @param key    JSF resource bundle key
      * @param locale
      * @return the entry from the JSF resource bundle corresponding to the
-     *         {@code key} or {@code null} if the key does not exist
+     *         {@code key}
      */
     public static String getJSFMessage(String key, Locale locale) {
         return getMessageFromBundle(JSF_BUNDLE_BASENAME, key, locale);
     }
 
     /**
-     * Checks a given test string against the entry for the given {@code key} in
-     * the JSF resource bundle. It also accounts for format strings in the
-     * entry.
+     * Checks a given test string against the entry for the given {@code key} in the
+     * JSF resource bundle. It also accounts for format strings in the entry.
      * 
      * @param test   test string
      * @param key    JSF resource bundle key
      * @param locale
-     * @return {@code false} if the test string does not match the entry or if
-     *         the {@code key} does not exist in the resource bundle
+     * @return {@code false} if the test string does not match the entry
      */
     public static boolean isJSFMessage(String test, String key, Locale locale) {
         String pattern = getJSFMessage(key, locale);
@@ -78,22 +76,20 @@ public class I18n {
      * @param key    CRIMSy UI resource bundle key
      * @param locale
      * @return the entry from the CRIMSy UI resource bundle corresponding to the
-     *         {@code key} or {@code null} if the key does not exist
+     *         {@code key}
      */
     public static String getUIMessage(String key, Locale locale) {
         return getMessageFromBundle(UI_BUNDLE_BASENAME, key, locale);
     }
 
     /**
-     * Checks a given test string against the entry for the given {@code key} in
-     * the CRIMSy UI resource bundle. It also accounts for format strings in the
-     * entry.
+     * Checks a given test string against the entry for the given {@code key} in the
+     * CRIMSy UI resource bundle. It also accounts for format strings in the entry.
      * 
      * @param test   test string
      * @param key    CRIMSy UI resource bundle key
      * @param locale
-     * @return {@code false} if the test string does not match the entry or if
-     *         the {@code key} does not exist in the resource bundle
+     * @return {@code false} if the test string does not match the entry
      */
     public static boolean isUIMessage(String test, String key, Locale locale) {
         String pattern = getUIMessage(key, locale);
@@ -104,13 +100,14 @@ public class I18n {
         }
     }
 
-    private static String getMessageFromBundle(String baseName, String key,
-            Locale locale) {
+    private static String getMessageFromBundle(String baseName, String key, Locale locale) {
         ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale);
         if ((key != null) && (bundle.containsKey(key))) {
             return bundle.getString(key);
         } else {
-            return null;
+            String error = String.format("Could not locate message key '%s' in bundle '%s' for locale %s.", key,
+                    baseName, locale.toString());
+            throw new RuntimeException(error);
         }
     }
 

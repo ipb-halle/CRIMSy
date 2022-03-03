@@ -26,7 +26,6 @@ import static java.util.Locale.ENGLISH;
 import static java.util.Locale.GERMAN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,8 +41,8 @@ public class I18nTest {
     public void test001_getJSFMessage() {
         assertEquals("{0}: Validation Error: Value is required.", getJSFMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
         assertEquals("{0}: Validierungsfehler: Eingabe erforderlich.", getJSFMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, GERMAN));
-        assertNull(getJSFMessage(nonExistingKey, ENGLISH));
-        assertNull(getJSFMessage(null, ENGLISH));
+        assertThrows(RuntimeException.class, () -> getJSFMessage(nonExistingKey, ENGLISH));
+        assertThrows(RuntimeException.class, () -> getJSFMessage(null, ENGLISH));
         assertThrows(NullPointerException.class, () -> getJSFMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, null));
     }
 
@@ -53,9 +52,9 @@ public class I18nTest {
         assertTrue(isJSFMessage("Passwort: Validierungsfehler: Eingabe erforderlich.", JSF_REQUIRED_VALIDATION_ERROR_KEY, GERMAN));
         assertFalse(isJSFMessage("Password: Validation failed: Value is required.", JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
         assertFalse(isJSFMessage("", JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
-        assertFalse(isJSFMessage("Password: Validation failed: Value is required.", nonExistingKey, ENGLISH));
+        assertThrows(RuntimeException.class, () -> isJSFMessage("Password: Validation failed: Value is required.", nonExistingKey, ENGLISH));
         assertFalse(isJSFMessage(null, JSF_REQUIRED_VALIDATION_ERROR_KEY, ENGLISH));
-        assertFalse(isJSFMessage("Password: Validation failed: Value is required.", null, ENGLISH));
+        assertThrows(RuntimeException.class, () -> isJSFMessage("Password: Validation failed: Value is required.", null, ENGLISH));
         assertThrows(NullPointerException.class, () -> isJSFMessage("Password: Validation Error: Value is required.", JSF_REQUIRED_VALIDATION_ERROR_KEY, null));
     }
 
@@ -63,8 +62,8 @@ public class I18nTest {
     public void test003_getUIMessage() {
         assertEquals("Save", getUIMessage("Save", ENGLISH));
         assertEquals("Speichern", getUIMessage("Save", GERMAN));
-        assertNull(getUIMessage(nonExistingKey, ENGLISH));
-        assertNull(getUIMessage(null, ENGLISH));
+        assertThrows(RuntimeException.class, () -> getUIMessage(nonExistingKey, ENGLISH));
+        assertThrows(RuntimeException.class, () -> getUIMessage(null, ENGLISH));
         assertThrows(NullPointerException.class, () -> getUIMessage("Save", null));
     }
 
@@ -74,9 +73,9 @@ public class I18nTest {
         assertTrue(isUIMessage("Speichern", "Save", GERMAN));
         assertFalse(isUIMessage("abcdef is no valid value", "Save", ENGLISH));
         assertFalse(isUIMessage("", "Save", ENGLISH));
-        assertFalse(isUIMessage("Save", nonExistingKey, ENGLISH));
+        assertThrows(RuntimeException.class, () -> isUIMessage("Save", nonExistingKey, ENGLISH));
         assertFalse(isUIMessage(null, "Save", ENGLISH));
-        assertFalse(isUIMessage("Save", null, ENGLISH));
+        assertThrows(RuntimeException.class, () -> isUIMessage("Save", null, ENGLISH));
         assertThrows(NullPointerException.class, () -> isUIMessage("Save", "Save", null));
     }
 }
