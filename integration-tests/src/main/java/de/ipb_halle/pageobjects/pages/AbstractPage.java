@@ -67,6 +67,16 @@ public abstract class AbstractPage<SELF extends AbstractPage<SELF>> {
     }
 
     /**
+     * Navigate to the login page. Only works if not logged in.
+     * 
+     * @return page object of the login page
+     */
+    public LoginPage navigateToLoginPage() {
+        LOGIN_CMDLINK.click();
+        return page(LoginPage.class);
+    }
+
+    /**
      * Log out.
      * <p>
      * Should direct the browser either to the login page or the search page

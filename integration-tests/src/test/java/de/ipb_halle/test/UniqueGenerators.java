@@ -25,9 +25,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author flange
  */
 public class UniqueGenerators {
-    private static AtomicInteger loginCounter = new AtomicInteger(1);
+    private UniqueGenerators() {
+    }
+
+    private static AtomicInteger counter = new AtomicInteger(1);
 
     public static String uniqueLogin() {
-        return "test-" + loginCounter.getAndIncrement() + "-login";
+        return "test-" + counter.getAndIncrement() + "-login";
     }
 }

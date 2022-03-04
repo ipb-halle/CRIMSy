@@ -51,7 +51,7 @@ import de.ipb_halle.test.SelenideEachExtension;
 @ExtendWith({ SelenideEachExtension.class, SoftAssertsExtension.class })
 @DisplayName("Test user creation")
 public class CreateUserTest {
-    private static UserManagementPage userManagementPage;
+    private UserManagementPage userManagementPage;
     private Locale locale = Locale.ENGLISH;
 
     @BeforeEach
@@ -178,7 +178,7 @@ public class CreateUserTest {
         String password = "12345678";
         String phone = "CALL-911";
 
-        UserModel user = new UserModel().name(name).login(login).shortcut(shortcut).email(email).password(password)
+        UserModel user = new UserModel().login(login).name(name).shortcut(shortcut).email(email).password(password)
                 .passwordRepeat(password).phone(phone);
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
@@ -222,20 +222,22 @@ public class CreateUserTest {
     public void test_createUser_and_login() {
         String login = uniqueLogin();
         String password = "12345678";
-        String username = "testuser";
-        UserModel user = new UserModel().login(login).name(username).password(password).passwordRepeat(password);
+        String username = "testuser123";
+        UserModel user = validUser(login, password).name(username);
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
-        SearchPage searchPage = userManagementPage.logout(LoginPage.class).login(login, password, SearchPage.class);
+        SearchPage searchPage = userManagementPage.logout(LoginPage.class).navigateToLoginPage().login(login, password,
+                SearchPage.class);
 
         searchPage.shouldBeLoggedIn().userNameShouldBe(username);
 
         // delete user
-        searchPage.logout(LoginPage.class).loginAsAdmin(SearchPage.class).navigateTo(UserManagementPage.class)
-                .getUsersTable().search(login).deleteUser(0).confirm();
+        searchPage.logout(LoginPage.class).navigateToLoginPage().loginAsAdmin(SearchPage.class)
+                .navigateTo(UserManagementPage.class).getUsersTable().search(login).deleteUser(0).confirm();
     }
 
     private UserModel validUser(String login, String password) {
-        return new UserModel().name("testuser").login(login).password(password).passwordRepeat(password);
+        return new UserModel().name("testuser").login(login).shortcut("").email("").password(password)
+                .passwordRepeat(password).phone("");
     }
 }

@@ -57,14 +57,51 @@ public class UserDialog extends PrimeFacesDialog {
     /*
      * Actions
      */
+    /**
+     * Applies to user model to the input fields.
+     * <p>
+     * Convention: The input element will not be evaluated in case the model field
+     * is null. Use empty strings to reset fields.
+     * 
+     * @param model
+     * @return
+     */
     public UserDialog applyModel(UserModel model) {
-        NAME_INPUT.setValue(model.getName());
-        LOGIN_INPUT.setValue(model.getLogin());
-        SHORTCUT_INPUT.setValue(model.getShortcut());
-        EMAIL_INPUT.setValue(model.getEmail());
-        PASSWORD_INPUT.setValue(model.getPassword());
-        PASSWORD_REPEAT_INPUT.setValue(model.getPasswordRepeat());
-        PHONE_INPUT.setValue(model.getPhone());
+        String name = model.getName();
+        if (name != null) {
+            NAME_INPUT.setValue(name);
+        }
+
+        String login = model.getLogin();
+        if (login != null) {
+            LOGIN_INPUT.setValue(login);
+        }
+
+        String shortcut = model.getShortcut();
+        if (shortcut != null) {
+            SHORTCUT_INPUT.setValue(shortcut);
+        }
+
+        String email = model.getEmail();
+        if (email != null) {
+            EMAIL_INPUT.setValue(email);
+        }
+
+        String password = model.getPassword();
+        if (password != null) {
+            PASSWORD_INPUT.setValue(password);
+        }
+
+        String passwordRepeat = model.getPasswordRepeat();
+        if (passwordRepeat != null) {
+            PASSWORD_REPEAT_INPUT.setValue(passwordRepeat);
+        }
+
+        String phone = model.getPhone();
+        if (phone != null) {
+            PHONE_INPUT.setValue(phone);
+        }
+
         return this;
     }
 
