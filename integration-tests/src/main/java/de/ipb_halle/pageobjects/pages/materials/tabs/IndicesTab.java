@@ -30,7 +30,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class IndicesTab extends AbstractPage implements MaterialEditTab {
+public class IndicesTab extends AbstractPage<IndicesTab> implements MaterialEditTab {
     private static final SelenideElement INDEX_CATEGORY_SELECTION = $(
             testId("select", "indicesTab:indexCategory"));
     private static final SelenideElement INDEX_VALUE_INPUT = $(

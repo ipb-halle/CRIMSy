@@ -36,7 +36,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class HazardsTab extends AbstractPage implements MaterialEditTab {
+public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEditTab {
     /*
      * GHS table
      */

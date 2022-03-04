@@ -31,7 +31,7 @@ import de.ipb_halle.pageobjects.pages.NavigablePage;
  * 
  * @author flange
  */
-public class UserManagementPage extends NavigablePage {
+public class UserManagementPage extends NavigablePage<UserManagementPage> {
     private static final UsersTable USERS_TABLE = new UsersTable("userManagement:usersTable");
     private static final SelenideElement CREATE_USER_BUTTON = $(testId("userManagement:createUser"));
     private static final SelenideElement REFRESH_BUTTON = $(testId("userManagement:refresh"));

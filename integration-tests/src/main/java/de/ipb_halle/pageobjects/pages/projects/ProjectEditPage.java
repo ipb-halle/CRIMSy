@@ -36,7 +36,7 @@ import de.ipb_halle.pageobjects.pages.composite.ChangeOwnerModalPage;
  * 
  * @author flange
  */
-public class ProjectEditPage extends AbstractPage {
+public class ProjectEditPage extends AbstractPage<ProjectEditPage> {
     private static final SelenideElement PROJECT_NAME_INPUT = $(testId("input", "projectEdit:projectName"));
     private static final SelenideElement CANCEL_BUTTON = $(testId("projectEdit:cancel"));
     private static final SelenideElement SAVE_BUTTON = $(testId("projectEdit:save"));

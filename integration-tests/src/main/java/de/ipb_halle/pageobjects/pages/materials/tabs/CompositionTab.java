@@ -34,7 +34,7 @@ import de.ipb_halle.pageobjects.pages.composite.SequenceSearchMaskPage;
  * 
  * @author flange
  */
-public class CompositionTab extends AbstractPage implements MaterialEditTab {
+public class CompositionTab extends AbstractPage<CompositionTab> implements MaterialEditTab {
     private static final SelenideElement COMPOSITION_TYPE_SELECTION = $(
             testId("select", "compositionTab:compositionType"));
     private static final SelenideElement MATERIAL_NAME_INPUT = $(

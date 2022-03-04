@@ -31,7 +31,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class MaterialNamesTab extends AbstractPage implements MaterialEditTab {
+public class MaterialNamesTab extends AbstractPage<MaterialNamesTab> implements MaterialEditTab {
     private static final SelenideElement MATERIAL_NAMES_TABLE = $(
             testId("materialNamesTab:materialNamesTable"));
 

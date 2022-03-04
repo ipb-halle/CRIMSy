@@ -33,7 +33,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class SequenceInfosTab extends AbstractPage implements MaterialEditTab {
+public class SequenceInfosTab extends AbstractPage<SequenceInfosTab> implements MaterialEditTab {
     private static final PrimeFacesSelectOneRadio SEQUENCE_TYPE_RADIO = new PrimeFacesSelectOneRadio(
             "sequenceInfosTab:sequenceType");
     private static final MolecularFacesOpenVectorEditor SEQUENCE_EDITOR = new MolecularFacesOpenVectorEditor(

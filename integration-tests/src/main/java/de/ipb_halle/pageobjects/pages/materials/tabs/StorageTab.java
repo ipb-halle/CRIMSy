@@ -32,7 +32,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class StorageTab extends AbstractPage implements MaterialEditTab {
+public class StorageTab extends AbstractPage<StorageTab> implements MaterialEditTab {
     private static final PrimeFacesSelectBooleanCheckbox STORAGE_CLASS_ACTIVATED_CHECKBOX = new PrimeFacesSelectBooleanCheckbox(
             "storageTab:storageClassActivated");
     private static final SelenideElement STORAGE_CLASS_SELECTION = $(

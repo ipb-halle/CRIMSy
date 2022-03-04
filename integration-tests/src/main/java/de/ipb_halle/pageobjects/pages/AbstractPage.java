@@ -34,7 +34,7 @@ import de.ipb_halle.pageobjects.navigation.Navigation;
  * 
  * @author flange
  */
-public abstract class AbstractPage {
+public abstract class AbstractPage<SELF extends AbstractPage<SELF>> {
     protected static final SelenideElement LOGIN_CMDLINK = $(testId("navigation:login"));
     protected static final SelenideElement LOGOUT_CMDLINK = $(testId("navigation:logout"));
     private static final SelenideElement CURRENT_USERNAME = $(testId("navigation:username"));
@@ -44,6 +44,11 @@ public abstract class AbstractPage {
      * moment. The CSS class is a workaround.
      */
     private static final ElementsCollection GROWL_DIVS = $$(elementWithCssClasses("div", "growlMessages"));
+
+    @SuppressWarnings("unchecked")
+    protected SELF self() {
+        return (SELF) this;
+    }
 
     /*
      * Actions
@@ -55,7 +60,7 @@ public abstract class AbstractPage {
      * @param clazz class of the target page
      * @return page object of the target page
      */
-    public <T extends NavigablePage> T navigateTo(Class<T> clazz) {
+    public <T extends NavigablePage<T>> T navigateTo(Class<T> clazz) {
         T page = page(clazz);
         page.getNavigationItem().navigate();
         return page;
@@ -73,7 +78,7 @@ public abstract class AbstractPage {
      * @param clazz expected page
      * @return page object of expected page
      */
-    public <T extends AbstractPage> T logout(Class<T> clazz) {
+    public <T extends AbstractPage<T>> T logout(Class<T> clazz) {
         LOGOUT_CMDLINK.click();
         return page(clazz);
     }
@@ -104,19 +109,19 @@ public abstract class AbstractPage {
     /*
      * Fluent assertions
      */
-    public AbstractPage shouldBeLoggedIn() {
+    public SELF shouldBeLoggedIn() {
         LOGIN_CMDLINK.shouldNotBe(visible);
         LOGOUT_CMDLINK.shouldBe(visible);
-        return this;
+        return self();
     }
 
-    public AbstractPage shouldNotBeLoggedIn() {
+    public SELF shouldNotBeLoggedIn() {
         LOGIN_CMDLINK.shouldBe(visible);
         LOGOUT_CMDLINK.shouldNotBe(visible);
-        return this;
+        return self();
     }
 
-    public AbstractPage userNameShouldBe(String name) {
+    public SELF userNameShouldBe(String name) {
         boolean settingMenuWasNotActive = false;
         if (CURRENT_USERNAME.is(not(visible))) {
             settingMenuWasNotActive = true;
@@ -126,6 +131,6 @@ public abstract class AbstractPage {
         if (settingMenuWasNotActive) {
             Navigation.Menu.SETTINGS.activate();
         }
-        return this;
+        return self();
     }
 }

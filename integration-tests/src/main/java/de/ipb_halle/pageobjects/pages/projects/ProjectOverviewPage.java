@@ -31,7 +31,7 @@ import de.ipb_halle.pageobjects.pages.NavigablePage;
  * 
  * @author flange
  */
-public class ProjectOverviewPage extends NavigablePage {
+public class ProjectOverviewPage extends NavigablePage<ProjectOverviewPage> {
     private static final SelenideElement NEW_PROJECT_BUTTON = $(testId("projectOverview:newProject"));
     private static final ProjectsTable PROJECTS_TABLE = new ProjectsTable("projectOverview:projectsTable");
 

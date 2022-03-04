@@ -30,7 +30,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class BiodataTab extends AbstractPage implements MaterialEditTab {
+public class BiodataTab extends AbstractPage<BiodataTab> implements MaterialEditTab {
     private static final PrimeFacesTree TAXONOMY_TREE = new PrimeFacesTree(
             "biodataTab:taxonomyTree");
     private static final SelenideElement SELECTED_TAXONOMY_INPUT = $(

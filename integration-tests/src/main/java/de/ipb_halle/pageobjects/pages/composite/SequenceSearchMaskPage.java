@@ -29,7 +29,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class SequenceSearchMaskPage extends AbstractPage {
+public class SequenceSearchMaskPage extends AbstractPage<SequenceSearchMaskPage> {
     private static final SelenideElement QUERY_SEQUENCE_INPUT = $(
             testId("textarea", "sequenceSearchMask:querySequence"));
     private static final SelenideElement SEARCH_MODE_SELECTION = $(

@@ -33,7 +33,7 @@ import de.ipb_halle.pageobjects.pages.composite.MaterialSearchMaskPage;
  * 
  * @author flange
  */
-public class MaterialOverviewPage extends NavigablePage {
+public class MaterialOverviewPage extends NavigablePage<MaterialOverviewPage> {
     private static final SelenideElement NEW_MATERIAL_BUTTON = $(testId("materialOverview:newMaterial"));
     private static final MaterialSearchResultsTable RESULTS_TABLE = new MaterialSearchResultsTable(
             "materialOverview:resultsTable");

@@ -30,7 +30,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class MaterialSearchMaskPage extends AbstractPage {
+public class MaterialSearchMaskPage extends AbstractPage<MaterialSearchMaskPage> {
     private static final SelenideElement NAME_INPUT = $(
             testId("materialSearchMask:name"));
     private static final SelenideElement ID_INPUT = $(

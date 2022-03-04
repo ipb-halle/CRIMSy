@@ -35,7 +35,7 @@ import de.ipb_halle.pageobjects.pages.NavigablePage;
  * 
  * @author flange
  */
-public class SearchPage extends NavigablePage {
+public class SearchPage extends NavigablePage<SearchPage> {
     private static final SelenideElement SEARCH_TEXT = $(
             testId("input", "search:searchText"));
     private static final SelenideElement SEARCH_BUTTON = $(

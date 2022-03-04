@@ -31,7 +31,7 @@ import de.ipb_halle.pageobjects.pages.materials.tabs.MaterialEditTab;
  * 
  * @author flange
  */
-public class MaterialEditPage extends AbstractPage implements MaterialEditTab {
+public class MaterialEditPage extends AbstractPage<MaterialEditPage> implements MaterialEditTab {
     private static final SelenideElement PROJECT_SELECTION = $(
             testId("select", "materialEdit:project"));
     private static final SelenideElement BACKWARD_BUTTON = $(

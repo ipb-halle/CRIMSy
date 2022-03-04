@@ -31,7 +31,7 @@ import de.ipb_halle.pageobjects.pages.search.SearchPage;
  * 
  * @author flange
  */
-public class LoginPage extends AbstractPage {
+public class LoginPage extends AbstractPage<LoginPage> {
     private static final SelenideElement LOGINNAME_INPUT = $(testId("input", "login:loginName_input"));
     private static final SelenideElement LOGINNAME_MESSAGE = $(testId("login:loginName_message"));
     private static final SelenideElement PASSWORD_INPUT = $(testId("input", "login:password_input"));
@@ -51,15 +51,15 @@ public class LoginPage extends AbstractPage {
      * @param <T>
      * @param loginName
      * @param password
-     * @param clazz     expected page
+     * @param expectedPageClass expected page
      * @return page object of expected page
      */
-    public <T extends AbstractPage> T login(String loginName, String password, Class<T> clazz) {
+    public <T extends AbstractPage<T>> T login(String loginName, String password, Class<T> expectedPageClass) {
         LOGINNAME_INPUT.setValue(loginName);
         PASSWORD_INPUT.setValue(password);
         LOGIN_BUTTON.click();
 
-        return page(clazz);
+        return page(expectedPageClass);
     }
 
     /**
@@ -70,11 +70,11 @@ public class LoginPage extends AbstractPage {
      * are useful page object classes to be supplied in the {@code clazz} parameter.
      * 
      * @param <T>
-     * @param clazz expected page
+     * @param expectedPageClass expected page
      * @return page object of expected page
      */
-    public <T extends AbstractPage> T loginAsAdmin(Class<T> clazz) {
-        return login(ADMIN_LOGIN, ADMIN_PASSWORD, clazz);
+    public <T extends AbstractPage<T>> T loginAsAdmin(Class<T> expectedPageClass) {
+        return login(ADMIN_LOGIN, ADMIN_PASSWORD, expectedPageClass);
     }
 
     /*

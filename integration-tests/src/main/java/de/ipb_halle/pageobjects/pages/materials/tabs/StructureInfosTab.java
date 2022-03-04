@@ -31,7 +31,7 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * 
  * @author flange
  */
-public class StructureInfosTab extends AbstractPage implements MaterialEditTab {
+public class StructureInfosTab extends AbstractPage<StructureInfosTab> implements MaterialEditTab {
     private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule(
             "structureInfosTab:molEditor", "structurePlugin");
     private static final SelenideElement AUTO_CALC_CHECKBOX = $(

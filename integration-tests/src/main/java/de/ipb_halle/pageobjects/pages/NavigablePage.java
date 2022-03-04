@@ -24,6 +24,6 @@ import de.ipb_halle.pageobjects.navigation.Navigation;
  * 
  * @author flange
  */
-public abstract class NavigablePage extends AbstractPage {
+public abstract class NavigablePage<SELF extends AbstractPage<SELF>> extends AbstractPage<SELF> {
     public abstract Navigation getNavigationItem();
 }
