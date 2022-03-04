@@ -97,7 +97,7 @@ function encrypt {
     cat << EOF > "etc/$CLOUD/config.sh.asc" 
 #
 # LBAC_INSTITUTION=$LBAC_INSTITUTION
-# CERTIFICATE_ID=`openssl x509 -in etc/$CLOUD/devcert.pem -text | \
+# CERTIFICATE_ID=`openssl x509 -in etc/$CLOUD/devcert.pem -text |\
           grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
 # `date`
 #
@@ -110,9 +110,42 @@ EOF
 }
 
 function error {
-        cleanUp
-        echo $1
-        exit 1
+    cleanUp
+    echo $1
+    exit 1
+}
+
+function leave {
+    # make sure database is running
+    (docker inspect dist_db_1 | grep Status | grep -q running ) || \
+        error "Cannot leave cloud while database is down"
+
+    # remove cloud from /etc/clouds.cfg
+    grep -vE "^$LEAVE;" etc/clouds.cfg > etc/clouds.tmp
+
+    if [ `wc -l etc/clouds.tmp` -gt 0 ] ; then 
+        mv etc/clouds.tmp etc/clouds.cfg
+    else
+        rm etc/clouds.tmp
+        error "Must be member in at least one cloud"
+    fi
+
+    # switch primary cloud if necessary
+    if [ $LEAVE = `cat etc/primary.cfg` ] ; then
+        cut -d';' -f1 etc/clouds.cfg > etc/primary.cfg
+    fi
+
+    # remove certificates
+    rm -r "etc/$LEAVE"
+    rm -r "dist/etc/$LEAVE"
+
+    # remove cloud from local database
+    echo "DELETE FROM clouds WHERE name='$LEAVE';" |\
+    docker exec -i -u postgres dist_db_1 psql -Ulbac lbac
+
+    # push configuration to containers
+    dist/bin/update.sh ui
+    dist/bin/update.sh proxy
 }
 
 function printHelp {
@@ -123,15 +156,38 @@ ${BOLD}NAME${REGULAR}
     join.sh
 
 ${BOLD}SYNOPSIS${REGULAR}
-    testSetup.sh [-r|request CLOUD] [-h|--help] [-j|--join CLOUD] 
+    join.sh [-r|request CLOUD] [-h|--help] [-j|--join CLOUD] 
         [-l|--leave CLOUD] [-u|--url URL] 
 
 ${BOLD}DESCRIPTION${REGULAR}
-    no description available
+    Performs necessary actions to join or leave an additional
+    cloud as a client node (not master).
 
 ${BOLD}OPTIONS${REGULAR}
+-h|--help
+    Prints this help text.
+
 -j|--join CLOUD
-    no description available
+    Join the named cloud. Downloads certificates, CRLs and 
+    information about the master node.
+
+-l|--leave CLOUD
+    Leave the named cloud. Deletes all information (users, nodes, 
+    etc.) of the respective cloud. Selects a new primary cloud if
+    necessary. Currently not implemented.
+
+-r|--request CLOUD
+    Initiate the joining of the specified cloud. Unless --url 
+    is specified, interactive dialogs will query the URL of the 
+    distribution server and validate the checksum of the cloud 
+    CA certificates.
+
+-u|--url URL
+    URL of the distribution server for the cloud. Use together 
+    with --request option. NOTE: This option is for test purposes 
+    only, as it reduces the security level (e.g. certificates are 
+    checked less rigorously). Providing this option forces batch 
+    operation (i.e. no user interaction required). 
 
 EOF
 
@@ -139,7 +195,7 @@ EOF
 
 function saveCloudInfo {
 
-        echo /$CLOUD$';/d\ni\n'$CLOUD$';'$DOWNLOAD_URL$'\n.\nw\nq\n' | \
+        echo /$CLOUD$';/d\ni\n'$CLOUD$';'$DOWNLOAD_URL$'\n.\nw\nq\n' |\
             ed etc/clouds.cfg
         rm etc/$CLOUD/cloud.tmp
 }

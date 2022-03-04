@@ -44,7 +44,7 @@ function compile {
     echo "=== Build Docker Images ==="
     if [ -n $stage ] ; then
         $LBAC_REPO/util/bin/buildDocker.sh \
-            --branch-file $BRANCH_FILE \
+            --branch-file "$BRANCH_FILE" \
             --stage-label $stage \
             --test-registry `hostname -f`:5000
     else 
@@ -68,15 +68,15 @@ function createNodeConfig {
     node=`echo $1 | cut -d';' -f1`
     remote=`echo $1 | cut -d';' -f2`
     login=`echo $1 | cut -d';' -f3`
-    cloud=`grep $node "$LBAC_REPO/util/test/etc/nodeconfig.cfg" | \
-        grep PRIMARY_CLOUD | \
+    cloud=`grep $node "$LBAC_REPO/util/test/etc/nodeconfig.cfg" |\
+        grep PRIMARY_CLOUD |\
         cut -d= -f2`
     crimsyhost=`hostname -f`
 
     echo "executing createNodeConfig for host $login@$remote ($node) ..."
 
     echo "copying node configuration ..."
-    grep -E "^$node;" "$LBAC_REPO/util/test/etc/nodeconfig.cfg" | \
+    grep -E "^$node;" "$LBAC_REPO/util/test/etc/nodeconfig.cfg" |\
     cut -d';' -f2- |\
     ssh -o "StrictHostKeyChecking no" $login@$remote bash -c "cat - > nodeconfig.cfg"
 
@@ -132,9 +132,9 @@ function infoLog {
 function installFunc {
     # install node
     echo "=== install nodes ==="
-    cat $HOSTLIST |\
+    grep -vE "^#" $HOSTLIST |\
     if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
-     while read record ; do
+    while read record ; do
         echo | installNode "$record"
     done
 
@@ -156,175 +156,27 @@ function installNode {
 function restore {
     if [ $NODE = "all" ] ; then
         echo "Restoring snapshot '$RESTORE' on all nodes"
-        cat $HOSTLIST | \
-            while read record ; do
-                remote=`echo $record | cut -d';' -f2`
-                login=`echo $record | cut -d';' -f3`
-                ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh restore $RESTORE
-            done
-    else 
-        echo "Restoring snapshot '$RESTORE' on node '$RESTORE'"
-        grep $NODE $HOSTLIST | \
-            while read record ; do
-                remote=`echo $record | cut -d';' -f2`
-                login=`echo $record | cut -d';' -f3`
-                ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh restore $RESTORE
-            done
+    else
+        echo "Restoring snapshot '$RESTORE' on node '$NODE'"
     fi
-}
 
-#
-#
-#
-function runDistServer {
-    echo "=== Distribution Servers ===" 
-    buildDistServer
-
-    mkdir -p "$LBAC_REPO/config/integration/htdocs"
-    cp docker/crimsyci/index.html config/integration/htdocs
-    (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
-    docker inspect crimsyci_service >/dev/null 2>&1 && docker rm crimsyci_service 
-    docker run -p 8000:80 \
-        --mount type=bind,src=`realpath config/integration/htdocs`,dst=/usr/local/apache2/htdocs \
-        --hostname `hostname -f` \
-        --detach --name crimsyci_service \
-        crimsyci
-
-    (docker inspect crimsyreg_service | grep Status | grep -q running ) && docker stop crimsyreg_service
-    docker inspect crimsyreg_service >/dev/null 2>&1 && docker rm crimsyreg_service
-    docker run -p 5000:5000 \
-        --hostname `hostname -f` \
-        --detach --name crimsyreg_service \
-        registry
-}
-
-
-#
-#
-#
-function runJobs {
-    runDistServer
-    cat $JOB_FILE |\
-    while read job; do
-        echo "executing: $job"
-        j=`echo "$job" | cut -d';' -f1`
-        case $j in
-            compile)
-                stage=`echo "$job" | cut -d';' -f2`
-                compile $stage
-                ;;
-            install)
-                NODE=`echo "$job" | cut -d';' -f2`
-                installFunc
-                echo "sleep 15 seconds to settle everything ..."
-                sleep 15
-                ;;
-            join)
-                NODE=`echo "$job" | cut -d';' -f2`
-                CLOUD=`echo "$job" | cut -d';' -f3`
-                runJoin
-                ;;
-            pause)
-                echo "PAUSE not implemented"
-                ;;
-            restore)
-                echo "RESTORE not implemented"
-                ;;
-            setup)
-                NODE="all"
-                setupFunc
-                ;;
-            snapshot)
-                echo "SNAPSHOT not implemented"
-                ;;
-            teardown)
-                NODE="all"
-                tearDown
-                ;;
-            test)
-                NODE=`echo "$job" | cut -d';' -f2`
-                runTests
-                ;;
-            update)
-                NODE=`echo "$job" | cut -d';' -f2`
-                CMD=`echo "$job" | cut -d';' -f2`
-                runUpdate
-                echo "sleep 15 seconds to settle everything ..."
-                ;;
-            wake)
-                echo "WAKE not implemented"
-                ;;
-            *)
-                echo "ignored: $j"
-                ;;
-        esac
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh restore $RESTORE
     done
 }
 
 #
-#
-#
-function runJoin {
-    url="http://`hostname -f`:8000/$CLOUD"
-    remote=`grep $NODE $HOSTLIST | cut -d';' -f2`
-    login=`grep $NODE $HOSTLIST | cut -d';' -f3`
-
-    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
-        dist/bin/join.sh --request $CLOUD --url $url 
-
-    scp -q -o "StrictHostKeyChecking no" $login@$remote:etc/$CLOUD/config.sh.asc "$LBAC_REPO/config/nodes/${NODE}_${CLOUD}.sh.asc"
-
-    copyNodeConfig "$CLOUD;$NODE"
-    $LBAC_REPO/util/bin/package.sh "$CLOUD" AUTOBATCH
-
-    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
-        dist/bin/join.sh --join $CLOUD
-}
-
-#
-#
-#
-function runSetup {
-    runDistServer
-    rm -f config/revision_info.cfg
-
-    if [ -n $BRANCH_FILE ] ; then
-        initial_stage=`cut -d';' -f1 $BRANCH_FILE | sort | uniq | head -1`
-        echo "Executing initial setup stage $initial_stage"
-    else 
-        echo "Executing direct setup"
-        initial_stage=''
-    fi
-    compile $initial_stage
-    setupFunc 
-    installFunc
-
-    # ToDo: multiple cloud memberships 
-
-    echo "sleep 15 seconds to settle everything ..."
-    sleep 15
-
-    if [ -n $BRANCH_FILE ] ; then
-        cut -d';' -f1 $BRANCH_FILE |\
-        grep -v $initial_stage | sort | uniq |\
-        while read record ; do
-            echo "compiling for stage $record"
-            compile $record
-            runUpdate 
-            echo "sleep 15 seconds to settle everything ..."
-            sleep 15
-        done
-    fi
-}
-
-#
-# run Tests. 
+# run Cypress tests. 
 # NOTE: tests are currently available for node1 only 
 #
-function runTests {
+function runCypress {
     # check prerequisites
     echo "checking test prerequsites ..."
-    cat $HOSTLIST |\
+    grep -vE "^#" $HOSTLIST |\
     if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
     while read record ; do
         node=`echo $record | cut -d';' -f1`
@@ -338,7 +190,7 @@ function runTests {
 
     # initialize database with test data
     echo "loading initial data ..."
-    cat $HOSTLIST |\
+    grep -vE "^#" $HOSTLIST |\
     if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
     while read record ; do
         node=`echo $record | cut -d';' -f1`
@@ -383,17 +235,231 @@ EOF
 #
 #
 #
+function runDistServer {
+    echo "=== Distribution Servers ===" 
+    buildDistServer
+
+    mkdir -p "$LBAC_REPO/config/integration/htdocs"
+    cp docker/crimsyci/index.html config/integration/htdocs
+    (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
+    docker inspect crimsyci_service >/dev/null 2>&1 && docker rm crimsyci_service 
+    docker run -p 8000:80 \
+        --mount type=bind,src=`realpath config/integration/htdocs`,dst=/usr/local/apache2/htdocs \
+        --hostname `hostname -f` \
+        --detach --name crimsyci_service \
+        crimsyci
+
+    (docker inspect crimsyreg_service | grep Status | grep -q running ) && docker stop crimsyreg_service
+    docker inspect crimsyreg_service >/dev/null 2>&1 && docker rm crimsyreg_service
+    docker run -p 5000:5000 \
+        --hostname `hostname -f` \
+        --detach --name crimsyreg_service \
+        registry
+}
+
+#
+#
+#
+function runJobs {
+    runDistServer
+    grep -vE "^#" "$JOB_FILE" |\
+    while read job; do
+        echo "executing: $job"
+        j=`echo "$job" | cut -d';' -f1`
+        case $j in
+            compile)
+                stage=`echo "$job" | cut -d';' -f2`
+                compile $stage
+                ;;
+            cypress)
+                NODE=`echo "$job" | cut -d';' -f2`
+                runCypress
+                ;;
+            install)
+                NODE=`echo "$job" | cut -d';' -f2`
+                installFunc
+                echo "sleep 15 seconds to settle everything ..."
+                sleep 15
+                ;;
+            join)
+                NODE=`echo "$job" | cut -d';' -f2`
+                CLOUD=`echo "$job" | cut -d';' -f3`
+                runJoin
+                ;;
+            leave)
+                NODE=`echo "$job" | cut -d';' -f2`
+                CLOUD=`echo "$job" | cut -d';' -f3`
+                runLeave
+                ;;
+            pause)
+                PAUSE=`echo "$job" | cut -d';' -f2`
+                runPause
+                ;;
+            restore)
+                NODE=`echo "$job" | cut -d';' -f2`
+                RESTORE=`echo "$job" | cut -d';' -f3`
+                restore
+                ;;
+            sleep)
+                sleep `echo "$job" | cut -d';' -f2`
+                ;;
+            setup)
+                NODE="all"
+                setupFunc
+                ;;
+            snapshot)
+                NODE=`echo "$job" | cut -d';' -f2`
+                SNAPSHOT=`echo "$job" | cut -d';' -f3`
+                snapshot
+                ;;
+            teardown)
+                NODE="all"
+                tearDown
+                ;;
+            test)
+                SCRIPT=`echo "$job" | cut -d';' -f2`
+                ARGS=`echo "$job" | cut -d';' -f3-`
+                util/test/bin/$SCRIPT $HOSTLIST "$ARGS"
+                ;;
+            update)
+                NODE=`echo "$job" | cut -d';' -f2`
+                CMD=`echo "$job" | cut -d';' -f2`
+                runUpdate
+                echo "sleep 15 seconds to settle everything ..."
+                sleep 15
+                ;;
+            wake)
+                WAKE=`echo "$job" | cut -d';' -f2`
+                runWake
+                ;;
+            *)
+                echo "ignored: $j"
+                ;;
+        esac
+    done
+}
+
+#
+#
+#
+function runJoin {
+    url="http://`hostname -f`:8000/$CLOUD"
+    remote=`grep -vE "^#" $HOSTLIST | grep $NODE | cut -d';' -f2`
+    login=`grep -vE "^#" $HOSTLIST | grep $NODE | cut -d';' -f3`
+
+    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+        dist/bin/join.sh --request $CLOUD --url $url 
+
+    scp -q -o "StrictHostKeyChecking no" $login@$remote:etc/$CLOUD/config.sh.asc "$LBAC_REPO/config/nodes/${NODE}_${CLOUD}.sh.asc"
+
+    copyNodeConfig "$CLOUD;$NODE"
+    $LBAC_REPO/util/bin/package.sh "$CLOUD" AUTOBATCH
+
+    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+        dist/bin/join.sh --join $CLOUD
+}
+
+#
+#
+#
+function runLeave {
+    remote=`grep -vE "^#" $HOSTLIST | grep $NODE | cut -d';' -f2`
+    login=`grep -vE "^#" $HOSTLIST | grep $NODE | cut -d';' -f3`
+
+    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+        dist/bin/join.sh --leave $CLOUD 
+}
+
+#
+#
+#
+function runPause {
+
+    if [ $PAUSE = "all" ] ; then
+        echo "Pausing ALL nodes" 
+    else 
+        echo "Pausing node '$PAUSE'"
+    fi
+
+    grep -vE "^#" $HOSTLIST |\
+    if [ $PAUSE = all ] ; then cat ; else grep $PAUSE; fi |\
+    while read record ; do
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/setupROOT.sh shutdown
+    done
+}
+
+#
+#
+#
+function runSetup {
+    runDistServer
+    rm -f config/revision_info.cfg
+
+    if [ -n "$BRANCH_FILE" ] ; then
+        initial_stage=`cut -d';' -f1 "$BRANCH_FILE" | sort | uniq | head -1`
+        echo "Executing initial setup stage $initial_stage"
+    else 
+        echo "Executing direct setup"
+        initial_stage=''
+    fi
+    compile $initial_stage
+    setupFunc 
+    installFunc
+
+    # ToDo: multiple cloud memberships 
+
+    echo "sleep 15 seconds to settle everything ..."
+    sleep 15
+
+    if [ -n "$BRANCH_FILE" ] ; then
+        cut -d';' -f1 "$BRANCH_FILE" |\
+        grep -v $initial_stage | sort | uniq |\
+        while read record ; do
+            echo "compiling for stage $record"
+            compile $record
+            runUpdate 
+            echo "sleep 15 seconds to settle everything ..."
+            sleep 15
+        done
+    fi
+}
+
+
+#
+#
+#
 function runUpdate {
     echo "=== run update on nodes ==="
-    cat $HOSTLIST |\
+    grep -vE "^#" $HOSTLIST |\
     if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
-     while read record ; do
+    while read record ; do
         node=`echo $record | cut -d';' -f1`
         remote=`echo $record | cut -d';' -f2`
         login=`echo $record | cut -d';' -f3`
 
         echo "updating node $node with $UPDATE_CMD"
         echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh $UPDATE_CMD
+    done
+}
+
+#
+#
+#
+function runWake {
+    if [ $WAKE = "all" ] ; then
+        echo "Waking ALL nodes" 
+    else
+        echo "Waking node '$WAKE'"
+    fi
+
+    grep -vE "^#" $HOSTLIST |\
+    if [ $WAKE = all ] ; then cat ; else grep $WAKE ; fi |\
+    while read record ; do
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/setupROOT.sh start
     done
 }
 
@@ -438,7 +504,7 @@ EOF
 #
 #
 function setupFunc {
-    cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+    cat $LBAC_REPO/util/test/etc/cloudconfig.txt |\
         while read record ; do
             setupTestCAconf "$record"
         done
@@ -447,23 +513,23 @@ function setupFunc {
     setupTestRootCA
 
     echo "=== Setup Sub CAs ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt |\
         while read record ; do
             setupTestSubCA "$record"
             setupConfigure "$record"
         done
 
     echo "=== create node configurations ==="
-    cat $HOSTLIST |\
+    grep -vE "^#" $HOSTLIST |\
     if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
-     while read record ; do
+    while read record ; do
         echo | createNodeConfig "$record"
     done
 
     # package master nodes
     echo "=== determine master nodes ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        cut -d';' -f1 | \
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt |\
+        cut -d';' -f1 |\
         while read record ; do
             $LBAC_REPO/util/bin/package.sh "$record" MASTERBATCH
         done
@@ -474,8 +540,8 @@ function setupFunc {
         while read record ; do
             copyNodeConfig "$record"
         done
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        cut -d';' -f1 | \
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt |\
+        cut -d';' -f1 |\
         while read record ; do
             $LBAC_REPO/util/bin/package.sh "$record" AUTOBATCH
         done
@@ -517,7 +583,7 @@ function setupConfigure {
     . $LBAC_CA_DIR/cloud.cfg
 
     # initial revision defined in runSetup
-    sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
+    sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
     openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
       -md sha256 -binary -out $LBAC_REPO/config/integration/htdocs/$cloud/configure.sh.sig \
@@ -576,21 +642,17 @@ EOF
 function snapshot {
     if [ $NODE = "all" ] ; then
         echo "Taking snapshot '$SNAPSHOT' of all nodes"
-        cat $HOSTLIST | \
-            while read record ; do
-                remote=`echo $record | cut -d';' -f2`
-                login=`echo $record | cut -d';' -f3`
-                ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh snapshot $SNAPSHOT
-            done
     else
-        echo "Taking snapshot '$SNAPSHOT' for node '$NODE'"
-        grep $NODE $HOSTLIST | \
-            while read record ; do
-                remote=`echo $record | cut -d';' -f2`
-                login=`echo $record | cut -d';' -f3`
-                ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh snapshot $SNAPSHOT
-            done
+        "Taking snapshot '$SNAPSHOT' for node '$NODE'"
     fi
+
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = all ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh snapshot $SNAPSHOT
+    done
 }
 
 #
@@ -599,9 +661,9 @@ function snapshot {
 function teardown {
 
     # tear down nodes
-    cat $HOSTLIST |\
+    grep -vE "^#" $HOSTLIST |\
     if [ $NODE = all ] ; then cat ; else grep $NODE ; fi |\
-     while read record ; do
+    while read record ; do
         echo | cleanup "$record"
     done
 
@@ -707,12 +769,12 @@ function mainFunc {
     fi
 
     if [ -n "$PAUSE" ] ; then
-        echo "Pause not implemented"
+        runPause
         exit 0
     fi
 
     if [ -n "$WAKE" ] ; then
-        echo "Wake not implemented"
+        runWake
         exit 0
     fi
 
@@ -791,7 +853,7 @@ unset GETOPT
 while true ; do
     case "$1" in
     '-b'|'--branch-file')
-        BRANCH_FILE="$2"
+        BRANCH_FILE=`realpath "$2"`
         shift 2
         continue
         ;;
@@ -805,7 +867,7 @@ while true ; do
         exit 0
         ;;
     '-j'|'--jobs')
-        JOB_FILE=$2
+        JOB_FILE=`realpath "$2"`
         shift 2
         continue
         ;;
@@ -815,8 +877,8 @@ while true ; do
         continue
         ;;
     '-p'|'--pause')
-        PAUSE='pause'
-        shift
+        PAUSE=$2
+        shift 2
         continue
         ;;
     '-R'|'--restore')
@@ -851,8 +913,8 @@ while true ; do
         continue
         ;;
     '-w'|'--wake')
-        WAKE='wake'
-        shift
+        WAKE=$2 
+        shift 2
         continue
         ;;
     '--')

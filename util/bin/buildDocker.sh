@@ -129,9 +129,9 @@ function pushImage {
 function buildDocker {
 
     CURRENT_BRANCH=`git status --branch --porcelain=2 | grep "branch.head" | cut -d' ' -f3`
-    if [ -r $BRANCH_FILE ] ; then
+    if [ -r "$BRANCH_FILE" ] ; then
         git stash push -u
-        cat $BRANCH_FILE |\
+        grep -vE "^#" "$BRANCH_FILE" |\
         if [ -z $STAGE_LABEL ] ; then cat ; else grep $STAGE_LABEL ; fi |\
         while read record ; do
             BRANCH=`echo $record | cut -d';' -f2`
@@ -176,7 +176,7 @@ unset GETOPT
 while true ; do
     case "$1" in
     '-b'|'--branch-file')
-        BRANCH_FILE="$2"
+        BRANCH_FILE=`realpath "$2"`
         shift 2
         continue
         ;;

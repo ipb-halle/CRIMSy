@@ -29,7 +29,7 @@ function cleanUp {
 # Extracts the common name from a subject line
 #
 function commonName {
-	echo $1 | sed -e s./.\\n.g | grep "CN=" | \
+	echo $1 | sed -e s./.\\n.g | grep "CN=" |\
 	  cut -d= -f2- | tr -d $'\n'
 }
 
@@ -269,8 +269,8 @@ function createSubCA {
 # Transform date from index.txt into readable form
 #
 function dateFormat {
-	echo $1 | cut --output-delimiter=" " -c1-2,3-4,5-6 | \
-	  xargs -l1 printf "20%s-%s-%s" | \
+	echo $1 | cut --output-delimiter=" " -c1-2,3-4,5-6 |\
+	  xargs -l1 printf "20%s-%s-%s" |\
 	  tr -d $'\n'
 }
 
@@ -312,7 +312,7 @@ function devCert {
         # developer certificate has been used to encrypt the configuration. 
         # The distributor needs this to select the matching decryption key. 
         #
-	id=`openssl x509 -in devcert/$SERIAL.pem -text | \
+	id=`openssl x509 -in devcert/$SERIAL.pem -text |\
 	  grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
 	ln -s $SERIAL.pem devcert/$id.pem
 	ln -s $SERIAL.key devcert/$id.key

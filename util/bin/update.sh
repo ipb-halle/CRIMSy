@@ -138,7 +138,7 @@ function downloadCRL {
 
     output=$LBAC_DATASTORE/tmp/proxy_conf/crl/$NAME.$FP.crl
     curl --silent --output $output $CRL
-    openssl crl -in $output -CApath $LBAC_DATASTORE/tmp/proxy_conf/crt -verify -noout 2>&1 | \
+    openssl crl -in $output -CApath $LBAC_DATASTORE/tmp/proxy_conf/crt -verify -noout 2>&1 |\
         grep -q "verify OK" || exit 255
 }
 export -f downloadCRL
@@ -225,8 +225,8 @@ function proxyProcessCloud {
     popd >/dev/null
 
     # get the CRLs
-    cat $LBAC_DATASTORE/dist/etc/$CLOUD/addresses.txt | \
-        sort | uniq -f2 -w41 | \
+    cat $LBAC_DATASTORE/dist/etc/$CLOUD/addresses.txt |\
+        sort | uniq -f2 -w41 |\
         xargs -i /bin/bash -c "downloadCRL '{}'" || error "CRL verification failed"
 }
 
@@ -375,6 +375,8 @@ function superDoUI {
     chown 8080:8080 $LBAC_DATASTORE/data/ui
     rsync -a --del $LBAC_DATASTORE/tmp/ui_conf/ $LBAC_DATASTORE/data/ui_conf
     rm -rf $LBAC_DATASTORE/tmp/ui_conf
+    (docker inspect dist_ui_1 | grep Status | grep -q running ) && \
+        docker restart dist_ui_1
 }
 
 #

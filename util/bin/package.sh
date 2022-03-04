@@ -56,8 +56,8 @@ function dialog_CHECK_CONFIG {
 function decryptConfig {
 	id=`cat $tmp | grep CERTIFICATE_ID= | cut -d= -f2 | tr -d $'\n'`
 	echo "ID: $id"
-	cat $tmp | sed -n -e "/SMIME ENCRYPTED CONFIG BEGIN/,/SMIME ENCRYPTED CONFIG END/p" | \
-	  tail -n +2 | head -n -1 | \
+	cat $tmp | sed -n -e "/SMIME ENCRYPTED CONFIG BEGIN/,/SMIME ENCRYPTED CONFIG END/p" |\
+	  tail -n +2 | head -n -1 |\
 	  openssl smime -decrypt -inform PEM -inkey $LBAC_REPO/config/$LBAC_CLOUD/CA/devcert/$id.key \
 	  -passin file:config/$LBAC_CLOUD/CA/devcert/$id.passwd \
           -out $LBAC_CONFIG || error "Error in decryption"
@@ -187,7 +187,7 @@ function copyFiles {
     if [ ! -r config/revision_info.cfg ] ; then error "Missing revision info file" ; fi
     grep LATEST config/revision_info.cfg | tail -1 | cut -d';' -f1 > target/dist/etc/revision_info.cfg
 
-    sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
+    sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$LBAC_CLOUD," > target/dist/bin/configure.sh
 
     cp util/bin/chainsplit.pl target/dist/bin
@@ -236,7 +236,7 @@ function masterConfig {
 
 function packageBin {
 	pushd target >/dev/null
-	tar -czf - dist/bin dist/etc | base64 | \
+	tar -czf - dist/bin dist/etc | base64 |\
         openssl smime -sign \
           -signer $LBAC_CA_DIR/$DEV_CERT.pem \
           -inkey $LBAC_CA_DIR/$DEV_CERT.key -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd \
@@ -250,7 +250,7 @@ function packageBin {
 
 function packageCfg {
 	pushd target > /dev/null
-        tar -czf - dist/etc/$LBAC_CLOUD | \
+        tar -czf - dist/etc/$LBAC_CLOUD |\
         openssl smime -encrypt -binary -stream -outform PEM -aes-256-cbc \
           $LBAC_CA_DIR/cloud/$LBAC_CERT_IDENTIFIER.pem | openssl smime -sign \
           -signer $LBAC_CA_DIR/$DEV_CERT.pem -nocerts -stream \

@@ -678,6 +678,8 @@ function checkSoftware {
         echo $'begin-base64 644 -\nQQo=\n====' | uudecode > /dev/null || return
         NEXT_FORM="ERROR: uuidgen nicht installiert."
         uuidgen > /dev/null || return
+        NEXT_FORM="ERROR: rsync nicht installiert."
+        rsync --version > /dev/null || return
 
 	NEXT_FORM=DIALOG_START
 }
@@ -786,7 +788,7 @@ function encrypt {
             cat << EOF > "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc" && echo > $TMP_SSL_DATA && NEXT_FORM=DIALOG_END
 #
 # LBAC_INSTITUTION=$LBAC_INSTITUTION
-# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_SSL_DEVCERT" -text | \
+# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_SSL_DEVCERT" -text |\
           grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
 # `date`
 #
@@ -860,11 +862,12 @@ function makeDirectories {
             uuidgen -r | tr -d $'\n' > "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE"
         fi
 
-        echo /$CLOUD_NAME$';/d\ni\n'$CLOUD_NAME$';'$LBAC_DISTRIBUTION_POINT$'\n.\nw\nq\n' | \
+        echo /$CLOUD_NAME$';/d\ni\n'$CLOUD_NAME$';'$LBAC_DISTRIBUTION_POINT$'\n.\nw\nq\n' |\
             ed $LBAC_DATASTORE/etc/clouds.cfg
 
-        echo "$CLOUD_NAME;$LBAC_DISTRIBUTION_POINT" > $LBAC_DATASTORE/etc/clouds.cfg
-        echo "$CLOUD_NAME" > $LBAC_DATASTORE/etc/primary.cfg
+        if [ ! -s $LBAC_DATASTORE/etc/primary.cfg ] ; then
+            echo "$CLOUD_NAME" > $LBAC_DATASTORE/etc/primary.cfg
+        fi
 
 	# clean up certificates from download and 
 	# verification (see upload.sh)
