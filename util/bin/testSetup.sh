@@ -68,7 +68,7 @@ function createNodeConfig {
     node=`echo $1 | cut -d';' -f1`
     remote=`echo $1 | cut -d';' -f2`
     login=`echo $1 | cut -d';' -f3`
-    cloud=`grep $node "$LBAC_REPO/util/test/etc/nodeconfig.cfg" |\
+    cloud=`grep -E "^$node;" "$LBAC_REPO/util/test/etc/nodeconfig.cfg" |\
         grep PRIMARY_CLOUD |\
         cut -d= -f2`
     crimsyhost=`hostname -f`
@@ -319,7 +319,7 @@ function runJobs {
             test)
                 SCRIPT=`echo "$job" | cut -d';' -f2`
                 ARGS=`echo "$job" | cut -d';' -f3-`
-                util/test/bin/$SCRIPT $HOSTLIST "$ARGS"
+                echo | util/test/bin/$SCRIPT $HOSTLIST "$ARGS"
                 ;;
             update)
                 NODE=`echo "$job" | cut -d';' -f2`
@@ -398,7 +398,7 @@ function runSetup {
     rm -f config/revision_info.cfg
 
     if [ -n "$BRANCH_FILE" ] ; then
-        initial_stage=`cut -d';' -f1 "$BRANCH_FILE" | sort | uniq | head -1`
+        initial_stage=`grep -vE "^#" "$BRANCH_FILE" | cut -d';' -f1 | sort | uniq | head -1`
         echo "Executing initial setup stage $initial_stage"
     else 
         echo "Executing direct setup"
@@ -414,7 +414,7 @@ function runSetup {
     sleep 15
 
     if [ -n "$BRANCH_FILE" ] ; then
-        cut -d';' -f1 "$BRANCH_FILE" |\
+        grep -vE "^#" "$BRANCH_FILE" | cut -d';' -f1 |\
         grep -v $initial_stage | sort | uniq |\
         while read record ; do
             echo "compiling for stage $record"
@@ -504,20 +504,23 @@ EOF
 #
 #
 function setupFunc {
-    cat $LBAC_REPO/util/test/etc/cloudconfig.txt |\
-        while read record ; do
-            setupTestCAconf "$record"
-        done
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
+    while read record ; do
+        setupTestCAconf "$record"
+    done
 
     echo "=== Setup ROOT CA ==="
     setupTestRootCA
 
     echo "=== Setup Sub CAs ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt |\
-        while read record ; do
-            setupTestSubCA "$record"
-            setupConfigure "$record"
-        done
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
+    cut -d';' -f3 |\
+    while read cloud ; do
+        if [ -n $cloud ] ; then
+            setupTestSubCA
+            setupConfigure
+        fi
+    done
 
     echo "=== create node configurations ==="
     grep -vE "^#" $HOSTLIST |\
@@ -528,23 +531,28 @@ function setupFunc {
 
     # package master nodes
     echo "=== determine master nodes ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt |\
-        cut -d';' -f1 |\
-        while read record ; do
-            $LBAC_REPO/util/bin/package.sh "$record" MASTERBATCH
-        done
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
+    cut -d';' -f3 |\
+    while read cloud ; do
+        if [ -n $cloud ] ; then
+            $LBAC_REPO/util/bin/package.sh "$cloud" MASTERBATCH
+        fi
+    done
 
     # package all other nodes
     echo "=== package all nodes ==="
-    cat $LBAC_REPO/util/test/etc/cloudnodes.txt |\
-        while read record ; do
-            copyNodeConfig "$record"
-        done
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt |\
-        cut -d';' -f1 |\
-        while read record ; do
-            $LBAC_REPO/util/bin/package.sh "$record" AUTOBATCH
-        done
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudnodes.cfg |\
+    while read record ; do
+        copyNodeConfig "$record"
+    done
+
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
+    cut -d';' -f3 |\
+    while read cloud; do
+        if [ -n $cloud ] ; then
+            $LBAC_REPO/util/bin/package.sh "$cloud" AUTOBATCH
+        fi
+    done
 }
 
 #
@@ -559,8 +567,6 @@ function setupTestRootCA {
 #
 #
 function setupTestSubCA {
-    cloud=`echo $1 | cut -d';' -f1`
-
     $LBAC_REPO/util/bin/camgr.sh --batch --mode ca --cloud $cloud
 
     $LBAC_REPO/util/bin/camgr.sh --batch --mode sign --extension v3_subCA \
@@ -578,7 +584,6 @@ function setupTestSubCA {
 }
 
 function setupConfigure {
-    cloud=`echo $1 | cut -d';' -f1`
     LBAC_CA_DIR=$LBAC_REPO/config/$cloud/CA
     . $LBAC_CA_DIR/cloud.cfg
 

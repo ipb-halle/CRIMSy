@@ -32,5 +32,5 @@ cmd="echo \$'\\\\pset tuples_only on\nSELECT COUNT(*) FROM nodes;' | docker exec
 cnt=`ssh -o "StrictHostKeyChecking no" "$login@$remote" "$cmd"` || \
     error "checkNodeCound.sh failed" $LINENO
 
-assert "$expected -eq $cnt" checkNodeCound.sh $LINENO
+assert "$expected -eq $cnt" "check node count" $LINENO
 exit $?

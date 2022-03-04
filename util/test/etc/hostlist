@@ -1,0 +1,8 @@
+#
+# example hostlist file for testSetup.sh
+#
+# Format: NODE NAME;FQHN;LOGIN
+#
+node1;crimsy1.example.com;crimsy
+node2;crimsy2.example.com;crimsy
+node3;crimsy3.example.com;crimsy

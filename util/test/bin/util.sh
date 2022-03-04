@@ -4,10 +4,10 @@
 
 function assert {
     if [ ! $1 ] ; then
-        echo "Assertion '$2' failed in file $0, line $3"
+        echo "Assertion failed: '$2', file $0, line $3"
         exit 1
     fi
-    echo "Assertion '$2' succeeded."
+    echo "Assertion succeeded: '$2'."
     exit 0
 }
 
