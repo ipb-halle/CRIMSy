@@ -24,6 +24,7 @@ import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_K
 import static de.ipb_halle.pageobjects.util.I18n.getUIMessage;
 import static de.ipb_halle.test.Conditions.jsfMessage;
 import static de.ipb_halle.test.Conditions.uiMessage;
+import static de.ipb_halle.test.UniqueGenerators.uniqueLogin;
 
 import java.util.Locale;
 
@@ -31,6 +32,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.codeborne.selenide.AssertionMode;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.junit5.SoftAssertsExtension;
 
 import de.ipb_halle.pageobjects.pages.LoginPage;
 import de.ipb_halle.pageobjects.pages.search.SearchPage;
@@ -43,7 +48,7 @@ import de.ipb_halle.test.SelenideEachExtension;
 /**
  * @author flange
  */
-@ExtendWith(SelenideEachExtension.class)
+@ExtendWith({ SelenideEachExtension.class, SoftAssertsExtension.class })
 @DisplayName("Test user creation")
 public class CreateUserTest {
     private static UserManagementPage userManagementPage;
@@ -51,6 +56,7 @@ public class CreateUserTest {
 
     @BeforeEach
     public void beforeEach() {
+        Configuration.assertionMode = AssertionMode.SOFT;
         userManagementPage = open("/", LoginPage.class).loginAsAdmin(SearchPage.class)
                 .navigateTo(UserManagementPage.class);
     }
@@ -70,7 +76,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("If the password is too short, a validation error should appear and no new user should be created.")
     public void test_createUserDialog_tooShortPassword_producesValidationErrorWhenTryingToSave() {
-        String login = "test-001";
+        String login = uniqueLogin();
         UserModel user = validUser(login, "1234567").passwordRepeat(null);
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
@@ -83,7 +89,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("If the password and repeat do not match, a validation error should appear and new no user should be created.")
     public void test_createUserDialog_wrongPasswordRepeat_producesValidationErrorWhenTryingToSave() {
-        String login = "test-002";
+        String login = uniqueLogin();
         UserModel user = validUser(login, "12345678").passwordRepeat("123456789");
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
@@ -96,7 +102,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("If the login already exists, a validation error should appear and no new user should be created.")
     public void test_createUserDialog_createUserWithAlreadyExistingLogin_producesValidationErrorWhenTryingToSave() {
-        String login = "test-003";
+        String login = uniqueLogin();
         UserModel user = validUser(login, "12345678");
         // create a user
         UserDialog dialog = userManagementPage.createUser();
@@ -118,8 +124,8 @@ public class CreateUserTest {
     @Test
     @DisplayName("If the shortcut already exists, a validation error should appear and no new user should be created.")
     public void test_createUserDialog_createUserWithAlreadyExistingShortcut_producesValidationErrorWhenTryingToSave() {
-        String login = "test-004";
-        String newLogin = "test-004-1";
+        String login = uniqueLogin();
+        String newLogin = uniqueLogin();
         UserModel user = validUser(login, "12345678").shortcut("XYZ");
         // create a user
         UserDialog dialog = userManagementPage.createUser();
@@ -150,7 +156,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("If the shortcut does not only contain letters, a validation error should appear and no new user should be created.")
     public void test_createUserDialog_nonAlphabeticShortcut_producesValidationErrorWhenTryingToSave() {
-        String login = "test-005";
+        String login = uniqueLogin();
         UserModel user = validUser(login, "12345678").shortcut("ABC123");
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
@@ -165,7 +171,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("After successful creation of a user, the users table should show its data.")
     public void test_createUser_and_checkItsData() {
-        String login = "test-006";
+        String login = uniqueLogin();
         String name = "test user XYZ";
         String shortcut = "ABCDEF";
         String email = "user@test.example";
@@ -201,7 +207,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("If the email is invalid, a validation error should appear and no new user should be created.")
     public void test_createUserDialog_invalidEmail_producesValidationErrorWhenTryingToSave() {
-        String login = "test-007";
+        String login = uniqueLogin();
         UserModel user = validUser(login, "12345678").email("user@test");
         UserDialog dialog = userManagementPage.createUser();
         dialog.applyModel(user).confirm();
@@ -209,6 +215,24 @@ public class CreateUserTest {
         dialog.emailMessage().shouldBe(visible).shouldHave(uiMessage("admission_invalid_email", locale));
         dialog.close();
         userManagementPage.getUsersTable().search(login).shouldBeEmpty();
+    }
+
+    @Test
+    @DisplayName("After successful creation of a user, the user should be able to log in.")
+    public void test_createUser_and_login() {
+        String login = uniqueLogin();
+        String password = "12345678";
+        String username = "testuser";
+        UserModel user = new UserModel().login(login).name(username).password(password).passwordRepeat(password);
+        UserDialog dialog = userManagementPage.createUser();
+        dialog.applyModel(user).confirm();
+        SearchPage searchPage = userManagementPage.logout(LoginPage.class).login(login, password, SearchPage.class);
+
+        searchPage.shouldBeLoggedIn().userNameShouldBe(username);
+
+        // delete user
+        searchPage.logout(LoginPage.class).loginAsAdmin(SearchPage.class).navigateTo(UserManagementPage.class)
+                .getUsersTable().search(login).deleteUser(0).confirm();
     }
 
     private UserModel validUser(String login, String password) {
