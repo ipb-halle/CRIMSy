@@ -116,6 +116,10 @@ function error {
 }
 
 function leave {
+    echo
+    echo "NOTE: leave operation is incomplete and still experimental"
+    echo
+
     # make sure database is running
     (docker inspect dist_db_1 | grep Status | grep -q running ) || \
         error "Cannot leave cloud while database is down"
@@ -123,7 +127,7 @@ function leave {
     # remove cloud from /etc/clouds.cfg
     grep -vE "^$LEAVE;" etc/clouds.cfg > etc/clouds.tmp
 
-    if [ `wc -l etc/clouds.tmp` -gt 0 ] ; then 
+    if [ `wc -l etc/clouds.tmp | cut -d' ' -f1` -gt 0 ] ; then 
         mv etc/clouds.tmp etc/clouds.cfg
     else
         rm etc/clouds.tmp
@@ -240,8 +244,7 @@ function joinFunc {
     fi
 
     if [ -n "$LEAVE" ] ; then
-        CLOUD="$LEAVE"
-        error "Leaving not implemented"
+        leave
     fi
 }
 #

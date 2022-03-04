@@ -117,7 +117,7 @@ function error {
 #
 #
 function infoLog {
-    msg=`echo "$1 FINISHED                                                        -" | cut -c-63`
+    msg=`echo "$1 FINISHED                                                        -" | cut -c-61`
     echo "*****************************************************************"
     echo "*                                                               *"
     echo "* $msg *"
@@ -314,7 +314,7 @@ function runJobs {
                 ;;
             teardown)
                 NODE="all"
-                tearDown
+                teardown
                 ;;
             test)
                 SCRIPT=`echo "$job" | cut -d';' -f2`
@@ -648,7 +648,7 @@ function snapshot {
     if [ $NODE = "all" ] ; then
         echo "Taking snapshot '$SNAPSHOT' of all nodes"
     else
-        "Taking snapshot '$SNAPSHOT' for node '$NODE'"
+        echo "Taking snapshot '$SNAPSHOT' for node '$NODE'"
     fi
 
     grep -vE "^#" $HOSTLIST |\
