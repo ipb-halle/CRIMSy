@@ -42,7 +42,7 @@ public class PrimeFacesDialog {
     /*
      * Getters
      */
-    public String getTitle() {
-        return TITLE.text();
+    public SelenideElement title() {
+        return TITLE;
     }
 }

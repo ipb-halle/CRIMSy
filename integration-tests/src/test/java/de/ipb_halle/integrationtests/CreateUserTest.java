@@ -34,8 +34,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.codeborne.selenide.AssertionMode;
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.junit5.SoftAssertsExtension;
 
 import de.ipb_halle.pageobjects.pages.LoginPage;
@@ -57,16 +55,16 @@ public class CreateUserTest {
 
     @BeforeEach
     public void beforeEach() {
-        Configuration.assertionMode = AssertionMode.SOFT;
         userManagementPage = open("/", LoginPage.class).loginAsAdmin(SearchPage.class)
                 .navigateTo(UserManagementPage.class);
     }
 
     @Test
-    @DisplayName("After opening the create user dialog, the input fields should be empty.")
-    public void test_createUserDialog_checkEmptyInputs() {
+    @DisplayName("After opening the create user dialog, the it should have the correct title and the input fields should be empty.")
+    public void test_createUserDialog_checkTitle_and_emptyInputs() {
         UserDialog dialog = userManagementPage.createUser();
 
+        dialog.title().shouldBe(uiMessage("userMgr_mode_createUser", locale));
         dialog.idInput().shouldBe(empty);
         dialog.nameInput().shouldBe(empty);
         dialog.loginInput().shouldBe(empty);

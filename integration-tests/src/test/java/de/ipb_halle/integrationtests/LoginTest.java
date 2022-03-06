@@ -36,6 +36,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import com.codeborne.selenide.junit5.SoftAssertsExtension;
+
 import de.ipb_halle.pageobjects.pages.LoginPage;
 import de.ipb_halle.pageobjects.pages.search.SearchPage;
 import de.ipb_halle.test.SelenideEachExtension;
@@ -43,7 +45,7 @@ import de.ipb_halle.test.SelenideEachExtension;
 /**
  * @author flange
  */
-@ExtendWith(SelenideEachExtension.class)
+@ExtendWith({ SelenideEachExtension.class, SoftAssertsExtension.class })
 @DisplayName("Test login page")
 public class LoginTest {
     private LoginPage loginPage;

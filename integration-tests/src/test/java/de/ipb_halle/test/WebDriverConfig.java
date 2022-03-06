@@ -22,6 +22,8 @@ import java.net.URL;
 import java.util.Arrays;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 
@@ -56,6 +58,7 @@ public class WebDriverConfig {
     public void configure() {
         Configuration.baseUrl = crimsyUrl;
         Configuration.browser = browserName;
+        Configuration.assertionMode = AssertionMode.SOFT;
 
         // scroll to element before clicking
         int navbarOffset = 47;

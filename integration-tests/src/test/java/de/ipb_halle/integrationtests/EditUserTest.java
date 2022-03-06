@@ -37,8 +37,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.codeborne.selenide.AssertionMode;
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.junit5.SoftAssertsExtension;
 
 import de.ipb_halle.pageobjects.pages.LoginPage;
@@ -62,8 +60,6 @@ public class EditUserTest {
 
     @BeforeEach
     public void beforeEach() {
-        Configuration.assertionMode = AssertionMode.SOFT;
-
         String password = "12345678";
         userToEdit = new UserModel().login(uniqueLogin()).name("test user XYZ").shortcut("ABCDEF")
                 .email("user@test.example").password(password).passwordRepeat(password).phone("CALL-911");
@@ -79,10 +75,11 @@ public class EditUserTest {
     }
 
     @Test
-    @DisplayName("After opening the edit user dialog, the input fields should be filled with the user's data and the password fields should be empty.")
-    public void test_editUserDialog_checkUserData_and_passwordsAreEmpty() {
+    @DisplayName("After opening the edit user dialog, it should have the correct title, the input fields should be filled with the user's data and the password fields should be empty.")
+    public void test_editUserDialog_checkTitleAndUserData_and_passwordsAreEmpty() {
         UserDialog dialog = userManagementPage.getUsersTable().search(userToEdit.getLogin()).editUser(0);
 
+        dialog.title().shouldBe(uiMessage("userMgr_mode_updateUser", locale));
         dialog.nameInput().shouldHave(value(userToEdit.getName()));
         dialog.loginInput().shouldHave(value(userToEdit.getLogin()));
         dialog.shortcutInput().shouldHave(value(userToEdit.getShortcut()));
