@@ -32,6 +32,7 @@ import static de.ipb_halle.test.Conditions.jsfMessage;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -43,6 +44,7 @@ import de.ipb_halle.test.SelenideEachExtension;
  * @author flange
  */
 @ExtendWith(SelenideEachExtension.class)
+@DisplayName("Test login page")
 public class LoginTest {
     private LoginPage loginPage;
     private Locale locale = Locale.ENGLISH;
@@ -53,7 +55,8 @@ public class LoginTest {
     }
 
     @Test
-    public void test_sucessfulLogin() {
+    @DisplayName("After successful login as admin, the username should be shown in the settings menu and an info growl should be shown.")
+    public void test_successfulLogin_checkUsername_and_infoGrowl() {
         loginPage.login(ADMIN_LOGIN, ADMIN_PASSWORD, SearchPage.class).shouldBeLoggedIn().userNameShouldBe(ADMIN_NAME)
                 .growls().shouldHave(size(1)).get(0)
                 .shouldHave(growlI18nText("admission_login_succeeded_detail", locale)).shouldHave(growlSeverity(INFO));
@@ -61,13 +64,15 @@ public class LoginTest {
 
     // Don't run too frequent/often or you'll run into the intruder lockout.
     @Test
-    public void test_failedLogin() {
+    @DisplayName("After failed login, the username should not be logged in and a warn growl should be shown.")
+    public void test_failedLogin_notLoggedIn_and_warnGrowl() {
         loginPage.login("nonexistinguser", "pw", LoginPage.class).shouldNotBeLoggedIn().growls().shouldHave(size(1))
                 .get(0).shouldHave(growlI18nText("admission_login_failure", locale)).shouldHave(growlSeverity(WARN));
     }
 
     @Test
-    public void test_emptyInputs_validationErrors() {
+    @DisplayName("If inputs are empty, some validation errors should appear.")
+    public void test_emptyInputs_produceValidationErrorsWhenTryingToLogin() {
         loginPage.login("", "", LoginPage.class).shouldNotBeLoggedIn().growls().shouldBe(empty);
         loginPage.loginNameMessage().shouldHave(jsfMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));
         loginPage.passwordMessage().shouldHave(jsfMessage(JSF_REQUIRED_VALIDATION_ERROR_KEY, locale));

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.integrationtests;
 
+import static com.codeborne.selenide.Condition.empty;
 import static com.codeborne.selenide.Condition.exactTextCaseSensitive;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.open;
@@ -59,6 +60,21 @@ public class CreateUserTest {
         Configuration.assertionMode = AssertionMode.SOFT;
         userManagementPage = open("/", LoginPage.class).loginAsAdmin(SearchPage.class)
                 .navigateTo(UserManagementPage.class);
+    }
+
+    @Test
+    @DisplayName("After opening the create user dialog, the input fields should be empty.")
+    public void test_createUserDialog_checkEmptyInputs() {
+        UserDialog dialog = userManagementPage.createUser();
+
+        dialog.idInput().shouldBe(empty);
+        dialog.nameInput().shouldBe(empty);
+        dialog.loginInput().shouldBe(empty);
+        dialog.shortcutInput().shouldBe(empty);
+        dialog.emailInput().shouldBe(empty);
+        dialog.passwordInput().shouldBe(empty);
+        dialog.passwordRepeatInput().shouldBe(empty);
+        dialog.phoneInput().shouldBe(empty);
     }
 
     @Test
@@ -184,7 +200,6 @@ public class CreateUserTest {
         dialog.applyModel(user).confirm();
 
         UsersTable table = userManagementPage.getUsersTable().search(login);
-        table.shouldNotBeEmpty();
         table.getName(0).shouldHave(exactTextCaseSensitive(name));
         table.getLogin(0).shouldHave(exactTextCaseSensitive(login));
         table.getShortcut(0).shouldHave(exactTextCaseSensitive(shortcut));

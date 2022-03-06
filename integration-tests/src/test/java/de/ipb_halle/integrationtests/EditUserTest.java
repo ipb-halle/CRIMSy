@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.integrationtests;
 
+import static com.codeborne.selenide.Condition.empty;
 import static com.codeborne.selenide.Condition.exactTextCaseSensitive;
+import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.open;
 import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY;
@@ -25,6 +27,7 @@ import static de.ipb_halle.pageobjects.util.I18n.getUIMessage;
 import static de.ipb_halle.test.Conditions.jsfMessage;
 import static de.ipb_halle.test.Conditions.uiMessage;
 import static de.ipb_halle.test.UniqueGenerators.uniqueLogin;
+import static java.time.Duration.ZERO;
 
 import java.util.Locale;
 
@@ -73,6 +76,23 @@ public class EditUserTest {
     public void afterEach() {
         LoginPage loginPage = userManagementPage.logout(LoginPage.class).navigateToLoginPage();
         ModelTools.deleteUser(userToEdit.getLogin(), loginPage);
+    }
+
+    @Test
+    @DisplayName("After opening the edit user dialog, the input fields should be filled with the user's data and the password fields should be empty.")
+    public void test_editUserDialog_checkUserData_and_passwordsAreEmpty() {
+        UserDialog dialog = userManagementPage.getUsersTable().search(userToEdit.getLogin()).editUser(0);
+
+        dialog.nameInput().shouldHave(value(userToEdit.getName()));
+        dialog.loginInput().shouldHave(value(userToEdit.getLogin()));
+        dialog.shortcutInput().shouldHave(value(userToEdit.getShortcut()));
+        dialog.emailInput().shouldHave(value(userToEdit.getEmail()));
+        dialog.phoneInput().shouldHave(value(userToEdit.getPhone()));
+        dialog.idInput().shouldNotBe(empty, ZERO);
+        dialog.newPasswordInput().shouldBe(empty);
+        dialog.newPasswordRepeatInput().shouldBe(empty);
+
+        dialog.close();
     }
 
     @Test
@@ -152,7 +172,6 @@ public class EditUserTest {
         dialog.applyModel(userToEdit).confirm();
 
         UsersTable table = userManagementPage.getUsersTable().search(userToEdit.getLogin());
-        table.shouldNotBeEmpty();
         table.getName(0).shouldHave(exactTextCaseSensitive(userToEdit.getName()));
         table.getLogin(0).shouldHave(exactTextCaseSensitive(userToEdit.getLogin()));
         table.getShortcut(0).shouldHave(exactTextCaseSensitive(userToEdit.getShortcut()));

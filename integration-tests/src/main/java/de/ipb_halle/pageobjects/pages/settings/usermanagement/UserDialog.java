@@ -163,7 +163,7 @@ public class UserDialog extends PrimeFacesDialog {
         return EMAIL_MESSAGE;
     }
 
-    public SelenideElement getPasswordInput() {
+    public SelenideElement passwordInput() {
         return PASSWORD_INPUT;
     }
 
