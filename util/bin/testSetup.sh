@@ -42,12 +42,13 @@ function cleanup {
 function compile {
     stage=$1
     echo "=== Build Docker Images ==="
-    if [ -n $stage ] ; then
+    if [ -n "$stage" ] ; then
         $LBAC_REPO/util/bin/buildDocker.sh \
             --branch-file "$BRANCH_FILE" \
             --stage-label $stage \
             --test-registry `hostname -f`:5000
     else 
+        echo "No stage selected, calling buildDocker.sh directly"
         $LBAC_REPO/util/bin/buildDocker.sh --test-registry `hostname -f`:5000
     fi
 }
@@ -516,7 +517,7 @@ function setupFunc {
     grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
     cut -d';' -f3 |\
     while read cloud ; do
-        if [ -n $cloud ] ; then
+        if [ -n "$cloud" ] ; then
             setupTestSubCA
             setupConfigure
         fi
@@ -534,7 +535,7 @@ function setupFunc {
     grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
     cut -d';' -f3 |\
     while read cloud ; do
-        if [ -n $cloud ] ; then
+        if [ -n "$cloud" ] ; then
             $LBAC_REPO/util/bin/package.sh "$cloud" MASTERBATCH
         fi
     done
@@ -549,7 +550,7 @@ function setupFunc {
     grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
     cut -d';' -f3 |\
     while read cloud; do
-        if [ -n $cloud ] ; then
+        if [ -n "$cloud" ] ; then
             $LBAC_REPO/util/bin/package.sh "$cloud" AUTOBATCH
         fi
     done

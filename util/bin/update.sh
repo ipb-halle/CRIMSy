@@ -340,7 +340,7 @@ function superDoDb {
     echo "Waiting 40 sek. for database to come up ..."
     sleep 40
 
-    docker exec -u postgres dist_db_1 /usr/local/bin/getversion.sh
+    docker exec dist_db_1 /usr/local/bin/getversion.sh
 
     if [ -e "$LBAC_DATASTORE/tmp/OLD_PG_VERSION" ] ; then
         OLD_PG_VERSION=`cat "$LBAC_DATASTORE/tmp/OLD_PG_VERSION"`
@@ -402,6 +402,9 @@ case $1 in
     db)
         createDbConfig
         sudo dist/bin/update.sh superDb 
+        ;;
+    log)
+        docker exec dist_ui_1 /usr/local/bin/logpurge.sh
         ;;
     proxy)
         createProxyConfig

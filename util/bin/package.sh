@@ -126,7 +126,7 @@ Für den Knoten muss mittels 'configure.sh' ein neuer Zertifikatsrequest erzeugt
             ;;
         2)  # certificate not found
             echo "certificate not found: $LBAC_CERT_IDENTIFIER"
-            if [ -z $BATCH ] ; then 
+            if [ -z "$BATCH" ] ; then 
                 dialog --backtitle "$CLOUD_NAME" \
                   --msgbox "Im folgenden Schritt wird ggf. das Zertifikat ausgestellt. Bitte prüfen Sie gründlich." 15 72 || error "Aborted"
             fi 

@@ -50,6 +50,7 @@ $CRON_ED_CMD
 #
 #Min Hour Day Month Week Cmd
 13 * * * * "$LBAC_DATASTORE/dist/bin/update.sh" proxy 2>/dev/null > /dev/null
+17 10 * * * "$LBAC_DATASTORE/dist/bin/update.sh" log 2>/dev/null > /dev/null
 5 4 * * 1 "$LBAC_DATASTORE/dist/bin/update.sh" container 2>/dev/null > /dev/null
 8 1 * * * "$LBAC_DATASTORE/dist/bin/update.sh" backup 2>/dev/null > /dev/null
 # LBAC CRON END

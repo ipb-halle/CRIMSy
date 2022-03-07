@@ -42,7 +42,7 @@ function compile {
     cp -r target/extralib target/docker/ui/
     cp ui/target/ui.war target/docker/ui/
 
-    if [ -n $STAGE_LABEL ] ; then
+    if [ -n "$STAGE_LABEL" ] ; then
         flags="$flags,$STAGE_LABEL"
     fi
     grep -v ";$BRANCH;" config/revision_info.cfg > config/revision_info.tmp
@@ -111,7 +111,7 @@ EOF
 function pushImage {
     IMAGE_TAG=$1
     echo "pushImage $IMAGE_BASE --> $IMAGE_TAG"
-    if [ -z $TEST_REGISTRY ] ; then
+    if [ -z "$TEST_REGISTRY" ] ; then
         IMAGE_DST=$IMAGE_BASE:$IMAGE_TAG
         if [ $IMAGE_DST != $IMAGE ] ; then
             docker image tag $IMAGE $IMAGE_DST
@@ -132,7 +132,7 @@ function buildDocker {
     if [ -r "$BRANCH_FILE" ] ; then
         git stash push -u
         grep -vE "^#" "$BRANCH_FILE" |\
-        if [ -z $STAGE_LABEL ] ; then cat ; else grep $STAGE_LABEL ; fi |\
+        if [ -z "$STAGE_LABEL" ] ; then cat ; else grep "$STAGE_LABEL" ; fi |\
         while read record ; do
             BRANCH=`echo $record | cut -d';' -f2`
             RELEASE_FLAGS=`echo $record | cut -d';' -f3`
