@@ -85,6 +85,13 @@ Im darauffolgenden Formular können Sie entscheiden, ob Ihr Knoten durch HTTP St
     :align: center
     :alt: HSTS 
 
+Der folgende Dialog fragt ab, ob und in welchem Umfang automatische Updates durchgeführt werden dürfen. Aus Sicherheitsgründen empfehlen wir dringend, mindestens Patchlevel-Updates automatisch ausführen zu lassen. Auf Patchlevel-Eben werden Sicherheitslücken in den Basiskomponenten der Docker-Container und in von CRIMSy verwendeten Bibliotheken geschlossen. Automatische Updates auf Minor-Level-Ebene können zusätzlich kleinere Funktionserweiterungen enthalten. Automatische Major-Level-Updates werden derzeit nicht unterstützt, die Auswahl dieser Option hat aktuell den selben Effekt wie Minor-Level-Updates.
+
+.. image:: img/config_06a.png
+    :width: 60%
+    :align: center
+    :alt: Auto Update
+
 Mittlerweile verwenden viele Linux-Distributionen SystemD als Init-System. Im Rahmen des Konfigurationsskripts wird abgefragt, für welches System der Knoten konfiguriert werden soll, damit CRIMSy nach einem Neustart des Knotens automatisch starten kann. SystemV-Init-Skripte existieren für alle anderen Distributionen und als Fallback-Lösung; es finden allerdings keine Tests statt.  
 
 .. image:: img/config_07.png

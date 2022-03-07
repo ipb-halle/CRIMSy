@@ -674,8 +674,8 @@ function checkSoftware {
 	echo TEST | openssl md5 > /dev/null || return
         NEXT_FORM="ERROR: sudo nicht installiert."
         sudo -V >/dev/null || return
-        NEXT_FORM="ERROR: uudecode nicht installiert."
-        echo $'begin-base64 644 -\nQQo=\n====' | uudecode > /dev/null || return
+        NEXT_FORM="ERROR: base64 nicht installiert."
+        echo QQo= | base64 -di > /dev/null || return
         NEXT_FORM="ERROR: uuidgen nicht installiert."
         uuidgen > /dev/null || return
         NEXT_FORM="ERROR: rsync nicht installiert."
