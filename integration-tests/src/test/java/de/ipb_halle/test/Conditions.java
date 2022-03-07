@@ -17,10 +17,11 @@
  */
 package de.ipb_halle.test;
 
-import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithAttribute;
 
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -28,8 +29,6 @@ import org.openqa.selenium.WebElement;
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Driver;
-import com.codeborne.selenide.SelenideElement;
-
 import de.ipb_halle.pageobjects.components.Severity;
 import de.ipb_halle.test.conditions.JSFMessageCondition;
 import de.ipb_halle.test.conditions.UIMessageCondition;
@@ -61,8 +60,7 @@ public class Conditions {
 
     /**
      * Check condition on a child. Code from
-     * https://github.com/selenide/selenide/wiki/Custom-conditions#child, updated
-     * for the current Selenide API.
+     * https://github.com/selenide/selenide/wiki/Custom-conditions#child
      * 
      * @author Olivier Grech (https://github.com/olivier-grech)
      * @param childCssSelector
@@ -70,11 +68,12 @@ public class Conditions {
      * @return
      */
     private static Condition child(String childCssSelector, Condition condition) {
-        return new Condition("child " + childCssSelector + " has " + condition.getName()) {
+        return new Condition("child " + childCssSelector + " with " + condition.getName()) {
+            @Nonnull
             @Override
             public CheckResult check(Driver driver, WebElement element) {
-                SelenideElement child = $(element.findElement(By.cssSelector(childCssSelector)));
-                return new CheckResult(child.has(condition), null);
+                WebElement child = element.findElement(By.cssSelector(childCssSelector));
+                return condition.check(driver, child);
             }
         };
     }

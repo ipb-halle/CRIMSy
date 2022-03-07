@@ -25,10 +25,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:cc="http://java.sun.com/jsf/composite"
->
+      xmlns:cc="http://java.sun.com/jsf/composite">
 
-<cc:interface/>
+<cc:interface />
 
 <cc:implementation>
     <div class="qq-uploader-selector qq-uploader" qq-drop-area-text="#{msgs.fileupload_fineUploader_areaText}">
@@ -40,17 +39,17 @@
             <span class="qq-upload-drop-area-text-selector"></span>
         </div>
         <div class="buttons">
-            <div class="qq-upload-button-selector qq-upload-button" style="width:150px;">
+            <div data-test-id="documentUpload:selectFiles" class="qq-upload-button-selector qq-upload-button" style="width:150px;">
                 <div>#{msgs.fileupload_fineUploader_selectFilesButton}</div>
             </div>
-            <button type="button" id="trigger-upload" class="btn btn-primary">
+            <button data-test-id="documentUpload:upload" type="button" id="trigger-upload" class="btn btn-primary">
                 <i class="icon-upload icon-white"></i>#{msgs.fileupload_fineUploader_uploadButton}
             </button>
         </div>
         <span class="qq-drop-processing-selector qq-drop-processing">
-                <span>#{msgs.fileupload_fineUploader_processing}</span>
-                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
-            </span>
+            <span>#{msgs.fileupload_fineUploader_processing}</span>
+            <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+        </span>
         <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
             <li>
                 <div class="qq-progress-bar-container-selector">
@@ -61,7 +60,7 @@
                 <span class="qq-upload-file-selector qq-upload-file"></span>
                 <span class="qq-upload-size-selector qq-upload-size"></span>
 
-                <button type="button" class="qq-btn qq-upload-cancel-selector qq-upload-cancel">#{msgs.Cancel}</button>
+                <button data-test-id="documentUpload:cancelUpload" type="button" class="qq-btn qq-upload-cancel-selector qq-upload-cancel">#{msgs.Cancel}</button>
                 <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry">#{msgs.fileupload_fineUploader_retry}</button>
                 <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">#{msgs.fileupload_fineUploader_delete}</button>
                 <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>

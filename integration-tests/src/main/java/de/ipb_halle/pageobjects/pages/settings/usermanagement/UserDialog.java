@@ -67,42 +67,21 @@ public class UserDialog extends PrimeFacesDialog {
      * @return
      */
     public UserDialog applyModel(UserModel model) {
-        String name = model.getName();
-        if (name != null) {
-            NAME_INPUT.setValue(name);
-        }
-
-        String login = model.getLogin();
-        if (login != null) {
-            LOGIN_INPUT.setValue(login);
-        }
-
-        String shortcut = model.getShortcut();
-        if (shortcut != null) {
-            SHORTCUT_INPUT.setValue(shortcut);
-        }
-
-        String email = model.getEmail();
-        if (email != null) {
-            EMAIL_INPUT.setValue(email);
-        }
-
-        String password = model.getPassword();
-        if (password != null) {
-            PASSWORD_INPUT.setValue(password);
-        }
-
-        String passwordRepeat = model.getPasswordRepeat();
-        if (passwordRepeat != null) {
-            PASSWORD_REPEAT_INPUT.setValue(passwordRepeat);
-        }
-
-        String phone = model.getPhone();
-        if (phone != null) {
-            PHONE_INPUT.setValue(phone);
-        }
+        applyIfNotNull(model.getName(), NAME_INPUT);
+        applyIfNotNull(model.getLogin(), LOGIN_INPUT);
+        applyIfNotNull(model.getShortcut(), SHORTCUT_INPUT);
+        applyIfNotNull(model.getEmail(), EMAIL_INPUT);
+        applyIfNotNull(model.getPassword(), PASSWORD_INPUT);
+        applyIfNotNull(model.getPasswordRepeat(), PASSWORD_REPEAT_INPUT);
+        applyIfNotNull(model.getPhone(), PHONE_INPUT);
 
         return this;
+    }
+
+    private void applyIfNotNull(String value, SelenideElement element) {
+        if (value != null) {
+            element.setValue(value);
+        }
     }
 
     public UserManagementPage confirm() {

@@ -47,6 +47,7 @@
                 resizable="false">
                 <div class="upload-collection-settings">
                     <b:selectOneMenu
+                        pt:data-test-id="documentUpload:collection"
                         label="#{msgs.fileupload_modal_uploadToCollectionText}"
                         styleClass="upload-collection">
                         <f:selectItems
@@ -62,11 +63,13 @@
 
                 <f:facet name="footer">
                     <b:button
+                        pt:data-test-id="documentUpload:clear"
                         value="#{msgs.fileupload_modal_button_clear}"
                         style="margin-bottom: 10px;"
                         look="primary"
                         onclick="$('#fine-uploader-manual-trigger').fineUploader('clearStoredFiles');" />
                     <b:button
+                        pt:data-test-id="documentUpload:close"
                         value="#{msgs.fileupload_modal_button_close}"
                         style="margin-bottom: 10px;"
                         look="primary"

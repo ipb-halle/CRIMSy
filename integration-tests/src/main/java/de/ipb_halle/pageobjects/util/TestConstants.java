@@ -26,6 +26,7 @@ public class TestConstants {
     public static final String ADMIN_NAME = "Admin";
     public static final String PULBIC_GROUP = "Public Group";
     public static final String ADMIN_GROUP = "Admin Group";
+    public static final String PUBLIC_COLLECTION = "public";
 
     private TestConstants() {
     }

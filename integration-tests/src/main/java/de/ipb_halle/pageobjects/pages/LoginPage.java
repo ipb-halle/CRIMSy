@@ -46,7 +46,8 @@ public class LoginPage extends AbstractPage<LoginPage> {
      * <p>
      * Should direct the browser either to the search page (successful login) the
      * login page (failed login), thus only {@link SearchPage} or {@link LoginPage}
-     * are useful page object classes to be supplied in the {@code clazz} parameter.
+     * are useful page object classes to be supplied in the
+     * {@code expectedPageClass} parameter.
      * 
      * @param <T>
      * @param loginName
@@ -63,11 +64,12 @@ public class LoginPage extends AbstractPage<LoginPage> {
     }
 
     /**
-     * Log in.
+     * Log in as admin.
      * <p>
      * Should direct the browser either to the search page (successful login) the
      * login page (failed login), thus only {@link SearchPage} or {@link LoginPage}
-     * are useful page object classes to be supplied in the {@code clazz} parameter.
+     * are useful page object classes to be supplied in the
+     * {@code expectedPageClass} parameter.
      * 
      * @param <T>
      * @param expectedPageClass expected page

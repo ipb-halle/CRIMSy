@@ -19,8 +19,10 @@
 package de.ipb_halle.pageobjects.pages.search;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.page;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
+import java.io.File;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -36,22 +38,15 @@ import de.ipb_halle.pageobjects.pages.NavigablePage;
  * @author flange
  */
 public class SearchPage extends NavigablePage<SearchPage> {
-    private static final SelenideElement SEARCH_TEXT = $(
-            testId("input", "search:searchText"));
-    private static final SelenideElement SEARCH_BUTTON = $(
-            testId("search:searchButton"));
-    private static final SelenideElement REFRESH_RESULT_BUTTON = $(
-            testId("search:refreshResultsButton"));
-    private static final SelenideElement NUMBER_OF_NEW_DOCUMENTS_BADGE = $(
-            testId("search:numberOfNewDocumentsBadge"));
-    private static final SelenideElement UPLOAD_DOCUMENT_BUTTON = $(
-            testId("search:uploadDocumentButton"));
-    private static final SearchResultsTable SEARCH_RESULTS_TABLE = new SearchResultsTable(
-            "search:searchResultsTable");
-    private static final SelenideElement TOGGLE_ADVANCED_SEARCH_BUTTON = $(
-            testId("search:toggleAdvancedSearchButton"));
-    private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule(
-            "search:molEditor", "molEditorWidgetVar");
+    private static final SelenideElement SEARCH_TEXT_INPUT = $(testId("input", "search:searchText"));
+    private static final SelenideElement SEARCH_BUTTON = $(testId("search:searchButton"));
+    private static final SelenideElement REFRESH_RESULT_BUTTON = $(testId("search:refreshResultsButton"));
+    private static final SelenideElement NUMBER_OF_NEW_DOCUMENTS_BADGE = $(testId("search:numberOfNewDocumentsBadge"));
+    private static final SelenideElement UPLOAD_DOCUMENT_BUTTON = $(testId("search:uploadDocumentButton"));
+    private static final SearchResultsTable SEARCH_RESULTS_TABLE = new SearchResultsTable("search:searchResultsTable");
+    private static final SelenideElement TOGGLE_ADVANCED_SEARCH_BUTTON = $(testId("search:toggleAdvancedSearchButton"));
+    private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule("search:molEditor",
+            "molEditorWidgetVar");
 
     public enum TypeFilter {
         DOCUMENT("search:filterDocumentCheckbox"),
@@ -79,8 +74,25 @@ public class SearchPage extends NavigablePage<SearchPage> {
      * Actions
      */
     public SearchPage search(String searchText) {
-        SEARCH_TEXT.setValue(searchText);
+        SEARCH_TEXT_INPUT.setValue(searchText);
         SEARCH_BUTTON.click();
+        return this;
+    }
+
+    public SearchPage refreshSearchResults() {
+        REFRESH_RESULT_BUTTON.click();
+        return this;
+    }
+
+    public DocumentUploadDialog upload() {
+        UPLOAD_DOCUMENT_BUTTON.click();
+        return page(DocumentUploadDialog.class);
+    }
+
+    public SearchPage uploadFilesToCollection(String collection, File... files) {
+        DocumentUploadDialog uploadDialog = upload();
+        uploadDialog.getCollectionSelection().selectOption(collection);
+        uploadDialog.uploadFiles(files).close();
         return this;
     }
 
@@ -122,6 +134,12 @@ public class SearchPage extends NavigablePage<SearchPage> {
         return this;
     }
 
+    private void toggleAdvancedSearchIfNeeded() {
+        if (!TypeFilter.DOCUMENT.checkbox.isDisplayed()) {
+            TOGGLE_ADVANCED_SEARCH_BUTTON.click();
+        }
+    }
+
     /*
      * Getters
      */
@@ -157,31 +175,5 @@ public class SearchPage extends NavigablePage<SearchPage> {
      */
     public SearchResultsTable getSearchResultsTable() {
         return SEARCH_RESULTS_TABLE;
-    }
-
-    public SelenideElement getSearchText() {
-        return SEARCH_TEXT;
-    }
-
-    public SelenideElement getSearchButton() {
-        return SEARCH_BUTTON;
-    }
-
-    public SelenideElement getRefreshResultButton() {
-        return REFRESH_RESULT_BUTTON;
-    }
-
-    public SelenideElement getUploadDocumentButton() {
-        return UPLOAD_DOCUMENT_BUTTON;
-    }
-
-    public SelenideElement getToggleAdvancedSearchButton() {
-        return TOGGLE_ADVANCED_SEARCH_BUTTON;
-    }
-
-    private void toggleAdvancedSearchIfNeeded() {
-        if (!TypeFilter.DOCUMENT.checkbox.isDisplayed()) {
-            TOGGLE_ADVANCED_SEARCH_BUTTON.click();
-        }
     }
 }

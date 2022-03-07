@@ -23,6 +23,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
+import static java.time.Duration.ZERO;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
@@ -82,15 +83,15 @@ public abstract class AbstractPage<SELF extends AbstractPage<SELF>> {
      * Should direct the browser either to the login page or the search page
      * depending on CRIMSy's settings, thus only {@link LoginPage} or
      * {@link SearchPage} are useful page object classes to be supplied in the
-     * {@code clazz} parameter.
+     * {@code expectedPageClass} parameter.
      * 
      * @param <T>
-     * @param clazz expected page
+     * @param expectedPageClass expected page
      * @return page object of expected page
      */
-    public <T extends AbstractPage<T>> T logout(Class<T> clazz) {
+    public <T extends AbstractPage<T>> T logout(Class<T> expectedPageClass) {
         LOGOUT_CMDLINK.click();
-        return page(clazz);
+        return page(expectedPageClass);
     }
 
     /*
@@ -120,14 +121,14 @@ public abstract class AbstractPage<SELF extends AbstractPage<SELF>> {
      * Fluent assertions
      */
     public SELF shouldBeLoggedIn() {
-        LOGIN_CMDLINK.shouldNotBe(visible);
         LOGOUT_CMDLINK.shouldBe(visible);
+        LOGIN_CMDLINK.shouldNotBe(visible, ZERO);
         return self();
     }
 
     public SELF shouldNotBeLoggedIn() {
         LOGIN_CMDLINK.shouldBe(visible);
-        LOGOUT_CMDLINK.shouldNotBe(visible);
+        LOGOUT_CMDLINK.shouldNotBe(visible, ZERO);
         return self();
     }
 
