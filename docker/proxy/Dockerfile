@@ -20,22 +20,14 @@
 FROM ipbhalle/crimsyplugins
 
 #
-RUN mkdir -p /install
-
-#
-WORKDIR /install
-
-#
-COPY ./etc /install/etc
-COPY ./proxy/conf /install/conf
-COPY ./proxy/setup.sh /install/
-COPY ./proxy/htdocs/index.html /usr/local/apache2/htdocs/
+COPY ./setup.sh /
+COPY ./httpd-foreground /usr/local/bin/
 
 #
 EXPOSE 80 443 8443
 
 #
-RUN ["/bin/bash", "/install/setup.sh", "init"]
+RUN ["/bin/bash", "/setup.sh" ]
 
 #
 # switch to unprivileged user is done by httpd and

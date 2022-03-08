@@ -53,7 +53,7 @@ public class GlobalAdmissionContext implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     public final static String PUBLIC_NODE_ID = "1e0f832b-3d9e-4ebb-9e68-5a9fc2d9bee8";
-    protected String LBAC_PROPERTIES_PATH = "/install/etc/lbac_properties.xml";
+    protected String LBAC_PROPERTIES_PATH = "/install/conf/lbac_properties.xml";
 
     public final static Integer PUBLIC_GROUP_ID = 1;
     public final static Integer PUBLIC_ACCOUNT_ID = 2;

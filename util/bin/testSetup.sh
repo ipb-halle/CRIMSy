@@ -29,44 +29,67 @@ function buildDistServer {
 #
 # DANGER: remove installation without (almost) any trace
 function cleanup {
-    dst=`echo $0 | cut -d' ' -f2`
-    ssh -o "StrictHostKeyChecking no" $dst "./configBatch.sh CLEANUP"
+    node=`echo $1 | cut -d';' -f1`
+    remote=`echo $1 | cut -d';' -f2`
+    login=`echo $1 | cut -d';' -f3`
+    echo "performing teardown at $login@remote ($node) ..."
+    ssh -o "StrictHostKeyChecking no" $login@$remote "./configBatch.sh CLEANUP"
 }
-export -f cleanup
+
+#
+#
+#
+function compile {
+    stage=$1
+    echo "=== Build Docker Images ==="
+    if [ -n "$stage" ] ; then
+        $LBAC_REPO/util/bin/buildDocker.sh \
+            --branch-file "$BRANCH_FILE" \
+            --stage-label $stage \
+            --test-registry `hostname -f`:5000
+    else 
+        echo "No stage selected, calling buildDocker.sh directly"
+        $LBAC_REPO/util/bin/buildDocker.sh --test-registry `hostname -f`:5000
+    fi
+}
 
 #
 #
 #
 function copyNodeConfig {
-    cloud=`echo $0 | cut -d' ' -f1`
-    node=`echo $0 | cut -d' ' -f2`
-    cp $LBAC_REPO/config/nodes/$node.sh.asc $LBAC_REPO/config/$cloud/
+    cloud=`echo $1 | cut -d';' -f1`
+    node=`echo $1 | cut -d';' -f2`
+    cp $LBAC_REPO/config/nodes/${node}_${cloud}.sh.asc $LBAC_REPO/config/$cloud/
 }
-export -f copyNodeConfig
 
 #
 #
 #
 function createNodeConfig {
-    key=`echo $0 | cut -d' ' -f1`
-    dst=`echo $0 | cut -d' ' -f2`
-    cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | \
-        cut -c9-18 | \
-        sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    url="http://`hostname -f`:8000/$cloud"
+    node=`echo $1 | cut -d';' -f1`
+    remote=`echo $1 | cut -d';' -f2`
+    login=`echo $1 | cut -d';' -f3`
+    cloud=`grep -E "^$node;" "$LBAC_REPO/util/test/etc/nodeconfig.cfg" |\
+        grep PRIMARY_CLOUD |\
+        cut -d= -f2`
+    crimsyhost=`hostname -f`
 
-    echo "executing createNodeConfig for host $dst ($key) ..."
+    echo "executing createNodeConfig for host $login@$remote ($node) ..."
+
+    echo "copying node configuration ..."
+    grep -E "^$node;" "$LBAC_REPO/util/test/etc/nodeconfig.cfg" |\
+    cut -d';' -f2- |\
+    ssh -o "StrictHostKeyChecking no" $login@$remote bash -c "cat - > nodeconfig.cfg"
 
     echo "copying configBatch.sh script ..."
-    scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
+    scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $login@$remote:
 
     echo "executing configBatch.sh ..."
-    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $url $key"
+    ssh -o "StrictHostKeyChecking no" $login@$remote "chmod +x configBatch.sh && ./configBatch.sh CONFIG $crimsyhost"
 
     echo "fetching node configuration ..."
-    scp -q -o "StrictHostKeyChecking no" $dst:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
+    scp -q -o "StrictHostKeyChecking no" $login@$remote:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/${node}_${cloud}.sh.asc"
 }
-export -f createNodeConfig
 
 #
 # preprocess Cypress test cases
@@ -94,12 +117,39 @@ function error {
 #
 #
 #
-function installNode {
-    dst=`echo $0 | cut -d' ' -f2`
-    echo "installNode called for host: $dst"
-    ssh -o "StrictHostKeyChecking no" $dst "./bin/install.sh"
+function infoLog {
+    msg=`echo "$1 FINISHED                                                        -" | cut -c-61`
+    echo "*****************************************************************"
+    echo "*                                                               *"
+    echo "* $msg *"
+    echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
+    echo "*                                                               *"
+    echo "*****************************************************************"
 }
-export -f installNode
+
+#
+#
+#
+function installFunc {
+    # install node
+    echo "=== install nodes ==="
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        echo | installNode "$record"
+    done
+
+}
+
+#
+#
+#
+function installNode {
+    remote=`echo $1 | cut -d';' -f2`
+    login=`echo $1 | cut -d';' -f3`
+    echo "installNode called for host: $login@$remote"
+    ssh -o "StrictHostKeyChecking no" $login@$remote "./bin/install.sh"
+}
 
 #
 #
@@ -107,44 +157,52 @@ export -f installNode
 function restore {
     if [ $NODE = "all" ] ; then
         echo "Restoring snapshot '$RESTORE' on all nodes"
-        cat $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh restore $RESTORE
-    else 
-        echo "Restoring snapshot '$RESTORE' on node '$RESTORE'"
-        grep $NODE $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh restore $RESTORE
+    else
+        echo "Restoring snapshot '$RESTORE' on node '$NODE'"
     fi
+
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh restore $RESTORE
+    done
 }
 
 #
+# run Cypress tests. 
+# NOTE: tests are currently available for node1 only 
 #
-#
-function runDistServer {
-    cp docker/crimsyci/index.html target/integration/htdocs
-    (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
-    docker inspect crimsyci_service >/dev/null 2>&1 && docker rm crimsyci_service 
-    docker run -p 8000:80 \
-        --mount type=bind,src=`realpath target/integration/htdocs`,dst=/usr/local/apache2/htdocs \
-        --hostname `hostname -f` \
-        --detach --name crimsyci_service \
-        crimsyci
-}
-
-#
-# run Tests. 
-# NOTE: currently only runs on first node in HOSTLIST
-#
-function runTests {
+function runCypress {
     # check prerequisites
-    echo "checking prerequsites"
-    (docker inspect dist_proxy_1 2>/dev/null | grep -q running ) \
-        || error "Service seems unavailable ..."
+    echo "checking test prerequsites ..."
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        node=`echo $record | cut -d';' -f1`
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+            bash -c "docker inspect dist_proxy_1 2>/dev/null | grep -q running" \
+            || error "Service seems unavailable at node $node"
+
+    done
 
     # initialize database with test data
-    HOST=`head -1 $HOSTLIST | cut -d' ' -f2`
-    docker cp $LBAC_REPO/util/test/etc/initial_data.sql dist_db_1:/tmp/
-    wget -o /dev/null -O /dev/null --no-check-certificate https://$HOST/ui/index.xhtml
-    echo "waiting 3 sec. for webapp to initialize database ..."
-    sleep 3
-    docker exec -ti dist_db_1 su - postgres /bin/sh -c "psql -Ulbac lbac -f /tmp/initial_data.sql"
+    echo "loading initial data ..."
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        node=`echo $record | cut -d';' -f1`
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        if [ -s $LBAC_REPO/util/test/etc/$node.initial_data.sql ] ; then
+            echo "processing node $node"
+            echo | scp -o "StrictHostKeyChecking no" $LBAC_REPO/util/test/etc/$node.initial_data.sql "$login@$remote:tmp/initial_data.sql"
+            echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" ./configBatch LOAD_DATA
+        fi
+    done
 
     # build test containers and set up environment
     echo "checking / building test environment"
@@ -158,26 +216,252 @@ function runTests {
 dnl
 dnl Cypress test fixtures configuration
 dnl
-define(\`TESTBASE_HOSTNAME',\`$HOST')dnl
+define(\`TESTBASE_HOSTNAME',\`$remote')dnl
 EOF
     find $LBAC_REPO/target/cypress -type f -name "*.m4" -exec /bin/bash -c cypressPreprocess {} \;
 
     # run tests ...
-    echo "running tests"
+    echo "*"
+    echo "* Running Tests"
+    echo "* Test outcomes will be saved in target/cypress/"
+    echo "*"
     docker run -v $LBAC_REPO/target/cypress/cypress:/app/cypress --name cy1 cypress --browser firefox --headless
 
     # clean up
     echo "removing test container"
     docker rm cy1
     popd >/dev/null
+}
 
-    echo "*****************************************************************"
-    echo "*                                                               *"
-    echo "* TESTS FINISHED                                                *"
-    echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
-    echo "* and test outcomes in directory target/cypress/                *"
-    echo "*                                                               *"
-    echo "*****************************************************************"
+#
+#
+#
+function runDistServer {
+    echo "=== Distribution Servers ===" 
+    buildDistServer
+
+    mkdir -p "$LBAC_REPO/config/integration/htdocs"
+    cp docker/crimsyci/index.html config/integration/htdocs
+    (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
+    docker inspect crimsyci_service >/dev/null 2>&1 && docker rm crimsyci_service 
+    docker run -p 8000:80 \
+        --mount type=bind,src=`realpath config/integration/htdocs`,dst=/usr/local/apache2/htdocs \
+        --hostname `hostname -f` \
+        --detach --name crimsyci_service \
+        crimsyci
+
+    (docker inspect crimsyreg_service | grep Status | grep -q running ) && docker stop crimsyreg_service
+    docker inspect crimsyreg_service >/dev/null 2>&1 && docker rm crimsyreg_service
+    docker run -p 5000:5000 \
+        --hostname `hostname -f` \
+        --detach --name crimsyreg_service \
+        registry
+}
+
+#
+#
+#
+function runJobs {
+    runDistServer
+    grep -vE "^#" "$JOB_FILE" |\
+    while read job; do
+        echo "executing: $job"
+        j=`echo "$job" | cut -d';' -f1`
+        case $j in
+            compile)
+                stage=`echo "$job" | cut -d';' -f2`
+                compile $stage
+                ;;
+            cypress)
+                NODE=`echo "$job" | cut -d';' -f2`
+                runCypress
+                ;;
+            install)
+                NODE=`echo "$job" | cut -d';' -f2`
+                installFunc
+                echo "sleep 15 seconds to settle everything ..."
+                sleep 15
+                ;;
+            join)
+                NODE=`echo "$job" | cut -d';' -f2`
+                CLOUD=`echo "$job" | cut -d';' -f3`
+                runJoin
+                ;;
+            leave)
+                NODE=`echo "$job" | cut -d';' -f2`
+                CLOUD=`echo "$job" | cut -d';' -f3`
+                runLeave
+                ;;
+            pause)
+                PAUSE=`echo "$job" | cut -d';' -f2`
+                runPause
+                ;;
+            restore)
+                NODE=`echo "$job" | cut -d';' -f2`
+                RESTORE=`echo "$job" | cut -d';' -f3`
+                restore
+                ;;
+            sleep)
+                sleep `echo "$job" | cut -d';' -f2`
+                ;;
+            setup)
+                NODE="all"
+                setupFunc
+                ;;
+            snapshot)
+                NODE=`echo "$job" | cut -d';' -f2`
+                SNAPSHOT=`echo "$job" | cut -d';' -f3`
+                snapshot
+                ;;
+            teardown)
+                NODE="all"
+                teardown
+                ;;
+            test)
+                SCRIPT=`echo "$job" | cut -d';' -f2`
+                ARGS=`echo "$job" | cut -d';' -f3-`
+                echo | util/test/bin/$SCRIPT $HOSTLIST "$ARGS"
+                ;;
+            update)
+                NODE=`echo "$job" | cut -d';' -f2`
+                CMD=`echo "$job" | cut -d';' -f2`
+                runUpdate
+                echo "sleep 15 seconds to settle everything ..."
+                sleep 15
+                ;;
+            wake)
+                WAKE=`echo "$job" | cut -d';' -f2`
+                runWake
+                ;;
+            *)
+                echo "ignored: $j"
+                ;;
+        esac
+    done
+}
+
+#
+#
+#
+function runJoin {
+    url="http://`hostname -f`:8000/$CLOUD"
+    remote=`grep -vE "^#" $HOSTLIST | grep $NODE | cut -d';' -f2`
+    login=`grep -vE "^#" $HOSTLIST | grep $NODE | cut -d';' -f3`
+
+    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+        dist/bin/join.sh --request $CLOUD --url $url 
+
+    scp -q -o "StrictHostKeyChecking no" $login@$remote:etc/$CLOUD/config.sh.asc "$LBAC_REPO/config/nodes/${NODE}_${CLOUD}.sh.asc"
+
+    copyNodeConfig "$CLOUD;$NODE"
+    $LBAC_REPO/util/bin/package.sh "$CLOUD" AUTOBATCH
+
+    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+        dist/bin/join.sh --join $CLOUD
+}
+
+#
+#
+#
+function runLeave {
+    remote=`grep -vE "^#" $HOSTLIST | grep $NODE | cut -d';' -f2`
+    login=`grep -vE "^#" $HOSTLIST | grep $NODE | cut -d';' -f3`
+
+    echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" \
+        dist/bin/join.sh --leave $CLOUD 
+}
+
+#
+#
+#
+function runPause {
+
+    if [ $PAUSE = "all" ] ; then
+        echo "Pausing ALL nodes" 
+    else 
+        echo "Pausing node '$PAUSE'"
+    fi
+
+    grep -vE "^#" $HOSTLIST |\
+    if [ $PAUSE = all ] ; then cat ; else grep $PAUSE; fi |\
+    while read record ; do
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/setupROOT.sh shutdown
+    done
+}
+
+#
+#
+#
+function runSetup {
+    runDistServer
+    rm -f config/revision_info.cfg
+
+    if [ -n "$BRANCH_FILE" ] ; then
+        initial_stage=`grep -vE "^#" "$BRANCH_FILE" | cut -d';' -f1 | sort | uniq | head -1`
+        echo "Executing initial setup stage $initial_stage"
+    else 
+        echo "Executing direct setup"
+        initial_stage=''
+    fi
+    compile $initial_stage
+    setupFunc 
+    installFunc
+
+    # ToDo: multiple cloud memberships 
+
+    echo "sleep 15 seconds to settle everything ..."
+    sleep 15
+
+    if [ -n "$BRANCH_FILE" ] ; then
+        grep -vE "^#" "$BRANCH_FILE" | cut -d';' -f1 |\
+        grep -v $initial_stage | sort | uniq |\
+        while read record ; do
+            echo "compiling for stage $record"
+            compile $record
+            runUpdate 
+            echo "sleep 15 seconds to settle everything ..."
+            sleep 15
+        done
+    fi
+}
+
+
+#
+#
+#
+function runUpdate {
+    echo "=== run update on nodes ==="
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        node=`echo $record | cut -d';' -f1`
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+
+        echo "updating node $node with $UPDATE_CMD"
+        echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh $UPDATE_CMD
+    done
+}
+
+#
+#
+#
+function runWake {
+    if [ $WAKE = "all" ] ; then
+        echo "Waking ALL nodes" 
+    else
+        echo "Waking node '$WAKE'"
+    fi
+
+    grep -vE "^#" $HOSTLIST |\
+    if [ $WAKE = all ] ; then cat ; else grep $WAKE ; fi |\
+    while read record ; do
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/setupROOT.sh start
+    done
 }
 
 #
@@ -220,55 +504,56 @@ EOF
 #
 #
 #
-function setup {
-    cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        xargs -i /bin/bash -c setupTestCAconf "{}"
-
-    echo "=== Distribution Server ==="
-    buildDistServer
-    runDistServer
+function setupFunc {
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
+    while read record ; do
+        setupTestCAconf "$record"
+    done
 
     echo "=== Setup ROOT CA ==="
     setupTestRootCA
 
     echo "=== Setup Sub CAs ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        xargs -i /bin/bash -c setupTestSubCA "{}"
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
+    cut -d';' -f3 |\
+    while read cloud ; do
+        if [ -n "$cloud" ] ; then
+            setupTestSubCA
+            setupConfigure
+        fi
+    done
 
     echo "=== create node configurations ==="
-    cat $HOSTLIST | xargs -i /bin/bash -c createNodeConfig "{}"
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = "all" ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        echo | createNodeConfig "$record"
+    done
 
     # package master nodes
     echo "=== determine master nodes ==="
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        cut -d: -f1 | \
-        xargs -i $LBAC_REPO/util/bin/package.sh "{}" MASTERBATCH
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
+    cut -d';' -f3 |\
+    while read cloud ; do
+        if [ -n "$cloud" ] ; then
+            $LBAC_REPO/util/bin/package.sh "$cloud" MASTERBATCH
+        fi
+    done
 
     # package all other nodes
     echo "=== package all nodes ==="
-    cat $LBAC_REPO/util/test/etc/cloudnodes.txt | xargs -i /bin/bash -c copyNodeConfig "{}"
-    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-        cut -d: -f1 | \
-        xargs -i $LBAC_REPO/util/bin/package.sh "{}" AUTOBATCH
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudnodes.cfg |\
+    while read record ; do
+        copyNodeConfig "$record"
+    done
 
-    # install node
-    echo "=== install nodes ==="
-    cat $HOSTLIST | xargs -i /bin/bash -c installNode "{}"
-
-    #
-    # ToDo: multiple cloud memberships 
-    #
-
-    #
-    echo "sleep 15 seconds to settle everything ..."
-    sleep 15
-
-    echo "*****************************************************************"
-    echo "*                                                               *"
-    echo "* SETUP FINISHED                                                *"
-    echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
-    echo "*                                                               *"
-    echo "*****************************************************************"
+    grep -vE "^#" $LBAC_REPO/util/test/etc/cloudconfig.cfg |\
+    cut -d';' -f3 |\
+    while read cloud; do
+        if [ -n "$cloud" ] ; then
+            $LBAC_REPO/util/bin/package.sh "$cloud" AUTOBATCH
+        fi
+    done
 }
 
 #
@@ -276,15 +561,13 @@ function setup {
 #
 function setupTestRootCA {
     $LBAC_REPO/util/bin/camgr.sh --batch --mode ca
-    chmod -R go+rX $LBAC_REPO/target/integration/htdocs
+    chmod -R go+rX $LBAC_REPO/config/integration/htdocs
 }
 
 #
 #
 #
 function setupTestSubCA {
-    cloud=`echo $0 | cut -d: -f1`
-
     $LBAC_REPO/util/bin/camgr.sh --batch --mode ca --cloud $cloud
 
     $LBAC_REPO/util/bin/camgr.sh --batch --mode sign --extension v3_subCA \
@@ -298,32 +581,36 @@ function setupTestSubCA {
     LBAC_CA_DIR=$LBAC_REPO/config/$cloud/CA
     . $LBAC_CA_DIR/cloud.cfg
 
-    sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
+    cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/config/integration/htdocs/$cloud/devcert.pem
+}
+
+function setupConfigure {
+    LBAC_CA_DIR=$LBAC_REPO/config/$cloud/CA
+    . $LBAC_CA_DIR/cloud.cfg
+
+    # initial revision defined in runSetup
+    sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
     openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
-      -md sha256 -binary -out $LBAC_REPO/target/integration/htdocs/$cloud/configure.sh.sig \
+      -md sha256 -binary -out $LBAC_REPO/config/integration/htdocs/$cloud/configure.sh.sig \
       -stream -nodetach \
       -inkey $LBAC_CA_DIR/$DEV_CERT.key \
       -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd 
 
-    cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/target/integration/htdocs/$cloud/devcert.pem
-
-    chmod -R go+rX $LBAC_REPO/target/integration/htdocs
+    chmod -R go+rX $LBAC_REPO/config/integration/htdocs
 }
-export -f setupTestSubCA
 
 #
 #
 #
 function setupTestCAconf {
-    dist=`echo $0 | cut -d: -f1`
-    superior=`echo $0 | cut -d: -f2`
-    cloud=`echo $0 | cut -d: -f3`
-    name=`echo $0 | cut -d: -f4`
+    dist=`echo $1 | cut -d';' -f1`
+    superior=`echo $1 | cut -d';' -f2`
+    cloud=`echo $1 | cut -d';' -f3`
+    name=`echo $1 | cut -d';' -f4`
 
     mkdir -p "$LBAC_REPO/config/$cloud/CA"
-    mkdir -p "$LBAC_REPO/target/integration/htdocs/$dist"
-    cp "$LBAC_REPO/util/test/etc/nodeconfig.txt" "$LBAC_REPO/target/integration/htdocs/$dist"
+    mkdir -p "$LBAC_REPO/config/integration/htdocs/$dist"
 
     cat > "$LBAC_REPO/config/$cloud/CA/cloud.cfg" <<EOF
 #
@@ -348,13 +635,12 @@ DEV_CN="Developer Name"
 DEV_CERT=""
 DOWNLOAD_URL="http://`hostname -f`:8000/$dist"
 SUPERIOR_URL="http://`hostname -f`:8000/$superior"
-SCP_ADDR="$LBAC_REPO/target/integration/htdocs/$dist"
+SCP_ADDR="$LBAC_REPO/config/integration/htdocs/$dist"
 CLOUD="$cloud"
 CLOUD_NAME="$name"
 EOF
 
 }
-export -f setupTestCAconf
 
 #
 # 
@@ -362,11 +648,17 @@ export -f setupTestCAconf
 function snapshot {
     if [ $NODE = "all" ] ; then
         echo "Taking snapshot '$SNAPSHOT' of all nodes"
-        cat $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
     else
         echo "Taking snapshot '$SNAPSHOT' for node '$NODE'"
-        grep $NODE $HOSTLIST | cut -d' ' -f2 | xargs -i ssh -o "StrictHostKeyChecking no" {} ./dist/bin/setupROOT.sh snapshot $SNAPSHOT
     fi
+
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = all ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        remote=`echo $record | cut -d';' -f2`
+        login=`echo $record | cut -d';' -f3`
+        ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh snapshot $SNAPSHOT
+    done
 }
 
 #
@@ -375,10 +667,24 @@ function snapshot {
 function teardown {
 
     # tear down nodes
-    cat $HOSTLIST | xargs -i /bin/bash -c cleanup "{}"
+    grep -vE "^#" $HOSTLIST |\
+    if [ $NODE = all ] ; then cat ; else grep $NODE ; fi |\
+    while read record ; do
+        echo | cleanup "$record"
+    done
 
-    # remove target directory (needs root privilege)
-    sudo rm -r config/ target/
+    if [ $NODE = all ] ; then
+        # remove target directory (may need root privilege?)
+        rm -rf config/ target/
+
+        docker stop crimsyci_service
+        docker stop crimsyreg_service
+        docker container prune -f
+    else
+        echo 
+        echo "NOTE: teardown limited to node $NODE"
+        echo
+    fi
 
     echo "*****************************************************************"
     echo "*                                                               *"
@@ -398,9 +704,9 @@ ${BOLD}NAME${REGULAR}
     testSetup.sh
 
 ${BOLD}SYNOPSIS${REGULAR}
-    testSetup.sh [-H|hostlist HOSTLIST] [-h|--help] [-n|--node NODE] 
-        [-p|--pause] [-R|--restore LABEL] [-r|--runTests] [-S|--snapshot LABEL] 
-        [-s|--setup] [-t|--teardown] [-w|--wake]
+    testSetup.sh [-H|hostlist HOSTLIST] [-h|--help] [-j|--jobs JOBFILE] [-n|--node NODE] 
+        [-p|--pause NODE] [-R|--restore LABEL] [-r|--runTests] [-S|--snapshot LABEL] 
+        [-s|--setup] [-t|--teardown] [-u|--update CMD] [-w|--wake NODE]
 
 ${BOLD}DESCRIPTION${REGULAR}
     Set up, operate and clean up a test environment of CRIMSy. Setup includes 
@@ -409,17 +715,27 @@ ${BOLD}DESCRIPTION${REGULAR}
     involved hosts.
 
 ${BOLD}OPTIONS${REGULAR}
+-b|--branch-file FILE
+    a list of branches to compile and build on each stage. Contains a stage 
+    label, the the branch name and respective flags for container image 
+    tagging separated by semicolon
+
 -H|--hostlist HOSTLIST
-    mapping of node names (node1, node2, ...) to real host names. Each line contains
-    the node name followed by the host name separated by a single space character.
+    mapping of node names (node1, node2, ...) to real host names. Each line 
+    contains the node name followed by the host name and the user account 
+    separated by semicolon.
 
 -h|--help
     print this help text
 
+-j|--jobs JOBFILE
+    run a set of jobs (compile, setup, install, join, test, teardown, update).
+    Requires a file with job parameters (e.g. update command, node or cloud name, etc.)
+
 -n|--node NODE
     operate on node NODE only (default all)
 
--p|--pause
+-p|--pause NODE
     pause execution of node NODE
 
 -R|--restore LABEL
@@ -437,7 +753,11 @@ ${BOLD}OPTIONS${REGULAR}
 -t|--teardown
     remove all nodes and clean up everything
 
--w|--wake
+-u|--update CMD
+    run update.sh on remote node with argument. If used with --branch-file, CMD defaults 
+    to 'container'
+
+-w|--wake NODE
     resume execution of node NODE
 EOF
 
@@ -448,40 +768,58 @@ function mainFunc {
         error "Must provide HOSTLIST. Call testSetup.sh -h for help."
     fi
 
+    if [ -n "$JOB_FILE" ] ; then
+        runJobs
+        infoLog "JOB EXECUTION"
+        exit 0
+    fi
+
     if [ -n "$PAUSE" ] ; then
-        echo "Pause not implemented"
+        runPause
         exit 0
     fi
 
     if [ -n "$WAKE" ] ; then
-        echo "Wake not implemented"
+        runWake
         exit 0
     fi
 
     if [ -n "$SNAPSHOT" ] ; then
         snapshot
+        infoLog SNAPSHOT
         exit 0
     fi
 
     if [ -n "$RESTORE" ] ; then
         restore
+        infoLog RESTORE
         exit 0
     fi
 
     if [ -n "$SETUP" ] ; then
-        echo "setup"
-        mvn --batch-mode -DskipTests clean install
-        setup
+        echo "Starting setup ..."
+        runSetup
+        infoLog SETUP
+    fi
+
+    if [ -n "$UPDATE" ] ; then
+        if [ -n "$SETUP" ] ; then
+            error "Cannot combine setup and update in a single run"
+        fi
+        echo "Run update ..."
+        runUpdate 
+        infoLog UPDATE
     fi
 
     if [ -n "$RUNTESTS" ] ; then
         echo "run tests"
         runTests
+        infoLog TESTS
     fi
 
     if [ -n "$TEARDOWN" ] ; then
         echo "tear down"
-        teardown
+        teardown 
     fi
 }
 #
@@ -494,7 +832,9 @@ cd $LBAC_REPO
 safetyCheck
 TEST_DATE=`date +%Y%m%d%H%M`
 
+BRANCH_FILE=''
 HOSTLIST=''
+JOB_FILE=''
 NODE=all
 PAUSE=''
 RESTORE=''
@@ -502,9 +842,11 @@ RUNTESTS=''
 SNAPSHOT=''
 SETUP=''
 TEARDOWN=''
+UPDATE=''
+UPDATE_CMD='container'
 WAKE=''
 
-GETOPT=$(getopt -o 'H:hn:pR:rS:stw' --longoptions 'hostlist:,help,node:,pause,restore:,runTests:,snapshot:,setup,teardown:,wake' -n 'testSetup.sh' -- "$@")
+GETOPT=$(getopt -o 'b:H:hj:n:p:R:rS:stu:w:' --longoptions 'branch-file:hostlist:,help,jobs:,node:,pause:,restore:,runTests,snapshot:,setup,teardown,update:wake:' -n 'testSetup.sh' -- "$@")
 
 if [ $? -ne 0 ]; then
         echo 'Error in commandline evaluation. Terminating...' >&2
@@ -516,6 +858,11 @@ unset GETOPT
 
 while true ; do
     case "$1" in
+    '-b'|'--branch-file')
+        BRANCH_FILE=`realpath "$2"`
+        shift 2
+        continue
+        ;;
     '-H'|'--hostlist')
         HOSTLIST=`realpath "$2"`
         shift 2
@@ -525,14 +872,19 @@ while true ; do
         printHelp
         exit 0
         ;;
+    '-j'|'--jobs')
+        JOB_FILE=`realpath "$2"`
+        shift 2
+        continue
+        ;;
     '-n'|'--node')
         NODE=$2
         shift 2
         continue
         ;;
     '-p'|'--pause')
-        PAUSE='pause'
-        shift
+        PAUSE=$2
+        shift 2
         continue
         ;;
     '-R'|'--restore')
@@ -560,9 +912,15 @@ while true ; do
         shift
         continue
         ;;
+    '-u'|'--update')
+        UPDATE='update'
+        UPDATE_CMD=$2
+        shift 2
+        continue
+        ;;
     '-w'|'--wake')
-        WAKE='wake'
-        shift
+        WAKE=$2 
+        shift 2
         continue
         ;;
     '--')

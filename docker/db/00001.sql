@@ -1,9 +1,8 @@
-include(dist/etc/config_m4.inc)dnl
 /*
- * Leibniz Bioactives Cloud
+ * Cloud Resource & Information Management System (CRIMSy)
  * Init script for database postgres 12.6
  * 
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +28,7 @@ include(dist/etc/config_m4.inc)dnl
 \set LBAC_USER lbac
 \set LBAC_PW lbac
 --  quoted stuff --
-\set LBAC_SCHEMA_QUOTED '\'' :LBAC_SCHEMA '\''
 \set LBAC_DATABASE_QUOTED '\'' :LBAC_DATABASE '\''
-\set LBAC_USER_QUOTED '\'' :LBAC_USER '\''
 \set LBAC_PW_QUOTED '\'' :LBAC_PW '\''
 
 /*
@@ -110,7 +107,6 @@ CREATE TABLE clouds (
     name        VARCHAR,
     UNIQUE (name)
 );
-INSERT INTO clouds (name) VALUES ('LBAC_PRIMARY_CLOUD');
 
 CREATE TABLE cloud_nodes (
     id          BIGSERIAL NOT NULL PRIMARY KEY,
@@ -122,24 +118,6 @@ CREATE TABLE cloud_nodes (
     retrytime   BIGINT NOT NULL DEFAULT 0,
     UNIQUE (cloud_id, node_id)
 );
-
-
-/* definition of master node (will be skipped on master node) */
-LBAC_MASTER_SKIP INSERT INTO nodes (id, baseUrl, institution, local) VALUES
-LBAC_MASTER_SKIP ('LBAC_MASTER_NODE_ID', 'LBAC_MASTER_URL', 'LBAC_MASTER_INSTITUTION', False);
-
-/* definition of local node */
-INSERT INTO nodes (id, baseUrl, institution, local) VALUES
-  ( 'LBAC_NODE_ID',
-    'https://LBAC_INTERNET_FQHN:8443/ui',
-    'LBAC_INSTITUTION_SHORT', True);
-
-INSERT INTO cloud_nodes (node_id, cloud_id, rank) 
-  SELECT 'LBAC_NODE_ID'::UUID AS node_id, id AS cloud_id, LBAC_NODE_RANK AS rank 
-  FROM clouds WHERE name='LBAC_PRIMARY_CLOUD';
-LBAC_MASTER_SKIP INSERT INTO cloud_nodes (node_id, cloud_id, rank) 
-LBAC_MASTER_SKIP  SELECT 'LBAC_MASTER_NODE_ID'::UUID AS node_id, id AS cloud_id, 10 AS rank
-LBAC_MASTER_SKIP  FROM clouds WHERE name='LBAC_PRIMARY_CLOUD';
 
 /*
  * Admission 
@@ -267,7 +245,7 @@ CREATE TABLE topics (
   category      VARCHAR,
   owner_id      INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
   aclist_id     INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  cloud_name    VARCHAR NOT NULL DEFAULT 'LBAC_PRIMARY_CLOUD' REFERENCES clouds(name) ON UPDATE CASCADE ON DELETE CASCADE
+  cloud_name    VARCHAR NOT NULL REFERENCES clouds(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE postings (

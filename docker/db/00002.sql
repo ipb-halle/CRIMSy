@@ -1,8 +1,7 @@
-include(dist/etc/config_m4.inc)dnl
 /*
- * Leibniz Bioactives Cloud
+ * Cloud Resource & Information Management System (CRIMSy)
  * Initial data 
- * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
