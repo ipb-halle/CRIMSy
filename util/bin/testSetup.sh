@@ -679,17 +679,23 @@ function teardown {
 
         docker stop crimsyci_service
         docker stop crimsyreg_service
+        reg_vol=`docker inspect crimsyreg_service |  $LBAC_REPO/util/bin/jason.sh "[0]['Mounts'][0]['Name']"`
+
         docker container prune -f
+        docker image prune -f
+        docker volume rm -f $reg_vol
+        msg="Removed everything including logs.                           "
     else
         echo 
         echo "NOTE: teardown limited to node $NODE"
         echo
+        msg="Keeping configuration and logs.                              "
     fi
 
     echo "*****************************************************************"
     echo "*                                                               *"
     echo "* TEARDOWN FINISHED                                             *"
-    echo "* Removed everything including logs.                            *"
+    echo "* $msg *"
     echo "*                                                               *"
     echo "*****************************************************************"
 }
@@ -704,9 +710,11 @@ ${BOLD}NAME${REGULAR}
     testSetup.sh
 
 ${BOLD}SYNOPSIS${REGULAR}
-    testSetup.sh [-H|hostlist HOSTLIST] [-h|--help] [-j|--jobs JOBFILE] [-n|--node NODE] 
-        [-p|--pause NODE] [-R|--restore LABEL] [-r|--runTests] [-S|--snapshot LABEL] 
-        [-s|--setup] [-t|--teardown] [-u|--update CMD] [-w|--wake NODE]
+    testSetup.sh [-b|--branch-file FILE] [-H|hostlist HOSTLIST] [-h|--help] 
+        [-j|--jobs JOBFILE] [-b|--branch-file FILE] [-n|--node NODE] 
+        [-p|--pause NODE] [-R|--restore LABEL] [-r|--runTests] 
+        [-S|--snapshot LABEL] [-s|--setup] [-t|--teardown] [-u|--update CMD] 
+        [-w|--wake NODE]
 
 ${BOLD}DESCRIPTION${REGULAR}
     Set up, operate and clean up a test environment of CRIMSy. Setup includes 
@@ -730,7 +738,8 @@ ${BOLD}OPTIONS${REGULAR}
 
 -j|--jobs JOBFILE
     run a set of jobs (compile, setup, install, join, test, teardown, update).
-    Requires a file with job parameters (e.g. update command, node or cloud name, etc.)
+    Requires a file with job parameters (e.g. update command, node or cloud 
+    name, etc.).
 
 -n|--node NODE
     operate on node NODE only (default all)

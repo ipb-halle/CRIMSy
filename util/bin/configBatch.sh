@@ -115,7 +115,7 @@ function createConfiguration {
 #
 function loadData {
     # initialize database with test data
-    wget -o /dev/null -O /dev/null --no-check-certificate https://`hostname -f`/ui/index.xhtml
+    curl --silent --output /dev/null --insecure https://`hostname -f`/ui/index.xhtml
     echo "waiting 5 sec. for webapp to initialize database ..."
     sleep 5
     docker cp tmp/initial_data.sql dist_db_1:/tmp

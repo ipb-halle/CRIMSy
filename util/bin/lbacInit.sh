@@ -63,7 +63,7 @@ function remove {
         for i in `docker ps -a -q | tr -d $'\n'` ; do
             docker stop $i
         done
-        docker container prune
+        docker container prune -f
 
         # clean up dangling images
         docker image prune
