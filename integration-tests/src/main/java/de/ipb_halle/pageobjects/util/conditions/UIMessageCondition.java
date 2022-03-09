@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.test.conditions;
+package de.ipb_halle.pageobjects.util.conditions;
 
 import java.util.Locale;
 

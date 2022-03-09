@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.test;
+package de.ipb_halle.pageobjects.util.conditions;
 
 import static com.codeborne.selenide.Condition.not;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithAttribute;
@@ -33,8 +33,6 @@ import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.conditions.CssClass;
 
 import de.ipb_halle.pageobjects.components.Severity;
-import de.ipb_halle.test.conditions.JSFMessageCondition;
-import de.ipb_halle.test.conditions.UIMessageCondition;
 
 /**
  * Collection of useful conditions.

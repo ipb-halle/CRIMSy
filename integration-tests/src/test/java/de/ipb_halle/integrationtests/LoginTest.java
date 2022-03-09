@@ -24,11 +24,12 @@ import static de.ipb_halle.pageobjects.components.Severity.INFO;
 import static de.ipb_halle.pageobjects.components.Severity.WARN;
 import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY;
 import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_PASSWORD;
+import static de.ipb_halle.pageobjects.util.conditions.Conditions.growlI18nText;
+import static de.ipb_halle.pageobjects.util.conditions.Conditions.growlSeverity;
+import static de.ipb_halle.pageobjects.util.conditions.Conditions.jsfMessage;
 import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_LOGIN;
 import static de.ipb_halle.pageobjects.util.TestConstants.ADMIN_NAME;
-import static de.ipb_halle.test.Conditions.growlI18nText;
-import static de.ipb_halle.test.Conditions.growlSeverity;
-import static de.ipb_halle.test.Conditions.jsfMessage;
+
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeEach;

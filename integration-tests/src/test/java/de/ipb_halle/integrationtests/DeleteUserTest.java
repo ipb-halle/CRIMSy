@@ -20,7 +20,7 @@ package de.ipb_halle.integrationtests;
 import static com.codeborne.selenide.Condition.empty;
 import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Selenide.open;
-import static de.ipb_halle.test.Conditions.uiMessage;
+import static de.ipb_halle.pageobjects.util.conditions.Conditions.uiMessage;
 import static de.ipb_halle.test.UniqueGenerators.uniqueLogin;
 import static java.time.Duration.ZERO;
 

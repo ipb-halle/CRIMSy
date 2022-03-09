@@ -23,8 +23,8 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.open;
 import static de.ipb_halle.pageobjects.util.I18n.JSF_REQUIRED_VALIDATION_ERROR_KEY;
 import static de.ipb_halle.pageobjects.util.I18n.getUIMessage;
-import static de.ipb_halle.test.Conditions.jsfMessage;
-import static de.ipb_halle.test.Conditions.uiMessage;
+import static de.ipb_halle.pageobjects.util.conditions.Conditions.jsfMessage;
+import static de.ipb_halle.pageobjects.util.conditions.Conditions.uiMessage;
 import static de.ipb_halle.test.UniqueGenerators.uniqueLogin;
 
 import java.util.Locale;
