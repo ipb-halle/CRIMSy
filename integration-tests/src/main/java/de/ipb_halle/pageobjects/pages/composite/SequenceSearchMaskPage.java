@@ -30,14 +30,10 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * @author flange
  */
 public class SequenceSearchMaskPage extends AbstractPage<SequenceSearchMaskPage> {
-    private static final SelenideElement QUERY_SEQUENCE_INPUT = $(
-            testId("textarea", "sequenceSearchMask:querySequence"));
-    private static final SelenideElement SEARCH_MODE_SELECTION = $(
-            testId("select", "sequenceSearchMask:searchMode"));
-    private static final SelenideElement TRANSLATION_TABLE_SELECTION = $(
-            testId("select", "sequenceSearchMask:translationTable"));
-    private static final SelenideElement MAX_RESULTS_SELECTION = $(
-            testId("select", "sequenceSearchMask:maxResults"));
+    private static final SelenideElement QUERY_SEQUENCE_INPUT = $(testId("textarea", "sequenceSearchMask:querySequence"));
+    private static final SelenideElement SEARCH_MODE_SELECTION = $(testId("select", "sequenceSearchMask:searchMode"));
+    private static final SelenideElement TRANSLATION_TABLE_SELECTION = $(testId("select", "sequenceSearchMask:translationTable"));
+    private static final SelenideElement MAX_RESULTS_SELECTION = $(testId("select", "sequenceSearchMask:maxResults"));
 
     /*
      * Actions

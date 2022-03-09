@@ -17,35 +17,41 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
-import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.components.PrimeFacesTree;
-import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.components.table.DataTable;
 
 /**
- * Page object for /ui/web/WEB-INF/templates/material/components/biodata.xhtml
+ * Page object for the search results table in
+ * /ui/web/WEB-INF/templates/material/components/composition.xhtml
  * 
  * @author flange
  */
-public class BiodataTab extends AbstractPage<BiodataTab> implements MaterialEditTab {
-    private static final PrimeFacesTree TAXONOMY_TREE = new PrimeFacesTree("biodataTab:taxonomyTree");
-    private static final SelenideElement SELECTED_TAXONOMY_INPUT = $(testId("input", "biodataTab:selectedTaxonomy"));
+public class CompositionSearchResultTable extends DataTable<CompositionSearchResultTable> {
+    private static final String ADD_BUTTON = testId("compositionTab:searchResultTable:add");
+
+    public CompositionSearchResultTable(String testId) {
+        super(testId);
+    }
 
     /*
      * Actions
      */
+    public CompositionSearchResultTable add(int rowIndex) {
+        getCell(2, rowIndex).$(ADD_BUTTON).click();
+        return this;
+    }
 
     /*
      * Getters
      */
-    public PrimeFacesTree taxonomyTree() {
-        return TAXONOMY_TREE;
+    public SelenideElement getId(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
-    public SelenideElement selectedTaxonomyInput() {
-        return SELECTED_TAXONOMY_INPUT;
+    public SelenideElement getName(int rowIndex) {
+        return getCell(1, rowIndex);
     }
 }

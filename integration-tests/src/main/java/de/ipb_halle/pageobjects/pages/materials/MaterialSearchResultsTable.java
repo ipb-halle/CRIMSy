@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.pageobjects.pages.materials;
 
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
@@ -59,10 +58,10 @@ public class MaterialSearchResultsTable extends DataTable<MaterialSearchResultsT
         return page(MaterialEditPage.class);
     }
 
-    public ItemEditPage createItem(int rowIndex) {
-        getCell(3, rowIndex).$(CREATE_ITEM_BUTTON).click();
-        return page(ItemEditPage.class);
-    }
+//    public ItemEditPage createItem(int rowIndex) {
+//        getCell(3, rowIndex).$(CREATE_ITEM_BUTTON).click();
+//        return page(ItemEditPage.class);
+//    }
 
     public ACObjectModalPage changePermissions(int rowIndex) {
         getCell(3, rowIndex).$(CHANGE_PERMISSIONS_BUTTON).click();
@@ -85,7 +84,7 @@ public class MaterialSearchResultsTable extends DataTable<MaterialSearchResultsT
      * Hover over the material names text via {@link #hoverOverMaterialNames(int)}
      * before calling this getter.
      * 
-     * @return tooltip text
+     * @return tooltip
      */
     public PrimeFacesTooltip getMaterialNamesTooltip() {
         return MATERIAL_NAMES_TOOLTIP;

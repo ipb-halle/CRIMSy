@@ -17,35 +17,42 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
-import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.components.PrimeFacesTree;
-import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.components.table.DataTable;
 
 /**
- * Page object for /ui/web/WEB-INF/templates/material/components/biodata.xhtml
+ * Page object for the index table in
+ * /ui/web/WEB-INF/templates/material/components/indices.xhtml
  * 
  * @author flange
  */
-public class BiodataTab extends AbstractPage<BiodataTab> implements MaterialEditTab {
-    private static final PrimeFacesTree TAXONOMY_TREE = new PrimeFacesTree("biodataTab:taxonomyTree");
-    private static final SelenideElement SELECTED_TAXONOMY_INPUT = $(testId("input", "biodataTab:selectedTaxonomy"));
+public class IndicesTable extends DataTable<IndicesTable> {
+    private static final String INDEX_VALUE_INPUT = testId("input", "indicesTab:indicesTable:indexValue");
+    private static final String DELETE_BUTTON = testId("indicesTab:indicesTable:delete");
+
+    public IndicesTable(String testId) {
+        super(testId);
+    }
 
     /*
      * Actions
      */
+    public IndicesTable delete(int rowIndex) {
+        getCell(2, rowIndex).$(DELETE_BUTTON);
+        return this;
+    }
 
     /*
      * Getters
      */
-    public PrimeFacesTree taxonomyTree() {
-        return TAXONOMY_TREE;
+    public SelenideElement getIndexName(int rowIndex) {
+        return getCell(0, rowIndex);
     }
 
-    public SelenideElement selectedTaxonomyInput() {
-        return SELECTED_TAXONOMY_INPUT;
+    public SelenideElement getIndexValueInput(int rowIndex) {
+        return getCell(1, rowIndex).$(INDEX_VALUE_INPUT);
     }
 }

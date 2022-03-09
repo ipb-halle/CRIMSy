@@ -17,10 +17,9 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
+import static com.codeborne.selenide.Condition.exactTextCaseSensitive;
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
-
-import java.util.List;
 
 import com.codeborne.selenide.SelenideElement;
 
@@ -38,39 +37,47 @@ public class SequenceInfosTab extends AbstractPage<SequenceInfosTab> implements 
             "sequenceInfosTab:sequenceType");
     private static final MolecularFacesOpenVectorEditor SEQUENCE_EDITOR = new MolecularFacesOpenVectorEditor(
             "sequenceInfosTab:sequenceEditor", "sequenceEditorVar");
-    private static final SelenideElement SEQUENCE_LENGTH_INPUT = $(
-            testId("input", "sequenceInfosTab:sequenceLength"));
-    private static final SelenideElement SEQUENCE_STRING_INPUT = $(
-            testId("input", "sequenceInfosTab:sequenceString"));
+    private static final SelenideElement SEQUENCE_LENGTH_INPUT = $(testId("input", "sequenceInfosTab:sequenceLength"));
+    private static final SelenideElement SEQUENCE_STRING_INPUT = $(testId("input", "sequenceInfosTab:sequenceString"));
 
     /*
      * Actions
      */
-    public SequenceInfosTab selectSequenceType(String type) {
-        SEQUENCE_TYPE_RADIO.clickRadioButton(type);
+    public SequenceInfosTab selectDNA() {
+        SEQUENCE_TYPE_RADIO.clickRadioButton(0);
+        return this;
+    }
+
+    public SequenceInfosTab selectRNA() {
+        SEQUENCE_TYPE_RADIO.clickRadioButton(1);
+        return this;
+    }
+
+    public SequenceInfosTab selectProtein() {
+        SEQUENCE_TYPE_RADIO.clickRadioButton(2);
         return this;
     }
 
     /*
      * Getters
      */
-    public List<String> getAllSelectableSequenceTypes() {
-        return SEQUENCE_TYPE_RADIO.getLabels();
-    }
-
-    public String getSelectedSequenceType() {
-        return SEQUENCE_TYPE_RADIO.getSelectedLabel();
-    }
-
-    public MolecularFacesOpenVectorEditor getSequenceEditor() {
+    public MolecularFacesOpenVectorEditor sequenceEditor() {
         return SEQUENCE_EDITOR;
     }
 
-    public SelenideElement getSequenceLengthInput() {
+    public SelenideElement sequenceLengthInput() {
         return SEQUENCE_LENGTH_INPUT;
     }
 
-    public SelenideElement getSequenceStringInput() {
+    public SelenideElement sequenceStringInput() {
         return SEQUENCE_STRING_INPUT;
+    }
+
+    /*
+     * Fluent assertions
+     */
+    public SequenceInfosTab checkedSequenceTypeShouldBe(String type) {
+        SEQUENCE_TYPE_RADIO.checkedLabel().shouldBe(exactTextCaseSensitive(type));
+        return this;
     }
 }

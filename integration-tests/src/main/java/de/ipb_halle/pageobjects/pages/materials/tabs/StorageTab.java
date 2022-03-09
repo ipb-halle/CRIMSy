@@ -35,10 +35,8 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
 public class StorageTab extends AbstractPage<StorageTab> implements MaterialEditTab {
     private static final PrimeFacesSelectBooleanCheckbox STORAGE_CLASS_ACTIVATED_CHECKBOX = new PrimeFacesSelectBooleanCheckbox(
             "storageTab:storageClassActivated");
-    private static final SelenideElement STORAGE_CLASS_SELECTION = $(
-            testId("select", "storageTab:storageClass"));
-    private static final SelenideElement REMARKS_INPUT = $(
-            testId("input", "storageTab:remarks"));
+    private static final SelenideElement STORAGE_CLASS_SELECTION = $(testId("select", "storageTab:storageClass"));
+    private static final SelenideElement REMARKS_INPUT = $(testId("input", "storageTab:remarks"));
     private static final PrimeFacesSelectManyCheckbox STORAGE_CONDITIONS_CHECKBOXES = new PrimeFacesSelectManyCheckbox(
             "storageTab:storageConditions");
 
@@ -58,19 +56,19 @@ public class StorageTab extends AbstractPage<StorageTab> implements MaterialEdit
     /*
      * Getters
      */
-    public boolean isStorageClassActivated() {
-        return STORAGE_CLASS_ACTIVATED_CHECKBOX.isSelected();
+    public PrimeFacesSelectBooleanCheckbox storageClassActivatedCheckbox() {
+        return STORAGE_CLASS_ACTIVATED_CHECKBOX;
     }
 
-    public SelenideElement getStorageClassSelection() {
+    public SelenideElement storageClassSelection() {
         return STORAGE_CLASS_SELECTION;
     }
 
-    public SelenideElement getRemarksInput() {
+    public SelenideElement remarksInput() {
         return REMARKS_INPUT;
     }
 
-    public PrimeFacesSelectManyCheckbox getStorageConditionsCheckboxes() {
+    public PrimeFacesSelectManyCheckbox storageConditionsCheckboxes() {
         return STORAGE_CONDITIONS_CHECKBOXES;
     }
 }

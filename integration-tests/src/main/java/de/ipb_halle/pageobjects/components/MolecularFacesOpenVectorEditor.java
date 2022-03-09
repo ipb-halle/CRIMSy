@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.pageobjects.components;
 
+import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.executeJavaScript;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
@@ -29,32 +30,48 @@ import com.codeborne.selenide.SelenideElement;
  * @author flange
  */
 public class MolecularFacesOpenVectorEditor {
+    private final SelenideElement outerDiv;
     private final SelenideElement inputElement;
     private final String widgetVar;
 
     public MolecularFacesOpenVectorEditor(String testId, String widgetVar) {
-        this.inputElement = $(testId("input", testId));
+        outerDiv = $(testId("div", testId));
+        inputElement = $(testId("input", testId));
         this.widgetVar = widgetVar;
     }
 
-    public boolean isReadonly() {
-        /*
-         * The trick here is that the <input> element has no name attribute when
-         * the component is readonly.
-         */
-        return inputElement.attr("name") == null;
-    }
-
     public String getSequence() {
-        String js = String.format("%s.then(plugin => plugin.getSequence());",
-                widgetVar);
+        String js = String.format("%s.then(plugin => plugin.getSequence());", widgetVar);
         return (String) executeJavaScript(js);
     }
 
     public void setSequence(String sequenceJson) {
-        String js = String.format(
-                "%s.then(plugin => plugin.setSequence(\"%s\"));", widgetVar,
-                sequenceJson);
+        String js = String.format("%s.then(plugin => plugin.setSequence(\"%s\"));", widgetVar, sequenceJson);
         executeJavaScript(js);
+    }
+
+    /**
+     * Can be used to determine the rendering of the JSF component. e.g. via
+     * {@code outerDiv().should(exist)}.
+     */
+    public SelenideElement outerDiv() {
+        return outerDiv;
+    }
+
+    /*
+     * Fluent assertions
+     */
+    public MolecularFacesOpenVectorEditor sequenceShouldBe(String sequence) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    public MolecularFacesOpenVectorEditor shouldBeReadonly() {
+        inputElement.shouldNotHave(attribute("name"));
+        return this;
+    }
+
+    public MolecularFacesOpenVectorEditor shouldNotBeReadonly() {
+        inputElement.shouldHave(attribute("name"));
+        return this;
     }
 }

@@ -30,22 +30,14 @@ import com.codeborne.selenide.SelenideElement;
  * @author flange
  */
 public interface MaterialEditTab {
-    static final SelenideElement MATERIAL_NAMES_TAB = $(
-            testId("materialEdit:materialNamesTab"));
-    static final SelenideElement INDICES_TAB = $(
-            testId("materialEdit:indicesTab"));
-    static final SelenideElement STRUCTURE_INFOS_TAB = $(
-            testId("materialEdit:structureInfosTab"));
-    static final SelenideElement SEQUENCE_INFOS_TAB = $(
-            testId("materialEdit:sequenceInfosTab"));
-    static final SelenideElement HARZARDS_TAB = $(
-            testId("materialEdit:hazardsTab"));
-    static final SelenideElement STORAGE_TAB = $(
-            testId("materialEdit:storageTab"));
-    static final SelenideElement BIODATA_TAB = $(
-            testId("materialEdit:biodataTab"));
-    static final SelenideElement COMPOSITION_TAB = $(
-            testId("materialEdit:compositionTab"));
+    static final SelenideElement MATERIAL_NAMES_TAB = $(testId("materialEdit:materialNamesTab"));
+    static final SelenideElement INDICES_TAB = $(testId("materialEdit:indicesTab"));
+    static final SelenideElement STRUCTURE_INFOS_TAB = $(testId("materialEdit:structureInfosTab"));
+    static final SelenideElement SEQUENCE_INFOS_TAB = $(testId("materialEdit:sequenceInfosTab"));
+    static final SelenideElement HARZARDS_TAB = $(testId("materialEdit:hazardsTab"));
+    static final SelenideElement STORAGE_TAB = $(testId("materialEdit:storageTab"));
+    static final SelenideElement BIODATA_TAB = $(testId("materialEdit:biodataTab"));
+    static final SelenideElement COMPOSITION_TAB = $(testId("materialEdit:compositionTab"));
 
     /*
      * Actions
@@ -88,5 +80,40 @@ public interface MaterialEditTab {
     public default CompositionTab openCompositionTab() {
         COMPOSITION_TAB.click();
         return page(CompositionTab.class);
+    }
+
+    /*
+     * Getters
+     */
+    public default SelenideElement materialNamesTab() {
+        return MATERIAL_NAMES_TAB;
+    }
+
+    public default SelenideElement indicesTab() {
+        return INDICES_TAB;
+    }
+
+    public default SelenideElement structureInfosTab() {
+        return STRUCTURE_INFOS_TAB;
+    }
+
+    public default SelenideElement sequenceInfosTab() {
+        return SEQUENCE_INFOS_TAB;
+    }
+
+    public default SelenideElement harzardsTab() {
+        return HARZARDS_TAB;
+    }
+
+    public default SelenideElement storageTab() {
+        return STORAGE_TAB;
+    }
+
+    public default SelenideElement biodataTab() {
+        return BIODATA_TAB;
+    }
+
+    public default SelenideElement compositionTab() {
+        return COMPOSITION_TAB;
     }
 }

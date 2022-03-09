@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.pageobjects.components;
 
+import static com.codeborne.selenide.CollectionCondition.size;
+import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
@@ -35,57 +38,67 @@ import com.codeborne.selenide.SelenideElement;
  * @author flange
  */
 public class PrimeFacesSelectOneRadio {
+    private static final Condition CHECKED_INPUT_CONDITION = attribute("checked", "checked");
     private final ElementsCollection clickableDivs;
     private final ElementsCollection inputs;
-    private final ElementsCollection labelElements;
+    private final ElementsCollection labels;
 
     public PrimeFacesSelectOneRadio(String testId) {
         SelenideElement element = $(testId(testId));
-        clickableDivs = element
-                .$$(elementWithCssClasses("div", "ui-radiobutton-box"));
+        clickableDivs = element.$$(elementWithCssClasses("div", "ui-radiobutton-box"));
         inputs = element.$$(By.tagName("input"));
-        labelElements = element.$$(By.tagName("label"));
+        labels = element.$$(By.tagName("label"));
     }
 
-    public List<String> getLabels() {
-        List<String> labels = new ArrayList<>();
-        for (SelenideElement element : labelElements) {
-            labels.add(element.text());
-        }
-        return labels;
-    }
-
-    private int getLabelIndex(String label) {
-        int index = getLabels().indexOf(label);
-        if (index == -1) {
-            throw new RuntimeException("No such label: " + label);
-        }
-        return index;
-    }
-
-    public PrimeFacesSelectOneRadio clickRadioButton(String label) {
-        clickableDivs.get(getLabelIndex(label)).click();
+    /*
+     * Actions
+     */
+    public PrimeFacesSelectOneRadio clickRadioButton(int index) {
+        clickableDivs.get(index).click();
         return this;
     }
 
-    public String getSelectedLabel() {
-        List<String> selected = new ArrayList<>();
+//    public PrimeFacesSelectOneRadio clickRadioButton(String label) {
+//        clickableDivs.get(getLabelIndex(label)).click();
+//        return this;
+//    }
 
-        List<String> allLabels = getLabels();
-        for (int i = 0; i < allLabels.size(); i++) {
-            String label = allLabels.get(i);
-            if (inputs.get(i).isSelected()) {
-                selected.add(label);
-            }
-        }
+//    private int getLabelIndex(String label) {
+//        int index = getLabels().indexOf(label);
+//        if (index == -1) {
+//            throw new RuntimeException("No such label: " + label);
+//        }
+//        return index;
+//    }
 
-        if (selected.size() > 1) {
-            throw new RuntimeException(
-                    "A radio group cannot have more than one selected radio button!");
-        } else if (selected.size() == 1) {
-            return selected.get(0);
-        } else {
-            return null;
-        }
+    /*
+     * Getters
+     */
+    public ElementsCollection labels() {
+        return labels;
     }
+
+    public SelenideElement label(int index) {
+        return labels.get(index);
+    }
+
+    public SelenideElement checkedLabel() {
+        SelenideElement checkedInput = inputs.filterBy(CHECKED_INPUT_CONDITION).shouldHave(size(1)).first();
+        /*
+         * Not sure if SelenideElement.equals() works reliably: Don't use List.indexOf()
+         * here.
+         */
+
+        SelenideElement td = checkedInput.parent().parent().parent();
+        SelenideElement label = td.$(By.tagName("label"));
+        return label;
+    }
+
+//    public List<String> getLabels() {
+//        List<String> textLabels = new ArrayList<>();
+//        for (SelenideElement element : labels) {
+//            textLabels.add(element.text());
+//        }
+//        return textLabels;
+//    }
 }

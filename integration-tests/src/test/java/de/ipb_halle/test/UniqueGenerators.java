@@ -33,4 +33,12 @@ public class UniqueGenerators {
     public static String uniqueLogin() {
         return "test-" + counter.getAndIncrement() + "-login";
     }
+
+    public static String uniqueCollection() {
+        return "test_" + counter.getAndIncrement() + "_collection";
+    }
+
+    public static String uniqueProject() {
+        return "test-" + counter.getAndIncrement() + "-project";
+    }
 }

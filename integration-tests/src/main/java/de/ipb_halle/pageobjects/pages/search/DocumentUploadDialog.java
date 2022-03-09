@@ -47,6 +47,11 @@ public class DocumentUploadDialog extends PrimeFacesDialog {
     /*
      * Actions
      */
+    public DocumentUploadDialog selectCollection(String collection) {
+        COLLECTION_SELECTION.selectOption(collection);
+        return this;
+    }
+
     public DocumentUploadDialog clear() {
         CLEAR_BUTTON.click();
         return this;
@@ -76,11 +81,7 @@ public class DocumentUploadDialog extends PrimeFacesDialog {
     /*
      * Getters
      */
-    public SelenideElement getCollectionSelection() {
-        return COLLECTION_SELECTION;
-    }
-
-    public SelenideElement getSelectFiles() {
+    public SelenideElement fileUpload() {
         return SELECT_FILES;
     }
 }

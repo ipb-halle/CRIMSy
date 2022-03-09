@@ -92,9 +92,10 @@
                                     <b:dataTableColumn
                                         orderable="false"
                                         label="#{msgs.materialCreation_panelIndices_tableHeader_value}">
-                                        <b:inputText 
-                                            disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                            value="#{index.value}">
+                                        <b:inputText
+                                            pt:data-test-id="indicesTab:indicesTable:indexValue"
+                                            value="#{index.value}"
+                                            disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}">
                                             <f:converter converterId="InputConverter" />
                                         </b:inputText>
                                     </b:dataTableColumn>
@@ -102,6 +103,7 @@
                                         orderable="false"
                                         label="#{msgs.materialCreation_panelIndices_tableHeader_action}">
                                         <b:commandButton
+                                            pt:data-test-id="indicesTab:indicesTable:delete"
                                             style="padding: 0 4px;"
                                             icon="trash"
                                             look="link"

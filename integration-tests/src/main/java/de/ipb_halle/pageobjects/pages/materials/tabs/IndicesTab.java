@@ -22,7 +22,6 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
-import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
 
 /**
@@ -31,14 +30,10 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * @author flange
  */
 public class IndicesTab extends AbstractPage<IndicesTab> implements MaterialEditTab {
-    private static final SelenideElement INDEX_CATEGORY_SELECTION = $(
-            testId("select", "indicesTab:indexCategory"));
-    private static final SelenideElement INDEX_VALUE_INPUT = $(
-            testId("input", "indicesTab:indexValue"));
-    private static final SelenideElement ADD_INDEX_BUTTON = $(
-            testId("indicesTab:addIndex"));
-    private static final SelenideElement INDICES_TABLE = $(
-            testId("indicesTab:indicesTable"));
+    private static final SelenideElement INDEX_CATEGORY_SELECTION = $(testId("select", "indicesTab:indexCategory"));
+    private static final SelenideElement INDEX_VALUE_INPUT = $(testId("input", "indicesTab:indexValue"));
+    private static final SelenideElement ADD_INDEX_BUTTON = $(testId("indicesTab:addIndex"));
+    private static final IndicesTable INDICES_TABLE = new IndicesTable("indicesTab:indicesTable");
 
     /*
      * Actions
@@ -53,7 +48,7 @@ public class IndicesTab extends AbstractPage<IndicesTab> implements MaterialEdit
     /*
      * Getters
      */
-    public DataTable getIndicesTable() {
-        return DataTable.extract(INDICES_TABLE);
+    public IndicesTable getIndicesTable() {
+        return INDICES_TABLE;
     }
 }

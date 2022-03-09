@@ -48,6 +48,7 @@
                             label="#{msgs.materialCreation_panelNames_tableHeader_name}"
                             styleClass="materialNameText">
                             <p:inputText
+                                pt:data-test-id="materialNamesTab:materialNamesTable:name"
                                 value="#{mName.value}"
                                 styleClass="tstMaterialNameInput"
                                 style="width: 100%;"
@@ -56,15 +57,15 @@
                                 <p:ajax process="@this" update="@none" />
                                 <f:converter converterId="InputConverter" />
                             </p:inputText>
-
                         </b:dataTableColumn>
                         <b:dataTableColumn
                             styleClass="materialNameLanguage"
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_language}">
                             <b:selectOneMenu
-                                disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
-                                value="#{mName.language}">
+                                pt:data-test-id="materialNamesTab:materialNamesTable:language"
+                                value="#{mName.language}"
+                                disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}">
                                 <f:selectItems value="#{materialBean.materialNameBean.getPossibleLanguages()}"/>
                             </b:selectOneMenu>
                         </b:dataTableColumn>
@@ -73,6 +74,7 @@
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_action}">
                             <b:commandButton
+                                pt:data-test-id="materialNamesTab:materialNamesTable:toTop"
                                 style="padding: 0 4px;"
                                 icon-awesome="fa-angle-double-up"
                                 look="link"
@@ -84,6 +86,7 @@
                                 onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHEST');"
                                 type="button" />
                             <b:commandButton
+                                pt:data-test-id="materialNamesTab:materialNamesTable:up"
                                 style="padding: 0 4px;"
                                 icon-awesome="fa-angle-up"
                                 look="link"
@@ -95,6 +98,7 @@
                                 onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHER');"
                                 type="button" />
                             <b:commandButton
+                                pt:data-test-id="materialNamesTab:materialNamesTable:down"
                                 style="padding: 0 4px;"
                                 icon-awesome="fa-angle-down"
                                 look="link"
@@ -106,6 +110,7 @@
                                 onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWER');"
                                 type="button" />
                             <b:commandButton
+                                pt:data-test-id="materialNamesTab:materialNamesTable:toButtom"
                                 style="padding: 0 4px;"
                                 icon-awesome="fa-angle-double-down"
                                 look="link"
@@ -117,6 +122,7 @@
                                 onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWEST');"
                                 type="button" />
                             <b:commandButton
+                                pt:data-test-id="materialNamesTab:materialNamesTable:delete"
                                 style="padding: 0 4px;"
                                 icon="trash"
                                 look="link"
@@ -128,6 +134,7 @@
                                 tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"
                                 type="button" />
                             <b:commandButton
+                                pt:data-test-id="materialNamesTab:materialNamesTable:add"
                                 style="padding: 0 4px;"
                                 icon-awesome="fa-plus"
                                 look="link"

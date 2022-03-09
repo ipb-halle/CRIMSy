@@ -24,7 +24,6 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.MolecularFacesMolecule;
-import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
 import de.ipb_halle.pageobjects.pages.composite.SequenceSearchMaskPage;
 
@@ -35,25 +34,17 @@ import de.ipb_halle.pageobjects.pages.composite.SequenceSearchMaskPage;
  * @author flange
  */
 public class CompositionTab extends AbstractPage<CompositionTab> implements MaterialEditTab {
-    private static final SelenideElement COMPOSITION_TYPE_SELECTION = $(
-            testId("select", "compositionTab:compositionType"));
-    private static final SelenideElement MATERIAL_NAME_INPUT = $(
-            testId("compositionTab:materialName"));
-    private static final SelenideElement SEARCH_BUTTON = $(
-            testId("compositionTab:search"));
-    private static final SelenideElement STRUCTURE_SEARCH_TAB = $(
-            testId("compositionTab:structureSearchTab"));
+    private static final SelenideElement COMPOSITION_TYPE_SELECTION = $(testId("select", "compositionTab:compositionType"));
+    private static final SelenideElement MATERIAL_NAME_INPUT = $(testId("compositionTab:materialName"));
+    private static final SelenideElement SEARCH_BUTTON = $(testId("compositionTab:search"));
+    private static final SelenideElement STRUCTURE_SEARCH_TAB = $(testId("compositionTab:structureSearchTab"));
     private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule(
-            "compositionTab:structureSearchTab:molEditor",
-            "compositionStructurePlugin");
-    private static final SelenideElement SEQUENCE_SEARCH_TAB = $(
-            testId("compositionTab:sequenceSearchTab"));
-    private static final SelenideElement ORGANISM_SEARCH_TAB = $(
-            testId("compositionTab:organismSearchTab"));
-    private static final SelenideElement SEARCH_RESULT_TABLE = $(
-            testId("compositionTab:searchResultTable"));
-    private static final SelenideElement COMPONENTS_TABLE = $(
-            testId("compositionTab:componentsTable"));
+            "compositionTab:structureSearchTab:molEditor", "compositionStructurePlugin");
+    private static final SelenideElement SEQUENCE_SEARCH_TAB = $(testId("compositionTab:sequenceSearchTab"));
+    private static final SelenideElement ORGANISM_SEARCH_TAB = $(testId("compositionTab:organismSearchTab"));
+    private static final CompositionSearchResultTable SEARCH_RESULT_TABLE = new CompositionSearchResultTable(
+            "compositionTab:searchResultTable");
+    private static final CompositionComponentsTable COMPONENTS_TABLE = new CompositionComponentsTable("compositionTab:componentsTable");
 
     /*
      * Actions
@@ -81,27 +72,27 @@ public class CompositionTab extends AbstractPage<CompositionTab> implements Mate
     /*
      * Getters
      */
-    public SelenideElement getCompositionTypeSelection() {
+    public SelenideElement compositionTypeSelection() {
         return COMPOSITION_TYPE_SELECTION;
     }
 
-    public SelenideElement getMaterialNameInput() {
+    public SelenideElement materialNameInput() {
         return MATERIAL_NAME_INPUT;
     }
 
-    public MolecularFacesMolecule getMolEditor() {
+    public MolecularFacesMolecule molEditor() {
         return MOL_EDITOR;
     }
 
-    public SequenceSearchMaskPage getSequenceSearchMask() {
+    public SequenceSearchMaskPage sequenceSearchMask() {
         return page(SequenceSearchMaskPage.class);
     }
 
-    public DataTable getSearchResultTable() {
-        return DataTable.extract(SEARCH_RESULT_TABLE);
+    public CompositionSearchResultTable searchResultTable() {
+        return SEARCH_RESULT_TABLE;
     }
 
-    public DataTable getComponentsTable() {
-        return DataTable.extract(COMPONENTS_TABLE);
+    public CompositionComponentsTable componentsTable() {
+        return COMPONENTS_TABLE;
     }
 }

@@ -90,9 +90,7 @@ public class SearchPage extends NavigablePage<SearchPage> {
     }
 
     public SearchPage uploadFilesToCollection(String collection, File... files) {
-        DocumentUploadDialog uploadDialog = upload();
-        uploadDialog.getCollectionSelection().selectOption(collection);
-        uploadDialog.uploadFiles(files).close();
+        upload().selectCollection(collection).uploadFiles(files).close();
         return this;
     }
 

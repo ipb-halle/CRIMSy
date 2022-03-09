@@ -37,38 +37,60 @@ import com.codeborne.selenide.SelenideElement;
 public class PrimeFacesSelectManyCheckbox {
     private final ElementsCollection clickableDivs;
     private final ElementsCollection inputs;
-    private final ElementsCollection labelElements;
+    private final ElementsCollection labels;
 
     public PrimeFacesSelectManyCheckbox(String testId) {
         SelenideElement element = $(testId(testId));
-        clickableDivs = element
-                .$$(elementWithCssClasses("div", "ui-chkbox-box"));
+        clickableDivs = element.$$(elementWithCssClasses("div", "ui-chkbox-box"));
         inputs = element.$$(By.tagName("input"));
-        labelElements = element.$$(By.tagName("label"));
+        labels = element.$$(By.tagName("label"));
     }
 
-    public List<String> getLabels() {
-        List<String> labels = new ArrayList<>();
-        for (SelenideElement element : labelElements) {
-            labels.add(element.text());
-        }
-        return labels;
-    }
-
-    private int getLabelIndex(String label) {
-        int index = getLabels().indexOf(label);
-        if (index == -1) {
-            throw new RuntimeException("No such label: " + label);
-        }
-        return index;
-    }
-
-    public PrimeFacesSelectManyCheckbox clickCheckbox(String label) {
-        clickableDivs.get(getLabelIndex(label)).click();
+    /*
+     * Actions
+     */
+    public PrimeFacesSelectManyCheckbox clickCheckbox(int index) {
+        clickableDivs.get(index).click();
         return this;
     }
 
-    public boolean isSelected(String label) {
-        return inputs.get(getLabelIndex(label)).isSelected();
+//    public PrimeFacesSelectManyCheckbox clickCheckbox(String label) {
+//        clickableDivs.get(getLabelIndex(label)).click();
+//        return this;
+//    }
+
+//    private int getLabelIndex(String label) {
+//        int index = getLabels().indexOf(label);
+//        if (index == -1) {
+//            throw new RuntimeException("No such label: " + label);
+//        }
+//        return index;
+//    }
+
+    /*
+     * Getters
+     */
+    public ElementsCollection labels() {
+        return labels;
     }
+
+    public SelenideElement label(int index) {
+        return labels.get(index);
+    }
+
+    public ElementsCollection selectInputs() {
+        return inputs;
+    }
+
+    public SelenideElement selectInput(int index) {
+        return inputs.get(index);
+    }
+
+//    public List<String> getLabels() {
+//        List<String> textLabels = new ArrayList<>();
+//        for (SelenideElement element : labels) {
+//            textLabels.add(element.text());
+//        }
+//        return textLabels;
+//    }
 }

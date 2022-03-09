@@ -32,37 +32,33 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * @author flange
  */
 public class StructureInfosTab extends AbstractPage<StructureInfosTab> implements MaterialEditTab {
-    private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule(
-            "structureInfosTab:molEditor", "structurePlugin");
-    private static final SelenideElement AUTO_CALC_CHECKBOX = $(
-            testId("input", "structureInfosTab:autoCalc"));
-    private static final SelenideElement SUM_FORMULA_INPUT = $(
-            testId("input", "structureInfosTab:sumFormula"));
-    private static final SelenideElement AVERAGE_MOLAR_MASS_INPUT = $(
-            testId("input", "structureInfosTab:averageMolarMass"));
-    private static final SelenideElement EXACT_MOLAR_MASS_INPUT = $(
-            testId("input", "structureInfosTab:exactMolarMass"));
+    private static final MolecularFacesMolecule MOL_EDITOR = new MolecularFacesMolecule("structureInfosTab:molEditor",
+            "structurePlugin");
+    private static final SelenideElement AUTO_CALC_CHECKBOX = $(testId("input", "structureInfosTab:autoCalc"));
+    private static final SelenideElement SUM_FORMULA_INPUT = $(testId("input", "structureInfosTab:sumFormula"));
+    private static final SelenideElement AVERAGE_MOLAR_MASS_INPUT = $(testId("input", "structureInfosTab:averageMolarMass"));
+    private static final SelenideElement EXACT_MOLAR_MASS_INPUT = $(testId("input", "structureInfosTab:exactMolarMass"));
 
     /*
      * Getters
      */
-    public MolecularFacesMolecule getMolEditor() {
+    public MolecularFacesMolecule molEditor() {
         return MOL_EDITOR;
     }
 
-    public SelenideElement getAutoCalcCheckbox() {
+    public SelenideElement autoCalcCheckbox() {
         return AUTO_CALC_CHECKBOX;
     }
 
-    public SelenideElement getSumFormulaInput() {
+    public SelenideElement sumFormulaInput() {
         return SUM_FORMULA_INPUT;
     }
 
-    public SelenideElement getAverageMolarMassInput() {
+    public SelenideElement averageMolarMassInput() {
         return AVERAGE_MOLAR_MASS_INPUT;
     }
 
-    public SelenideElement getExactMolarMassInput() {
+    public SelenideElement exactMolarMassInput() {
         return EXACT_MOLAR_MASS_INPUT;
     }
 }

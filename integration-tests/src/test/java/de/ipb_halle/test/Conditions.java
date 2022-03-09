@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.test;
 
+import static com.codeborne.selenide.Condition.not;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithAttribute;
 
 import java.util.Locale;
@@ -29,6 +30,8 @@ import org.openqa.selenium.WebElement;
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Driver;
+import com.codeborne.selenide.conditions.CssClass;
+
 import de.ipb_halle.pageobjects.components.Severity;
 import de.ipb_halle.test.conditions.JSFMessageCondition;
 import de.ipb_halle.test.conditions.UIMessageCondition;
@@ -89,4 +92,15 @@ public class Conditions {
     public static Condition growlSeverity(Severity severity) {
         return severity.getGrowlCondition();
     }
+
+    /**
+     * Checks that a PrimeFaces p:tab inside a p:tabView is enabled (clickable).
+     */
+    public static final Condition enabledTab = not(new CssClass("ui-state-disabled"));
+
+    /**
+     * Checks that a PrimeFaces p:tab inside a p:tabView is disabled (not
+     * clickable).
+     */
+    public static final Condition disabledTab = new CssClass("ui-state-disabled");
 }

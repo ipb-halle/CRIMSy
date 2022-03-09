@@ -143,13 +143,14 @@
                                     saveState="false"
                                     paginated="true">
                                     <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsID}"
-                                        value="#{material.getId()}" />
+                                        value="#{material.getId()}"
+                                        label="#{msgs.materialCreation_composition_concentrationsID}" />
                                     <b:dataTableColumn
-                                        label="Name"
-                                        value="#{material.getFirstName()}" />
+                                        value="#{material.getFirstName()}"
+                                        label="Name" />
                                     <b:dataTableColumn label="#{msgs.materialCreation_composition_searchResultTable_Action}">
                                         <b:commandButton
+                                            pt:data-test-id="compositionTab:searchResultTable:add"
                                             ajax="true"
                                             look="link"
                                             type="button"
@@ -177,21 +178,23 @@
                                     saveState="false"
                                     paginated="true">
                                     <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsID}"
-                                        value="#{materialCompositionBean.getFormatedIdOfConcentration(concentration)}" />
+                                        value="#{materialCompositionBean.getFormatedIdOfConcentration(concentration)}"
+                                        label="#{msgs.materialCreation_composition_concentrationsID}" />
                                     <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsName}"
-                                        value="#{concentration.getMaterialName()}" />
+                                        value="#{concentration.getMaterialName()}"
+                                        label="#{msgs.materialCreation_composition_concentrationsName}" />
                                     <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsType}"
-                                        value="#{materialCompositionBean.getLocalizedMaterialType(concentration)}" />
+                                        value="#{materialCompositionBean.getLocalizedMaterialType(concentration)}"
+                                        label="#{msgs.materialCreation_composition_concentrationsType}" />
                                     <b:dataTableColumn label="#{msgs.materialCreation_composition_concentrationsValue}">
                                         <b:inputText
+                                            pt:data-test-id="compositionTab:componentsTable:amount"
                                             value="#{concentration.concentration}"
                                             disabled="#{!materialBean.permission.isEditAllowed()}" />
                                     </b:dataTableColumn>
                                     <b:dataTableColumn label="#{msgs.materialCreation_composition_concentrationsUnit}">
                                         <b:selectOneMenu
+                                            pt:data-test-id="compositionTab:componentsTable:unit"
                                             value="#{concentration.unit}"
                                             disabled="#{!materialBean.permission.isEditAllowed()}">
                                             <f:selectItems
@@ -202,6 +205,7 @@
                                     </b:dataTableColumn>
                                     <b:dataTableColumn label="#{msgs.materialCreation_composition_searchResultTable_Action}">
                                         <b:commandButton
+                                            pt:data-test-id="compositionTab:componentsTable:remove"
                                             look="link"
                                             type="button"
                                             icon="minus"

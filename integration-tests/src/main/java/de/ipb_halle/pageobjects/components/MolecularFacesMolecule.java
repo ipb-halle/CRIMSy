@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.pageobjects.components;
 
+import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.executeJavaScript;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
@@ -37,17 +38,8 @@ public class MolecularFacesMolecule {
         this.widgetVar = widgetVar;
     }
 
-    public boolean isReadonly() {
-        /*
-         * The trick here is that the <input> element has no name attribute when
-         * the component is readonly.
-         */
-        return inputElement.attr("name") == null;
-    }
-
     public String getMolecule() {
-        String js = String.format("%s.then(plugin => plugin.getMolecule());",
-                widgetVar);
+        String js = String.format("%s.then(plugin => plugin.getMolecule());", widgetVar);
         return (String) executeJavaScript(js);
     }
 
@@ -55,24 +47,40 @@ public class MolecularFacesMolecule {
      * @param molfile unescaped V2000 Molfile
      */
     public void setMolecule(String molfile) {
-        String js = String.format(
-                "%s.then(plugin => plugin.setMolecule(\"%s\"));", widgetVar,
-                escape(molfile));
+        String js = String.format("%s.then(plugin => plugin.setMolecule(\"%s\"));", widgetVar, escape(molfile));
         executeJavaScript(js);
-    }
-
-    /**
-     * @return plugin type
-     */
-    public String getPluginType() {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private String escape(String s) {
         if (s == null) {
             return "";
         }
-        return s.replace("\\", "\\\\").replace("\"", "\\\"")
-                .replace("\n", "\\n").replace("\r", "");
+        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
+    }
+
+    /*
+     * Fluent assertions
+     */
+    /**
+     * @param molfile unescaped V2000 Molfile
+     * @return this
+     */
+    public MolecularFacesMolecule moleculeShouldBe(String molfile) {
+        // compare molecules with CDK?
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    public MolecularFacesMolecule shouldBeReadonly() {
+        inputElement.shouldNotHave(attribute("name"));
+        return this;
+    }
+
+    public MolecularFacesMolecule shouldNotBeReadonly() {
+        inputElement.shouldHave(attribute("name"));
+        return this;
+    }
+
+    public MolecularFacesMolecule pluginTypeShouldBe(String type) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

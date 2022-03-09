@@ -32,24 +32,15 @@ import de.ipb_halle.pageobjects.pages.materials.tabs.MaterialEditTab;
  * @author flange
  */
 public class MaterialEditPage extends AbstractPage<MaterialEditPage> implements MaterialEditTab {
-    private static final SelenideElement PROJECT_SELECTION = $(
-            testId("select", "materialEdit:project"));
-    private static final SelenideElement BACKWARD_BUTTON = $(
-            testId("materialEdit:backward"));
-    private static final SelenideElement CHANGED_TEXT = $(
-            testId("materialEdit:changedText"));
-    private static final SelenideElement FORWARD_BUTTON = $(
-            testId("materialEdit:forward"));
-    private static final SelenideElement CANCEL_BUTTON = $(
-            testId("materialEdit:cancel"));
-    private static final SelenideElement SAVE_BUTTON = $(
-            testId("materialEdit:save"));
-    private static final SelenideElement MATERIAL_TYPE_SELECTION = $(
-            testId("select", "materialEdit:materialType"));
-    private static final SelenideElement MODE_TEXT = $(
-            testId("materialEdit:mode"));
-    private static final SelenideElement ERROR_MESSAGES = $(
-            testId("materialEdit:errorMessages"));
+    private static final SelenideElement PROJECT_SELECTION = $(testId("select", "materialEdit:project"));
+    private static final SelenideElement BACKWARD_BUTTON = $(testId("materialEdit:backward"));
+    private static final SelenideElement CHANGED_TEXT = $(testId("materialEdit:changedText"));
+    private static final SelenideElement FORWARD_BUTTON = $(testId("materialEdit:forward"));
+    private static final SelenideElement CANCEL_BUTTON = $(testId("materialEdit:cancel"));
+    private static final SelenideElement SAVE_BUTTON = $(testId("materialEdit:save"));
+    private static final SelenideElement MATERIAL_TYPE_SELECTION = $(testId("select", "materialEdit:materialType"));
+    private static final SelenideElement MODE_TEXT = $(testId("materialEdit:mode"));
+    private static final SelenideElement ERROR_MESSAGES = $(testId("materialEdit:errorMessages"));
 
     /*
      * Actions
@@ -80,18 +71,20 @@ public class MaterialEditPage extends AbstractPage<MaterialEditPage> implements 
     }
 
     /**
+     * Try to save the material.
+     * <p>
+     * Should direct the browser to the materials overview page or stay on this page
+     * depending on the validation outcome, thus only {@link MaterialOverviewPage}
+     * or {@link MaterialEditPage} are useful page object classes to be supplied in
+     * the {@code expectedPageClass} parameter.
      * 
-     * @return {@link MaterialOverviewPage} object (if material is saved) or
-     *         {@link MaterialEditPage} object (if material cannot be saved due
-     *         to validation errors)
+     * @param <T>
+     * @param expectedPageClass expected page
+     * @return page object of expected page
      */
-    public AbstractPage save() {
+    public <T extends AbstractPage<T>> T save(Class<T> expectedPageClass) {
         SAVE_BUTTON.click();
-        if (ERROR_MESSAGES.isDisplayed()) {
-            return this;
-        } else {
-            return page(MaterialOverviewPage.class);
-        }
+        return page(expectedPageClass);
     }
 
     /*

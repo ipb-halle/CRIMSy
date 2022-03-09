@@ -57,13 +57,21 @@ public class ProjectEditPage extends AbstractPage<ProjectEditPage> {
         return page(ProjectOverviewPage.class);
     }
 
-    public AbstractPage save() {
+    /**
+     * Try to save the project.
+     * <p>
+     * Should direct the browser to the project overview page or stay on this page
+     * depending on the validation outcome, thus only {@link ProjectOverviewPage} or
+     * {@link ProjectEditPage} are useful page object classes to be supplied in the
+     * {@code expectedPageClass} parameter.
+     * 
+     * @param <T>
+     * @param expectedPageClass expected page
+     * @return page object of expected page
+     */
+    public <T extends AbstractPage<T>> T save(Class<T> expectedPageClass) {
         SAVE_BUTTON.click();
-        if (PROJECT_NAME_INPUT.isDisplayed()) {
-            return this;
-        } else {
-            return page(ProjectOverviewPage.class);
-        }
+        return page(expectedPageClass);
     }
 
     public ProjectEditPage selectProjectType(String type) {

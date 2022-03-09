@@ -17,12 +17,6 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
-import static com.codeborne.selenide.Selenide.$;
-import static de.ipb_halle.pageobjects.util.Selectors.testId;
-
-import com.codeborne.selenide.SelenideElement;
-
-import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
 
 /**
@@ -32,13 +26,13 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * @author flange
  */
 public class MaterialNamesTab extends AbstractPage<MaterialNamesTab> implements MaterialEditTab {
-    private static final SelenideElement MATERIAL_NAMES_TABLE = $(
-            testId("materialNamesTab:materialNamesTable"));
+    private static final MaterialNamesTable MATERIAL_NAMES_TABLE = new MaterialNamesTable(
+            "materialNamesTab:materialNamesTable");
 
     /*
      * Getters
      */
-    public DataTable getMaterialNamesTable() {
-        return DataTable.extract(MATERIAL_NAMES_TABLE);
+    public MaterialNamesTable materialNamesTable() {
+        return MATERIAL_NAMES_TABLE;
     }
 }

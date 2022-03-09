@@ -32,7 +32,7 @@ import com.codeborne.selenide.SelenideElement;
  */
 public class PrimeFacesSelectBooleanCheckbox {
     private final SelenideElement clickableDiv;
-    private final SelenideElement input;
+    private final SelenideElement selectInput;
     private final SelenideElement label;
 
     public PrimeFacesSelectBooleanCheckbox(String testId) {
@@ -48,20 +48,26 @@ public class PrimeFacesSelectBooleanCheckbox {
         }
 
         clickableDiv = element.$(elementWithCssClasses("div", "ui-chkbox-box"));
-        input = element.$(By.tagName("input"));
+        selectInput = element.$(By.tagName("input"));
         label = element.$(By.tagName("label"));
     }
 
-    public String getLabel() {
-        return label.text();
-    }
-
+    /*
+     * Actions
+     */
     public PrimeFacesSelectBooleanCheckbox click() {
         clickableDiv.click();
         return this;
     }
 
-    public boolean isSelected() {
-        return input.isSelected();
+    /*
+     * Getters
+     */
+    public SelenideElement label() {
+        return label;
+    }
+
+    public SelenideElement selectInput() {
+        return selectInput;
     }
 }
