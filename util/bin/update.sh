@@ -176,7 +176,7 @@ function downloadCloudPackages {
     cp $LBAC_DATASTORE/dist/etc/$CLOUD/chain.pem $LBAC_DATASTORE/tmp/ui_conf/$CLOUD
     cp $LBAC_DATASTORE/dist/etc/$CLOUD/$CLOUD.cert $LBAC_DATASTORE/tmp/ui_conf/$CLOUD/$LBAC_INTERNET_FQHN.pem
     pushd $LBAC_DATASTORE/tmp/ui_conf/$CLOUD >/dev/null
-    $LBAC_DATASTORE/dist/bin/chainsplit.pl $CLOUD chain.pem
+    cat chain.pem | $LBAC_DATASTORE/dist/bin/chainsplit.py $CLOUD
     rm chain.pem
     popd > /dev/null
 
@@ -219,7 +219,7 @@ function proxyProcessCloud {
     cp $LBAC_DATASTORE/dist/etc/$CLOUD/chain.pem $LBAC_DATASTORE/tmp/proxy_conf/crt/
 
     pushd $LBAC_DATASTORE/tmp/proxy_conf/crt >/dev/null
-    $LBAC_DATASTORE/dist/bin/chainsplit.pl $CLOUD chain.pem
+    cat chain.pem | $LBAC_DATASTORE/dist/bin/chainsplit.py $CLOUD
     rm chain.pem
     c_rehash .
     popd >/dev/null

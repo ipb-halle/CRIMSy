@@ -190,7 +190,7 @@ function copyFiles {
     sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$LBAC_CLOUD," > target/dist/bin/configure.sh
 
-    cp util/bin/chainsplit.pl target/dist/bin
+    cp util/bin/chainsplit.py target/dist/bin
     cp util/bin/join.sh target/dist/bin
     cp util/bin/lbacInit.sh target/dist/bin
     cp util/bin/setup.sh target/dist/bin

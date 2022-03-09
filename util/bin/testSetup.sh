@@ -679,7 +679,7 @@ function teardown {
 
         docker stop crimsyci_service
         docker stop crimsyreg_service
-        reg_vol=`docker inspect crimsyreg_service |  $LBAC_REPO/util/bin/jason.sh "[0]['Mounts'][0]['Name']"`
+        reg_vol=`docker inspect crimsyreg_service |  $LBAC_REPO/util/bin/jason.py "[0]['Mounts'][0]['Name']"`
 
         docker container prune -f
         docker image prune -f
