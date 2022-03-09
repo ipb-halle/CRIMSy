@@ -20,6 +20,7 @@ package de.ipb_halle.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -28,34 +29,30 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 
 /**
- * Configure the Selenide default browser. 
+ * Configure the Selenide default browser.
  * 
  * @author flange
  */
 public class WebDriverConfig {
     private static final String DEFAULT_BROWSER = "firefox";
 
-    private final String browserName = System.getProperty("integrationtests.browserName", DEFAULT_BROWSER);
-    private final String browserVersion = System.getProperty("integrationtests.browserVersion", null);
-    private final String selenoidUrl = System.getProperty("integrationtests.selenoidUrl", null);
-    private final String crimsyUrl = System.getProperty("integrationtests.crimsyUrl", null);
+    private static final String browserName = System.getProperty("integrationtests.browserName", DEFAULT_BROWSER);
+    private static final String browserVersion = System.getProperty("integrationtests.browserVersion", null);
+    private static final String selenoidUrl = System.getProperty("integrationtests.selenoidUrl", null);
+    private static final String crimsyUrl = System.getProperty("integrationtests.crimsyUrl", null);
 
-    public WebDriverConfig() {
-        validateOrFail();
+    private static final AtomicBoolean FIRST_RUN = new AtomicBoolean(true);
+
+    private WebDriverConfig() {
     }
 
-    private void validateOrFail() {
-        try {
-            new URL(crimsyUrl);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(
-                    "URL to CRIMSy instance is incorrect, please set the system"
-                            + " property \"integrationtests.crimsyUrl\" correctly",
-                    e);
+    public static void configure() {
+        if (!FIRST_RUN.getAndSet(false)) {
+            return;
         }
-    }
 
-    public void configure() {
+        validateOrFail();
+
         Configuration.baseUrl = crimsyUrl;
         Configuration.browser = browserName;
         Configuration.assertionMode = AssertionMode.SOFT;
@@ -71,7 +68,16 @@ public class WebDriverConfig {
         }
     }
 
-    private void configureSelenoid() {
+    private static void validateOrFail() {
+        try {
+            new URL(crimsyUrl);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("URL to CRIMSy instance is incorrect, please set the system"
+                    + " property \"integrationtests.crimsyUrl\" correctly", e);
+        }
+    }
+
+    private static void configureSelenoid() {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("browserName", browserName);
         if (browserVersion != null) {
@@ -85,6 +91,6 @@ public class WebDriverConfig {
         Configuration.remote = selenoidUrl;
     }
 
-    private void configureLocal() {
+    private static void configureLocal() {
     }
 }

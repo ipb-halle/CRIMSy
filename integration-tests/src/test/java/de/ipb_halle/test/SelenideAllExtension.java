@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 public class SelenideAllExtension implements BeforeAllCallback, AfterAllCallback {
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-        new WebDriverConfig().configure();
+        WebDriverConfig.configure();
     }
 
     @Override
