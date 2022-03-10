@@ -18,6 +18,8 @@
 package de.ipb_halle.pageobjects.pages.composite;
 
 import static com.codeborne.selenide.Selenide.$;
+import static de.ipb_halle.pageobjects.util.Apply.applySelection;
+import static de.ipb_halle.pageobjects.util.Apply.applyValue;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
@@ -54,16 +56,12 @@ public class MaterialSearchMaskPage extends AbstractPage<MaterialSearchMaskPage>
      * Actions
      */
     public MaterialSearchMaskPage applyModel(MaterialSearchMaskModel model) {
-        applyIfNotNull(model.getName(), NAME_INPUT);
-        applyIfNotNull(model.getId(), ID_INPUT);
-        applyIfNotNull(model.getUserName(), USER_NAME_INPUT);
-        applyIfNotNull(model.getProjectName(), PROJECT_NAME_INPUT);
-        applyIfNotNull(model.getIndex(), INDEX_INPUT);
-
-        String materialType = model.getMaterialType();
-        if (materialType != null) {
-            MATERIAL_TYPE_SELECTION.selectOption(materialType);
-        }
+        applyValue(model.getName(), NAME_INPUT);
+        applyValue(model.getId(), ID_INPUT);
+        applyValue(model.getUserName(), USER_NAME_INPUT);
+        applyValue(model.getProjectName(), PROJECT_NAME_INPUT);
+        applyValue(model.getIndex(), INDEX_INPUT);
+        applySelection(model.getMaterialType(), MATERIAL_TYPE_SELECTION);
 
         String molfile = model.getMolfile();
         if (molfile != null) {
@@ -71,12 +69,6 @@ public class MaterialSearchMaskPage extends AbstractPage<MaterialSearchMaskPage>
         }
 
         return this;
-    }
-
-    private void applyIfNotNull(String value, SelenideElement element) {
-        if (value != null) {
-            element.setValue(value);
-        }
     }
 
     public MaterialSearchMaskPage clear() {

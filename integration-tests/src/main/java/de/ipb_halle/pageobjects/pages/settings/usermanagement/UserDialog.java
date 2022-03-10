@@ -19,6 +19,7 @@ package de.ipb_halle.pageobjects.pages.settings.usermanagement;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
+import static de.ipb_halle.pageobjects.util.Apply.applyValue;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
@@ -58,30 +59,24 @@ public class UserDialog extends PrimeFacesDialog {
      * Actions
      */
     /**
-     * Applies to user model to the input fields.
+     * Applies the user model to the input fields.
      * <p>
      * Convention: The input element will not be evaluated in case the model field
      * is null. Use empty strings to reset fields.
      * 
      * @param model
-     * @return
+     * @return this
      */
     public UserDialog applyModel(UserModel model) {
-        applyIfNotNull(model.getName(), NAME_INPUT);
-        applyIfNotNull(model.getLogin(), LOGIN_INPUT);
-        applyIfNotNull(model.getShortcut(), SHORTCUT_INPUT);
-        applyIfNotNull(model.getEmail(), EMAIL_INPUT);
-        applyIfNotNull(model.getPassword(), PASSWORD_INPUT);
-        applyIfNotNull(model.getPasswordRepeat(), PASSWORD_REPEAT_INPUT);
-        applyIfNotNull(model.getPhone(), PHONE_INPUT);
+        applyValue(model.getName(), NAME_INPUT);
+        applyValue(model.getLogin(), LOGIN_INPUT);
+        applyValue(model.getShortcut(), SHORTCUT_INPUT);
+        applyValue(model.getEmail(), EMAIL_INPUT);
+        applyValue(model.getPassword(), PASSWORD_INPUT);
+        applyValue(model.getPasswordRepeat(), PASSWORD_REPEAT_INPUT);
+        applyValue(model.getPhone(), PHONE_INPUT);
 
         return this;
-    }
-
-    private void applyIfNotNull(String value, SelenideElement element) {
-        if (value != null) {
-            element.setValue(value);
-        }
     }
 
     public UserManagementPage confirm() {

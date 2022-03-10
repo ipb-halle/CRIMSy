@@ -17,12 +17,14 @@
  */
 package de.ipb_halle.pageobjects.pages.composite;
 
+import static com.codeborne.selenide.Selenide.page;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.PrimeFacesDialog;
 import de.ipb_halle.pageobjects.components.table.DataTable;
+import de.ipb_halle.pageobjects.pages.projects.ProjectEditPage;
 
 /**
  * Page object for /ui/web/resources/crimsy/changeOwnerModal.xhtml
@@ -35,7 +37,7 @@ public class ChangeOwnerModalPage extends PrimeFacesDialog {
     /*
      * Getters
      */
-    public UsersTable getUsersTable() {
+    public UsersTable usersTable() {
         return USERS_TABLE;
     }
 
@@ -49,8 +51,9 @@ public class ChangeOwnerModalPage extends PrimeFacesDialog {
         /*
          * Actions
          */
-        public void selectUser(int rowIndex) {
+        public ProjectEditPage selectUser(int rowIndex) {
             getCell(3, rowIndex).$(SELECT_USER_BUTTON).click();
+            return page(ProjectEditPage.class);
         }
 
         /*

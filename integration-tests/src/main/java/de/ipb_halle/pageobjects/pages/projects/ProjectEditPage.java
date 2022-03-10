@@ -17,14 +17,18 @@
  */
 package de.ipb_halle.pageobjects.pages.projects;
 
+import static com.codeborne.selenide.Condition.exactTextCaseSensitive;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
+import static de.ipb_halle.pageobjects.util.Apply.applySelection;
+import static de.ipb_halle.pageobjects.util.Apply.applyValue;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.pages.AbstractPage;
 import de.ipb_halle.pageobjects.pages.composite.ChangeOwnerModalPage;
+import de.ipb_halle.pageobjects.pages.composite.ChangeOwnerModalPage.UsersTable;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/project/projectEdit.xhtml and its
@@ -52,6 +56,32 @@ public class ProjectEditPage extends AbstractPage<ProjectEditPage> {
     /*
      * Actions
      */
+    /**
+     * Applies the project model.
+     * <p>
+     * Convention: The input element will not be evaluated in case the model field
+     * is null. Use empty strings to reset fields.
+     * 
+     * @param model
+     * @return this
+     */
+    public ProjectEditPage applyModel(ProjectModel model) {
+        applyValue(model.getName(), PROJECT_NAME_INPUT);
+        applySelection(model.getProjectType(), PROJECT_TYPE_SELECTION);
+
+        String owner = model.getOwner();
+        if (owner != null) {
+            UsersTable table = openProjectOwnerModal().usersTable().search(owner);
+            table.getUserName(0).shouldBe(exactTextCaseSensitive(owner));
+            table.selectUser(0);
+        }
+
+        applyValue(model.getDescription(), PROJECT_DESCRIPTION_INPUT);
+        // TODO: groups
+
+        return this;
+    }
+
     public ProjectOverviewPage cancel() {
         CANCEL_BUTTON.click();
         return page(ProjectOverviewPage.class);
@@ -87,27 +117,27 @@ public class ProjectEditPage extends AbstractPage<ProjectEditPage> {
     /*
      * Getters
      */
-    public SelenideElement getProjectNameInput() {
+    public SelenideElement projectNameInput() {
         return PROJECT_NAME_INPUT;
     }
 
-    public SelenideElement getProjectTypeSelection() {
+    public SelenideElement projectTypeSelection() {
         return PROJECT_TYPE_SELECTION;
     }
 
-    public SelenideElement getProjectDescriptionInput() {
+    public SelenideElement projectDescriptionInput() {
         return PROJECT_DESCRIPTION_INPUT;
     }
 
-    public SelenideElement getProjectOwnerInput() {
+    public SelenideElement projectOwnerInput() {
         return PROJECT_OWNER_INPUT;
     }
 
-    public ProjectACETable getAceTable() {
+    public ProjectACETable aceTable() {
         return ACE_TABLE;
     }
 
-    public AddableGroupsTable getAddableGroupsTable() {
+    public AddableGroupsTable addableGroupsTable() {
         return ADDABLE_GROUPS_TABLE;
     }
 }

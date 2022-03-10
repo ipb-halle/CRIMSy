@@ -18,6 +18,8 @@
 package de.ipb_halle.test;
 
 import de.ipb_halle.pageobjects.pages.LoginPage;
+import de.ipb_halle.pageobjects.pages.projects.ProjectModel;
+import de.ipb_halle.pageobjects.pages.projects.ProjectOverviewPage;
 import de.ipb_halle.pageobjects.pages.search.SearchPage;
 import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserDialog;
 import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserManagementPage;
@@ -64,5 +66,38 @@ public class ModelTools {
         dialog.shortcutInput().setValue("");
         return dialog.confirm().getUsersTable().search(login).deleteUser(0).confirm().logout(LoginPage.class)
                 .navigateToLoginPage();
+    }
+
+    /**
+     * Creates a project according to the model.
+     * <p>
+     * Requirements: Not logged in and browser is on the login page.
+     * <p>
+     * Outcome: Not logged in and browser is on the login page.
+     * 
+     * @param model
+     * @param loginPage
+     * @return
+     */
+    public static LoginPage createProject(ProjectModel model, LoginPage loginPage) {
+        return loginPage.loginAsAdmin(SearchPage.class).navigateTo(ProjectOverviewPage.class).newProject()
+                .applyModel(model).save(ProjectOverviewPage.class).logout(LoginPage.class).navigateToLoginPage();
+    }
+
+    /**
+     * Deactivates the project with the given name.
+     * <p>
+     * Requirements: Not logged in and browser is on the login page.
+     * <p>
+     * Outcome: Not logged in and browser is on the login page.
+     * 
+     * @param name
+     * @param loginPage
+     * @return
+     */
+    public static LoginPage deactivateProject(String name, LoginPage loginPage) {
+        ProjectOverviewPage page = loginPage.loginAsAdmin(SearchPage.class).navigateTo(ProjectOverviewPage.class);
+        page.getProjectsTable().search(name).deactivateProject(0);
+        return page.logout(LoginPage.class).navigateToLoginPage();
     }
 }
