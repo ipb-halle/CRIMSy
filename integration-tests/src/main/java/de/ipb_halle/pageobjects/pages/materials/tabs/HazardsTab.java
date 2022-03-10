@@ -17,12 +17,12 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
+import static com.codeborne.selenide.CollectionCondition.size;
+import static com.codeborne.selenide.Condition.selected;
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.openqa.selenium.By;
 
 import com.codeborne.selenide.ElementsCollection;
@@ -37,151 +37,118 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
  * @author flange
  */
 public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEditTab {
-    /*
-     * GHS table
-     */
-    private static final SelenideElement GHS_TABLE = $(
-            testId("hazardsTab:GHSTable"));
-    private static final ElementsCollection GHS_CHECKBOXES_CLICKABLE_DIVS = GHS_TABLE
-            .$$(elementWithCssClasses("div", "ui-chkbox-box"));
-    private static final ElementsCollection GHS_INPUTS = GHS_TABLE
-            .$$(By.tagName("input"));
-    private static final ElementsCollection GHS_LABELS = GHS_TABLE
-            .$$(testId("hazardsTab:GHSLabel"));
-    private static final ElementsCollection GHS_IMAGES = GHS_TABLE
-            .$$(testId("hazardsTab:GHSImage"));
-    /*
-     * H/P statements
-     */
-    private static final SelenideElement H_STATEMENTS_INPUT = $(
-            testId("hazardsTab:hStatements"));
-    private static final SelenideElement P_STATEMENTS_INPUT = $(
-            testId("hazardsTab:pStatements"));
-    /*
-     * radioactive
-     */
+    private static final SelenideElement H_STATEMENTS_INPUT = $(testId("hazardsTab:hStatements"));
+    private static final SelenideElement P_STATEMENTS_INPUT = $(testId("hazardsTab:pStatements"));
     private static final PrimeFacesSelectBooleanCheckbox RADIOACTIVE_CHECKBOX = new PrimeFacesSelectBooleanCheckbox(
             "hazardsTab:radioactive");
-    /*
-     * biosafety
-     */
-    private static final SelenideElement BIOSAFETY_LEVEL_TABLE = $(
-            testId("hazardsTab:bioSafetyLevelTable"));
-    private static final ElementsCollection BIOSAFETY_CLICKABLE_DIVS = BIOSAFETY_LEVEL_TABLE
-            .$$(elementWithCssClasses("div", "ui-radiobutton-box"));
-    private static final ElementsCollection BIOSAFETY_INPUTS = BIOSAFETY_LEVEL_TABLE
-            .$$(By.tagName("input"));
-    private static final ElementsCollection BIOSAFETY_LABELS = BIOSAFETY_LEVEL_TABLE
-            .$$(testId("hazardsTab:bioSafetyLevelLabel"));
-    private static final ElementsCollection BIOSAFETY_IMAGES = BIOSAFETY_LEVEL_TABLE
-            .$$(testId("hazardsTab:bioSafetyLevelImage"));
-    /*
-     * GMO
-     */
     private static final PrimeFacesSelectBooleanCheckbox GMO_CHECKBOX = new PrimeFacesSelectBooleanCheckbox(
             "hazardsTab:gmo");
-    /*
-     * custom remarks
-     */
-    private static final SelenideElement CUSTOM_REMARKS_INPUT = $(
-            testId("hazardsTab:customRemarks"));
+    private static final SelenideElement CUSTOM_REMARKS_INPUT = $(testId("hazardsTab:customRemarks"));
 
     /**
-     * Page model for the GHS checkboxes. This class holds no state, thus all
-     * methods use the current state of the page.
+     * Page object for the GHS checkboxes.
      * 
      * @author flange
      */
-    // TODO: maybe refactor with PrimeFacesSelectBooleanCheckbox
-    public class GHSDataModel {
-        private GHSDataModel() {
-        }
+    /*
+     * This class cannot be refactored using PrimeFacesSelectManyCheckbox, but it
+     * tries to offer a similar API and implementation.
+     */
+    public static class GHSData {
+        private static final SelenideElement GHS_TABLE = $(testId("hazardsTab:GHSTable"));
+        private static final ElementsCollection GHS_CHECKBOXES_CLICKABLE_DIVS = GHS_TABLE
+                .$$(elementWithCssClasses("div", "ui-chkbox-box"));
+        private static final ElementsCollection GHS_INPUTS = GHS_TABLE.$$(By.tagName("input"));
+        private static final ElementsCollection GHS_LABELS = GHS_TABLE.$$(testId("hazardsTab:GHSLabel"));
+        private static final ElementsCollection GHS_IMAGES = GHS_TABLE.$$(testId("hazardsTab:GHSImage"));
 
-        public List<String> getLabels() {
-            List<String> labels = new ArrayList<>();
-            for (SelenideElement element : GHS_LABELS) {
-                labels.add(element.text());
-            }
-            return labels;
-        }
-
-        private int getLabelIndex(String label) {
-            int index = getLabels().indexOf(label);
-            if (index == -1) {
-                throw new RuntimeException("No such label: " + label);
-            }
-            return index;
-        }
-
-        public GHSDataModel clickCheckbox(String label) {
-            GHS_CHECKBOXES_CLICKABLE_DIVS.get(getLabelIndex(label)).click();
+        /*
+         * Actions
+         */
+        public GHSData clickCheckbox(int index) {
+            GHS_CHECKBOXES_CLICKABLE_DIVS.get(index).click();
             return this;
         }
 
-        public boolean isSelected(String label) {
-            return GHS_INPUTS.get(getLabelIndex(label)).isSelected();
+        /*
+         * Getters
+         */
+        public ElementsCollection labels() {
+            return GHS_LABELS;
         }
 
-        public SelenideElement getImage(String label) {
-            return GHS_IMAGES.get(getLabelIndex(label));
+        public SelenideElement label(int index) {
+            return GHS_LABELS.get(index);
+        }
+
+        public ElementsCollection selectInputs() {
+            return GHS_INPUTS;
+        }
+
+        public SelenideElement selectInput(int index) {
+            return GHS_INPUTS.get(index);
+        }
+
+        public ElementsCollection images() {
+            return GHS_IMAGES;
+        }
+
+        public SelenideElement image(int index) {
+            return GHS_IMAGES.get(index);
         }
     }
 
     /**
-     * Page model for the biosafety radio group. This class holds no state, thus
-     * all methods use the current state of the page.
+     * Page object for the biosafety radio group.
      * 
      * @author flange
      */
-    // TODO: refactor to PrimeFacesSelectOneRadio
-    public static class BioSafetyDataModel {
-        private BioSafetyDataModel() {
-        }
+    /*
+     * This class cannot be refactored using PrimeFacesSelectOneRadio, but it tries
+     * to offer a similar API and implementation.
+     */
+    public static class BioSafetyData {
+        private static final SelenideElement BIOSAFETY_LEVEL_TABLE = $(testId("hazardsTab:bioSafetyLevelTable"));
+        private static final ElementsCollection BIOSAFETY_CLICKABLE_DIVS = BIOSAFETY_LEVEL_TABLE
+                .$$(elementWithCssClasses("div", "ui-radiobutton-box"));
+        private static final ElementsCollection BIOSAFETY_INPUTS = BIOSAFETY_LEVEL_TABLE.$$(By.tagName("input"));
+        private static final ElementsCollection BIOSAFETY_LABELS = BIOSAFETY_LEVEL_TABLE
+                .$$(testId("hazardsTab:bioSafetyLevelLabel"));
+        private static final ElementsCollection BIOSAFETY_IMAGES = BIOSAFETY_LEVEL_TABLE
+                .$$(testId("hazardsTab:bioSafetyLevelImage"));
 
-        public List<String> getLabels() {
-            List<String> labels = new ArrayList<>();
-            for (SelenideElement element : BIOSAFETY_LABELS) {
-                labels.add(element.text());
-            }
-            return labels;
-        }
-
-        private int getLabelIndex(String label) {
-            int index = getLabels().indexOf(label);
-            if (index == -1) {
-                throw new RuntimeException("No such label: " + label);
-            }
-            return index;
-        }
-
-        public BioSafetyDataModel clickRadioButton(String label) {
-            BIOSAFETY_CLICKABLE_DIVS.get(getLabelIndex(label)).click();
+        /*
+         * Actions
+         */
+        public BioSafetyData clickRadioButton(int index) {
+            BIOSAFETY_CLICKABLE_DIVS.get(index).click();
             return this;
         }
 
-        public String getSelectedLabel() {
-            List<String> selected = new ArrayList<>();
-
-            List<String> allLabels = getLabels();
-            for (int i = 0; i < allLabels.size(); i++) {
-                String label = allLabels.get(i);
-                if (BIOSAFETY_INPUTS.get(i).isSelected()) {
-                    selected.add(label);
-                }
-            }
-
-            if (selected.size() > 1) {
-                throw new RuntimeException(
-                        "A radio group cannot have more than one selected radio button!");
-            } else if (selected.size() == 1) {
-                return selected.get(0);
-            } else {
-                return null;
-            }
+        /*
+         * Getters
+         */
+        public ElementsCollection labels() {
+            return BIOSAFETY_LABELS;
         }
 
-        public SelenideElement getImage(String label) {
-            return BIOSAFETY_IMAGES.get(getLabelIndex(label));
+        public SelenideElement label(int index) {
+            return BIOSAFETY_LABELS.get(index);
+        }
+
+        public SelenideElement checkedLabel() {
+            SelenideElement checkedInput = BIOSAFETY_INPUTS.filter(selected).shouldHave(size(1)).first();
+            SelenideElement tr = checkedInput.parent().parent().parent().parent();
+            SelenideElement label = tr.$(By.tagName("label"));
+            return label;
+        }
+
+        public ElementsCollection images() {
+            return BIOSAFETY_IMAGES;
+        }
+
+        public SelenideElement image(int index) {
+            return BIOSAFETY_IMAGES.get(index);
         }
     }
 
@@ -201,31 +168,31 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
     /*
      * Getters
      */
-    public GHSDataModel getGHSDataModel() {
-        return new GHSDataModel();
+    public GHSData ghsData() {
+        return new GHSData();
     }
 
-    public SelenideElement getHStatementsInput() {
+    public SelenideElement hStatementsInput() {
         return H_STATEMENTS_INPUT;
     }
 
-    public SelenideElement getPStatementsInput() {
+    public SelenideElement pStatementsInput() {
         return P_STATEMENTS_INPUT;
     }
 
-    public boolean isRadioactiveSelected() {
-        return RADIOACTIVE_CHECKBOX.isSelected();
+    public PrimeFacesSelectBooleanCheckbox radioActiveCheckbox() {
+        return RADIOACTIVE_CHECKBOX;
     }
 
-    public boolean isGMOSelected() {
-        return GMO_CHECKBOX.isSelected();
+    public BioSafetyData bioSafetyData() {
+        return new BioSafetyData();
     }
 
-    public BioSafetyDataModel getBioSafetyDataModel() {
-        return new BioSafetyDataModel();
+    public PrimeFacesSelectBooleanCheckbox gmoCheckbox() {
+        return GMO_CHECKBOX;
     }
 
-    public SelenideElement getCustomRemarksInput() {
+    public SelenideElement customRemarksInput() {
         return CUSTOM_REMARKS_INPUT;
     }
 }

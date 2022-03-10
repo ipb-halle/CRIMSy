@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.pageobjects.components;
 
+import static com.codeborne.selenide.Condition.selected;
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
@@ -69,5 +70,18 @@ public class PrimeFacesSelectBooleanCheckbox {
 
     public SelenideElement selectInput() {
         return selectInput;
+    }
+
+    /*
+     * Fluent assertions
+     */
+    public PrimeFacesSelectBooleanCheckbox shouldBeSelected() {
+        selectInput.shouldBe(selected);
+        return this;
+    }
+
+    public PrimeFacesSelectBooleanCheckbox shouldNotBeSelected() {
+        selectInput.shouldNotBe(selected);
+        return this;
     }
 }

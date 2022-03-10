@@ -21,8 +21,7 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
-import org.openqa.selenium.By.ByClassName;
-
+import org.openqa.selenium.By;
 import com.codeborne.selenide.SelenideElement;
 
 /**
@@ -37,10 +36,13 @@ public class PrimeFacesTree {
         element = $(testId(testId));
     }
 
+    /*
+     * Actions
+     */
     /**
-     * Toggle an item in the taxonomy tree. The item has to be visible. Item
-     * names are not unique inside the tree, so the nth item with the given name
-     * is selected.
+     * Toggle an item in the taxonomy tree. The item has to be visible. Item names
+     * are not unique inside the tree, so the nth item with the given name is
+     * selected.
      * 
      * @param name
      * @param n    index of item (starting with 0)
@@ -49,16 +51,15 @@ public class PrimeFacesTree {
     public PrimeFacesTree toggleTaxonomyItem(String name, int n) {
         SelenideElement spanWithName = element.$$(byText(name)).get(n);
         SelenideElement parent = spanWithName.parent();
-        SelenideElement toggleSpan = parent
-                .$(new ByClassName("ui-tree-toggler"));
+        SelenideElement toggleSpan = parent.$(By.className("ui-tree-toggler"));
         toggleSpan.click();
         return this;
     }
 
     /**
-     * Select an item in the taxonomy tree. The item has to be visible. Item
-     * names are not unique inside the tree, so the nth item with the given name
-     * is selected.
+     * Select an item in the taxonomy tree. The item has to be visible. Item names
+     * are not unique inside the tree, so the nth item with the given name is
+     * selected.
      * 
      * @param name
      * @param n    index of item (starting with 0)
@@ -67,5 +68,12 @@ public class PrimeFacesTree {
     public PrimeFacesTree selectTaxonomyItem(String name, int n) {
         element.$$(byText(name)).get(n).click();
         return this;
+    }
+
+    /*
+     * Getters
+     */
+    public SelenideElement selectedItem() {
+        return element.$(By.className("ui-state-highlight"));
     }
 }
