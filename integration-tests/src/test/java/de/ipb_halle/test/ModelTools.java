@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.test;
 
+import java.util.Random;
+
 import de.ipb_halle.pageobjects.pages.LoginPage;
 import de.ipb_halle.pageobjects.pages.projects.ProjectModel;
 import de.ipb_halle.pageobjects.pages.projects.ProjectOverviewPage;
@@ -85,7 +87,8 @@ public class ModelTools {
     }
 
     /**
-     * Deactivates the project with the given name.
+     * Deactivates the project with the given name. It renames the project to a
+     * random name before.
      * <p>
      * Requirements: Not logged in and browser is on the login page.
      * <p>
@@ -96,8 +99,13 @@ public class ModelTools {
      * @return
      */
     public static LoginPage deactivateProject(String name, LoginPage loginPage) {
-        ProjectOverviewPage page = loginPage.loginAsAdmin(SearchPage.class).navigateTo(ProjectOverviewPage.class);
-        page.getProjectsTable().search(name).deactivateProject(0);
+        String newRandomName = String.format("deactivatedProject-%d", new Random().nextInt());
+
+        ProjectOverviewPage page = loginPage.loginAsAdmin(SearchPage.class).navigateTo(ProjectOverviewPage.class)
+                .getProjectsTable().search(name).editProject(0).setProjectName(newRandomName)
+                .save(ProjectOverviewPage.class);
+        page.getProjectsTable().search(newRandomName).deactivateProject(0);
+
         return page.logout(LoginPage.class).navigateToLoginPage();
     }
 }

@@ -104,6 +104,11 @@ public class ProjectEditPage extends AbstractPage<ProjectEditPage> {
         return page(expectedPageClass);
     }
 
+    public ProjectEditPage setProjectName(String name) {
+        PROJECT_NAME_INPUT.setValue(name);
+        return this;
+    }
+
     public ProjectEditPage selectProjectType(String type) {
         PROJECT_TYPE_SELECTION.selectOption(type);
         return this;
@@ -112,6 +117,11 @@ public class ProjectEditPage extends AbstractPage<ProjectEditPage> {
     public ChangeOwnerModalPage openProjectOwnerModal() {
         PROJECT_OWNER_BUTTON.click();
         return page(ChangeOwnerModalPage.class);
+    }
+
+    public ProjectEditPage setProjectDescription(String description) {
+        PROJECT_DESCRIPTION_INPUT.setValue(description);
+        return this;
     }
 
     /*
