@@ -23,20 +23,22 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.container.mock.CallBackControllerMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
  * 
  * @author flange
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class ShortcutValidatorTest extends TestBase {
     private FacesContext fc = null;
     private UIComponent comp = null;

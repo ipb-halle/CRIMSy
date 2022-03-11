@@ -21,11 +21,11 @@ import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
@@ -46,18 +46,20 @@ import static de.ipb_halle.lbac.material.sequence.SequenceType.PROTEIN;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import javax.ws.rs.core.Response;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
 
 /**
  * @author flange
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class SequenceSearchServiceTest extends TestBase {
     private static final long serialVersionUID = 1L;
 
@@ -75,9 +77,9 @@ public class SequenceSearchServiceTest extends TestBase {
 
     private Sequence sequence;
 
-    private final String SQL_LOAD_PARAMETER = "SELECT * from temp_search_parameter";
+    private final String SQL_LOAD_PARAMETER = "SELECT id from temp_search_parameter";
 
-    @Before
+    @BeforeEach
     public void init() {
         mock.setBehaviour(null);
 
@@ -90,7 +92,7 @@ public class SequenceSearchServiceTest extends TestBase {
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
     }

@@ -73,7 +73,7 @@ public class CollectionWebService extends LbacWebService {
         try {
             checkAuthenticityOfRequest(request);
         } catch (NotAuthentificatedException e) {
-            logger.error("Error at athentificating request", ExceptionUtils.getStackTrace(e));
+            logger.error("Error at athentificating request"+ ExceptionUtils.getStackTrace(e));
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -96,7 +96,7 @@ public class CollectionWebService extends LbacWebService {
             result.setCollectionList(filteredColls);
             return Response.ok(result).build();
         } catch (Exception e) {
-            logger.error("Error at fetching local collections", ExceptionUtils.getStackTrace(e));
+            logger.error("Error at fetching local collections"+ExceptionUtils.getStackTrace(e));
             return Response.serverError().build();
         }
     }

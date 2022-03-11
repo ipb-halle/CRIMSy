@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.material.sequence.search.bean;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.fasta_search_service.models.search.TranslationTable;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
@@ -32,7 +32,7 @@ public class SequenceSearchMaskValuesHolderTest {
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
     private SequenceSearchMaskValuesHolder valuesHolder;
 
-    @Before
+    @BeforeEach
     public void init() {
         valuesHolder = new SequenceSearchMaskValuesHolder(messagePresenter);
     }

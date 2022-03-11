@@ -33,20 +33,22 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This class will provide some test cases for the CollectionService class.
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class CollectionBeanTest extends TestBase {
 
     @Inject
@@ -62,7 +64,7 @@ public class CollectionBeanTest extends TestBase {
 
     private CollectionBean bean;
 
-    @Before
+    @BeforeEach
     public void init() {
         bean = new CollectionBeanMock()
                 .setCollectionService(collectionService)
@@ -88,7 +90,7 @@ public class CollectionBeanTest extends TestBase {
         Assert.assertEquals(publicUser.getId(), bean.getCurrentAccount().getId());
     }
 
-    @Ignore("Due to some problems with the test database")
+    @Disabled("Due to some problems with the test database")
     @Test
     public void test002_actionCreate() {
         LoginEvent logInEvent = new LoginEvent(publicUser);
@@ -105,6 +107,7 @@ public class CollectionBeanTest extends TestBase {
 
     @Test
     public void test003_getCreatableLocalCollections() {
+        entityManagerService.doSqlUpdate("DELETE FROM collections;");
         Collection col = new Collection();
         col.setName("ReadOnly");
         col.setOwner(adminUser);

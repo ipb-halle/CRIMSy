@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.exp.image;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
@@ -34,7 +34,7 @@ public class ImageEntityTest {
     private User user;
     private ACList aclist;
 
-    @Before
+    @BeforeEach
     public void init() {
         user = new User();
         user.setId(10);

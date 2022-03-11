@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.material.sequence.SequenceEntity;
 import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchConditionBuilder;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,9 +38,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.criteria.JoinType;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -50,7 +51,8 @@ import static org.junit.Assert.assertTrue;
  *
  * @author fblocal
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class SqlParamTableBuilderTest extends TestBase {
 
     @Deployment

@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
@@ -54,6 +53,8 @@ import de.ipb_halle.lbac.material.sequence.SequenceType;
 import de.ipb_halle.lbac.material.sequence.history.SequenceDifference;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -62,18 +63,19 @@ import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class MaterialServiceTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -100,7 +102,7 @@ public class MaterialServiceTest extends TestBase {
     String precautionaryStatement = "PrecautionaryStatement - Text";
     String storageClassRemark = "storageClassRemark";
 
-    @Before
+    @BeforeEach
     public void init() {
         creationTools = new CreationTools(hazardStatement, precautionaryStatement, storageClassRemark, memberService, projectService);
         cleanItemsFromDb();
@@ -219,8 +221,8 @@ public class MaterialServiceTest extends TestBase {
     @Test
     public void test002_updateStructure() throws Exception {
 
-        Project p = creationTools.createProject();
-        Project p2 = creationTools.createProject();
+        Project p = creationTools.createProject("project1");
+        Project p2 = creationTools.createProject("project2");
 
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
@@ -358,7 +360,7 @@ public class MaterialServiceTest extends TestBase {
         List hazardHists = entityManagerService.doSqlQuery(
                 "SELECT materialid,typeid_old,typeid_new ,remarks_old,remarks_new "
                 + "FROM material_hazards_hist "
-                + "ORDER BY typeid_old,typeid_new");
+                + "ORDER BY typeid_old ASC NULLS FIRST,typeid_new ASC NULLS FIRST");
         Assert.assertEquals(4, hazardHists.size());
 
         // Add poisonous hazard (GHS06)
@@ -409,6 +411,7 @@ public class MaterialServiceTest extends TestBase {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test005_saveTaxonomy() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
@@ -440,10 +443,10 @@ public class MaterialServiceTest extends TestBase {
         t3.getTaxHierachy().add(t2);
         t3.setLevel(levels.get(2));
         instance.saveMaterialToDB(t3, p.getUserGroups().getId(), new HashMap<>(), publicUser);
-
+        @SuppressWarnings("unchecked")
         List<Integer> results = (List) entityManagerService.doSqlQuery("SELECT parentid FROM effective_taxonomy WHERE taxoid=0");
         Assert.assertTrue(results.isEmpty());
-
+        
         results = (List) entityManagerService.doSqlQuery(String.format("SELECT parentid FROM effective_taxonomy WHERE taxoid=%d", t2.getId()));
         Assert.assertEquals(1, results.size());
 

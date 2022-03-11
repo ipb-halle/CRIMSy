@@ -182,7 +182,13 @@ public class MaterialOverviewDifference implements MaterialDifference {
         this.digest = digest;
     }
 
+    /**
+     *
+     * @param bean
+     * @return
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public OverviewHistoryController createHistoryController(MaterialBean bean) {
         return new OverviewHistoryController(bean);
     }

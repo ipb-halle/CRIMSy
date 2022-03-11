@@ -148,7 +148,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
         READ, // Default mode 
         UPDATE, // Changes the description of a collection
         DELETE, // Deletes the complete collection
-        REINDEX, // reindex all documents in collection in solr
         CLEAR // removes all documents from collection
     };
 
@@ -243,20 +242,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
         } else {
             logger.error("User " + currentAccount.getLogin() + " not allowed to delete collection " + activeCollection.getName());
             UIMessage.info(MESSAGE_BUNDLE, "collMgr_delete_no_permission");
-        }
-    }
-
-    /**
-     * Triggers the reindexing of all documents in the solR core of the
-     * collection. Needs the permission to EDIT the collection or the current
-     * user must be the owner.
-     */
-    public void actionReindex() {
-        boolean isOwner = currentAccount.equals(activeCollection.getOwner());
-        if (isOwner || acListService.isPermitted(ACPermission.permEDIT, activeCollection, currentAccount)) {
-            collectionOperation.reindexCollection(activeCollection, currentAccount);
-        } else {
-            UIMessage.info(MESSAGE_BUNDLE, "collMgr_reindex_no_permission");
         }
     }
 
@@ -396,10 +381,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
             case DELETE:
                 return Messages.getString(MESSAGE_BUNDLE, "collMgr_mode_deleteCollection", null);
             case UPDATE:
-
                 return Messages.getString(MESSAGE_BUNDLE, "collMgr_mode_updateCollection", null);
-            case REINDEX:
-                return Messages.getString(MESSAGE_BUNDLE, "collMgr_mode_reindexCollection", null);
             case CLEAR:
                 return Messages.getString(MESSAGE_BUNDLE, "collMgr_mode_clearCollection", null);
         }
@@ -461,10 +443,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     public boolean isClearAllowed(Collection col) {
         return collPermAnalyser.isClearAllowed(col, currentAccount);
-    }
-
-    public boolean isReindexingAllowed(Collection col) {
-        return collPermAnalyser.isReindexingAllowed(col, currentAccount);
     }
 
     public boolean isPermissionEditAllowed(Collection col) {

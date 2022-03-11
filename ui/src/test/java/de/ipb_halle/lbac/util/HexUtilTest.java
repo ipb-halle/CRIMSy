@@ -17,10 +17,11 @@
  */
 package de.ipb_halle.lbac.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 
 /**
  * This class will provide some test cases for the HexUtil class 
@@ -49,14 +50,14 @@ public class HexUtilTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHexUtilOdd() {
-        HexUtil.fromHex("5");
+        assertThrows(IllegalArgumentException.class, () -> HexUtil.fromHex("5"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHexUtilInvalidChar() {
-        HexUtil.fromHex("2g");
+        assertThrows(IllegalArgumentException.class, () ->HexUtil.fromHex("2g"));
     }
 
 }

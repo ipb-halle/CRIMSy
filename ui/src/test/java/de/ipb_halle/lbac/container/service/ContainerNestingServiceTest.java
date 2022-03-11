@@ -23,23 +23,25 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class ContainerNestingServiceTest extends TestBase {
 
     @Inject
@@ -48,7 +50,7 @@ public class ContainerNestingServiceTest extends TestBase {
     @Inject
     private ContainerService containerService;
 
-    @After
+    @AfterEach
     public void cleanUp() {
 
     }
@@ -140,12 +142,12 @@ public class ContainerNestingServiceTest extends TestBase {
         Assert.assertFalse(getNested(c1.getId(), c0.getId(), "C1 -> C0"));  // C1 -> 03 (direct)
 
     }
-
+    @SuppressWarnings("unchecked")
     private int getNestedEntries() {
         List<BigInteger> amountList = (List) entityManagerService.doSqlQuery("SELECT COUNT(*) FROM nested_containers");
         return amountList.get(0).intValue();
     }
-
+    @SuppressWarnings("unchecked")
     private boolean getNested(int source, int target, String label) {
         List<Boolean> nestedList = (List) entityManagerService.doSqlQuery("SELECT nested FROM nested_containers WHERE sourceid=" + source + " AND targetid=" + target);
         if (nestedList.size() != 1) {

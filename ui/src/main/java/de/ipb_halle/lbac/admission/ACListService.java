@@ -228,6 +228,7 @@ public class ACListService implements Serializable {
     /**
      * repair the permission codes of ACLists
      */
+    @Deprecated
     public void repairPermCodes() {
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
         CriteriaQuery<ACListEntity> criteriaQuery = builder.createQuery(ACListEntity.class);

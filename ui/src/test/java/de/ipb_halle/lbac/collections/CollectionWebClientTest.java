@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -40,18 +41,19 @@ import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class CollectionWebClientTest extends TestBase {
 
     @Inject
@@ -82,7 +84,7 @@ public class CollectionWebClientTest extends TestBase {
         return UserBeanDeployment.add(deployment);
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();

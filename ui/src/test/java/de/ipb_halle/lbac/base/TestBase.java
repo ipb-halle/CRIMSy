@@ -66,7 +66,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Basic Functionality to support specialized tests.
@@ -165,14 +165,13 @@ public class TestBase implements Serializable {
                 .addClass(MessagePresenterMock.class)
                 .addClass(SessionScopeContext.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
-                .addAsResource("init.sql", "init.sql")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource("javax.enterprise.inject.spi.Extension",
                         "META-INF/services/javax.enterprise.inject.spi.Extension");
         return archive;
     }
     
-    @Before
+    @BeforeEach
     public final void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
         
@@ -368,6 +367,7 @@ public class TestBase implements Serializable {
         createTaxanomy(19, "Victoria", 7, userGroups, ownerId, 1, 16, 17, 18);
         createTaxanomy(20, "Euryale", 7, userGroups, ownerId, 1, 16, 17, 18);
         createTaxanomy(21, "Haarnixen", 7, userGroups, ownerId, 1, 16, 17);
+        entityManagerService.doSqlUpdate("ALTER SEQUENCE materials_materialid_seq RESTART WITH 22");
     }
     
     public void resetDB(MemberService memberService) {
@@ -449,7 +449,8 @@ public class TestBase implements Serializable {
     
     protected void cleanMaterialsFromDB() {
         entityManagerService.doSqlUpdate("DELETE FROM material_compositions");
-        entityManagerService.doSqlUpdate("delete from biomaterial");
+        entityManagerService.doSqlUpdate("DELETE from biomaterial_history");
+        entityManagerService.doSqlUpdate("DELETE from biomaterial");
         entityManagerService.doSqlUpdate("DELETE FROM tissues");
         entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
@@ -470,6 +471,7 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("delete from material_indices");
         entityManagerService.doSqlUpdate("delete from materialdetailrights");
         entityManagerService.doSqlUpdate("delete from structures");
+        entityManagerService.doSqlUpdate("delete from molecules");
         entityManagerService.doSqlUpdate("delete from storageconditions_material");
         entityManagerService.doSqlUpdate("delete from storages");
         entityManagerService.doSqlUpdate("delete from material_hazards");

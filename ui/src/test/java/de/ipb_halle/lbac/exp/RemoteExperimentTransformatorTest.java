@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.search.SearchTarget;
 import java.util.Date;
 import java.util.UUID;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

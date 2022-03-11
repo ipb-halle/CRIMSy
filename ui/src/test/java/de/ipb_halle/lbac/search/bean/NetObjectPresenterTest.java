@@ -40,21 +40,23 @@ import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class NetObjectPresenterTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -64,7 +66,7 @@ public class NetObjectPresenterTest extends TestBase {
     private NetObjectFactory netObjectFactory = new NetObjectFactory();
     private NetObjectPresenter presenter;
 
-    @Before
+    @BeforeEach
     public void init() {
         netObjects = netObjectFactory.createNetObjects();
         presenter = new NetObjectPresenter(new User(), MessagePresenterMock.getInstance());

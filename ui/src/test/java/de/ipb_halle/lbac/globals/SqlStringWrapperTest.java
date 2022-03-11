@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.admission.ACPermission;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -25,22 +25,24 @@ import de.ipb_halle.lbac.material.mocks.IndexServiceMock;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Arrays;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class MaterialIndexBeanTest extends TestBase {
 
     @Inject
@@ -48,7 +50,7 @@ public class MaterialIndexBeanTest extends TestBase {
     private MaterialIndexBean instance;
     private MateriaBeanMock materialEditBeanMock;
 
-    @Before
+    @BeforeEach
     public void init() {
         instance = new MaterialIndexBean();
         instance.setIndexService(indexServiceMock);

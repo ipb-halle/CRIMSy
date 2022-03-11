@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.search.document;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 

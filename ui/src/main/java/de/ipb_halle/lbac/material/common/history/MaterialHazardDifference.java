@@ -186,6 +186,7 @@ public class MaterialHazardDifference implements MaterialDifference {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public HazardHistoryController createHistoryController(MaterialBean bean) {
         return new HazardHistoryController(bean);
     }

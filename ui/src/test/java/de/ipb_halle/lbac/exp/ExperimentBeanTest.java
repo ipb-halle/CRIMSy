@@ -43,6 +43,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,19 +56,20 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class ExperimentBeanTest extends TestBase {
 
     @Inject
@@ -92,7 +94,7 @@ public class ExperimentBeanTest extends TestBase {
     private User publicUser;
     private ACList publicReadAcl;
 
-    @Before
+    @BeforeEach
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -125,7 +127,7 @@ public class ExperimentBeanTest extends TestBase {
 
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         entityManagerService.doSqlUpdate("DELETE FROM experiments");
 

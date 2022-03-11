@@ -29,26 +29,28 @@ import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(Arquillian.class)
+@TestMethodOrder(MethodName.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class ForumServiceTest extends TestBase {
 
     @Inject
@@ -66,7 +68,7 @@ public class ForumServiceTest extends TestBase {
 
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         entityManagerService.doSqlUpdate("DELETE FROM postings");
         entityManagerService.doSqlUpdate("DELETE FROM topics");

@@ -210,7 +210,13 @@ public class MaterialStructureDifference implements MaterialDifference {
         return modificationTime;
     }
 
+    /**
+     *
+     * @param bean
+     * @return
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public StructureHistoryController createHistoryController(MaterialBean bean) {
         return new StructureHistoryController(bean);
     }

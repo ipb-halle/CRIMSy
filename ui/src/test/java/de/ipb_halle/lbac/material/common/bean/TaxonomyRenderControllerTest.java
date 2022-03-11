@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,12 +40,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -52,7 +53,8 @@ import org.primefaces.model.TreeNode;
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class TaxonomyRenderControllerTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -69,7 +71,7 @@ public class TaxonomyRenderControllerTest extends TestBase {
     private Date creationDate2;
     private SimpleDateFormat SDF = new SimpleDateFormat(" yyyy-MM-dd HH:mm");
 
-    @Before
+    @BeforeEach
     public void init() {
         user_1 = new User();
         user_1.setName("user_1");

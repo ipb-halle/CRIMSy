@@ -39,6 +39,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,19 +47,20 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class ContainerServiceTest extends TestBase {
 
     Container c0;
@@ -93,7 +95,7 @@ public class ContainerServiceTest extends TestBase {
     @Inject
     private ItemService itemService;
 
-    @Before
+    @BeforeEach
     public void init() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
@@ -139,7 +141,7 @@ public class ContainerServiceTest extends TestBase {
         c3.setType(new ContainerType("CARTON", 90, true, false));
     }
 
-    @After
+    @AfterEach
     public void finish() {
 
         super.cleanItemsFromDb();
@@ -378,56 +380,76 @@ public class ContainerServiceTest extends TestBase {
 
     /**
      * The test ensures that when the container hierarchy is broken open, the
-     * orphaned nenesting entries are completely removed
+     * orphaned nesting entries are completely removed
      *
      */
     // BEFORE
+    // *          |- c2
+    // * c0 - c1 -
     // *          |- c3
-    // * c1 - c2 -
-    // *          |- c4
     // * AFTER
-    // * c1
+    // * c0
     // *
+    // *    |- c2
+    // * c1 -
     // *    |- c3
-    // * c2 -
-    // *    |- c4
     // */
     @Test
+    @SuppressWarnings("unchecked")
     public void test009_removeParent() {
-        String CHECK_SQL = "SELECT * FROM nested_containers order by sourceid";
+        String CHECK_SQL = "SELECT sourceid,targetid,nested FROM nested_containers order by sourceid ASC, targetid DESC";
 
         instance.saveContainer(c0);
         instance.saveContainer(c1);
         instance.saveContainer(c2);
         instance.saveContainer(c3);
 
-        ArrayList<Object[]> i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
-        Assert.assertEquals(5, i.size());
+        List<Object[]> results = (List) entityManagerService.doSqlQuery(CHECK_SQL);
+        Assert.assertEquals(5, results.size());
         // Container c1 is in c0
-        Assert.assertEquals(c1.getId(), (int) i.get(0)[0], 0);
-        Assert.assertEquals(c0.getId(), (int) i.get(0)[1], 0);
+        Assert.assertEquals(c1.getId(), getSourceId(results.get(0)));
+        Assert.assertEquals(c0.getId(), getTargetId(results.get(0)));
+        Assert.assertFalse(isNested(results.get(0)));
         // Container c2 is in c1 and indirect c0
-        Assert.assertEquals(c2.getId(), (int) i.get(1)[0], 0);
-        Assert.assertEquals(c1.getId(), (int) i.get(1)[1], 0);
-        Assert.assertEquals(c2.getId(), (int) i.get(2)[0], 0);
-        Assert.assertEquals(c0.getId(), (int) i.get(2)[1], 0);
+        Assert.assertEquals(c2.getId(), getSourceId(results.get(1)));
+        Assert.assertEquals(c1.getId(), getTargetId(results.get(1)));
+        Assert.assertFalse(isNested(results.get(1)));
+        Assert.assertEquals(c2.getId(), getSourceId(results.get(2)));
+        Assert.assertEquals(c0.getId(), getTargetId(results.get(2)));
+        Assert.assertTrue(isNested(results.get(2)));
         // Container c3 is in c1 and indirect in c0
-        Assert.assertEquals(c3.getId(), (int) i.get(3)[0], 0);
-        Assert.assertEquals(c1.getId(), (int) i.get(3)[1], 0);
-        Assert.assertEquals(c3.getId(), (int) i.get(4)[0], 0);
-        Assert.assertEquals(c0.getId(), (int) i.get(4)[1], 0);
+        Assert.assertEquals(c3.getId(), getSourceId(results.get(3)));
+        Assert.assertEquals(c1.getId(), getTargetId(results.get(3)));
+        Assert.assertFalse(isNested(results.get(3)));
+        Assert.assertEquals(c3.getId(), getSourceId(results.get(4)));
+        Assert.assertEquals(c0.getId(), getTargetId(results.get(4)));
+        Assert.assertTrue(isNested(results.get(4)));
 
         //remove the link between c0 and c1
         c1.setParentContainer(null);
         instance.saveEditedContainer(c1);
-        i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
-        Assert.assertEquals(2, i.size());
+        results = (List) entityManagerService.doSqlQuery(CHECK_SQL);
+        Assert.assertEquals(2, results.size());
         // Container c2 is in c1 and no more in c0
-        Assert.assertEquals(c2.getId(), (int) i.get(0)[0], 0);
-        Assert.assertEquals(c1.getId(), (int) i.get(0)[1], 0);
+        Assert.assertEquals(c2.getId(), getSourceId(results.get(0)));
+        Assert.assertEquals(c1.getId(), getTargetId(results.get(0)));
+        Assert.assertFalse(isNested(results.get(0)));
         // Container c3 is in c1 and no more in c0
-        Assert.assertEquals(c3.getId(), (int) i.get(1)[0], 0);
-        Assert.assertEquals(c1.getId(), (int) i.get(1)[1], 0);
+        Assert.assertEquals(c3.getId(), getSourceId(results.get(1)));
+        Assert.assertEquals(c1.getId(), getTargetId(results.get(1)));
+        Assert.assertFalse(isNested(results.get(1)));
+    }
+
+    private Integer getSourceId(Object[] row) {
+        return Integer.valueOf((int) row[0]);
+    }
+
+    private Integer getTargetId(Object[] row) {
+        return Integer.valueOf((int) row[1]);
+    }
+
+    private boolean isNested(Object[] row) {
+        return (boolean) row[2];
     }
 
     @Test

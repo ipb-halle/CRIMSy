@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.HttpServletResponseMock.WriterMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -34,19 +35,20 @@ import java.util.Map;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class UploadToColTest extends TestBase {
 
     @Inject
@@ -59,13 +61,13 @@ public class UploadToColTest extends TestBase {
     protected User publicUser;
     protected Collection col;
 
-    @Before
+    @BeforeEach
     public void init() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");

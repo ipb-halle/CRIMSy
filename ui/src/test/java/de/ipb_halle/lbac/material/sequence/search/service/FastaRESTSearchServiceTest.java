@@ -33,12 +33,12 @@ import javax.ws.rs.core.Response.Status;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
@@ -46,11 +46,13 @@ import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.webservice.RestApiHelper;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
  * @author flange
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class FastaRESTSearchServiceTest extends TestBase {
     private static final long serialVersionUID = 1L;
     private FastaRESTSearchService searchService;
@@ -69,7 +71,7 @@ public class FastaRESTSearchServiceTest extends TestBase {
         return UserBeanDeployment.add(deployment);
     }
 
-    @Before
+    @BeforeEach
     public void init() throws URISyntaxException {
         mockEndpoint.setBehaviour(null);
 

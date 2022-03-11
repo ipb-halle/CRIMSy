@@ -34,22 +34,24 @@ import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class ContainerPositionServiceTest extends TestBase {
 
     Container c0;
@@ -90,7 +92,7 @@ public class ContainerPositionServiceTest extends TestBase {
         itemService.saveItem(item);
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         creationTools = new CreationTools("", "", "", memberService, projectService);
@@ -115,7 +117,7 @@ public class ContainerPositionServiceTest extends TestBase {
         c1.setType(new ContainerType("CUPBOARD", 90, true, false));
     }
 
-    @After
+    @AfterEach
     public void finish() {
         super.cleanItemsFromDb();
         super.cleanMaterialsFromDB();

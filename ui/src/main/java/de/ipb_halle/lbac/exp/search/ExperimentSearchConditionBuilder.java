@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -81,7 +82,14 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         return conditionList;
     }
 
-    private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
+    private void addLabelCondition(List<Condition> conditionList, Set<String> valuesAsString) {
+        if (valuesAsString == null) {
+            return;
+        }
+        Set<Integer> values = new HashSet<>();
+        for (String s : valuesAsString) {
+            values.add(Integer.parseInt(s));
+        }
         conditionList.add(getBinaryLeafConditionWithCast(Operator.IN,
                 values,
                 "(%s)",

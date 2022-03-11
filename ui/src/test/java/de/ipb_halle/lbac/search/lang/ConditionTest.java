@@ -17,14 +17,8 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Assert;
-import org.junit.rules.ExpectedException;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

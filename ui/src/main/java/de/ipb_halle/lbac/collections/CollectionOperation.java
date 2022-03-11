@@ -172,18 +172,6 @@ public class CollectionOperation implements Serializable {
         return OperationState.OPERATION_SUCCESS;
     }
 
-    public OperationState reindexCollection(
-            Collection activeCollection,
-            User currentAccount) {
-        try {
-
-        } catch (Exception e) {
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
-
-        }
-        return OperationState.OPERATION_SUCCESS;
-    }
-
     public Collection updateCollection(Collection activeCollection, User currentAccount) {
         activeCollection = collectionService.save(activeCollection);
         return activeCollection;

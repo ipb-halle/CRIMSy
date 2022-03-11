@@ -41,6 +41,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -50,18 +51,18 @@ import java.util.List;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class DocumentSearchServiceTest extends TestBase {
 
     @Inject
@@ -74,7 +75,7 @@ public class DocumentSearchServiceTest extends TestBase {
     protected AsyncContextMock asynContext;
     private DocumentCreator documentCreator;
 
-    @Before
+    @BeforeEach
     public void init() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
         entityManagerService.doSqlUpdate("DELETE FROM collections");
@@ -104,7 +105,7 @@ public class DocumentSearchServiceTest extends TestBase {
 
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");

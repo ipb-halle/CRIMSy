@@ -27,8 +27,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for the {@link DataURIImage} annotation.
@@ -38,7 +38,7 @@ import org.junit.Test;
 public class DataURIImageTest {
     private static Validator validator;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpValidator() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }

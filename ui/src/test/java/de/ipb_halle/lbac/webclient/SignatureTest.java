@@ -33,7 +33,7 @@ import java.security.Signature;
 import java.util.Properties;
 import javax.crypto.NoSuchPaddingException;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testclass for examples of usage of signature, public and private keys

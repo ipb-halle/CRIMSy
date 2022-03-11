@@ -28,8 +28,8 @@ import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -41,7 +41,7 @@ public class MaterialCompositionTest {
     Structure struc1, struc2;
     BioMaterial bio1;
 
-    @Before
+    @BeforeEach
     public void init() {
         int projectid = 10;
 

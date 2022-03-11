@@ -22,23 +22,25 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.service.InfoObjectService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class SystemSettingsTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -51,7 +53,7 @@ public class SystemSettingsTest extends TestBase {
     @Inject
     private GlobalAdmissionContext context;
 
-    @Before
+    @BeforeEach
     public void beforeTest() {
         entityManagerService.doSqlUpdate("UPDATE info set value='True' WHERE key='SETTING_FORCE_LOGIN'");
 
@@ -61,7 +63,7 @@ public class SystemSettingsTest extends TestBase {
         settings.SystemSettingsInit();
     }
 
-    @After
+    @AfterEach
     public void clean() {
         entityManagerService.doSqlUpdate("DELETE FROM info WHERE key='SETTING_INSTITUTION_WEB'");
     }

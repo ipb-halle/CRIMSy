@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import net.bootsfaces.C;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -43,7 +43,7 @@ public class PostingTest {
     private Date d_20201021;
     private Date d_20201019;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         node = new Node();
         node.setInstitution("PostingTest-Institute");

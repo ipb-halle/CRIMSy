@@ -52,23 +52,25 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class MaterialEditSaverTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
@@ -94,7 +96,7 @@ public class MaterialEditSaverTest extends TestBase {
     String precautionaryStatement = "PrecautionaryStatement - Text";
     String storageClassRemark = "storageClassRemark";
 
-    @Before
+    @BeforeEach
     public void init() {
         creationTools = new CreationTools(hazardStatement, precautionaryStatement, storageClassRemark, memberService, projectService);
         p = new Project(ProjectType.BIOLOGICAL_PROJECT, "testProject");
@@ -112,7 +114,7 @@ public class MaterialEditSaverTest extends TestBase {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
     }
 
-    @After
+    @AfterEach
     public void finish() {
         cleanMaterialsFromDB();
         cleanProjectFromDB(p, false);
@@ -191,7 +193,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertTrue("Testcase 002 - history of storageclass must  be empty", storageClassHist.isEmpty());
 
         // Check the history of the storage conditions
-        List<Object[]> storageConditionsHist = (List) entityManagerService.doSqlQuery("select conditionId_old,conditionId_new from storagesconditions_storages_hist where materialid=" + mNew.getId() + " order by conditionId_old,conditionId_new");
+        List<Object[]> storageConditionsHist = (List) entityManagerService.doSqlQuery("select conditionId_old,conditionId_new from storagesconditions_storages_hist where materialid=" + mNew.getId() + " order by conditionId_old ASC NULLS FIRST,conditionId_new ASC NULLS FIRST");
         Assert.assertEquals("Testcase 002 - One history entry in storageconditions must be found ", 2, storageConditionsHist.size());
         Assert.assertNull("Testcase 002 - Old storagecondition must be null ", storageConditionsHist.get(0)[0]);
         Assert.assertEquals("Testcase 002 - New storagecondition must be 3 ", StorageCondition.lightSensitive.getId(), storageConditionsHist.get(0)[1]);

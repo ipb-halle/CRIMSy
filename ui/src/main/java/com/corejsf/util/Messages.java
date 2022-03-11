@@ -8,9 +8,10 @@ import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tika.utils.ExceptionUtils;
+
 
 public abstract class Messages {
 
@@ -55,8 +56,7 @@ public abstract class Messages {
                 try {
                     resource = bundle.getString(resourceId);
                 } catch (MissingResourceException ex) {
-                    logger.error(ExceptionUtils.getStackTrace(ex));
-
+                    logger.error(ExceptionUtils.getStackTrace(ex));                   
                 }
             }
         }

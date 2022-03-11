@@ -27,20 +27,22 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class InputValidatorTest extends TestBase {
 
     @Inject
@@ -49,7 +51,7 @@ public class InputValidatorTest extends TestBase {
     private InputValidator validator;
     private MessagePresenterMock messagePresenter;
 
-    @Before
+    @BeforeEach
     public void init() {
         validator = new InputValidator(containerService);
         validator.setContainerService(containerService);

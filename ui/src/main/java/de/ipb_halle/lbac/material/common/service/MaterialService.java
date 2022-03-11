@@ -323,6 +323,7 @@ public class MaterialService implements Serializable {
      * @param materialid
      * @return
      */
+     @SuppressWarnings("unchecked")
     private List<IndexEntry> loadMaterialIndicesById(int materialid) {
         List<IndexEntry> indices = new ArrayList<>();
         Query query = em.createNativeQuery(SQL_GET_INDICES, MaterialIndexEntryEntity.class);

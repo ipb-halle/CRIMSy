@@ -66,6 +66,7 @@ import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.webclient.XmlSetWrapper;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import static de.ipb_halle.fasta_search_service.models.search.TranslationTable.EUPLOTID_NUCLEAR;
 import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_LIBRARY_TYPE;
@@ -94,12 +95,12 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.BehaviorBase;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.TabChangeEvent;
 
@@ -107,7 +108,8 @@ import org.primefaces.event.TabChangeEvent;
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class MaterialCompositionBeanTest extends TestBase {
     private static final long serialVersionUID = 1L;
 
@@ -140,7 +142,7 @@ public class MaterialCompositionBeanTest extends TestBase {
     private int structureId1, structureId2, biomaterialId;
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
-    @Before
+    @BeforeEach
     public void init() {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         userBeanMock.setCurrentAccount(publicUser);
@@ -156,7 +158,7 @@ public class MaterialCompositionBeanTest extends TestBase {
         messagePresenter.resetMessages();
     }
 
-    @After
+    @AfterEach
     public void finish() {
         cleanMaterialsFromDB();
         cleanProjectFromDB(project, false);

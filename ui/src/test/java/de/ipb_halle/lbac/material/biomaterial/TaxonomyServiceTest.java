@@ -30,24 +30,26 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class TaxonomyServiceTest extends TestBase {
 
     Project project;
@@ -65,7 +67,7 @@ public class TaxonomyServiceTest extends TestBase {
 
     private CreationTools creationTools;
 
-    @Before
+    @BeforeEach
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         // Initialisieng the userbean for ownership of material
@@ -94,7 +96,7 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(1, life.getLevel().getId());
         Assert.assertEquals("Leben_de", life.getFirstName());
 
-        Taxonomy wulstlinge = taxonomies.get(12);
+        Taxonomy wulstlinge = taxonomies.get(16);
         Assert.assertEquals(7, wulstlinge.getLevel().getId());
         Assert.assertEquals("Wulstlinge_de", wulstlinge.getFirstName());
         Assert.assertEquals(6, (int) wulstlinge.getId());
@@ -105,7 +107,7 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(2, (int) wulstlinge.getTaxHierachy().get(3).getId());
         Assert.assertEquals(1, (int) wulstlinge.getTaxHierachy().get(4).getId());
 
-        Taxonomy ohrlappenpilze = taxonomies.get(10);
+        Taxonomy ohrlappenpilze = taxonomies.get(9);
         Assert.assertEquals(6, ohrlappenpilze.getLevel().getId());
         Assert.assertEquals("Gallerttränenverwandte_de", ohrlappenpilze.getFirstName());
         Assert.assertEquals(11, (int) ohrlappenpilze.getId());
@@ -173,10 +175,10 @@ public class TaxonomyServiceTest extends TestBase {
         Set<Integer> parents = getParentsOfTaxo(taxonomies.get(14).getId());
         Assert.assertEquals(5, parents.size());
         Assert.assertTrue(String.format("test003: has no 'Leben(%d)' as parent", taxonomies.get(0).getId()), parents.remove(taxonomies.get(0).getId()));
-        Assert.assertTrue(String.format("test003: has no 'Pilze(%d)' as parent", taxonomies.get(1).getId()), parents.remove(taxonomies.get(1).getId()));
+        Assert.assertTrue(String.format("test003: has no 'Pilze(%d)' as parent", taxonomies.get(2).getId()), parents.remove(taxonomies.get(2).getId()));
         Assert.assertTrue(String.format("test003: has no 'Dacrymytes(%d)' as parent", taxonomies.get(6).getId()), parents.remove(taxonomies.get(6).getId()));
-        Assert.assertTrue(String.format("test003: has no 'Champignonartige(%d)' as parent", taxonomies.get(7).getId()), parents.remove(taxonomies.get(7).getId()));
-        Assert.assertTrue(String.format("test003: has no 'Wulstlingsverwandte(%d)' as parent", taxonomies.get(10).getId()), parents.remove(taxonomies.get(10).getId()));
+        Assert.assertTrue(String.format("test003: has no 'Champignonartige(%d)' as parent", taxonomies.get(9).getId()), parents.remove(taxonomies.get(9).getId()));
+        Assert.assertTrue(String.format("test003: has no 'Wulstlingsverwandte(%d)' as parent", taxonomies.get(12).getId()), parents.remove(taxonomies.get(12).getId()));
     }
 
     // Move a taxonomy with a subtree to another node

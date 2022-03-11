@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -47,7 +47,7 @@ public class AssayRecordTest {
     private Assay assay;
     private LinkedData record;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         user = new User();
         user.setId(1);

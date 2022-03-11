@@ -100,6 +100,10 @@ public class CreationTools {
         return createAndSaveProject("biochemical-test-project");
     }
 
+    public Project createProject(String name) {
+        return createAndSaveProject(name);
+    }
+
     public Project createAndSaveProject(String projectname) {
         Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, projectname);
         p.setBudget(1000d);

@@ -21,22 +21,25 @@ import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserEntity;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 /**
  * This class will provide some test cases around PreferenceService.
  */
-@RunWith(Arquillian.class)
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
 public class PreferenceServiceTest extends TestBase {
 
     private final static String TESTKEY = "TESTKEY";
@@ -55,7 +58,7 @@ public class PreferenceServiceTest extends TestBase {
 
     private User user;
 
-    @Before
+    @BeforeEach
     public void beforeTest() {
         this.user = createUser("ptester", "Preference Tester");
     }
@@ -89,12 +92,12 @@ public class PreferenceServiceTest extends TestBase {
                 TESTKEY, "ghi"));
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void test003_empty_key() {
-        this.preferenceService.setPreference(this.user, "", "xyz");
+        assertThrows(Exception.class, () -> this.preferenceService.setPreference(this.user, "", "xyz"));
     }
 
-    @After
+    @AfterEach
     public void finish() {
         /*
          * deletion cascades to preferences table
