@@ -41,7 +41,7 @@ public class MolecularFacesOpenVectorEditor {
     }
 
     public String getSequence() {
-        String js = String.format("%s.then(plugin => plugin.getSequence());", widgetVar);
+        String js = String.format("return %s.then(plugin => plugin.getSequence());", widgetVar);
         return (String) executeJavaScript(js);
     }
 

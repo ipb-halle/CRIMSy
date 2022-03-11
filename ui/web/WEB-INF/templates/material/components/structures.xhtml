@@ -49,13 +49,16 @@
                         <b:row>
                             <b:column span="6">
                                 <mol:molecule
-                                    pt:data-test-id="structureInfosTab:molEditor"
                                     value="#{materialBean.structureInfos.structureModel}"
                                     pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                     format="MDLV2000"
                                     border="true"
                                     readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                    widgetVar="structurePlugin" />
+                                    widgetVar="structurePlugin">
+                                    <f:passThroughAttribute
+                                        name="data-test-id"
+                                        value="structureInfosTab:molEditor" />
+                                </mol:molecule>
                                 <!-- This JS snippet guarantees proper plugin initialization after
                                      this p:tab is rendered by AJAX and the tab comes into focus. -->
                                 <script>structurePlugin.then(plugin => plugin.init());</script>

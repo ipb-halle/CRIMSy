@@ -301,13 +301,16 @@
                                             <b:column span="2">
                                                 <mol:molecule
                                                     id="molEditorSearchPage"
-                                                    pt:data-test-id="search:molEditor"
                                                     value="#{searchBean.getSearchFilter().structureString}"
                                                     pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                                     format="MDLV2000"
                                                     border="true"
                                                     readonly="false"
-                                                    widgetVar="molEditorWidgetVar" />
+                                                    widgetVar="molEditorWidgetVar">
+                                                    <f:passThroughAttribute
+                                                        name="data-test-id"
+                                                        value="search:molEditor" />
+                                                </mol:molecule>
                                             </b:column>
                                         </b:row>
                                     </p:tab>

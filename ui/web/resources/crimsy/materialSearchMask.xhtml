@@ -192,13 +192,16 @@ limitations under the License.
                         <b:column span="2">
                             <mol:molecule
                                 id="molEditorSearchMask"
-                                pt:data-test-id="materialSearchMask:molEditor"
                                 value="#{cc.attrs.searchController.molecule}" 
                                 pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                 format="MDLV2000"
                                 border="true"
                                 readonly="false"
-                                widgetVar="molEditorWidgetVar" />
+                                widgetVar="molEditorWidgetVar">
+                                <f:passThroughAttribute
+                                    name="data-test-id"
+                                    value="materialSearchMask:molEditor" />
+                            </mol:molecule>
                         </b:column>
                     </b:row>
                 </ui:fragment>

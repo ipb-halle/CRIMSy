@@ -100,13 +100,16 @@
                                                     disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
                                                     title="#{materialCompositionBean.getLocalizedTabTitle('STRUCTURE')}">
                                                     <mol:molecule
-                                                        pt:data-test-id="compositionTab:structureSearchTab:molEditor"
                                                         value="#{materialCompositionBean.searchMolecule}"
                                                         pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                                         format="MDLV2000"
                                                         border="true"
                                                         readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                                        widgetVar="compositionStructurePlugin" />
+                                                        widgetVar="compositionStructurePlugin">
+                                                        <f:passThroughAttribute
+                                                            name="data-test-id"
+                                                            value="compositionTab:structureSearchTab:molEditor" />
+                                                    </mol:molecule>
                                                     <!-- This JS snippet guarantees proper plugin initialization after
                                                          this p:tab is rendered by AJAX and the tab comes into focus. -->
                                                     <script>compositionStructurePlugin.then(plugin => plugin.init());</script>

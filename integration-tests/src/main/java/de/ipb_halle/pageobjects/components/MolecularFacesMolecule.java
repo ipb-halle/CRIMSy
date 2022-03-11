@@ -24,6 +24,8 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
+import de.ipb_halle.pageobjects.util.conditions.MolfileMatchesCondition;
+
 /**
  * Page object abstraction for MolecularFaces' molecule component.
  * 
@@ -39,7 +41,7 @@ public class MolecularFacesMolecule {
     }
 
     public String getMolecule() {
-        String js = String.format("%s.then(plugin => plugin.getMolecule());", widgetVar);
+        String js = String.format("return %s.then(plugin => plugin.getMolecule());", widgetVar);
         return (String) executeJavaScript(js);
     }
 
@@ -66,8 +68,8 @@ public class MolecularFacesMolecule {
      * @return this
      */
     public MolecularFacesMolecule moleculeShouldBe(String molfile) {
-        // compare molecules with CDK?
-        throw new UnsupportedOperationException("Not implemented yet");
+        inputElement.shouldHave(new MolfileMatchesCondition("value", molfile));
+        return this;
     }
 
     public MolecularFacesMolecule shouldBeReadonly() {
