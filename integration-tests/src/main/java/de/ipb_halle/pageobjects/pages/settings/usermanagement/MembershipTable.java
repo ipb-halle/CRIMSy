@@ -24,13 +24,13 @@ import com.codeborne.selenide.SelenideElement;
 import de.ipb_halle.pageobjects.components.table.DataTable;
 
 /**
- * Page object for the membership table in the group dialog in
+ * Page object for the membership table in the group memberships dialog in
  * /ui/web/WEB-INF/templates/userManagement.xhtml
  * 
  * @author flange
  */
 public class MembershipTable extends DataTable<MembershipTable> {
-    private static final String DELETE_BUTTON = testId("userManagement:groupDialog:delete");
+    private static final String DELETE_BUTTON = testId("userManagement:groupMembershipsDialog:delete");
 
     public MembershipTable(String testId) {
         super(testId);

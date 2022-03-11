@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.pages.settings.usermanagement;
+package de.ipb_halle.pageobjects.pages.settings.groupmanagement;
 
 import static com.codeborne.selenide.Selenide.page;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
@@ -25,36 +25,36 @@ import com.codeborne.selenide.SelenideElement;
 import de.ipb_halle.pageobjects.components.table.DataTable;
 
 /**
- * Page object for the users table in
- * /ui/web/WEB-INF/templates/userManagement.xhtml
+ * Page object for the groups table in
+ * /ui/web/WEB-INF/templates/groupManagement.xhtml
  * 
  * @author flange
  */
-public class UsersTable extends DataTable<UsersTable> {
-    private static final String EDIT_USER_BUTTON = testId("userManagement:editUser");
-    private static final String EDIT_MEMBERSHIPS_BUTTON = testId("userManagement:editMemberships");
-    private static final String DELETE_USER_BUTTON = testId("userManagement:deleteUser");
+public class GroupsTable extends DataTable<GroupsTable> {
+    private static final String EDIT_GROUP_BUTTON = testId("groupManagement:editGroup");
+    private static final String EDIT_MEMBERSHIPS_BUTTON = testId("groupManagement:editMemberships");
+    private static final String DELETE_GROUP_BUTTON = testId("groupManagement:deleteGroup");
 
-    public UsersTable(String testId) {
+    public GroupsTable(String testId) {
         super(testId);
     }
 
     /*
      * Actions
      */
-    public UserDialog editUser(int rowIndex) {
-        getCell(7, rowIndex).$(EDIT_USER_BUTTON).click();
-        return page(UserDialog.class);
+    public GroupDialog editGroup(int rowIndex) {
+        getCell(3, rowIndex).$(EDIT_GROUP_BUTTON).click();
+        return page(GroupDialog.class);
     }
 
     public GroupMembershipsDialog editMemberships(int rowIndex) {
-        getCell(7, rowIndex).$(EDIT_MEMBERSHIPS_BUTTON).click();
+        getCell(3, rowIndex).$(EDIT_MEMBERSHIPS_BUTTON).click();
         return page(GroupMembershipsDialog.class);
     }
 
-    public UserDialog deleteUser(int rowIndex) {
-        getCell(7, rowIndex).$(DELETE_USER_BUTTON).click();
-        return page(UserDialog.class);
+    public GroupDialog deleteGroup(int rowIndex) {
+        getCell(3, rowIndex).$(DELETE_GROUP_BUTTON).click();
+        return page(GroupDialog.class);
     }
 
     /*
@@ -64,27 +64,11 @@ public class UsersTable extends DataTable<UsersTable> {
         return getCell(0, rowIndex);
     }
 
-    public SelenideElement getLogin(int rowIndex) {
+    public SelenideElement getType(int rowIndex) {
         return getCell(1, rowIndex);
     }
 
-    public SelenideElement getShortcut(int rowIndex) {
-        return getCell(2, rowIndex);
-    }
-
-    public SelenideElement getEmail(int rowIndex) {
-        return getCell(3, rowIndex);
-    }
-
-    public SelenideElement getPhone(int rowIndex) {
-        return getCell(4, rowIndex);
-    }
-
-    public SelenideElement getType(int rowIndex) {
-        return getCell(5, rowIndex);
-    }
-
     public SelenideElement getInstitute(int rowIndex) {
-        return getCell(6, rowIndex);
+        return getCell(2, rowIndex);
     }
 }

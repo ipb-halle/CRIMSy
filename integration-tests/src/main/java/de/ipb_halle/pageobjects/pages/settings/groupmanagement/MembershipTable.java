@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.pageobjects.pages.settings.usermanagement;
+package de.ipb_halle.pageobjects.pages.settings.groupmanagement;
 
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
@@ -24,23 +24,23 @@ import com.codeborne.selenide.SelenideElement;
 import de.ipb_halle.pageobjects.components.table.DataTable;
 
 /**
- * Page object for the available groups table in the group memberships dialog in
+ * Page object for the membership table in the group memberships dialog in
  * /ui/web/WEB-INF/templates/userManagement.xhtml
  * 
  * @author flange
  */
-public class AvailableGroupsTable extends DataTable<AvailableGroupsTable> {
-    private static final String ADD_BUTTON = testId("userManagement:groupMembershipsDialog:add");
+public class MembershipTable extends DataTable<MembershipTable> {
+    private static final String DELETE_BUTTON = testId("groupManagement:groupMembershipsDialog:delete");
 
-    public AvailableGroupsTable(String testId) {
+    public MembershipTable(String testId) {
         super(testId);
     }
 
     /*
      * Actions
      */
-    public AvailableGroupsTable add(int rowIndex) {
-        getCell(2, rowIndex).$(ADD_BUTTON).click();
+    public MembershipTable delete(int rowIndex) {
+        getCell(4, rowIndex).$(DELETE_BUTTON).click();
         return this;
     }
 
@@ -53,5 +53,13 @@ public class AvailableGroupsTable extends DataTable<AvailableGroupsTable> {
 
     public SelenideElement getInstitution(int rowIndex) {
         return getCell(1, rowIndex);
+    }
+
+    public SelenideElement getType(int rowIndex) {
+        return getCell(2, rowIndex);
+    }
+
+    public SelenideElement getNested(int rowIndex) {
+        return getCell(3, rowIndex);
     }
 }

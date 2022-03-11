@@ -15,34 +15,28 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.test;
-
-import java.util.concurrent.atomic.AtomicInteger;
+package de.ipb_halle.pageobjects.pages.settings.groupmanagement;
 
 /**
- * Generators for unique strings to be used in tests.
+ * Model class for input data in {@link GroupDialog}.
  * 
  * @author flange
  */
-public class UniqueGenerators {
-    private UniqueGenerators() {
+public class GroupModel {
+    private String name;
+
+    /*
+     * Fluent setters
+     */
+    public GroupModel name(String name) {
+        this.name = name;
+        return this;
     }
 
-    private static AtomicInteger counter = new AtomicInteger(1);
-
-    public static String uniqueLogin() {
-        return "test-" + counter.getAndIncrement() + "-login";
-    }
-
-    public static String uniqueGroup() {
-        return "test-" + counter.getAndIncrement() + "-group";
-    }
-
-    public static String uniqueCollection() {
-        return "test_" + counter.getAndIncrement() + "_collection";
-    }
-
-    public static String uniqueProject() {
-        return "test-" + counter.getAndIncrement() + "-project";
+    /*
+     * Getters
+     */
+    public String getName() {
+        return name;
     }
 }

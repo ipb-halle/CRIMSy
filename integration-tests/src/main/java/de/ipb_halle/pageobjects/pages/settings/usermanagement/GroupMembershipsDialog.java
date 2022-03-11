@@ -26,21 +26,21 @@ import com.codeborne.selenide.SelenideElement;
 import de.ipb_halle.pageobjects.components.PrimeFacesDialog;
 
 /**
- * Page object for the group dialog in
+ * Page object for the group memberships dialog in
  * /ui/web/WEB-INF/templates/userManagement.xhtml
  * 
  * @author flange
  */
-public class GroupDialog extends PrimeFacesDialog {
-    private static final MembershipTable MEMBERSHIP_TABLE = new MembershipTable("userManagement:groupDialog:membershipTable");
-    private static final SelenideElement TOGGLE_NESTED_BUTTON = $(testId("userManagement:groupDialog:toggleNested"));
-    private static final AvailableGroupsTable AVAILABLE_GROUPS_TABLE = new AvailableGroupsTable("userManagement:groupDialog:availableGroupsTable");
-    private static final SelenideElement CLOSE_BUTTON = $(testId("userManagement:groupDialog:close"));
+public class GroupMembershipsDialog extends PrimeFacesDialog {
+    private static final MembershipTable MEMBERSHIP_TABLE = new MembershipTable("userManagement:groupMembershipsDialog:membershipTable");
+    private static final SelenideElement TOGGLE_NESTED_BUTTON = $(testId("userManagement:groupMembershipsDialog:toggleNested"));
+    private static final AvailableGroupsTable AVAILABLE_GROUPS_TABLE = new AvailableGroupsTable("userManagement:groupMembershipsDialog:availableGroupsTable");
+    private static final SelenideElement CLOSE_BUTTON = $(testId("userManagement:groupMembershipsDialog:close"));
 
     /*
      * Actions
      */
-    public GroupDialog toggleNested() {
+    public GroupMembershipsDialog toggleNested() {
         TOGGLE_NESTED_BUTTON.click();
         return this;
     }

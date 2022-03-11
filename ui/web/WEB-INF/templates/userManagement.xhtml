@@ -325,7 +325,7 @@
                 </b:row>
                 <b:dataTable
                     id="membershipList"
-                    pt:data-test-id="userManagement:groupDialog:membershipTable"
+                    pt:data-test-id="userManagement:groupMembershipsDialog:membershipTable"
                     value="#{userMgrBean.membershipList}"
                     styleClass="membershipList"
                     striped="true"
@@ -342,7 +342,7 @@
                         <tr>
                             <th colspan="5">
                                 <b:commandButton
-                                    pt:data-test-id="userManagement:groupDialog:toggleNested"
+                                    pt:data-test-id="userManagement:groupMembershipsDialog:toggleNested"
                                     style="padding: 0 4px;"
                                     value="#{msgs.userMgr_showNested}"
                                     iconAwesome="#{userMgrBean.nestedFlag ? 'toggle-on' : 'toggle-off'}"
@@ -368,7 +368,7 @@
                     <b:dataTableColumn value="#{ms.nested ? msgs.YES : msgs.NO}" />
                     <b:dataTableColumn>
                         <b:commandButton
-                            pt:data-test-id="userManagement:groupDialog:delete"
+                            pt:data-test-id="userManagement:groupMembershipsDialog:delete"
                             style="padding: 0 4px;"
                             styleClass="tstUserMgrMembershipDelete"
                             icon="trash"
@@ -386,7 +386,7 @@
                 </b:row>
                 <b:dataTable
                     id="groupList"
-                    pt:data-test-id="userManagement:groupDialog:availableGroupsTable"
+                    pt:data-test-id="userManagement:groupMembershipsDialog:availableGroupsTable"
                     value="#{userMgrBean.groupList}"
                     styleClass="groupListClass"
                     striped="true"
@@ -412,7 +412,7 @@
                     <b:dataTableColumn value="#{group.getNode().getInstitution()}" />
                     <b:dataTableColumn>
                         <b:commandButton
-                            pt:data-test-id="userManagement:groupDialog:add"
+                            pt:data-test-id="userManagement:groupMembershipsDialog:add"
                             style="padding: 0 4px;"
                             styleClass="tstUserMgrMembershipAdd"
                             iconAwesome="user-plus"
@@ -429,7 +429,7 @@
 
                 <b:row styleClass="modal-footer">
                     <b:button
-                        pt:data-test-id="userManagement:groupDialog:close"
+                        pt:data-test-id="userManagement:groupMembershipsDialog:close"
                         value="#{msgs.Close}"
                         styleClass="tstUserMgrMembershipClose"
                         onclick="PF('groupMembershipsDialogWidgetVar').hide()" />
