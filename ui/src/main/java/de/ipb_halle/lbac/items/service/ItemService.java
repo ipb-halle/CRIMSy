@@ -275,6 +275,12 @@ public class ItemService {
         return item;
     }
 
+    public Item saveItemAndPlaceInContainer(Item item, int containerid, int posX, int posY) {
+        Item savedItem = saveItem(item);
+        containerPositionService.saveItemInContainer(savedItem.getId(), containerid, posX, posY);
+        return savedItem;
+    }
+
     public Item saveEditedItem(Item editedItem, Item origItem, User user) {
         return saveEditedItem(editedItem, origItem, user, new HashSet<>());
     }

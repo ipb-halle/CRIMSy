@@ -253,17 +253,23 @@ public class ItemBean implements Serializable {
     }
 
     private void saveNewItem() {
-        state.getEditedItem().setACList(state.getEditedItem().getMaterial().getACList());
-        state.getEditedItem().setOwner(userBean.getCurrentAccount());
-        state.getEditedItem().setcTime(new Date());
+        Item itemToSave = state.getEditedItem();
+        itemToSave.setACList(itemToSave.getMaterial().getACList());
+        itemToSave.setOwner(userBean.getCurrentAccount());
+        itemToSave.setcTime(new Date());
         if (customLabel) {
-            state.getEditedItem().setLabel(customLabelValue);
+            itemToSave.setLabel(customLabelValue);
         }
-        state.setEditedItem(itemService.saveItem(state.getEditedItem()));
+
+        Item newItem = null;
         if (containerController.getContainer() != null && containerController.getItemPositions() != null) {
             int[] positions = containerController.resolveItemPositions().iterator().next();
-            containerPositionService.saveItemInContainer(state.getEditedItem().getId(), containerController.getContainer().getId(), positions[0], positions[1]);
+            newItem = itemService.saveItemAndPlaceInContainer(itemToSave, containerController.getContainer().getId(), positions[0], positions[1]);
+        } else {
+            newItem = itemService.saveItem(itemToSave);
         }
+
+        state.setEditedItem(newItem);
     }
 
     public boolean isCreateMode() {
