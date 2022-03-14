@@ -32,7 +32,7 @@ import de.ipb_halle.pageobjects.pages.projects.ProjectEditPage;
  * @author flange
  */
 public class ChangeOwnerModalPage extends PrimeFacesDialog {
-    private static final UsersTable USERS_TABLE = new UsersTable(testId("changeOwnerModal:usersTable"));
+    private static final UsersTable USERS_TABLE = new UsersTable("changeOwnerModal:usersTable");
 
     /*
      * Getters

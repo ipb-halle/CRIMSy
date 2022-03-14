@@ -42,7 +42,7 @@ public class UniqueGenerators {
         return "test_" + counter.getAndIncrement() + "_collection";
     }
 
-    public static String uniqueProject() {
+    public static String uniqueProjectName() {
         return "test-" + counter.getAndIncrement() + "-project";
     }
 }
