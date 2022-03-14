@@ -28,6 +28,16 @@
     <h:body>
         <ui:composition>
             <b:container>
+                <!-- Wizard navigation -->
+                <b:row>
+                    <b:column
+                        span="1"
+                        offset="11">
+                        <b:button
+                            value="Next"
+                            onclick="PF('consumePartOfItemWizard').next();" />
+                    </b:column>
+                </b:row>
                 <!-- Target concentration -->
                 <b:row>
                     <b:column

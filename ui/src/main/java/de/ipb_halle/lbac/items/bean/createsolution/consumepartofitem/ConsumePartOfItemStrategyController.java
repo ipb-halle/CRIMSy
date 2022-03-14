@@ -93,7 +93,6 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     private static final String STEP4 = "step4_directContainerAndLabel";
     private static final String STEP5 = "step5_project";
     private static final String STEP6 = "step6_location";
-    private static final String STEP7 = "step7_save";
 
     public String onFlowProcess(FlowEvent event) {
         // STEP1 -> STEP2: target mass <= item mass
@@ -127,15 +126,6 @@ public class ConsumePartOfItemStrategyController implements Serializable {
                 return STEP5;
             }
         }
-
-        // STEP6 -> STEP7: valid container and position
-//        if (STEP7.equals(event.getNewStep())) {
-//            if () {
-//                return STEP6;
-//            } else {
-//                return STEP7;
-//            }
-//        }
 
         return event.getNewStep();
     }

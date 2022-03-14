@@ -28,6 +28,23 @@
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
         <ui:composition>
+            <b:container>
+                <!-- Wizard navigation -->
+                <b:row>
+                    <b:column span="1">
+                        <b:button
+                            value="Back"
+                            onclick="PF('consumePartOfItemWizard').back();" />
+                    </b:column>
+                    <b:column
+                        span="1"
+                        offset="10">
+                        <b:commandButton
+                            value="Save"
+                            action="#{controller.actionSave()}" />
+                    </b:column>
+                </b:row>
+            </b:container>
             <crimsy:containerSelectionAndInfos
                 containerController="#{controller.step6Controller.containerController}"
                 historyMode="false" />
