@@ -62,8 +62,9 @@
                         </b:inputText>
                     </b:column>
                 </b:row>
-                <!--  Volume to dispense -->
+
                 <b:row>
+                    <!--  Volume to dispense -->
                     <b:column
                         span="2"
                         offset="1">
@@ -93,6 +94,7 @@
                             label="Dispensed volume"
                             required="true"
                             onchange="createSolution_step3_dispensedVolumeChange();">
+                            <b:focus />
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetVolumeUnit}" />
                             </f:facet>

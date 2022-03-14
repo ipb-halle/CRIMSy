@@ -56,10 +56,6 @@ public class ConsumePartOfItemStep4ControllerTest {
         controller.setDirectContainerSize(42.0);
         assertEquals(42.0, controller.getDirectContainerSize(), DELTA);
 
-        assertNull(controller.getDirectContainerUnit());
-        controller.setDirectContainerUnit(Unit.getUnit("ml"));
-        assertEquals("ml", controller.getDirectContainerUnit().toString());
-
         assertNull(controller.getDirectContainerType());
         ContainerType type = new ContainerType("abc", 0, false, false);
         controller.setDirectContainerType(type);
@@ -72,33 +68,6 @@ public class ConsumePartOfItemStep4ControllerTest {
         assertNull(controller.getCustomLabelValue());
         controller.setCustomLabelValue("abc");
         assertEquals("abc", controller.getCustomLabelValue());
-    }
-
-    /*
-     * Tests for init()
-     */
-    @Test
-    public void test_init() {
-        Item item = new Item();
-        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
-        ConsumePartOfItemStep3Controller step3Controller = new ConsumePartOfItemStep3Controller(step1Controller, null,
-                null);
-        ConsumePartOfItemStep4Controller controller = new ConsumePartOfItemStep4Controller(step1Controller,
-                step3Controller, messagePresenter);
-
-        step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
-        assertNull(controller.getDirectContainerUnit());
-        // userChangedContainerSizeUnit is false
-        controller.init();
-        assertEquals("ml", controller.getDirectContainerUnit().toString());
-
-        step3Controller.setDispensedVolume(10.0);
-        controller.setDirectContainerSize(40.0);
-        controller.setDirectContainerUnit(Unit.getUnit("m^3"));
-        controller.actionOnChangeContainerSizeUnit();
-        // userChangedContainerSizeUnit is true
-        controller.init();
-        assertEquals("m^3", controller.getDirectContainerUnit().toString());
     }
 
     /*
@@ -116,8 +85,7 @@ public class ConsumePartOfItemStep4ControllerTest {
         // container size larger than dispensed volume
         step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
         step3Controller.setDispensedVolume(10.0);
-        controller.setDirectContainerSize(5.0);
-        controller.setDirectContainerUnit(Unit.getUnit("l"));
+        controller.setDirectContainerSize(15.0);
         controller.actionOnChangeDirectContainerSize();
         assertNull(messagePresenter.getLastErrorMessage());
 
@@ -125,8 +93,26 @@ public class ConsumePartOfItemStep4ControllerTest {
         step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
         step3Controller.setDispensedVolume(10.0);
         controller.setDirectContainerSize(5.0);
-        controller.setDirectContainerUnit(Unit.getUnit("ml"));
         controller.actionOnChangeDirectContainerSize();
+        assertEquals("itemCreateSolution_error_containerTooSmall", messagePresenter.getLastErrorMessage());
+    }
+
+    /*
+     * Tests for presentContainerTooSmallError()
+     */
+    @Test
+    public void test_presentContainerTooSmallError() {
+        Item item = new Item();
+        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
+        ConsumePartOfItemStep3Controller step3Controller = new ConsumePartOfItemStep3Controller(step1Controller, null,
+                null);
+        ConsumePartOfItemStep4Controller controller = new ConsumePartOfItemStep4Controller(step1Controller,
+                step3Controller, messagePresenter);
+        assertNull(messagePresenter.getLastErrorMessage());
+
+        step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
+        step3Controller.setDispensedVolume(10.0);
+        controller.presentContainerTooSmallError();
         assertEquals("itemCreateSolution_error_containerTooSmall", messagePresenter.getLastErrorMessage());
     }
 }

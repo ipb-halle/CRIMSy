@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
 
+import java.io.Serializable;
 import java.util.List;
 
 import de.ipb_halle.lbac.admission.User;
@@ -33,7 +34,9 @@ import de.ipb_halle.lbac.search.SearchResult;
  * 
  * @author flange
  */
-public class ConsumePartOfItemStep5Controller {
+public class ConsumePartOfItemStep5Controller implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final List<Project> availableProjects;
     private Project selectedProject;
 

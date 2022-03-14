@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
 
+import java.io.Serializable;
+
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.bean.ContainerController;
@@ -28,7 +30,9 @@ import de.ipb_halle.lbac.material.MessagePresenter;
  * 
  * @author flange
  */
-public class ConsumePartOfItemStep6Controller {
+public class ConsumePartOfItemStep6Controller implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final ContainerController containerController; // r
 
     public ConsumePartOfItemStep6Controller(ContainerService containerService, UserBean userBean,

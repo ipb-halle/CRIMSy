@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import org.primefaces.event.FlowEvent;
@@ -39,6 +40,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 public class ConsumePartOfItemStrategyController implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private final Item parentItem;
     private final ItemService itemService;
     private final ContainerService containerService;
     private final MessagePresenter messagePresenter;
@@ -56,6 +58,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     public ConsumePartOfItemStrategyController(Item parentItem, ItemService itemService,
             ContainerService containerService, ProjectService projectService, UserBean userBean,
             MessagePresenter messagePresenter) {
+        this.parentItem = parentItem;
         this.itemService = itemService;
         this.containerService = containerService;
         this.messagePresenter = messagePresenter;
@@ -90,8 +93,10 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     private static final String STEP4 = "step4_directContainerAndLabel";
     private static final String STEP5 = "step5_project";
     private static final String STEP6 = "step6_location";
+    private static final String STEP7 = "step7_save";
 
     public String onFlowProcess(FlowEvent event) {
+        // STEP1 -> STEP2: target mass <= item mass
         if (STEP2.equals(event.getNewStep())) {
             if (step1Controller.isTargetMassGreaterThanItemMass()) {
                 messagePresenter.error("itemCreateSolution_error_targetMassTooHigh");
@@ -102,6 +107,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
             }
         }
 
+        // STEP2 -> STEP3: weigh <= item mass
         if (STEP3.equals(event.getNewStep())) {
             if (step2Controller.isWeighGreaterThanItemMass()) {
                 messagePresenter.error("itemCreateSolution_error_weighTooHigh");
@@ -112,16 +118,60 @@ public class ConsumePartOfItemStrategyController implements Serializable {
             }
         }
 
-        if (STEP4.equals(event.getNewStep())) {
-            step4Controller.init();
-            return STEP4;
+        // STEP4 -> STEP5: dispensed volume <= container volume
+        if (STEP5.equals(event.getNewStep())) {
+            if (step4Controller.isDirectContainer() && step4Controller.isDispensedVolumeGreaterThanContainerSize()) {
+                step4Controller.presentContainerTooSmallError();
+                return STEP4;
+            } else {
+                return STEP5;
+            }
         }
 
-//        if (STEP5.equals(event.getNewStep())) {
-//            check if volume from step4 is less or equal than volume available in container
+        // STEP6 -> STEP7: valid container and position
+//        if (STEP7.equals(event.getNewStep())) {
+//            if () {
+//                return STEP6;
+//            } else {
+//                return STEP7;
+//            }
 //        }
 
         return event.getNewStep();
+    }
+
+    /*
+     * Actions
+     */
+    public void actionSave() {
+        Item newItem = prepareNewItem();
+    }
+
+    private Item prepareNewItem() {
+        Item item = new Item();
+
+        item.setAmount(step3Controller.getDispensedVolume());
+        item.setUnit(step1Controller.getTargetVolumeUnit());
+        item.setConcentration(step3Controller.getFinalConcentration());
+        item.setConcentrationUnit(step1Controller.getTargetConcentrationUnit());
+        item.setContainer(step6Controller.getContainerController().getContainer());
+
+        if (step4Controller.isDirectContainer()) {
+            item.setContainerSize(step4Controller.getDirectContainerSize());
+            item.setContainerType(step4Controller.getDirectContainerType());
+        }
+
+        item.setMaterial(parentItem.getMaterial());
+        item.setProject(step5Controller.getSelectedProject());
+        item.setPurity(parentItem.getPurity());
+        item.setSolvent(step3Controller.getSolvent());
+        item.setcTime(new Date());
+
+        if (step4Controller.isCustomLabel()) {
+            item.setLabel(step4Controller.getCustomLabelValue());
+        }
+
+        return item;
     }
 
     /*

@@ -50,7 +50,7 @@
                         <ui:fragment rendered="#{controller.step4Controller.directContainer}">
                             <p:remoteCommand
                                 name="createSolution_step4_directContainerSizeChange"
-                                process="directContainerSizeInputId directContainerUnitSelectionId"
+                                process="directContainerSizeInputId"
                                 update="@none"
                                 action="#{controller.step4Controller.actionOnChangeDirectContainerSize()}" />
                             <b:inputText
@@ -59,34 +59,15 @@
                                 label="Container size"
                                 required="true"
                                 onchange="createSolution_step4_directContainerSizeChange();">
+                                <f:facet name="append">
+                                    <h:outputText value="#{controller.step1Controller.targetVolumeUnit}" />
+                                </f:facet>
                                 <f:convertNumber
                                     type="number"
                                     groupingUsed="false"
                                     locale="#{globalLocaleBean.numberConverterLocale}" />
                                 <f:validateDoubleRange minimum="0" />
                             </b:inputText>
-                        </ui:fragment>
-                    </b:column>
-                    <b:column
-                        span="2"
-                        styleClass="directContainerClass">
-                        <ui:fragment rendered="#{controller.step4Controller.directContainer}">
-                            <p:remoteCommand
-                                name="createSolution_step4_directContainerUnitChange"
-                                process="directContainerSizeInputId directContainerUnitSelectionId"
-                                update="@none"
-                                action="#{controller.step4Controller.actionOnChangeContainerSizeUnit()}" />
-                            <b:selectOneMenu
-                                id="directContainerUnitSelectionId"
-                                value="#{controller.step4Controller.directContainerUnit}"
-                                label="Unit"
-                                required="true"
-                                onchange="createSolution_step4_directContainerUnitChange();">
-                                <f:selectItems
-                                    value="#{controller.step1Controller.availableVolumeUnits}"
-                                    var="unit"
-                                    itemLabel="#{unit.unit}" />
-                            </b:selectOneMenu>
                         </ui:fragment>
                     </b:column>
                     <b:column

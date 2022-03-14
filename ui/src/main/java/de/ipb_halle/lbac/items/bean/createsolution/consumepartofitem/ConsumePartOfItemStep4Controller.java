@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.util.jsf.NumberFunctions;
 import de.ipb_halle.lbac.util.units.Quantity;
-import de.ipb_halle.lbac.util.units.Unit;
 
 /**
  * Controls the fourth step of the create solution wizard: The user defines the
@@ -39,13 +38,10 @@ public class ConsumePartOfItemStep4Controller implements Serializable {
 
     private boolean directContainer = false; // rw
     private Double directContainerSize; // rw
-    private Unit directContainerUnit; // rw
     private ContainerType directContainerType; // rw
 
     private boolean customLabel = false; // rw
     private String customLabelValue; // rw
-
-    private boolean userChangedContainerSizeUnit = false;
 
     public ConsumePartOfItemStep4Controller(ConsumePartOfItemStep1Controller step1Controller,
             ConsumePartOfItemStep3Controller step3Controller, MessagePresenter messagePresenter) {
@@ -54,31 +50,27 @@ public class ConsumePartOfItemStep4Controller implements Serializable {
         this.messagePresenter = messagePresenter;
     }
 
-    public void init() {
-        if (!userChangedContainerSizeUnit) {
-            directContainerUnit = step1Controller.getTargetVolumeUnit();
-        }
-    }
-
     /*
      * Actions
      */
     public void actionOnChangeDirectContainerSize() {
         if (isDispensedVolumeGreaterThanContainerSize()) {
-            Quantity dispensedVolume = step3Controller.getDispensedVolumeAsQuantity();
-            messagePresenter.error("itemCreateSolution_error_containerTooSmall",
-                    NumberFunctions.formatAmount(dispensedVolume.getValue()), dispensedVolume.getUnit().toString());
+            presentContainerTooSmallError();
         }
     }
 
-    public void actionOnChangeContainerSizeUnit() {
-        userChangedContainerSizeUnit = true;
-        actionOnChangeDirectContainerSize();
+    public void presentContainerTooSmallError() {
+        Quantity dispensedVolume = step3Controller.getDispensedVolumeAsQuantity();
+        messagePresenter.error("itemCreateSolution_error_containerTooSmall",
+                NumberFunctions.formatAmount(dispensedVolume.getValue()), dispensedVolume.getUnit().toString());
     }
 
-    private boolean isDispensedVolumeGreaterThanContainerSize() {
+    /*
+     * Getters with logic
+     */
+    public boolean isDispensedVolumeGreaterThanContainerSize() {
         Quantity dispensedVolume = step3Controller.getDispensedVolumeAsQuantity();
-        Quantity containerSize = Quantity.create(directContainerSize, directContainerUnit);
+        Quantity containerSize = Quantity.create(directContainerSize, step1Controller.getTargetVolumeUnit());
 
         return dispensedVolume.isGreaterThan(containerSize);
     }
@@ -100,14 +92,6 @@ public class ConsumePartOfItemStep4Controller implements Serializable {
 
     public void setDirectContainerSize(Double directContainerSize) {
         this.directContainerSize = directContainerSize;
-    }
-
-    public Unit getDirectContainerUnit() {
-        return directContainerUnit;
-    }
-
-    public void setDirectContainerUnit(Unit directContainerUnit) {
-        this.directContainerUnit = directContainerUnit;
     }
 
     public ContainerType getDirectContainerType() {

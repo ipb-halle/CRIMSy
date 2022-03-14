@@ -74,6 +74,13 @@
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
+                <p:tab
+                    id="step7_save"
+                    title="Save">
+                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep7.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
             </p:wizard>
         </ui:composition>
     </h:body>
