@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.integrationtests;
+package de.ipb_halle.integrationtests.settings.usermanagement;
 
 import static com.codeborne.selenide.Condition.empty;
 import static com.codeborne.selenide.Condition.exactTextCaseSensitive;
@@ -42,6 +42,7 @@ import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserDialog;
 import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserManagementPage;
 import de.ipb_halle.pageobjects.pages.settings.usermanagement.UserModel;
 import de.ipb_halle.pageobjects.pages.settings.usermanagement.UsersTable;
+import de.ipb_halle.test.ModelTools;
 import de.ipb_halle.test.SelenideEachExtension;
 
 /**
@@ -60,7 +61,7 @@ public class CreateUserTest {
     }
 
     @Test
-    @DisplayName("After opening the create user dialog, the it should have the correct title and the input fields should be empty.")
+    @DisplayName("After opening the create user dialog, the dialog should have the correct title and the input fields should be empty.")
     public void test_createUserDialog_checkTitle_and_emptyInputs() {
         UserDialog dialog = userManagementPage.createUser();
 
@@ -73,6 +74,36 @@ public class CreateUserTest {
         dialog.passwordInput().shouldBe(empty);
         dialog.passwordRepeatInput().shouldBe(empty);
         dialog.phoneInput().shouldBe(empty);
+    }
+
+    @Test
+    @DisplayName("After editing an existing user and closing the dialog, the create user dialog should have the correct title and empty input fields.")
+    public void test_createUserDialog_afterEditingExistingUser_checkTitle_and_emptyInputs() {
+        String login = uniqueLogin();
+        String password = "12345678";
+        UserModel user = new UserModel().login(login).name("test user XYZ").shortcut("ABCDEF")
+                .email("user@test.example").password(password).passwordRepeat(password).phone("CALL-911");
+        // create the user
+        userManagementPage.createUser().applyModel(user).confirm();
+        // edit this user and close dialog
+        userManagementPage.getUsersTable().search(login).editUser(0).close();
+
+        UserDialog dialog = userManagementPage.createUser();
+
+        dialog.title().shouldBe(uiMessage("userMgr_mode_createUser", locale));
+        dialog.idInput().shouldBe(empty);
+        dialog.nameInput().shouldBe(empty);
+        dialog.loginInput().shouldBe(empty);
+        dialog.shortcutInput().shouldBe(empty);
+        dialog.emailInput().shouldBe(empty);
+        dialog.passwordInput().shouldBe(empty);
+        dialog.passwordRepeatInput().shouldBe(empty);
+        dialog.phoneInput().shouldBe(empty);
+
+        dialog.close();
+        // delete existing user
+        LoginPage loginPage = userManagementPage.logout(LoginPage.class).navigateToLoginPage();
+        ModelTools.deleteUser(login, loginPage);
     }
 
     @Test
@@ -132,7 +163,8 @@ public class CreateUserTest {
 
         dialog.close();
         // delete existing user
-        userManagementPage.getUsersTable().search(login).deleteUser(0).confirm();
+        LoginPage loginPage = userManagementPage.logout(LoginPage.class).navigateToLoginPage();
+        ModelTools.deleteUser(login, loginPage);
     }
 
     @Test
@@ -156,15 +188,9 @@ public class CreateUserTest {
         dialog.close();
         userManagementPage.getUsersTable().search(newLogin).shouldBeEmpty();
 
-        /*
-         * Remove shortcut for the existing user, so we don't run into trouble the next
-         * time this test is executed.
-         */
-        dialog = userManagementPage.getUsersTable().search(login).editUser(0);
-        dialog.shortcutInput().setValue("");
-        dialog.confirm();
         // delete existing user
-        userManagementPage.getUsersTable().search(login).deleteUser(0).confirm();
+        LoginPage loginPage = userManagementPage.logout(LoginPage.class).navigateToLoginPage();
+        ModelTools.deleteUser(login, loginPage);
     }
 
     @Test
@@ -206,15 +232,9 @@ public class CreateUserTest {
         table.getType(0).shouldHave(exactTextCaseSensitive("LOCAL"));
 //        table.getInstitute(0).shouldHave(exactTextCaseSensitive("???"));
 
-        /*
-         * Remove shortcut for the user, so we don't run into trouble the next time this
-         * test is executed.
-         */
-        table.editUser(0);
-        dialog.shortcutInput().setValue("");
-        dialog.confirm();
         // delete user
-        userManagementPage.getUsersTable().search(login).deleteUser(0).confirm();
+        LoginPage loginPage = userManagementPage.logout(LoginPage.class).navigateToLoginPage();
+        ModelTools.deleteUser(login, loginPage);
     }
 
     @Test
@@ -245,8 +265,8 @@ public class CreateUserTest {
         searchPage.shouldBeLoggedIn().userNameShouldBe(username);
 
         // delete user
-        searchPage.logout(LoginPage.class).navigateToLoginPage().loginAsAdmin(SearchPage.class)
-                .navigateTo(UserManagementPage.class).getUsersTable().search(login).deleteUser(0).confirm();
+        LoginPage loginPage = searchPage.logout(LoginPage.class).navigateToLoginPage();
+        ModelTools.deleteUser(login, loginPage);
     }
 
     private UserModel validUser(String login, String password) {

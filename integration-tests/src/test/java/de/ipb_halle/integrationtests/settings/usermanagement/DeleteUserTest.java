@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.integrationtests;
+package de.ipb_halle.integrationtests.settings.usermanagement;
 
 import static com.codeborne.selenide.Condition.empty;
 import static com.codeborne.selenide.Condition.value;
