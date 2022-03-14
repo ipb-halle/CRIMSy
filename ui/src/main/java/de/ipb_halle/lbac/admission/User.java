@@ -167,4 +167,8 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     public Type getTypeToDisplay() {
         return new Type(SearchTarget.USER);
     }
+    
+    public boolean  isDeactivated(){
+        return getName().equals("deactivated");
+    }
 }
