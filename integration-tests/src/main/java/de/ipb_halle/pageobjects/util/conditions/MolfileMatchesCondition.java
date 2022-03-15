@@ -25,6 +25,8 @@ import org.openqa.selenium.WebElement;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.io.MDLV2000Reader;
+import org.openscience.cdk.tools.manipulator.AtomContainerComparator;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Condition;
@@ -78,7 +80,9 @@ public class MolfileMatchesCondition extends Condition {
             expected = reader.read(new AtomContainer());
         }
 
-        // let CDK compare the AtomContainers
-        throw new UnsupportedOperationException("Not implemented yet");
+        AtomContainerManipulator.suppressHydrogens(actual);
+        AtomContainerManipulator.suppressHydrogens(expected);
+
+        return new AtomContainerComparator().compare(actual, expected) == 0;
     }
 }

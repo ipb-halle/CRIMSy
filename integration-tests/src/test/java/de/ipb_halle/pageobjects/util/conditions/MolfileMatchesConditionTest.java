@@ -37,8 +37,14 @@ public class MolfileMatchesConditionTest {
         MolfileMatchesCondition condition = new MolfileMatchesCondition(null, null);
 
         assertTrue(condition.molfilesMatch(benzene, benzene));
+        assertTrue(condition.molfilesMatch(caffeine1, caffeine1));
+        assertTrue(condition.molfilesMatch(caffeine2, caffeine2));
+
         assertFalse(condition.molfilesMatch(benzene, caffeine1));
+        assertFalse(condition.molfilesMatch(benzene, caffeine2));
         assertFalse(condition.molfilesMatch(caffeine1, benzene));
+        assertFalse(condition.molfilesMatch(caffeine2, benzene));
+
         assertTrue(condition.molfilesMatch(caffeine1, caffeine2));
         assertTrue(condition.molfilesMatch(caffeine2, caffeine1));
     }
