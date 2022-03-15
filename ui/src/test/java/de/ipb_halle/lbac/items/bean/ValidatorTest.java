@@ -79,17 +79,17 @@ public class ValidatorTest extends TestBase {
 
     @Test
     public void test001_itemValideToSave_noCustomLabel() {
-        Assert.assertTrue(validator.itemValideToSave(item, containerController, isCustomLabel, customLabel));
+        Assert.assertTrue(validator.itemValidToSave(item, containerController, isCustomLabel, customLabel));
 
         labelServiceMock.isLabelAvailable = false;
-        Assert.assertTrue(validator.itemValideToSave(item, containerController, isCustomLabel, customLabel));
+        Assert.assertTrue(validator.itemValidToSave(item, containerController, isCustomLabel, customLabel));
     }
 
     @Test
     public void test002_itemValideToSave_allowedCustomLabel() {
         isCustomLabel = true;
 
-        Assert.assertTrue(validator.itemValideToSave(item, containerController, isCustomLabel, customLabel));
+        Assert.assertTrue(validator.itemValidToSave(item, containerController, isCustomLabel, customLabel));
     }
 
     @Test
@@ -97,14 +97,14 @@ public class ValidatorTest extends TestBase {
         isCustomLabel = true;
         labelServiceMock.isLabelAvailable = false;
 
-        Assert.assertFalse(validator.itemValideToSave(item, containerController, isCustomLabel, customLabel));
+        Assert.assertFalse(validator.itemValidToSave(item, containerController, isCustomLabel, customLabel));
     }
 
     @Test
     public void test004_itemValideToSave_positionForbidden() {
         containerServiceMock.arePositionsFree = false;
 
-        Assert.assertFalse(validator.itemValideToSave(item, containerController, isCustomLabel, customLabel));
+        Assert.assertFalse(validator.itemValidToSave(item, containerController, isCustomLabel, customLabel));
     }
 
     @Deployment

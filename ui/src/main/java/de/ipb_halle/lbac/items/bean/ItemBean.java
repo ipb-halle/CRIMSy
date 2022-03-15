@@ -45,6 +45,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIInput;
@@ -230,7 +232,7 @@ public class ItemBean implements Serializable {
             }
             state.getEditedItem().setContainer(containerController.getContainer());
 
-            if (validator.itemValideToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
+            if (validator.itemValidToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
                 if (isCreateMode()) {
                     saveNewItem();
                     messagePresenter.info("itemEdit_save_new_success");
@@ -261,14 +263,13 @@ public class ItemBean implements Serializable {
             itemToSave.setLabel(customLabelValue);
         }
 
-        Item newItem = null;
-        if (containerController.getContainer() != null && containerController.getItemPositions() != null) {
-            int[] positions = containerController.resolveItemPositions().iterator().next();
-            newItem = itemService.saveItemAndPlaceInContainer(itemToSave, containerController.getContainer().getId(), positions[0], positions[1]);
-        } else {
-            newItem = itemService.saveItem(itemToSave);
+        int[] position = null;
+        Set<int[]> setWithPositions = containerController.resolveItemPositions();
+        if (containerController.getContainer() != null && !setWithPositions.isEmpty()) {
+            position = setWithPositions.iterator().next();
         }
 
+        Item newItem = itemService.saveItem(itemToSave, position);
         state.setEditedItem(newItem);
     }
 

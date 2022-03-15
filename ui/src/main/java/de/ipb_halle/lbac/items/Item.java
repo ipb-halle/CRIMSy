@@ -68,6 +68,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
     private List<Container> nestedContainer = new ArrayList<>();
     private Date expiry_date;
     private String label;
+    private Integer parentId;
 
     public Item() {
 
@@ -106,6 +107,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.purity = entity.getPurity();
         this.solvent = sol;
         this.cTime = entity.getCtime();
+        this.parentId = entity.getParent_id();
         this.nestedContainer = nestedContainer;
         this.setACList(aclist);
         this.setOwner(owner);
@@ -149,6 +151,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         entity.setACList(getACList().getId());
         entity.setCtime(cTime);
         entity.setExpiry_date(expiry_date);
+        entity.setParent_id(parentId);
         return entity;
     }
 
@@ -308,6 +311,14 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
 
     public void setcTime(Date cTime) {
         this.cTime = cTime;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     public SortedMap<Date, List<ItemDifference>> getHistory() {

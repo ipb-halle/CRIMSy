@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 public class Validator {
 
     private MessagePresenter messagePresenter;
-    boolean valide = true;
+    boolean valid = true;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private final ContainerPositionService containerPositionService;
     private final LabelService labelService;
@@ -44,31 +44,31 @@ public class Validator {
         messagePresenter = JsfMessagePresenter.getInstance();
     }
 
-    public boolean itemValideToSave(
+    public boolean itemValidToSave(
             Item itemToCheck,
             ContainerController containerController,
             boolean customLabel,
             String customLabelValue) {
-        valide = true;
+        valid = true;
         boolean areSlotsEmpty = containerPositionService.areContainerSlotsFree(
                 itemToCheck,
                 containerController.getContainer(),
                 containerController.resolveItemPositions());
         if (!areSlotsEmpty) {
             messagePresenter.error("itemEdit_container_blocked");
-            valide = false;
+            valid = false;
         }
         if (customLabel && !labelService.isLabelAvailable(customLabelValue)) {
             messagePresenter.error("itemEdit_label_unavailable");
-            valide = false;
+            valid = false;
         }
         if (containerWithPlaces(containerController.getContainer())) {
             if (containerController.resolveItemPositions().isEmpty()) {
                 messagePresenter.error("itemEdit_item_not_placed");
-                valide = false;
+                valid = false;
             }
         }
-        return valide;
+        return valid;
     }
 
     private boolean containerWithPlaces(Container c) {

@@ -275,9 +275,13 @@ public class ItemService {
         return item;
     }
 
-    public Item saveItemAndPlaceInContainer(Item item, int containerid, int posX, int posY) {
+    public Item saveItem(Item item, int[] position) {
         Item savedItem = saveItem(item);
-        containerPositionService.saveItemInContainer(savedItem.getId(), containerid, posX, posY);
+
+        Container container = savedItem.getContainer();
+        if ((container != null) && (position != null)) {
+            containerPositionService.saveItemInContainer(savedItem.getId(), container.getId(), position[0], position[1]);
+        }
         return savedItem;
     }
 
