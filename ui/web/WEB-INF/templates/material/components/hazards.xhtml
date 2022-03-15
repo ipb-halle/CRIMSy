@@ -136,10 +136,12 @@
                         label="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"
                         disabled="#{!materialBean.hazardController.isHazardEditable()}" />
                     <p:outputLabel
+                        pt:data-test-id="hazardsTab:radioactiveLabel"
                         for="@previous"
                         styleClass="radioactiveLabel"
                         value="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}" />
                     <b:image
+                        pt:data-test-id="hazardsTab:radioactiveImage"
                         styleClass="radioactiveImage"
                         name="#{materialBean.hazardController.radioactiveImageLocation}" />   
                 </p:panel>

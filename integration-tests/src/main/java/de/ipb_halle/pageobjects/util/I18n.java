@@ -64,7 +64,7 @@ public class I18n {
      * @return {@code false} if the test string does not match the entry
      */
     public static boolean isJSFMessage(String test, String key, Locale locale) {
-        String pattern = getJSFMessage(key, locale);
+        String pattern = getJSFMessage(key, locale).trim();
         if (pattern != null) {
             return isParsableMessage(test, pattern);
         } else {
@@ -92,7 +92,7 @@ public class I18n {
      * @return {@code false} if the test string does not match the entry
      */
     public static boolean isUIMessage(String test, String key, Locale locale) {
-        String pattern = getUIMessage(key, locale);
+        String pattern = getUIMessage(key, locale).trim();
         if (pattern != null) {
             return isParsableMessage(test, pattern);
         } else {

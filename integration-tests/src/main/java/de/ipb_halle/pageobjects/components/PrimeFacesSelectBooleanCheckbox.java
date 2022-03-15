@@ -50,7 +50,7 @@ public class PrimeFacesSelectBooleanCheckbox {
 
         clickableDiv = element.$(elementWithCssClasses("div", "ui-chkbox-box"));
         selectInput = element.$(By.tagName("input"));
-        label = element.$(By.tagName("label"));
+        label = element.$(By.className("ui-chkbox-label"));
     }
 
     /*

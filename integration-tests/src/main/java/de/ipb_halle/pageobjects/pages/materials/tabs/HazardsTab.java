@@ -41,6 +41,8 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
     private static final SelenideElement P_STATEMENTS_INPUT = $(testId("hazardsTab:pStatements"));
     private static final PrimeFacesSelectBooleanCheckbox RADIOACTIVE_CHECKBOX = new PrimeFacesSelectBooleanCheckbox(
             "hazardsTab:radioactive");
+    private static final SelenideElement RADIOACTIVE_LABEL = $(testId("hazardsTab:radioactiveLabel"));
+    private static final SelenideElement RADIOACTIVE_IMAGE = $(testId("hazardsTab:radioactiveImage"));
     private static final PrimeFacesSelectBooleanCheckbox GMO_CHECKBOX = new PrimeFacesSelectBooleanCheckbox(
             "hazardsTab:gmo");
     private static final SelenideElement CUSTOM_REMARKS_INPUT = $(testId("hazardsTab:customRemarks"));
@@ -73,6 +75,10 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
         /*
          * Getters
          */
+        public SelenideElement ghsTable() {
+            return GHS_TABLE;
+        }
+
         public ElementsCollection labels() {
             return GHS_LABELS;
         }
@@ -128,6 +134,10 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
         /*
          * Getters
          */
+        public SelenideElement biosafetyLevelTable() {
+            return BIOSAFETY_LEVEL_TABLE;
+        }
+
         public ElementsCollection labels() {
             return BIOSAFETY_LABELS;
         }
@@ -182,6 +192,14 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
 
     public PrimeFacesSelectBooleanCheckbox radioActiveCheckbox() {
         return RADIOACTIVE_CHECKBOX;
+    }
+
+    public SelenideElement radioactiveLabel() {
+        return RADIOACTIVE_LABEL;
+    }
+
+    public SelenideElement radioactiveImage() {
+        return RADIOACTIVE_IMAGE;
     }
 
     public BioSafetyData bioSafetyData() {
