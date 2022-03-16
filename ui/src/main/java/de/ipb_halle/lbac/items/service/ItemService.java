@@ -319,9 +319,9 @@ public class ItemService {
         }
         parentItem.setAmount(newQuantityOfParent.getValue());
 
-        Set<int[]> positions = containerPositionService.getItemPositionsInContainer(parentItem);
+        Set<int[]> positionsOfParent = containerPositionService.getItemPositionsInContainer(parentItem);
 
-        saveEditedItem(parentItem, originalParentItem, user, positions);
+        saveEditedItem(parentItem, originalParentItem, user, positionsOfParent);
 
         return savedItem;
     }
