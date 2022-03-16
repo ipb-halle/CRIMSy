@@ -32,14 +32,14 @@
                 <b:row>
                     <b:column span="1">
                         <b:button
-                            value="Back"
+                            value="#{msgs.wizard_back}"
                             onclick="PF('consumePartOfItemWizard').back();" />
                     </b:column>
                     <b:column
                         span="1"
                         offset="10">
                         <b:button
-                            value="Next"
+                            value="#{msgs.wizard_next}"
                             onclick="PF('consumePartOfItemWizard').next();" />
                     </b:column>
                 </b:row>
@@ -50,7 +50,7 @@
                         offset="1">
                         <b:inputText
                             value="#{controller.step1Controller.targetConcentration}"
-                            label="Target concentration"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetConcentration}"
                             readonly="true">
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetConcentrationUnit}" />
@@ -65,7 +65,7 @@
                     <b:column span="2">
                         <b:inputText
                             value="#{controller.step2Controller.weigh}"
-                            label="Weigh"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_weigh}"
                             readonly="true">
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step2Controller.weighUnit}" />
@@ -85,7 +85,7 @@
                         offset="1">
                         <b:inputText
                             value="#{controller.step3Controller.volumeToDispense}"
-                            label="Volume to dispense"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_volumeToDispense}"
                             readonly="true">
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetVolumeUnit}" />
@@ -106,7 +106,7 @@
                         <b:inputText
                             id="dispensedVolumeInputId"
                             value="#{controller.step3Controller.dispensedVolume}"
-                            label="Dispensed volume"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_dispensedVolume}"
                             required="true"
                             onchange="createSolution_step3_dispensedVolumeChange();">
                             <b:focus />
@@ -129,7 +129,7 @@
                         <b:inputText
                             id="finalConcentrationInputId"
                             value="#{controller.step3Controller.finalConcentration}"
-                            label="Final concentration"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_finalConcentration}"
                             readonly="true">
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetConcentrationUnit}" />
@@ -148,7 +148,7 @@
                         offset="1">
                         <b:selectOneMenu
                             value="#{controller.step3Controller.solvent}"
-                            label="Solvent"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_solvent}"
                             required="true">
                             <f:selectItems
                                 value="#{controller.solvents}"

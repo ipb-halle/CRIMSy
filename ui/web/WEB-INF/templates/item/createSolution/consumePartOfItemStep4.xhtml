@@ -32,14 +32,14 @@
                 <b:row>
                     <b:column span="1">
                         <b:button
-                            value="Back"
+                            value="#{msgs.wizard_back}"
                             onclick="PF('consumePartOfItemWizard').back();" />
                     </b:column>
                     <b:column
                         span="1"
                         offset="10">
                         <b:button
-                            value="Next"
+                            value="#{msgs.wizard_next}"
                             onclick="PF('consumePartOfItemWizard').next();" />
                     </b:column>
                 </b:row>
@@ -71,7 +71,7 @@
                             <b:inputText
                                 id="directContainerSizeInputId"
                                 value="#{controller.step4Controller.directContainerSize}"
-                                label="Container size"
+                                label="#{msgs.itemEdit_itemPanel_container_size}"
                                 required="true"
                                 onchange="createSolution_step4_directContainerSizeChange();">
                                 <f:facet name="append">

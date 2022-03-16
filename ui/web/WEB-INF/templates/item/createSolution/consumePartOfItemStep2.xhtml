@@ -33,14 +33,14 @@
                 <b:row>
                     <b:column span="1">
                         <b:button
-                            value="Back"
+                            value="#{msgs.wizard_back}"
                             onclick="PF('consumePartOfItemWizard').back();" />
                     </b:column>
                     <b:column
                         span="1"
                         offset="10">
                         <b:button
-                            value="Next"
+                            value="#{msgs.wizard_next}"
                             onclick="PF('consumePartOfItemWizard').next();" />
                     </b:column>
                 </b:row>
@@ -51,7 +51,7 @@
                         offset="1">
                         <b:inputText
                             value="#{controller.step1Controller.targetMass}"
-                            label="Target mass"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetMass}"
                             readonly="true">
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
@@ -67,7 +67,7 @@
                         <b:inputText
                             id="errorMarginInputId"
                             value="#{controller.step2Controller.errorMargin}"
-                            label="Error Margin"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_errorMargin}"
                             type="number"
                             pt:min="0"
                             pt:max="100"
@@ -92,7 +92,7 @@
                         offset="1">
                         <b:inputText
                             value="#{controller.step2Controller.targetMassPlusMargin}"
-                            label="Target mass +#{controller.step2Controller.errorMargin}%"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetMass} +#{controller.step2Controller.errorMargin}%"
                             readonly="true">
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
@@ -107,7 +107,7 @@
                     <b:column span="2">
                         <b:inputText
                             value="#{controller.step2Controller.targetMassMinusMargin}"
-                            label="Target mass -#{controller.step2Controller.errorMargin}%"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetMass} -#{controller.step2Controller.errorMargin}%"
                             readonly="true">
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
@@ -132,7 +132,7 @@
                         <b:inputText
                             id="weighInputId"
                             value="#{controller.step2Controller.weigh}"
-                            label="Weigh"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_weigh}"
                             required="true"
                             onchange="createSolution_step2_weighChange();">
                             <b:focus />
@@ -147,7 +147,7 @@
                         <b:selectOneMenu
                             id="weighUnitSelectionId"
                             value="#{controller.step2Controller.weighUnit}"
-                            label="Unit"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
                             required="true"
                             onchange="createSolution_step2_weighChange();">
                             <f:selectItems

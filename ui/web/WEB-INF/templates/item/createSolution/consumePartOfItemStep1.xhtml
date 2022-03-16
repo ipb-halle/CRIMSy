@@ -34,7 +34,7 @@
                         span="1"
                         offset="11">
                         <b:button
-                            value="Next"
+                            value="#{msgs.wizard_next}"
                             onclick="PF('consumePartOfItemWizard').next();" />
                     </b:column>
                 </b:row>
@@ -46,7 +46,7 @@
                         <b:inputText
                             id="targetConcentrationInputId"
                             value="#{controller.step1Controller.targetConcentration}"
-                            label="Target concentration"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetConcentration}"
                             required="true">
                             <b:focus />
                             <!-- Workaround for BootsFaces issue #541 -->
@@ -65,7 +65,7 @@
                     <b:column span="2">
                         <b:selectOneMenu
                             value="#{controller.step1Controller.targetConcentrationUnit}"
-                            label="Unit"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
                             required="true">
                             <f:selectItems
                                 value="#{controller.step1Controller.availableConcentrationUnits}"
@@ -92,7 +92,7 @@
                         <b:inputText
                             id="targetVolumeInputId"
                             value="#{controller.step1Controller.targetVolume}"
-                            label="Target volume"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetVolume}"
                             required="true">
                             <f:ajax
                                 event="change"
@@ -109,7 +109,7 @@
                     <b:column span="2">
                         <b:selectOneMenu
                             value="#{controller.step1Controller.targetVolumeUnit}"
-                            label="Unit"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
                             required="true">
                             <f:ajax
                                 event="change"
@@ -135,7 +135,7 @@
                         offset="1">
                         <b:inputText
                             value="#{controller.step1Controller.targetMass}"
-                            label="Target mass"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetMass}"
                             readonly="true">
                             <f:convertNumber
                                 type="number"
@@ -146,7 +146,7 @@
                     <b:column span="2">
                         <b:selectOneMenu
                             value="#{controller.step1Controller.targetMassUnit}"
-                            label="Unit"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
                             required="true">
                             <f:ajax
                                 event="change"
@@ -167,7 +167,7 @@
                         offset="1">
                         <b:inputText
                             value="#{controller.step1Controller.availableMassFromItem}"
-                            label="Available mass"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_availableMass}"
                             readonly="true">
                             <f:convertNumber
                                 type="number"
@@ -178,7 +178,7 @@
                     <b:column span="2">
                         <b:inputText
                             value="#{controller.step1Controller.availableMassFromItemUnit}"
-                            label="Unit"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
                             readonly="true" />
                     </b:column>
                     <b:column span="6">
