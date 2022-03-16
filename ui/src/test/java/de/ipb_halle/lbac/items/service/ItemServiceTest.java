@@ -410,7 +410,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(c2);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c2.getId(), loadedItem.getContainer().getId());
         Container loadedContainer = containerService.loadContainerById(c2.getId());
@@ -435,7 +435,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertNull(loadedItem.getContainer());
         diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
@@ -448,7 +448,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(c1);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
         diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
@@ -460,7 +460,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(c1);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
         Assert.assertTrue(loadedItem.getHistory().size() > 0);
@@ -500,7 +500,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         //put item into container with positions
         original = edited;
         edited = original.copy();
@@ -535,14 +535,14 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         int oldHistorySize = loadedItem.getHistory().size();
         // save item with no container into no container
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(oldHistorySize, loadedItem.getHistory().size());
     }

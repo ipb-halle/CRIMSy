@@ -23,14 +23,9 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemUtils;
 import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
-import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.material.MessagePresenter;
-import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.util.units.Quantity;
 
 /**
@@ -43,23 +38,10 @@ public class CreateSolutionBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private ItemService itemService;
-
-    @Inject
-    private ContainerService containerService;
-
-    @Inject
-    private ProjectService projectService;
-
-    @Inject
-    private UserBean userBean;
-
-    @Inject
-    private transient MessagePresenter messagePresenter;
+    private ConsumePartOfItemStrategyController consumePartOfItemStrategyController;
 
     private Item parentItem; // r
     private Quantity molarMassFromParentItem; // r
-    private ConsumePartOfItemStrategyController consumePartOfItemStrategyController; // r
 
     @PostConstruct
     public void init() {
@@ -71,8 +53,7 @@ public class CreateSolutionBean implements Serializable {
     public void actionStartCreateSolution(Item parentItem) {
         this.parentItem = parentItem;
         molarMassFromParentItem = ItemUtils.molarMassFromItem(parentItem);
-        consumePartOfItemStrategyController = new ConsumePartOfItemStrategyController(parentItem, itemService,
-                containerService, projectService, userBean, messagePresenter);
+        consumePartOfItemStrategyController.init(parentItem);
     }
 
     /*

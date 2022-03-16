@@ -20,48 +20,84 @@ package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.apache.cxf.jaxrs.utils.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.primefaces.event.FlowEvent;
 
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.ContainerUtils;
+import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
+import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
+import de.ipb_halle.lbac.items.bean.Validator;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.units.Quantity;
 
 /**
  * 
  * @author flange
  */
+@Dependent
 public class ConsumePartOfItemStrategyController implements Serializable {
     private static final long serialVersionUID = 1L;
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private final Item parentItem;
-    private final ItemService itemService;
-    private final ContainerService containerService;
-    private final MessagePresenter messagePresenter;
+    private Item parentItem;
+    private Validator validator;
 
-    private final ConsumePartOfItemStep1Controller step1Controller; // r
-    private final ConsumePartOfItemStep2Controller step2Controller; // r
-    private final ConsumePartOfItemStep3Controller step3Controller; // r
-    private final ConsumePartOfItemStep4Controller step4Controller; // r
-    private final ConsumePartOfItemStep5Controller step5Controller; // r
-    private final ConsumePartOfItemStep6Controller step6Controller; // r
+    @Inject
+    private ItemService itemService;
 
-    private final List<Solvent> solvents; // r
-    private final List<ContainerType> availableContainerTypes; // r
+    @Inject
+    private ContainerService containerService;
 
-    public ConsumePartOfItemStrategyController(Item parentItem, ItemService itemService,
-            ContainerService containerService, ProjectService projectService, UserBean userBean,
-            MessagePresenter messagePresenter) {
+    @Inject
+    private ContainerPositionService containerPositionService;
+
+    @Inject
+    private LabelService labelService;
+
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
+    private UserBean userBean;
+
+    @Inject
+    private ItemOverviewBean itemOverviewBean;
+
+    @Inject
+    private Navigator navigator;
+
+    @Inject
+    private transient MessagePresenter messagePresenter;
+
+    private ConsumePartOfItemStep1Controller step1Controller; // r
+    private ConsumePartOfItemStep2Controller step2Controller; // r
+    private ConsumePartOfItemStep3Controller step3Controller; // r
+    private ConsumePartOfItemStep4Controller step4Controller; // r
+    private ConsumePartOfItemStep5Controller step5Controller; // r
+    private ConsumePartOfItemStep6Controller step6Controller; // r
+
+    private List<Solvent> solvents; // r
+    private List<ContainerType> availableContainerTypes; // r
+
+    public void init(Item parentItem) {
         this.parentItem = parentItem;
-        this.itemService = itemService;
-        this.containerService = containerService;
-        this.messagePresenter = messagePresenter;
+        validator = new Validator(containerPositionService, labelService);
 
         step1Controller = new ConsumePartOfItemStep1Controller(parentItem, messagePresenter);
         step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, parentItem, messagePresenter);
@@ -135,6 +171,24 @@ public class ConsumePartOfItemStrategyController implements Serializable {
      */
     public void actionSave() {
         Item newItem = prepareNewItem();
+
+        if (!validator.itemValidToSave(newItem, step6Controller.getContainerController(),
+                step4Controller.isCustomLabel(), newItem.getLabel())) {
+            return;
+        }
+
+        Quantity massToSubtractFromParentItem = step2Controller.getWeighAsQuantity();
+
+        try {
+            saveAliquot(newItem, massToSubtractFromParentItem);
+            messagePresenter.info("itemEdit_save_new_success");
+
+            itemOverviewBean.reloadItems();
+            navigator.navigate("/item/items");
+        } catch (Exception e) {
+            messagePresenter.error("itemEdit_save_failed");
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
     }
 
     private Item prepareNewItem() {
@@ -161,7 +215,21 @@ public class ConsumePartOfItemStrategyController implements Serializable {
             item.setLabel(step4Controller.getCustomLabelValue());
         }
 
+        item.setParentId(parentItem.getId());
+        item.setACList(parentItem.getACList());
+        item.setOwner(userBean.getCurrentAccount());
+
         return item;
+    }
+
+    private void saveAliquot(Item newItem, Quantity massToSubtractFromParentItem) {
+        int[] position = null;
+        Set<int[]> setWithPositions = step6Controller.getContainerController().resolveItemPositions();
+        if (newItem.getContainer() != null && !setWithPositions.isEmpty()) {
+            position = setWithPositions.iterator().next();
+        }
+
+        itemService.saveAliquot(newItem, position, massToSubtractFromParentItem, userBean.getCurrentAccount());
     }
 
     /*

@@ -58,6 +58,8 @@ import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.units.Quantity;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -285,10 +287,6 @@ public class ItemService {
         return savedItem;
     }
 
-    public Item saveEditedItem(Item editedItem, Item origItem, User user) {
-        return saveEditedItem(editedItem, origItem, user, new HashSet<>());
-    }
-
     public Item saveEditedItem(Item editedItem, Item origItem, User user, Set<int[]> newPositions) {
         Date mdate = new Date();
         ItemComparator comparator = new ItemComparator(mdate);
@@ -307,6 +305,25 @@ public class ItemService {
 
     public void saveItemHistory(ItemHistory history) {
         this.em.merge(history.createEntity());
+    }
+
+    public Item saveAliquot(Item item, int[] position, Quantity subtractFromParentAmount, User user) {
+        Item savedItem = saveItem(item, position);
+
+        Item parentItem = loadItemById(savedItem.getParentId());
+        Item originalParentItem = parentItem.copy();
+
+        Quantity newQuantityOfParent = parentItem.getAmountAsQuantity().subtract(subtractFromParentAmount);
+        if (newQuantityOfParent.getValue() < 0) {
+            throw new RuntimeException("Amount cannot become negative");
+        }
+        parentItem.setAmount(newQuantityOfParent.getValue());
+
+        Set<int[]> positions = containerPositionService.getItemPositionsInContainer(parentItem);
+
+        saveEditedItem(parentItem, originalParentItem, user, positions);
+
+        return savedItem;
     }
 
     public SortedMap<Date, ItemPositionHistoryList> loadItemPositionHistory(Item item) {

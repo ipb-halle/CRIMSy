@@ -365,6 +365,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         copiedItem.setHistory(getHistory());
         copiedItem.setACList(getACList());
         copiedItem.setLabel(label);
+        copiedItem.setParentId(parentId);
         return copiedItem;
     }
 
