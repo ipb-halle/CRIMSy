@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.mocks;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
@@ -68,5 +69,9 @@ public class ItemBeanMock extends ItemBean {
 
     public void setMessagePresenter(MessagePresenter messagePresenter) {
         this.messagePresenter = messagePresenter;
+    }
+    
+    public void setACListService(ACListService service ){
+        this.aclistService=service;
     }
 }
