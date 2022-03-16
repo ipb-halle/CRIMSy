@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.ContainerType;
@@ -78,6 +80,9 @@ public class ItemBean implements Serializable {
     protected PrintBean printBean;
 
     @Inject
+    protected ACListService aclistService;
+
+    @Inject
     protected ItemOverviewBean itemOverviewBean;
 
     @Inject
@@ -118,9 +123,10 @@ public class ItemBean implements Serializable {
 
     protected Mode mode;
     private String customLabelValue;
-    
+    private boolean userHasEditRight = false;
+
     protected transient MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
-    
+
     public enum Mode {
         CREATE, EDIT, HISTORY
     }
@@ -281,8 +287,8 @@ public class ItemBean implements Serializable {
         return mode == Mode.EDIT;
     }
 
-    public boolean isHistoryMode() {
-        return mode == Mode.HISTORY;
+    public boolean isInDeactivatedMode() {
+        return mode == Mode.HISTORY||!userHasEditRight;
     }
 
     public boolean isCustomLabelDisabled() {
@@ -301,6 +307,7 @@ public class ItemBean implements Serializable {
         if (originalItem.getContainer() != null) {
             originalItem.setContainer(containerService.loadContainerById(originalItem.getContainer().getId()));
         }
+        userHasEditRight = aclistService.isPermitted(ACPermission.permEDIT, originalItem, userBean.getCurrentAccount());
         mode = Mode.EDIT;
         directContainer = originalItem.getContainerType() != null;
         state = new ItemState(originalItem);
@@ -318,6 +325,7 @@ public class ItemBean implements Serializable {
     }
 
     public void actionStartItemCreation(Material m) {
+        userHasEditRight = true;
         mode = Mode.CREATE;
         state = new ItemState();
         Item editedItem = state.getEditedItem();
@@ -565,7 +573,7 @@ public class ItemBean implements Serializable {
          * is not invoked when returning back to the edit state from navigation
          * through the history.
          */
-        if (!isDirectContainer() || isHistoryMode()) {
+        if (!isDirectContainer() || isInDeactivatedMode()) {
             return true;
         }
         if (values.size() != 2) {

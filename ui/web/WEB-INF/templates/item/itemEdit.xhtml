@@ -83,7 +83,7 @@
                             <b:column span="1">
                                 <b:commandButton
                                     value="#{msgs.itemEdit_itemEditPanel_save}"
-                                    disabled="#{itemBean.historyMode}"
+                                    disabled="#{itemBean.inDeactivatedMode}"
                                     action="#{itemBean.actionSave()}" />
                             </b:column>
                         </b:row>
@@ -102,7 +102,7 @@
                                     <b:inputText
                                         id="itemAmountId"
                                         value="#{itemBean.state.editedItem.amount}"
-                                        disabled="#{itemBean.historyMode}"
+                                        disabled="#{itemBean.inDeactivatedMode}"
                                         label="#{msgs.itemEdit_itemPanel_amount}"
                                         required="true"
                                         required-message="#{msgs.itemEdit_itemPanel_amount_requiredtext}">
@@ -117,7 +117,7 @@
                                     <b:selectOneMenu
                                         label="#{msgs.itemEdit_itemPanel_amount_unit}"
                                         value="#{itemBean.state.editedItem.unit}"
-                                        disabled="#{itemBean.historyMode or itemBean.editMode}"
+                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
                                         ajax="true"
                                         valueChangeListener="#{itemBean.amountUnitChanged}"
                                         process="@this itemAmountId boundContainerSizeId"
@@ -132,7 +132,7 @@
                                     <b:selectOneMenu
                                         label="#{msgs.itemEdit_itemPanel_amount_purity}"
                                         value="#{itemBean.state.editedItem.purity}"
-                                        disabled="#{itemBean.historyMode}">
+                                        disabled="#{itemBean.inDeactivatedMode}">
                                         <f:selectItems value="#{itemBean.availablePurities}" />
                                     </b:selectOneMenu>
                                 </b:column>
@@ -147,7 +147,7 @@
                                         process="@this"
                                         update="@(.directContainerClass)"
                                         value="#{itemBean.directContainer}"
-                                        disabled="#{itemBean.historyMode or itemBean.editMode}" />
+                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}" />
                                 </b:column>
                                 <b:column span="2" styleClass="directContainerClass">
                                     <b:inputText
@@ -157,7 +157,7 @@
                                         required="true"
                                         required-message="#{msgs.itemEdit_itemPanel_container_size_requiredtext}"
                                         label="#{msgs.itemEdit_itemPanel_container_size}"
-                                        disabled="#{(itemBean.historyMode or itemBean.editMode) and faces.renderResponse}">
+                                        disabled="#{(itemBean.inDeactivatedMode or itemBean.editMode) and faces.renderResponse}">
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
@@ -186,7 +186,7 @@
                                         rendered="#{itemBean.directContainer}"
                                         label="#{msgs.itemEdit_itemPanel_container_type}"
                                         value="#{itemBean.state.editedItem.containerType}"
-                                        disabled="#{itemBean.historyMode or itemBean.editMode}">
+                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
                                         <f:selectItems 
                                             value="#{itemBean.availableContainerTypes}"
                                             var ="ct"
@@ -206,7 +206,7 @@
                                         process="@this"
                                         update="@(.solventClass)"
                                         value="#{itemBean.solved}"
-                                        disabled="#{itemBean.historyMode or itemBean.editMode}"
+                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
                                         onchange="ajax:itemBean.onChangeSolved()" />
                                 </b:column>
                                 <b:column
@@ -216,7 +216,7 @@
                                         id="concentrationId"
                                         label="#{msgs.itemEdit_itemPanel_concentration}"
                                         value="#{itemBean.state.editedItem.concentration}"
-                                        disabled="#{itemBean.historyMode}"
+                                        disabled="#{itemBean.inDeactivatedMode}"
                                         required="true"
                                         required-message="#{msgs.itemEdit_itemPanel_concentration_requiredtext}">
                                         <f:convertNumber
@@ -236,7 +236,7 @@
                                         valueChangeListener="#{itemBean.concentrationUnitChanged}"
                                         process="@this concentrationId"
                                         update="concentrationId"
-                                        disabled="#{itemBean.historyMode}">
+                                        disabled="#{itemBean.inDeactivatedMode}">
                                         <f:selectItems
                                             value="#{itemBean.availableConcentrationUnits}"
                                             var="unit"
@@ -249,7 +249,7 @@
                                     <b:selectOneMenu
                                         label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
                                         value="#{itemBean.state.editedItem.solvent}"
-                                        disabled="#{itemBean.historyMode or itemBean.editMode}">
+                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
                                         <f:selectItems 
                                             value="#{itemBean.availableSolvents}"
                                             var="s"
@@ -290,7 +290,7 @@
                                         label="#{msgs.itemEdit_itemPanel_description}"
                                         value="#{itemBean.state.editedItem.description}"
                                         placeholder="#{msgs.itemEdit_itemPanel_description_placeholder}"
-                                        disabled="#{itemBean.historyMode}">
+                                        disabled="#{itemBean.inDeactivatedMode}">
                                         <f:converter converterId="InputConverter" />
                                     </b:inputTextarea>
                                 </b:column>
@@ -299,7 +299,7 @@
                     </p:tab>
                     <!-- Project -->
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_project}">
-                        <o:massAttribute name="disabled" value="#{itemBean.historyMode}">
+                        <o:massAttribute name="disabled" value="#{itemBean.inDeactivatedMode}">
                             <b:container>
                                 <b:row>
                                     <b:column
@@ -322,7 +322,7 @@
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_location}">
                         <crimsy:containerSelectionAndInfos
                             containerController="#{itemBean.containerController}"
-                            historyMode="#{itemBean.historyMode}" />
+                            historyMode="#{itemBean.inDeactivatedMode}" />
                     </p:tab>
                     <p:tab title="Print">
                         <b:container>
