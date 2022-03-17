@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean.createsolution;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
@@ -34,6 +36,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class CreateSolutionBeanTest extends TestBase {
+
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -49,7 +52,9 @@ public class CreateSolutionBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("CreateSolutionBeanTest.war").addClass(CreateSolutionBean.class);
-        // TODO: add ItemService (probably via ItemDeployment)
+
+        return UserBeanDeployment.add(ItemDeployment.add(
+                prepareDeployment("CreateSolutionBeanTest.war")
+                        .addClass(CreateSolutionBean.class)));
     }
 }

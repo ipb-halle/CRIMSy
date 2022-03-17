@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
@@ -24,6 +25,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -81,6 +83,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected ProjectService projectService;
     @Inject
     protected NodeService nodeService;
+    @Inject
+    protected ACListService aclistService;
 
     private ACObjectController acObjectController;
     protected User currentUser;
@@ -244,5 +248,9 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         }
 
         return itemIsNotSolved && itemHasMassUnit;
+    }
+
+    public boolean isEditDeactivated(Item item) {
+        return !aclistService.isPermitted(ACPermission.permEDIT, item, currentUser);
     }
 }

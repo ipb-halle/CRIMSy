@@ -129,7 +129,7 @@ public class ItemOverviewBeanTest extends TestBase {
         itemBean.setContainerPositionService(containerPositionService);
         itemBean.setNavigator(new NavigatorMock(userBean));
         itemBean.setUserBean(userBean);
-
+        itemBean.setACListService(aclistService);
     }
     
     @Test
