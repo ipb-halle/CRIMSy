@@ -92,7 +92,7 @@ public class GroupDialog extends PrimeFacesDialog {
         return SUBSYSTEM_INPUT;
     }
 
-    public static SelenideElement subsystemMessage() {
+    public SelenideElement subsystemMessage() {
         return SUBSYSTEM_MESSAGE;
     }
 }

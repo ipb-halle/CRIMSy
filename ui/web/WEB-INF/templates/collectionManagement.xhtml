@@ -25,15 +25,15 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:body>
         <ui:composition>
             <crimsy:acobjectModal
                 acobjectController="#{collectionBean.getAcObjectController()}"
                 groupsAgent="#{groupAgent}"
-                updateTargetClass="collectionList"
-                />
+                updateTargetClass="collectionList" />
             <h2>
                 <h:outputText value="#{msgs.collMgr_header}" />
             </h2>
@@ -50,147 +50,189 @@
                      conjunction with p:dialog's modal="true" leads to an 
                      unresponsive input field (not clickable, no keyboard inputs). -->
                 <b:form id="frmModalCollection">
-                    <b:inputText id="ID" value="#{collectionBean.activeCollection.id}"
-                                 label="ID"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'UPDATE'}"
-                                 disabled="true"
-                                 placeholder=""
-                                 required="false">
+                    <b:inputText
+                        id="ID"
+                        pt:data-test-id="collectionManagement:collectionDialog:id"
+                        value="#{collectionBean.activeCollection.id}"
+                        label="ID"
+                        style="z-index: auto;"
+                        renderLabel="true"
+                        rendered="#{collectionBean.editMode != 'UPDATE'}"
+                        disabled="true"
+                        placeholder=""
+                        required="false">
                         <f:facet name="prepend">
-                            <b:icon name="cloud"/>
+                            <b:icon name="cloud" />
                         </f:facet>
                     </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="name" value="#{collectionBean.activeCollection.name}"
-                                 label="#{msgs.collMgr_modal_name_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="true"
-                                 disabled="#{collectionBean.editMode != 'CREATE'}"
-                                 placeholder="#{msgs.collMgr_modal_name_placeholder}"
-                                 required="#{collectionBean.editMode == 'CREATE'}">
-                        <f:validator validatorId="CollectionInputValidator"/>
+                    <b:message
+                        pt:data-test-id="collectionManagement:collectionDialog:idMessage"
+                        for="@previous" />
+                    <b:inputText
+                        id="name"
+                        pt:data-test-id="collectionManagement:collectionDialog:name"
+                        value="#{collectionBean.activeCollection.name}"
+                        label="#{msgs.collMgr_modal_name_label}"
+                        style="z-index: auto;"
+                        renderLabel="true"
+                        rendered="true"
+                        disabled="#{collectionBean.editMode != 'CREATE'}"
+                        placeholder="#{msgs.collMgr_modal_name_placeholder}"
+                        required="#{collectionBean.editMode == 'CREATE'}">
+                        <f:validator validatorId="CollectionInputValidator" />
                         <f:facet name="prepend">
-                            <b:iconAwesome name="files-o"/>
+                            <b:iconAwesome name="files-o" />
                         </f:facet>
                     </b:inputText>
-                    <b:message for="@previous"/>
+                    <b:message
+                        pt:data-test-id="collectionManagement:collectionDialog:nameMessage"
+                        for="@previous" />
 
-                    <b:inputText id="description" 
-                                 value="#{collectionBean.activeCollection.description}"
-                                 label="#{msgs.collMgr_modal_description_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="true"
-                                 disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR'}"
-                                 placeholder="#{msgs.collMgr_modal_description_placeholder}"
-                                 required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }">
+                    <b:inputText
+                        id="description" 
+                        pt:data-test-id="collectionManagement:collectionDialog:description"
+                        value="#{collectionBean.activeCollection.description}"
+                        label="#{msgs.collMgr_modal_description_label}"
+                        style="z-index: auto;"
+                        renderLabel="true"
+                        rendered="true"
+                        disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR'}"
+                        placeholder="#{msgs.collMgr_modal_description_placeholder}"
+                        required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }">
                         <f:facet name="prepend">
                             <b:iconAwesome name="fa-tag"/>
                         </f:facet>
                     </b:inputText>
-                    <b:message for="@previous"/>
+                    <b:message
+                        pt:data-test-id="collectionManagement:collectionDialog:descriptionMessage"
+                        for="@previous" />
 
-                    <b:inputText id="indexpath" 
-                                 value="#{collectionBean.activeCollection.indexPath}"
-                                 label="#{msgs.collMgr_modal_indexpath_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'CREATE'}"
-                                 disabled="true">
+                    <b:inputText
+                        id="indexpath"
+                        pt:data-test-id="collectionManagement:collectionDialog:indexPath"
+                        value="#{collectionBean.activeCollection.indexPath}"
+                        label="#{msgs.collMgr_modal_indexpath_label}"
+                        style="z-index: auto;"
+                        renderLabel="true"
+                        rendered="#{collectionBean.editMode != 'CREATE'}"
+                        disabled="true">
                         <f:facet name="prepend">
-                            <b:iconAwesome name="fa-list"/>
+                            <b:iconAwesome name="fa-list" />
                         </f:facet>
                     </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="storagepath"
-                                 value="#{collectionBean.activeCollection.storagePath}"
-                                 label="#{msgs.collMgr_modal_filepath_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'CREATE'}"
-                                 disabled="true">
+                    <b:message
+                        pt:data-test-id="collectionManagement:collectionDialog:indexPathMessage"
+                        for="@previous" />
+                    <b:inputText
+                        id="storagepath"
+                        pt:data-test-id="collectionManagement:collectionDialog:storagePath"
+                        value="#{collectionBean.activeCollection.storagePath}"
+                        label="#{msgs.collMgr_modal_filepath_label}"
+                        style="z-index: auto;"
+                        renderLabel="true"
+                        rendered="#{collectionBean.editMode != 'CREATE'}"
+                        disabled="true">
                         <f:facet name="prepend">
-                            <b:iconAwesome name="fa-folder-open"/>
+                            <b:iconAwesome name="fa-folder-open" />
                         </f:facet>
                     </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="institut" value="#{collectionBean.activeCollection.node.institution}"
-                                 label="#{msgs.collMgr_modal_institute_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode == 'DELETE'}"
-                                 required="false"
-                                 disabled="true">
+                    <b:message
+                        pt:data-test-id="collectionManagement:collectionDialog:storagePathMessage"
+                        for="@previous" />
+                    <b:inputText
+                        id="institut"
+                        pt:data-test-id="collectionManagement:collectionDialog:institution"
+                        value="#{collectionBean.activeCollection.node.institution}"
+                        label="#{msgs.collMgr_modal_institute_label}"
+                        style="z-index: auto;"
+                        renderLabel="true"
+                        rendered="#{collectionBean.editMode == 'DELETE'}"
+                        required="false"
+                        disabled="true">
                         <f:facet name="prepend">
-                            <b:iconAwesome name="building"/>
+                            <b:iconAwesome name="building" />
                         </f:facet>
                     </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:fetchBeanInfos/>
+                    <b:message
+                        pt:data-test-id="collectionManagement:collectionDialog:institutionMessage"
+                        for="@previous" />
+                    <b:fetchBeanInfos />
                     <b:row styleClass="modal-footer">
-                        <b:button value="#{msgs.collMgr_modal_cancel}" onclick="PF('collectionDialogWidgetVar').hide()"/>
-                        <b:commandButton value="#{msgs.collMgr_modal_button_apply}"
-                                         rendered="#{collectionBean.getEditMode() == 'CREATE'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         type="submit"
-                                         ajax="true"
-                                         onclick="ajax:collectionBean.actionCreate();"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                        <b:commandButton value="#{msgs.collMgr_modal_button_edit}"
-                                         rendered="#{collectionBean.getEditMode() == 'UPDATE'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         type="submit"
-                                         ajax="true"
-                                         onclick="ajax:collectionBean.actionUpdate();"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                        <b:commandButton value="#{msgs.collMgr_modal_button_deletedocuments}"
-                                         rendered="#{collectionBean.getEditMode() == 'CLEAR'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         type="submit"
-                                         ajax="true"
-                                         onclick="ajax:collectionBean.actionClear();"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                        <b:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
-                                         rendered="#{collectionBean.getEditMode() == 'DELETE'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         type="submit"
-                                         ajax="true"
-                                         onclick="ajax:collectionBean.actionDelete();"
-                                         oncomplete="PF('collectionDialogWidgetVar').hide();" 
-                                         look="primary"/>
+                        <b:button
+                            pt:data-test-id="collectionManagement:collectionDialog:close"
+                            value="#{msgs.collMgr_modal_cancel}"
+                            onclick="PF('collectionDialogWidgetVar').hide()" />
+                        <b:commandButton
+                            pt:data-test-id="collectionManagement:collectionDialog:confirm"
+                            value="#{msgs.collMgr_modal_button_apply}"
+                            rendered="#{collectionBean.getEditMode() == 'CREATE'}"
+                            update="growlMsg @form frmCollectionList:collectionList"
+                            type="submit"
+                            ajax="true"
+                            onclick="ajax:collectionBean.actionCreate();"
+                            oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
+                            look="primary" />
+                        <b:commandButton
+                            pt:data-test-id="collectionManagement:collectionDialog:confirm"
+                            value="#{msgs.collMgr_modal_button_edit}"
+                            rendered="#{collectionBean.getEditMode() == 'UPDATE'}"
+                            update="growlMsg @form frmCollectionList:collectionList"
+                            type="submit"
+                            ajax="true"
+                            onclick="ajax:collectionBean.actionUpdate();"
+                            oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
+                            look="primary" />
+                        <b:commandButton
+                            pt:data-test-id="collectionManagement:collectionDialog:confirm"
+                            value="#{msgs.collMgr_modal_button_deletedocuments}"
+                            rendered="#{collectionBean.getEditMode() == 'CLEAR'}"
+                            update="growlMsg @form frmCollectionList:collectionList"
+                            type="submit"
+                            ajax="true"
+                            onclick="ajax:collectionBean.actionClear();"
+                            oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
+                            look="primary" />
+                        <b:commandButton
+                            pt:data-test-id="collectionManagement:collectionDialog:confirm"
+                            value="#{msgs.collMgr_mode_deleteCollection}"
+                            rendered="#{collectionBean.getEditMode() == 'DELETE'}"
+                            update="growlMsg @form frmCollectionList:collectionList"
+                            type="submit"
+                            ajax="true"
+                            onclick="ajax:collectionBean.actionDelete();"
+                            oncomplete="PF('collectionDialogWidgetVar').hide();" 
+                            look="primary" />
                     </b:row>
                 </b:form>
             </p:dialog>
 
             <b:form id="frmCollectionList">
-                <b:poll id="searchPoll"
-                        class="searchPollClass"
-                        interval="#{collectionBean.getPollIntervall()}" 
-                        update="frmCollectionList:collectionList:collectionRefreshButton searchPoll"/>
-
-                <b:dataTable id="collectionList"
-                             value="#{collectionBean.getLocalCollectionList()}"
-                             styleClass="collectionList"
-                             striped="true"
-                             responsive="false"
-                             customOptions="autoWidth:true"
-                             fixedHeader="true"
-                             var="collection"
-                             saveState="false">
-                    <f:facet name="header" id="facetHeader">
+                <b:poll
+                    id="searchPoll"
+                    class="searchPollClass"
+                    interval="#{collectionBean.getPollIntervall()}" 
+                    update="frmCollectionList:collectionList:collectionRefreshButton searchPoll" />
+                <b:dataTable
+                    id="collectionList"
+                    pt:data-test-id="collectionManagement:collectionsTable"
+                    value="#{collectionBean.getLocalCollectionList()}"
+                    var="collection"
+                    styleClass="collectionList"
+                    striped="true"
+                    responsive="false"
+                    customOptions="autoWidth:true"
+                    fixedHeader="true"
+                    saveState="false">
+                    <f:facet name="header">
                         <tr>
                             <th colspan="7">
                                 <b:selectBooleanCheckbox
+                                    pt:data-test-id="collectionManagement:showLocalCollectionsOnly"
                                     value="#{collectionBean.showLocalCollectionsOnly}"
                                     caption="#{msgs.collMgr_datatable_localCollections}"
                                     update="@form frmCollectionList:collectionList" />
                                 <b:commandButton
+                                    pt:data-test-id="collectionManagement:createCollection"
                                     styleClass="pull-right"
                                     style="margin:0 2px;"
                                     iconAwesome="fa-plus-circle"
@@ -206,6 +248,7 @@
                                     <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                                 </b:commandButton>
                                 <b:commandButton
+                                    pt:data-test-id="collectionManagement:refresh"
                                     styleClass="refreshButtonClass pull-right"
                                     style="margin:0 2px;"
                                     iconAwesome="refresh"
@@ -218,10 +261,11 @@
                                     tooltip="#{collectionBean.getToolTipForRefresh()}"
                                     update="growlMsg frmCollectionList:collectionList frmCollectionList:searchPoll"
                                     onclick="javascript:frmCollectionListCollectionListWidget.DataTable().destroy();ajax:collectionBean.refreshCollectionSearch();">
-                                    <b:badge 
+                                    <b:badge
+                                        pt:data-test-id="collectionManagement:newCollections"
+                                        value="#{collectionBean.getNewDocumentsToShow()}"
                                         style="margin-left: 4px"
-                                        styleClass="newcollection_badge"
-                                        value="#{collectionBean.getNewDocumentsToShow()}" />
+                                        styleClass="newcollection_badge" />
                                 </b:commandButton>
                             </th>
                         </tr>
@@ -235,23 +279,26 @@
                         </tr>
                     </f:facet>
                     <b:dataTableColumn order="asc">
-                        <b:badge tooltip="id: #{collection.id}"
-                                 style="margin-right:4px;background-color: #4e6aca;"
-                                 value="i"/>
+                        <b:badge
+                            tooltip="id: #{collection.id}"
+                            style="margin-right:4px;background-color: #4e6aca;"
+                            value="i" />
                         <h:outputText value="#{collection.name}" />
                     </b:dataTableColumn>
-                    <b:dataTableColumn value="#{collection.description}"/>
-                    <b:dataTableColumn value="#{collection.getOwner().getName()}"/>
+                    <b:dataTableColumn value="#{collection.description}" />
+                    <b:dataTableColumn value="#{collection.getOwner().getName()}" />
                     <b:dataTableColumn>
-                        <b:badge tooltip="#{msgs.collMgr_tooltip_numDocs}"
-                                 rendered="#{collection.node.local}"
-                                 style="margin-right:4px;background-color: #4e6aca;"
-                                 value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
+                        <b:badge
+                            tooltip="#{msgs.collMgr_tooltip_numDocs}"
+                            rendered="#{collection.node.local}"
+                            style="margin-right:4px;background-color: #4e6aca;"
+                            value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}" />
                         <h:outputText value="#{collection.indexPath}" />
                     </b:dataTableColumn>
-                    <b:dataTableColumn value="#{collection.node.institution}"/>
+                    <b:dataTableColumn value="#{collection.node.institution}" />
                     <b:dataTableColumn>
                         <b:commandButton
+                            pt:data-test-id="collectionManagement:editCollection"
                             style="padding: 0 4px;"
                             icon="pencil"
                             look="link"
@@ -267,6 +314,7 @@
                             <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                         </b:commandButton>
                         <b:commandButton
+                            pt:data-test-id="collectionManagement:clearCollection"
                             style="padding: 0 4px;"
                             iconAwesome="fa-fast-backward"
                             look="link"
@@ -279,6 +327,7 @@
                             onclick="ajax:collectionBean.setEditMode('CLEAR');collectionBean.setActiveCollection(collection);"
                             oncomplete="PF('collectionDialogWidgetVar').show();" />
                         <b:commandButton
+                            pt:data-test-id="collectionManagement:deleteCollection"
                             style="padding: 0 4px;"
                             icon="trash"
                             look="link"
@@ -293,6 +342,7 @@
                             <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                         </b:commandButton>
                         <b:commandButton
+                            pt:data-test-id="collectionManagement:changePermissions"
                             style="padding: 0 4px;"
                             icon="glyphicon glyphicon-user"
                             look="link"

@@ -7,6 +7,7 @@
   * rendered as inline text: attach `pt:data-test-id` to parent component or embed it into a `<div data-test-id="testId">`
 
 #### BootsFaces
+* `<b:badge>`: `$(testId("testId"))`
 * `<b:button>`: `$(testId("testId"))`
 * `<b:commandButton>`: `$(testId("testId"))`
 * `<b:dataTable>`: use class `DataTable`; TODO: evaluate search and pagination
