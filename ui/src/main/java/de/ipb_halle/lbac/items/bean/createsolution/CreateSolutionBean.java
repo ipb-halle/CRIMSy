@@ -26,6 +26,7 @@ import javax.inject.Named;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemUtils;
 import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
+import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.util.units.Quantity;
 
 /**
@@ -36,6 +37,9 @@ import de.ipb_halle.lbac.util.units.Quantity;
 @Named
 public class CreateSolutionBean implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private Navigator navigator;
 
     @Inject
     private ConsumePartOfItemStrategyController consumePartOfItemStrategyController;
@@ -54,6 +58,10 @@ public class CreateSolutionBean implements Serializable {
         this.parentItem = parentItem;
         molarMassFromParentItem = ItemUtils.molarMassFromItem(parentItem);
         consumePartOfItemStrategyController.init(parentItem);
+    }
+
+    public void actionCancel() {
+        navigator.navigate("item/items");
     }
 
     /*

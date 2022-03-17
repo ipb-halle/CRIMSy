@@ -31,7 +31,7 @@
                 <b:panel>
                     <b:container>
                         <b:row styleClass="itemEditMaterialName">
-                            <b:column span="7">
+                            <b:column span="6">
                                 <h:outputFormat
                                     value="#{msgs.itemCreateSolution_materialNameFormat_withMolarMass}"
                                     rendered="#{createSolutionBean.parentItemHasMolarMass}">
@@ -57,6 +57,12 @@
                                     <f:param value="#{nwc:formatAmount(createSolutionBean.parentItem.amount)}" />
                                     <f:param value="#{createSolutionBean.parentItem.unit.unit}" />
                                 </h:outputFormat>
+                            </b:column>
+                            <b:column span="1">
+                                <b:commandButton
+                                    immediate="true"
+                                    action="#{createSolutionBean.actionCancel()}"
+                                    value="#{msgs.Cancel}"/>
                             </b:column>
                         </b:row>
                     </b:container>

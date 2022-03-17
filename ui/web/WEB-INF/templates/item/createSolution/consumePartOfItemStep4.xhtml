@@ -37,7 +37,12 @@
                     </b:column>
                     <b:column
                         span="1"
-                        offset="10">
+                        offset="9">
+                        <b:commandButton
+                            value="#{msgs.Save}"
+                            action="#{controller.actionSave()}" />
+                    </b:column>
+                    <b:column span="1">
                         <b:button
                             value="#{msgs.wizard_next}"
                             onclick="PF('consumePartOfItemWizard').next();" />

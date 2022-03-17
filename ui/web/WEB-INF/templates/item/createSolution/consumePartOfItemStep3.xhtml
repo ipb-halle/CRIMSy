@@ -37,7 +37,12 @@
                     </b:column>
                     <b:column
                         span="1"
-                        offset="10">
+                        offset="9">
+                        <b:commandButton
+                            value="#{msgs.Save}"
+                            action="#{controller.actionSave()}" />
+                    </b:column>
+                    <b:column span="1">
                         <b:button
                             value="#{msgs.wizard_next}"
                             onclick="PF('consumePartOfItemWizard').next();" />
@@ -98,7 +103,7 @@
                         </b:inputText>
                     </b:column>
                     <!--  Dispensed volume -->
-                    <b:column span="2">
+                    <b:column span="3">
                         <p:remoteCommand
                             name="createSolution_step3_dispensedVolumeChange"
                             process="dispensedVolumeInputId"
@@ -121,8 +126,8 @@
                         </b:inputText>
                     </b:column>
                 </b:row>
-                <!-- Final concentration -->
                 <b:row>
+                    <!-- Final concentration -->
                     <b:column
                         span="2"
                         offset="1">
@@ -140,12 +145,8 @@
                                 locale="#{globalLocaleBean.numberConverterLocale}" />
                         </b:inputText>
                     </b:column>
-                </b:row>
-                <!-- Solvent -->
-                <b:row>
-                    <b:column
-                        span="2"
-                        offset="1">
+                    <!-- Solvent -->
+                    <b:column span="3">
                         <b:selectOneMenu
                             value="#{controller.step3Controller.solvent}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_solvent}"
