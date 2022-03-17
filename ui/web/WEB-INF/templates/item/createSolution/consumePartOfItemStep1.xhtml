@@ -44,7 +44,8 @@
                         name="createSolution_step1_targetConcentrationChange"
                         process="targetConcentrationInputId targetConcentrationUnitSelectionId"
                         update="targetMassId"
-                        action="#{controller.step1Controller.actionUpdateTargetMass()}" />
+                        action="#{controller.step1Controller.actionUpdateTargetMass()}"
+                        resetValues="true" />
                     <b:column
                         span="2"
                         offset="1">
@@ -82,7 +83,8 @@
                         name="createSolution_step1_targetVolumeChange"
                         process="targetVolumeInputId targetVolumeUnitSelectionId"
                         update="targetMassId"
-                        action="#{controller.step1Controller.actionUpdateTargetMass()}" />
+                        action="#{controller.step1Controller.actionUpdateTargetMass()}"
+                        resetValues="true" />
                     <b:column
                         span="2"
                         offset="1">
