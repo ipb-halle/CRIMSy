@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.items.bean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.label.LabelService;
+import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import org.apache.logging.log4j.LogManager;
@@ -36,9 +36,9 @@ public class Validator {
     boolean valid = true;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private final ContainerPositionService containerPositionService;
-    private final LabelService labelService;
+    private final ItemLabelService labelService;
 
-    public Validator(ContainerPositionService containerPositionService, LabelService labelService) {
+    public Validator(ContainerPositionService containerPositionService, ItemLabelService labelService) {
         this.containerPositionService = containerPositionService;
         this.labelService = labelService;
         messagePresenter = JsfMessagePresenter.getInstance();

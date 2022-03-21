@@ -42,7 +42,6 @@ import de.ipb_halle.lbac.admission.MemberService;
 
 import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
-import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -90,7 +89,7 @@ import org.apache.logging.log4j.Logger;
 public class ItemService {
 
     @Inject
-    private LabelService labelService;
+    private ItemLabelService labelService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;

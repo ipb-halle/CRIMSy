@@ -40,8 +40,8 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.items.bean.Validator;
+import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -69,7 +69,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     private ContainerPositionService containerPositionService;
 
     @Inject
-    private LabelService labelService;
+    private ItemLabelService labelService;
 
     @Inject
     private ProjectService projectService;

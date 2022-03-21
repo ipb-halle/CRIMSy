@@ -21,15 +21,14 @@ import de.ipb_halle.lbac.container.service.ContainerNestingService;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.lbac.device.print.LabelService;
 import de.ipb_halle.lbac.device.print.PrintBean;
 import de.ipb_halle.lbac.device.print.PrinterService;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
-import de.ipb_halle.lbac.items.bean.createsolution.CreateSolutionBean;
-import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
 import de.ipb_halle.lbac.items.service.ArticleService;
+import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
@@ -51,12 +50,11 @@ public class ItemDeployment {
                 .addClass(ContainerPositionService.class)
                 .addClass(ItemOverviewBean.class)
                 .addClass(ItemBean.class)
-                .addClass(LabelService.class)
+                .addClass(ItemLabelService.class)
                 .addClass(PrintBean.class)
                 .addClass(JobService.class)
                 .addClass(PrinterService.class)
-                .addClass(de.ipb_halle.lbac.device.print.LabelService.class)
-                .addClass(de.ipb_halle.lbac.label.LabelService.class)
+                .addClass(LabelService.class)
                 .addClass(PreferenceService.class)
                 .addClass(MaterialService.class);
         return MaterialDeployment.add(d);

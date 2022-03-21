@@ -29,9 +29,8 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
 import de.ipb_halle.lbac.container.service.ContainerService;
-
+import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MessagePresenter;
@@ -100,7 +99,7 @@ public class ItemBean implements Serializable {
     protected ItemService itemService;
 
     @Inject
-    protected LabelService labelService;
+    protected ItemLabelService labelService;
 
     private ContainerController containerController;
 
