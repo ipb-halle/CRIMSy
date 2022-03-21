@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.EJBException;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -185,7 +186,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
 
             itemOverviewBean.reloadItems();
             navigator.navigate("/item/items");
-        } catch (Exception e) {
+        } catch (EJBException e) {
             messagePresenter.error("itemEdit_save_failed");
             logger.error(ExceptionUtils.getStackTrace(e));
         }

@@ -25,6 +25,7 @@ import static de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.Cons
 import static de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP6;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -37,6 +38,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.enterprise.event.Event;
 import javax.faces.component.UIInput;
 import javax.inject.Inject;
 
@@ -49,6 +51,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.primefaces.event.FlowEvent;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
@@ -61,6 +64,7 @@ import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.units.Unit;
@@ -87,6 +91,12 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
     @Inject
     private UserBeanMock userBeanMock;
 
+    @Inject
+    private Navigator navigator;
+
+    @Inject
+    private Event<LoginEvent> loginEvent;
+
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
     private Structure material;
@@ -95,6 +105,10 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
     @BeforeEach
     public void before() {
         userBeanMock.setCurrentAccount(publicUser);
+
+        // initializes the user in ItemOverviewBean
+        loginEvent.fire(new LoginEvent(publicUser));
+
         parentItem = createParentItem();
         controller.init(parentItem);
     }
@@ -332,6 +346,11 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
         assertEquals(selectedSolvent, newItem.getSolvent());
         assertEquals("007", newItem.getLabel());
         assertEquals(parentItem.getId(), newItem.getParentId());
+
+        // message and navigation outcome
+        assertEquals("itemEdit_save_new_success", messagePresenter.getLastInfoMessage());
+        assertNull(messagePresenter.getLastErrorMessage());
+        assertThat(navigator.getNextPage(), containsString("/item/items"));
     }
 
     private List<Item> findAllItems() {
