@@ -123,12 +123,12 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     /*
      * PrimeFaces wizard
      */
-    private static final String STEP1 = "step1_targetConcAndVol";
-    private static final String STEP2 = "step2_weigh";
-    private static final String STEP3 = "step3_volumeAndSolvent";
-    private static final String STEP4 = "step4_directContainerAndLabel";
-    private static final String STEP5 = "step5_project";
-    private static final String STEP6 = "step6_location";
+    static final String STEP1 = "step1_targetConcAndVol";
+    static final String STEP2 = "step2_weigh";
+    static final String STEP3 = "step3_volumeAndSolvent";
+    static final String STEP4 = "step4_directContainerAndLabel";
+    static final String STEP5 = "step5_project";
+    static final String STEP6 = "step6_location";
 
     public String onFlowProcess(FlowEvent event) {
         // STEP1 -> STEP2: target mass <= item mass
