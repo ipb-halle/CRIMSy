@@ -373,6 +373,7 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         return UserBeanDeployment
-                .add(ItemDeployment.add(prepareDeployment("ConsumePartOfItemStrategyControllerTest.war")));
+                .add(ItemDeployment.add(prepareDeployment("ConsumePartOfItemStrategyControllerTest.war")))
+                .addClass(ConsumePartOfItemStrategyController.class);
     }
 }

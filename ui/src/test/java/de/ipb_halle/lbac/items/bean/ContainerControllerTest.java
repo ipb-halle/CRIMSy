@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
@@ -26,9 +27,14 @@ import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import static de.ipb_halle.lbac.container.Container.DimensionType.NONE;
@@ -49,6 +55,7 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.faces.component.UIOutput;
@@ -72,6 +79,12 @@ public class ContainerControllerTest extends TestBase {
 
     @Inject
     private ContainerService containerService;
+
+    @Inject
+    private ItemService itemService;
+
+    @Inject
+    private MaterialService materialService;
 
     @Inject
     private UserBeanMock userBean;
@@ -104,16 +117,26 @@ public class ContainerControllerTest extends TestBase {
         c1 = containerService.loadContainerById(c1.getId());
         c2 = containerService.loadContainerById(c2.getId());
 
-        itemForPositionTests = new Item();
-        itemForPositionTests.setId(2);
         containerForPositionTests = new Container();
-        containerForPositionTests.setId(42);
+        containerForPositionTests.setLabel("PositionTests");
         containerForPositionTests.setRows(4);
         containerForPositionTests.setColumns(4);
+        containerForPositionTests.setType(new ContainerType("FREEZER", 90, false, false));
+        containerForPositionTests = containerService.saveContainer(containerForPositionTests);
+
+        Project p = creationTools.createProject();
+        Structure material = creationTools.createStructure(p);
+        materialService.saveMaterialToDB(material, p.getACList().getId(), p.getDetailTemplates(), publicUser);
+        itemForPositionTests = new Item();
+        itemForPositionTests.setId(2);
+        itemForPositionTests.setMaterial(material);
+        itemForPositionTests.setACList(GlobalAdmissionContext.getPublicReadACL());
+        itemForPositionTests.setOwner(publicUser);
+        itemForPositionTests.setAmount(10.0);
+        itemForPositionTests.setUnit(Unit.getUnit("g"));
+        itemForPositionTests.setcTime(new Date());
         itemForPositionTests.setContainer(containerForPositionTests);
-        Item[][] items = new Item[4][4];
-        items[2][1] = itemForPositionTests;
-        containerForPositionTests.setItems(items);
+        itemService.saveItem(itemForPositionTests, new int[] { 2, 1 });
     }
 
     @Test

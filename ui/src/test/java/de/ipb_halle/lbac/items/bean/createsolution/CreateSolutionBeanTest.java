@@ -17,16 +17,22 @@
  */
 package de.ipb_halle.lbac.items.bean.createsolution;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import java.util.Date;
 
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -35,6 +41,11 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
+import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
@@ -50,15 +61,67 @@ public class CreateSolutionBeanTest extends TestBase {
     @Inject
     private CreateSolutionBean bean;
 
+    @Inject
+    private Navigator navigator;
+
+    @Inject
+    private UserBeanMock userBeanMock;
+
+    @Inject
+    private ItemService itemService;
+
+    @Inject
+    private MaterialService materialService;
+
+    private Item parentItem;
+
+    @BeforeEach
+    public void before() {
+        userBeanMock.setCurrentAccount(publicUser);
+        parentItem = createParentItem();
+    }
+
+    private Item createParentItem() {
+        Project p = creationTools.createProject();
+        Structure material = creationTools.createStructure(p);
+        materialService.saveMaterialToDB(material, p.getACList().getId(), p.getDetailTemplates(), publicUser);
+
+        Item item = new Item();
+        item.setAmount(10.0);
+        item.setUnit(Unit.getUnit("kg"));
+        item.setACList(GlobalAdmissionContext.getPublicReadACL());
+        item.setMaterial(material);
+        item.setOwner(publicUser);
+        item.setProject(p);
+        item.setcTime(new Date());
+
+        item = itemService.saveItem(item);
+        return item;
+    }
+
     /*
      * Tests for actionStartCreateSolution()
      */
     @Test
     public void test_actionStartCreateSolution() {
-        // TODO
+        bean.actionStartCreateSolution(parentItem);
+
+        assertTrue(parentItem.isEqualTo(bean.getParentItem()));
+        assertTrue(bean.isParentItemHasMolarMass());
+        assertThat(navigator.getNextPage(), containsString("/item/createSolution/createSolution"));
     }
 
-    /**
+    /*
+     * Test for actionCancel()
+     */
+    @Test
+    public void test_actionCancel() {
+        bean.actionCancel();
+
+        assertThat(navigator.getNextPage(), containsString("item/items"));
+    }
+
+    /*
      * Tests for isItemNotSoluble()
      */
     @Test
@@ -92,10 +155,8 @@ public class CreateSolutionBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-
-        return UserBeanDeployment.add(ItemDeployment.add(
-                prepareDeployment("CreateSolutionBeanTest.war")
-                        .addClass(CreateSolutionBean.class)
-                        .addClass(ConsumePartOfItemStrategyController.class)));
+        return UserBeanDeployment.add(ItemDeployment.add(prepareDeployment("CreateSolutionBeanTest.war")
+                .addClass(CreateSolutionBean.class)
+                .addClass(ConsumePartOfItemStrategyController.class)));
     }
 }
