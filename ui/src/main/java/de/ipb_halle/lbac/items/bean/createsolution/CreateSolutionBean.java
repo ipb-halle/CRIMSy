@@ -27,7 +27,9 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemUtils;
 import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
 import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.lbac.util.units.Quality;
 import de.ipb_halle.lbac.util.units.Quantity;
+import de.ipb_halle.lbac.util.units.Unit;
 
 /**
  * 
@@ -58,6 +60,7 @@ public class CreateSolutionBean implements Serializable {
         this.parentItem = parentItem;
         molarMassFromParentItem = ItemUtils.molarMassFromItem(parentItem);
         consumePartOfItemStrategyController.init(parentItem);
+        navigator.navigate("/item/createSolution/createSolution");
     }
 
     public void actionCancel() {
@@ -67,6 +70,22 @@ public class CreateSolutionBean implements Serializable {
     /*
      * Getters with logic
      */
+    public boolean isItemNotSoluble(Item item) {
+        return !isItemSoluble(item);
+    }
+
+    private boolean isItemSoluble(Item item) {
+        boolean itemIsNotSolved = (item.getConcentration() == null) && (item.getConcentrationUnit() == null)
+                && (item.getSolvent() == null);
+        boolean itemHasMassUnit = false;
+        Unit unit = item.getUnit();
+        if (unit != null) {
+            itemHasMassUnit = Quality.MASS.equals(unit.getQuality());
+        }
+
+        return itemIsNotSolved && itemHasMassUnit;
+    }
+
     public boolean isParentItemHasMolarMass() {
         return molarMassFromParentItem != null;
     }

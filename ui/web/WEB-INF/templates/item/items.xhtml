@@ -268,8 +268,8 @@
                                                 iconAwesome="fa-flask"
                                                 look="link"
                                                 ajax="false"
-                                                disabled="#{itemOverviewBean.isItemNotSoluble(item) or itemOverviewBean.isEditDeactivated(item)}"
-                                                action="#{itemOverviewBean.actionStartCreateSolution(item)}"
+                                                disabled="#{createSolutionBean.isItemNotSoluble(item) or itemOverviewBean.isEditDeactivated(item)}"
+                                                action="#{createSolutionBean.actionStartCreateSolution(item)}"
                                                 tooltip="#{msgs.itemOverview_tooltip_createSolution}" />
                                         </b:dataTableColumn>
                                     </b:dataTable>

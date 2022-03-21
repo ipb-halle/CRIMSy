@@ -35,7 +35,6 @@ import de.ipb_halle.lbac.device.print.PrintBean;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.ItemHistory;
-import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
 import de.ipb_halle.lbac.items.mocks.ItemOverviewBeanMock;
 import de.ipb_halle.lbac.items.mocks.NavigatorMock;
@@ -45,7 +44,6 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import static org.junit.Assert.assertEquals;
@@ -323,35 +321,6 @@ public class ItemOverviewBeanTest extends TestBase {
         assertEquals(2, materialNames.size());
         assertEquals("Wasser", materialNames.get(0));
         assertEquals("Wasserstoff", materialNames.get(1));
-    }
-
-    @Test
-    public void test006_isItemNotSoluble() {
-        ItemOverviewBean bean = new ItemOverviewBean();
-        Item item = new Item();
-
-        // unit is null
-        assertTrue(bean.isItemNotSoluble(item));
-
-        // wrong unit quality
-        item.setUnit(Unit.getUnit("ml"));
-        assertTrue(bean.isItemNotSoluble(item));
-
-        // correct unit quality
-        item.setUnit(Unit.getUnit("g"));
-        assertFalse(bean.isItemNotSoluble(item));
-
-        // item is already a solution
-        item.setConcentration(42d);
-        assertTrue(bean.isItemNotSoluble(item));
-
-        item.setConcentration(null);
-        item.setConcentrationUnit(Unit.getUnit("mM"));
-        assertTrue(bean.isItemNotSoluble(item));
-
-        item.setConcentrationUnit(null);
-        item.setSolvent(new Solvent());
-        assertTrue(bean.isItemNotSoluble(item));
     }
 
     @Deployment

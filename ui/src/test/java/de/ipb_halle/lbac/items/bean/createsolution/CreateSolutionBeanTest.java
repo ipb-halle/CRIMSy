@@ -18,6 +18,10 @@
 package de.ipb_halle.lbac.items.bean.createsolution;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -27,7 +31,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.Solvent;
+import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
+import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
@@ -50,11 +58,44 @@ public class CreateSolutionBeanTest extends TestBase {
         // TODO
     }
 
+    /**
+     * Tests for isItemNotSoluble()
+     */
+    @Test
+    public void test006_isItemNotSoluble() {
+        CreateSolutionBean bean = new CreateSolutionBean();
+        Item item = new Item();
+
+        // unit is null
+        assertTrue(bean.isItemNotSoluble(item));
+
+        // wrong unit quality
+        item.setUnit(Unit.getUnit("ml"));
+        assertTrue(bean.isItemNotSoluble(item));
+
+        // correct unit quality
+        item.setUnit(Unit.getUnit("g"));
+        assertFalse(bean.isItemNotSoluble(item));
+
+        // item is already a solution
+        item.setConcentration(42d);
+        assertTrue(bean.isItemNotSoluble(item));
+
+        item.setConcentration(null);
+        item.setConcentrationUnit(Unit.getUnit("mM"));
+        assertTrue(bean.isItemNotSoluble(item));
+
+        item.setConcentrationUnit(null);
+        item.setSolvent(new Solvent());
+        assertTrue(bean.isItemNotSoluble(item));
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
 
         return UserBeanDeployment.add(ItemDeployment.add(
                 prepareDeployment("CreateSolutionBeanTest.war")
-                        .addClass(CreateSolutionBean.class)));
+                        .addClass(CreateSolutionBean.class)
+                        .addClass(ConsumePartOfItemStrategyController.class)));
     }
 }

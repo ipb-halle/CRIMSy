@@ -49,8 +49,6 @@ public class ItemDeployment {
                 .addClass(ContainerService.class)
                 .addClass(ContainerNestingService.class)
                 .addClass(ContainerPositionService.class)
-                .addClass(CreateSolutionBean.class)
-                .addClass(ConsumePartOfItemStrategyController.class)                
                 .addClass(ItemOverviewBean.class)
                 .addClass(ItemBean.class)
                 .addClass(LabelService.class)
