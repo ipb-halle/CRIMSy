@@ -122,7 +122,7 @@ footer .globalinfo {
 
 .simplesearch {
     margin-top: 50px;
-    margin-bottom: 50px;
+    margin-bottom: 70px;
 }
 
 .bottom_ul {
@@ -292,8 +292,8 @@ select.selCollection {
 
 .forumTopicTableRow{
     border:0px !important;
-    padding:2px !important
-        background-color:#FCFCFC !important;
+    padding:2px !important;
+    background-color:#FCFCFC !important;
 }
 
 .forumTopicTableCol1{
