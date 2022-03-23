@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.exp.Payload;
-import de.ipb_halle.lbac.util.Unit;
-import de.ipb_halle.lbac.util.UnitsValidator;
+import de.ipb_halle.lbac.util.units.Unit;
+import de.ipb_halle.lbac.util.units.UnitsValidator;
 
 import java.util.Set;
 

@@ -22,7 +22,11 @@ import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
@@ -43,7 +47,8 @@ import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Quantity;
+import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,6 +59,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.UUID;
+
+import javax.ejb.EJBException;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -410,7 +417,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(c2);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c2.getId(), loadedItem.getContainer().getId());
         Container loadedContainer = containerService.loadContainerById(c2.getId());
@@ -435,7 +442,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertNull(loadedItem.getContainer());
         diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
@@ -448,7 +455,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(c1);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
         diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
@@ -460,7 +467,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(c1);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
         Assert.assertTrue(loadedItem.getHistory().size() > 0);
@@ -500,7 +507,7 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         //put item into container with positions
         original = edited;
         edited = original.copy();
@@ -535,16 +542,69 @@ public class ItemServiceTest extends TestBase {
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         int oldHistorySize = loadedItem.getHistory().size();
         // save item with no container into no container
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
-        instance.saveEditedItem(edited, original, owner);
+        instance.saveEditedItem(edited, original, owner, new HashSet<>());
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(oldHistorySize, loadedItem.getHistory().size());
+    }
+
+    @Test
+    public void test006_saveAliquot() {
+        Item parent = createItem();
+        parent.setAmount(1.3);
+        parent.setUnit(Unit.getUnit("kg"));
+        parent = instance.saveItem(parent);
+
+        Item aliquot = createItem();
+        aliquot.setAmount(100.0);
+        aliquot.setUnit(Unit.getUnit("ml"));
+        aliquot.setParentId(parent.getId());
+
+        // quantity has wrong quality
+        assertThrows(EJBException.class, () -> instance.saveAliquot(aliquot, null, Quantity.create(10.0, Unit.getUnit("ml")), owner));
+
+        // amount in parent would become negative 
+        assertThrows(EJBException.class, () -> instance.saveAliquot(aliquot, null, Quantity.create(1.4, Unit.getUnit("kg")), owner));
+
+        // can save aliquot successfully
+        Item savedAliquot = instance.saveAliquot(aliquot, null, Quantity.create(250.0, Unit.getUnit("g")), owner);
+
+        /*
+         * assertions on aliquot
+         */
+        assertNotNull(savedAliquot.getId());
+        assertEquals(100.0, savedAliquot.getAmount(), 0);
+        assertEquals("ml", savedAliquot.getUnit().toString());
+
+        /*
+         * assertions on parent
+         */
+        parent = instance.loadItemById(parent.getId());
+        assertEquals(1.05, parent.getAmount(), 0.0001);
+        assertEquals("kg", parent.getUnit().toString());
+
+        /*
+         * assertions on parent history
+         */
+        SortedMap<Date, List<ItemDifference>> history = instance.loadHistoryOfItem(parent);
+        assertEquals(1, history.size());
+
+        List<ItemDifference> histEntry = history.values().iterator().next();
+        assertEquals(1, histEntry.size());
+
+        ItemHistory expectedHistory = new ItemHistory();
+        expectedHistory.setAmountNew(1.05);
+        expectedHistory.setAmountOld(1.3);
+        expectedHistory.setAction("EDIT");
+        expectedHistory.setActor(owner);
+        expectedHistory.setItem(parent);
+        assertTrue(compareHistories(expectedHistory, histEntry));
     }
 
     @Deployment

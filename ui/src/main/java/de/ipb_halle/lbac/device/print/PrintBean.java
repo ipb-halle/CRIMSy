@@ -21,7 +21,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.device.job.Job;
@@ -35,7 +34,6 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -130,6 +128,7 @@ import org.apache.logging.log4j.LogManager;
 public class PrintBean implements Serializable {
 
     private final static String PREFERRED_QUEUE = "LABEL_PRINTER";
+    private static final long serialVersionUID = 1L;
 
     @Inject
     private JobService jobService;

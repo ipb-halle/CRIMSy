@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:body>
+        <ui:composition>
+            <b:container>
+                <!-- Wizard navigation -->
+                <b:row>
+                    <b:column span="1">
+                        <b:button
+                            value="#{msgs.wizard_back}"
+                            onclick="PF('consumePartOfItemWizard').back();" />
+                    </b:column>
+                    <b:column
+                        span="1"
+                        offset="9">
+                        <b:commandButton
+                            value="#{msgs.Save}"
+                            action="#{controller.actionSave()}" />
+                    </b:column>
+                    <b:column span="1">
+                        <b:button
+                            value="#{msgs.wizard_next}"
+                            onclick="PF('consumePartOfItemWizard').next();" />
+                    </b:column>
+                </b:row>
+                <!-- Project -->
+                <b:row>
+                    <b:column
+                        span="4"
+                        offset="1"
+                        styleClass="rightLabeledCbxVendor">
+                        <b:selectOneMenu
+                            value="#{controller.step5Controller.selectedProject}"
+                            label="#{msgs.itemEdit_projectPanel_name}">
+                            <f:selectItems 
+                                value="#{controller.step5Controller.availableProjects}"
+                                var="project"
+                                itemLabel="#{project.toString()}" />
+                        </b:selectOneMenu>
+                    </b:column>
+                </b:row>
+            </b:container>
+        </ui:composition>
+    </h:body>
+</html>

@@ -17,130 +17,287 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
+import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.container.Container;
-import static de.ipb_halle.lbac.container.Container.DimensionType.NONE;
+import de.ipb_halle.lbac.container.Container.DimensionType;
+import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.items.mocks.ItemBeanContainerControllerMock;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.units.Unit;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+
+import static de.ipb_halle.lbac.container.Container.DimensionType.NONE;
+import static de.ipb_halle.lbac.container.Container.DimensionType.ONE_DIMENSION;
+import static de.ipb_halle.lbac.container.Container.DimensionType.TWO_DIMENSION;
+import static de.ipb_halle.lbac.container.Container.DimensionType.ZERO_DIMENSION;
+import static de.ipb_halle.lbac.items.bean.Container2dControllerTest.assertThatItemIsAt;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Date;
 import java.util.Set;
-import org.junit.Assert;
+
+import javax.faces.component.UIOutput;
+import javax.faces.component.behavior.BehaviorBase;
+import javax.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.primefaces.event.SelectEvent;
 
 /**
- *
  * @author fmauz
  */
-public class ContainerControllerTest {
-    
-    Item item = new Item();
-    Item anotherItem = new Item();
-    ItemBean bean;
-    Container container = new Container();
-    ContainerController controller;
-    
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
+public class ContainerControllerTest extends TestBase {
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private ContainerService containerService;
+
+    @Inject
+    private ItemService itemService;
+
+    @Inject
+    private MaterialService materialService;
+
+    @Inject
+    private UserBeanMock userBean;
+
+    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private Item item;
+    private Container c1;
+    private Container c2;
+    private Item itemForPositionTests;
+    private Container containerForPositionTests;
+
     @BeforeEach
-    public void setUp() {
+    public void init() {
+        item = new Item();
         item.setId(1);
-        anotherItem.setId(2);
-        bean = new ItemBeanContainerControllerMock(item);
-        container.setRows(4);
+
+        userBean.setCurrentAccount(publicUser);
+
+        c1 = new Container();
+        c2 = new Container();
+        c1.setLabel("Container1");
+        c2.setLabel("Container2");
+        c1.setType(new ContainerType("ROOM", 100, false, false));
+        c2.setType(new ContainerType("FREEZER", 90, false, false));
+        c2.setParentContainer(c1);
+        c1 = containerService.saveContainer(c1);
+        c2 = containerService.saveContainer(c2);
+
+        // only loading sets the autocomplete string
+        c1 = containerService.loadContainerById(c1.getId());
+        c2 = containerService.loadContainerById(c2.getId());
+
+        containerForPositionTests = new Container();
+        containerForPositionTests.setLabel("PositionTests");
+        containerForPositionTests.setRows(4);
+        containerForPositionTests.setColumns(4);
+        containerForPositionTests.setType(new ContainerType("FREEZER", 90, false, false));
+        containerForPositionTests = containerService.saveContainer(containerForPositionTests);
+
+        Project p = creationTools.createProject();
+        Structure material = creationTools.createStructure(p);
+        materialService.saveMaterialToDB(material, p.getACList().getId(), p.getDetailTemplates(), publicUser);
+        itemForPositionTests = new Item();
+        itemForPositionTests.setId(2);
+        itemForPositionTests.setMaterial(material);
+        itemForPositionTests.setACList(GlobalAdmissionContext.getPublicReadACL());
+        itemForPositionTests.setOwner(publicUser);
+        itemForPositionTests.setAmount(10.0);
+        itemForPositionTests.setUnit(Unit.getUnit("g"));
+        itemForPositionTests.setcTime(new Date());
+        itemForPositionTests.setContainer(containerForPositionTests);
+        itemService.saveItem(itemForPositionTests, new int[] { 2, 1 });
+    }
+
+    @Test
+    public void test_actionOnItemSelect() {
+        ContainerController controller = new ContainerController(item, containerService, userBean, messagePresenter);
+        assertNull(controller.getContainer());
+
+        SelectEvent event = new SelectEvent(new UIOutput(), new BehaviorBase(), c1.getAutoCompleteString());
+        controller.actionOnItemSelect(event);
+        assertTrue(c1.isEqualTo(controller.getContainer()));
+
+        event = new SelectEvent(new UIOutput(), new BehaviorBase(), c2.getAutoCompleteString());
+        controller.actionOnItemSelect(event);
+        assertTrue(c2.isEqualTo(controller.getContainer()));
+
+        // Unparsable string sent by the event should not change the container.
+        event = new SelectEvent(new UIOutput(), new BehaviorBase(), "abc");
+        controller.actionOnItemSelect(event);
+        assertTrue(c2.isEqualTo(controller.getContainer()));
+
+        // NPE in ContainerService due to a null entity
+//        // Parsable string, but unknown container id
+//        event = new SelectEvent(new UIOutput(), new BehaviorBase(), "123456789-");
+//        controller.actionOnItemSelect(event);
+//        assertTrue(c2.isEqualTo(controller.getContainer()));
+    }
+
+    @Test
+    public void test_actionRemoveContainer() {
+        ContainerController controller = new ContainerController(item, containerService, userBean, messagePresenter);
+        controller.actionChangeContainer(c1);
+        assertTrue(c1.isEqualTo(controller.getContainer()));
+
+        controller.actionRemoveContainer();
+        assertNull(controller.getContainer());
+    }
+
+    @Test
+    public void test_actionChangeContainer() {
+        ContainerController controller = new ContainerController(item, containerService, userBean, messagePresenter);
+        assertNull(controller.getContainer());
+        assertEquals("", controller.getContainerInfoPresenter().getContainerName());
+        assertThat(controller.getContainer2dController().getColumns(), is(empty()));
+        assertThat(controller.getContainer2dController().getRows(), is(empty()));
+
+        Container container = new Container();
+        container.setId(42);
+        container.setLabel("abc");
+        container.setItems(new Item[3][5]);
         container.setColumns(3);
-        Item[][] items = new Item[4][3];
-        items[1][0] = item;
-        items[0][1] = anotherItem;
-        container.setItems(items);
-        controller = new ContainerController(bean, container);
-        bean.setContainerController(controller);
-        controller.setMessagePresenter(MessagePresenterMock.getInstance());
-        
+        container.setRows(5);
+
+        controller.actionChangeContainer(container);
+        assertTrue(container.isEqualTo(controller.getContainer()));
+        assertEquals("abc", controller.getContainerInfoPresenter().getContainerName());
+        assertThat(controller.getContainer2dController().getColumns(), hasSize(3));
+        assertThat(controller.getContainer2dController().getRows(), hasSize(5));
+
+        controller.actionChangeContainer(null);
+        assertNull(controller.getContainer());
+        assertEquals("", controller.getContainerInfoPresenter().getContainerName());
+        assertThat(controller.getContainer2dController().getColumns(), is(empty()));
+        assertThat(controller.getContainer2dController().getRows(), is(empty()));
     }
-    
+
     @Test
-    public void test001_getStyleOfContainerPlace() {
-        Assert.assertEquals("possible-place", controller.getStyleOfContainerPlace(0, 0));
-        Assert.assertEquals("own-place", controller.getStyleOfContainerPlace(1, 0));
-        Assert.assertEquals("occupied-place", controller.getStyleOfContainerPlace(0, 1));
-         bean.mode=ItemBean.Mode.HISTORY;
-         Assert.assertEquals("possible-place", controller.getStyleOfContainerPlace(0, 0));
+    public void test_nameSuggestions() {
+        ContainerController controller = new ContainerController(item, containerService, userBean, messagePresenter);
+        String c1AutoComplete = c1.getAutoCompleteString();
+        String c2AutoComplete = c2.getAutoCompleteString();
+
+        assertThat(controller.nameSuggestions(null), is(empty()));
+        assertThat(controller.nameSuggestions(""), is(empty()));
+        assertThat(controller.nameSuggestions("    "), is(empty()));
+        assertThat(controller.nameSuggestions("abc"), is(empty()));
+        assertThat(controller.nameSuggestions("AINER"), hasSize(2));
+        assertThat(controller.nameSuggestions("AINER"), containsInAnyOrder(c1AutoComplete, c2AutoComplete));
+        assertThat(controller.nameSuggestions("AINER1"), hasSize(1));
+        assertThat(controller.nameSuggestions("AINER1"), contains(c1AutoComplete));
     }
-    
+
     @Test
-    public void test002_getToolTipForContainerPlace() {
-        Assert.assertEquals("container_slot_free_place", controller.getToolTipForContainerPlace(0, 0));
-        Assert.assertEquals("ID: 1", controller.getToolTipForContainerPlace(1, 0));
-        Assert.assertEquals("ID: 2", controller.getToolTipForContainerPlace(0, 1));
+    public void test_isContainerSubComponentRendered() {
+        ContainerController controller = new ContainerController(item, containerService, userBean, messagePresenter);
+
+        assertNull(controller.getContainer());
+        assertTrue(controller.isContainerSubComponentRendered(null));
+        assertThrows(IllegalArgumentException.class,
+                () -> controller.isContainerSubComponentRendered("not a valid DimensionType"));
+        for (DimensionType type : DimensionType.values()) {
+            assertFalse(controller.isContainerSubComponentRendered(type.toString()));
+        }
+
+        Container container = new Container();
+        controller.actionChangeContainer(container);
+
+        assertEquals(NONE, container.getDimensionType());
+        assertFalse(controller.isContainerSubComponentRendered(null));
+        assertTrue(controller.isContainerSubComponentRendered(NONE.toString()));
+        assertFalse(controller.isContainerSubComponentRendered(ZERO_DIMENSION.toString()));
+        assertFalse(controller.isContainerSubComponentRendered(ONE_DIMENSION.toString()));
+        assertFalse(controller.isContainerSubComponentRendered(TWO_DIMENSION.toString()));
+
+        container.setRows(5);
+        assertEquals(ONE_DIMENSION, container.getDimensionType());
+        assertFalse(controller.isContainerSubComponentRendered(null));
+        assertFalse(controller.isContainerSubComponentRendered(NONE.toString()));
+        assertFalse(controller.isContainerSubComponentRendered(ZERO_DIMENSION.toString()));
+        assertTrue(controller.isContainerSubComponentRendered(ONE_DIMENSION.toString()));
+        assertFalse(controller.isContainerSubComponentRendered(TWO_DIMENSION.toString()));
+
+        container.setColumns(3);
+        assertEquals(TWO_DIMENSION, container.getDimensionType());
+        assertFalse(controller.isContainerSubComponentRendered(null));
+        assertFalse(controller.isContainerSubComponentRendered(NONE.toString()));
+        assertFalse(controller.isContainerSubComponentRendered(ZERO_DIMENSION.toString()));
+        assertFalse(controller.isContainerSubComponentRendered(ONE_DIMENSION.toString()));
+        assertTrue(controller.isContainerSubComponentRendered(TWO_DIMENSION.toString()));
     }
-    
+
     @Test
-    public void test003_clickCheckBox() {
-        controller.actionClickCheckBox(0, 0);
-        Assert.assertFalse(controller.getItemPositions()[0][0]);
-        controller.setItemAtPosition(0, 0);
-        controller.actionClickCheckBox(0, 0);
-        Assert.assertTrue(controller.getItemPositions()[0][0]);
-        controller.removeItemFromPosition();
-        Assert.assertFalse(controller.getItemPositions()[0][0]);
+    public void test_getItemPositions() {
+        ContainerController controller = new ContainerController(itemForPositionTests, containerService, userBean,
+                messagePresenter);
+        assertThatItemIsAt(2, 1, controller.getItemPositions());
     }
-    
+
     @Test
-    public void test004_isContainerPlaceDisabled() {
-        Assert.assertFalse(controller.isContainerPlaceDisabled(0, 0)); //empty slot
-        Assert.assertFalse(controller.isContainerPlaceDisabled(1, 0)); //own item
-        Assert.assertTrue(controller.isContainerPlaceDisabled(0, 1));  // another item
-        bean.mode=ItemBean.Mode.HISTORY;
-        Assert.assertTrue(controller.isContainerPlaceDisabled(0, 0));
-    }
-    
-    @Test
-    public void test004_resolveItemPositions() {
-        controller.setItemAtPosition(0, 0);
+    public void test_resolveItemPositions() {
+        ContainerController controller = new ContainerController(itemForPositionTests, containerService, userBean,
+                messagePresenter);
         Set<int[]> positions = controller.resolveItemPositions();
-        Assert.assertEquals(2, positions.size());
+        assertThat(positions, hasSize(1));
+        assertArrayEquals(new int[] { 2, 1 }, positions.iterator().next());
     }
-    
+
     @Test
-    public void test005_resolveItemPositions() {
-        // default: not swapped --> dimension 1 is labeled with letters 
-        Assert.assertEquals("A", controller.getDimensionLabel(1, 0));
+    public void test_setItemAtPosition() {
+        ContainerController controller = new ContainerController(itemForPositionTests, containerService, userBean,
+                messagePresenter);
+        assertThatItemIsAt(2, 1, controller.getItemPositions());
+
+        controller.removeItemFromPosition();
+        controller.setItemAtPosition(1, 0);
+        assertThatItemIsAt(0, 1, controller.getItemPositions());
     }
-    
+
     @Test
-    public void test006_checkRowAndColLists() {
-        Assert.assertEquals(4, controller.getRows().size());
-        Assert.assertEquals(3, controller.getColumns().size());
-        
-        container.setRows(null);
-        container.setColumns(null);
-        container.setItems(null);
-        controller = new ContainerController(bean, container);
-        
-        Assert.assertEquals(0, controller.getRows().size());
-        Assert.assertEquals(0, controller.getColumns().size());
-        
-        container.setRows(10);
-        container.setColumns(null);
-        container.setItems(new Item[10][1]);
-        controller = new ContainerController(bean, container);
-        
-        Assert.assertEquals(10, controller.getRows().size());
-        Assert.assertEquals(1, controller.getColumns().size());
+    public void test_removeItemFromPosition() {
+        ContainerController controller = new ContainerController(itemForPositionTests, containerService, userBean,
+                messagePresenter);
+        assertThatItemIsAt(2, 1, controller.getItemPositions());
+
+        controller.removeItemFromPosition();
+        assertThatItemIsAt(-1, -1, controller.getItemPositions()); // matrix is false everywhere
     }
-    
-    @Test
-    public void test007_isContainerSubComponentRendered() {
-        Assert.assertTrue(controller.isContainerSubComponentRendered(Container.DimensionType.TWO_DIMENSION.toString()));
-        Assert.assertFalse(controller.isContainerSubComponentRendered(Container.DimensionType.ONE_DIMENSION.toString()));
-        
+
+    @Deployment
+    public static WebArchive createDeployment() {
+        WebArchive deployment = prepareDeployment("ContainerControllerTest.war").addClass(Navigator.class)
+                .addClass(ProjectService.class);
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
-    
-    @Test
-    public void test008_isContainerSubComponentRendered() {
-        Assert.assertFalse(controller.isContainerSubComponentRendered(null));
-        Assert.assertFalse(controller.isContainerSubComponentRendered("NONE"));
-        Assert.assertFalse(controller.isContainerSubComponentRendered("ZERO_DIMENSION"));
-        Assert.assertFalse(controller.isContainerSubComponentRendered("ONE_DIMENSION"));
-        Assert.assertTrue(controller.isContainerSubComponentRendered("TWO_DIMENSION"));
-    }
-    
 }

@@ -615,3 +615,6 @@ body.waiting * {
     border-width: 0px !important;
 }
 
+.wizardConsumePartOfItemForSolution .ui-wizard-content {
+	margin-top: 10px;
+}

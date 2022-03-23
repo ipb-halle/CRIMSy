@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
+    <composite:interface>
+        <composite:attribute
+            name="containerController"
+            type="de.ipb_halle.lbac.items.bean.ContainerController"
+            required="true" />
+        <composite:attribute
+            name="historyMode"
+            required="false"
+            default="false" />
+    </composite:interface>
+
+    <!-- Note: p:remoteCommand is invoked by all non-PrimeFaces components that have AJAX-activity.
+               This is due a bug in p:wizard (see comment in consumePartOfItem.xhtml). -->
+    <composite:implementation>
+        <crimsy:containerModal
+            controller="#{cc.attrs.containerController.containerSelectionDialogController}"
+            widgetVar="dlgcontainerSearch"
+            updateTargetClass="containerPseudoClass"
+            rendered="#{not cc.attrs.historyMode}" />
+        <b:container>
+            <b:row>
+                <b:column
+                    span="4"
+                    styleClass="containerPseudoClass">
+                    <b:container>
+                        <b:row>
+                            <b:column
+                                span="2"
+                                styleClass="itemEditLocationHeader">
+                                <h:outputText value="#{msgs.itemEdit_containerPanel_current_location}" />
+                            </b:column>
+                            <b:column span="1">
+                                <p:remoteCommand
+                                    name="containerSelectionAndInfos_actionRemoveContainer"
+                                    process="@this"
+                                    update="@(.containerPseudoClass)"
+                                    action="#{cc.attrs.containerController.actionRemoveContainer()}"
+                                    rendered="#{not cc.attrs.historyMode}" />
+                                <b:button
+                                    styleClass="itemEditContainerRemoveButton"
+                                    onclick="containerSelectionAndInfos_actionRemoveContainer();"
+                                    value="remove"
+                                    disabled="#{cc.attrs.historyMode}" />
+                            </b:column>
+                        </b:row>
+                        <crimsy:containerInfos containerInfoPresenter="#{cc.attrs.containerController.containerInfoPresenter}" />
+                        <b:row>
+                            <b:column
+                                span="3"
+                                styleClass="itemEditLocationHeader">
+                                <h:outputText value="" />
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column
+                                span="3"
+                                styleClass="itemEditLocationHeader">
+                                <h:outputText value="#{msgs.itemEdit_containerPanel_locationSearch}" />
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="1">
+                                <h:outputText value="#{msgs.itemEdit_containerPanel_quickSearch}" />
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column
+                                span="2"
+                                styleClass="containerPseudoClass">
+                                <p:autoComplete
+                                    value="#{cc.attrs.containerController.containerInfoPresenter.containerName}"
+                                    maxResults="15"
+                                    forceSelection="true"
+                                    completeMethod="#{cc.attrs.containerController.nameSuggestions}"
+                                    disabled="#{cc.attrs.historyMode}">
+                                    <p:ajax
+                                        event="itemSelect" 
+                                        listener="#{cc.attrs.containerController.actionOnItemSelect}"
+                                        update="@(.containerPseudoClass)" />
+                                </p:autoComplete>
+                            </b:column>
+                            <b:column span="1">
+                                <p:remoteCommand
+                                    name="containerSelectionAndInfos_actionOpenContainerSearchDialog"
+                                    process="@this"
+                                    update="@(.containerModal)"
+                                    oncomplete="PF('dlgcontainerSearch').show();"
+                                    rendered="#{not cc.attrs.historyMode}" />
+                                <b:button
+                                    styleClass="itemEditcontainerAdvancedSearch"
+                                    onclick="containerSelectionAndInfos_actionOpenContainerSearchDialog();"
+                                    value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}"
+                                    disabled="#{cc.attrs.historyMode}" />
+                            </b:column>
+                        </b:row>
+                    </b:container>
+                </b:column>
+                <b:column
+                    span="4"
+                    styleClass="containerPseudoClass">
+                    <crimsy:container2d
+                        controller="#{cc.attrs.containerController.container2dController}"
+                        rendered="#{cc.attrs.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"
+                        disabled="#{cc.attrs.historyMode}" />
+                </b:column>
+            </b:row>
+        </b:container>
+    </composite:implementation>
+</html>

@@ -30,8 +30,9 @@ import de.ipb_halle.lbac.material.sequence.search.bean.SearchMode;
 import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchMaskValuesHolder;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.search.SearchResult;
-import de.ipb_halle.lbac.util.Quality;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Quality;
+import de.ipb_halle.lbac.util.units.Unit;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -378,7 +379,7 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public List<Unit> getAvailableAmountUnits() {
-        return Unit.getUnitsOfQuality(
+        return Unit.getVisibleUnitsOfQuality(
                 Quality.AMOUNT_OF_SUBSTANCE,
                 Quality.PERCENT_CONCENTRATION,
                 Quality.MOLAR_MASS,

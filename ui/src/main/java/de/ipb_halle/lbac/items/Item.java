@@ -31,7 +31,9 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.bean.Type;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Quantity;
+import de.ipb_halle.lbac.util.units.Unit;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,6 +68,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
     private List<Container> nestedContainer = new ArrayList<>();
     private Date expiry_date;
     private String label;
+    private Integer parentId;
 
     public Item() {
 
@@ -104,6 +107,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.purity = entity.getPurity();
         this.solvent = sol;
         this.cTime = entity.getCtime();
+        this.parentId = entity.getParent_id();
         this.nestedContainer = nestedContainer;
         this.setACList(aclist);
         this.setOwner(owner);
@@ -147,6 +151,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         entity.setACList(getACList().getId());
         entity.setCtime(cTime);
         entity.setExpiry_date(expiry_date);
+        entity.setParent_id(parentId);
         return entity;
     }
 
@@ -308,6 +313,14 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.cTime = cTime;
     }
 
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
     public SortedMap<Date, List<ItemDifference>> getHistory() {
         return history;
     }
@@ -337,7 +350,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         copiedItem.setArticle(getArticle());
         copiedItem.setConcentration(getConcentration());
         copiedItem.setConcentrationUnit(getConcentrationUnit());
-        copiedItem.setContainer(getContainer());
+        copiedItem.setContainer(getContainer() == null ? null : getContainer().copy());
         copiedItem.setContainerSize(getContainerSize());
         copiedItem.setContainerType(getContainerType());
         copiedItem.setDescription(getDescription());
@@ -352,6 +365,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         copiedItem.setHistory(getHistory());
         copiedItem.setACList(getACList());
         copiedItem.setLabel(label);
+        copiedItem.setParentId(parentId);
         return copiedItem;
     }
 
@@ -360,8 +374,8 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         if (!(other instanceof Item)) {
             return false;
         }
-        Item otherUser = (Item) other;
-        return Objects.equals(otherUser.getId(), this.getId());
+        Item otherItem = (Item) other;
+        return Objects.equals(otherItem.getId(), this.getId());
     }
 
     @Override
@@ -377,4 +391,14 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.label = label;
     }
 
+    /**
+     * @return new quantity with the {@code amount} as value and the
+     * {@code unit} as unit or null if one of those is null
+     */
+    public Quantity getAmountAsQuantity() {
+        if ((amount == null) || (unit == null)) {
+            return null;
+        }
+        return new Quantity(amount, unit);
+    }
 }

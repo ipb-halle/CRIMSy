@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.label;
+package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import java.io.Serializable;
@@ -31,7 +31,7 @@ import javax.persistence.Query;
  * @author fmauz
  */
 @Stateless
-public class LabelService implements Serializable{
+public class ItemLabelService implements Serializable{
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;

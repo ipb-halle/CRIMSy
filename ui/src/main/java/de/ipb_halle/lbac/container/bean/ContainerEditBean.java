@@ -22,11 +22,14 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.bean.ContainerOverviewBean.Mode;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -43,6 +46,8 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class ContainerEditBean implements Serializable {
+    @Inject
+    private transient MessagePresenter messagePresenter;
 
     @Inject
     protected ContainerService containerService;
@@ -62,7 +67,12 @@ public class ContainerEditBean implements Serializable {
     private Container originalContainer;
     protected final List<String> gmoSafetyLevels = new ArrayList<>();
     private String preferredProjectName;
-    protected ContainerLocalizer localizer = new ContainerLocalizer();
+    protected ContainerLocalizer localizer;
+
+    @PostConstruct
+    public void init() {
+        localizer = new ContainerLocalizer(messagePresenter);
+    }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();

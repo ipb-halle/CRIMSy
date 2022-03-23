@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,24 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.util;
+package de.ipb_halle.lbac.util.units;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
+import org.junit.jupiter.api.Test;
 
 /**
- * Physical quality of units of measurement
- *
- * @author fbroda
+ * @author flange
  */
-public enum Quality {
-    PIECES("ea"),
-    LENGTH("m"),
-    AREA("m^2"),
-    VOLUME("m^3"),
-    MASS("kg"),
-    DENSITY("kg/m^3"),
-    AMOUNT_OF_SUBSTANCE("mol"),
-    MOLAR_MASS("g/mol"),
-    MOLAR_CONCENTRATION("M"),
-    PERCENT_CONCENTRATION("[1]"),
-    MASS_CONCENTRATION("g/l");
-
-    private String baseUnit;
-
-    private Quality(String baseUnit) {
-        this.baseUnit = baseUnit;
-    }
-
-    public Unit getBaseUnit() {
-        return Unit.getUnit(this.baseUnit);
+class QualityTest {
+    @Test
+    public void test_allQualitiesHaveABaseUnit() {
+        for (Quality q : Quality.values()) {
+            Unit baseUnit = q.getBaseUnit();
+            assertNotNull(baseUnit);
+            assertNotNull(baseUnit.toString());
+            assertFalse(baseUnit.toString().isEmpty());
+        }
     }
 }

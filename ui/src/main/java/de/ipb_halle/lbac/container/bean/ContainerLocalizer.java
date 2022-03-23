@@ -17,7 +17,8 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
-import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.material.MessagePresenter;
+
 import java.io.Serializable;
 
 /**
@@ -25,13 +26,15 @@ import java.io.Serializable;
  * @author fmauz
  */
 public class ContainerLocalizer implements Serializable {
-
     private final static long serialVersionUID = 1L;
 
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private final MessagePresenter messagePresenter;
 
-    public String localizeString(String toLocalize, Object... args) {
-        return Messages.getString(MESSAGE_BUNDLE, toLocalize, args);
+    public ContainerLocalizer(MessagePresenter messagePresenter) {
+        this.messagePresenter = messagePresenter;
     }
 
+    public String localizeString(String toLocalize, Object... args) {
+        return messagePresenter.presentMessage(toLocalize, args);
+    }
 }

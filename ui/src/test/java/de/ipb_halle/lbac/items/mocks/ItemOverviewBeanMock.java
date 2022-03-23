@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.mocks;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
@@ -83,5 +84,6 @@ public class ItemOverviewBeanMock extends ItemOverviewBean {
         this.nodeService = nodeService;
         return this;
     }
-
+    
+   
 }

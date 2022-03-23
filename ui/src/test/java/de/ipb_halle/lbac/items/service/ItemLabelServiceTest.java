@@ -15,27 +15,16 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.label;
+package de.ipb_halle.lbac.items.service;
 
-import de.ipb_halle.lbac.items.service.*;
-import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.container.service.ContainerNestingService;
-import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.MaterialDeployment;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -56,7 +45,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
-public class LabelServiceTest extends TestBase {
+public class ItemLabelServiceTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
 
@@ -67,7 +56,7 @@ public class LabelServiceTest extends TestBase {
     private ProjectService projectService;
 
     @Inject
-    private LabelService labelService;
+    private ItemLabelService labelService;
 
     private User publicUser;
     private ACList publicACList;

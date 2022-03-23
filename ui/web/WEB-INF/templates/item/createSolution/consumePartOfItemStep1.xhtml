@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition>
+            <b:container>
+                <!-- Wizard navigation -->
+                <b:row>
+                    <b:column
+                        span="1"
+                        offset="11">
+                        <b:button
+                            value="#{msgs.wizard_next}"
+                            onclick="PF('consumePartOfItemWizard').next();" />
+                    </b:column>
+                </b:row>
+                <!-- Target concentration -->
+                <b:row>
+                    <p:remoteCommand
+                        name="createSolution_step1_targetConcentrationChange"
+                        process="targetConcentrationInputId targetConcentrationUnitSelectionId"
+                        update="targetMassId"
+                        action="#{controller.step1Controller.actionUpdateTargetMass()}"
+                        resetValues="true" />
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:inputText
+                            id="targetConcentrationInputId"
+                            value="#{controller.step1Controller.targetConcentration}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetConcentration}"
+                            required="true"
+                            onchange="createSolution_step1_targetConcentrationChange();">
+                            <b:focus />
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                            <f:validateDoubleRange minimum="0" />
+                        </b:inputText>
+                    </b:column>
+                    <b:column span="2">
+                        <b:selectOneMenu
+                            id="targetConcentrationUnitSelectionId"
+                            value="#{controller.step1Controller.targetConcentrationUnit}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
+                            required="true"
+                            onchange="createSolution_step1_targetConcentrationChange();">
+                            <f:selectItems
+                                value="#{controller.step1Controller.availableConcentrationUnits}"
+                                var="unit"
+                                itemLabel="#{unit.unit}" />
+                        </b:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <!-- Target volume -->
+                <b:row>
+                    <p:remoteCommand
+                        name="createSolution_step1_targetVolumeChange"
+                        process="targetVolumeInputId targetVolumeUnitSelectionId"
+                        update="targetMassId"
+                        action="#{controller.step1Controller.actionUpdateTargetMass()}"
+                        resetValues="true" />
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:inputText
+                            id="targetVolumeInputId"
+                            value="#{controller.step1Controller.targetVolume}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetVolume}"
+                            required="true"
+                            onchange="createSolution_step1_targetVolumeChange();">
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                            <f:validateDoubleRange minimum="0" />
+                        </b:inputText>
+                    </b:column>
+                    <b:column span="2">
+                        <b:selectOneMenu
+                            id="targetVolumeUnitSelectionId"
+                            value="#{controller.step1Controller.targetVolumeUnit}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
+                            required="true"
+                            onchange="createSolution_step1_targetVolumeChange();">
+                            <f:selectItems
+                                value="#{controller.step1Controller.availableVolumeUnits}"
+                                var="unit"
+                                itemLabel="#{unit.unit}" />
+                        </b:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <!-- Target mass -->
+                <b:row id="targetMassId">
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:inputText
+                            value="#{controller.step1Controller.targetMass}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_targetMass}"
+                            readonly="true">
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                        </b:inputText>
+                    </b:column>
+                    <b:column span="2">
+                        <p:remoteCommand
+                            name="createSolution_step1_targetMassUnitChange"
+                            process="targetMassUnitSelectionId"
+                            update="targetMassId"
+                            action="#{controller.step1Controller.actionOnChangeTargetMassUnit()}" />
+                        <b:selectOneMenu
+                            id="targetMassUnitSelectionId"
+                            value="#{controller.step1Controller.targetMassUnit}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
+                            required="true"
+                            onchange="createSolution_step1_targetMassUnitChange();">
+                            <f:selectItems
+                                value="#{controller.step1Controller.availableMassUnits}"
+                                var="unit"
+                                itemLabel="#{unit.unit}" />                                        
+                        </b:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <!-- Available mass from item -->
+                <b:row>
+                    <b:column
+                        span="2"
+                        offset="1">
+                        <b:inputText
+                            value="#{controller.step1Controller.availableMassFromItem}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_availableMass}"
+                            readonly="true">
+                            <f:convertNumber
+                                type="number"
+                                groupingUsed="false"
+                                locale="#{globalLocaleBean.numberConverterLocale}" />
+                        </b:inputText>
+                    </b:column>
+                    <b:column span="2">
+                        <b:inputText
+                            value="#{controller.step1Controller.availableMassFromItemUnit}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
+                            readonly="true" />
+                    </b:column>
+                </b:row>
+                <b:messages auto-update="true" />
+            </b:container>
+        </ui:composition>
+    </h:body>
+</html>

@@ -202,7 +202,7 @@ public class ContainerPositionService {
         }
     }
 
-    private Set<int[]> getItemPositionsInContainer(Item item) {
+    public Set<int[]> getItemPositionsInContainer(Item item) {
         Set<int[]> positions = new HashSet<>();
         if (item.getContainer() != null) {
             positions = item.getContainer().getPositionsOfItem(item.getId());
