@@ -1,0 +1,52 @@
+CREATE OR REPLACE FUNCTION getDimensionLabel (BOOLEAN, BOOLEAN, INTEGER, INTEGER) RETURNS VARCHAR 
+        AS $$
+        --
+        -- return true if the second structure is a substructure of the first. 
+        --
+                DECLARE
+                        zerobased       ALIAS FOR $1;
+                        swapdimension   ALIAS FOR $2;
+                        itemrow         ALIAS FOR $3;
+                        itemcol         ALIAS FOR $4;
+                        value           INTEGER;
+                        v               INTEGER;
+                        result          VARCHAR;
+                BEGIN
+
+                        IF swapdimension IS NULL OR zerobased IS NULL OR itemrow IS NULL THEN
+                            return '';
+                        END IF;
+
+                        IF swapdimension THEN
+                            value := itemrow;
+                        ELSE 
+                            value := itemcol;
+                        END IF;
+
+                        IF value IS NOT NULL THEN
+                            value := value + 1;
+                            LOOP
+                                v := (value + 25) % 26;
+                                result := concat(result, chr(65 + v));
+                                value := value - v;
+                                value := value / 26;
+                                EXIT WHEN value = 0;
+                            END LOOP;
+                        END IF;
+
+                        IF zerobased THEN
+                            v = 0;
+                        ELSE
+                            v = 1;
+                        END IF;
+
+                        IF swapdimension THEN                        
+                            value := itemcol;
+                        ELSE
+                            value := itemrow;
+                        END IF;
+
+                        RETURN concat(reverse(result), value + v);
+                END;
+        $$ LANGUAGE plpgsql;
+

@@ -158,15 +158,29 @@
                                         ajax="true"
                                         onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
                                 </b:column>
-                                <b:column
-                                    span="1"
-                                    styleClass="itemFilterButtonColumn itemFilterButtonRight">
-                                    <b:commandButton 
-                                        styleClass="itemFilterButton"
-                                        value="Report ..."
-                                        action="#{itemOverviewBean.actionReport}"/>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <b:selectOneMenu value="#{itemOverviewBean.reportType}" styleClass="itemFilterInputfield">
+                                        <f:selectItem itemLabel="#{msgs.report_itemsByOwner}" itemValue="itemlistByOwner.prpt"/>
+                                        <f:selectItem itemLabel="#{msgs.report_itemsByLocation}" itemValue="itemlistByPlace.prpt"/>
+                                    </b:selectOneMenu>
                                 </b:column>
                             </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column
+                                    span="1"
+                                    styleClass="itemFilterButtonColumn">
+                                    <b:commandButton 
+                                        styleClass="itemFilterButton"
+                                        value="#{msgs.Report}"
+                                        action="#{itemOverviewBean.actionReport}"/>
+                                </b:column>
+                                <b:column span="1" ></b:column>
+                            </b:row>
+                                
                         </b:container>
                     </b:column>    
                     <b:column span="10">  

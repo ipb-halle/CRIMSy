@@ -93,6 +93,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     private SearchResult searchResult;
     private SearchMaskValues searchMaskValues = new SearchMaskValues();
 
+    private String reportType = "itemlistByOwner.prpt";
+
     public void actionApplySearchFilter() {
         actionFirstItems();
     }
@@ -124,16 +126,31 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reloadItems();
     }
 
+    private String nullOrNonEmpty(String str) {
+        if ((str == null) || str.isEmpty()) {
+            return null;
+        }
+        return str;
+    }
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String rpt) {
+        reportType = rpt;
+    }
+
     public void actionReport() {
         HashMap<String, Object> map = new HashMap<String, Object> ();
-        map.put("paramCurrentUserId", null);
-        map.put("paramDescription", null);
+        map.put("paramCurrentUserId", currentUser.getId());
+        map.put("paramDescription", nullOrNonEmpty(searchMaskValues.getDescription()));
         map.put("paramMaterialId", null);
         map.put("paramOwnerId", 3);
-        map.put("paramPlace", null);
+        map.put("paramPlace", nullOrNonEmpty(searchMaskValues.getLocation()));
         map.put("paramProjectId", null);
         map.put("paramUserId", null);
-        reportMgr.prepareReport("itemlistByOwner.prpt", map);
+        reportMgr.prepareReport(reportType, map);
         reloadItems();
     }
 
