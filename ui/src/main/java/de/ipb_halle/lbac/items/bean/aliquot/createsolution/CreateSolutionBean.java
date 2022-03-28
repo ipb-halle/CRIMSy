@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean.createsolution;
+package de.ipb_halle.lbac.items.bean.aliquot.createsolution;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -25,7 +25,7 @@ import javax.inject.Named;
 
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemUtils;
-import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
+import de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.util.units.Quality;
 import de.ipb_halle.lbac.util.units.Quantity;

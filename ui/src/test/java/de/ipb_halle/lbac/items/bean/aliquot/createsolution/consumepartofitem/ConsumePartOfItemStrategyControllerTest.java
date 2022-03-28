@@ -15,14 +15,14 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
+package de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem;
 
-import static de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP1;
-import static de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP2;
-import static de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP3;
-import static de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP4;
-import static de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP5;
-import static de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP6;
+import static de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP1;
+import static de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP2;
+import static de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP3;
+import static de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP4;
+import static de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP5;
+import static de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem.ConsumePartOfItemStrategyController.STEP6;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;

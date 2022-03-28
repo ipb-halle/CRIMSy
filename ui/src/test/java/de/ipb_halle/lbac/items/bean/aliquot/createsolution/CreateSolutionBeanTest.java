@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean.createsolution;
+package de.ipb_halle.lbac.items.bean.aliquot.createsolution;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.Solvent;
-import de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
+import de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem.ConsumePartOfItemStrategyController;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Structure;

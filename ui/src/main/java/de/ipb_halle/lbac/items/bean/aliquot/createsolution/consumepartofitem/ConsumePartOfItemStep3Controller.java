@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean.createsolution.consumepartofitem;
+package de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem;
 
 import static de.ipb_halle.lbac.util.units.Quality.MASS_CONCENTRATION;
 

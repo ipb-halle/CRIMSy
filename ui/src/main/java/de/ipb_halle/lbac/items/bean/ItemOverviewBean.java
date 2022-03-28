@@ -33,7 +33,7 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
-import de.ipb_halle.lbac.items.bean.createsolution.CreateSolutionBean;
+import de.ipb_halle.lbac.items.bean.aliquot.createsolution.CreateSolutionBean;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
