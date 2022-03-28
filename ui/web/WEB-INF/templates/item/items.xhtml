@@ -158,6 +158,14 @@
                                         ajax="true"
                                         onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
                                 </b:column>
+                                <b:column
+                                    span="1"
+                                    styleClass="itemFilterButtonColumn itemFilterButtonRight">
+                                    <b:commandButton 
+                                        styleClass="itemFilterButton"
+                                        value="Report ..."
+                                        action="#{itemOverviewBean.actionReport}"/>
+                                </b:column>
                             </b:row>
                         </b:container>
                     </b:column>    

@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.reporting.ReportMgr;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,6 +81,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected NodeService nodeService;
     @Inject
     protected ACListService aclistService;
+    @Inject
+    protected ReportMgr reportMgr;
 
     private ACObjectController acObjectController;
     protected User currentUser;
@@ -118,6 +121,19 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     public void actionEndItems() {
         firstResult = itemAmount - PAGE_SIZE;
         firstResult = Math.max(0, firstResult);
+        reloadItems();
+    }
+
+    public void actionReport() {
+        HashMap<String, Object> map = new HashMap<String, Object> ();
+        map.put("paramCurrentUserId", null);
+        map.put("paramDescription", null);
+        map.put("paramMaterialId", null);
+        map.put("paramOwnerId", 3);
+        map.put("paramPlace", null);
+        map.put("paramProjectId", null);
+        map.put("paramUserId", null);
+        reportMgr.prepareReport("itemlistByOwner.prpt", map);
         reloadItems();
     }
 
