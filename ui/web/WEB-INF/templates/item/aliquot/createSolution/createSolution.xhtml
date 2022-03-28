@@ -40,20 +40,20 @@
                                     <f:param value="#{createSolutionBean.molarMassFromParentItem.unit.unit}"/>
                                 </h:outputFormat>
                                 <h:outputFormat
-                                    value="#{msgs.itemCreateSolution_materialNameFormat_withoutMolarMass}"
+                                    value="#{msgs.itemCreateAliquot_materialNameFormat_withoutMolarMass}"
                                     rendered="#{!createSolutionBean.parentItemHasMolarMass}">
                                     <f:param value="#{createSolutionBean.parentItem.material.firstName}" />
                                 </h:outputFormat>
                             </b:column>
                             <b:column span="3">
                                 <h:outputFormat
-                                    value="#{msgs.itemCreateSolution_itemLabelFormat}">
+                                    value="#{msgs.itemCreateAliquot_itemLabelFormat}">
                                     <f:param value="#{createSolutionBean.parentItem.label}" />
                                 </h:outputFormat>
                             </b:column>
                             <b:column span="2">
                                 <h:outputFormat
-                                    value="#{msgs.itemCreateSolution_itemAmountFormat}">
+                                    value="#{msgs.itemCreateAliquot_itemAmountFormat}">
                                     <f:param value="#{nwc:formatAmount(createSolutionBean.parentItem.amount)}" />
                                     <f:param value="#{createSolutionBean.parentItem.unit.unit}" />
                                 </h:outputFormat>
@@ -68,7 +68,7 @@
                     </b:container>
                 </b:panel>
 
-                <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItem.xhtml">
+                <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItem.xhtml">
                     <ui:param name="controller" value="#{createSolutionBean.consumePartOfItemStrategyController}" />
                 </ui:include>
             </b:form>

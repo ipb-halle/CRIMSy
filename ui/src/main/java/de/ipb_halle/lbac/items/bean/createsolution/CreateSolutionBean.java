@@ -60,7 +60,7 @@ public class CreateSolutionBean implements Serializable {
         this.parentItem = parentItem;
         molarMassFromParentItem = ItemUtils.molarMassFromItem(parentItem);
         consumePartOfItemStrategyController.init(parentItem);
-        navigator.navigate("/item/createSolution/createSolution");
+        navigator.navigate("/item/aliquot/createSolution/createSolution");
     }
 
     public void actionCancel() {

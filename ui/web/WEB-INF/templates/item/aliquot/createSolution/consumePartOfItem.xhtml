@@ -32,49 +32,49 @@
                       <p:inputText> with <p:ajax>).
                  Workaround: Invoke a p:remoteCommand via a JavaScript call. -->
             <p:wizard
-                flowListener="#{createSolutionBean.consumePartOfItemStrategyController.onFlowProcess}"
-                styleClass="wizardConsumePartOfItemForSolution"
+                flowListener="#{controller.onFlowProcess}"
+                styleClass="wizardCreateAliquot"
                 showNavBar="false"
                 widgetVar="consumePartOfItemWizard">
                 <p:tab
                     id="step1_targetConcAndVol"
                     title="#{msgs.itemCreateSolution_consumePartOfItem_step1Title}">
-                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep1.xhtml">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep1.xhtml">
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
                 <p:tab
                     id="step2_weigh"
                     title="#{msgs.itemCreateSolution_consumePartOfItem_step2Title}">
-                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep2.xhtml">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep2.xhtml">
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
                 <p:tab
                     id="step3_volumeAndSolvent"
                     title="#{msgs.itemCreateSolution_consumePartOfItem_step3Title}">
-                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep3.xhtml">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep3.xhtml">
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
                 <p:tab
                     id="step4_directContainerAndLabel"
                     title="#{msgs.itemCreateSolution_consumePartOfItem_step4Title}">
-                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep4.xhtml">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep4.xhtml">
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
                 <p:tab
                     id="step5_project"
                     title="#{msgs.itemCreateSolution_consumePartOfItem_step5Title}">
-                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep5.xhtml">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep5.xhtml">
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
                 <p:tab
                     id="step6_location"
                     title="#{msgs.itemCreateSolution_consumePartOfItem_step6Title}">
-                    <ui:include src="/WEB-INF/templates/item/createSolution/consumePartOfItemStep6.xhtml">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep6.xhtml">
                         <ui:param name="controller" value="#{controller}" />
                     </ui:include>
                 </p:tab>
