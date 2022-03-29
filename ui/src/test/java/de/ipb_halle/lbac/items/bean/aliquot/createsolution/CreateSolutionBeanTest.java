@@ -55,7 +55,6 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class CreateSolutionBeanTest extends TestBase {
-
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -108,7 +107,7 @@ public class CreateSolutionBeanTest extends TestBase {
 
         assertTrue(parentItem.isEqualTo(bean.getParentItem()));
         assertTrue(bean.isParentItemHasMolarMass());
-        assertThat(navigator.getNextPage(), containsString("/item/createSolution/createSolution"));
+        assertThat(navigator.getNextPage(), containsString("/item/aliquot/createSolution/createSolution"));
     }
 
     /*
@@ -125,7 +124,7 @@ public class CreateSolutionBeanTest extends TestBase {
      * Tests for isItemNotSoluble()
      */
     @Test
-    public void test006_isItemNotSoluble() {
+    public void test_isItemNotSoluble() {
         CreateSolutionBean bean = new CreateSolutionBean();
         Item item = new Item();
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem;
+package de.ipb_halle.lbac.items.bean.aliquot.createaliquot;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,7 +34,7 @@ import de.ipb_halle.lbac.util.units.Unit;
 /**
  * @author flange
  */
-public class ConsumePartOfItemStep4ControllerTest {
+public class CreateAliquotStep2ControllerTest {
     private static final double DELTA = 1e-6;
 
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
@@ -46,7 +46,7 @@ public class ConsumePartOfItemStep4ControllerTest {
 
     @Test
     public void test_defaultsGettersAndSetters() {
-        ConsumePartOfItemStep4Controller controller = new ConsumePartOfItemStep4Controller(null, null, null);
+        CreateAliquotStep2Controller controller = new CreateAliquotStep2Controller(null, messagePresenter);
 
         assertFalse(controller.isDirectContainer());
         controller.setDirectContainer(true);
@@ -75,26 +75,23 @@ public class ConsumePartOfItemStep4ControllerTest {
      */
     @Test
     public void test_actionOnChangeDirectContainerSize() {
-        Item item = new Item();
-        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
-        ConsumePartOfItemStep3Controller step3Controller = new ConsumePartOfItemStep3Controller(step1Controller, null,
-                null);
-        ConsumePartOfItemStep4Controller controller = new ConsumePartOfItemStep4Controller(step1Controller,
-                step3Controller, messagePresenter);
+        Item parentItem = new Item();
+        parentItem.setAmount(1.0);
+        parentItem.setUnit(Unit.getUnit("kg"));
+        CreateAliquotStep1Controller step1Controller = new CreateAliquotStep1Controller(parentItem);
+        CreateAliquotStep2Controller controller = new CreateAliquotStep2Controller(step1Controller, messagePresenter);
 
-        // container size larger than dispensed volume
-        step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
-        step3Controller.setDispensedVolume(10.0);
-        controller.setDirectContainerSize(15.0);
+        // container size larger than amount
+        step1Controller.setAmount(500.0);
+        step1Controller.setAmountUnit(Unit.getUnit("g"));
+        controller.setDirectContainerSize(700.0);
         controller.actionOnChangeDirectContainerSize();
         assertNull(messagePresenter.getLastErrorMessage());
 
         // container too small
-        step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
-        step3Controller.setDispensedVolume(10.0);
-        controller.setDirectContainerSize(5.0);
+        controller.setDirectContainerSize(300.0);
         controller.actionOnChangeDirectContainerSize();
-        assertEquals("itemCreateSolution_error_containerTooSmall", messagePresenter.getLastErrorMessage());
+        assertEquals("itemCreateAliquot_error_containerTooSmall", messagePresenter.getLastErrorMessage());
     }
 
     /*
@@ -102,17 +99,15 @@ public class ConsumePartOfItemStep4ControllerTest {
      */
     @Test
     public void test_presentContainerTooSmallError() {
-        Item item = new Item();
-        ConsumePartOfItemStep1Controller step1Controller = new ConsumePartOfItemStep1Controller(item, null);
-        ConsumePartOfItemStep3Controller step3Controller = new ConsumePartOfItemStep3Controller(step1Controller, null,
-                null);
-        ConsumePartOfItemStep4Controller controller = new ConsumePartOfItemStep4Controller(step1Controller,
-                step3Controller, messagePresenter);
-        assertNull(messagePresenter.getLastErrorMessage());
+        Item parentItem = new Item();
+        parentItem.setAmount(1.0);
+        parentItem.setUnit(Unit.getUnit("kg"));
+        CreateAliquotStep1Controller step1Controller = new CreateAliquotStep1Controller(parentItem);
+        step1Controller.setAmount(500.0);
+        step1Controller.setAmountUnit(Unit.getUnit("g"));
+        CreateAliquotStep2Controller controller = new CreateAliquotStep2Controller(step1Controller, messagePresenter);
 
-        step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
-        step3Controller.setDispensedVolume(10.0);
         controller.presentContainerTooSmallError();
-        assertEquals("itemCreateSolution_error_containerTooSmall", messagePresenter.getLastErrorMessage());
+        assertEquals("itemCreateAliquot_error_containerTooSmall", messagePresenter.getLastErrorMessage());
     }
 }
