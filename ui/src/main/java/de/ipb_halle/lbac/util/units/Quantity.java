@@ -29,12 +29,12 @@ public class Quantity {
     private final double value;
     private final Unit unit;
 
-    public Quantity(double value, Unit unit) {
+    private Quantity(double value, Unit unit) {
         this.value = value;
         this.unit = unit;
     }
 
-    public Quantity(double value, String unit) {
+    private Quantity(double value, String unit) {
         this(value, Unit.getUnit(unit));
     }
 

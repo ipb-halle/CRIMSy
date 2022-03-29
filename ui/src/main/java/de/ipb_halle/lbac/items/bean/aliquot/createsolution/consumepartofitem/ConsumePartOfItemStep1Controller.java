@@ -143,13 +143,9 @@ public class ConsumePartOfItemStep1Controller implements Serializable {
      */
     public boolean isTargetMassGreaterThanItemMass() {
         Quantity massFromItem = massFromParentItem();
-        Quantity targetMassAsQuantity = new Quantity(targetMass, targetMassUnit);
+        Quantity targetMassAsQuantity = Quantity.create(targetMass, targetMassUnit);
 
-        if (targetMassAsQuantity.isGreaterThan(massFromItem)) {
-            return true;
-        } else {
-            return false;
-        }
+        return targetMassAsQuantity.isGreaterThan(massFromItem);
     }
 
     public Quantity getTargetConcentrationAsQuantity() {

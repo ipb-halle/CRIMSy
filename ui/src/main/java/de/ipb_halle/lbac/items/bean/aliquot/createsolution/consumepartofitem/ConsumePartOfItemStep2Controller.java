@@ -84,13 +84,9 @@ public class ConsumePartOfItemStep2Controller implements Serializable {
 
     public boolean isWeightGreaterThanItemMass() {
         Quantity massFromItem = parentItem.getAmountAsQuantity();
-        Quantity weightAsQuantity = new Quantity(weight, weightUnit);
+        Quantity weightAsQuantity = getWeightAsQuantity();
 
-        if (weightAsQuantity.isGreaterThan(massFromItem)) {
-            return true;
-        } else {
-            return false;
-        }
+        return weightAsQuantity.isGreaterThan(massFromItem);
     }
 
     public Quantity getWeightAsQuantity() {

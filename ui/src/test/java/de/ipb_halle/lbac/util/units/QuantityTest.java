@@ -32,9 +32,9 @@ import org.junit.jupiter.api.Test;
 
 class QuantityTest {
     private static final double DELTA = 1.0e-9;
-    private Quantity q1 = new Quantity(12.34, "mm");
-    private Quantity q2 = new Quantity(5.67, "m");
-    private Quantity q3 = new Quantity(8.9, "mol");
+    private Quantity q1 = Quantity.create(12.34, "mm");
+    private Quantity q2 = Quantity.create(5.67, "m");
+    private Quantity q3 = Quantity.create(8.9, "mol");
 
     @Test
     public void test_create() {
@@ -57,14 +57,14 @@ class QuantityTest {
 
     @Test
     public void test_getters() {
-        Quantity quantity = new Quantity(42.123, "cm");
+        Quantity quantity = Quantity.create(42.123, "cm");
         assertEquals(42.123, quantity.getValue(), DELTA);
         assertEquals("cm", quantity.getUnit().toString());
     }
 
     @Test
     public void test_to() {
-        Quantity quantity = new Quantity(42.123, "cm");
+        Quantity quantity = Quantity.create(42.123, "cm");
         Quantity newQuantity = quantity.to(Unit.getUnit("mm"));
         assertEquals(421.23, newQuantity.getValue(), DELTA);
         assertEquals("mm", newQuantity.getUnit().toString());
@@ -75,7 +75,7 @@ class QuantityTest {
 
     @Test
     public void test_toBaseUnit() {
-        Quantity quantity = new Quantity(42.123, "cm");
+        Quantity quantity = Quantity.create(42.123, "cm");
         Quantity newQuantity = quantity.toBaseUnit();
         assertEquals(0.42123, newQuantity.getValue(), DELTA);
         assertEquals("m", newQuantity.getUnit().toString());
@@ -98,14 +98,14 @@ class QuantityTest {
         Quantity humanReadableQuantity;
         List<Unit> availableUnits;
 
-        quantity = new Quantity(1000.0, "mm");
+        quantity = Quantity.create(1000.0, "mm");
         availableUnits = Arrays.asList(Unit.getUnit("mol"), Unit.getUnit("m^2"));
         humanReadableQuantity = quantity.toHumanReadableUnit(availableUnits);
         // All available units are incompatible, so we get the original quantity.
         assertEquals(1000.0, humanReadableQuantity.getValue(), DELTA);
         assertEquals("mm", humanReadableQuantity.getUnit().toString());
 
-        quantity = new Quantity(1000.0, "mm");
+        quantity = Quantity.create(1000.0, "mm");
         availableUnits = Arrays.asList(Unit.getUnit("mol"), Unit.getUnit("µm"));
         humanReadableQuantity = quantity.toHumanReadableUnit(availableUnits);
         // Only one compatible unit, which has a worse score compared to the given unit.
@@ -114,7 +114,7 @@ class QuantityTest {
     }
 
     private void assertHumanReadability(double value, String unit, double expectedValue, String expectedUnit) {
-        Quantity humanReadableQuantity = new Quantity(value, unit).toHumanReadableUnit(Unit.getUnitsOfQuality(LENGTH));
+        Quantity humanReadableQuantity = Quantity.create(value, unit).toHumanReadableUnit(Unit.getUnitsOfQuality(LENGTH));
         assertEquals(expectedValue, humanReadableQuantity.getValue(), DELTA);
         assertEquals(expectedUnit, humanReadableQuantity.getUnit().toString());
     }

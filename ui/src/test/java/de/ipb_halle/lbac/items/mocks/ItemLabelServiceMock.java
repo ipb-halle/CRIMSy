@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.items.service.ItemLabelService;
  *
  * @author fmauz
  */
-public class LabelServiceMock extends ItemLabelService {
+public class ItemLabelServiceMock extends ItemLabelService {
 
     public boolean isLabelAvailable = true;
 

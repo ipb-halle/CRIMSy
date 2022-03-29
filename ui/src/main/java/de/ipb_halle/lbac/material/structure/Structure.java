@@ -219,9 +219,6 @@ public class Structure extends Material {
      *         or null if the average molar mass is null
      */
     public Quantity getAverageMolarMassAsQuantity() {
-        if (averageMolarMass == null) {
-            return null;
-        }
-        return new Quantity(averageMolarMass, "g/mol");
+        return Quantity.create(averageMolarMass, "g/mol");
     }
 }
