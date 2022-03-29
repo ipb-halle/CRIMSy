@@ -115,23 +115,34 @@ public class ContainerController {
     public List<String> nameSuggestions(String enteredValue) {
         List<String> matches = new ArrayList<>();
 
-        if ((enteredValue == null) || (enteredValue.trim().isEmpty())) {
+        if (enteredValue == null) {
             return matches;
         }
+
+        String trimmedEnteredValue = enteredValue.trim();
+        if (trimmedEnteredValue.isEmpty()) {
+            return matches;
+        }
+
         for (String s : namesForAutocomplete) {
-            if (s.toLowerCase().contains(enteredValue.toLowerCase())) {
+            if (s.toLowerCase().contains(trimmedEnteredValue.toLowerCase())) {
                 matches.add(s);
             }
         }
         return matches;
     }
 
-    public boolean isContainerSubComponentRendered(String typename) {
-        if (typename == null) {
+    /**
+     * 
+     * @param type name of the dimension type (items from the {@link DimensionType} enum)
+     * @return whether the current container supports the given dimension type
+     */
+    public boolean isContainerSubComponentRendered(String type) {
+        if (type == null) {
             return container == null;
         }
-        DimensionType type = DimensionType.valueOf(typename);
-        return container != null && container.getDimensionType() == type;
+        DimensionType typeObj = DimensionType.valueOf(type);
+        return container != null && container.getDimensionType() == typeObj;
     }
 
     public boolean[][] getItemPositions() {
