@@ -51,8 +51,8 @@ public class ConsumePartOfItemStep2ControllerTest {
         ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(null, null, null);
 
         assertEquals(5, controller.getErrorMargin());
-        assertNull(controller.getWeigh());
-        assertNull(controller.getWeighUnit());
+        assertNull(controller.getWeight());
+        assertNull(controller.getWeightUnit());
     }
 
     /*
@@ -66,18 +66,18 @@ public class ConsumePartOfItemStep2ControllerTest {
         ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(step1Controller, null, null);
 
         controller.init();
-        assertEquals("µg", controller.getWeighUnit().toString());
+        assertEquals("µg", controller.getWeightUnit().toString());
 
-        controller.setWeighUnit(Unit.getUnit("g"));
+        controller.setWeightUnit(Unit.getUnit("g"));
         controller.init();
-        assertEquals("g", controller.getWeighUnit().toString());
+        assertEquals("g", controller.getWeightUnit().toString());
     }
 
     /*
-     * Tests for actionWeighChange()
+     * Tests for actionWeightChange()
      */
     @Test
-    public void test_actionWeighChange() {
+    public void test_actionWeightChange() {
         Item item = new Item();
         item.setAmount(100.0);
         item.setUnit(Unit.getUnit("g"));
@@ -85,23 +85,23 @@ public class ConsumePartOfItemStep2ControllerTest {
         ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(null, item,
                 messagePresenter);
 
-        // weigh is lower than item amount
-        controller.setWeigh(10000.0);
-        controller.setWeighUnit(Unit.getUnit("mg"));
-        controller.actionWeighChange();
+        // weight is lower than item amount
+        controller.setWeight(10000.0);
+        controller.setWeightUnit(Unit.getUnit("mg"));
+        controller.actionWeightChange();
         assertNull(messagePresenter.getLastErrorMessage());
 
-        // weigh equals item amount
-        controller.setWeigh(0.1);
-        controller.setWeighUnit(Unit.getUnit("kg"));
-        controller.actionWeighChange();
+        // weight equals item amount
+        controller.setWeight(0.1);
+        controller.setWeightUnit(Unit.getUnit("kg"));
+        controller.actionWeightChange();
         assertNull(messagePresenter.getLastErrorMessage());
 
-        // weigh is too high
-        controller.setWeigh(10.0);
-        controller.setWeighUnit(Unit.getUnit("kg"));
-        controller.actionWeighChange();
-        assertEquals("itemCreateSolution_error_weighTooHigh", messagePresenter.getLastErrorMessage());
+        // weight is too high
+        controller.setWeight(10.0);
+        controller.setWeightUnit(Unit.getUnit("kg"));
+        controller.actionWeightChange();
+        assertEquals("itemCreateSolution_error_weightTooHigh", messagePresenter.getLastErrorMessage());
     }
 
     /*
@@ -171,10 +171,10 @@ public class ConsumePartOfItemStep2ControllerTest {
     }
 
     /*
-     * Tests for isWeighGreaterThanItemMass()
+     * Tests for isWeightGreaterThanItemMass()
      */
     @Test
-    public void test_isWeighGreaterThanItemMass() {
+    public void test_isWeightGreaterThanItemMass() {
         Item item = new Item();
         item.setAmount(100.0);
         item.setUnit(Unit.getUnit("g"));
@@ -182,43 +182,43 @@ public class ConsumePartOfItemStep2ControllerTest {
         ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(null, item, null);
 
         // greater
-        controller.setWeigh(10.0);
-        controller.setWeighUnit(Unit.getUnit("kg"));
-        assertTrue(controller.isWeighGreaterThanItemMass());
+        controller.setWeight(10.0);
+        controller.setWeightUnit(Unit.getUnit("kg"));
+        assertTrue(controller.isWeightGreaterThanItemMass());
 
         // equal
-        controller.setWeigh(0.1);
-        controller.setWeighUnit(Unit.getUnit("kg"));
-        assertFalse(controller.isWeighGreaterThanItemMass());
+        controller.setWeight(0.1);
+        controller.setWeightUnit(Unit.getUnit("kg"));
+        assertFalse(controller.isWeightGreaterThanItemMass());
 
         // lesser
-        controller.setWeigh(10.0);
-        controller.setWeighUnit(Unit.getUnit("mg"));
-        assertFalse(controller.isWeighGreaterThanItemMass());
+        controller.setWeight(10.0);
+        controller.setWeightUnit(Unit.getUnit("mg"));
+        assertFalse(controller.isWeightGreaterThanItemMass());
     }
 
     /*
-     * Tests for getWeighAsQuantity()
+     * Tests for getWeightAsQuantity()
      */
     @Test
-    public void test_getWeighAsQuantity() {
+    public void test_getWeightAsQuantity() {
         ConsumePartOfItemStep2Controller controller = new ConsumePartOfItemStep2Controller(null, null, null);
 
-        controller.setWeigh(null);
-        controller.setWeighUnit(null);
-        assertNull(controller.getWeighAsQuantity());
+        controller.setWeight(null);
+        controller.setWeightUnit(null);
+        assertNull(controller.getWeightAsQuantity());
 
-        controller.setWeigh(10.0);
-        controller.setWeighUnit(null);
-        assertNull(controller.getWeighAsQuantity());
+        controller.setWeight(10.0);
+        controller.setWeightUnit(null);
+        assertNull(controller.getWeightAsQuantity());
 
-        controller.setWeigh(null);
-        controller.setWeighUnit(Unit.getUnit("mg"));
-        assertNull(controller.getWeighAsQuantity());
+        controller.setWeight(null);
+        controller.setWeightUnit(Unit.getUnit("mg"));
+        assertNull(controller.getWeightAsQuantity());
 
-        controller.setWeigh(10.0);
-        controller.setWeighUnit(Unit.getUnit("mg"));
-        Quantity q = controller.getWeighAsQuantity();
+        controller.setWeight(10.0);
+        controller.setWeightUnit(Unit.getUnit("mg"));
+        Quantity q = controller.getWeightAsQuantity();
         assertEquals(10.0, q.getValue(), DELTA);
         assertEquals("mg", q.getUnit().toString());
     }

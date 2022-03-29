@@ -143,10 +143,10 @@ public class ConsumePartOfItemStrategyController implements Serializable {
             }
         }
 
-        // STEP2 -> STEP3: weigh <= item mass
+        // STEP2 -> STEP3: weight <= item mass
         if (STEP3.equals(event.getNewStep())) {
-            if (step2Controller.isWeighGreaterThanItemMass()) {
-                messagePresenter.error("itemCreateSolution_error_weighTooHigh");
+            if (step2Controller.isWeightGreaterThanItemMass()) {
+                messagePresenter.error("itemCreateSolution_error_weightTooHigh");
                 return STEP2;
             } else {
                 step3Controller.init();
@@ -183,7 +183,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
             return;
         }
 
-        Quantity massToSubtractFromParentItem = step2Controller.getWeighAsQuantity();
+        Quantity massToSubtractFromParentItem = step2Controller.getWeightAsQuantity();
 
         try {
             saveAliquot(newItem, massToSubtractFromParentItem);

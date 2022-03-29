@@ -66,14 +66,14 @@
                                 locale="#{globalLocaleBean.numberConverterLocale}" />
                         </b:inputText>
                     </b:column>
-                    <!-- Weigh -->
+                    <!-- Weight -->
                     <b:column span="2">
                         <b:inputText
-                            value="#{controller.step2Controller.weigh}"
-                            label="#{msgs.itemCreateSolution_consumePartOfItem_weigh}"
+                            value="#{controller.step2Controller.weight}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_weight}"
                             readonly="true">
                             <f:facet name="append">
-                                <h:outputText value="#{controller.step2Controller.weighUnit}" />
+                                <h:outputText value="#{controller.step2Controller.weightUnit}" />
                             </f:facet>
                             <f:convertNumber
                                 type="number"

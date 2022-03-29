@@ -119,22 +119,22 @@
                         </b:inputText>
                     </b:column>
                 </b:row>
-                <!-- Weighed mass -->
+                <!-- Weight -->
                 <b:row>
                     <p:remoteCommand
-                        name="createSolution_step2_weighChange"
-                        process="weighInputId weighUnitSelectionId"
+                        name="createSolution_step2_weightChange"
+                        process="weightInputId weightUnitSelectionId"
                         update="@none"
-                        action="#{controller.step2Controller.actionWeighChange()}" />
+                        action="#{controller.step2Controller.actionWeightChange()}" />
                     <b:column
                         span="2"
                         offset="1">
                         <b:inputText
-                            id="weighInputId"
-                            value="#{controller.step2Controller.weigh}"
-                            label="#{msgs.itemCreateSolution_consumePartOfItem_weigh}"
+                            id="weightInputId"
+                            value="#{controller.step2Controller.weight}"
+                            label="#{msgs.itemCreateSolution_consumePartOfItem_weight}"
                             required="true"
-                            onchange="createSolution_step2_weighChange();">
+                            onchange="createSolution_step2_weightChange();">
                             <b:focus />
                             <f:convertNumber
                                 type="number"
@@ -145,11 +145,11 @@
                     </b:column>
                     <b:column span="2">
                         <b:selectOneMenu
-                            id="weighUnitSelectionId"
-                            value="#{controller.step2Controller.weighUnit}"
+                            id="weightUnitSelectionId"
+                            value="#{controller.step2Controller.weightUnit}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
                             required="true"
-                            onchange="createSolution_step2_weighChange();">
+                            onchange="createSolution_step2_weightChange();">
                             <f:selectItems
                                 value="#{controller.step1Controller.availableMassUnits}"
                                 var="unit"

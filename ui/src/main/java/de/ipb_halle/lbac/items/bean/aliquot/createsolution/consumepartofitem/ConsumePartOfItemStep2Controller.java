@@ -26,7 +26,7 @@ import de.ipb_halle.lbac.util.units.Unit;
 
 /**
  * Controls the second step of the create solution wizard: The target mass is
- * shown with a user-defined margin and the user inputs the weigh.
+ * shown with a user-defined margin and the user inputs the weight.
  * 
  * @author flange
  */
@@ -38,8 +38,8 @@ public class ConsumePartOfItemStep2Controller implements Serializable {
     private final MessagePresenter messagePresenter;
 
     private int errorMargin = 5; // rw
-    private Double weigh; // rw
-    private Unit weighUnit; // rw
+    private Double weight; // rw
+    private Unit weightUnit; // rw
 
     public ConsumePartOfItemStep2Controller(ConsumePartOfItemStep1Controller step1Controller, Item parentItem,
             MessagePresenter messagePresenter) {
@@ -52,14 +52,14 @@ public class ConsumePartOfItemStep2Controller implements Serializable {
      * Actions
      */
     public void init() {
-        if (weighUnit == null) {
-            weighUnit = step1Controller.getTargetMassUnit();
+        if (weightUnit == null) {
+            weightUnit = step1Controller.getTargetMassUnit();
         }
     }
 
-    public void actionWeighChange() {
-        if (isWeighGreaterThanItemMass()) {
-            messagePresenter.error("itemCreateSolution_error_weighTooHigh");
+    public void actionWeightChange() {
+        if (isWeightGreaterThanItemMass()) {
+            messagePresenter.error("itemCreateSolution_error_weightTooHigh");
         }
     }
 
@@ -82,19 +82,19 @@ public class ConsumePartOfItemStep2Controller implements Serializable {
         return targetMass * (1.0 - (errorMargin / 100.0));
     }
 
-    public boolean isWeighGreaterThanItemMass() {
+    public boolean isWeightGreaterThanItemMass() {
         Quantity massFromItem = parentItem.getAmountAsQuantity();
-        Quantity weighAsQuantity = new Quantity(weigh, weighUnit);
+        Quantity weightAsQuantity = new Quantity(weight, weightUnit);
 
-        if (weighAsQuantity.isGreaterThan(massFromItem)) {
+        if (weightAsQuantity.isGreaterThan(massFromItem)) {
             return true;
         } else {
             return false;
         }
     }
 
-    public Quantity getWeighAsQuantity() {
-        return Quantity.create(weigh, weighUnit);
+    public Quantity getWeightAsQuantity() {
+        return Quantity.create(weight, weightUnit);
     }
 
     /*
@@ -108,19 +108,19 @@ public class ConsumePartOfItemStep2Controller implements Serializable {
         this.errorMargin = errorMargin;
     }
 
-    public Double getWeigh() {
-        return weigh;
+    public Double getWeight() {
+        return weight;
     }
 
-    public void setWeigh(Double weigh) {
-        this.weigh = weigh;
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 
-    public Unit getWeighUnit() {
-        return weighUnit;
+    public Unit getWeightUnit() {
+        return weightUnit;
     }
 
-    public void setWeighUnit(Unit weighUnit) {
-        this.weighUnit = weighUnit;
+    public void setWeightUnit(Unit weightUnit) {
+        this.weightUnit = weightUnit;
     }
 }

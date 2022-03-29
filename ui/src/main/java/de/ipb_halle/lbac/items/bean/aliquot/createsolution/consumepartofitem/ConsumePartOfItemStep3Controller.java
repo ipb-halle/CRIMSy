@@ -70,7 +70,7 @@ public class ConsumePartOfItemStep3Controller implements Serializable {
 
     private Quantity calculateVolumeToDispense() {
         Quantity concentration = step1Controller.getTargetConcentrationAsQuantity();
-        Quantity mass = step2Controller.getWeighAsQuantity();
+        Quantity mass = step2Controller.getWeightAsQuantity();
         Unit volumeUnit = step1Controller.getTargetVolumeUnit();
 
         if (MASS_CONCENTRATION == concentration.getUnit().getQuality()) {
@@ -86,7 +86,7 @@ public class ConsumePartOfItemStep3Controller implements Serializable {
     }
 
     private Quantity calculateFinalConcentration() {
-        Quantity mass = step2Controller.getWeighAsQuantity();
+        Quantity mass = step2Controller.getWeightAsQuantity();
         Quantity volume = Quantity.create(dispensedVolume, step1Controller.getTargetVolumeUnit());
         Unit concentrationUnit = step1Controller.getTargetConcentrationUnit();
 

@@ -68,8 +68,8 @@ public class ConsumePartOfItemStep3ControllerTest {
 
         step1Controller.setTargetConcentration(10.0);
         step1Controller.setTargetConcentrationUnit(Unit.getUnit("g/l"));
-        step2Controller.setWeigh(5.0);
-        step2Controller.setWeighUnit(Unit.getUnit("mg"));
+        step2Controller.setWeight(5.0);
+        step2Controller.setWeightUnit(Unit.getUnit("mg"));
         step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
 
         // assumptions
@@ -96,8 +96,8 @@ public class ConsumePartOfItemStep3ControllerTest {
 
         step1Controller.setTargetConcentration(10.0);
         step1Controller.setTargetConcentrationUnit(Unit.getUnit("mM"));
-        step2Controller.setWeigh(5.0);
-        step2Controller.setWeighUnit(Unit.getUnit("mg"));
+        step2Controller.setWeight(5.0);
+        step2Controller.setWeightUnit(Unit.getUnit("mg"));
         step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
 
         // assumptions
@@ -124,8 +124,8 @@ public class ConsumePartOfItemStep3ControllerTest {
 
         step1Controller.setTargetConcentration(10.0);
         step1Controller.setTargetConcentrationUnit(Unit.getUnit("g/l"));
-        step2Controller.setWeigh(5.0);
-        step2Controller.setWeighUnit(Unit.getUnit("mg"));
+        step2Controller.setWeight(5.0);
+        step2Controller.setWeightUnit(Unit.getUnit("mg"));
         step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
 
         assertEquals(0.5, controller.getVolumeToDispense(), DELTA);
@@ -144,8 +144,8 @@ public class ConsumePartOfItemStep3ControllerTest {
 
         step1Controller.setTargetConcentration(10.0);
         step1Controller.setTargetConcentrationUnit(Unit.getUnit("mM"));
-        step2Controller.setWeigh(5.0);
-        step2Controller.setWeighUnit(Unit.getUnit("mg"));
+        step2Controller.setWeight(5.0);
+        step2Controller.setWeightUnit(Unit.getUnit("mg"));
         step1Controller.setTargetVolumeUnit(Unit.getUnit("ml"));
 
         // assertions
@@ -164,8 +164,8 @@ public class ConsumePartOfItemStep3ControllerTest {
         ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller,
                 step2Controller, item);
 
-        step2Controller.setWeigh(5.0);
-        step2Controller.setWeighUnit(Unit.getUnit("mg"));
+        step2Controller.setWeight(5.0);
+        step2Controller.setWeightUnit(Unit.getUnit("mg"));
         controller.setDispensedVolume(100.0);
         step1Controller.setTargetVolumeUnit(Unit.getUnit("µl"));
         step1Controller.setTargetConcentrationUnit(Unit.getUnit("g/l"));
@@ -184,8 +184,8 @@ public class ConsumePartOfItemStep3ControllerTest {
         ConsumePartOfItemStep3Controller controller = new ConsumePartOfItemStep3Controller(step1Controller,
                 step2Controller, item);
 
-        step2Controller.setWeigh(5.0);
-        step2Controller.setWeighUnit(Unit.getUnit("mg"));
+        step2Controller.setWeight(5.0);
+        step2Controller.setWeightUnit(Unit.getUnit("mg"));
         controller.setDispensedVolume(100.0);
         step1Controller.setTargetVolumeUnit(Unit.getUnit("µl"));
         step1Controller.setTargetConcentrationUnit(Unit.getUnit("mM"));

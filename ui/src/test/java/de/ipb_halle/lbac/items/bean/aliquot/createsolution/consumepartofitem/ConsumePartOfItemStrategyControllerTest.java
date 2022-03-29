@@ -167,14 +167,14 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
         messagePresenter.resetMessages();
 
         // before calling onFlowProcess(): step2Controller is not initialized
-        assertNull(controller.getStep2Controller().getWeighUnit());
+        assertNull(controller.getStep2Controller().getWeightUnit());
 
         // target mass is ok, proceed to STEP2
         assertEquals(STEP2, controller.onFlowProcess(event));
         assertNull(messagePresenter.getLastErrorMessage());
 
         // step2Controller is now initialized
-        assertEquals("kg", controller.getStep2Controller().getWeighUnit().toString());
+        assertEquals("kg", controller.getStep2Controller().getWeightUnit().toString());
     }
 
     @Test
@@ -184,19 +184,19 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
         parentItem.setUnit(Unit.getUnit("g"));
         ConsumePartOfItemStep2Controller step2Controller = controller.getStep2Controller();
 
-        // set weigh to 0.15kg
-        step2Controller.setWeigh(0.15);
-        step2Controller.setWeighUnit(Unit.getUnit("kg"));
+        // set weight to 0.15kg
+        step2Controller.setWeight(0.15);
+        step2Controller.setWeightUnit(Unit.getUnit("kg"));
 
         messagePresenter.resetMessages();
 
-        // weigh is too high, stay in STEP2
+        // weight is too high, stay in STEP2
         assertEquals(STEP2, controller.onFlowProcess(event));
-        assertEquals("itemCreateSolution_error_weighTooHigh", messagePresenter.getLastErrorMessage());
+        assertEquals("itemCreateSolution_error_weightTooHigh", messagePresenter.getLastErrorMessage());
 
-        // set weigh to 0.05kg
-        step2Controller.setWeigh(0.05);
-        step2Controller.setWeighUnit(Unit.getUnit("kg"));
+        // set weight to 0.05kg
+        step2Controller.setWeight(0.05);
+        step2Controller.setWeightUnit(Unit.getUnit("kg"));
 
         messagePresenter.resetMessages();
 
@@ -210,7 +210,7 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
         // before calling onFlowProcess(): step3Controller is not initialized
         assertNull(controller.getStep3Controller().getDispensedVolume());
 
-        // weigh is ok, proceed to STEP3
+        // weight is ok, proceed to STEP3
         assertEquals(STEP3, controller.onFlowProcess(event));
         assertNull(messagePresenter.getLastErrorMessage());
 
@@ -326,9 +326,9 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
         controller.getStep3Controller().setDispensedVolume(50.0);
         controller.getStep1Controller().setTargetVolumeUnit(Unit.getUnit("ml"));
 
-        // set weigh to 20g
-        controller.getStep2Controller().setWeigh(20.0);
-        controller.getStep2Controller().setWeighUnit(Unit.getUnit("g"));
+        // set weight to 20g
+        controller.getStep2Controller().setWeight(20.0);
+        controller.getStep2Controller().setWeightUnit(Unit.getUnit("g"));
 
         // final concentration will be 400g/l
         controller.getStep1Controller().setTargetConcentrationUnit(Unit.getUnit("g/l"));
