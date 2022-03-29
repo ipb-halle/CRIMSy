@@ -171,6 +171,11 @@ public class ConsumePartOfItemStrategyController implements Serializable {
      * Actions
      */
     public void actionSave() {
+        if (step4Controller.isDirectContainer() && step4Controller.isDispensedVolumeGreaterThanContainerSize()) {
+            step4Controller.presentContainerTooSmallError();
+            return;
+        }
+
         Item newItem = prepareNewItem();
 
         if (!validator.itemValidToSave(newItem, step6Controller.getContainerController(),

@@ -270,7 +270,52 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
      * Tests for actionSave()
      */
     @Test
-    public void test_actionSave() {
+    public void test_actionSave_directContainerTooSmall() {
+        /*
+         * Preparation
+         */
+        createSolvents("Water");
+        controller.init(parentItem);
+
+        // set volume to 50ml
+        controller.getStep3Controller().setDispensedVolume(50.0);
+        controller.getStep1Controller().setTargetVolumeUnit(Unit.getUnit("ml"));
+
+        // define direct container with size of 40ml
+        controller.getStep4Controller().setDirectContainer(true);
+        controller.getStep4Controller().setDirectContainerSize(40.0);
+
+        /*
+         * Assumptions
+         */
+        // only parentItem in database
+        List<Item> items = findAllItems();
+        assertThat(items, hasSize(1));
+
+        /*
+         * Execution
+         */
+        controller.actionSave();
+
+        /*
+         * Assertions
+         */
+        items = findAllItems();
+        assertThat(items, hasSize(1));
+
+        // parent item as same amount
+        assertEquals(parentItem.getId(), items.get(0).getId());
+        assertEquals(10.0, items.get(0).getAmount(), DELTA);
+        assertEquals("kg", items.get(0).getUnit().toString());
+
+        // message and navigation outcome
+        assertNull(messagePresenter.getLastInfoMessage());
+        assertEquals("itemCreateSolution_error_containerTooSmall", messagePresenter.getLastErrorMessage());
+        assertThat(navigator.getNextPage(), not(containsString("/item/items")));
+    }
+
+    @Test
+    public void test_actionSave_successful() {
         /*
          * Preparation
          */
@@ -326,7 +371,7 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
         assertThat(items, hasSize(2));
         items.sort((i1, i2) -> Integer.compare(i1.getId(), i2.getId()));
 
-        // parent item as reduced amount (= 10kg - 20g)
+        // parent item has reduced amount (= 10kg - 20g)
         assertEquals(parentItem.getId(), items.get(0).getId());
         assertEquals(9.98, items.get(0).getAmount(), DELTA);
         assertEquals("kg", items.get(0).getUnit().toString());
