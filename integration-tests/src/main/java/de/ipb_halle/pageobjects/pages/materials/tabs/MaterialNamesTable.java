@@ -17,11 +17,14 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
+import static com.codeborne.selenide.Selenide.$$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.table.DataTable;
+import de.ipb_halle.pageobjects.pages.materials.models.MaterialNamesModel;
+import de.ipb_halle.pageobjects.pages.materials.models.MaterialNamesModel.MaterialName;
 
 /**
  * Page object for the material names table in
@@ -46,44 +49,80 @@ public class MaterialNamesTable extends DataTable<MaterialNamesTable> {
     /*
      * Actions
      */
+    /**
+     * Deletes all entries in the table and applies the given material name model.
+     * 
+     * @param model
+     * @return this
+     */
+    public MaterialNamesTable applyModel(MaterialNamesModel model) {
+        clear();
+
+        int size = model.getNames().size();
+        for (int i = 0; i < size; i++) {
+            applyName(model.getNames().get(i), i);
+            if (i < size - 1) {
+                add(0);
+            }
+        }
+
+        return this;
+    }
+
+    private void clear() {
+        // delete all existing name entries until there is only one left
+        while ($$(NAME_INPUT).size() > 1) {
+            delete(1);
+        }
+
+        // reset remaining entry
+        nameInput(0).setValue(null);
+        languageSelection(0).selectOption(0);
+    }
+
+    private void applyName(MaterialName name, int index) {
+        nameInput(index).setValue(name.getName());
+        languageSelection(index).selectOption(name.getLanguage());
+    }
+
     public MaterialNamesTable toTop(int rowIndex) {
-        getCell(2, rowIndex).$(TO_TOP_BUTTON);
+        getCell(2, rowIndex).$(TO_TOP_BUTTON).click();
         return this;
     }
 
     public MaterialNamesTable up(int rowIndex) {
-        getCell(2, rowIndex).$(UP_BUTTON);
+        getCell(2, rowIndex).$(UP_BUTTON).click();
         return this;
     }
 
     public MaterialNamesTable down(int rowIndex) {
-        getCell(2, rowIndex).$(DOWN_BUTTON);
+        getCell(2, rowIndex).$(DOWN_BUTTON).click();
         return this;
     }
 
     public MaterialNamesTable toButtom(int rowIndex) {
-        getCell(2, rowIndex).$(TO_BUTTOM_BUTTON);
+        getCell(2, rowIndex).$(TO_BUTTOM_BUTTON).click();
         return this;
     }
 
     public MaterialNamesTable delete(int rowIndex) {
-        getCell(2, rowIndex).$(DELETE_BUTTON);
+        getCell(2, rowIndex).$(DELETE_BUTTON).click();
         return this;
     }
 
     public MaterialNamesTable add(int rowIndex) {
-        getCell(2, rowIndex).$(ADD_BUTTON);
+        getCell(2, rowIndex).$(ADD_BUTTON).click();
         return this;
     }
 
     /*
      * Getters
      */
-    public SelenideElement getNameInput(int rowIndex) {
+    public SelenideElement nameInput(int rowIndex) {
         return getCell(0, rowIndex).$(NAME_INPUT);
     }
 
-    public SelenideElement getLanguageSelection(int rowIndex) {
+    public SelenideElement languageSelection(int rowIndex) {
         return getCell(1, rowIndex).$(LANGUAGE_SELECTION);
     }
 }

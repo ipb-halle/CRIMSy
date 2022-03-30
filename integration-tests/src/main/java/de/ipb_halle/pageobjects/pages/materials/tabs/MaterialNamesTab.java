@@ -18,6 +18,7 @@
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
 import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.pages.materials.models.MaterialNamesModel;
 
 /**
  * Page object for
@@ -28,6 +29,20 @@ import de.ipb_halle.pageobjects.pages.AbstractPage;
 public class MaterialNamesTab extends AbstractPage<MaterialNamesTab> implements MaterialEditTab {
     private static final MaterialNamesTable MATERIAL_NAMES_TABLE = new MaterialNamesTable(
             "materialNamesTab:materialNamesTable");
+
+    /*
+     * Actions
+     */
+    /**
+     * See {@link MaterialNamesTable#applyModel(MaterialNamesModel)}
+     * 
+     * @param model
+     * @return this
+     */
+    public MaterialNamesTab applyModel(MaterialNamesModel model) {
+        materialNamesTable().applyModel(model);
+        return this;
+    }
 
     /*
      * Getters
