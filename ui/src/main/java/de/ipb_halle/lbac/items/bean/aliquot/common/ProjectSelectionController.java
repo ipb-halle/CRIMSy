@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean.aliquot.createaliquot;
+package de.ipb_halle.lbac.items.bean.aliquot.common;
 
 import java.io.Serializable;
 import java.util.List;
@@ -29,18 +29,17 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
 
 /**
- * Controls the third step of the create aliquot wizard: The user defines a
- * project.
+ * Controller for the selection of a project.
  * 
  * @author flange
  */
-public class CreateAliquotStep3Controller implements Serializable {
+public class ProjectSelectionController implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final List<Project> availableProjects;
     private Project selectedProject;
 
-    public CreateAliquotStep3Controller(Item parentItem, ProjectService projectService, UserBean userBean) {
+    public ProjectSelectionController(Item parentItem, ProjectService projectService, UserBean userBean) {
         availableProjects = loadReadableProjects(userBean.getCurrentAccount(), projectService);
         selectedProject = parentItem.getProject();
     }

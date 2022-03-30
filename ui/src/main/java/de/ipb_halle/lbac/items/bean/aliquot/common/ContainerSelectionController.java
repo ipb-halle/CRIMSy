@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean.aliquot.createsolution.consumepartofitem;
+package de.ipb_halle.lbac.items.bean.aliquot.common;
 
 import java.io.Serializable;
 
@@ -25,17 +25,16 @@ import de.ipb_halle.lbac.items.bean.ContainerController;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 /**
- * Controls the sixth step of the create solution wizard: The user defines a
- * location.
+ * Controller for the selection of a container location.
  * 
  * @author flange
  */
-public class ConsumePartOfItemStep6Controller implements Serializable {
+public class ContainerSelectionController implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final ContainerController containerController; // r
 
-    public ConsumePartOfItemStep6Controller(ContainerService containerService, UserBean userBean,
+    public ContainerSelectionController(ContainerService containerService, UserBean userBean,
             MessagePresenter messagePresenter) {
         containerController = new ContainerController(null, containerService, userBean, messagePresenter);
     }

@@ -40,6 +40,8 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.items.bean.Validator;
+import de.ipb_halle.lbac.items.bean.aliquot.common.ContainerSelectionController;
+import de.ipb_halle.lbac.items.bean.aliquot.common.ProjectSelectionController;
 import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MessagePresenter;
@@ -89,8 +91,8 @@ public class CreateAliquotBean implements Serializable {
 
     private CreateAliquotStep1Controller step1Controller; // r
     private CreateAliquotStep2Controller step2Controller; // r
-    private CreateAliquotStep3Controller step3Controller; // r
-    private CreateAliquotStep4Controller step4Controller; // r
+    private ProjectSelectionController step3Controller; // r
+    private ContainerSelectionController step4Controller; // r
 
     private List<ContainerType> availableContainerTypes; // r
 
@@ -100,8 +102,8 @@ public class CreateAliquotBean implements Serializable {
 
         step1Controller = new CreateAliquotStep1Controller(parentItem);
         step2Controller = new CreateAliquotStep2Controller(step1Controller, messagePresenter);
-        step3Controller = new CreateAliquotStep3Controller(parentItem, projectService, userBean);
-        step4Controller = new CreateAliquotStep4Controller(containerService, userBean, messagePresenter);
+        step3Controller = new ProjectSelectionController(parentItem, projectService, userBean);
+        step4Controller = new ContainerSelectionController(containerService, userBean, messagePresenter);
 
         availableContainerTypes = loadAvailableContainerTypes();
     }
@@ -240,11 +242,11 @@ public class CreateAliquotBean implements Serializable {
         return step2Controller;
     }
 
-    public CreateAliquotStep3Controller getStep3Controller() {
+    public ProjectSelectionController getStep3Controller() {
         return step3Controller;
     }
 
-    public CreateAliquotStep4Controller getStep4Controller() {
+    public ContainerSelectionController getStep4Controller() {
         return step4Controller;
     }
 

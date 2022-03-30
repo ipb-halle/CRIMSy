@@ -40,6 +40,8 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.items.bean.Validator;
+import de.ipb_halle.lbac.items.bean.aliquot.common.ContainerSelectionController;
+import de.ipb_halle.lbac.items.bean.aliquot.common.ProjectSelectionController;
 import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MessagePresenter;
@@ -90,8 +92,8 @@ public class ConsumePartOfItemStrategyController implements Serializable {
     private ConsumePartOfItemStep2Controller step2Controller; // r
     private ConsumePartOfItemStep3Controller step3Controller; // r
     private ConsumePartOfItemStep4Controller step4Controller; // r
-    private ConsumePartOfItemStep5Controller step5Controller; // r
-    private ConsumePartOfItemStep6Controller step6Controller; // r
+    private ProjectSelectionController step5Controller; // r
+    private ContainerSelectionController step6Controller; // r
 
     private List<Solvent> solvents; // r
     private List<ContainerType> availableContainerTypes; // r
@@ -104,8 +106,8 @@ public class ConsumePartOfItemStrategyController implements Serializable {
         step2Controller = new ConsumePartOfItemStep2Controller(step1Controller, parentItem, messagePresenter);
         step3Controller = new ConsumePartOfItemStep3Controller(step1Controller, step2Controller, parentItem);
         step4Controller = new ConsumePartOfItemStep4Controller(step1Controller, step3Controller, messagePresenter);
-        step5Controller = new ConsumePartOfItemStep5Controller(parentItem, projectService, userBean);
-        step6Controller = new ConsumePartOfItemStep6Controller(containerService, userBean, messagePresenter);
+        step5Controller = new ProjectSelectionController(parentItem, projectService, userBean);
+        step6Controller = new ContainerSelectionController(containerService, userBean, messagePresenter);
 
         solvents = loadSolvents();
         availableContainerTypes = loadAvailableContainerTypes();
@@ -257,11 +259,11 @@ public class ConsumePartOfItemStrategyController implements Serializable {
         return step4Controller;
     }
 
-    public ConsumePartOfItemStep5Controller getStep5Controller() {
+    public ProjectSelectionController getStep5Controller() {
         return step5Controller;
     }
 
-    public ConsumePartOfItemStep6Controller getStep6Controller() {
+    public ContainerSelectionController getStep6Controller() {
         return step6Controller;
     }
 

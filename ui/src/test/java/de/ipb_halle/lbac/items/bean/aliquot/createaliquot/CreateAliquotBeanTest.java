@@ -53,6 +53,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.bean.aliquot.common.ProjectSelectionController;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -279,7 +280,7 @@ public class CreateAliquotBeanTest extends TestBase {
     public void test_actionSave_successful() {
         CreateAliquotStep1Controller step1Controller = bean.getStep1Controller();
         CreateAliquotStep2Controller step2Controller = bean.getStep2Controller();
-        CreateAliquotStep3Controller step3Controller = bean.getStep3Controller();
+        ProjectSelectionController step3Controller = bean.getStep3Controller();
 
         /*
          * Preparation
