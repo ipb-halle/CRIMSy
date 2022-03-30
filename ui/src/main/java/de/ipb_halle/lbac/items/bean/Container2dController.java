@@ -188,9 +188,8 @@ public class Container2dController {
     }
 
     /**
-     * Checks if the checkbox for putting a item at a place (x,y) is disabled. It is
-     * disabled if: (1) itembean is in history mode (2) another item blocks the
-     * place
+     * Checks if the checkbox for putting an item at a place (x,y) is disabled. It is
+     * disabled if another item blocks the place.
      *
      * @param x
      * @param y

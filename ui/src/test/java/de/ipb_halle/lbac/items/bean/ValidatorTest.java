@@ -26,7 +26,7 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.mocks.ContainerPositionServiceMock;
-import de.ipb_halle.lbac.items.mocks.LabelServiceMock;
+import de.ipb_halle.lbac.items.mocks.ItemLabelServiceMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -49,7 +49,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class ValidatorTest extends TestBase {
 
     private final ContainerPositionServiceMock containerServiceMock = new ContainerPositionServiceMock();
-    private final LabelServiceMock labelServiceMock = new LabelServiceMock();
+    private final ItemLabelServiceMock labelServiceMock = new ItemLabelServiceMock();
     private final Item item = new Item();
     private ContainerController containerController;
     private final String customLabel = "customLabel";

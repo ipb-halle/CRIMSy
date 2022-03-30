@@ -32,13 +32,13 @@ import de.ipb_halle.lbac.util.units.Unit;
  * @author flange
  */
 class MolarConcentrationCalculationsTest {
-    Quantity oneMeter = new Quantity(1, "m");
+    Quantity oneMeter = Quantity.create(1.0, "m");
 
     @Test
     public void test_calculateMolarConcentration() {
-        Quantity mass = new Quantity(200, "mg");
-        Quantity molarMass = new Quantity(58.44, "g/mol");
-        Quantity volume = new Quantity(150, "µl");
+        Quantity mass = Quantity.create(200.0, "mg");
+        Quantity molarMass = Quantity.create(58.44, "g/mol");
+        Quantity volume = Quantity.create(150.0, "µl");
         Quantity molarConcentration;
 
         molarConcentration = calculateMolarConcentration(mass, molarMass, volume);
@@ -58,15 +58,15 @@ class MolarConcentrationCalculationsTest {
                 () -> calculateMolarConcentration(mass, molarMass, volume, oneMeter.getUnit()));
 
         // divide by 0
-        molarConcentration = calculateMolarConcentration(mass, molarMass, new Quantity(0, "l"));
+        molarConcentration = calculateMolarConcentration(mass, molarMass, Quantity.create(0.0, "l"));
         assertEquals(Double.POSITIVE_INFINITY, molarConcentration.getValue(), 1e-3);
     }
 
     @Test
     public void test_calculateMass() {
-        Quantity molarConcentration = new Quantity(22.815423, "M");
-        Quantity molarMass = new Quantity(58.44, "g/mol");
-        Quantity volume = new Quantity(150, "µl");
+        Quantity molarConcentration = Quantity.create(22.815423, "M");
+        Quantity molarMass = Quantity.create(58.44, "g/mol");
+        Quantity volume = Quantity.create(150.0, "µl");
         Quantity mass;
 
         mass = calculateMass(molarConcentration, molarMass, volume);
@@ -88,9 +88,9 @@ class MolarConcentrationCalculationsTest {
 
     @Test
     public void test_calculateVolume() {
-        Quantity mass = new Quantity(200, "mg");
-        Quantity molarConcentration = new Quantity(22.815423, "M");
-        Quantity molarMass = new Quantity(58.44, "g/mol");
+        Quantity mass = Quantity.create(200.0, "mg");
+        Quantity molarConcentration = Quantity.create(22.815423, "M");
+        Quantity molarMass = Quantity.create(58.44, "g/mol");
         Quantity volume;
 
         volume = calculateVolume(mass, molarConcentration, molarMass);
