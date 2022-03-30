@@ -50,7 +50,7 @@ public class CreateAliquotStep1ControllerTest {
         assertEquals(42.0, controller.getAvailableAmountFromItem(), DELTA);
         assertEquals("µl", controller.getAvailableAmountFromItemUnit().toString());
         assertNull(controller.getAmount());
-        assertNull(controller.getAmountUnit());
+        assertEquals("µl", controller.getAmountUnit().toString());
     }
 
     /*
