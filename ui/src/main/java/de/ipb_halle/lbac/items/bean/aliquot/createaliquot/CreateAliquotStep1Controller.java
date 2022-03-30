@@ -43,6 +43,7 @@ public class CreateAliquotStep1Controller implements Serializable {
     public CreateAliquotStep1Controller(Item parentItem) {
         availableAmountFromItem = parentItem.getAmount();
         availableAmountFromItemUnit = parentItem.getUnit();
+        amountUnit = parentItem.getUnit();
 
         availableAmountUnits = Unit.getVisibleUnitsOfQuality(availableAmountFromItemUnit.getQuality());
     }
