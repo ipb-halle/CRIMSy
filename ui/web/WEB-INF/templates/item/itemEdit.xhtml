@@ -236,7 +236,7 @@
                                         valueChangeListener="#{itemBean.concentrationUnitChanged}"
                                         process="@this concentrationId"
                                         update="concentrationId"
-                                        disabled="#{itemBean.inDeactivatedMode}">
+                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
                                         <f:selectItems
                                             value="#{itemBean.availableConcentrationUnits}"
                                             var="unit"
