@@ -36,9 +36,11 @@ import com.codeborne.selenide.junit5.SoftAssertsExtension;
 import de.ipb_halle.pageobjects.pages.LoginPage;
 import de.ipb_halle.pageobjects.pages.materials.MaterialEditPage;
 import de.ipb_halle.pageobjects.pages.materials.MaterialOverviewPage;
+import de.ipb_halle.pageobjects.pages.materials.models.GHSModel;
+import de.ipb_halle.pageobjects.pages.materials.tabs.BioSafetyData;
+import de.ipb_halle.pageobjects.pages.materials.tabs.GHSData;
 import de.ipb_halle.pageobjects.pages.materials.tabs.HazardsTab;
-import de.ipb_halle.pageobjects.pages.materials.tabs.HazardsTab.BioSafetyData;
-import de.ipb_halle.pageobjects.pages.materials.tabs.HazardsTab.GHSData;
+import de.ipb_halle.pageobjects.pages.materials.tabs.BioSafetyData.Level;
 import de.ipb_halle.pageobjects.pages.projects.ProjectModel;
 import de.ipb_halle.pageobjects.pages.search.SearchPage;
 import de.ipb_halle.pageobjects.util.TestConstants;
@@ -136,6 +138,10 @@ public class HazardsTabContentTest {
     private void checkGHSData(GHSData ghsData) {
         ghsData.ghsTable().shouldBe(visible);
 
+        // no checkbox selected
+        ghsData.shouldHave(new GHSModel());
+
+        // labels and images are visible
         for (int i = 0; i <= 10; i++) {
             String messageKey = String.format("hazard_GHS%02d", i + 1);
             ghsData.label(i).shouldBe(visible).shouldBe(uiMessage(messageKey, locale));
@@ -176,6 +182,10 @@ public class HazardsTabContentTest {
     private void checkBioSafetyData(BioSafetyData bioSafetyData) {
         bioSafetyData.biosafetyLevelTable().shouldBe(visible);
 
+        // 'unclassified' should be selected
+        bioSafetyData.shouldHave(Level.UNCLASSIFIED);
+
+        // labels and images are visible
         for (int i = 0; i <= 4; i++) {
             /*
              * 'risk group 1' ("hazard_S1") comes first, 'unclassified' ("hazard_S0") last,
