@@ -18,12 +18,15 @@
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
 import static com.codeborne.selenide.Selenide.$;
+import static de.ipb_halle.pageobjects.util.Apply.applyCheckbox;
+import static de.ipb_halle.pageobjects.util.Apply.applyValue;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.MolecularFacesMolecule;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.pages.materials.models.StructureInfosModel;
 
 /**
  * Page object for
@@ -38,6 +41,32 @@ public class StructureInfosTab extends AbstractPage<StructureInfosTab> implement
     private static final SelenideElement SUM_FORMULA_INPUT = $(testId("input", "structureInfosTab:sumFormula"));
     private static final SelenideElement AVERAGE_MOLAR_MASS_INPUT = $(testId("input", "structureInfosTab:averageMolarMass"));
     private static final SelenideElement EXACT_MOLAR_MASS_INPUT = $(testId("input", "structureInfosTab:exactMolarMass"));
+
+    /*
+     * Actions
+     */
+    /**
+     * Applies the structure infos model.
+     * <p>
+     * Convention: The input element will not be evaluated in case the model field
+     * is null. Use empty strings to reset fields.
+     * 
+     * @param model
+     * @return this
+     */
+    public StructureInfosTab applyModel(StructureInfosModel model) {
+        String molfile = model.getMolfile();
+        if (molfile != null) {
+            MOL_EDITOR.setMolecule(molfile);
+        }
+
+        applyCheckbox(model.getAutocalc(), AUTO_CALC_CHECKBOX);
+        applyValue(model.getSumFormula(), SUM_FORMULA_INPUT);
+        applyValue(model.getMolarMass(), AVERAGE_MOLAR_MASS_INPUT);
+        applyValue(model.getExactMolarMass(), EXACT_MOLAR_MASS_INPUT);
+
+        return this;
+    }
 
     /*
      * Getters

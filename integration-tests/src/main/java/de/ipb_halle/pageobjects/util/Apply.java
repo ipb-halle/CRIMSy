@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.pageobjects.util;
 
-import java.util.function.Consumer;
-
 import com.codeborne.selenide.SelenideElement;
 
 /**
@@ -31,16 +29,6 @@ public class Apply {
     }
 
     /**
-     * Apply an action to a Selenide element.
-     * 
-     * @param element
-     * @param action
-     */
-    public static void apply(SelenideElement element, Consumer<SelenideElement> action) {
-        action.accept(element);
-    }
-
-    /**
      * Sets the value if an input text field. The element will not be evaluated in
      * case {@code value} is null. Use empty strings to reset fields.
      * 
@@ -49,7 +37,7 @@ public class Apply {
      */
     public static void applyValue(String value, SelenideElement element) {
         if (value != null) {
-            apply(element, e -> e.setValue(value));
+            element.setValue(value);
         }
     }
 
@@ -62,7 +50,24 @@ public class Apply {
      */
     public static void applySelection(String option, SelenideElement element) {
         if (option != null) {
-            apply(element, e -> e.selectOption(option));
+            element.selectOption(option);
+        }
+    }
+
+    /**
+     * Sets the state of a checkbox. The element will not be evaluated in case
+     * {@code state} is null.
+     * 
+     * @param state
+     * @param element
+     */
+    public static void applyCheckbox(Boolean state, SelenideElement element) {
+        if (state == null) {
+            return;
+        }
+        // XOR
+        if (state.booleanValue() ^ element.isSelected()) {
+            element.click();
         }
     }
 }

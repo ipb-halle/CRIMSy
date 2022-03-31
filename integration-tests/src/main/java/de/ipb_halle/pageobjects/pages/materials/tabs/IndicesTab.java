@@ -23,6 +23,8 @@ import static de.ipb_halle.pageobjects.util.Selectors.testId;
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.pages.materials.models.IndicesModel;
+import de.ipb_halle.pageobjects.pages.materials.models.IndicesModel.Index;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/material/components/indices.xhtml
@@ -38,6 +40,22 @@ public class IndicesTab extends AbstractPage<IndicesTab> implements MaterialEdit
     /*
      * Actions
      */
+    /**
+     * Deletes all entries in the indices table and applies the given indices model.
+     * 
+     * @param model
+     * @return this
+     */
+    public IndicesTab applyModel(IndicesModel model) {
+        getIndicesTable().clear();
+
+        for (Index index : model.getIndices()) {
+            addIndex(index.getCategory(), index.getValue());
+        }
+
+        return this;
+    }
+
     public IndicesTab addIndex(String category, String value) {
         INDEX_CATEGORY_SELECTION.selectOption(category);
         INDEX_VALUE_INPUT.setValue(value);

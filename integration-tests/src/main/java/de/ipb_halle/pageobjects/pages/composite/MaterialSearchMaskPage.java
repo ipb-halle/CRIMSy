@@ -55,6 +55,15 @@ public class MaterialSearchMaskPage extends AbstractPage<MaterialSearchMaskPage>
     /*
      * Actions
      */
+    /**
+     * Applies the search mask model.
+     * <p>
+     * Convention: The input element will not be evaluated in case the model field
+     * is null. Use empty strings to reset fields.
+     * 
+     * @param model
+     * @return this
+     */
     public MaterialSearchMaskPage applyModel(MaterialSearchMaskModel model) {
         applyValue(model.getName(), NAME_INPUT);
         applyValue(model.getId(), ID_INPUT);

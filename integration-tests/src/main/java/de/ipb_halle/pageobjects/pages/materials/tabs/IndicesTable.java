@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
+import static com.codeborne.selenide.Selenide.$$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
@@ -41,7 +42,19 @@ public class IndicesTable extends DataTable<IndicesTable> {
      * Actions
      */
     public IndicesTable delete(int rowIndex) {
-        getCell(2, rowIndex).$(DELETE_BUTTON);
+        getCell(2, rowIndex).$(DELETE_BUTTON).click();
+        return this;
+    }
+
+    /**
+     * Deletes all index entries.
+     * 
+     * @return this
+     */
+    public IndicesTable clear() {
+        while ($$(DELETE_BUTTON).size() > 0) {
+            delete(0);
+        }
         return this;
     }
 
