@@ -64,6 +64,14 @@ public class IndicesTab extends AbstractPage<IndicesTab> implements MaterialEdit
     }
 
     /*
+     * Fluent assertions
+     */
+    public IndicesTab shouldHave(IndicesModel model) {
+        getIndicesTable().shouldHave(model);
+        return this;
+    }
+
+    /*
      * Getters
      */
     public IndicesTable getIndicesTable() {

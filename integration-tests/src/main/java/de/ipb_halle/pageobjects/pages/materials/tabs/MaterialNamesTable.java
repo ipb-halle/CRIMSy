@@ -17,8 +17,12 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
+import static com.codeborne.selenide.CollectionCondition.size;
+import static com.codeborne.selenide.Condition.exactValue;
 import static com.codeborne.selenide.Selenide.$$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
+
+import java.util.List;
 
 import com.codeborne.selenide.SelenideElement;
 
@@ -112,6 +116,22 @@ public class MaterialNamesTable extends DataTable<MaterialNamesTable> {
 
     public MaterialNamesTable add(int rowIndex) {
         getCell(2, rowIndex).$(ADD_BUTTON).click();
+        return this;
+    }
+
+    /*
+     * Fluent assertions
+     */
+    public MaterialNamesTable shouldHave(MaterialNamesModel model) {
+        List<MaterialName> names = model.getNames();
+        $$(NAME_INPUT).shouldHave(size(names.size()));
+
+        for (int i = 0; i < names.size(); i++) {
+            MaterialName name = names.get(i);
+            $$(NAME_INPUT).get(i).shouldHave(exactValue(name.getName()));
+            $$(LANGUAGE_SELECTION).get(i).shouldHave(exactValue(name.getLanguage()));
+        }
+
         return this;
     }
 

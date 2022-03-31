@@ -45,6 +45,14 @@ public class MaterialNamesTab extends AbstractPage<MaterialNamesTab> implements 
     }
 
     /*
+     * Fluent assertions
+     */
+    public MaterialNamesTab shouldHave(MaterialNamesModel model) {
+        materialNamesTable().shouldHave(model);
+        return this;
+    }
+
+    /*
      * Getters
      */
     public MaterialNamesTable materialNamesTable() {

@@ -17,12 +17,19 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
+import static com.codeborne.selenide.CollectionCondition.size;
+import static com.codeborne.selenide.Condition.exactTextCaseSensitive;
+import static com.codeborne.selenide.Condition.exactValue;
 import static com.codeborne.selenide.Selenide.$$;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
+
+import java.util.List;
 
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.table.DataTable;
+import de.ipb_halle.pageobjects.pages.materials.models.IndicesModel;
+import de.ipb_halle.pageobjects.pages.materials.models.IndicesModel.Index;
 
 /**
  * Page object for the index table in
@@ -59,13 +66,29 @@ public class IndicesTable extends DataTable<IndicesTable> {
     }
 
     /*
+     * Fluent assertions
+     */
+    public IndicesTable shouldHave(IndicesModel model) {
+        List<Index> indices = model.getIndices();
+        $$(INDEX_VALUE_INPUT).shouldHave(size(indices.size()));
+
+        for (int i = 0; i < indices.size(); i++) {
+            Index index = indices.get(i);
+            indexName(i).shouldHave(exactTextCaseSensitive(index.getCategory()));
+            $$(INDEX_VALUE_INPUT).get(i).shouldHave(exactValue(index.getValue()));
+        }
+
+        return this;
+    }
+
+    /*
      * Getters
      */
-    public SelenideElement getIndexName(int rowIndex) {
+    public SelenideElement indexName(int rowIndex) {
         return getCell(0, rowIndex);
     }
 
-    public SelenideElement getIndexValueInput(int rowIndex) {
+    public SelenideElement indexValueInput(int rowIndex) {
         return getCell(1, rowIndex).$(INDEX_VALUE_INPUT);
     }
 }
