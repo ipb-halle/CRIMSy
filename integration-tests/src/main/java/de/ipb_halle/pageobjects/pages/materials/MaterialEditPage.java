@@ -114,23 +114,23 @@ public class MaterialEditPage extends AbstractPage<MaterialEditPage> implements 
     /*
      * Getters
      */
-    public SelenideElement getProjectSelection() {
+    public SelenideElement projectSelection() {
         return PROJECT_SELECTION;
     }
 
-    public SelenideElement getChangedText() {
+    public SelenideElement changedText() {
         return CHANGED_TEXT;
     }
 
-    public SelenideElement getMaterialTypeSelection() {
+    public SelenideElement materialTypeSelection() {
         return MATERIAL_TYPE_SELECTION;
     }
 
-    public SelenideElement getModeText() {
+    public SelenideElement modeText() {
         return MODE_TEXT;
     }
 
-    public SelenideElement getErrorMessages() {
+    public SelenideElement errorMessages() {
         return ERROR_MESSAGES;
     }
 }
