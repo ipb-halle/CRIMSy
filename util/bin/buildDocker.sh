@@ -1,8 +1,6 @@
 #!/bin/bash
 #
 #
-DEPICT=https://github.com/cdk/depict/releases/download/1.8/cdkdepict-1.8.war
-#
 function buildFunc {
     for i in db proxy ui fasta ; do
         pushd target/docker/$i 
@@ -51,12 +49,6 @@ function compile {
     echo "$REVISION;$BRANCH;$flags" >> config/revision_info.tmp
     mv config/revision_info.tmp config/revision_info.cfg
 
-}
-
-function loadDepict {
-    pushd target/docker/ui
-    curl -L --silent --output depict.war $DEPICT
-    popd
 }
 
 function printHelp {
@@ -146,7 +138,6 @@ function buildDocker {
             echo "processing branch file entry: $record"
             git checkout $BRANCH
             compile "$RELEASE_FLAGS" 
-            loadDepict
             buildFunc
         done
         git checkout "$CURRENT_BRANCH"
@@ -156,7 +147,6 @@ function buildDocker {
         RELEASE_FLAGS='LATEST,MINOR,MAJOR'
         BRANCH=$CURRENT_BRANCH
         compile "$RELEASE_FLAGS"
-        loadDepict
         buildFunc
     fi
 }
