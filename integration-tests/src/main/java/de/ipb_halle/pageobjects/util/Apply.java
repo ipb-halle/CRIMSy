@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.pageobjects.util;
 
+import java.util.function.Consumer;
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.PrimeFacesSelectBooleanCheckbox;
@@ -28,6 +29,18 @@ import de.ipb_halle.pageobjects.components.PrimeFacesSelectBooleanCheckbox;
  */
 public class Apply {
     private Apply() {
+    }
+
+    /**
+     * Applies {@code obj} to the given action if {@code obj} is not null.
+     * 
+     * @param obj
+     * @param action
+     */
+    public static <T> void applyIfNotNull(T obj, Consumer<T> action) {
+        if (obj != null) {
+            action.accept(obj);
+        }
     }
 
     /**

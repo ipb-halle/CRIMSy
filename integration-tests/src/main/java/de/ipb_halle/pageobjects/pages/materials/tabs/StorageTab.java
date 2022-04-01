@@ -47,7 +47,7 @@ public class StorageTab extends AbstractPage<StorageTab> implements MaterialEdit
     /*
      * Actions
      */
-    public StorageTab apply(StorageModel model) {
+    public StorageTab applyModel(StorageModel model) {
         applyCheckbox(model.getStorageClassActivated(), STORAGE_CLASS_ACTIVATED_CHECKBOX);
         applySelection(model.getStorageClass(), STORAGE_CLASS_SELECTION);
         applyValue(model.getRemarks(), REMARKS_INPUT);

@@ -19,11 +19,14 @@ package de.ipb_halle.pageobjects.pages.materials;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
+import static de.ipb_halle.pageobjects.util.Apply.applyIfNotNull;
+import static de.ipb_halle.pageobjects.util.Apply.applySelection;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.pages.materials.models.MaterialModel;
 import de.ipb_halle.pageobjects.pages.materials.tabs.MaterialEditTab;
 
 /**
@@ -45,6 +48,18 @@ public class MaterialEditPage extends AbstractPage<MaterialEditPage> implements 
     /*
      * Actions
      */
+    public MaterialEditPage applyModel(MaterialModel model) {
+        applySelection(model.getProject(), PROJECT_SELECTION);
+        applySelection(model.getMaterialType(), MATERIAL_TYPE_SELECTION);
+        applyIfNotNull(model.getMaterialNamesModel(), (m) -> openMaterialNamesTab().applyModel(m));
+        applyIfNotNull(model.getIndicesModel(), (m) -> openIndicesTab().applyModel(m));
+        applyIfNotNull(model.getStructureInfosModel(), (m) -> openStructureInfosTab().applyModel(m));
+        applyIfNotNull(model.getHazardsModel(), (m) -> openHazardsTab().applyModel(m));
+        applyIfNotNull(model.getStorageModel(), (m) -> openStorageTab().applyModel(m));
+
+        return this;
+    }
+
     public MaterialEditPage selectProject(String project) {
         PROJECT_SELECTION.selectOption(project);
         return this;
