@@ -19,6 +19,8 @@ package de.ipb_halle.pageobjects.util;
 
 import com.codeborne.selenide.SelenideElement;
 
+import de.ipb_halle.pageobjects.components.PrimeFacesSelectBooleanCheckbox;
+
 /**
  * Apply actions to Selenide elements.
  * 
@@ -68,6 +70,23 @@ public class Apply {
         // XOR
         if (state.booleanValue() ^ element.isSelected()) {
             element.click();
+        }
+    }
+
+    /**
+     * Sets the state of a checkbox. The element will not be evaluated in case
+     * {@code state} is null.
+     * 
+     * @param state
+     * @param checkbox
+     */
+    public static void applyCheckbox(Boolean state, PrimeFacesSelectBooleanCheckbox checkbox) {
+        if (state == null) {
+            return;
+        }
+        // XOR
+        if (state.booleanValue() ^ checkbox.isSelected()) {
+            checkbox.click();
         }
     }
 }

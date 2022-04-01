@@ -30,7 +30,8 @@ import com.codeborne.selenide.SelenideElement;
 import de.ipb_halle.pageobjects.pages.materials.models.GHSModel;
 
 /**
- * Page object for the GHS checkboxes.
+ * Page object for the GHS checkboxes in
+ * /ui/web/WEB-INF/templates/material/components/hazards.xhtml
  * 
  * @author flange
  */

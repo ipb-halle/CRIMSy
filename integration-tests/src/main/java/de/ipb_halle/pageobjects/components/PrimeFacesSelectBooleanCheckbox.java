@@ -72,6 +72,10 @@ public class PrimeFacesSelectBooleanCheckbox {
         return selectInput;
     }
 
+    public boolean isSelected() {
+        return selectInput.isSelected();
+    }
+
     /*
      * Fluent assertions
      */

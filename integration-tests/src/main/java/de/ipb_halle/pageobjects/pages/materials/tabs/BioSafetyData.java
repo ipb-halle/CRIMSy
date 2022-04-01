@@ -29,7 +29,8 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
 /**
- * Page object for the biosafety radio group.
+ * Page object for the biosafety radio group in
+ * /ui/web/WEB-INF/templates/material/components/hazards.xhtml
  * 
  * @author flange
  */
