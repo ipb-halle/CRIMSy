@@ -19,6 +19,7 @@ package de.ipb_halle.pageobjects.pages.materials.tabs;
 
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Apply.applyCheckbox;
+import static de.ipb_halle.pageobjects.util.Apply.applyIfNotNull;
 import static de.ipb_halle.pageobjects.util.Apply.applyValue;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
@@ -55,11 +56,7 @@ public class StructureInfosTab extends AbstractPage<StructureInfosTab> implement
      * @return this
      */
     public StructureInfosTab applyModel(StructureInfosModel model) {
-        String molfile = model.getMolfile();
-        if (molfile != null) {
-            MOL_EDITOR.setMolecule(molfile);
-        }
-
+        applyIfNotNull(model.getMolfile(), (m) -> MOL_EDITOR.setMolecule(m));
         applyCheckbox(model.getAutocalc(), AUTO_CALC_CHECKBOX);
         applyValue(model.getSumFormula(), SUM_FORMULA_INPUT);
         applyValue(model.getMolarMass(), AVERAGE_MOLAR_MASS_INPUT);

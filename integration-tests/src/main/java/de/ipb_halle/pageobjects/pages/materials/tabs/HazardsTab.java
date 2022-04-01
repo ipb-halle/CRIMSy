@@ -19,6 +19,7 @@ package de.ipb_halle.pageobjects.pages.materials.tabs;
 
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Apply.applyCheckbox;
+import static de.ipb_halle.pageobjects.util.Apply.applyIfNotNull;
 import static de.ipb_halle.pageobjects.util.Apply.applyValue;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
@@ -26,10 +27,7 @@ import com.codeborne.selenide.SelenideElement;
 
 import de.ipb_halle.pageobjects.components.PrimeFacesSelectBooleanCheckbox;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
-import de.ipb_halle.pageobjects.pages.materials.models.GHSModel;
 import de.ipb_halle.pageobjects.pages.materials.models.HazardsModel;
-import de.ipb_halle.pageobjects.pages.materials.tabs.BioSafetyData.Level;
-import de.ipb_halle.pageobjects.util.Apply;
 
 /**
  * Page object for /ui/web/WEB-INF/templates/material/components/hazards.xhtml
@@ -51,7 +49,7 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
      * Actions
      */
     /**
-     * Applies the harzards model.
+     * Applies the hazards model.
      * <p>
      * Convention: The input element will not be evaluated in case the model field
      * is null. Use empty strings to reset fields.
@@ -60,20 +58,11 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
      * @return
      */
     public HazardsTab applyModel(HazardsModel model) {
-        GHSModel ghsModel = model.getGhsModel();
-        if (ghsModel != null) {
-            ghsData().applyModel(ghsModel);
-        }
-
+        applyIfNotNull(model.getGhsModel(), (m) -> ghsData().applyModel(m));
         applyValue(model.gethStatements(), H_STATEMENTS_INPUT);
         applyValue(model.getpStatements(), P_STATEMENTS_INPUT);
         applyCheckbox(model.getRadioactive(), RADIOACTIVE_CHECKBOX);
-
-        Level bioSafetyLevel = model.getBioSafetyLevel();
-        if (bioSafetyLevel != null) {
-            bioSafetyData().select(bioSafetyLevel);
-        }
-
+        applyIfNotNull(model.getBioSafetyLevel(), (l) -> bioSafetyData().select(l));
         applyCheckbox(model.getGmo(), GMO_CHECKBOX);
         applyValue(model.getCustomRemarks(), CUSTOM_REMARKS_INPUT);
 

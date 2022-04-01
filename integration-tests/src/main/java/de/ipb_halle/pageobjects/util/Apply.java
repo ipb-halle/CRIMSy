@@ -51,9 +51,7 @@ public class Apply {
      * @param element
      */
     public static void applyValue(String value, SelenideElement element) {
-        if (value != null) {
-            element.setValue(value);
-        }
+        applyIfNotNull(value, (v) -> element.setValue(v));
     }
 
     /**
@@ -64,9 +62,7 @@ public class Apply {
      * @param element
      */
     public static void applySelection(String option, SelenideElement element) {
-        if (option != null) {
-            element.selectOption(option);
-        }
+        applyIfNotNull(option, (o) -> element.selectOption(o));
     }
 
     /**
