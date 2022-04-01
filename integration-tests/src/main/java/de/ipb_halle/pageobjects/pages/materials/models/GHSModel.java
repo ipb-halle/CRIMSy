@@ -34,7 +34,7 @@ public class GHSModel {
      * Activate the GHS number(s).
      * 
      * @param ghsNumbers GHS number(s) - valid range in the UI is 1 to 11 (GHS01 to GHS11).
-     * @return
+     * @return this
      */
     public GHSModel activate(int... ghsNumbers) {
         for (int num : ghsNumbers) {

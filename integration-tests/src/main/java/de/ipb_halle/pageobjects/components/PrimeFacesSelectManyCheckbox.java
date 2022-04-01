@@ -86,6 +86,10 @@ public class PrimeFacesSelectManyCheckbox {
         return inputs.get(index);
     }
 
+    public boolean isSelected(int index) {
+        return selectInput(index).isSelected();
+    }
+
 //    public List<String> getLabels() {
 //        List<String> textLabels = new ArrayList<>();
 //        for (SelenideElement element : labels) {

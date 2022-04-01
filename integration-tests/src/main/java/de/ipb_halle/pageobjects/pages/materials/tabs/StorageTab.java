@@ -18,6 +18,9 @@
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
 import static com.codeborne.selenide.Selenide.$;
+import static de.ipb_halle.pageobjects.util.Apply.applyCheckbox;
+import static de.ipb_halle.pageobjects.util.Apply.applySelection;
+import static de.ipb_halle.pageobjects.util.Apply.applyValue;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
 import com.codeborne.selenide.SelenideElement;
@@ -25,6 +28,7 @@ import com.codeborne.selenide.SelenideElement;
 import de.ipb_halle.pageobjects.components.PrimeFacesSelectBooleanCheckbox;
 import de.ipb_halle.pageobjects.components.PrimeFacesSelectManyCheckbox;
 import de.ipb_halle.pageobjects.pages.AbstractPage;
+import de.ipb_halle.pageobjects.pages.materials.models.StorageModel;
 
 /**
  * Page object for
@@ -43,6 +47,25 @@ public class StorageTab extends AbstractPage<StorageTab> implements MaterialEdit
     /*
      * Actions
      */
+    public StorageTab apply(StorageModel model) {
+        applyCheckbox(model.getStorageClassActivated(), STORAGE_CLASS_ACTIVATED_CHECKBOX);
+        applySelection(model.getStorageClass(), STORAGE_CLASS_SELECTION);
+        applyValue(model.getRemarks(), REMARKS_INPUT);
+
+        for (Integer num : model.getActivatedStorageConditions()) {
+            if (!STORAGE_CONDITIONS_CHECKBOXES.isSelected(num - 1)) {
+                STORAGE_CONDITIONS_CHECKBOXES.clickCheckbox(num - 1);
+            }
+        }
+        for (Integer num : model.getDeactivatedStorageConditions()) {
+            if (STORAGE_CONDITIONS_CHECKBOXES.isSelected(num - 1)) {
+                STORAGE_CONDITIONS_CHECKBOXES.clickCheckbox(num - 1);
+            }
+        }
+
+        return this;
+    }
+
     public StorageTab clickStorageClassActivatedCheckbox() {
         STORAGE_CLASS_ACTIVATED_CHECKBOX.click();
         return this;
