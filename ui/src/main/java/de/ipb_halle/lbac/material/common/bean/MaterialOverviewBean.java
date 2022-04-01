@@ -36,6 +36,8 @@ import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.composition.Concentration;
+import de.ipb_halle.lbac.util.NonEmpty;
+import de.ipb_halle.lbac.util.reporting.ReportMgr;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,11 +74,14 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private MaterialTableController tableController;
     private MessagePresenter messagePresenter;
 
+    private final String DEFAULT_REPORT = "MaterialStructureOverview.prpt";
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
     private final int HAZARD_RADIACTIVE_ID = 16;
     private final int HAZARD_ATTENTION_ID = 18;
     private final int HAZARD_DANGER_ID = 19;
+
+    private String reportType = DEFAULT_REPORT;
 
     @Inject
     private ItemBean itemBean;
@@ -98,6 +103,9 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     @Inject
     protected HazardService hazardService;
+
+    @Inject
+    private ReportMgr reportMgr;
 
     /**
      * Creates the tablecontroller and the controller for managing the search
@@ -190,6 +198,26 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     public void actionCreateNewItem(Material m) {
         itemBean.actionStartItemCreation(m);
         navigator.navigate(NAVIGATION_ITEM_EDIT);
+    }
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String rpt) {
+        reportType = rpt;
+    }
+
+    public void actionReport() {
+        HashMap<String, Object> map = new HashMap<String, Object> ();
+        map.put("paramCurrentUserId", currentUser.getId());
+        map.put("paramMaterialId", NonEmpty.nullOrNonZero(searchController.getId()));
+        map.put("paramOwnerId", 3);
+        map.put("paramProjectName", NonEmpty.nullOrNonEmpty(searchController.getProjectName()));
+        map.put("paramUserName", NonEmpty.nullOrNonEmpty(searchController.getUserName()));
+        map.put("paramMolQuery", NonEmpty.nullOrNonEmpty(searchController.getMolecule()));
+        // query for index values still missing
+        reportMgr.prepareReport(reportType, map);
     }
 
     public User getCurrentUser() {

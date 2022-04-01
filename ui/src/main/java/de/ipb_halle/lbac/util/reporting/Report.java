@@ -69,7 +69,8 @@ public class Report implements Runnable {
             Iterator<String> iter = parameters.keySet().iterator();
             while(iter.hasNext()) {
                     String paramName = iter.next();
-                    logger.info("Setting parameter: " + paramName);
+                    Object o = parameters.get(paramName);
+//                  logger.info("Setting parameter: " + paramName + " --> " + ((o == null) ? "null" : o.toString()));
                     report.getParameterValues().put(paramName, parameters.get(paramName));
             }
 

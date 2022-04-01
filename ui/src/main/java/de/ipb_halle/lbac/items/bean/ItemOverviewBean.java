@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.NonEmpty;
 import de.ipb_halle.lbac.util.reporting.ReportMgr;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -126,13 +127,6 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reloadItems();
     }
 
-    private String nullOrNonEmpty(String str) {
-        if ((str == null) || str.isEmpty()) {
-            return null;
-        }
-        return str;
-    }
-
     public String getReportType() {
         return reportType;
     }
@@ -144,10 +138,10 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     public void actionReport() {
         HashMap<String, Object> map = new HashMap<String, Object> ();
         map.put("paramCurrentUserId", currentUser.getId());
-        map.put("paramDescription", nullOrNonEmpty(searchMaskValues.getDescription()));
+        map.put("paramDescription", NonEmpty.nullOrNonEmpty(searchMaskValues.getDescription()));
         map.put("paramMaterialId", null);
         map.put("paramOwnerId", 3);
-        map.put("paramPlace", nullOrNonEmpty(searchMaskValues.getLocation()));
+        map.put("paramPlace", NonEmpty.nullOrNonEmpty(searchMaskValues.getLocation()));
         map.put("paramProjectId", null);
         map.put("paramUserId", null);
         reportMgr.prepareReport(reportType, map);
