@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.pageobjects.components;
 
+import static com.codeborne.selenide.Condition.selected;
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
@@ -97,4 +98,26 @@ public class PrimeFacesSelectManyCheckbox {
 //        }
 //        return textLabels;
 //    }
+
+    /*
+     * Fluent assertions
+     */
+    public PrimeFacesSelectManyCheckbox shouldBe(boolean selected, int index) {
+        if (selected) {
+            shouldBeSelected(index);
+        } else {
+            shouldNotBeSelected(index);
+        }
+        return this;
+    }
+
+    public PrimeFacesSelectManyCheckbox shouldBeSelected(int index) {
+        selectInput(index).shouldBe(selected);
+        return this;
+    }
+
+    public PrimeFacesSelectManyCheckbox shouldNotBeSelected(int index) {
+        selectInput(index).shouldNotBe(selected);
+        return this;
+    }
 }

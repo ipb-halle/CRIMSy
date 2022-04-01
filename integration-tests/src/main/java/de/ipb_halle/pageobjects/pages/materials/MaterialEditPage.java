@@ -48,6 +48,15 @@ public class MaterialEditPage extends AbstractPage<MaterialEditPage> implements 
     /*
      * Actions
      */
+    /**
+     * Applies the material model.
+     * <p>
+     * Convention: The input element will not be evaluated in case the model field
+     * is null. Use empty strings to reset fields.
+     * 
+     * @param model
+     * @return this
+     */
     public MaterialEditPage applyModel(MaterialModel model) {
         applySelection(model.getProject(), PROJECT_SELECTION);
         applySelection(model.getMaterialType(), MATERIAL_TYPE_SELECTION);

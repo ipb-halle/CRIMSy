@@ -79,6 +79,15 @@ public class PrimeFacesSelectBooleanCheckbox {
     /*
      * Fluent assertions
      */
+    public PrimeFacesSelectBooleanCheckbox shouldBe(boolean selected) {
+        if (selected) {
+            shouldBeSelected();
+        } else {
+            shouldNotBeSelected();
+        }
+        return this;
+    }
+
     public PrimeFacesSelectBooleanCheckbox shouldBeSelected() {
         selectInput.shouldBe(selected);
         return this;

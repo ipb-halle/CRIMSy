@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
+import static com.codeborne.selenide.Condition.exactValue;
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Apply.applyCheckbox;
 import static de.ipb_halle.pageobjects.util.Apply.applyIfNotNull;
@@ -55,7 +56,7 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
      * is null. Use empty strings to reset fields.
      * 
      * @param model
-     * @return
+     * @return this
      */
     public HazardsTab applyModel(HazardsModel model) {
         applyIfNotNull(model.getGhsModel(), (m) -> ghsData().applyModel(m));
@@ -76,6 +77,21 @@ public class HazardsTab extends AbstractPage<HazardsTab> implements MaterialEdit
 
     public HazardsTab clickGMOCheckbox() {
         GMO_CHECKBOX.click();
+        return this;
+    }
+
+    /*
+     * Fluent assertions
+     */
+    public HazardsTab shouldHave(HazardsModel model) {
+        applyIfNotNull(model.getGhsModel(), (m) -> ghsData().shouldHave(m));
+        applyIfNotNull(model.gethStatements(), (statement) -> H_STATEMENTS_INPUT.shouldHave(exactValue(statement)));
+        applyIfNotNull(model.getpStatements(), (statement) -> P_STATEMENTS_INPUT.shouldHave(exactValue(statement)));
+        applyIfNotNull(model.getRadioactive(), (selected) -> RADIOACTIVE_CHECKBOX.shouldBe(selected));
+        applyIfNotNull(model.getBioSafetyLevel(), (level) -> bioSafetyData().shouldHave(level));
+        applyIfNotNull(model.getGmo(), (selected) -> GMO_CHECKBOX.shouldBe(selected));
+        applyIfNotNull(model.getCustomRemarks(), (remark) -> CUSTOM_REMARKS_INPUT.shouldHave(exactValue(remark)));
+
         return this;
     }
 

@@ -17,8 +17,10 @@
  */
 package de.ipb_halle.pageobjects.pages.materials.tabs;
 
+import static com.codeborne.selenide.Condition.exactValue;
 import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Apply.applyCheckbox;
+import static de.ipb_halle.pageobjects.util.Apply.applyIfNotNull;
 import static de.ipb_halle.pageobjects.util.Apply.applySelection;
 import static de.ipb_halle.pageobjects.util.Apply.applyValue;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
@@ -73,6 +75,24 @@ public class StorageTab extends AbstractPage<StorageTab> implements MaterialEdit
 
     public StorageTab selectStorageClass(String storageClass) {
         STORAGE_CLASS_SELECTION.selectOption(storageClass);
+        return this;
+    }
+
+    /*
+     * Fluent assertions
+     */
+    public StorageTab shouldHave(StorageModel model) {
+        applyIfNotNull(model.getStorageClassActivated(), (selected) -> STORAGE_CLASS_ACTIVATED_CHECKBOX.shouldBe(selected));
+        applyIfNotNull(model.getStorageClass(), (c) -> STORAGE_CLASS_SELECTION.shouldHave(exactValue(c)));
+        REMARKS_INPUT.shouldHave(exactValue(model.getRemarks()));
+
+        for (int num : model.getActivatedStorageConditions()) {
+            storageConditionsCheckboxes().shouldBeSelected(num - 1);
+        }
+        for (int num : model.getDeactivatedStorageConditions()) {
+            storageConditionsCheckboxes().shouldNotBeSelected(num - 1);
+        }
+
         return this;
     }
 
