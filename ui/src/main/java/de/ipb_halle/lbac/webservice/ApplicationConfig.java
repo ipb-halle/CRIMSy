@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.device.job.JobWebService;
 import de.ipb_halle.lbac.forum.postings.PostingWebService;
 import de.ipb_halle.lbac.forum.topics.TopicsWebService;
 import de.ipb_halle.lbac.search.SearchWebService;
+import de.ipb_halle.lbac.search.document.download.DocumentWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
 
 import java.util.Arrays;
@@ -46,6 +47,7 @@ public class ApplicationConfig extends Application {
                 TopicsWebService.class,
                 PostingWebService.class,
                 JobWebService.class,
-                SimpleRESTPojoExample.class));
+                SimpleRESTPojoExample.class,
+                DocumentWebService.class));
     }
 }
