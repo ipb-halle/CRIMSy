@@ -19,8 +19,10 @@ package de.ipb_halle.lbac.search.document.download;
 
 import java.io.File;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -46,7 +48,9 @@ public class DocumentWebService extends LbacWebService {
      * @param request
      * @return {@link Response} with {@link InputStream} of the file
      */
-    @GET
+    @POST
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadDocument(DocumentWebRequest request) {
         try {
             checkAuthenticityOfRequest(request);

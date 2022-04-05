@@ -75,10 +75,15 @@ public class DocumentDownloadBean {
         }
         Document document = (Document) no.getSearchable();
 
+        InputStream is = null;
         if (isLocalNode(document.getNode())) {
-            downloadLocal(document);
+            is = downloadLocal(document);
         } else {
-            downloadRemote(document);
+            is = downloadRemote(document);
+        }
+
+        if (is != null) {
+            sendFileBean.sendFile(is, document.getOriginalName());
         }
     }
 
@@ -86,17 +91,15 @@ public class DocumentDownloadBean {
         return nodeService.getLocalNode().equals(node);
     }
 
-    private void downloadLocal(Document document) throws IOException {
+    private InputStream downloadLocal(Document document) throws IOException {
         FileObject file = fileEntityService.getFileEntity(document.getId());
-        InputStream is = new FileInputStream(new File(file.getFileLocation()));
-        sendFileBean.sendFile(is, document.getOriginalName());
+        return new FileInputStream(new File(file.getFileLocation()));
     }
 
-    private void downloadRemote(Document document) throws IOException {
+    private InputStream downloadRemote(Document document) throws IOException {
         CloudNode cn = getCloudNodeForNode(document.getNode());
         User user = userBean.getCurrentAccount();
-        InputStream is = client.downloadDocument(cn, user, document);
-        sendFileBean.sendFile(is, document.getOriginalName());
+        return client.downloadDocument(cn, user, document);
     }
 
     private CloudNode getCloudNodeForNode(Node node) {

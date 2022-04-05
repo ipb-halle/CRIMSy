@@ -21,6 +21,7 @@ import java.io.InputStream;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
@@ -59,8 +60,13 @@ public class DocumentWebClient extends LbacWebClient {
 
             WebClient wc = createWebclient(cn, DocumentWebService.class);
             wc.accept(MediaType.APPLICATION_OCTET_STREAM);
-            Response response = wc.get();
-            return response.readEntity(InputStream.class);
+            Response response = wc.post(request);
+
+            if (response.getStatus() == Status.OK.getStatusCode()) {
+                return response.readEntity(InputStream.class);
+            } else {
+                return null;
+            }
         } catch (Exception e) {
             cn.fail();
             logger.error(ExceptionUtils.getStackTrace(e));
