@@ -24,6 +24,10 @@ import java.io.InputStream;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.CloudNode;
@@ -44,6 +48,8 @@ import de.ipb_halle.lbac.util.jsf.SendFileBean;
 @RequestScoped
 @Named
 public class DocumentDownloadBean {
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+
     @Inject
     private UserBean userBean;
 
@@ -92,8 +98,21 @@ public class DocumentDownloadBean {
     }
 
     private InputStream downloadLocal(Document document) throws IOException {
-        FileObject file = fileEntityService.getFileEntity(document.getId());
-        return new FileInputStream(new File(file.getFileLocation()));
+        FileObject fileObject = fileEntityService.getFileEntity(document.getId());
+        if (fileObject == null) {
+            return null;
+        }
+        return streamLocalFile(fileObject);
+    }
+
+    private InputStream streamLocalFile(FileObject fileObject) throws IOException {
+        File file = new File(fileObject.getFileLocation());
+        if (!file.exists()) {
+            logger.error("Requested file with id={} does not exist at location={}", fileObject.getId(),
+                    fileObject.getFileLocation());
+            return null;
+        }
+        return new FileInputStream(file);
     }
 
     private InputStream downloadRemote(Document document) throws IOException {

@@ -65,6 +65,7 @@ public class DocumentWebClient extends LbacWebClient {
             if (response.getStatus() == Status.OK.getStatusCode()) {
                 return response.readEntity(InputStream.class);
             } else {
+                logger.error("Received response {} from node with id={}", response.getStatus(), cn.getNode().getId());
                 return null;
             }
         } catch (Exception e) {

@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.search.document.download;
 
 import java.io.File;
+import java.io.InputStream;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -26,6 +28,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.FileObject;
@@ -39,6 +44,10 @@ import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
  */
 @Path("/download")
 public class DocumentWebService extends LbacWebService {
+    private static final Response FILE_NOT_FOUND = Response.status(Status.NOT_FOUND).build();
+
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+
     @Inject
     private FileEntityService fileEntityService;
 
@@ -58,11 +67,21 @@ public class DocumentWebService extends LbacWebService {
             return Response.status(Status.FORBIDDEN).build();
         }
 
-        FileObject file = fileEntityService.getFileEntity(request.getFileObjectId());
-        if (file != null) {
-            return Response.ok(new File(file.getFileLocation()), MediaType.APPLICATION_OCTET_STREAM).build();
+        FileObject fileObject = fileEntityService.getFileEntity(request.getFileObjectId());
+        if (fileObject != null) {
+            return responseWithFile(fileObject);
         } else {
-            return Response.status(Status.NOT_FOUND).build();
+            return FILE_NOT_FOUND;
         }
+    }
+
+    private Response responseWithFile(FileObject fileObject) {
+        File file = new File(fileObject.getFileLocation());
+        if (!file.exists()) {
+            logger.error("Requested file with id={} does not exist at location={}", fileObject.getId(),
+                    fileObject.getFileLocation());
+            return FILE_NOT_FOUND;
+        }
+        return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM).build();
     }
 }
