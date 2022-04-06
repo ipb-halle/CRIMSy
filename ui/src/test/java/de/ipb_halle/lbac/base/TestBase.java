@@ -25,6 +25,8 @@ import de.ipb_halle.lbac.admission.ACListEntity;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.entity.Cloud;
+import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
@@ -407,6 +409,10 @@ public class TestBase implements Serializable {
         return nodeService.save(newNode);
     }
     
+    protected CloudNode createCloudNode(Node node, Cloud cloud) {
+        return cloudNodeService.save(new CloudNode(cloud, node));
+    }
+
     protected void initializeBaseUrl() {
         Node n = this.nodeService.getLocalNode();
         n.setBaseUrl(this.baseUrl.toString());

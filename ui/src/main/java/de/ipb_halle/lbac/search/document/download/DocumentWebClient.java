@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.search.document.download;
 
 import java.io.InputStream;
 
+import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -38,6 +39,7 @@ import de.ipb_halle.lbac.webclient.LbacWebClient;
  * 
  * @author flange
  */
+@Dependent
 public class DocumentWebClient extends LbacWebClient {
     private static final long serialVersionUID = 1L;
 
@@ -62,6 +64,8 @@ public class DocumentWebClient extends LbacWebClient {
             wc.accept(MediaType.APPLICATION_OCTET_STREAM);
             Response response = wc.post(request);
 
+            cn.recover();
+
             if (response.getStatus() == Status.OK.getStatusCode()) {
                 return response.readEntity(InputStream.class);
             } else {
@@ -72,6 +76,8 @@ public class DocumentWebClient extends LbacWebClient {
             cn.fail();
             logger.error(ExceptionUtils.getStackTrace(e));
             return null;
+        } finally {
+            cloudNodeService.save(cn);
         }
     }
 }

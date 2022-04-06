@@ -32,6 +32,12 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
@@ -45,11 +51,18 @@ import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 @Path("/download")
 public class DocumentWebService extends LbacWebService {
     private static final Response FILE_NOT_FOUND = Response.status(Status.NOT_FOUND).build();
+    private static final Response FORBIDDEN = Response.status(Status.FORBIDDEN).build();
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Inject
     private FileEntityService fileEntityService;
+
+    @Inject
+    private ACListService acListService;
+
+    @Inject
+    private MemberService memberService;
 
     /**
      * Provides a download of a document (identified by its fileObject id).
@@ -61,25 +74,32 @@ public class DocumentWebService extends LbacWebService {
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadDocument(DocumentWebRequest request) {
+        Node node;
         try {
-            checkAuthenticityOfRequest(request);
+            node = checkAuthenticityOfRequest(request);
         } catch (NotAuthentificatedException e) {
-            return Response.status(Status.FORBIDDEN).build();
+            return FORBIDDEN;
         }
 
         FileObject fileObject = fileEntityService.getFileEntity(request.getFileObjectId());
-        if (fileObject != null) {
-            return responseWithFile(fileObject);
-        } else {
+        if ((fileObject == null) || (fileObject.getFileLocation() == null)) {
             return FILE_NOT_FOUND;
         }
+
+        Collection collection = (Collection) fileObject.getCollection();
+        User localUser = memberService.mapRemoteUserToLocalUser(request.getUser(), node);
+        if (!acListService.isPermitted(ACPermission.permREAD, collection, localUser)) {
+            return FORBIDDEN;
+        }
+
+        return responseWithLocalFile(fileObject);
     }
 
-    private Response responseWithFile(FileObject fileObject) {
-        File file = new File(fileObject.getFileLocation());
+    private Response responseWithLocalFile(FileObject fileObject) {
+        String location = fileObject.getFileLocation();
+        File file = new File(location);
         if (!file.exists()) {
-            logger.error("Requested file with id={} does not exist at location={}", fileObject.getId(),
-                    fileObject.getFileLocation());
+            logger.error("Requested file with id={} does not exist at location={}", fileObject.getId(), location);
             return FILE_NOT_FOUND;
         }
         return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM).build();

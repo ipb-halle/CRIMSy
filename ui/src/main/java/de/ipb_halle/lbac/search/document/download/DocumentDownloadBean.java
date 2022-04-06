@@ -28,8 +28,11 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.FileEntityService;
@@ -66,26 +69,29 @@ public class DocumentDownloadBean {
     private CloudNodeService cloudNodeService;
 
     @Inject
+    private ACListService acListService;
+
+    @Inject
     private SendFileBean sendFileBean;
 
     /**
      * Request a download of a local/remote document. The response is offered as
      * file download to the user.
      * 
-     * @param no
+     * @param netObject
      * @throws IOException
      */
-    public void actionDownload(NetObject no) throws IOException {
-        if (no.getSearchable().getTypeToDisplay().getGeneralType() != SearchTarget.DOCUMENT) {
+    public void actionDownload(NetObject netObject) throws IOException {
+        if (netObject.getSearchable().getTypeToDisplay().getGeneralType() != SearchTarget.DOCUMENT) {
             return;
         }
-        Document document = (Document) no.getSearchable();
+        Document document = (Document) netObject.getSearchable();
 
         InputStream is = null;
-        if (isLocalNode(document.getNode())) {
-            is = downloadLocal(document);
-        } else {
+        if (nodeService.isRemoteNode(document.getNode())) {
             is = downloadRemote(document);
+        } else {
+            is = downloadLocal(document);
         }
 
         if (is != null) {
@@ -93,23 +99,24 @@ public class DocumentDownloadBean {
         }
     }
 
-    private boolean isLocalNode(Node node) {
-        return nodeService.getLocalNode().equals(node);
-    }
-
     private InputStream downloadLocal(Document document) throws IOException {
+        Collection collection = document.getCollection();
+        if (!acListService.isPermitted(ACPermission.permREAD, collection, userBean.getCurrentAccount())) {
+            return null;
+        }
+
         FileObject fileObject = fileEntityService.getFileEntity(document.getId());
-        if (fileObject == null) {
+        if ((fileObject == null) || (fileObject.getFileLocation() == null)) {
             return null;
         }
         return streamLocalFile(fileObject);
     }
 
     private InputStream streamLocalFile(FileObject fileObject) throws IOException {
-        File file = new File(fileObject.getFileLocation());
+        String location = fileObject.getFileLocation();
+        File file = new File(location);
         if (!file.exists()) {
-            logger.error("Requested file with id={} does not exist at location={}", fileObject.getId(),
-                    fileObject.getFileLocation());
+            logger.error("Requested file with id={} does not exist at location={}", fileObject.getId(), location);
             return null;
         }
         return new FileInputStream(file);
