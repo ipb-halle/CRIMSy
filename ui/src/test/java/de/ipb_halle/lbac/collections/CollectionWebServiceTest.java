@@ -100,22 +100,23 @@ public class CollectionWebServiceTest
 
         Assert.assertNotNull("Could not initialize WebService", collectionWebService);
 
-        User u = createUser("test", "testName");
-        User u2 = createUser("test2", "testName2");
+        User localRequestingUser = createUser("test", "testName");
+        User remoteRequestingUser = createRemoteUser(localRequestingUser);
+        User owner = createUser("test2", "testName2");
 
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
         cn.setPublicKey(Base64.getEncoder().encodeToString(keyManager.getLocalPublicKey(TESTCLOUD).getEncoded()));
         cn = cloudNodeService.save(cn);
 
         createLocalCollections(
-                createAcList(u, true), nodeService.getLocalNode(),
-                u2, "READ-COL1", "Readable Collection for User " + u2.getName(),
+                createAcList(remoteRequestingUser, true), nodeService.getLocalNode(),
+                owner, "READ-COL1", "Readable Collection for remote user " + remoteRequestingUser.getName(),
                 collectionService
         );
 
         createLocalCollections(
-                createAcList(u, false), nodeService.getLocalNode(),
-                u2, "NONREAD-COL1", "Non-Readable Collection for User " + u2.getName(),
+                createAcList(remoteRequestingUser, false), nodeService.getLocalNode(),
+                owner, "NONREAD-COL1", "Non-Readable Collection for remote user " + remoteRequestingUser.getName(),
                 collectionService
         );
 
@@ -125,7 +126,7 @@ public class CollectionWebServiceTest
         );
 
         CollectionWebRequest wr = new CollectionWebRequest();
-        wr.setUser(u);
+        wr.setUser(localRequestingUser);
         wr.setCloudName(TESTCLOUD);
         wr.setNodeIdOfRequest(TEST_NODE_ID);
         wr.setSignature(wrs);
