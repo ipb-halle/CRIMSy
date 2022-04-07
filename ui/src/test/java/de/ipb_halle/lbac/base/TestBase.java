@@ -245,6 +245,20 @@ public class TestBase implements Serializable {
         return u;
     }
 
+    protected User createRemoteUser(User user) {
+        User u = new User();
+        u.setLogin(user.getLogin());
+        u.setName(user.getName());
+        u.setNode(user.getNode());
+        u.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
+        u.setSubSystemData(user.getId().toString());
+        u = memberService.save(u);
+
+        membershipService.addMembership(u, u);
+
+        return u;
+    }
+
     /**
      * Creates a local group which will be saved in the database.
      *

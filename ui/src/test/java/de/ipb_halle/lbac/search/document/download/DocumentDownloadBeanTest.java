@@ -26,7 +26,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Date;
-
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
@@ -47,7 +46,6 @@ import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.FileObject;
@@ -109,9 +107,8 @@ public class DocumentDownloadBeanTest extends TestBase {
 
         userBeanMock.setCurrentAccount(publicUser);
 
-        nonReadableCollection = readableCollection = createLocalCollections(globalAdmissionContext.getNoAccessACL(),
-                localNode, adminUser, "DocumentDownloadBeanTest_nonReadableCollection", "desc", collectionService)
-                        .get(0);
+        nonReadableCollection = createLocalCollections(globalAdmissionContext.getNoAccessACL(), localNode, adminUser,
+                "DocumentDownloadBeanTest_nonReadableCollection", "desc", collectionService).get(0);
         readableCollection = createLocalCollections(GlobalAdmissionContext.getPublicReadACL(), localNode, adminUser,
                 "DocumentDownloadBeanTest_readableCollection", "desc", collectionService).get(0);
 
@@ -122,6 +119,7 @@ public class DocumentDownloadBeanTest extends TestBase {
 
     @AfterEach
     public void after() {
+        entityManagerService.doSqlUpdate(String.format("DELETE FROM nodes WHERE id = '%s'", remoteNode.getId()));
         resetCollectionsInDb(collectionService);
     }
 
