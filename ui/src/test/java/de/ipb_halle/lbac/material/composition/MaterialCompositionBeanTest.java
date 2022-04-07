@@ -65,6 +65,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.util.ResourceUtils;
 import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
@@ -82,7 +83,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -349,7 +349,7 @@ public class MaterialCompositionBeanTest extends TestBase {
         initSequenceSearchMaskValuesHolder();
         bean.setChoosenType(CompositionType.PROTEIN);
 
-        Reader reader = readerForResourceFile("fastaresults/results7.txt");
+        Reader reader = ResourceUtils.readerForResourceFile("fastaresults/results7.txt");
         // This list is ordered by the E-value.
         List<FastaResult> parserResults = new FastaResultParser(reader).parse();
 
@@ -502,10 +502,6 @@ public class MaterialCompositionBeanTest extends TestBase {
                 projectAcl);
         projectCreator.setProjectName(projectName);
         project1 = projectCreator.createAndSaveProject(user);
-    }
-
-    private Reader readerForResourceFile(String filename) {
-        return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));
     }
 
     private void initSequenceSearchMaskValuesHolder() {
