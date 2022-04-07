@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.material.sequence.search.SequenceAlignment;
 import de.ipb_halle.lbac.material.sequence.search.bean.SearchMode;
 import de.ipb_halle.lbac.material.sequence.search.bean.SequenceSearchMaskValuesHolder;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.units.Quality;
 import de.ipb_halle.lbac.util.units.Unit;
@@ -188,8 +189,11 @@ public class MaterialCompositionBean implements Serializable {
         if (materialName != null && !materialName.trim().isEmpty()) {
             requestBuilder.setMaterialName(materialName);
         }
-        if (searchMolecule != null && !searchMolecule.isEmpty() && choosenMaterialType == MaterialType.STRUCTURE) {
-            requestBuilder.setStructure(searchMolecule);
+        if (choosenMaterialType == MaterialType.STRUCTURE) {
+            Molecule mol = new Molecule(searchMolecule, -1);
+            if (!mol.isEmptyMolecule()) {
+                requestBuilder.setStructure(searchMolecule);
+            }
         }
 
         if (choosenMaterialType == MaterialType.SEQUENCE) {
