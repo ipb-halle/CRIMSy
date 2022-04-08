@@ -28,6 +28,9 @@ import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchService
 import de.ipb_halle.lbac.material.sequence.search.service.SearchParameterService;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
+import de.ipb_halle.lbac.util.reporting.ReportMgr;
+import de.ipb_halle.lbac.util.reporting.ReportService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
@@ -50,6 +53,9 @@ public class MaterialDeployment {
                 .addClass(SearchParameterService.class)
                 .addClass(SequenceSearchService.class)
                 .addClass(IndexService.class)
+                .addClass(ReportMgr.class)
+                .addClass(ReportService.class)
+                .addClass(SendFileBeanMock.class)
                 .addClass(TaxonomyNestingService.class);
     }
 }

@@ -64,7 +64,7 @@
             <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
             <url>https://nexus.pentaho.org/content/groups/omni</url>
             <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>false</enabled></snapshots>
+            <snapshots><enabled>true</enabled></snapshots>
         </repository>
         <repository>
             <id>primefaces themes</id>
@@ -652,7 +652,7 @@
         <dependency>
             <groupId>org.pentaho.reporting.engine</groupId>
             <artifactId>classic-extensions</artifactId>
-            <version>9.2.0.2-388</version>
+            <version>9.2.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
