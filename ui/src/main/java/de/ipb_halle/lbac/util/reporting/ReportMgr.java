@@ -19,12 +19,17 @@ package de.ipb_halle.lbac.util.reporting;
 
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
-import java.io.PipedInputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Future;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
@@ -39,6 +44,9 @@ import org.apache.logging.log4j.LogManager;
 public class ReportMgr {
 
     @Inject
+    private ReportService reportService;
+
+    @Inject
     private SendFileBean sendFileBean;
 
     @Resource
@@ -50,22 +58,56 @@ public class ReportMgr {
         logger = LogManager.getLogger(getClass().getName());
     }
 
+    public List<SelectItem> getReports(String context) {
+        Locale locale = FacesContext.getCurrentInstance().getViewRoot()
+            .getLocale();
+        return reportService.load(context, locale.getLanguage());
+    }
+
+    public List<SelectItem> getReportTypes() {
+        List<SelectItem> types = new ArrayList<> ();
+        for (ReportType t : ReportType.class.getEnumConstants()) {
+            types.add(new SelectItem(t.toString()));
+        }
+        return types;
+    }
+
     /**
      * prepare a report and deliver it to the user
-     * @param name of the report template
+     * @param id id of the report template
      * @param parameters map of report parameters
+     * @param type type of report (PDF, XLSX, CSV)
      */
-    public void prepareReport(String name, Map<String, Object> parameters) {
+    public void prepareReport(Integer id, Map<String, Object> parameters, ReportType type) {
 
-        Report report = new Report();
-        report.setName(name);
+        Report report = reportService.loadById(id);
         report.setParameters(parameters);
+        report.setType(type);
+        File tmpFile = null;
         try {
-            PipedInputStream inputStream = new PipedInputStream(report.getPipedOutputStream());
-            Future<?> reportFuture = executor.submit(report);
-            sendFileBean.sendFile(inputStream, "report.pdf");
+            String ext = ".tmp";
+            switch(type) {
+                case PDF:
+                    ext = ".pdf";
+                    break;
+                case CSV:
+                    ext = ".csv";
+                    break;
+                case XLSX:
+                    ext = ".xlsx";
+                    break;
+            }
+            tmpFile = File.createTempFile("report", ext);
+            report.setFileName(tmpFile.getAbsolutePath());
+            report.run();
+            sendFileBean.sendFile(tmpFile);
+
         } catch(Exception e) {
             this.logger.warn("prepare Report caught an exception: ", (Throwable) e);
+        } finally {
+            if (tmpFile != null) {
+                tmpFile.delete();
+            }
         }
     }
 }

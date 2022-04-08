@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<style xmlns="http://reporting.pentaho.org/namespaces/engine/classic/bundle/style/1.0" xmlns:layout="http://reporting.pentaho.org/namespaces/engine/classic/bundle/layout/1.0" xmlns:core="http://reporting.pentaho.org/namespaces/engine/attributes/core" xmlns:html="http://reporting.pentaho.org/namespaces/engine/attributes/html" xmlns:swing="http://reporting.pentaho.org/namespaces/engine/attributes/swing" xmlns:pdf="http://reporting.pentaho.org/namespaces/engine/attributes/pdf" xmlns:designtime="http://reporting.pentaho.org/namespaces/report-designer/2.0" xmlns:crosstab="http://reporting.pentaho.org/namespaces/engine/attributes/crosstab" xmlns:pentaho="http://reporting.pentaho.org/namespaces/engine/attributes/pentaho" xmlns:table="http://reporting.pentaho.org/namespaces/engine/attributes/table" xmlns:page="http://jfreereport.sourceforge.net/namespaces/reports/legacy/ext">
+  <page-definition horizontal-span="1" vertical-span="1" pageformat="LETTER" orientation="portrait" margin-top="40" margin-left="18" margin-bottom="18" margin-right="18"/>
+  <layout:watermark designtime:hideInLayoutGUI="true" designtime:visual-height="0.0">
+    <element-style>
+    </element-style>
+  </layout:watermark>
+  <layout:page-header designtime:visual-height="21.0">
+    <element-style>
+      <content-styles color="#828d7e"/>
+    </element-style>
+    <layout:horizontal-line core:name="">
+      <element-style>
+        <border-styles border-width="0" border-break-width="0" border-color="black" border-break-color="black" border-style="none" border-break-style="none" border-radius-width="0" border-radius-height="0"/>
+        <content-styles draw-shape="true" scale="true" stroke-weight="1" stroke-style="solid"/>
+        <spatial-styles x="0" y="18" min-width="576" min-height="3" max-width="32767" max-height="32767"/>
+      </element-style>
+    </layout:horizontal-line>
+    <layout:message core:name="" core:null-value="" html:xml-id="rpt-page-header-lt">
+      <element-style>
+        <common-styles alignment="left" vertical-alignment="middle"/>
+        <spatial-styles x="0" y="0" min-width="50%" min-height="18" max-width="32767" max-height="32767"/>
+        <text-styles embedded="false" excel-text-wrapping="false" font-size="9"/>
+      </element-style>
+      <core:value>Cloud Resource &amp; Information Management System (CRIMSy)</core:value>
+    </layout:message>
+    <layout:message core:name="" core:null-value="" html:xml-id="rpt-page-header-rt">
+      <element-style>
+        <common-styles alignment="right" vertical-alignment="middle"/>
+        <spatial-styles x="288" y="0" min-width="50%" min-height="18" max-width="32767" max-height="32767"/>
+        <text-styles embedded="false" excel-text-wrapping="false" font-size="9"/>
+      </element-style>
+      <layout:attribute-expression namespace="http://reporting.pentaho.org/namespaces/engine/attributes/core" name="value" formula="=CONCATENATE(&quot;Page &quot;;[PageofPages])&#10;"/>
+    </layout:message>
+  </layout:page-header>
+  <layout:page-footer designtime:visual-height="22.0">
+    <element-style>
+      <content-styles color="#828d7e"/>
+      <text-styles font-size="9"/>
+    </element-style>
+    <layout:message core:name="" core:null-value="" html:xml-id="rpt-page-header-lt">
+      <element-style>
+        <common-styles alignment="left" vertical-alignment="middle"/>
+        <spatial-styles x="0" y="4" min-width="50%" min-height="18" max-width="32767" max-height="32767"/>
+        <text-styles embedded="false" excel-text-wrapping="false"/>
+      </element-style>
+    </layout:message>
+    <layout:message core:name="" core:null-value="" html:xml-id="rpt-page-header-rt">
+      <element-style>
+        <common-styles alignment="right" vertical-alignment="middle"/>
+        <spatial-styles x="288" y="4" min-width="50%" min-height="18" max-width="32767" max-height="32767"/>
+        <text-styles embedded="false" excel-text-wrapping="false"/>
+      </element-style>
+      <core:value>$(report.date)</core:value>
+    </layout:message>
+    <layout:horizontal-line core:name="">
+      <element-style>
+        <border-styles border-width="0" border-break-width="0" border-color="black" border-break-color="black" border-style="none" border-break-style="none" border-radius-width="0" border-radius-height="0"/>
+        <content-styles draw-shape="true" scale="true" stroke-weight="1" stroke-style="solid"/>
+        <spatial-styles x="0" y="0" min-width="576" min-height="3" max-width="32767" max-height="32767"/>
+      </element-style>
+    </layout:horizontal-line>
+  </layout:page-footer>
+</style>

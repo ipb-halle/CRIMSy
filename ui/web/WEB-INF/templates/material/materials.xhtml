@@ -54,6 +54,11 @@
                                 </b:column>
                                 <b:column span="1"></b:column>
                                 <b:column span="1">
+                                    <b:selectOneMenu value="#{materialOverviewBean.reportId}" >
+                                        <f:selectItems value="#{materialOverviewBean.reports}" />
+                                    </b:selectOneMenu>
+                                </b:column>
+                                <b:column span="1">
                                     <b:commandButton
                                         action="#{materialOverviewBean.actionReport()}"
                                         value="#{msgs.Report}"

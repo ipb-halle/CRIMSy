@@ -162,14 +162,25 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <b:selectOneMenu value="#{itemOverviewBean.reportType}" styleClass="itemFilterInputfield">
-                                        <f:selectItem itemLabel="#{msgs.report_itemsByOwner}" itemValue="itemlistByOwner.prpt"/>
-                                        <f:selectItem itemLabel="#{msgs.report_itemsByLocation}" itemValue="itemlistByPlace.prpt"/>
+                                    <h:outputText value="#{msgs.ReportName}"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <b:selectOneMenu value="#{itemOverviewBean.reportId}" styleClass="itemFilterInputfield">
+                                        <f:selectItems value="#{itemOverviewBean.reports}" />
                                     </b:selectOneMenu>
                                 </b:column>
                             </b:row>
                             <b:row
                                 styleClass="itemFilterRow">
+                                <b:column span="1" 
+                                    styleClass="itemFilterButtonColumn">
+                                    <b:selectOneMenu value="#{itemOverviewBean.reportType}" >
+                                        <f:selectItems value="#{itemOverviewBean.reportTypes}" />
+                                    </b:selectOneMenu>
+                                </b:column>
                                 <b:column
                                     span="1"
                                     styleClass="itemFilterButtonColumn">
@@ -178,7 +189,6 @@
                                         value="#{msgs.Report}"
                                         action="#{itemOverviewBean.actionReport}"/>
                                 </b:column>
-                                <b:column span="1" ></b:column>
                             </b:row>
                                 
                         </b:container>

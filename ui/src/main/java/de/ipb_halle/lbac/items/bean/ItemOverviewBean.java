@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.NonEmpty;
 import de.ipb_halle.lbac.util.reporting.ReportMgr;
+import de.ipb_halle.lbac.util.reporting.ReportType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,6 +49,7 @@ import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -94,7 +96,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     private SearchResult searchResult;
     private SearchMaskValues searchMaskValues = new SearchMaskValues();
 
-    private String reportType = "itemlistByOwner.prpt";
+    private Integer reportId;
+    private ReportType reportType; 
 
     public void actionApplySearchFilter() {
         actionFirstItems();
@@ -127,12 +130,28 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reloadItems();
     }
 
-    public String getReportType() {
+    public List<SelectItem> getReports() {
+        return reportMgr.getReports(this.getClass().getName());
+    }
+
+    public List<SelectItem> getReportTypes() {
+        return reportMgr.getReportTypes();
+    }
+
+    public Integer getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Integer id) {
+        reportId = id;
+    }
+
+    public ReportType getReportType() {
         return reportType;
     }
 
-    public void setReportType(String rpt) {
-        reportType = rpt;
+    public void setReportType(ReportType t) {
+        reportType = t;
     }
 
     public void actionReport() {
@@ -142,9 +161,9 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         map.put("paramMaterialId", null);
         map.put("paramOwnerId", 3);
         map.put("paramPlace", NonEmpty.nullOrNonEmpty(searchMaskValues.getLocation()));
-        map.put("paramProjectId", null);
+        map.put("paramProjectId", NonEmpty.nullOrNonEmpty(searchMaskValues.getProjectName())); 
         map.put("paramUserId", null);
-        reportMgr.prepareReport(reportType, map);
+        reportMgr.prepareReport(reportId, map, reportType);
         reloadItems();
     }
 

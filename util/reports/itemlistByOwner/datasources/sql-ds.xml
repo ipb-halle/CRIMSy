@@ -1,0 +1,68 @@
+<data:sql-datasource xmlns:data="http://jfreereport.sourceforge.net/namespaces/datasources/sql">
+  <data:config/>
+  <data:connection>
+    <data:driver>org.postgresql.Driver</data:driver>
+    <data:url>jdbc:postgresql://db:5432/lbac</data:url>
+    <data:properties>
+      <data:property name="user">lbac</data:property>
+      <data:property name="password">encrypted:5f0c4450</data:property>
+      <data:property name="::pentaho-reporting::port">5432</data:property>
+      <data:property name="::pentaho-reporting::name">lbacDB</data:property>
+      <data:property name="::pentaho-reporting-other-attribute::PORT_NUMBER">5432</data:property>
+      <data:property name="::pentaho-reporting::database-name">lbac</data:property>
+      <data:property name="::pentaho-reporting::hostname">db</data:property>
+      <data:property name="::pentaho-reporting::database-type">POSTGRESQL</data:property>
+    </data:properties>
+  </data:connection>
+  <data:query-definitions>
+    <data:query name="itemQuery">
+      <data:static-query>SELECT DISTINCT i.id, i.materialid, i.amount, i.articleid,
+i.projectid, i.concentration, i.concentrationunit,
+i.unit, i.purity, i.solventid, i.description,
+i.containersize, i.containertype, i.containerid, i.label,
+i.owner_id, u.name AS owner_name,
+c.label AS container_label,
+ip.itemrow, ip.itemcol,
+p.name AS project_name,
+    (SELECT string_agg(c1.label, &apos; &gt; &apos; ORDER BY ct.rank DESC)
+     FROM nested_containers AS nc
+     JOIN containers AS c1 ON nc.targetid = c1.id
+     JOIN containertypes AS ct ON c1.type = ct.name
+     WHERE nc.sourceid=i.containerid)
+     || &apos; &gt; &apos; || c.label AS place,
+getdimensionlabel(c.zerobased, c.swapdimensions,
+ip.itemrow, ip.itemcol) AS position,
+
+    (SELECT mn.&quot;value&quot;
+     FROM materials AS m
+     JOIN material_indices AS mn ON m.materialid = mn.materialid
+     JOIN usersgroups AS mu ON m.owner_id = mu.id
+     JOIN aclists AS macl ON m.aclist_id = macl.id
+     JOIN acentries AS mace ON macl.id = mace.aclist_id
+     JOIN memberships AS macem ON mace.member_id = macem.group_id
+     WHERE mace.permread
+        AND (macem.member_id = ${paramCurrentUserId}
+            OR (macem.member_id = ${paramOwnerId} AND m.owner_id = ${paramCurrentUserId}))
+        AND m.materialid=i.materialid AND mn.typeid=1
+    ORDER BY length(mn.&quot;value&quot;) LIMIT 1) AS substance_name
+
+FROM items AS i
+ JOIN containers AS c ON i.containerid = c.id
+ JOIN item_positions AS ip ON i.id = ip.itemid AND i.containerid = ip.containerid
+ JOIN usersgroups AS u ON i.owner_id = u.id
+ JOIN aclists AS acl ON i.aclist_id = acl.id
+ JOIN acentries AS ace ON acl.id = ace.aclist_id
+ JOIN memberships AS acem ON ace.member_id = acem.group_id
+ JOIN projects AS p ON i.projectid = p.id
+ WHERE ace.permread AND (acem.member_id = ${paramCurrentUserId}
+    OR (acem.member_id = ${paramOwnerId} AND i.owner_id = ${paramCurrentUserId}))
+  AND COALESCE(NULLIF(true, ${paramPlace}::VARCHAR IS NOT NULL), c.label LIKE ${paramPlace})
+  AND COALESCE(NULLIF(true, ${paramUserId}::INTEGER IS NOT NULL), i.owner_id = ${paramUserId})
+  AND COALESCE(NULLIF(true, ${paramDescription}::VARCHAR IS NOT NULL), i.description ILIKE ${paramDescription})
+  AND COALESCE(NULLIF(true, ${paramMaterialId}::INTEGER IS NOT NULL), i.materialid = ${paramMaterialId})
+  AND COALESCE(NULLIF(true, ${paramProjectId}::INTEGER IS NOT NULL), i.projectid = ${paramProjectId})
+ ORDER BY i.owner_id, c.label, ip.itemcol, ip.itemrow;
+</data:static-query>
+    </data:query>
+  </data:query-definitions>
+</data:sql-datasource>

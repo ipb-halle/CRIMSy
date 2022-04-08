@@ -113,10 +113,10 @@ function createUiConfig {
   Mutual ssl authentication
 -->
 <entry key="SecureWebClient.KEYSTORE_TYPE">PKCS12</entry>
-<entry key="SecureWebClient.KEYSTORE_PATH">/install/conf</entry>
+<entry key="SecureWebClient.KEYSTORE_PATH">/data/conf</entry>
 <entry key="SecureWebClient.KEYSTORE_PASSWORD">$LBAC_KEYSTORE_PASSWORD</entry>
 <entry key="SecureWebClient.TRUSTSTORE_TYPE">JKS</entry>
-<entry key="SecureWebClient.TRUSTSTORE_PATH">/install/conf</entry>
+<entry key="SecureWebClient.TRUSTSTORE_PATH">/data/conf</entry>
 <entry key="SecureWebClient.TRUSTSTORE_PASSWORD">$LBAC_TRUSTSTORE_PASSWORD</entry>
 <entry key="SecureWebClient.SSL_PROTOCOL">TLSv1.2</entry>
 <!-- key alias -->
@@ -375,6 +375,11 @@ function superDoUI {
     chown 8080:8080 $LBAC_DATASTORE/data/ui
     rsync -a --del $LBAC_DATASTORE/tmp/ui_conf/ $LBAC_DATASTORE/data/ui_conf
     rm -rf $LBAC_DATASTORE/tmp/ui_conf
+
+    mkdir -p $LBAC_DATASTORE/data/reports/
+    cp $LBAC_DATASTORE/dist/reports/*.prpt $LBAC_DATASTORE/data/reports/
+    chown -R 8080:8080 $LBAC_DATASTORE/data/reports/
+
     (docker inspect dist_ui_1 | grep Status | grep -q running ) && \
         docker restart dist_ui_1
 }

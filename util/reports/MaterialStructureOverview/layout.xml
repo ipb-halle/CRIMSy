@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout xmlns="http://reporting.pentaho.org/namespaces/engine/classic/bundle/layout/1.0" xmlns:style="http://reporting.pentaho.org/namespaces/engine/classic/bundle/style/1.0" xmlns:core="http://reporting.pentaho.org/namespaces/engine/attributes/core" xmlns:html="http://reporting.pentaho.org/namespaces/engine/attributes/html" xmlns:swing="http://reporting.pentaho.org/namespaces/engine/attributes/swing" xmlns:pdf="http://reporting.pentaho.org/namespaces/engine/attributes/pdf" xmlns:wizard="http://reporting.pentaho.org/namespaces/engine/attributes/wizard" xmlns:designtime="http://reporting.pentaho.org/namespaces/report-designer/2.0" xmlns:crosstab="http://reporting.pentaho.org/namespaces/engine/attributes/crosstab" xmlns:pentaho="http://reporting.pentaho.org/namespaces/engine/attributes/pentaho" xmlns:table="http://reporting.pentaho.org/namespaces/engine/attributes/table" xmlns:internal="http://reporting.pentaho.org/namespaces/engine/attributes/internal" internal:compatibility-level="3.8.0" designtime:zoom="1.5399998" designtime:preview-dialog-bounds="379.0,109.0,700.0,700.0" pentaho:report-cache="false" wizard:template="/home/fblocal/pentaho/report-designer/templates/maple_4_left_aligned_grid.prpt" html:extra-raw-header-content="&lt;script type=&quot;text/javascript&quot; src=&quot;https://nwc04170.ipb-halle.de/plugins/molpaintjs/molpaint.js&quot;&gt;&lt;/script&gt;">
+  <preprocessor class="org.pentaho.reporting.engine.classic.wizard.WizardProcessor">
+  </preprocessor>
+  <style:element-style>
+    <style:text-styles font-face="Arial" font-size="14"/>
+  </style:element-style>
+  <report-header>
+    <root-level-content designtime:visual-height="35.004">
+      <style:element-style>
+        <style:common-styles avoid-page-break="true" vertical-alignment="middle"/>
+        <style:content-styles color="#a5a297"/>
+      </style:element-style>
+      <message core:name="" core:null-value="">
+        <style:element-style>
+          <style:border-styles border-width="1" border-break-width="0" border-color="white" border-break-color="black" border-style="solid" border-break-style="none" border-radius-width="0" border-radius-height="0"/>
+          <style:common-styles alignment="left"/>
+          <style:content-styles dynamic-height="true"/>
+          <style:spatial-styles x="0" y="10.004" min-width="100%" min-height="25" max-width="32767" max-height="32767"/>
+          <style:text-styles font-face="Arial" bold="false" embedded="false" excel-text-wrapping="false" font-size="18" min-letter-spacing="2"/>
+        </style:element-style>
+        <core:value>Material Structure Overview</core:value>
+      </message>
+    </root-level-content>
+  </report-header>
+  <group core:group-fields="">
+    <style:element-style>
+    </style:element-style>
+    <fields>
+    </fields>
+    <group-header>
+      <root-level-content designtime:visual-height="0.5714218616485596">
+        <style:element-style>
+        </style:element-style>
+      </root-level-content>
+    </group-header>
+    <data-body>
+      <style:element-style>
+      </style:element-style>
+      <details-header designtime:visual-height="19.40259289741516">
+        <style:element-style>
+          <style:common-styles avoid-page-break="true"/>
+        </style:element-style>
+      </details-header>
+      <details>
+        <root-level-content designtime:visual-height="177.92204946069717">
+          <style:element-style>
+          </style:element-style>
+          <number-field core:field="materialid">
+            <style:element-style>
+              <style:spatial-styles x="2" y="5" min-width="46.104" min-height="20"/>
+            </style:element-style>
+          </number-field>
+          <content-field>
+            <style:element-style>
+              <style:content-styles scale="true" keep-aspect-ratio="true"/>
+              <style:spatial-styles x="352.623" y="5" min-width="223.377" min-height="144.805"/>
+            </style:element-style>
+            <attribute-expression namespace="http://reporting.pentaho.org/namespaces/engine/attributes/core" name="value" formula="=CONCATENATE(&quot;http://localhost:8080/depict/depict/bow/svg?smi=&quot;; URLENCODE([smiles]))"/>
+          </content-field>
+          <sub-report href="/subreport/content.xml">
+            <input-parameter master-fieldname="materialid" detail-fieldname="paramMaterialId"/>
+          </sub-report>
+          <horizontal-line>
+            <style:element-style>
+              <style:content-styles draw-shape="true" scale="true"/>
+              <style:spatial-styles x="8.442" y="168.831" min-width="559.74" min-height="0"/>
+            </style:element-style>
+          </horizontal-line>
+        </root-level-content>
+      </details>
+      <no-data>
+        <root-level-content designtime:visual-height="0.5714216828346252">
+          <style:element-style>
+          </style:element-style>
+        </root-level-content>
+      </no-data>
+      <details-footer designtime:visual-height="1.870121955871582">
+        <style:element-style>
+          <style:common-styles avoid-page-break="true"/>
+        </style:element-style>
+      </details-footer>
+    </data-body>
+    <group-footer>
+      <root-level-content designtime:visual-height="0.5714212656021118">
+        <style:element-style>
+        </style:element-style>
+      </root-level-content>
+    </group-footer>
+  </group>
+  <report-footer>
+    <root-level-content designtime:visual-height="46.0">
+      <style:element-style>
+        <style:band-styles layout="block"/>
+        <style:common-styles avoid-page-break="true" alignment="center"/>
+        <style:content-styles color="#a5a297"/>
+        <style:spatial-styles min-height="20"/>
+        <style:text-styles font-size="12"/>
+      </style:element-style>
+      <band wizard:generated-content-marker="true">
+        <style:element-style>
+          <style:common-styles vertical-alignment="middle"/>
+          <style:spatial-styles min-width="100%" min-height="20"/>
+        </style:element-style>
+      </band>
+      <horizontal-line>
+        <style:element-style>
+          <style:content-styles draw-shape="true" scale="true" stroke-weight="2" stroke-style="solid"/>
+          <style:spatial-styles x="0" y="42" min-width="100%" min-height="3"/>
+        </style:element-style>
+      </horizontal-line>
+      <horizontal-line>
+        <style:element-style>
+          <style:content-styles draw-shape="true" scale="true"/>
+          <style:spatial-styles x="0" y="42" min-width="100%" min-height="3"/>
+        </style:element-style>
+      </horizontal-line>
+      <message>
+        <style:element-style>
+          <style:common-styles alignment="center"/>
+          <style:content-styles dynamic-height="true"/>
+          <style:spatial-styles x="0" y="20" min-width="100%" min-height="20"/>
+        </style:element-style>
+        <core:value>Footer</core:value>
+      </message>
+    </root-level-content>
+  </report-footer>
+</layout>

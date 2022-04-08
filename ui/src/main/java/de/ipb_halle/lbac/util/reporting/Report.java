@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.util.reporting;
 
+import de.ipb_halle.lbac.entity.DTO;
+
 import java.io.PipedOutputStream;
 import java.net.URL;
 import java.util.Iterator;
@@ -27,6 +29,8 @@ import org.apache.logging.log4j.LogManager;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.PdfReportUtil;
+import org.pentaho.reporting.engine.classic.core.modules.output.table.csv.CSVReportUtil;
+import org.pentaho.reporting.engine.classic.core.modules.output.table.xls.ExcelReportUtil;
 import org.pentaho.reporting.libraries.resourceloader.Resource;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 
@@ -35,20 +39,33 @@ import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
  *
  * @author fbroda
  */
-public class Report implements Runnable {
+public class Report implements Runnable, DTO {
 
+    private Integer id;
+    private String context;
     private Logger logger;
-    private PipedOutputStream outputStream;
     private String name;
+    private String source;
+    private ReportType type;
+    private String fileName;
     private Map<String, Object> parameters;
 
-    public Report() {
+    public Report(ReportEntity entity) {
+        id = entity.getId();
+        context = entity.getContext();
+        name = entity.getName();
+        source = entity.getSource();
+        type = ReportType.PDF;
         logger = LogManager.getLogger(getClass().getName());
     }
 
-    public PipedOutputStream getPipedOutputStream() {
-        outputStream = new PipedOutputStream();
-        return outputStream;
+    @Override
+    public ReportEntity createEntity() {
+        return new ReportEntity()
+            .setId(id)
+            .setContext(context)
+            .setName(name)
+            .setSource(source);
     }
 
     /**
@@ -56,10 +73,10 @@ public class Report implements Runnable {
      */
     public void run() {
 
-        URL url = this.getClass().getResource(name);
-        logger.info("Processing report: "  + url.toString());
-
         try {
+            URL url = new URL(source);
+            logger.info("Processing report: "  + source);
+
             ClassicEngineBoot.getInstance().start();
             ResourceManager manager = new ResourceManager();
             manager.registerDefaults();
@@ -74,18 +91,29 @@ public class Report implements Runnable {
                     report.getParameterValues().put(paramName, parameters.get(paramName));
             }
 
-            PdfReportUtil.createPDF(report, outputStream);
-
+            switch(type) {
+                case PDF:
+                    PdfReportUtil.createPDF(report, fileName);
+                    break;
+                case CSV:
+                    CSVReportUtil.createCSV(report, fileName, null);
+                    break;
+                case XLSX:
+                    ExcelReportUtil.createXLSX(report, fileName);
+                    break;
+                default:
+                    // do nothing
+            }
         } catch(Exception e) {
             this.logger.warn("run() caught an exception during report preparation: ", (Throwable) e);
         }
     }
 
     /**
-     * @param name of the report template
+     * @param name name of the temporary report file
      */
-    public void setName(String n) {
-        name = n;
+    public void setFileName(String name) {
+        fileName = name;
     }
 
     /**
@@ -93,5 +121,12 @@ public class Report implements Runnable {
      */
     public void setParameters(Map<String, Object> p) {
         parameters = p;
+    }
+
+    /**
+     * @param t the type of report to generate (PDF, CSV, XLSX, ...)
+     */
+    public void setType(ReportType t) {
+        this.type = t;
     }
 }

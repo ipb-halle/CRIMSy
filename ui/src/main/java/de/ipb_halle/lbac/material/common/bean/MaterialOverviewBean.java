@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.util.NonEmpty;
 import de.ipb_halle.lbac.util.reporting.ReportMgr;
+import de.ipb_halle.lbac.util.reporting.ReportType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -74,14 +76,13 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private MaterialTableController tableController;
     private MessagePresenter messagePresenter;
 
-    private final String DEFAULT_REPORT = "MaterialStructureOverview.prpt";
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
     private final int HAZARD_RADIACTIVE_ID = 16;
     private final int HAZARD_ATTENTION_ID = 18;
     private final int HAZARD_DANGER_ID = 19;
 
-    private String reportType = DEFAULT_REPORT;
+    private Integer reportId;
 
     @Inject
     private ItemBean itemBean;
@@ -200,12 +201,16 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         navigator.navigate(NAVIGATION_ITEM_EDIT);
     }
 
-    public String getReportType() {
-        return reportType;
+    public List<SelectItem> getReports() {
+        return reportMgr.getReports(this.getClass().getName());
     }
 
-    public void setReportType(String rpt) {
-        reportType = rpt;
+    public Integer getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Integer id) {
+        reportId = id;
     }
 
     public void actionReport() {
@@ -217,7 +222,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         map.put("paramUserName", NonEmpty.nullOrNonEmpty(searchController.getUserName()));
         map.put("paramMolQuery", NonEmpty.nullOrNonEmpty(searchController.getMolecule()));
         // query for index values still missing
-        reportMgr.prepareReport(reportType, map);
+        reportMgr.prepareReport(reportId, map, ReportType.PDF);
     }
 
     public User getCurrentUser() {

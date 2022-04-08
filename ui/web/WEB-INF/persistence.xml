@@ -88,6 +88,7 @@
         <class>de.ipb_halle.lbac.util.hibernatePG.types.ParametrizedJsonTypes</class>
         <class>de.ipb_halle.lbac.util.hibernatePG.types.RawJsonType</class>
         <class>de.ipb_halle.lbac.util.pref.PreferenceEntity</class>
+        <class>de.ipb_halle.lbac.util.reporting.ReportEntity</class>
         <class>de.ipb_halle.lbac.container.entity.ContainerEntity</class>
         <class>de.ipb_halle.lbac.container.entity.ContainerNestingEntity</class>
         <class>de.ipb_halle.lbac.container.entity.ContainerTypeEntity</class>
