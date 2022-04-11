@@ -16,7 +16,8 @@
   </data:connection>
   <data:query-definitions>
     <data:query name="molQuery">
-      <data:static-query>SELECT mat.materialid, struc.moleculeid, mol.molecule, bingo.cansmiles(mol.molecule) AS smiles 
+      <data:static-query>SELECT DISTINCT mat.materialid, struc.moleculeid, mol.molecule, 
+  bingo.cansmiles(mol.molecule) AS smiles 
   FROM materials AS mat 
   JOIN material_indices AS matidx ON mat.materialid = matidx.materialid
   JOIN structures AS struc ON mat.materialid = struc.id
