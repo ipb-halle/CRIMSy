@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Create JKS truststores from certificates in 
-# /install/conf/$CLOUD 
+# /data/conf/$CLOUD 
 #
 #==========================================================
 #
@@ -28,12 +28,12 @@ function createTruststore {
 #
 #==========================================================
 #
-cd /install/conf
+cd /data/conf
 TRUSTSTORE_PASSWD=`cat trustpass`
 
 CLOUDS=`cat clouds.cfg | cut -d';' -f1`
 for c in $CLOUDS ; do
     createTruststore $c
+    chown 8080:8080 $c.truststore
 done
-chown 8080:8080 $c.truststore
 
