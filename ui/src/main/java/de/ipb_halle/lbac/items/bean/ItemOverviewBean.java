@@ -130,8 +130,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reloadItems();
     }
 
-    public List<SelectItem> getReports() {
-        return reportMgr.getReports(this.getClass().getName());
+    public List<SelectItem> getAvailableReports() {
+        return reportMgr.getAvailableReports(this.getClass().getName());
     }
 
     public List<SelectItem> getReportTypes() {

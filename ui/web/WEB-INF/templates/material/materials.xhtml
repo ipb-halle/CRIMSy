@@ -45,24 +45,24 @@
                         id="materialForm">
                         <b:container>
                             <b:row>
-                                <b:column span="1">
+                                <b:column span="2">
                                     <b:commandButton
                                         styleClass="tstNewMaterial"
                                         action="#{materialOverviewBean.actionCreateNewMaterial()}"
                                         value="#{msgs.materials_createNew}"
                                         />
                                 </b:column>
-                                <b:column span="1"></b:column>
-                                <b:column span="1">
-                                    <b:selectOneMenu value="#{materialOverviewBean.reportId}" >
-                                        <f:selectItems value="#{materialOverviewBean.reports}" />
+                                <b:column
+                                    offset="5"
+                                    span="3">
+                                    <b:selectOneMenu value="#{materialOverviewBean.reportId}">
+                                        <f:selectItems value="#{materialOverviewBean.availableReports}" />
                                     </b:selectOneMenu>
                                 </b:column>
-                                <b:column span="1">
+                                <b:column span="2">
                                     <b:commandButton
-                                        action="#{materialOverviewBean.actionReport()}"
-                                        value="#{msgs.Report}"
-                                        />
+                                        action="#{materialOverviewBean.actionCreateReport()}"
+                                        value="#{msgs.Report}" />
                                 </b:column>
                             </b:row>
                             <b:row>

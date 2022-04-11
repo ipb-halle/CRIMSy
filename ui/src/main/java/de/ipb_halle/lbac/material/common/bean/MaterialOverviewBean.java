@@ -129,7 +129,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.STRUCTURE));
         namePresenter = new NamePresenter();
         messagePresenter = JsfMessagePresenter.getInstance();
-
     }
 
     /**
@@ -201,8 +200,8 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         navigator.navigate(NAVIGATION_ITEM_EDIT);
     }
 
-    public List<SelectItem> getReports() {
-        return reportMgr.getReports(this.getClass().getName());
+    public List<SelectItem> getAvailableReports() {
+        return reportMgr.getAvailableReports(this.getClass().getName());
     }
 
     public Integer getReportId() {
@@ -213,7 +212,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         reportId = id;
     }
 
-    public void actionReport() {
+    public void actionCreateReport() {
         HashMap<String, Object> map = new HashMap<String, Object> ();
         map.put("paramCurrentUserId", currentUser.getId());
         map.put("paramMaterialId", NonEmpty.nullOrNonZero(searchController.getId()));

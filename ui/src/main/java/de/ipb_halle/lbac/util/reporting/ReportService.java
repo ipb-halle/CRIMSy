@@ -18,26 +18,28 @@
 package de.ipb_halle.lbac.util.reporting;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
+/**
+ * 
+ * @author fbroda
+ */
 @Stateless
 public class ReportService implements Serializable {
 
@@ -55,42 +57,52 @@ public class ReportService implements Serializable {
     }
 
     /**
-     * @param context the reporting context
-     * @param language the ISO639 specification of the language 
-     * @return a list of SelectItems for the given context
+     * Loads available reports for the given context from the database. The report
+     * names are assigned according to the given language.
+     * 
+     * @param context  the reporting context (the name of the class)
+     * @param language the ISO639 specification of the language
+     * @return map of ids and names of reports
      */
-    @SuppressWarnings("unchecked")
-    public List<SelectItem> load(String context, String language) {
-
-        CriteriaBuilder builder = this.em.getCriteriaBuilder();
-
+    public Map<Integer, String> load(String context, String language) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ReportEntity> criteriaQuery = builder.createQuery(ReportEntity.class);
         Root<ReportEntity> reportRoot = criteriaQuery.from(ReportEntity.class);
         criteriaQuery.select(reportRoot);
-        criteriaQuery.where(builder.equal(reportRoot.get("context"), context)); 
+        criteriaQuery.where(builder.equal(reportRoot.get("context"), context));
 
-        List<SelectItem> results = new ArrayList<> ();
-        for(ReportEntity entity: this.em.createQuery(criteriaQuery).getResultList()) {
-
+        Map<Integer, String> results = new HashMap<>();
+        for (ReportEntity entity : em.createQuery(criteriaQuery).getResultList()) {
             String name = DEFAULT_NAME;
             try {
-                JsonElement jsonTree = JsonParser.parseString(entity.getName());
-                name = jsonTree.getAsJsonObject().get(language).getAsString();
-                if (name == null) {
-                    // resort to name in default locale
-                    name = jsonTree.getAsJsonObject().get(DEFAULT_LANGUAGE).getAsString();
-                }
-                if (name == null) {
-                    throw new Exception("Default localization missing");
-                }
-            } catch(Exception e) {
-                this.logger.info("Failed to obtain localized [{}] name for report [{}]: {}", language, entity.getId(), e.getMessage());
-                name = DEFAULT_NAME;
+                name = extractNameFromEntity(entity, language);
+            } catch (JsonSyntaxException e) {
+                logger.error("Failed to obtain localized [{}] name for report [{}]: {}", language, entity.getId(),
+                        e.getMessage());
             }
-
-            results.add(new SelectItem(entity.getId(), name));
+            results.put(entity.getId(), name);
         }
+
         return results;
+    }
+
+    private String extractNameFromEntity(ReportEntity entity, String language) throws JsonSyntaxException {
+        String json = entity.getName();
+        JsonElement jsonTree = JsonParser.parseString(json);
+
+        String name = jsonTree.getAsJsonObject().get(language).getAsString();
+        if (StringUtils.isNotBlank(name)) {
+            return name;
+        }
+
+        // resort to name in default language
+        name = jsonTree.getAsJsonObject().get(DEFAULT_LANGUAGE).getAsString();
+        if (StringUtils.isNotBlank(name)) {
+            return name;
+        }
+
+        logger.warn("Default localization missing for report with id={}", entity.getId());
+        return DEFAULT_NAME;
     }
 
     /**

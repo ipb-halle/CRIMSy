@@ -24,49 +24,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Future;
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import java.util.Map.Entry;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
+import org.omnifaces.util.Faces;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Create Pentaho report 
+ * Create Pentaho report
  *
  * @author fbroda
  */
 @RequestScoped
 public class ReportMgr {
-
     @Inject
     private ReportService reportService;
 
     @Inject
     private SendFileBean sendFileBean;
 
-    @Resource
-    private ManagedExecutorService executor;
+    private Logger logger = LogManager.getLogger(getClass().getName());
 
-    private transient Logger logger;
+    public List<SelectItem> getAvailableReports(String context) {
+        Locale locale = Faces.getLocale();
+        Map<Integer, String> reportIdsAndNames = reportService.load(context, locale.getLanguage());
 
-    public ReportMgr() {
-        logger = LogManager.getLogger(getClass().getName());
-    }
+        List<SelectItem> items = new ArrayList<>();
+        for (Entry<Integer, String> e : reportIdsAndNames.entrySet()) {
+            Integer idOfReport = e.getKey();
+            String nameOfReport = e.getValue();
+            items.add(new SelectItem(idOfReport, nameOfReport));
+        }
 
-    public List<SelectItem> getReports(String context) {
-        Locale locale = FacesContext.getCurrentInstance().getViewRoot()
-            .getLocale();
-        return reportService.load(context, locale.getLanguage());
+        return items;
     }
 
     public List<SelectItem> getReportTypes() {
-        List<SelectItem> types = new ArrayList<> ();
-        for (ReportType t : ReportType.class.getEnumConstants()) {
+        List<SelectItem> types = new ArrayList<>();
+        for (ReportType t : ReportType.values()) {
             types.add(new SelectItem(t.toString()));
         }
         return types;
@@ -74,9 +72,10 @@ public class ReportMgr {
 
     /**
      * prepare a report and deliver it to the user
-     * @param id id of the report template
+     * 
+     * @param id         id of the report template
      * @param parameters map of report parameters
-     * @param type type of report (PDF, XLSX, CSV)
+     * @param type       type of report (PDF, XLSX, CSV)
      */
     public void prepareReport(Integer id, Map<String, Object> parameters, ReportType type) {
 
@@ -86,23 +85,23 @@ public class ReportMgr {
         File tmpFile = null;
         try {
             String ext = ".tmp";
-            switch(type) {
-                case PDF:
-                    ext = ".pdf";
-                    break;
-                case CSV:
-                    ext = ".csv";
-                    break;
-                case XLSX:
-                    ext = ".xlsx";
-                    break;
+            switch (type) {
+            case PDF:
+                ext = ".pdf";
+                break;
+            case CSV:
+                ext = ".csv";
+                break;
+            case XLSX:
+                ext = ".xlsx";
+                break;
             }
             tmpFile = File.createTempFile("report", ext);
             report.setFileName(tmpFile.getAbsolutePath());
             report.run();
             sendFileBean.sendFile(tmpFile);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             this.logger.warn("prepare Report caught an exception: ", (Throwable) e);
         } finally {
             if (tmpFile != null) {
