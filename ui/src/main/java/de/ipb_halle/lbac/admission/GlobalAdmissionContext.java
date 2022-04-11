@@ -23,8 +23,6 @@ import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
-import java.io.File;
-
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -53,7 +51,7 @@ public class GlobalAdmissionContext implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     public final static String PUBLIC_NODE_ID = "1e0f832b-3d9e-4ebb-9e68-5a9fc2d9bee8";
-    protected String LBAC_PROPERTIES_PATH = "/install/conf/lbac_properties.xml";
+    private String LBAC_PROPERTIES_PATH = "/data/conf/lbac_properties.xml";
 
     public final static Integer PUBLIC_GROUP_ID = 1;
     public final static Integer PUBLIC_ACCOUNT_ID = 2;
