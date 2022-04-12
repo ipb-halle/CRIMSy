@@ -159,14 +159,17 @@
                                         onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
-                                <b:column span="2">
-                                    <h:outputText value="#{msgs.ReportName}"/>
+
+                            <!-- Reporting -->
+                            <br />
+                            <b:row>
+                                <b:column>
+                                    <h:outputText
+                                        value="#{msgs.reporting_createReport}"
+                                        styleClass="searchFilterHeader" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <b:selectOneMenu
                                         value="#{itemOverviewBean.selectedReport}"
@@ -178,24 +181,25 @@
                                     </b:selectOneMenu>
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
-                                <b:column span="1" 
+                            <b:row>
+                                <b:column
+                                    span="1" 
                                     styleClass="itemFilterButtonColumn">
-                                    <b:selectOneMenu value="#{itemOverviewBean.reportType}" >
+                                    <b:selectOneMenu
+                                        value="#{itemOverviewBean.reportType}"
+                                        styleClass="itemFilterButton">
                                         <f:selectItems value="#{itemOverviewBean.reportTypes}" />
                                     </b:selectOneMenu>
                                 </b:column>
                                 <b:column
                                     span="1"
-                                    styleClass="itemFilterButtonColumn">
+                                    styleClass="itemFilterButtonColumn itemFilterButtonRight">
                                     <b:commandButton 
                                         styleClass="itemFilterButton"
-                                        value="#{msgs.Report}"
+                                        value="#{msgs.reporting_report}"
                                         action="#{itemOverviewBean.actionReport}"/>
                                 </b:column>
                             </b:row>
-                                
                         </b:container>
                     </b:column>    
                     <b:column span="10">  
