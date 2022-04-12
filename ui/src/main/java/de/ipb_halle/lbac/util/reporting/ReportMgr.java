@@ -114,23 +114,10 @@ public class ReportMgr {
         report.setType(type);
         File tmpFile = null;
         try {
-            String ext = ".tmp";
-            switch (type) {
-            case PDF:
-                ext = ".pdf";
-                break;
-            case CSV:
-                ext = ".csv";
-                break;
-            case XLSX:
-                ext = ".xlsx";
-                break;
-            }
-            tmpFile = File.createTempFile("report", ext);
+            tmpFile = File.createTempFile("report", type.getFileExtension());
             report.setFileName(tmpFile.getAbsolutePath());
             report.run();
             sendFileBean.sendFile(tmpFile);
-
         } catch (Exception e) {
             this.logger.warn("prepare Report caught an exception: ", (Throwable) e);
         } finally {

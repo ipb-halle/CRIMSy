@@ -27,9 +27,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
-import org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.PdfReportUtil;
-import org.pentaho.reporting.engine.classic.core.modules.output.table.csv.CSVReportUtil;
-import org.pentaho.reporting.engine.classic.core.modules.output.table.xls.ExcelReportUtil;
 import org.pentaho.reporting.libraries.resourceloader.Resource;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 
@@ -87,19 +84,7 @@ public class Report implements Runnable, DTO {
                 report.getParameterValues().put(paramName, paramValue);
             }
 
-            switch (type) {
-            case PDF:
-                PdfReportUtil.createPDF(report, fileName);
-                break;
-            case CSV:
-                CSVReportUtil.createCSV(report, fileName, null);
-                break;
-            case XLSX:
-                ExcelReportUtil.createXLSX(report, fileName);
-                break;
-            default:
-                // do nothing
-            }
+            type.createReport(report, fileName);
         } catch (Exception e) {
             this.logger.warn("run() caught an exception during report preparation: ", (Throwable) e);
         }
