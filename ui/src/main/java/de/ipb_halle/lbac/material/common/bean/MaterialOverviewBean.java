@@ -36,7 +36,9 @@ import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.composition.Concentration;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.util.NonEmpty;
+import de.ipb_halle.lbac.util.reporting.Report;
 import de.ipb_halle.lbac.util.reporting.ReportMgr;
 import de.ipb_halle.lbac.util.reporting.ReportType;
 import java.io.Serializable;
@@ -48,7 +50,6 @@ import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -82,7 +83,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private final int HAZARD_ATTENTION_ID = 18;
     private final int HAZARD_DANGER_ID = 19;
 
-    private Integer reportId;
+    private Report selectedReport;
 
     @Inject
     private ItemBean itemBean;
@@ -200,28 +201,34 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         navigator.navigate(NAVIGATION_ITEM_EDIT);
     }
 
-    public List<SelectItem> getAvailableReports() {
+    public List<Report> getAvailableReports() {
         return reportMgr.getAvailableReports(this.getClass().getName());
     }
 
-    public Integer getReportId() {
-        return reportId;
+    public Report getSelectedReport() {
+        return selectedReport;
     }
 
-    public void setReportId(Integer id) {
-        reportId = id;
+    public void setSelectedReport(Report selectedReport) {
+        this.selectedReport = selectedReport;
     }
 
     public void actionCreateReport() {
-        HashMap<String, Object> map = new HashMap<String, Object> ();
-        map.put("paramCurrentUserId", currentUser.getId());
-        map.put("paramMaterialId", NonEmpty.nullOrNonZero(searchController.getId()));
-        map.put("paramOwnerId", 3);
-        map.put("paramProjectName", NonEmpty.nullOrNonEmpty(searchController.getProjectName()));
-        map.put("paramUserName", NonEmpty.nullOrNonEmpty(searchController.getUserName()));
-        map.put("paramMolQuery", NonEmpty.nullOrNonEmpty(searchController.getMolecule()));
-        // query for index values still missing
-        reportMgr.prepareReport(reportId, map, ReportType.PDF);
+        HashMap<String, Object> reportParams = new HashMap<String, Object>();
+
+        reportParams.put("paramCurrentUserId", currentUser.getId());
+        reportParams.put("paramOwnerId", 3);
+
+        // TODO: paramMaterialName
+        reportParams.put("paramMaterialId", NonEmpty.nullOrNonZero(searchController.getId()));
+        reportParams.put("paramUserName", NonEmpty.nullOrNonEmpty(searchController.getUserName()));
+        reportParams.put("paramProjectName", NonEmpty.nullOrNonEmpty(searchController.getProjectName()));
+        // TODO: paramIndex
+        // TODO: paramMaterialType
+        String molfile = searchController.getMolecule();
+        reportParams.put("paramMolQuery", new Molecule(molfile, -1).isEmptyMolecule() ? null : molfile);
+
+        reportMgr.prepareReport(selectedReport, reportParams, ReportType.PDF);
     }
 
     public User getCurrentUser() {

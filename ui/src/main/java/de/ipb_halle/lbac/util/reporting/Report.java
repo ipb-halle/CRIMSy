@@ -19,10 +19,9 @@ package de.ipb_halle.lbac.util.reporting;
 
 import de.ipb_halle.lbac.entity.DTO;
 
-import java.io.PipedOutputStream;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -35,12 +34,11 @@ import org.pentaho.reporting.libraries.resourceloader.Resource;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 
 /**
- * Create Pentaho report 
+ * Create Pentaho report
  *
  * @author fbroda
  */
 public class Report implements Runnable, DTO {
-
     private Integer id;
     private String context;
     private Logger logger;
@@ -62,10 +60,10 @@ public class Report implements Runnable, DTO {
     @Override
     public ReportEntity createEntity() {
         return new ReportEntity()
-            .setId(id)
-            .setContext(context)
-            .setName(name)
-            .setSource(source);
+                .setId(id)
+                .setContext(context)
+                .setName(name)
+                .setSource(source);
     }
 
     /**
@@ -75,7 +73,7 @@ public class Report implements Runnable, DTO {
 
         try {
             URL url = new URL(source);
-            logger.info("Processing report: "  + source);
+            logger.info("Processing report: " + source);
 
             ClassicEngineBoot.getInstance().start();
             ResourceManager manager = new ResourceManager();
@@ -83,30 +81,40 @@ public class Report implements Runnable, DTO {
             Resource resource = manager.createDirectly(url, MasterReport.class);
             MasterReport report = (MasterReport) resource.getResource();
 
-            Iterator<String> iter = parameters.keySet().iterator();
-            while(iter.hasNext()) {
-                    String paramName = iter.next();
-                    Object o = parameters.get(paramName);
-//                  logger.info("Setting parameter: " + paramName + " --> " + ((o == null) ? "null" : o.toString()));
-                    report.getParameterValues().put(paramName, parameters.get(paramName));
+            for (Entry<String, Object> entry : parameters.entrySet()) {
+                String paramName = entry.getKey();
+                Object paramValue = entry.getValue();
+                report.getParameterValues().put(paramName, paramValue);
             }
 
-            switch(type) {
-                case PDF:
-                    PdfReportUtil.createPDF(report, fileName);
-                    break;
-                case CSV:
-                    CSVReportUtil.createCSV(report, fileName, null);
-                    break;
-                case XLSX:
-                    ExcelReportUtil.createXLSX(report, fileName);
-                    break;
-                default:
-                    // do nothing
+            switch (type) {
+            case PDF:
+                PdfReportUtil.createPDF(report, fileName);
+                break;
+            case CSV:
+                CSVReportUtil.createCSV(report, fileName, null);
+                break;
+            case XLSX:
+                ExcelReportUtil.createXLSX(report, fileName);
+                break;
+            default:
+                // do nothing
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             this.logger.warn("run() caught an exception during report preparation: ", (Throwable) e);
         }
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

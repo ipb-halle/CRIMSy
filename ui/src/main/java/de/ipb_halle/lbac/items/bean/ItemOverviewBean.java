@@ -33,12 +33,12 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
-import de.ipb_halle.lbac.items.bean.createsolution.CreateSolutionBean;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.NonEmpty;
+import de.ipb_halle.lbac.util.reporting.Report;
 import de.ipb_halle.lbac.util.reporting.ReportMgr;
 import de.ipb_halle.lbac.util.reporting.ReportType;
 import java.io.Serializable;
@@ -96,7 +96,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     private SearchResult searchResult;
     private SearchMaskValues searchMaskValues = new SearchMaskValues();
 
-    private Integer reportId;
+    private Report selectedReport;
     private ReportType reportType; 
 
     public void actionApplySearchFilter() {
@@ -130,20 +130,20 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reloadItems();
     }
 
-    public List<SelectItem> getAvailableReports() {
+    public List<Report> getAvailableReports() {
         return reportMgr.getAvailableReports(this.getClass().getName());
+    }
+
+    public Report getSelectedReport() {
+        return selectedReport;
+    }
+
+    public void setSelectedReport(Report selectedReport) {
+        this.selectedReport = selectedReport;
     }
 
     public List<SelectItem> getReportTypes() {
         return reportMgr.getReportTypes();
-    }
-
-    public Integer getReportId() {
-        return reportId;
-    }
-
-    public void setReportId(Integer id) {
-        reportId = id;
     }
 
     public ReportType getReportType() {
@@ -163,7 +163,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         map.put("paramPlace", NonEmpty.nullOrNonEmpty(searchMaskValues.getLocation()));
         map.put("paramProjectId", NonEmpty.nullOrNonEmpty(searchMaskValues.getProjectName())); 
         map.put("paramUserId", null);
-        reportMgr.prepareReport(reportId, map, reportType);
+        reportMgr.prepareReport(selectedReport, map, reportType);
         reloadItems();
     }
 

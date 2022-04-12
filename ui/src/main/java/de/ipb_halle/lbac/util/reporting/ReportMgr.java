@@ -21,16 +21,21 @@ import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
 import org.omnifaces.util.Faces;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -40,6 +45,9 @@ import org.apache.logging.log4j.LogManager;
  */
 @RequestScoped
 public class ReportMgr {
+    private static final String DEFAULT_LANGUAGE = "en";
+    private static final String DEFAULT_NAME = "Report with no name";
+
     @Inject
     private ReportService reportService;
 
@@ -48,18 +56,52 @@ public class ReportMgr {
 
     private Logger logger = LogManager.getLogger(getClass().getName());
 
-    public List<SelectItem> getAvailableReports(String context) {
-        Locale locale = Faces.getLocale();
-        Map<Integer, String> reportIdsAndNames = reportService.load(context, locale.getLanguage());
+    public List<Report> getAvailableReports(String context) {
+        List<Report> reports = reportService.loadByContext(context);
 
-        List<SelectItem> items = new ArrayList<>();
-        for (Entry<Integer, String> e : reportIdsAndNames.entrySet()) {
-            Integer idOfReport = e.getKey();
-            String nameOfReport = e.getValue();
-            items.add(new SelectItem(idOfReport, nameOfReport));
+        for (Report report : reports) {
+            localizeReportName(report);
+        }
+        reports.sort(Comparator.comparing(Report::getName));
+
+        return reports;
+    }
+
+    private void localizeReportName(Report report) throws JsonSyntaxException {
+        String targetLanguage;
+        if (Faces.getContext() != null) {
+            targetLanguage = Faces.getLocale().getLanguage();
+        } else {
+            targetLanguage = DEFAULT_LANGUAGE;
+        }
+        String json = report.getName();
+
+        String localizedName = DEFAULT_NAME;
+        try {
+            localizedName = extractNameFromJson(json, targetLanguage);
+        } catch (JsonSyntaxException e) {
+            logger.error("Failed to obtain localized [{}] name for report [{}]: {}", targetLanguage, report.getId(),
+                    e.getMessage());
         }
 
-        return items;
+        report.setName(localizedName);
+    }
+
+    private String extractNameFromJson(String json, String preferredLanguage) throws JsonSyntaxException {
+        JsonElement jsonTree = JsonParser.parseString(json);
+
+        String name = jsonTree.getAsJsonObject().get(preferredLanguage).getAsString();
+        if (StringUtils.isNotBlank(name)) {
+            return name;
+        }
+
+        // resort to name in default language
+        name = jsonTree.getAsJsonObject().get(DEFAULT_LANGUAGE).getAsString();
+        if (StringUtils.isNotBlank(name)) {
+            return name;
+        }
+
+        return DEFAULT_NAME;
     }
 
     public List<SelectItem> getReportTypes() {
@@ -77,9 +119,7 @@ public class ReportMgr {
      * @param parameters map of report parameters
      * @param type       type of report (PDF, XLSX, CSV)
      */
-    public void prepareReport(Integer id, Map<String, Object> parameters, ReportType type) {
-
-        Report report = reportService.loadById(id);
+    public void prepareReport(Report report, Map<String, Object> parameters, ReportType type) {
         report.setParameters(parameters);
         report.setType(type);
         File tmpFile = null;

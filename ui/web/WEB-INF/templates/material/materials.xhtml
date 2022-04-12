@@ -55,8 +55,11 @@
                                 <b:column
                                     offset="5"
                                     span="3">
-                                    <b:selectOneMenu value="#{materialOverviewBean.reportId}">
-                                        <f:selectItems value="#{materialOverviewBean.availableReports}" />
+                                    <b:selectOneMenu value="#{materialOverviewBean.selectedReport}">
+                                        <f:selectItems
+                                            value="#{materialOverviewBean.availableReports}"
+                                            var="report"
+                                            itemLabel="#{report.name}" />
                                     </b:selectOneMenu>
                                 </b:column>
                                 <b:column span="2">
