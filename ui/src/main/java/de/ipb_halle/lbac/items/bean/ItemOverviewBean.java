@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -49,7 +50,6 @@ import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -97,7 +97,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     private SearchMaskValues searchMaskValues = new SearchMaskValues();
 
     private Report selectedReport;
-    private ReportType reportType; 
+    private ReportType selectedReportType;
 
     public void actionApplySearchFilter() {
         actionFirstItems();
@@ -142,29 +142,32 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         this.selectedReport = selectedReport;
     }
 
-    public List<SelectItem> getReportTypes() {
-        return reportMgr.getReportTypes();
+    public ReportType[] getReportTypes() {
+        return ReportType.values();
     }
 
-    public ReportType getReportType() {
-        return reportType;
+    public ReportType getSelectedReportType() {
+        return selectedReportType;
     }
 
-    public void setReportType(ReportType t) {
-        reportType = t;
+    public void setSelectedReportType(ReportType selectedReportType) {
+        this.selectedReportType = selectedReportType;
     }
 
     public void actionReport() {
-        HashMap<String, Object> map = new HashMap<String, Object> ();
-        map.put("paramCurrentUserId", currentUser.getId());
-        map.put("paramDescription", NonEmpty.nullOrNonEmpty(searchMaskValues.getDescription()));
-        map.put("paramMaterialId", null);
-        map.put("paramOwnerId", 3);
-        map.put("paramPlace", NonEmpty.nullOrNonEmpty(searchMaskValues.getLocation()));
-        map.put("paramProjectId", NonEmpty.nullOrNonEmpty(searchMaskValues.getProjectName())); 
-        map.put("paramUserId", null);
-        reportMgr.prepareReport(selectedReport, map, reportType);
-        reloadItems();
+        HashMap<String, Object> reportParams = new HashMap<String, Object>();
+
+        reportParams.put("paramCurrentUserId", currentUser.getId());
+        reportParams.put("paramOwnerId", GlobalAdmissionContext.OWNER_ACCOUNT_ID);
+
+        reportParams.put("paramMaterialName", NonEmpty.nullOrNonEmpty(searchMaskValues.getMaterialName()));
+        reportParams.put("paramItemLabel", NonEmpty.nullOrNonEmpty(searchMaskValues.getLabel()));
+        reportParams.put("paramUserName", NonEmpty.nullOrNonEmpty(searchMaskValues.getUserName()));
+        reportParams.put("paramProjectName", NonEmpty.nullOrNonEmpty(searchMaskValues.getProjectName()));
+        reportParams.put("paramLocation", NonEmpty.nullOrNonEmpty(searchMaskValues.getLocation()));
+        reportParams.put("paramDescription", NonEmpty.nullOrNonEmpty(searchMaskValues.getDescription()));
+
+        reportMgr.prepareReport(selectedReport, reportParams, selectedReportType);
     }
 
     public void actionStartItemEdit(Item i) {

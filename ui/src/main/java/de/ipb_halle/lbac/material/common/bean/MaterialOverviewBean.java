@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
@@ -217,14 +218,17 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         HashMap<String, Object> reportParams = new HashMap<String, Object>();
 
         reportParams.put("paramCurrentUserId", currentUser.getId());
-        reportParams.put("paramOwnerId", 3);
+        reportParams.put("paramOwnerId", GlobalAdmissionContext.OWNER_ACCOUNT_ID);
 
-        // TODO: paramMaterialName
+        reportParams.put("paramMaterialName", NonEmpty.nullOrNonZero(searchController.getName()));
         reportParams.put("paramMaterialId", NonEmpty.nullOrNonZero(searchController.getId()));
         reportParams.put("paramUserName", NonEmpty.nullOrNonEmpty(searchController.getUserName()));
         reportParams.put("paramProjectName", NonEmpty.nullOrNonEmpty(searchController.getProjectName()));
-        // TODO: paramIndex
-        // TODO: paramMaterialType
+        reportParams.put("paramIndex", NonEmpty.nullOrNonEmpty(searchController.getIndex()));
+
+        MaterialType materialType = searchController.getMaterialType();
+        reportParams.put("paramMaterialType", materialType == null ? null : materialType.getId());
+
         String molfile = searchController.getMolecule();
         reportParams.put("paramMolQuery", new Molecule(molfile, -1).isEmptyMolecule() ? null : molfile);
 

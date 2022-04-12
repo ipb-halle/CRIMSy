@@ -20,12 +20,10 @@ package de.ipb_halle.lbac.util.reporting;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
@@ -102,14 +100,6 @@ public class ReportMgr {
         }
 
         return DEFAULT_NAME;
-    }
-
-    public List<SelectItem> getReportTypes() {
-        List<SelectItem> types = new ArrayList<>();
-        for (ReportType t : ReportType.values()) {
-            types.add(new SelectItem(t.toString()));
-        }
-        return types;
     }
 
     /**
