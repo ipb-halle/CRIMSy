@@ -46,7 +46,7 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 @Stateless
 public class KeyManager {
 
-    protected String LBAC_PROPERTIES_PATH = "/install/etc/lbac_properties.xml";
+    protected String LBAC_PROPERTIES_PATH = "/install/conf/lbac_properties.xml";
 
     protected Logger logger;
 

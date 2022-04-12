@@ -96,11 +96,12 @@ limitations under the License.
                         </b:row>
                         <b:row>
                             <b:column span="4">
-                                <p:autoComplete value="#{containerEditBean.preferredProjectName}"
-                                                maxResults="10"
-                                                completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
-                                                styleClass="containerEditInputfield">
-                                </p:autoComplete>
+                                <p:autoComplete
+                                    value="#{containerEditBean.preferredProjectName}"
+                                    maxResults="10"
+                                    completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
+                                    forceSelection="true"
+                                    styleClass="containerEditInputfield" />
                             </b:column>
                         </b:row>
 

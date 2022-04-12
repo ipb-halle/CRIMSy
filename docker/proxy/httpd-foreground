@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+
+#
+# (re-)create redirection document
+#
+cat <<EOF > /usr/local/apache2/htdocs/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Refresh" Content= "0; URL=https://$REDIRECT_FQHN/ui"/>
+  <title>CRIMSy</title>
+</head>
+<body>
+<h1>Cloud Resource &amp; Information Management System (CRIMSy)</h1>
+Copyright 2022 Leibniz Institute of Plant Biochemistry</br>
+
+You will be redirected to CRIMSy immediately. Please click <a href="https://$REDIRECT_FQHN/ui">here</a> if automatic redirection does not work. 
+</body>
+</html>
+EOF
+chmod go+r /usr/local/apache2/htdocs/index.html
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /usr/local/apache2/logs/httpd.pid
+
+exec httpd -DFOREGROUND "$@"
+

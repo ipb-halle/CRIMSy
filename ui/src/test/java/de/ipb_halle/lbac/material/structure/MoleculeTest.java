@@ -17,31 +17,23 @@
  */
 package de.ipb_halle.lbac.material.structure;
 
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+
+import de.ipb_halle.lbac.util.ResourceUtils;
 
 /**
  *
  * @author fmauz
  */
 public class MoleculeTest {
-
-    String benzene = "\n" + "Actelion Java MolfileCreator 1.0\n" + "\n"
-            + "  6  6  0  0  0  0  0  0  0  0999 V2000\n"
-            + "    5.9375  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    5.9375  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    7.2365  -12.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    8.5356  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    8.5356  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    7.2365   -9.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n" + "  1  2  2  0  0  0  0\n"
-            + "  2  3  1  0  0  0  0\n" + "  3  4  2  0  0  0  0\n" + "  4  5  1  0  0  0  0\n"
-            + "  5  6  2  0  0  0  0\n" + "  6  1  1  0  0  0  0\n" + "M  END";
-    String empty = "\n" + "Actelion Java MolfileCreator 1.0\n" + "\n"
-            + "  0  0  0  0  0  0  0  0  0  0999 V2000\n"
-            + "M  END";
-
     @Test
-    public void test001_checkEmptyMolecule() {
+    public void test001_checkEmptyMolecule() throws IOException {
+        String benzene = ResourceUtils.readResourceFile("molfiles/Benzene.mol");
+        String empty = ResourceUtils.readResourceFile("molfiles/Empty.mol");
+
         Molecule mol = new Molecule(null, 0);
         Assert.assertTrue(mol.isEmptyMolecule());
         mol = new Molecule("", 0);
@@ -52,6 +44,5 @@ public class MoleculeTest {
         Assert.assertTrue(mol.isEmptyMolecule());
         mol = new Molecule(benzene, 0);
         Assert.assertFalse(mol.isEmptyMolecule());
-
     }
 }

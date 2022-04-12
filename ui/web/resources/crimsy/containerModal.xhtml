@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <composite:interface>
+        <composite:attribute
+            name="controller"
+            type="de.ipb_halle.lbac.items.bean.ContainerSelectionDialogController"
+            required="true" />
+        <composite:attribute
+            name="widgetVar"
+            required="true" />
+        <composite:attribute
+            name="updateTargetClass"
+            required="false" />
+    </composite:interface>
+
+    <!-- Note: p:remoteCommand is invoked by all non-PrimeFaces components that have AJAX-activity.
+               This is due a bug in p:wizard (see comment in consumePartOfItem.xhtml). -->
+    <composite:implementation>
+        <p:dialog
+            id="containerModalDialogId"
+            styleClass="containerModal"
+            widgetVar="#{cc.attrs.widgetVar}"
+            modal="true"
+            closable="true"
+            header="#{msgs.container_dialog_title}">
+            <!-- The selected row index is used in the action method, see
+                 https://github.com/primefaces/primefaces/blob/master/docs/11_0_0/components/remotecommand.md#passing-parameters -->
+            <p:remoteCommand
+                name="containerModal_actionOnSelect"
+                process="@this"
+                update="growlMsg @(.#{cc.attrs.updateTargetClass})"
+                action="#{cc.attrs.controller.actionOnSelect()}"
+                oncomplete="PF('#{cc.attrs.widgetVar}').hide();" />
+            <b:dataTable
+                value="#{cc.attrs.controller.availableContainers}"
+                var="container"
+                select="true"
+                onselect="containerModal_actionOnSelect([{name:'selectedRow', value:indexes}]);"
+                saveState="false">
+                <b:dataTableColumn value="#{container.id}" />
+                <b:dataTableColumn
+                    value="#{container.label}"
+                    label="#{msgs.container_dialog_label}" />
+                <b:dataTableColumn label="#{msgs.container_dialog_location}">
+                    <h:outputText
+                        value="#{container.getLocation(true,true)}"
+                        escape="false">
+                        <f:converter converterId="RichTextConverter" />
+                    </h:outputText>
+                </b:dataTableColumn>
+                <b:dataTableColumn
+                    value="#{container.type.getLocalizedName()}"
+                    label="#{msgs.container_dialog_type}" />
+                <b:dataTableColumn
+                    value="#{cc.attrs.controller.getDimensionString(container)}"
+                    label="#{msgs.container_dialog_size}" />
+            </b:dataTable>
+        </p:dialog>
+    </composite:implementation>
+</html>

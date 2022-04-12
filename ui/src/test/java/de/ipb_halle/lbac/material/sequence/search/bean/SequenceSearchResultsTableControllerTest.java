@@ -27,7 +27,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +49,7 @@ import de.ipb_halle.lbac.material.sequence.search.display.TfastxyResultDisplayCo
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchServiceMock;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.util.ResourceUtils;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
 
 /**
@@ -85,7 +85,7 @@ public class SequenceSearchResultsTableControllerTest {
         sequence2 = new Sequence(2, names2, 1, null, null, data2);
         sequence3 = new Sequence(3, names3, 1, null, null, data3);
 
-        Reader reader = readerForResourceFile("fastaresults/results1.txt");
+        Reader reader = ResourceUtils.readerForResourceFile("fastaresults/results1.txt");
         fastaResults = new FastaResultParser(reader).parse();
 
         alignment1 = new SequenceAlignment(sequence1, fastaResults.get(3));
@@ -279,10 +279,6 @@ public class SequenceSearchResultsTableControllerTest {
         List<FastaResultDisplayWrapper> results = controller.getResults();
 
         assertionsForDefaultAlignments(results);
-    }
-
-    private Reader readerForResourceFile(String filename) {
-        return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));
     }
 
     private void assertionsForDefaultAlignments(List<FastaResultDisplayWrapper> results) {

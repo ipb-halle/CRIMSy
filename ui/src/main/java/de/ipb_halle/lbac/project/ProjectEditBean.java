@@ -33,7 +33,6 @@ import de.ipb_halle.lbac.i18n.UIMessage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -359,7 +358,13 @@ public class ProjectEditBean implements Serializable {
     }
 
     public List<User> getLocalUsers() {
-        return memberService.loadLocalUsers();
+        List<User> localUsers=memberService.loadLocalUsers();
+        for(int i=localUsers.size()-1;i>=0;i--){
+            if(localUsers.get(i).isDeactivated()){
+                localUsers.remove(i);
+            }
+        }
+        return localUsers;
     }
 
     public void changeOwner(User user) {

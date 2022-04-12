@@ -58,8 +58,10 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.ResourceUtils;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -116,17 +118,6 @@ public class MaterialBeanTest extends TestBase {
 
     @Inject
     private MaterialCompositionBean compositionBean;
-    
-     String benzene = "\n" + "Actelion Java MolfileCreator 1.0\n" + "\n"
-            + "  6  6  0  0  0  0  0  0  0  0999 V2000\n"
-            + "    5.9375  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    5.9375  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    7.2365  -12.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    8.5356  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    8.5356  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    7.2365   -9.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n" + "  1  2  2  0  0  0  0\n"
-            + "  2  3  1  0  0  0  0\n" + "  3  4  2  0  0  0  0\n" + "  4  5  1  0  0  0  0\n"
-            + "  5  6  2  0  0  0  0\n" + "  6  1  1  0  0  0  0\n" + "M  END";
 
     CreationTools creationTools;
     User publicUser;
@@ -540,7 +531,9 @@ public class MaterialBeanTest extends TestBase {
     }
     @DisplayName("Issue-based (#156) - Disappeared molecule")
     @Test
-    public void test_011_bug_disappeared_molecule_156(){
+    public void test_011_bug_disappeared_molecule_156() throws IOException {
+        String benzene = ResourceUtils.readResourceFile("molfiles/Benzene.mol");
+
         //Create new Structure
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
         projectService.saveEditedProjectToDb(project);

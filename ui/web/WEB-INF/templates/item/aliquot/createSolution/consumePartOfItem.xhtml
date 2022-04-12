@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition>
+            <!-- Bug: BootsFaces'/JSF's AJAX handlers are not able to update DOM elements inside the 
+                      tabs of p:wizard (except the first one). This works for PF components (e.g. 
+                      <p:inputText> with <p:ajax>).
+                 Workaround: Invoke a p:remoteCommand via a JavaScript call. -->
+            <p:wizard
+                flowListener="#{controller.onFlowProcess}"
+                styleClass="wizardCreateAliquot"
+                showNavBar="false"
+                widgetVar="consumePartOfItemWizard">
+                <p:tab
+                    id="step1_targetConcAndVol"
+                    title="#{msgs.itemCreateSolution_consumePartOfItem_step1Title}">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep1.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    id="step2_weigh"
+                    title="#{msgs.itemCreateSolution_consumePartOfItem_step2Title}">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep2.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    id="step3_volumeAndSolvent"
+                    title="#{msgs.itemCreateSolution_consumePartOfItem_step3Title}">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep3.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    id="step4_directContainerAndLabel"
+                    title="#{msgs.itemCreateSolution_consumePartOfItem_step4Title}">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep4.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    id="step5_project"
+                    title="#{msgs.itemCreateSolution_consumePartOfItem_step5Title}">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep5.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    id="step6_location"
+                    title="#{msgs.itemCreateSolution_consumePartOfItem_step6Title}">
+                    <ui:include src="/WEB-INF/templates/item/aliquot/createSolution/consumePartOfItemStep6.xhtml">
+                        <ui:param name="controller" value="#{controller}" />
+                    </ui:include>
+                </p:tab>
+            </p:wizard>
+        </ui:composition>
+    </h:body>
+</html>

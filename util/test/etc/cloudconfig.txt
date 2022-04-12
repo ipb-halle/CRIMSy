@@ -1,3 +1,0 @@
-rootCA:rootCA::CI root
-cloudONE:rootCA:cloudONE:CRIMSy CI Cloud ONE
-cloudTWO:rootCA:cloudTWO:CRIMSy CI Cloud TWO

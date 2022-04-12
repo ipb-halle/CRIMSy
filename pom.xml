@@ -58,7 +58,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>${project.basedir}/config/extralib/</outputDirectory>
+                    <outputDirectory>${project.basedir}/target/extralib/</outputDirectory>
                     <artifactItems>
                         <artifactItem>
                             <groupId>antlr</groupId>

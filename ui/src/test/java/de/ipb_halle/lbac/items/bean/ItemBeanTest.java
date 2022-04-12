@@ -43,7 +43,7 @@ import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import javax.inject.Inject;

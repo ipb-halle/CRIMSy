@@ -29,7 +29,7 @@ function cleanUp {
 # Extracts the common name from a subject line
 #
 function commonName {
-	echo $1 | sed -e s./.\\n.g | grep "CN=" | \
+	echo $1 | sed -e s./.\\n.g | grep "CN=" |\
 	  cut -d= -f2- | tr -d $'\n'
 }
 
@@ -169,7 +169,7 @@ EOF
 }
 
 #
-# Create a self-signed certificate and a truststore
+# Create a self-signed certificate 
 # as well as the complete CA directory and file infrstructure
 #
 function createCA {
@@ -207,11 +207,10 @@ function createCA {
 	mkdir -p crl
 	mkdir -p certs
         mkdir -p revoked
-        rm truststore*
 	touch index.txt
 	touch index.txt.attr
-        echo $CA_SUBJECT > chain.txt
-        cat cacert.pem >> chain.txt
+        echo $CA_SUBJECT > chain.pem
+        cat cacert.pem >> chain.pem
 
 	echo "01" > serial.txt
 
@@ -220,16 +219,6 @@ function createCA {
         echo -n $'ROOT\t'$tmp$'\t' > addresses.txt
         tmp=`openssl x509 -in cacert.pem -fingerprint -noout | cut -d= -f2 | tr -d $':\n'`
         echo $tmp$'\t'$DOWNLOAD_URL/cacert.pem$'\t'$CA_CRL >> addresses.txt
-
-        # Truststore
-        uuidgen -r | tr -d $'\n'  > truststore.passwd
-        TRUST_PASSWD=`cat truststore.passwd`
-        openssl ca -updatedb \
-          -passin file:cacert.passwd -config ca.cfg
-
-        echo "createCA: importing root certificate into truststore ..."
-        keytool -importcert -keystore truststore -storepass $TRUST_PASSWD \
-          -noprompt -trustcacerts -file cacert.pem -alias "$CA_CN"
 
 	writeConfig
 }
@@ -271,48 +260,17 @@ function createSubCA {
 	touch index.txt
 	touch index.txt.attr
 	echo "01" > serial.txt
-        echo $CA_SUBJECT > newchain.txt
+        echo $CA_SUBJECT > newchain.pem
 
 	writeConfig
-}
-
-#
-# Create (duplicate and import to a) truststore
-# Obsolete: The truststore does not need to contain the client certificate 
-# but only CA certificates.
-#
-function createTruststore {
-
-    openssl ca -updatedb -passin file:cacert.passwd -config ca.cfg
-
-    # "copy" this CA's truststore
-    tmp=`cat truststore.passwd`
-    uuidgen -r | tr -d $'\n'  > $OUTPUT.passwd
-    TRUST_PASSWD=`cat $OUTPUT.passwd`
-
-    cp truststore $OUTPUT
-    echo "createTruststore: Changing truststore password ..."
-    keytool -storepasswd -keystore $OUTPUT -storepass $tmp \
-          -new $TRUST_PASSWD
-
-    # This is a rudimentary validity test. Should we use openssl verify instead?
-    SERIAL=`grep $HASH index.cloud | tail -1 | cut -d' ' -f1`
-    grep -E "^V" index.txt | cut -f4 | grep -q $SERIAL || error 'Specified certificate is invalid'
-
-    # import a certificate into the truststore
-    ALIAS=`grep $HASH index.cloud | tail -1 | cut -d' ' -f4-`
-    echo "createTruststore: Importing certificate into truststore ..."
-    keytool -importcert -storepass $TRUST_PASSWD \
-      -trustcacerts -file cloud/$HASH.pem \
-      -keystore $OUTPUT -alias "$ALIAS" || error "keytool error"
 }
 
 #
 # Transform date from index.txt into readable form
 #
 function dateFormat {
-	echo $1 | cut --output-delimiter=" " -c1-2,3-4,5-6 | \
-	  xargs -l1 printf "20%s-%s-%s" | \
+	echo $1 | cut --output-delimiter=" " -c1-2,3-4,5-6 |\
+	  xargs -l1 printf "20%s-%s-%s" |\
 	  tr -d $'\n'
 }
 
@@ -354,7 +312,7 @@ function devCert {
         # developer certificate has been used to encrypt the configuration. 
         # The distributor needs this to select the matching decryption key. 
         #
-	id=`openssl x509 -in devcert/$SERIAL.pem -text | \
+	id=`openssl x509 -in devcert/$SERIAL.pem -text |\
 	  grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
 	ln -s $SERIAL.pem devcert/$id.pem
 	ln -s $SERIAL.key devcert/$id.key
@@ -394,10 +352,8 @@ function dialogCA {
         if test -z "$CLOUD" ; then
             createCA
             scp cacert.pem $SCP_ADDR/cacert.pem
-            scp chain.txt $SCP_ADDR/chain.txt
+            scp chain.pem $SCP_ADDR/chain.pem
             scp addresses.txt $SCP_ADDR/addresses.txt
-            scp truststore $SCP_ADDR/truststore
-            scp truststore.passwd $SCP_ADDR/truststore.passwd
             genCRL
             sleep 10
         else
@@ -405,10 +361,8 @@ function dialogCA {
                 dialogDownload '*superior*'
                 SUPERIOR_URL=$TMP_DOWNLOAD_URL
             fi
-            curl --silent --output chain.txt $SUPERIOR_URL/chain.txt
+            curl --silent --output chain.pem $SUPERIOR_URL/chain.pem
             curl --silent --output addresses.txt $SUPERIOR_URL/addresses.txt
-            curl --silent --output truststore $SUPERIOR_URL/truststore
-            curl --silent --output truststore.passwd $SUPERIOR_URL/truststore.passwd
             createSubCA
         fi
         writeConfig
@@ -576,10 +530,6 @@ function getAction {
                         ACTION=12
                         MODE='quit'
                         ;;
-                trust)
-                        ACTION=13
-                        MODE='quit'
-                        ;;
                 quit)
                         ACTION=10
                         return
@@ -655,10 +605,6 @@ function performAction {
                 12)
                         testRevoked
                         ;;
-                13)
-                        test -z "$OUTPUT" -o ! -d "$OUTPUT" || error "no output file given"
-                        createTruststore 
-                        ;;
                 *)
                         error "Invalid action"
                         ;;
@@ -681,7 +627,7 @@ ${BOLD}SYNOPSIS${REGULAR}
 
 ${BOLD}DESCRIPTION${REGULAR}
     Operate the Cloud CA or a subCA. Sign certificate requests, manage 
-    certificates and generate CRLs and truststores. 
+    certificates and generate CRLs. 
     Input and output file names should be absolute or relative to the 
     current directory.
 
@@ -708,16 +654,14 @@ ${BOLD}OPTIONS${REGULAR}
     revocation checks 
 
 -m | --mode MODE
-    The mode of operation, one of: genCRL, importSubCA, sign, testRevoked, trust
+    The mode of operation, one of: genCRL, importSubCA, sign, testRevoked 
 
 -i | --input NAME
     Name of a certificate signing request (CSR) to be signed by the 
     specified CA.
 
 -o NAME | --output NAME
-    Destination of the output certificate. Base name of the truststore 
-    to be created. The password of the truststore will be copied to a 
-    in a file named "NAME.passwd".
+    Destination of the output certificate. 
 
 ${BOLD}MODES${REGULAR}
 ca
@@ -744,11 +688,6 @@ testRevoked
         0 (success) valid certificate exists
         1 certificate has been revoked (invalid)
         2 unknown certificate
-
-trust
-    Copies the system truststore to the destination given by -o NAME and
-    imports the certificate specified by -h HASH into it. A password file 
-    is generated with suffix .passwd
 
 EOF
 }
@@ -801,30 +740,16 @@ function genCRL {
 }
 
 #
-# Import the certificate for a Sub-CA, update truststore
-# and truststore password. If using this script, cacert.pem is 
+# Import the certificate for a Sub-CA. If using this script, cacert.pem is 
 # copied during genCert step of superior CA!
 #
 function importSubCA {
-        cat cacert.pem | sed $'/BEGIN CERTIFICATE/,$p\nd' >> newchain.txt
-        cat chain.txt >> newchain.txt
-        mv newchain.txt chain.txt
+        cat cacert.pem | sed $'/BEGIN CERTIFICATE/,$p\nd' >> newchain.pem
+        cat chain.pem >> newchain.pem
+        mv newchain.pem chain.pem
 
         openssl ca -updatedb \
           -passin file:cacert.passwd -config ca.cfg
-
-        # Truststore
-        tmp=`cat truststore.passwd`
-        TRUST_PASSWD=`uuidgen -r | tr -d $'\n'`
-        echo $TRUST_PASSWD > truststore.passwd
-
-        echo "ImportSubCA: changing truststore password ..."
-        keytool -storepasswd -keystore truststore -storepass $tmp \
-          -new $TRUST_PASSWD 
-
-        echo "ImportSubCA: adding certificate to truststore ..."
-        keytool -importcert -keystore truststore -storepass $TRUST_PASSWD \
-          -noprompt -trustcacerts -file cacert.pem -alias "$CA_CN"
 
         # name, subject hash, fingerprint, cacert url, crl url
         tmp=`openssl x509 -in cacert.pem -subject_hash -noout | tr -d $'\n'`
@@ -832,12 +757,10 @@ function importSubCA {
         tmp=`openssl x509 -in cacert.pem -fingerprint -noout | cut -d= -f2 | tr -d $':\n'`
         echo $tmp$'\t'$DOWNLOAD_URL/cacert.pem$'\t'$CA_CRL >> addresses.txt
 
-        chmod go+r cacert.pem chain.txt addresses.txt truststore truststore.passwd
+        chmod go+r cacert.pem chain.pem addresses.txt 
         scp cacert.pem $SCP_ADDR/cacert.pem
-        scp chain.txt $SCP_ADDR/chain.txt
+        scp chain.pem $SCP_ADDR/chain.pem
         scp addresses.txt $SCP_ADDR/addresses.txt
-        scp truststore $SCP_ADDR/truststore 
-        scp truststore.passwd $SCP_ADDR/truststore.passwd
         genCRL
 }
 
@@ -936,7 +859,7 @@ function selectDialog {
 #
 # Perform basic CA setup
 #
-function setup() {
+function setup {
 
         mkdir -p $CONFIG_DIR/nodes
         tmp=$CONFIG_DIR/$CLOUD/CA
@@ -1124,9 +1047,6 @@ while true ; do
                     ;;
                 'testRevoked')
                     MODE=testRevoked
-                    ;;
-                'trust')
-                    MODE=trust
                     ;;
                 *)
                     echo 'Invalid mode. Terminating...' >&2

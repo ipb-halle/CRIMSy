@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Leibniz Bioactives Cloud 
-# Copyright 2018 Leibniz-Institut f. Pflanzenbiochemie 
+# Cloud Resource & Information Management System (CRIMSy)
+# Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie 
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

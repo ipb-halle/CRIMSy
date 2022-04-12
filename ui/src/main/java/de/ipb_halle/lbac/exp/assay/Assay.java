@@ -25,8 +25,8 @@ import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.util.Unit;
-import de.ipb_halle.lbac.util.UnitsValidator;
+import de.ipb_halle.lbac.util.units.Unit;
+import de.ipb_halle.lbac.util.units.UnitsValidator;
 
 import java.util.ArrayList;
 import java.util.HashSet;

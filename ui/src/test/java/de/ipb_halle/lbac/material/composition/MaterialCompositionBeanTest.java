@@ -65,6 +65,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.util.ResourceUtils;
 import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
@@ -82,7 +83,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -137,13 +138,20 @@ public class MaterialCompositionBeanTest extends TestBase {
     @Inject
     MaterialBean materialBean;
 
+    private String benzene;
+    private String ethanol;
     private Project project, project1;
     private int publicAclId;
     private int structureId1, structureId2, biomaterialId;
     private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
 
     @BeforeEach
-    public void init() {
+    public void init() throws IOException {
+        bean.clearBean();
+
+        benzene = ResourceUtils.readResourceFile("molfiles/Benzene.mol");
+        ethanol = ResourceUtils.readResourceFile("molfiles/Ethanol.mol");
+
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         userBeanMock.setCurrentAccount(publicUser);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -270,25 +278,39 @@ public class MaterialCompositionBeanTest extends TestBase {
     @Test
     public void test007_actionStartSearch() {
         createProject("SearchServiceTest-Project-01", GlobalAdmissionContext.getPublicReadACL(), publicUser);
-
         createMaterials();
+
         bean.setChoosenType(CompositionType.MIXTURE);
         bean.actionSwitchMaterialType("STRUCTURE");
         bean.actionStartSearch();
         assertEquals(2, bean.getMaterialsThatCanBeAdded().size());
+        bean.clearBean();
 
+        bean.setChoosenType(CompositionType.MIXTURE);
+        bean.actionSwitchMaterialType("STRUCTURE");
         bean.setMaterialName("l-002");
         bean.actionStartSearch();
         assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
+        bean.clearBean();
 
-        bean.setSearchMolecule("H2O");
+        bean.setChoosenType(CompositionType.MIXTURE);
+        bean.actionSwitchMaterialType("STRUCTURE");
+        bean.setSearchMolecule(benzene);
+        bean.actionStartSearch();
+        assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
+        bean.clearBean();
+
+        bean.setChoosenType(CompositionType.MIXTURE);
+        bean.actionSwitchMaterialType("STRUCTURE");
+        bean.setSearchMolecule(ethanol);
         bean.actionStartSearch();
         assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+        bean.clearBean();
 
         bean.setChoosenType(CompositionType.EXTRACT);
         bean.actionSwitchMaterialType("BIOMATERIAL");
         bean.actionStartSearch();
-        assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+        assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
     }
 
     @Test
@@ -349,7 +371,7 @@ public class MaterialCompositionBeanTest extends TestBase {
         initSequenceSearchMaskValuesHolder();
         bean.setChoosenType(CompositionType.PROTEIN);
 
-        Reader reader = readerForResourceFile("fastaresults/results7.txt");
+        Reader reader = ResourceUtils.readerForResourceFile("fastaresults/results7.txt");
         // This list is ordered by the E-value.
         List<FastaResult> parserResults = new FastaResultParser(reader).parse();
 
@@ -479,7 +501,7 @@ public class MaterialCompositionBeanTest extends TestBase {
         structureId1 = materialCreator.createStructure(
                 publicUser.getId(),
                 publicAclId,
-                "CCCCCCCCC",
+                benzene,
                 project1.getId(),
                 "Testmaterial-001");
         materialCreator.addIndexToMaterial(structureId1, 2, "Index of material 1");
@@ -502,10 +524,6 @@ public class MaterialCompositionBeanTest extends TestBase {
                 projectAcl);
         projectCreator.setProjectName(projectName);
         project1 = projectCreator.createAndSaveProject(user);
-    }
-
-    private Reader readerForResourceFile(String filename) {
-        return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));
     }
 
     private void initSequenceSearchMaskValuesHolder() {

@@ -53,7 +53,7 @@ public class KeyStoreFactory {
     // xxxxx LBAC_PROPERTIES_PATH
     // xxxxx this definition should move to some global location
     // xxxxx or should be replaced by a more general approach.
-    protected static String LBAC_PROPERTIES_PATH = "/install/etc/lbac_properties.xml";
+    protected static String LBAC_PROPERTIES_PATH = "/install/conf/lbac_properties.xml";
 
     private Map<String, KeyStore> keyStore;
     private Map<String, KeyStore> trustStore;

@@ -182,6 +182,7 @@ public class TestBase implements Serializable {
         
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
         cleanItemsFromDb();
+        cleanSolventsFromDb();
         this.entityManagerService.doSqlUpdate("Delete from containers");
         cleanMaterialsFromDB();
         materialCreator = new MaterialCreator(entityManagerService);
@@ -385,6 +386,12 @@ public class TestBase implements Serializable {
         createTaxanomy(21, "Haarnixen", 7, userGroups, ownerId, 1, 16, 17);
         entityManagerService.doSqlUpdate("ALTER SEQUENCE materials_materialid_seq RESTART WITH 22");
     }
+
+    protected void createSolvents(String... solvents) {
+        for (String solvent : solvents) {
+            entityManagerService.doSqlUpdate(String.format("INSERT INTO solvents (name) VALUES('%s')", solvent));
+        }
+    }
     
     public void resetDB(MemberService memberService) {
         List<Collection> colls = collectionService.load(new HashMap<>());
@@ -465,6 +472,10 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("delete from item_positions");
         entityManagerService.doSqlUpdate("delete from items_history");
         entityManagerService.doSqlUpdate("delete from items");
+    }
+
+    private void cleanSolventsFromDb() {
+        entityManagerService.doSqlUpdate("DELETE FROM solvents");
     }
     
     protected void cleanMaterialsFromDB() {
