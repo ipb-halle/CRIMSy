@@ -123,7 +123,7 @@ function  startService {
                 docker-compose up --no-color -d $service
                 ;;
             exited)
-                docker-compose start --no-color -d $service
+                docker-compose start $service
                 ;;
             paused)
                 docker-compose unpause $service
