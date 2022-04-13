@@ -6,11 +6,6 @@
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramCurrentUserId</attribute>
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
     </plain-parameter>
-    <plain-parameter name="paramDescription" mandatory="false" type="java.lang.String">
-      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
-      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramDescription</attribute>
-      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
-    </plain-parameter>
     <plain-parameter name="paramMaterialId" mandatory="false" type="java.lang.Integer">
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramMaterialId</attribute>
@@ -33,6 +28,16 @@
     </plain-parameter>
     <plain-parameter name="paramMolQuery" mandatory="false" type="java.lang.String">
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramIndex" mandatory="false" type="java.lang.String">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramIndex</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramMaterialName" mandatory="false" type="java.lang.String">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramMaterialName</attribute>
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
     </plain-parameter>
   </parameter-definition>

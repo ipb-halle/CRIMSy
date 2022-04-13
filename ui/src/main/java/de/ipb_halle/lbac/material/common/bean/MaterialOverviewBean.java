@@ -220,7 +220,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         reportParams.put("paramCurrentUserId", currentUser.getId());
         reportParams.put("paramOwnerId", GlobalAdmissionContext.OWNER_ACCOUNT_ID);
 
-        reportParams.put("paramMaterialName", NonEmpty.nullOrNonZero(searchController.getName()));
+        reportParams.put("paramMaterialName", NonEmpty.nullOrNonEmpty(searchController.getName()));
         reportParams.put("paramMaterialId", NonEmpty.nullOrNonZero(searchController.getId()));
         reportParams.put("paramUserName", NonEmpty.nullOrNonEmpty(searchController.getUserName()));
         reportParams.put("paramProjectName", NonEmpty.nullOrNonEmpty(searchController.getProjectName()));

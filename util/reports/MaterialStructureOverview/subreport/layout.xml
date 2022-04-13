@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<layout xmlns="http://reporting.pentaho.org/namespaces/engine/classic/bundle/layout/1.0" xmlns:style="http://reporting.pentaho.org/namespaces/engine/classic/bundle/style/1.0" xmlns:core="http://reporting.pentaho.org/namespaces/engine/attributes/core" xmlns:html="http://reporting.pentaho.org/namespaces/engine/attributes/html" xmlns:swing="http://reporting.pentaho.org/namespaces/engine/attributes/swing" xmlns:pdf="http://reporting.pentaho.org/namespaces/engine/attributes/pdf" xmlns:wizard="http://reporting.pentaho.org/namespaces/engine/attributes/wizard" xmlns:designtime="http://reporting.pentaho.org/namespaces/report-designer/2.0" xmlns:crosstab="http://reporting.pentaho.org/namespaces/engine/attributes/crosstab" xmlns:pentaho="http://reporting.pentaho.org/namespaces/engine/attributes/pentaho" xmlns:table="http://reporting.pentaho.org/namespaces/engine/attributes/table" core:auto-sort="true">
+<layout xmlns="http://reporting.pentaho.org/namespaces/engine/classic/bundle/layout/1.0" xmlns:style="http://reporting.pentaho.org/namespaces/engine/classic/bundle/style/1.0" xmlns:core="http://reporting.pentaho.org/namespaces/engine/attributes/core" xmlns:html="http://reporting.pentaho.org/namespaces/engine/attributes/html" xmlns:swing="http://reporting.pentaho.org/namespaces/engine/attributes/swing" xmlns:pdf="http://reporting.pentaho.org/namespaces/engine/attributes/pdf" xmlns:wizard="http://reporting.pentaho.org/namespaces/engine/attributes/wizard" xmlns:designtime="http://reporting.pentaho.org/namespaces/report-designer/2.0" xmlns:crosstab="http://reporting.pentaho.org/namespaces/engine/attributes/crosstab" xmlns:pentaho="http://reporting.pentaho.org/namespaces/engine/attributes/pentaho" xmlns:table="http://reporting.pentaho.org/namespaces/engine/attributes/table" core:auto-sort="true" designtime:zoom="4.0">
   <style:element-style>
     <style:spatial-styles x="53.104" y="3" min-width="280.52" min-height="108.931"/>
   </style:element-style>
   <report-header>
     <root-level-content designtime:visual-height="0.0">
+      <style:element-style>
+      </style:element-style>
     </root-level-content>
   </report-header>
   <group core:group-fields="">
+    <style:element-style>
+    </style:element-style>
     <fields>
     </fields>
     <group-header>
       <root-level-content designtime:hideInLayoutGUI="true">
+        <style:element-style>
+        </style:element-style>
       </root-level-content>
     </group-header>
     <data-body>
+      <style:element-style>
+      </style:element-style>
       <details-header designtime:hideInLayoutGUI="true">
         <style:element-style>
           <style:common-styles avoid-page-break="true"/>
@@ -22,15 +30,28 @@
       </details-header>
       <details>
         <root-level-content designtime:visual-height="54.0">
+          <style:element-style>
+          </style:element-style>
           <text-field core:field="value">
             <style:element-style>
-              <style:spatial-styles x="8" y="5.048" min-width="258" min-height="20"/>
+              <style:content-styles dynamic-height="true"/>
+              <style:spatial-styles x="13.25" y="0" min-width="258" min-height="12.922"/>
+              <style:text-styles font-size="12"/>
             </style:element-style>
           </text-field>
+          <label core:rich-text-type="text/html">
+            <style:element-style>
+              <style:spatial-styles x="2" y="0" min-width="8.75" min-height="10.22"/>
+              <style:text-styles font-face="DejaVu Sans" font-size="12"/>
+            </style:element-style>
+            <core:value>•</core:value>
+          </label>
         </root-level-content>
       </details>
       <no-data>
         <root-level-content designtime:hideInLayoutGUI="true">
+          <style:element-style>
+          </style:element-style>
         </root-level-content>
       </no-data>
       <details-footer designtime:hideInLayoutGUI="true">
@@ -41,11 +62,15 @@
     </data-body>
     <group-footer>
       <root-level-content designtime:hideInLayoutGUI="true">
+        <style:element-style>
+        </style:element-style>
       </root-level-content>
     </group-footer>
   </group>
   <report-footer>
     <root-level-content designtime:visual-height="0.0">
+      <style:element-style>
+      </style:element-style>
     </root-level-content>
   </report-footer>
 </layout>

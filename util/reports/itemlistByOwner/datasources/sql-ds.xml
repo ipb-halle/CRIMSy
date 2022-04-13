@@ -49,6 +49,7 @@ ip.itemrow, ip.itemcol) AS position,
 FROM items AS i
  JOIN containers AS c ON i.containerid = c.id
  JOIN item_positions AS ip ON i.id = ip.itemid AND i.containerid = ip.containerid
+ JOIN material_indices AS mi ON i.materialid = mi.materialid
  JOIN usersgroups AS u ON i.owner_id = u.id
  JOIN aclists AS acl ON i.aclist_id = acl.id
  JOIN acentries AS ace ON acl.id = ace.aclist_id
@@ -56,11 +57,13 @@ FROM items AS i
  JOIN projects AS p ON i.projectid = p.id
  WHERE ace.permread AND (acem.member_id = ${paramCurrentUserId}
     OR (acem.member_id = ${paramOwnerId} AND i.owner_id = ${paramCurrentUserId}))
-  AND COALESCE(NULLIF(true, ${paramPlace}::VARCHAR IS NOT NULL), c.label LIKE ${paramPlace})
-  AND COALESCE(NULLIF(true, ${paramUserId}::INTEGER IS NOT NULL), i.owner_id = ${paramUserId})
+  AND COALESCE(NULLIF(true, ${paramMaterialName}::VARCHAR IS NOT NULL), mi.&quot;value&quot; ILIKE ${paramMaterialName})
+  AND COALESCE(NULLIF(true, ${paramItemLabel}::VARCHAR IS NOT NULL), i.label ILIKE ${paramItemLabel}) 
+  AND COALESCE(NULLIF(true, ${paramUserName}::VARCHAR IS NOT NULL), u.name ILIKE ${paramUserName})
+  AND COALESCE(NULLIF(true, ${paramProjectName}::VARCHAR IS NOT NULL), p.name ILIKE ${paramProjectName})
+  AND COALESCE(NULLIF(true, ${paramLocation}::VARCHAR IS NOT NULL), c.label ILIKE ${paramLocation})
   AND COALESCE(NULLIF(true, ${paramDescription}::VARCHAR IS NOT NULL), i.description ILIKE ${paramDescription})
   AND COALESCE(NULLIF(true, ${paramMaterialId}::INTEGER IS NOT NULL), i.materialid = ${paramMaterialId})
-  AND COALESCE(NULLIF(true, ${paramProjectId}::INTEGER IS NOT NULL), i.projectid = ${paramProjectId})
  ORDER BY i.owner_id, c.label, ip.itemcol, ip.itemrow;
 </data:static-query>
     </data:query>
