@@ -18,12 +18,10 @@
 package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchTarget;
-import java.io.UnsupportedEncodingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,15 +67,6 @@ public class NetObjectPresenter {
     public String getObjectType(NetObject no) {
         return messagePresenter.presentMessage(
                 "search_category_" + no.getTypeToDisplay().getTypeName());
-    }
-
-    public String getLink(NetObject no) throws UnsupportedEncodingException {
-        if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
-            Document d = (Document) no.getSearchable();
-            return d.getLink();
-        } else {
-            return "-";
-        }
     }
 
     public String getToolTip(NetObject no) {

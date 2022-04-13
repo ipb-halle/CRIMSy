@@ -32,8 +32,6 @@ include(dist/etc/config_m4.inc)dnl
 
 		ProxyPass         /ui/rest  http://ui:8080/ui/rest
 		ProxyPassReverse  /ui/rest  http://ui:8080/ui/rest
-                ProxyPass         /ui/servlet/document http://ui:8080/ui/servlet/document
-                ProxyPassReverse  /ui/servlet/document http://ui:8080/ui/servlet/document
 
 	</IfModule>
 
