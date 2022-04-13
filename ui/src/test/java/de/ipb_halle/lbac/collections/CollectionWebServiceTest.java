@@ -135,8 +135,8 @@ public class CollectionWebServiceTest
         Response resp = collectionWebService.getReadableCollections(wr);
 
         Assert.assertEquals("Found Collectionssize does not match", 1, resp.readEntity(CollectionList.class).getCollectionList().size());
-        entityManagerService.doSqlUpdate("Delete from usersgroups where id=" + u.getId());
-        entityManagerService.doSqlUpdate("Delete from usersgroups where id=" + u2.getId());
+        entityManagerService.doSqlUpdate("Delete from usersgroups where id=" + localRequestingUser.getId());
+        entityManagerService.doSqlUpdate("Delete from usersgroups where id=" + remoteRequestingUser.getId());
 
     }
 
