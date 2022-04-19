@@ -94,6 +94,18 @@ public class Report implements Runnable, DTO {
         return id;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public ReportType getType() {
+        return type;
+    }
+
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
     public String getName() {
         return name;
     }

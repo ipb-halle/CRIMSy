@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.device.job;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -29,8 +28,6 @@ import java.util.Date;
  * @author fbroda
  */
 public class Job implements DTO {
-
-
     private Integer jobid;
     private byte[]  input;
     private Date    jobdate;
