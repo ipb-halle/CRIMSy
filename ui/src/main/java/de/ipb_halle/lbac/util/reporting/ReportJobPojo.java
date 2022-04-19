@@ -24,13 +24,25 @@ import java.util.Map;
  * @author flange
  */
 public class ReportJobPojo {
-    public final String source;
-    public final ReportType type;
-    public final Map<String, Object> parameters;
+    private final String reportURI;
+    private final ReportType type;
+    private final Map<String, Object> parameters;
 
-    public ReportJobPojo(Report report) {
-        source = report.getSource();
-        type = report.getType();
-        parameters = report.getParameters();
+    public ReportJobPojo(String reportURI, ReportType type, Map<String, Object> parameters) {
+        this.reportURI = reportURI;
+        this.type = type;
+        this.parameters = parameters;
+    }
+
+    public String getReportURI() {
+        return reportURI;
+    }
+
+    public ReportType getType() {
+        return type;
+    }
+
+    public Map<String, Object> getParameters() {
+        return parameters;
     }
 }

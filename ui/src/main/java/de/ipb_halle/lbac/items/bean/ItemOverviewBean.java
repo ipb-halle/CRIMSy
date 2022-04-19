@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -86,6 +88,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected ACListService aclistService;
     @Inject
     protected ReportMgr reportMgr;
+    @Inject
+    private transient MessagePresenter messagePresenter;
 
     private ACObjectController acObjectController;
     protected User currentUser;
@@ -154,8 +158,13 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         this.selectedReportType = selectedReportType;
     }
 
-    public void actionReport() {
-        HashMap<String, Object> reportParams = new HashMap<String, Object>();
+    public void actionCreateReport() {
+        reportMgr.submitReport(selectedReport, collectReportParameters(), selectedReportType, currentUser);
+        messagePresenter.info("reporting_reportSumbittedGrowlMsg");
+    }
+
+    private Map<String, Object> collectReportParameters() {
+        Map<String, Object> reportParams = new HashMap<String, Object>();
 
         reportParams.put("paramCurrentUserId", currentUser.getId());
         reportParams.put("paramOwnerId", GlobalAdmissionContext.OWNER_ACCOUNT_ID);
@@ -167,7 +176,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reportParams.put("paramLocation", NonEmpty.nullOrNonEmpty(searchMaskValues.getLocation()));
         reportParams.put("paramDescription", NonEmpty.nullOrNonEmpty(searchMaskValues.getDescription()));
 
-        reportMgr.prepareReport(selectedReport, reportParams, selectedReportType);
+        return reportParams;
     }
 
     public void actionStartItemEdit(Item i) {

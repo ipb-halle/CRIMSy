@@ -30,19 +30,19 @@ import org.pentaho.reporting.engine.classic.core.modules.output.table.xls.ExcelR
 public enum ReportType {
     PDF(".pdf") {
         @Override
-        void createReport(MasterReport report, String filename) throws Exception {
+        public void createReport(MasterReport report, String filename) throws Exception {
             PdfReportUtil.createPDF(report, filename);
         }
     },
     XLSX(".xlsx") {
         @Override
-        void createReport(MasterReport report, String filename) throws Exception {
+        public void createReport(MasterReport report, String filename) throws Exception {
             ExcelReportUtil.createXLSX(report, filename);
         }
     },
     CSV(".csv") {
         @Override
-        void createReport(MasterReport report, String filename) throws Exception {
+        public void createReport(MasterReport report, String filename) throws Exception {
             CSVReportUtil.createCSV(report, filename, null);
         }
     };
@@ -57,5 +57,12 @@ public enum ReportType {
         return fileExtension;
     }
 
-    abstract void createReport(MasterReport report, String filename) throws Exception;
+    /**
+     * Create a report and write it to the specified file
+     * 
+     * @param report
+     * @param filename
+     * @throws Exception
+     */
+    public abstract void createReport(MasterReport report, String filename) throws Exception;
 }

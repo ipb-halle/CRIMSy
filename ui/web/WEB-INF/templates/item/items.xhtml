@@ -194,10 +194,13 @@
                                 <b:column
                                     span="1"
                                     styleClass="itemFilterButtonColumn itemFilterButtonRight">
-                                    <b:commandButton 
+                                    <b:commandButton
+                                        ajax="true"
+                                        process="@form"
+                                        update="growlMsg"
+                                        action="#{itemOverviewBean.actionCreateReport()}"
                                         styleClass="itemFilterButton"
-                                        value="#{msgs.reporting_report}"
-                                        action="#{itemOverviewBean.actionReport}"/>
+                                        value="#{msgs.reporting_report}" />
                                 </b:column>
                             </b:row>
                         </b:container>

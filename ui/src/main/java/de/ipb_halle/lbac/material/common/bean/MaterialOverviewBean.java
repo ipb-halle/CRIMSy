@@ -48,6 +48,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -215,6 +217,11 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     }
 
     public void actionCreateReport() {
+        reportMgr.submitReport(selectedReport, collectReportParameters(), ReportType.PDF, currentUser);
+        messagePresenter.info("reporting_reportSumbittedGrowlMsg");
+    }
+
+    private Map<String, Object> collectReportParameters() {
         HashMap<String, Object> reportParams = new HashMap<String, Object>();
 
         reportParams.put("paramCurrentUserId", currentUser.getId());
@@ -232,7 +239,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         String molfile = searchController.getMolecule();
         reportParams.put("paramMolQuery", new Molecule(molfile, -1).isEmptyMolecule() ? null : molfile);
 
-        reportMgr.prepareReport(selectedReport, reportParams, ReportType.PDF);
+        return reportParams;
     }
 
     public User getCurrentUser() {

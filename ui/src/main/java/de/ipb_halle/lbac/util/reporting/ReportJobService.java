@@ -54,6 +54,8 @@ import de.ipb_halle.lbac.device.job.JobService;
 @Singleton
 @Startup
 public class ReportJobService {
+    public static final String REPORT_DIR = "/data/tmp/reports";
+
     private Logger logger = LogManager.getLogger(getClass().getName());
     private Gson gson = new Gson(); // Gson is thread-safe
 

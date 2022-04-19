@@ -17,7 +17,12 @@
  */
 package de.ipb_halle.lbac.util.reporting;
 
+import static de.ipb_halle.lbac.util.reporting.ReportJobService.REPORT_DIR;
+
+import java.io.File;
+import java.net.URL;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
@@ -27,6 +32,10 @@ import javax.enterprise.inject.spi.CDI;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
+import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.libraries.resourceloader.Resource;
+import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 
 /**
  * 
@@ -44,19 +53,42 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
 
     @Override
     public void run() {
-        String tempFilePath = null;
+        File reportFile = null;
+        String reportFilePath = null;
 
         try {
-            // Pentaho
+            reportFile = File.createTempFile("report", reportJobPojo.getType().getFileExtension(),
+                    new File(REPORT_DIR));
+            reportFilePath = reportFile.getAbsolutePath();
+            URL url = new URL(reportJobPojo.getReportURI());
+
+            ClassicEngineBoot.getInstance().start();
+            ResourceManager manager = new ResourceManager();
+            manager.registerDefaults();
+            Resource resource = manager.createDirectly(url, MasterReport.class);
+            MasterReport report = (MasterReport) resource.getResource();
+
+            for (Entry<String, Object> entry : reportJobPojo.getParameters().entrySet()) {
+                String paramName = entry.getKey();
+                Object paramValue = entry.getValue();
+                report.getParameterValues().put(paramName, paramValue);
+            }
+
+            reportJobPojo.getType().createReport(report, reportFilePath);
         } catch (Exception e) {
+            if ((reportFile != null) && (reportFile.exists())) {
+                reportFile.delete();
+            }
+
             fail(e);
+            return;
         }
 
-        done(tempFilePath);
+        done(reportFilePath);
     }
 
-    private void done(String tempFilePath) {
-        reportJobService().markJobAsCompleted(jobId, tempFilePath);
+    private void done(String reportFilePath) {
+        reportJobService().markJobAsCompleted(jobId, reportFilePath);
     }
 
     private void fail(Throwable exception) {

@@ -17,9 +17,7 @@
  */
 package de.ipb_halle.lbac.util.reporting;
 
-import de.ipb_halle.lbac.util.jsf.SendFileBean;
-
-import java.io.File;
+import de.ipb_halle.lbac.admission.User;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +35,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Create Pentaho report
  *
  * @author fbroda
  */
@@ -46,13 +43,13 @@ public class ReportMgr {
     private static final String DEFAULT_LANGUAGE = "en";
     private static final String DEFAULT_NAME = "Report with no name";
 
+    private Logger logger = LogManager.getLogger(getClass().getName());
+
     @Inject
     private ReportService reportService;
 
     @Inject
-    private SendFileBean sendFileBean;
-
-    private Logger logger = LogManager.getLogger(getClass().getName());
+    private ReportJobService reportJobService;
 
     public List<Report> getAvailableReports(String context) {
         List<Report> reports = reportService.loadByContext(context);
@@ -103,27 +100,15 @@ public class ReportMgr {
     }
 
     /**
-     * prepare a report and deliver it to the user
+     * Submit a report to the report generator.
      * 
-     * @param id         id of the report template
-     * @param parameters map of report parameters
-     * @param type       type of report (PDF, XLSX, CSV)
+     * @param report      report template description
+     * @param parameters  map of report parameters
+     * @param type        type of report
+     * @param currentUser current user
      */
-    public void prepareReport(Report report, Map<String, Object> parameters, ReportType type) {
-        report.setParameters(parameters);
-        report.setType(type);
-        File tmpFile = null;
-        try {
-            tmpFile = File.createTempFile("report", type.getFileExtension());
-            report.setFileName(tmpFile.getAbsolutePath());
-            report.run();
-            sendFileBean.sendFile(tmpFile);
-        } catch (Exception e) {
-            this.logger.warn("prepare Report caught an exception: ", (Throwable) e);
-        } finally {
-            if (tmpFile != null) {
-                tmpFile.delete();
-            }
-        }
+    public void submitReport(Report report, Map<String, Object> parameters, ReportType type, User currentUser) {
+        ReportJobPojo pojo = new ReportJobPojo(report.getSource(), type, parameters);
+        reportJobService.submit(pojo, currentUser);
     }
 }
