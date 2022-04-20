@@ -20,7 +20,10 @@ package de.ipb_halle.lbac.util.reporting;
 import static de.ipb_halle.lbac.util.reporting.ReportJobService.REPORT_DIR;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
@@ -30,6 +33,7 @@ import javax.enterprise.concurrent.ManagedTask;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.enterprise.inject.spi.CDI;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
@@ -57,8 +61,7 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
         String reportFilePath = null;
 
         try {
-            reportFile = File.createTempFile("report", reportJobPojo.getType().getFileExtension(),
-                    new File(REPORT_DIR));
+            reportFile = File.createTempFile("report", reportJobPojo.getType().getFileExtension(), getReportDir());
             reportFilePath = reportFile.getAbsolutePath();
             URL url = new URL(reportJobPojo.getReportURI());
 
@@ -71,6 +74,7 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
             for (Entry<String, Object> entry : reportJobPojo.getParameters().entrySet()) {
                 String paramName = entry.getKey();
                 Object paramValue = entry.getValue();
+
                 report.getParameterValues().put(paramName, paramValue);
             }
 
@@ -87,12 +91,17 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
         done(reportFilePath);
     }
 
+    private File getReportDir() throws IOException {
+        // createDirectories() does not fail in case the directory already exists.
+        return Files.createDirectories(Paths.get(REPORT_DIR)).toFile();
+    }
+
     private void done(String reportFilePath) {
         reportJobService().markJobAsCompleted(jobId, reportFilePath);
     }
 
     private void fail(Throwable exception) {
-        logger.warn("Task with jobId={} failed: {}", jobId, exception);
+        logger.warn("Task with jobId={} failed: {}", jobId, ExceptionUtils.getStackTrace(exception));
         reportJobService().markJobAsFailed(jobId);
     }
 

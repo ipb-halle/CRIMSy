@@ -122,13 +122,14 @@ public class JobService implements Serializable {
      * load a Job by id 
      *
      * @param id Job Id 
-     * @return the Job object
+     * @return the Job object or null in case the entity does not exist
      */
     public Job loadById(Integer id) {
         JobEntity entity = this.em.find(JobEntity.class, id);
-        return new Job(
-                entity, 
-                memberService.loadUserById(entity.getOwnerId()));
+        if (entity == null) {
+            return null;
+        }
+        return new Job(entity, memberService.loadUserById(entity.getOwnerId()));
     }
 
     /**

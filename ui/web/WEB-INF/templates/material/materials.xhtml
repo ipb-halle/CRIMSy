@@ -56,7 +56,9 @@
                                 <b:column
                                     offset="5"
                                     span="3">
-                                    <b:selectOneMenu value="#{materialOverviewBean.selectedReport}">
+                                    <b:selectOneMenu
+                                        id="reportSelectionId"
+                                        value="#{materialOverviewBean.selectedReport}">
                                         <f:selectItems
                                             value="#{materialOverviewBean.availableReports}"
                                             var="report"
@@ -66,7 +68,7 @@
                                 <b:column span="2">
                                     <b:commandButton
                                         ajax="true"
-                                        process="materialSearchMaskId"
+                                        process="reportSelectionId materialSearchMaskId"
                                         update="growlMsg"
                                         action="#{materialOverviewBean.actionCreateReport()}"
                                         value="#{msgs.reporting_createReport}" />

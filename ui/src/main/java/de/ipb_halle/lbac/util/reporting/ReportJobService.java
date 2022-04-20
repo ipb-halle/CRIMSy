@@ -25,6 +25,11 @@ import static de.ipb_halle.lbac.device.job.JobStatus.FAILED;
 import static de.ipb_halle.lbac.device.job.JobStatus.PENDING;
 import static de.ipb_halle.lbac.device.job.JobType.REPORT;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +43,6 @@ import javax.ejb.Startup;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.google.gson.Gson;
-
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
@@ -55,9 +55,6 @@ import de.ipb_halle.lbac.device.job.JobService;
 @Startup
 public class ReportJobService {
     public static final String REPORT_DIR = "/data/tmp/reports";
-
-    private Logger logger = LogManager.getLogger(getClass().getName());
-    private Gson gson = new Gson(); // Gson is thread-safe
 
     @Resource(name = "reportExecutorService")
     private ManagedExecutorService managedExecutorService;
@@ -116,8 +113,7 @@ public class ReportJobService {
     }
 
     private ReportTask prepareTask(Job job) {
-        String json = new String(job.getInput());
-        ReportJobPojo reportJobPojo = gson.fromJson(json, ReportJobPojo.class);
+        ReportJobPojo reportJobPojo = (ReportJobPojo) deserialize(job.getInput());
         return new ReportTask(reportJobPojo, job.getJobId());
     }
 
@@ -133,15 +129,35 @@ public class ReportJobService {
         newJob.setJobType(REPORT);
         newJob.setStatus(PENDING);
         newJob.setOwner(owner);
-        String inputJson = toJson(reportJobPojo);
-        newJob.setInput(inputJson.getBytes());
+        newJob.setQueue("");
+        newJob.setInput(serialize(reportJobPojo));
         newJob = jobService.save(newJob);
 
         submitJob(newJob);
     }
 
-    private String toJson(ReportJobPojo pojo) {
-        return gson.toJson(pojo);
+    private byte[] serialize(Object o) {
+        byte[] bytes;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(o);
+            oos.flush();
+            bytes = baos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return bytes;
+    }
+
+    private Object deserialize(byte[] bytes) {
+        Object o = null;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+                ObjectInputStream ois = new ObjectInputStream(bais)) {
+            o = ois.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        return o;
     }
 
     private List<Job> pendingJobs() {
@@ -168,15 +184,23 @@ public class ReportJobService {
         return jobService.save(job);
     }
 
-    Job markJobAsCompleted(int jobId, String reportFilePath) {
+    public Job markJobAsCompleted(int jobId, String reportFilePath) {
         Job job = jobService.loadById(jobId);
+        if (job == null) {
+            return null;
+        }
+
         job.setStatus(COMPLETED);
         job.setOutput(reportFilePath.getBytes());
         return jobService.save(job);
     }
 
-    Job markJobAsFailed(int jobId) {
+    public Job markJobAsFailed(int jobId) {
         Job job = jobService.loadById(jobId);
+        if (job == null) {
+            return null;
+        }
+
         job.setStatus(FAILED);
         return jobService.save(job);
     }

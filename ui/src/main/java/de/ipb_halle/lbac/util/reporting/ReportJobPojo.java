@@ -17,16 +17,19 @@
  */
 package de.ipb_halle.lbac.util.reporting;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * 
  * @author flange
  */
-public class ReportJobPojo {
-    private final String reportURI;
-    private final ReportType type;
-    private final Map<String, Object> parameters;
+public class ReportJobPojo implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String reportURI;
+    private ReportType type;
+    private Map<String, Object> parameters;
 
     public ReportJobPojo(String reportURI, ReportType type, Map<String, Object> parameters) {
         this.reportURI = reportURI;

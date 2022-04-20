@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
+import de.ipb_halle.lbac.util.reporting.ReportJobService;
 import de.ipb_halle.lbac.util.reporting.ReportMgr;
 import de.ipb_halle.lbac.util.reporting.ReportService;
 
@@ -62,6 +63,7 @@ public class ItemDeployment {
                 .addClass(MaterialService.class)
                 .addClass(ReportMgr.class)
                 .addClass(ReportService.class)
+                .addClass(ReportJobService.class)
                 .addClass(SendFileBeanMock.class);
         return MaterialDeployment.add(d);
     }

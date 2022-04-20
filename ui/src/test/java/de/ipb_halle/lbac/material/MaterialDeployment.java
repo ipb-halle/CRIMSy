@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material;
 
+import de.ipb_halle.lbac.device.job.JobService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -29,6 +30,7 @@ import de.ipb_halle.lbac.material.sequence.search.service.SearchParameterService
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
+import de.ipb_halle.lbac.util.reporting.ReportJobService;
 import de.ipb_halle.lbac.util.reporting.ReportMgr;
 import de.ipb_halle.lbac.util.reporting.ReportService;
 
@@ -55,6 +57,8 @@ public class MaterialDeployment {
                 .addClass(IndexService.class)
                 .addClass(ReportMgr.class)
                 .addClass(ReportService.class)
+                .addClass(ReportJobService.class)
+                .addClass(JobService.class)
                 .addClass(SendFileBeanMock.class)
                 .addClass(TaxonomyNestingService.class);
     }
