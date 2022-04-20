@@ -51,6 +51,7 @@ LBAC_TOMEE_PORT_ENABLE     - "8080:8080"
       - LBAC_DATASTORE/data/ui:/data/ui
       - LBAC_DATASTORE/data/ui_conf:/data/conf
       - LBAC_DATASTORE/data/reports:/data/reports
+      - LBAC_DATASTORE/data/tmp/reports:/data/tmp/reports
 
   proxy:
     image: LBAC_IMAGE_REGISTRY/crimsyproxy:LBAC_VERSION

@@ -380,6 +380,9 @@ function superDoUI {
     cp $LBAC_DATASTORE/dist/reports/*.prpt $LBAC_DATASTORE/data/reports/
     chown -R 8080:8080 $LBAC_DATASTORE/data/reports/
 
+    mkdir -p $LBAC_DATASTORE/data/tmp/reports/
+    chown -R 8080:8080 $LBAC_DATASTORE/data/tmp/reports/
+
     (docker inspect dist_ui_1 | grep Status | grep -q running ) && \
         docker restart dist_ui_1
 }
