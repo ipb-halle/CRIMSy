@@ -54,7 +54,7 @@ public class InitApplication {
     private final static long serialVersionUID = 1L;
     private final static String PUBLIC_COLLECTION_NAME = "public";
 
-    @Resource
+    @Resource(name = "lbacManagedExecutorService")
     private ManagedExecutorService managedExecutorService;
 
     @Inject
