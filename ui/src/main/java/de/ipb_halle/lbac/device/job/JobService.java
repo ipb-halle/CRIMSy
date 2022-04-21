@@ -17,9 +17,6 @@
  */
 package de.ipb_halle.lbac.device.job;
 
-/**
- * JobService loads, stores and deletes jobs.
- */
 import de.ipb_halle.lbac.admission.MemberService;
 
 import java.io.Serializable;
@@ -41,14 +38,17 @@ import javax.persistence.criteria.Root;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+/**
+ * JobService loads, stores and deletes jobs.
+ */
 @Stateless
 public class JobService implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     public final static String CONDITION_JOBTYPE = "JOBTYPE";
     public final static String CONDITION_QUEUE = "QUEUE";
     public final static String CONDITION_STATUS = "STATUS";
+    public final static String CONDITION_OWNERID = "OWNERID";
 
     @Inject
     private MemberService memberService;
@@ -56,11 +56,7 @@ public class JobService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    private Logger logger;
-
-    public JobService() {
-        this.logger = LogManager.getLogger(this.getClass().getName());
-    }
+    private Logger logger = LogManager.getLogger(this.getClass().getName());;
 
     @PostConstruct
     public void JobServiceInit() {
@@ -70,31 +66,25 @@ public class JobService implements Serializable {
     }
 
     /**
-     * simply load all jobs
+     * load all jobs
      */
     public List<Job> load() {
-        return load(new HashMap<String, Object> ());
+        return load(new HashMap<String, Object>());
     }
 
     /**
-     * This needs to be complemented by means to select:
-     * <ul>
-     * <li>jobs by state (PENDING, FAILED, ...)</li>
-     * <li>jobs by queue</li>
-     * <li>jobs by owner?</li>
-     * <li>jobs by date (for job exipiration)</li>
-     * </ul>
-     * @return the the complete list of jobs
+     * Loads jobs from the database according to the given conditions.
+     * 
+     * @param cmap map of conditions
+     * @return selected jobs
      */
-    @SuppressWarnings("unchecked")
     public List<Job> load(Map<String, Object> cmap) {
-
-        CriteriaBuilder builder = this.em.getCriteriaBuilder();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<JobEntity> criteriaQuery = builder.createQuery(JobEntity.class);
         Root<JobEntity> jobRoot = criteriaQuery.from(JobEntity.class);
         criteriaQuery.select(jobRoot);
 
-        List<Predicate> predicates = new ArrayList<Predicate> ();
+        List<Predicate> predicates = new ArrayList<Predicate>();
 
         if (cmap.get(CONDITION_JOBTYPE) != null) {
             predicates.add(builder.equal(jobRoot.get("jobtype"), cmap.get(CONDITION_JOBTYPE)));
@@ -108,24 +98,26 @@ public class JobService implements Serializable {
             predicates.add(builder.equal(jobRoot.get("status"), cmap.get(CONDITION_STATUS)));
         }
 
+        if (cmap.get(CONDITION_OWNERID) != null) {
+            predicates.add(builder.equal(jobRoot.get("ownerid"), cmap.get(CONDITION_OWNERID)));
+        }
+
         criteriaQuery.where(builder.and(predicates.toArray(new Predicate[0])));
         List<Job> result = new ArrayList<>();
-        for (JobEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
-            result.add(new Job(
-                    e,
-                    memberService.loadUserById(e.getOwnerId())));
+        for (JobEntity e : em.createQuery(criteriaQuery).getResultList()) {
+            result.add(new Job(e, memberService.loadUserById(e.getOwnerId())));
         }
         return result;
     }
 
     /**
-     * load a Job by id 
+     * load a Job by id
      *
-     * @param id Job Id 
+     * @param id Job Id
      * @return the Job object or null in case the entity does not exist
      */
     public Job loadById(Integer id) {
-        JobEntity entity = this.em.find(JobEntity.class, id);
+        JobEntity entity = em.find(JobEntity.class, id);
         if (entity == null) {
             return null;
         }
@@ -134,21 +126,31 @@ public class JobService implements Serializable {
 
     /**
      * remove a job from the database
-     * @param p the job DTO
+     * 
+     * @param job the job DTO
      */
-    public void remove(Job j) {
-        this.em.remove(this.em.find(JobEntity.class, j.getJobId()));
+    public void remove(Job job) {
+        remove(job.getJobId());
+    }
+
+    /**
+     * remove a job from the database
+     * 
+     * @param jobId the job's id
+     */
+    public void remove(Integer jobId) {
+        if (jobId != null) {
+            em.remove(em.find(JobEntity.class, jobId));
+        }
     }
 
     /**
      * save a single job object
      *
-     * @param j the Job  to save
+     * @param j the Job to save
      * @return the persisted Job DTO
      */
     public Job save(Job j) {
-        return new Job(
-                this.em.merge(j.createEntity()),
-                j.getOwner());
+        return new Job(em.merge(j.createEntity()), j.getOwner());
     }
 }

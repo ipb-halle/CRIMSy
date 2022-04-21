@@ -93,6 +93,10 @@ public class Job implements DTO {
         return this.jobid;
     }
 
+    public Date getJobdate() {
+        return jobdate;
+    }
+
     public JobType getJobType() {
         return this.jobtype;
     }
