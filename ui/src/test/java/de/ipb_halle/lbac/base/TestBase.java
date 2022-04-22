@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.mock.GlobalAdmissionContextMock;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
@@ -76,7 +77,6 @@ import org.junit.jupiter.api.BeforeEach;
 public class TestBase implements Serializable {
     
     protected Logger logger;
-    protected String LBAC_PROPERTIES_PATH = "target/test-classes/keystore/lbac_properties.xml";
     protected String TEST_ROOT = "target/test-classes/";
     protected CreationTools creationTools;
     protected MaterialCreator materialCreator;
@@ -145,7 +145,7 @@ public class TestBase implements Serializable {
     
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
-                .addClass(GlobalAdmissionContext.class)
+                .addClass(GlobalAdmissionContextMock.class)
                 .addClass(GlobalVersions.class)
                 .addClass(ACListService.class)
                 .addClass(CloudService.class)
@@ -196,7 +196,6 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM files");
         
         entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
-        context.setLBAC_PROPERTIES_PATH("target/test-classes/keystore/lbac_properties.xml");
         context.createAdminAccount();
         cleanExperimentsFromDB();
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -421,7 +420,7 @@ public class TestBase implements Serializable {
     }
     
     protected void initializeKeyStoreFactory() {
-        KeyStoreFactory.setLBAC_PROPERTIES_PATH(LBAC_PROPERTIES_PATH);
+        KeyStoreFactory.setLBAC_PROPERTIES_PATH(context.getLbacPropertiesPath());
         KeyStoreFactory ksf = KeyStoreFactory
                 .getInstance()
                 .setLOCAL_KEY_ALIAS("test")

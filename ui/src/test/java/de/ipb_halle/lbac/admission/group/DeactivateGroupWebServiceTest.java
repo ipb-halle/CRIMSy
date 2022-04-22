@@ -67,9 +67,7 @@ public class DeactivateGroupWebServiceTest extends TestBase {
     public static WebArchive createDeployment() {
 
         return prepareDeployment("GroupWebServiceTest.war")
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(MembershipWebService.class)
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(FileService.class)
                 .addClass(KeyManager.class)

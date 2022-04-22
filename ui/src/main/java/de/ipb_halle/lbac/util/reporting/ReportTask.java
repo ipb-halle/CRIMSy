@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.util.reporting;
 
-import static de.ipb_halle.lbac.util.reporting.ReportJobService.REPORT_DIR;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -48,10 +46,12 @@ import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
     private Logger logger = LogManager.getLogger(getClass().getName());
     private final ReportJobPojo reportJobPojo;
+    private final String reportsDir;
     private final int jobId;
 
-    public ReportTask(ReportJobPojo reportJobPojo, int jobId) {
+    public ReportTask(ReportJobPojo reportJobPojo, String reportsDir, int jobId) {
         this.reportJobPojo = reportJobPojo;
+        this.reportsDir = reportsDir;
         this.jobId = jobId;
     }
 
@@ -93,7 +93,7 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
 
     private File getReportDir() throws IOException {
         // createDirectories() does not fail in case the directory already exists.
-        return Files.createDirectories(Paths.get(REPORT_DIR)).toFile();
+        return Files.createDirectories(Paths.get(reportsDir)).toFile();
     }
 
     private void done(String reportFilePath) {

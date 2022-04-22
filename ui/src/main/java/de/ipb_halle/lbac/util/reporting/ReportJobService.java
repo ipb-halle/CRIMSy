@@ -37,12 +37,17 @@ import java.util.concurrent.RejectedExecutionException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.DependsOn;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
@@ -53,11 +58,15 @@ import de.ipb_halle.lbac.device.job.JobService;
  */
 @Singleton
 @Startup
+@DependsOn("globalAdmissionContext")
 public class ReportJobService {
-    public static final String REPORT_DIR = "/data/tmp/reports";
+    private Logger logger = LogManager.getLogger(getClass().getName());
 
     @Resource(name = "reportExecutorService")
     private ManagedExecutorService managedExecutorService;
+
+    @Inject
+    private GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
     private JobService jobService;
@@ -114,7 +123,7 @@ public class ReportJobService {
 
     private ReportTask prepareTask(Job job) {
         ReportJobPojo reportJobPojo = (ReportJobPojo) deserialize(job.getInput());
-        return new ReportTask(reportJobPojo, job.getJobId());
+        return new ReportTask(reportJobPojo, globalAdmissionContext.getReportsDirectory(), job.getJobId());
     }
 
     /**
