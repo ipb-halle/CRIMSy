@@ -15,10 +15,12 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.util.reporting;
+package de.ipb_halle.lbac.reporting.job;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import de.ipb_halle.lbac.reporting.report.ReportType;
 
 /**
  * 

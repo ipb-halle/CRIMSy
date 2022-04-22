@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.util.reporting;
+package de.ipb_halle.lbac.reporting.report;
 
 import java.util.ArrayList;
 import java.util.List;

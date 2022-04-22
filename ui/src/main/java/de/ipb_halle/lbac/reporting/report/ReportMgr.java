@@ -15,9 +15,12 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.util.reporting;
+package de.ipb_halle.lbac.reporting.report;
 
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.reporting.job.ReportJobPojo;
+import de.ipb_halle.lbac.reporting.job.ReportJobService;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;

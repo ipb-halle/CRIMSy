@@ -31,11 +31,11 @@ import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.reporting.job.ReportJobService;
+import de.ipb_halle.lbac.reporting.report.ReportMgr;
+import de.ipb_halle.lbac.reporting.report.ReportService;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
-import de.ipb_halle.lbac.util.reporting.ReportJobService;
-import de.ipb_halle.lbac.util.reporting.ReportMgr;
-import de.ipb_halle.lbac.util.reporting.ReportService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 

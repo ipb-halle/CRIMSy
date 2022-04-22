@@ -29,10 +29,10 @@ import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchService
 import de.ipb_halle.lbac.material.sequence.search.service.SearchParameterService;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.reporting.job.ReportJobService;
+import de.ipb_halle.lbac.reporting.report.ReportMgr;
+import de.ipb_halle.lbac.reporting.report.ReportService;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
-import de.ipb_halle.lbac.util.reporting.ReportJobService;
-import de.ipb_halle.lbac.util.reporting.ReportMgr;
-import de.ipb_halle.lbac.util.reporting.ReportService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 

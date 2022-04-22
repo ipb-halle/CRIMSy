@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.util.reporting;
+package de.ipb_halle.lbac.reporting.job;
 
 import static de.ipb_halle.lbac.device.job.JobService.CONDITION_JOBTYPE;
 import static de.ipb_halle.lbac.device.job.JobService.CONDITION_STATUS;
