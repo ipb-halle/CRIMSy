@@ -196,6 +196,7 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM files");
         
         entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
+        entityManagerService.doSqlUpdate("DELETE FROM jobs");
         context.createAdminAccount();
         cleanExperimentsFromDB();
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);

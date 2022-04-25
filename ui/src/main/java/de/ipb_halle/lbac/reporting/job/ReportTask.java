@@ -40,6 +40,8 @@ import org.pentaho.reporting.libraries.resourceloader.Resource;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 
 /**
+ * Task that generates reports using Pentaho. It is associated to a reporting
+ * job.
  * 
  * @author flange
  */
@@ -55,6 +57,10 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
         this.jobId = jobId;
     }
 
+    /**
+     * Generates a report using Pentaho. If successful, it marks the associated job
+     * as completed. If unsuccessful, it marks the job as failed.
+     */
     @Override
     public void run() {
         File reportFile = null;
@@ -127,6 +133,10 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
     public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
     }
 
+    /**
+     * Called when the ManagedExecutorService decides to abort the task. This marks
+     * the associated job as failed.
+     */
     @Override
     public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable exception) {
         fail(exception);
