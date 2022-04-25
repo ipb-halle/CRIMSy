@@ -74,15 +74,15 @@ ${BOLD}DESCRIPTION${REGULAR}
     and "LATEST" to to tag containers accordingly. 
 
       Format: 
-        STAGE:BRANCH;FLAG[,FLAG] 
+        STAGE;BRANCH;FLAG[,FLAG] 
 
       Example file: 
-        stage1:production_3;MINOR
-        stage1:production_31;MAJOR,LATEST
-        stage1:testing;
-        stage2:production_3;MINOR
-        stage2:production_31;MINOR
-        stage2:testing;MAJOR,LATEST
+        stage1;production_3;MINOR
+        stage1;production_31;MAJOR,LATEST
+        stage1;testing;
+        stage2;production_3;MINOR
+        stage2;production_31;MINOR
+        stage2;testing;MAJOR,LATEST
 
 -h|--help
     Print this help text.
