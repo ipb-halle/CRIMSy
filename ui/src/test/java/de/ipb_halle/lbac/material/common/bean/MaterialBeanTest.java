@@ -119,6 +119,9 @@ public class MaterialBeanTest extends TestBase {
     @Inject
     private MaterialCompositionBean compositionBean;
 
+    @Inject
+    private MessagePresenterMock messagePresenter;
+
     CreationTools creationTools;
     User publicUser;
     User customUser;
@@ -200,7 +203,7 @@ public class MaterialBeanTest extends TestBase {
 
         Material originalMaterial = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(originalMaterial.copyMaterial());
-        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController());
+        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController(),messagePresenter);
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
 
@@ -507,14 +510,14 @@ public class MaterialBeanTest extends TestBase {
     public void test010_saveNewStructure() {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
         projectService.saveEditedProjectToDb(project);
-       
+
         instance.startMaterialCreation();
         instance.getMaterialEditState().setCurrentProject(project);
         instance.setCurrentMaterialType(MaterialType.STRUCTURE);
 
         instance.getMaterialNameBean().getNames().get(0).setValue("test-structure");
         instance.getMaterialIndexBean().getIndices().add(new IndexEntry(2, "XYZ", "de"));
-      
+
         instance.actionSaveMaterial();
 
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
@@ -529,6 +532,7 @@ public class MaterialBeanTest extends TestBase {
 
         Assert.assertEquals(1, loadedStruc.getIndices().size());
     }
+
     @DisplayName("Issue-based (#156) - Disappeared molecule")
     @Test
     public void test_011_bug_disappeared_molecule_156() throws IOException {
@@ -539,11 +543,11 @@ public class MaterialBeanTest extends TestBase {
         projectService.saveEditedProjectToDb(project);
         instance.startMaterialCreation();
         instance.getMaterialEditState().setCurrentProject(project);
-        instance.getMaterialNameBean().getNames().get(0).setValue("test_011-structure");         
+        instance.getMaterialNameBean().getNames().get(0).setValue("test_011-structure");
         instance.setAutoCalcFormularAndMasses(true);
         instance.getStructureInfos().setStructureModel(benzene);
         instance.actionSaveMaterial();
-         
+
         //Load structure
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("test_011-structure");
@@ -551,19 +555,18 @@ public class MaterialBeanTest extends TestBase {
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
 
         //Edit structure
-        Structure originalStruc=(Structure) result.getAllFoundObjects().get(0).getSearchable();
-        instance.startMaterialEdit(originalStruc);         
+        Structure originalStruc = (Structure) result.getAllFoundObjects().get(0).getSearchable();
+        instance.startMaterialEdit(originalStruc);
         instance.setAutoCalcFormularAndMasses(false);
-        instance.getStructureInfos().setAverageMolarMass(null);        
+        instance.getStructureInfos().setAverageMolarMass(null);
         instance.actionSaveMaterial();
-        
+
         //Check if the molecule still exists but without  molar mass
         result = materialService.loadReadableMaterials(requestBuilder.build());
-        Structure editedStruc=(Structure) result.getAllFoundObjects().get(0).getSearchable();
+        Structure editedStruc = (Structure) result.getAllFoundObjects().get(0).getSearchable();
         Assert.assertEquals(benzene, editedStruc.getMolecule().getStructureModel());
         Assert.assertNull(editedStruc.getAverageMolarMass());
-        
-        
+
     }
 
     @Deployment

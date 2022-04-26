@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import java.io.Serializable;
@@ -32,6 +32,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialEditState implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Project currentProject;
     private Date currentVersiondate;
@@ -40,8 +42,12 @@ public class MaterialEditState implements Serializable {
     private Project defaultProject;
     private MaterialHazardBuilder hazardController;
 
-    public MaterialEditState() {
-        defaultProject = new Project(ProjectType.DUMMY_PROJECT, "bitte das Projekt auswählen");
+    private transient MessagePresenter messagePresenter;
+
+    public MaterialEditState(MessagePresenter messagePresenter) {        
+        defaultProject = new Project(
+                ProjectType.DUMMY_PROJECT, 
+                messagePresenter.presentMessage("materialCreation_dummyProject"));
         currentProject = defaultProject;
     }
 
@@ -50,14 +56,17 @@ public class MaterialEditState implements Serializable {
             Date currentVersiondate,
             Material materialBeforeEdit,
             Material materialToEdit,
-            MaterialHazardBuilder hazards) {
+            MaterialHazardBuilder hazards,
+            MessagePresenter messagePresenter) {
         this.currentProject = currentProject;
         this.currentVersiondate = currentVersiondate;
         this.materialBeforeEdit = materialBeforeEdit;
         this.materialToEdit = materialToEdit;
         this.hazardController = hazards;
 
-        defaultProject = new Project(ProjectType.DUMMY_PROJECT, "bitte das Projekt auswählen");
+        defaultProject = new Project(
+                ProjectType.DUMMY_PROJECT, 
+                messagePresenter.presentMessage("materialCreation_dummyProject"));
 
     }
 
