@@ -21,6 +21,7 @@ import static de.ipb_halle.lbac.device.job.JobStatus.COMPLETED;
 import static de.ipb_halle.lbac.device.job.JobStatus.FAILED;
 import static de.ipb_halle.lbac.device.job.JobStatus.PENDING;
 import static de.ipb_halle.lbac.device.job.JobType.REPORT;
+import static de.ipb_halle.lbac.reporting.report.ReportType.CSV;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -29,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,15 +39,13 @@ import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
-import de.ipb_halle.lbac.reporting.report.ReportType;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
@@ -61,21 +59,12 @@ public class ReportTaskTest extends TestBase {
     @Inject
     private JobService jobService;
 
+    @TempDir
     private static File tempReportsDir;
 
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("ReportTaskTest.war").addClass(ReportJobService.class).addClass(JobService.class);
-    }
-
-    @BeforeAll
-    public static void beforeAll() throws IOException {
-        tempReportsDir = Files.createTempDirectory("ReportTaskTest").toFile();
-    }
-
-    @AfterEach
-    public void after() throws IOException {
-        FileUtils.deleteDirectory(tempReportsDir);
     }
 
     @Test
@@ -84,7 +73,7 @@ public class ReportTaskTest extends TestBase {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("paramHello", 42);
         parameters.put("paramWorld", "abcdef");
-        ReportJobPojo reportJobPojo = new ReportJobPojo(reportURI, ReportType.CSV, parameters);
+        ReportJobPojo reportJobPojo = new ReportJobPojo(reportURI, CSV, parameters);
         int jobId = prepareJob();
         ReportTask task = new ReportTask(reportJobPojo, tempReportsDir.getAbsolutePath(), jobId);
 
@@ -111,7 +100,7 @@ public class ReportTaskTest extends TestBase {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("paramHello", "42"); // wrong type!
         parameters.put("paramWorld", "abcdef");
-        ReportJobPojo reportJobPojo = new ReportJobPojo(reportURI, ReportType.CSV, parameters);
+        ReportJobPojo reportJobPojo = new ReportJobPojo(reportURI, CSV, parameters);
         int jobId = prepareJob();
         ReportTask task = new ReportTask(reportJobPojo, tempReportsDir.getAbsolutePath(), jobId);
 
@@ -130,7 +119,7 @@ public class ReportTaskTest extends TestBase {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("paramHello", 42);
         parameters.put("paramWorld", "abcdef");
-        ReportJobPojo reportJobPojo = new ReportJobPojo(reportURI, ReportType.CSV, parameters);
+        ReportJobPojo reportJobPojo = new ReportJobPojo(reportURI, CSV, parameters);
         int jobId = prepareJob();
         ReportTask task = new ReportTask(reportJobPojo, tempReportsDir.getAbsolutePath(), jobId);
 

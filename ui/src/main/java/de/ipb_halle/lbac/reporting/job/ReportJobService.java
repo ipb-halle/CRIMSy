@@ -35,17 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.DependsOn;
-import javax.ejb.Schedule;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
@@ -56,12 +49,8 @@ import de.ipb_halle.lbac.device.job.JobService;
  * 
  * @author flange
  */
-@Singleton
-@Startup
-@DependsOn("globalAdmissionContext")
+@Stateless
 public class ReportJobService {
-    private Logger logger = LogManager.getLogger(getClass().getName());
-
     @Resource(name = "reportExecutorService")
     private ManagedExecutorService managedExecutorService;
 
@@ -72,17 +61,25 @@ public class ReportJobService {
     private JobService jobService;
 
     /**
-     * Marks all existing busy reporting jobs as pending upon application startup.
+     * Create a new pending reporting job and try to submit it to the
+     * ManagedExecutorService immediately.
+     * 
+     * @param reportJobPojo
+     * @param owner
      */
-    @PostConstruct
-    void startUp() {
-        markBusyJobsAsPending();
+    public void submit(ReportJobPojo reportJobPojo, User owner) {
+        Job newJob = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(owner).setQueue("")
+                .setInput(serialize(reportJobPojo));
+        newJob = jobService.save(newJob);
 
-        // Could cause heavy load on application startup?
-        // submitTasksToExecutor();
+        submitJob(newJob);
     }
 
-    private void markBusyJobsAsPending() {
+    /**
+     * Marks all busy jobs as pending. Use only at startup of the application to
+     * ensure that previously unfinished reporting jobs are restarted.
+     */
+    public void markBusyJobsAsPending() {
         for (Job job : busyJobs()) {
             markJobAsPending(job);
         }
@@ -93,14 +90,46 @@ public class ReportJobService {
      * this activity as soon as the ManagedExecutorService cannot accept any new
      * tasks.
      */
-    @Schedule(second = "0", minute = "*", hour = "*")
-    void submitTasksToExecutor() {
+    public void submitPendingTasksToExecutor() {
         for (Job job : pendingJobs()) {
             boolean submitSuccessful = submitJob(job);
             if (!submitSuccessful) {
                 break;
             }
         }
+    }
+
+    /**
+     * Marks the job with the given ID as complete.
+     * 
+     * @param jobId
+     * @param reportFilePath
+     * @return the job DTO
+     */
+    public Job markJobAsCompleted(int jobId, String reportFilePath) {
+        Job job = jobService.loadById(jobId);
+        if (job == null) {
+            return null;
+        }
+
+        job.setStatus(COMPLETED).setOutput(reportFilePath.getBytes());
+        return jobService.save(job);
+    }
+
+    /**
+     * Marks the job with the given ID as failed.
+     * 
+     * @param jobId
+     * @return the job DTO
+     */
+    public Job markJobAsFailed(int jobId) {
+        Job job = jobService.loadById(jobId);
+        if (job == null) {
+            return null;
+        }
+
+        job.setStatus(FAILED);
+        return jobService.save(job);
     }
 
     /**
@@ -126,25 +155,6 @@ public class ReportJobService {
         return new ReportTask(reportJobPojo, globalAdmissionContext.getReportsDirectory(), job.getJobId());
     }
 
-    /**
-     * Submit a new reporting job and try to submit it to the ManagedExecutorService
-     * immediately.
-     * 
-     * @param report
-     * @param owner
-     */
-    public void submit(ReportJobPojo reportJobPojo, User owner) {
-        Job newJob = new Job();
-        newJob.setJobType(REPORT);
-        newJob.setStatus(PENDING);
-        newJob.setOwner(owner);
-        newJob.setQueue("");
-        newJob.setInput(serialize(reportJobPojo));
-        newJob = jobService.save(newJob);
-
-        submitJob(newJob);
-    }
-
     private byte[] serialize(Object o) {
         byte[] bytes;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -159,6 +169,10 @@ public class ReportJobService {
     }
 
     private Object deserialize(byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
+
         Object o = null;
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
                 ObjectInputStream ois = new ObjectInputStream(bais)) {
@@ -193,24 +207,8 @@ public class ReportJobService {
         return jobService.save(job);
     }
 
-    public Job markJobAsCompleted(int jobId, String reportFilePath) {
-        Job job = jobService.loadById(jobId);
-        if (job == null) {
-            return null;
-        }
-
-        job.setStatus(COMPLETED);
-        job.setOutput(reportFilePath.getBytes());
-        return jobService.save(job);
-    }
-
-    public Job markJobAsFailed(int jobId) {
-        Job job = jobService.loadById(jobId);
-        if (job == null) {
-            return null;
-        }
-
-        job.setStatus(FAILED);
-        return jobService.save(job);
+    // Replace managedExecutorService in tests.
+    public void setManagedExecutorService(ManagedExecutorService managedExecutorService) {
+        this.managedExecutorService = managedExecutorService;
     }
 }

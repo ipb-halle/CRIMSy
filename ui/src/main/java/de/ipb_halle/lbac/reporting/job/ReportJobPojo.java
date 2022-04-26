@@ -23,6 +23,7 @@ import java.util.Map;
 import de.ipb_halle.lbac.reporting.report.ReportType;
 
 /**
+ * Serializable data class to be used as input data of reporting jobs.
  * 
  * @author flange
  */
