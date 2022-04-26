@@ -118,9 +118,7 @@ public class MaterialBeanTest extends TestBase {
 
     @Inject
     private MaterialCompositionBean compositionBean;
-
-    @Inject
-    private MessagePresenterMock messagePresenter;
+   
 
     CreationTools creationTools;
     User publicUser;
@@ -203,7 +201,7 @@ public class MaterialBeanTest extends TestBase {
 
         Material originalMaterial = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(originalMaterial.copyMaterial());
-        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController(),messagePresenter);
+        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController(),MessagePresenterMock.getInstance());
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
 
