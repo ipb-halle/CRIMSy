@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +69,8 @@ public class JobService implements Serializable {
     /**
      * load all jobs
      */
-    public List<Job> load() {
-        return load(new HashMap<String, Object>());
+    public List<Job> loadAllJobs() {
+        return loadJobs(new HashMap<String, Object>());
     }
 
     /**
@@ -78,14 +79,20 @@ public class JobService implements Serializable {
      * @param cmap map of conditions
      * @return selected jobs
      */
-    public List<Job> load(Map<String, Object> cmap) {
+    public List<Job> loadJobs(Map<String, Object> cmap) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<JobEntity> criteriaQuery = builder.createQuery(JobEntity.class);
         Root<JobEntity> jobRoot = criteriaQuery.from(JobEntity.class);
         criteriaQuery.select(jobRoot);
 
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = buildPredicatesFromConditions(cmap, builder, jobRoot);
+        criteriaQuery.where(builder.and(predicates.toArray(new Predicate[0])));
+        return getResultsFromQuery(criteriaQuery);
+    }
 
+    private List<Predicate> buildPredicatesFromConditions(Map<String, Object> cmap, CriteriaBuilder builder,
+            Root<JobEntity> jobRoot) {
+        List<Predicate> predicates = new ArrayList<>();
         if (cmap.get(CONDITION_JOBTYPE) != null) {
             predicates.add(builder.equal(jobRoot.get("jobtype"), cmap.get(CONDITION_JOBTYPE)));
         }
@@ -101,8 +108,10 @@ public class JobService implements Serializable {
         if (cmap.get(CONDITION_OWNERID) != null) {
             predicates.add(builder.equal(jobRoot.get("ownerid"), cmap.get(CONDITION_OWNERID)));
         }
+        return predicates;
+    }
 
-        criteriaQuery.where(builder.and(predicates.toArray(new Predicate[0])));
+    private List<Job> getResultsFromQuery(CriteriaQuery<JobEntity> criteriaQuery) {
         List<Job> result = new ArrayList<>();
         for (JobEntity e : em.createQuery(criteriaQuery).getResultList()) {
             result.add(new Job(e, memberService.loadUserById(e.getOwnerId())));
@@ -111,12 +120,32 @@ public class JobService implements Serializable {
     }
 
     /**
+     * Loads jobs from the database with a jobdate older than the given date and according to the given conditions.
+     * 
+     * @param date
+     * @param cmap map of conditions
+     * @return selected jobs
+     */
+    public List<Job> loadJobsOlderThan(Date date, Map<String, Object> cmap) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<JobEntity> criteriaQuery = builder.createQuery(JobEntity.class);
+        Root<JobEntity> jobRoot = criteriaQuery.from(JobEntity.class);
+        criteriaQuery.select(jobRoot);
+
+        List<Predicate> predicates = buildPredicatesFromConditions(cmap, builder, jobRoot);
+        predicates.add(builder.lessThan(jobRoot.get("jobdate"), date));
+
+        criteriaQuery.where(builder.and(predicates.toArray(new Predicate[0])));
+        return getResultsFromQuery(criteriaQuery);
+    }
+
+    /**
      * load a Job by id
      *
      * @param id Job Id
      * @return the Job object or null in case the entity does not exist
      */
-    public Job loadById(Integer id) {
+    public Job loadJobById(Integer id) {
         JobEntity entity = em.find(JobEntity.class, id);
         if (entity == null) {
             return null;
@@ -129,8 +158,8 @@ public class JobService implements Serializable {
      * 
      * @param job the job DTO
      */
-    public void remove(Job job) {
-        remove(job.getJobId());
+    public void removeJob(Job job) {
+        removeJob(job.getJobId());
     }
 
     /**
@@ -138,7 +167,7 @@ public class JobService implements Serializable {
      * 
      * @param jobId the job's id
      */
-    public void remove(Integer jobId) {
+    public void removeJob(Integer jobId) {
         if (jobId != null) {
             em.remove(em.find(JobEntity.class, jobId));
         }
@@ -147,10 +176,10 @@ public class JobService implements Serializable {
     /**
      * save a single job object
      *
-     * @param j the Job to save
+     * @param job the Job to save
      * @return the persisted Job DTO
      */
-    public Job save(Job j) {
-        return new Job(em.merge(j.createEntity()), j.getOwner());
+    public Job saveJob(Job job) {
+        return new Job(em.merge(job.createEntity()), job.getOwner());
     }
 }

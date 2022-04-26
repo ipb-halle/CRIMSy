@@ -64,7 +64,7 @@ public class ReportTaskTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("ReportTaskTest.war").addClass(ReportJobService.class).addClass(JobService.class);
+        return prepareDeployment("ReportTaskTest.war").addClasses(ReportJobService.class, JobService.class);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class ReportTaskTest extends TestBase {
 
         task.run();
 
-        Job finishedJob = jobService.loadById(jobId);
+        Job finishedJob = jobService.loadJobById(jobId);
         assertEquals(COMPLETED, finishedJob.getStatus());
 
         byte[] output = finishedJob.getOutput();
@@ -106,7 +106,7 @@ public class ReportTaskTest extends TestBase {
 
         task.run();
 
-        Job failedJob = jobService.loadById(jobId);
+        Job failedJob = jobService.loadJobById(jobId);
         assertEquals(FAILED, failedJob.getStatus());
         assertNull(failedJob.getOutput());
 
@@ -125,7 +125,7 @@ public class ReportTaskTest extends TestBase {
 
         task.run();
 
-        Job failedJob = jobService.loadById(jobId);
+        Job failedJob = jobService.loadJobById(jobId);
         assertEquals(FAILED, failedJob.getStatus());
         assertNull(failedJob.getOutput());
 
@@ -151,7 +151,7 @@ public class ReportTaskTest extends TestBase {
 
         task.taskAborted(null, null, task, new Exception());
 
-        Job failedJob = jobService.loadById(jobId);
+        Job failedJob = jobService.loadJobById(jobId);
         assertEquals(FAILED, failedJob.getStatus());
         assertNull(failedJob.getOutput());
     }
@@ -159,7 +159,7 @@ public class ReportTaskTest extends TestBase {
     private int prepareJob() {
         Job newJob = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(adminUser).setQueue("").setInput(null)
                 .setOutput(null);
-        newJob = jobService.save(newJob);
+        newJob = jobService.saveJob(newJob);
         return newJob.getJobId();
     }
 

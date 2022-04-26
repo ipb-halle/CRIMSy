@@ -70,8 +70,7 @@ public class ReportJobServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("ReportJobServiceTest.war").addClass(ReportJobService.class)
-                .addClass(JobService.class);
+        return prepareDeployment("ReportJobServiceTest.war").addClasses(ReportJobService.class, JobService.class);
     }
 
     private ManagedExecutorServiceMock managedExecutorService;
@@ -119,11 +118,11 @@ public class ReportJobServiceTest extends TestBase {
     @Test
     public void test_markBusyJobsAsPending() {
         Job job = new Job().setJobType(REPORT).setStatus(BUSY).setOwner(adminUser).setQueue("");
-        job = jobService.save(job);
+        job = jobService.saveJob(job);
 
         reportJobService.markBusyJobsAsPending();
 
-        job = jobService.loadById(job.getJobId());
+        job = jobService.loadJobById(job.getJobId());
         assertEquals(PENDING, job.getStatus());
     }
 
@@ -132,9 +131,9 @@ public class ReportJobServiceTest extends TestBase {
         Job pending1 = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(adminUser).setQueue("");
         Job pending2 = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(adminUser).setQueue("");
         Job pending3 = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(adminUser).setQueue("");
-        pending1 = jobService.save(pending1);
-        pending2 = jobService.save(pending2);
-        pending3 = jobService.save(pending3);
+        pending1 = jobService.saveJob(pending1);
+        pending2 = jobService.saveJob(pending2);
+        pending3 = jobService.saveJob(pending3);
 
         reportJobService.submitPendingTasksToExecutor();
 
@@ -155,7 +154,7 @@ public class ReportJobServiceTest extends TestBase {
     @Test
     public void test_markJobAsCompleted_withValidJobId() {
         Job pendingJob = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(adminUser).setQueue("");
-        pendingJob = jobService.save(pendingJob);
+        pendingJob = jobService.saveJob(pendingJob);
 
         Job completedJob = reportJobService.markJobAsCompleted(pendingJob.getJobId(), "somewhere");
 
@@ -179,7 +178,7 @@ public class ReportJobServiceTest extends TestBase {
     @Test
     public void test_markJobAsFailed_withValidJobId() {
         Job pendingJob = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(adminUser).setQueue("");
-        pendingJob = jobService.save(pendingJob);
+        pendingJob = jobService.saveJob(pendingJob);
 
         Job failedJob = reportJobService.markJobAsFailed(pendingJob.getJobId());
 
@@ -203,21 +202,21 @@ public class ReportJobServiceTest extends TestBase {
     private List<Job> allJobs() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(CONDITION_JOBTYPE, REPORT);
-        return jobService.load(cmap);
+        return jobService.loadJobs(cmap);
     }
 
     private List<Job> pendingJobs() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(CONDITION_JOBTYPE, REPORT);
         cmap.put(CONDITION_STATUS, PENDING);
-        return jobService.load(cmap);
+        return jobService.loadJobs(cmap);
     }
 
     private List<Job> busyJobs() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(CONDITION_JOBTYPE, REPORT);
         cmap.put(CONDITION_STATUS, BUSY);
-        return jobService.load(cmap);
+        return jobService.loadJobs(cmap);
     }
 
     private ReportJobPojo deserializeToReportJobPojo(byte[] bytes) {

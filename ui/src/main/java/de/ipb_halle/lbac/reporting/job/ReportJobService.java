@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -51,6 +52,12 @@ import de.ipb_halle.lbac.device.job.JobService;
  */
 @Stateless
 public class ReportJobService {
+    /**
+     * Maximum age of reporting jobs in the database and files in the reports
+     * directory.
+     */
+    private static final long MAX_AGE = TimeUnit.DAYS.toMillis(7);
+
     @Resource(name = "reportExecutorService")
     private ManagedExecutorService managedExecutorService;
 
@@ -70,7 +77,7 @@ public class ReportJobService {
     public void submit(ReportJobPojo reportJobPojo, User owner) {
         Job newJob = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(owner).setQueue("")
                 .setInput(serialize(reportJobPojo));
-        newJob = jobService.save(newJob);
+        newJob = jobService.saveJob(newJob);
 
         submitJob(newJob);
     }
@@ -107,13 +114,13 @@ public class ReportJobService {
      * @return the job DTO
      */
     public Job markJobAsCompleted(int jobId, String reportFilePath) {
-        Job job = jobService.loadById(jobId);
+        Job job = jobService.loadJobById(jobId);
         if (job == null) {
             return null;
         }
 
         job.setStatus(COMPLETED).setOutput(reportFilePath.getBytes());
-        return jobService.save(job);
+        return jobService.saveJob(job);
     }
 
     /**
@@ -123,13 +130,20 @@ public class ReportJobService {
      * @return the job DTO
      */
     public Job markJobAsFailed(int jobId) {
-        Job job = jobService.loadById(jobId);
+        Job job = jobService.loadJobById(jobId);
         if (job == null) {
             return null;
         }
 
         job.setStatus(FAILED);
-        return jobService.save(job);
+        return jobService.saveJob(job);
+    }
+
+    /**
+     * Removes old reporting jobs and cleans orphaned files in the report directory.
+     */
+    public void cleanUpOldJobsAndFiles() {
+
     }
 
     /**
@@ -152,7 +166,11 @@ public class ReportJobService {
 
     private ReportTask prepareTask(Job job) {
         ReportJobPojo reportJobPojo = (ReportJobPojo) deserialize(job.getInput());
-        return new ReportTask(reportJobPojo, globalAdmissionContext.getReportsDirectory(), job.getJobId());
+        return new ReportTask(reportJobPojo, getReportsDirectory(), job.getJobId());
+    }
+
+    private String getReportsDirectory() {
+        return globalAdmissionContext.getReportsDirectory();
     }
 
     private byte[] serialize(Object o) {
@@ -187,24 +205,24 @@ public class ReportJobService {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(CONDITION_JOBTYPE, REPORT);
         cmap.put(CONDITION_STATUS, PENDING);
-        return jobService.load(cmap);
+        return jobService.loadJobs(cmap);
     }
 
     private List<Job> busyJobs() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(CONDITION_JOBTYPE, REPORT);
         cmap.put(CONDITION_STATUS, BUSY);
-        return jobService.load(cmap);
+        return jobService.loadJobs(cmap);
     }
 
     private Job markJobAsPending(Job job) {
         job.setStatus(PENDING);
-        return jobService.save(job);
+        return jobService.saveJob(job);
     }
 
     private Job markJobAsBusy(Job job) {
         job.setStatus(BUSY);
-        return jobService.save(job);
+        return jobService.saveJob(job);
     }
 
     // Replace managedExecutorService in tests.

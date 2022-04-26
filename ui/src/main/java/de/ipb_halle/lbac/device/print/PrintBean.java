@@ -578,6 +578,6 @@ public class PrintBean implements Serializable {
     private void submitJob(PrintDriver driver) {
         Job job = driver.createJob();
         job.setOwner(userBean.getCurrentAccount());
-        this.jobService.save(job);
+        this.jobService.saveJob(job);
     }
 }

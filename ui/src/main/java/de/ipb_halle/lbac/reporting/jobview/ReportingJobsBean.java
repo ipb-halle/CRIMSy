@@ -73,7 +73,7 @@ public class ReportingJobsBean implements Serializable {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(CONDITION_JOBTYPE, REPORT);
         cmap.put(CONDITION_OWNERID, userBean.getCurrentAccount().getId());
-        for (Job job : jobService.load(cmap)) {
+        for (Job job : jobService.loadJobs(cmap)) {
             newReportingJobs.add(new ReportingJobWapper(job));
         }
         reportingJobs = newReportingJobs;
@@ -94,8 +94,8 @@ public class ReportingJobsBean implements Serializable {
 
     public void actionDeleteReport(ReportingJobWapper job) {
         if (job.isDeleteable()) {
-            jobService.remove(job.getJobId());
-            job.getOutputFile().delete();
+            jobService.removeJob(job.getJobId());
+            job.getOutputFile().delete(); // check null and do this in the service
             loadReportingJobs();
         }
     }
