@@ -44,7 +44,7 @@ public class GlobalAdmissionContextMock extends GlobalAdmissionContext {
 
     /*
      * The reports directory is initialized lazily, i.e. only when requested. Most
-     * tests won't need it. The shutdown() methods needs to take care for its
+     * tests won't need it. The shutdown() method needs to take care for its
      * recursive deletion. Marking it with File.deleteOnExit() may not work, because
      * it does not delete recursively.
      */

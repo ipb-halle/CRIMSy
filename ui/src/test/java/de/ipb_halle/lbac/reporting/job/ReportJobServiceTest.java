@@ -24,18 +24,25 @@ import static de.ipb_halle.lbac.device.job.JobStatus.COMPLETED;
 import static de.ipb_halle.lbac.device.job.JobStatus.FAILED;
 import static de.ipb_halle.lbac.device.job.JobStatus.PENDING;
 import static de.ipb_halle.lbac.device.job.JobType.REPORT;
+import static de.ipb_halle.lbac.reporting.job.ReportJobService.MAX_AGE;
 import static de.ipb_halle.lbac.reporting.report.ReportType.CSV;
 import static de.ipb_halle.lbac.reporting.report.ReportType.PDF;
 import static de.ipb_halle.lbac.reporting.report.ReportType.XLSX;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +55,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
@@ -67,6 +76,9 @@ public class ReportJobServiceTest extends TestBase {
 
     @Inject
     private JobService jobService;
+
+    @Inject
+    private GlobalAdmissionContext globalAdmissionContext;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -172,7 +184,7 @@ public class ReportJobServiceTest extends TestBase {
     public void test_markJobAsCompleted_withInvalidJobId() {
         assertNull(reportJobService.markJobAsCompleted(42, "somewhere"));
 
-        assertThat(allJobs(), hasSize(0));
+        assertThat(allJobs(), is(empty()));
     }
 
     @Test
@@ -196,7 +208,97 @@ public class ReportJobServiceTest extends TestBase {
     public void test_markJobAsFailed_withInvalidJobId() {
         assertNull(reportJobService.markJobAsFailed(42));
 
-        assertThat(allJobs(), hasSize(0));
+        assertThat(allJobs(), is(empty()));
+    }
+
+    @Test
+    public void test_deleteJob_fileExists() throws IOException {
+        File tempFile = File.createTempFile("ReportJobServiceTest", "test");
+        tempFile.deleteOnExit();
+        assertTrue(tempFile.exists());
+
+        Job job = new Job().setJobType(REPORT).setStatus(COMPLETED).setOwner(adminUser).setQueue("")
+                .setOutput(tempFile.getAbsolutePath().getBytes());
+        job = jobService.saveJob(job);
+
+        reportJobService.deleteJob(job);
+
+        assertThat(allJobs(), is(empty()));
+        assertFalse(tempFile.exists());
+    }
+
+    @Test
+    public void test_deleteJob_fileDoesNotExist(@TempDir File tempDir) {
+        String nonExistingFilename = tempDir.getAbsolutePath() + "/doesNotExist.file";
+        Job job = new Job().setJobType(REPORT).setStatus(COMPLETED).setOwner(adminUser).setQueue("")
+                .setOutput(nonExistingFilename.getBytes());
+        job = jobService.saveJob(job);
+
+        reportJobService.deleteJob(job);
+
+        assertThat(allJobs(), is(empty()));
+    }
+
+    @Test
+    public void test_deleteJob_jobOutputIsNull() {
+        Job job = new Job().setJobType(REPORT).setStatus(COMPLETED).setOwner(adminUser).setQueue("").setOutput(null);
+        job = jobService.saveJob(job);
+
+        reportJobService.deleteJob(job);
+
+        assertThat(allJobs(), is(empty()));
+    }
+
+    @Test
+    public void test_cleanUpOldJobsAndReportFiles() throws IOException {
+        Instant now = Instant.now();
+        Date beforeMaxAge = Date.from(now.minus(MAX_AGE).minusSeconds(1000));
+        Date afterMaxAge = Date.from(now.minus(MAX_AGE).plusSeconds(1000));
+
+        // create jobs and their associated output files
+        File fileToBeDeleted = File.createTempFile("ReportJobServiceTest", "test");
+        File fileToBeKept = File.createTempFile("ReportJobServiceTest", "test");
+        fileToBeDeleted.deleteOnExit();
+        fileToBeKept.deleteOnExit();
+        assertTrue(fileToBeDeleted.exists());
+        assertTrue(fileToBeKept.exists());
+
+        Job jobToBeDeleted = new Job().setJobDate(beforeMaxAge).setJobType(REPORT).setStatus(COMPLETED)
+                .setOwner(adminUser).setQueue("").setOutput(fileToBeDeleted.getAbsolutePath().getBytes());
+        Job jobToBeKept = new Job().setJobDate(afterMaxAge).setJobType(REPORT).setStatus(COMPLETED).setOwner(adminUser)
+                .setQueue("").setOutput(fileToBeKept.getAbsolutePath().getBytes());
+        jobToBeDeleted = jobService.saveJob(jobToBeDeleted);
+        jobToBeKept = jobService.saveJob(jobToBeKept);
+
+        // create orphaned files in the reports directory
+        File orphanedFileToBeDeleted = createTempFileInReportsDirectory();
+        File orphanedFileToBeKept = createTempFileInReportsDirectory();
+        assertTrue(orphanedFileToBeDeleted.exists());
+        assertTrue(orphanedFileToBeKept.exists());
+        orphanedFileToBeDeleted.setLastModified(beforeMaxAge.getTime());
+        orphanedFileToBeKept.setLastModified(afterMaxAge.getTime());
+
+        // execution
+        reportJobService.cleanUpOldJobsAndReportFiles();
+
+        // check jobs and their associated output files
+        List<Job> allJobs = allJobs();
+        assertThat(allJobs, hasSize(1));
+        assertEquals(jobToBeKept.getJobId(), allJobs.get(0).getJobId());
+
+        assertFalse(fileToBeDeleted.exists());
+        assertTrue(fileToBeKept.exists());
+
+        // check orphaned files in the reports directory
+        assertFalse(orphanedFileToBeDeleted.exists());
+        assertTrue(orphanedFileToBeKept.exists());
+    }
+
+    private File createTempFileInReportsDirectory() throws IOException {
+        File reportsDir = new File(globalAdmissionContext.getReportsDirectory());
+        File tempFile = File.createTempFile("ReportJobServiceTest", "test", reportsDir);
+        tempFile.deleteOnExit();
+        return tempFile;
     }
 
     private List<Job> allJobs() {

@@ -40,7 +40,7 @@ public class ReportSchedulingService {
      * reporting jobs are restarted.
      */
     @PostConstruct
-    void startUp() {
+    public void startUp() {
         reportJobService.markBusyJobsAsPending();
 
         // Could cause heavy load on application startup?
@@ -51,16 +51,15 @@ public class ReportSchedulingService {
      * Frequently submits pending reporting jobs to the ManagedExecutorService.
      */
     @Schedule(second = "0", minute = "*", hour = "*")
-    void submitPendingTasksToExecutor() {
+    public void submitPendingTasksToExecutor() {
         reportJobService.submitPendingTasksToExecutor();
     }
 
     /**
-     * Removes old reporting jobs and cleans orphaned files in the temporary report
-     * directory.
+     * Removes old reporting jobs and cleans orphaned files in the report directory.
      */
     @Schedule(second = "0", minute = "0", hour = "0")
-    void cleanUp() {
-
+    public void cleanUpOldJobsAndReportFiles() {
+        reportJobService.cleanUpOldJobsAndReportFiles();
     }
 }

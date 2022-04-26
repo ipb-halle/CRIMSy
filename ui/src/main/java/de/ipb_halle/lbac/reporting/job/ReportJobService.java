@@ -24,22 +24,28 @@ import static de.ipb_halle.lbac.device.job.JobStatus.COMPLETED;
 import static de.ipb_halle.lbac.device.job.JobStatus.FAILED;
 import static de.ipb_halle.lbac.device.job.JobStatus.PENDING;
 import static de.ipb_halle.lbac.device.job.JobType.REPORT;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
@@ -52,11 +58,13 @@ import de.ipb_halle.lbac.device.job.JobService;
  */
 @Stateless
 public class ReportJobService {
+    private Logger logger = LogManager.getLogger(getClass().getName());
+
     /**
      * Maximum age of reporting jobs in the database and files in the reports
      * directory.
      */
-    private static final long MAX_AGE = TimeUnit.DAYS.toMillis(7);
+    static final Duration MAX_AGE = Duration.ofDays(7);
 
     @Resource(name = "reportExecutorService")
     private ManagedExecutorService managedExecutorService;
@@ -140,10 +148,31 @@ public class ReportJobService {
     }
 
     /**
+     * Delete the given reporting job and its report file.
+     * 
+     * @param job
+     */
+    public void deleteJob(Job job) {
+        jobService.removeJob(job.getJobId());
+        byte[] output = job.getOutput();
+        if (output != null) {
+            deleteFileIfExists(new String(output));
+        }
+    }
+
+    /**
      * Removes old reporting jobs and cleans orphaned files in the report directory.
      */
-    public void cleanUpOldJobsAndFiles() {
+    public void cleanUpOldJobsAndReportFiles() {
+        for (Job job : oldJobs()) {
+            deleteJob(job);
+        }
 
+        try {
+            deleteOrphanedReportFiles();
+        } catch (IOException e) {
+            logger.error("{}", e);
+        }
     }
 
     /**
@@ -225,7 +254,40 @@ public class ReportJobService {
         return jobService.saveJob(job);
     }
 
-    // Replace managedExecutorService in tests.
+    private List<Job> oldJobs() {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put(CONDITION_JOBTYPE, REPORT);
+        return jobService.loadJobsOlderThan(Date.from(Instant.now().minus(MAX_AGE)), cmap);
+    }
+
+    private void deleteFileIfExists(String filename) {
+        File file = new File(filename);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    private void deleteOrphanedReportFiles() throws IOException {
+        Instant cutoff = Instant.now().minus(MAX_AGE);
+
+        // from https://stackoverflow.com/a/46791681
+        Files.list(Paths.get(getReportsDirectory())).filter(path -> {
+            try {
+                return Files.isRegularFile(path) && Files.getLastModifiedTime(path).toInstant().isBefore(cutoff);
+            } catch (IOException e) {
+                logger.error("{}", e);
+                return false;
+            }
+        }).forEach(path -> {
+            try {
+                Files.delete(path);
+            } catch (IOException e) {
+                logger.error("{}", e);
+            }
+        });
+    }
+
+    // Replace managedExecutorService in tests
     public void setManagedExecutorService(ManagedExecutorService managedExecutorService) {
         this.managedExecutorService = managedExecutorService;
     }
