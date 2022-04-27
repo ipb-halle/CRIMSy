@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobStatus;
 
 /**
+ * Wrapper class for reporting job objects.
  * 
  * @author flange
  */
@@ -69,6 +70,10 @@ public class ReportingJobWapper {
 
     public boolean isDeleteable() {
         return isFailed() || isCompleted();
+    }
+
+    public String getRowStyleClass() {
+        return "report-" + job.getStatus().toString().toLowerCase();
     }
 
     private boolean isFailed() {

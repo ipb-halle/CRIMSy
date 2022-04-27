@@ -3,7 +3,7 @@
 <!--
   
   Cloud Resource & Information Management System (CRIMSy)
-  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:nwc="http://ipb-halle.de/nwc">
 <h:body>
     <ui:composition>
         <h2>
@@ -42,11 +43,20 @@
                 id="reportingJobsTableId"
                 value="#{reportingJobsBean.reportingJobs}"
                 var="job"
-                saveState="false">
+                saveState="false"
+                striped="false"
+                row-style-class="#{job.rowStyleClass}">
                 <b:dataTableColumn
-                    value="#{job.submissionDate}"
                     label="Submission date"
-                    order="desc" />
+                    order="desc">
+                    <h:outputFormat
+                        value="{0} ({1})">
+                        <o:param value="#{nwc:formatDateWithTimezone(job.submissionDate)}" />
+                        <o:param
+                            value="#{job.submissionDate}"
+                            converter="org.ocpsoft.PrettyTimeConverter" />
+                    </h:outputFormat>
+                </b:dataTableColumn>
                 <b:dataTableColumn
                     value="#{reportingJobsBean.getJobStatus(job)}"
                     label="Status" />
@@ -55,7 +65,8 @@
                         action="#{reportingJobsBean.actionDownloadReport(job)}"
                         rendered="#{job.downloadable}"
                         style="padding: 0 4px;"
-                        iconAwesome="download" />
+                        iconAwesome="download"
+                        look="link" />
                     <b:commandButton
                         ajax="true"
                         process="@this"
@@ -63,7 +74,8 @@
                         action="#{reportingJobsBean.actionDeleteReport(job)}"
                         rendered="#{job.deleteable}"
                         style="padding: 0 4px;"
-                        iconAwesome="trash" />
+                        icon="trash"
+                        look="link" />
                 </b:dataTableColumn>
             </b:dataTable>
         </b:form>

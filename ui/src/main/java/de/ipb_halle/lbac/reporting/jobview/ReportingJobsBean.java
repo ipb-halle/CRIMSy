@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 /**
+ * Controller for myReports.xhtml
  * 
  * @author flange
  */
