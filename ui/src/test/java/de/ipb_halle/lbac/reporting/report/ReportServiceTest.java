@@ -43,7 +43,6 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 @ExtendWith(ArquillianExtension.class)
 public class ReportServiceTest extends TestBase {
     private static final long serialVersionUID = 1L;
-    private static final String INSERT_REPORT_FORMAT = "INSERT INTO reports (context, name, source) VALUES ('%s','%s','%s')";
 
     @Inject
     private ReportService reportService;
@@ -58,14 +57,11 @@ public class ReportServiceTest extends TestBase {
         insertReport("context1", "report1", "source1");
         insertReport("context2", "report2", "source2");
 
+        assertThat(reportService.loadByContext(null), is(empty()));
         assertThat(reportService.loadByContext("context"), is(empty()));
 
         List<Report> reports = reportService.loadByContext("context1");
         assertThat(reports, hasSize(1));
         assertEquals("report1", reports.get(0).getName());
-    }
-
-    private void insertReport(String context, String name, String source) {
-        entityManagerService.doSqlUpdate(String.format(INSERT_REPORT_FORMAT, context, name, source));
     }
 }

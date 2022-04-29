@@ -505,4 +505,10 @@ public class TestBase implements Serializable {
     private void resetMessagePresenterMock() {
         MessagePresenterMock.getInstance().resetMessages();
     }
+
+    private static final String INSERT_REPORT_FORMAT = "INSERT INTO reports (context, name, source) VALUES ('%s','%s','%s')";
+
+    protected void insertReport(String context, String name, String source) {
+        entityManagerService.doSqlUpdate(String.format(INSERT_REPORT_FORMAT, context, name, source));
+    }
 }

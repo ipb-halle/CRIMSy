@@ -44,7 +44,7 @@ import org.apache.logging.log4j.LogManager;
 @RequestScoped
 public class ReportMgr {
     private static final String DEFAULT_LANGUAGE = "en";
-    private static final String DEFAULT_NAME = "Report with no name";
+    static final String DEFAULT_NAME = "Report with no name";
 
     private Logger logger = LogManager.getLogger(getClass().getName());
 
@@ -87,19 +87,35 @@ public class ReportMgr {
 
     private String extractNameFromJson(String json, String preferredLanguage) throws JsonSyntaxException {
         JsonElement jsonTree = JsonParser.parseString(json);
+        if (!jsonTree.isJsonObject()) {
+            return DEFAULT_NAME;
+        }
 
-        String name = jsonTree.getAsJsonObject().get(preferredLanguage).getAsString();
-        if (StringUtils.isNotBlank(name)) {
+        String name = extractNameFromLanguageElement(jsonTree.getAsJsonObject().get(preferredLanguage));
+        if (name != null) {
             return name;
         }
 
         // resort to name in default language
-        name = jsonTree.getAsJsonObject().get(DEFAULT_LANGUAGE).getAsString();
-        if (StringUtils.isNotBlank(name)) {
+        name = extractNameFromLanguageElement(jsonTree.getAsJsonObject().get(DEFAULT_LANGUAGE));
+        if (name != null) {
             return name;
         }
 
         return DEFAULT_NAME;
+    }
+
+    private String extractNameFromLanguageElement(JsonElement languageElement) {
+        if (languageElement == null) {
+            return null;
+        }
+
+        String name = languageElement.getAsString();
+        if (StringUtils.isBlank(name)) {
+            return null;
+        }
+
+        return name;
     }
 
     /**
