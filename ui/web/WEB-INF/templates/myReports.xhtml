@@ -29,7 +29,7 @@
 <h:body>
     <ui:composition>
         <h2>
-            <h:outputText value="Reports" />
+            <h:outputText value="#{msgs.myReports_title}" />
         </h2>
 
         <b:form>
@@ -38,7 +38,7 @@
                 process="@this"
                 update="reportingJobsTableId"
                 action="#{reportingJobsBean.actionReloadTable()}"
-                value="Reload"
+                value="#{msgs.Refresh}"
                 iconAwesome="refresh" />
             <b:dataTable
                 id="reportingJobsTableId"
@@ -48,7 +48,7 @@
                 striped="false"
                 row-style-class="#{jobWrapper.rowStyleClass}">
                 <b:dataTableColumn
-                    label="Submission date"
+                    label="#{msgs.myReports_tableheader_submissionDate}"
                     order="desc">
                     <h:outputFormat
                         value="{0} ({1})">
@@ -60,7 +60,7 @@
                 </b:dataTableColumn>
                 <b:dataTableColumn
                     value="#{reportingJobsBean.getJobStatusI18n(jobWrapper)}"
-                    label="Status" />
+                    label="#{msgs.myReports_tableheader_status}" />
                 <b:dataTableColumn
                     label="#{msgs.Tools}"
                     width="10%"
