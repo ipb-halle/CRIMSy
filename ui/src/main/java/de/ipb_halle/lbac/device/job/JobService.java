@@ -120,7 +120,8 @@ public class JobService implements Serializable {
     }
 
     /**
-     * Loads jobs from the database with a jobdate older than the given date and according to the given conditions.
+     * Loads jobs from the database with a jobdate older than the given date and
+     * according to the given conditions.
      * 
      * @param date
      * @param cmap map of conditions
@@ -165,11 +166,16 @@ public class JobService implements Serializable {
     /**
      * remove a job from the database
      * 
-     * @param jobId the job's id
+     * @param id the job's id
      */
-    public void removeJob(Integer jobId) {
-        if (jobId != null) {
-            em.remove(em.find(JobEntity.class, jobId));
+    public void removeJob(Integer id) {
+        if (id == null) {
+            return;
+        }
+
+        JobEntity entity = em.find(JobEntity.class, id);
+        if (entity != null) {
+            em.remove(entity);
         }
     }
 

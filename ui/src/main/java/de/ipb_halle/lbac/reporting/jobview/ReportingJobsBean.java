@@ -17,26 +17,20 @@
  */
 package de.ipb_halle.lbac.reporting.jobview;
 
-import static de.ipb_halle.lbac.device.job.JobService.CONDITION_JOBTYPE;
-import static de.ipb_halle.lbac.device.job.JobService.CONDITION_OWNERID;
-import static de.ipb_halle.lbac.device.job.JobType.REPORT;
-
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.device.job.Job;
-import de.ipb_halle.lbac.device.job.JobService;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.reporting.job.ReportJobService;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 /**
@@ -45,12 +39,12 @@ import de.ipb_halle.lbac.util.jsf.SendFileBean;
  * @author flange
  */
 @Named
-@SessionScoped
+@RequestScoped
 public class ReportingJobsBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private JobService jobService;
+    private ReportJobService reportJobService;
 
     @Inject
     private SendFileBean sendFileBean;
@@ -70,11 +64,7 @@ public class ReportingJobsBean implements Serializable {
 
     private void loadReportingJobs() {
         List<ReportingJobWapper> newReportingJobs = new ArrayList<>();
-
-        Map<String, Object> cmap = new HashMap<>();
-        cmap.put(CONDITION_JOBTYPE, REPORT);
-        cmap.put(CONDITION_OWNERID, userBean.getCurrentAccount().getId());
-        for (Job job : jobService.loadJobs(cmap)) {
+        for (Job job : reportJobService.loadJobsForUser(userBean.getCurrentAccount())) {
             newReportingJobs.add(new ReportingJobWapper(job));
         }
         reportingJobs = newReportingJobs;
@@ -87,16 +77,20 @@ public class ReportingJobsBean implements Serializable {
         loadReportingJobs();
     }
 
-    public void actionDownloadReport(ReportingJobWapper job) throws IOException {
-        if (job.isDownloadable()) {
-            sendFileBean.sendFile(job.getOutputFile());
+    public void actionDownloadReport(ReportingJobWapper wrapper) throws IOException {
+        if (!wrapper.isDownloadable()) {
+            return;
+        }
+
+        File f = reportJobService.getOutputFileOfJob(wrapper.getJob());
+        if (f != null) {
+            sendFileBean.sendFile(f);
         }
     }
 
-    public void actionDeleteReport(ReportingJobWapper job) {
-        if (job.isDeleteable()) {
-            jobService.removeJob(job.getJobId());
-            job.getOutputFile().delete(); // check null and do this in the service
+    public void actionDeleteReport(ReportingJobWapper wrapper) {
+        if (wrapper.isDeleteable()) {
+            reportJobService.deleteJob(wrapper.getJob());
             loadReportingJobs();
         }
     }
@@ -108,7 +102,7 @@ public class ReportingJobsBean implements Serializable {
         return reportingJobs;
     }
 
-    public String getJobStatus(ReportingJobWapper job) {
-        return messagePresenter.presentMessage(job.getI18nKeyForStatus());
+    public String getJobStatusI18n(ReportingJobWapper wrapper) {
+        return messagePresenter.presentMessage(wrapper.getI18nKeyForStatus());
     }
 }

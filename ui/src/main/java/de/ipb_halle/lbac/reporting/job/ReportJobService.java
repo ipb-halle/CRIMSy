@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.reporting.job;
 
 import static de.ipb_halle.lbac.device.job.JobService.CONDITION_JOBTYPE;
+import static de.ipb_halle.lbac.device.job.JobService.CONDITION_OWNERID;
 import static de.ipb_halle.lbac.device.job.JobService.CONDITION_STATUS;
 import static de.ipb_halle.lbac.device.job.JobStatus.BUSY;
 import static de.ipb_halle.lbac.device.job.JobStatus.COMPLETED;
@@ -147,17 +148,52 @@ public class ReportJobService {
         return jobService.saveJob(job);
     }
 
+    public List<Job> loadJobsForUser(User u) {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put(CONDITION_JOBTYPE, REPORT);
+        cmap.put(CONDITION_OWNERID, u.getId());
+
+        return jobService.loadJobs(cmap);
+    }
+
     /**
      * Delete the given reporting job and its report file.
      * 
      * @param job
      */
     public void deleteJob(Job job) {
-        jobService.removeJob(job.getJobId());
+        jobService.removeJob(job);
         byte[] output = job.getOutput();
         if (output != null) {
             deleteFileIfExists(new String(output));
         }
+    }
+
+    /**
+     * Request the report file of the given reporting job.
+     * 
+     * @param job
+     * @return report file or null in case the report job does not exist in the
+     *         database, does not have a report file or the file does not exist
+     */
+    public File getOutputFileOfJob(Job job) {
+        Job jobFromDB = jobService.loadJobById(job.getJobId());
+        if (jobFromDB == null) {
+            return null;
+        }
+
+        byte[] output = jobFromDB.getOutput();
+        if (output == null) {
+            return null;
+        }
+
+        String outputFile = new String(output);
+        File f = new File(outputFile);
+        if (!f.exists()) {
+            return null;
+        }
+
+        return f;
     }
 
     /**

@@ -18,8 +18,6 @@
 package de.ipb_halle.lbac.reporting.jobview;
 
 import java.io.File;
-import java.util.Date;
-
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobStatus;
 
@@ -35,12 +33,8 @@ public class ReportingJobWapper {
         this.job = job;
     }
 
-    public Integer getJobId() {
-        return job.getJobId();
-    }
-
-    public Date getSubmissionDate() {
-        return job.getJobdate();
+    public Job getJob() {
+        return job;
     }
 
     public String getI18nKeyForStatus() {
@@ -51,21 +45,8 @@ public class ReportingJobWapper {
         return "jobStatus_" + status.toString();
     }
 
-    public File getOutputFile() {
-        byte[] output = job.getOutput();
-        if (output == null) {
-            return null;
-        }
-        String outputFile = new String(output);
-        return new File(outputFile);
-    }
-
     public boolean isDownloadable() {
-        boolean isNotComplete = !isCompleted();
-        if (isNotComplete) {
-            return false;
-        }
-        return getOutputFile().exists();
+        return isCompleted() && outputFileExists();
     }
 
     public boolean isDeleteable() {
@@ -73,7 +54,11 @@ public class ReportingJobWapper {
     }
 
     public String getRowStyleClass() {
-        return "report-" + job.getStatus().toString().toLowerCase();
+        JobStatus status = job.getStatus();
+        if (status == null) {
+            return "";
+        }
+        return "report-" + status.toString().toLowerCase();
     }
 
     private boolean isFailed() {
@@ -82,5 +67,13 @@ public class ReportingJobWapper {
 
     private boolean isCompleted() {
         return JobStatus.COMPLETED.equals(job.getStatus());
+    }
+
+    private boolean outputFileExists() {
+        byte[] output = job.getOutput();
+        if (output == null) {
+            return false;
+        }
+        return new File(new String(output)).exists();
     }
 }

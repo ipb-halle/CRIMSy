@@ -34,6 +34,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -212,6 +213,19 @@ public class ReportJobServiceTest extends TestBase {
     }
 
     @Test
+    public void test_loadJobsForUser() {
+        Job job1 = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(adminUser).setQueue("");
+        Job job2 = new Job().setJobType(REPORT).setStatus(PENDING).setOwner(publicUser).setQueue("");
+        job1 = jobService.saveJob(job1);
+        job2 = jobService.saveJob(job2);
+
+        List<Job> jobs = reportJobService.loadJobsForUser(adminUser);
+
+        assertThat(jobs, hasSize(1));
+        assertEquals(job1.getJobId(), jobs.get(0).getJobId());
+    }
+
+    @Test
     public void test_deleteJob_fileExists() throws IOException {
         File tempFile = File.createTempFile("ReportJobServiceTest", "test");
         tempFile.deleteOnExit();
@@ -247,6 +261,45 @@ public class ReportJobServiceTest extends TestBase {
         reportJobService.deleteJob(job);
 
         assertThat(allJobs(), is(empty()));
+    }
+
+    @Test
+    public void test_getOutputFileOfJob_noJobInDB() {
+        Job job = new Job().setJobId(-1);
+
+        assertNull(reportJobService.getOutputFileOfJob(job));
+    }
+
+    @Test
+    public void test_getOutputFileOfJob_jobOutputIsNull() {
+        Job job = new Job().setJobType(REPORT).setStatus(COMPLETED).setOwner(adminUser).setQueue("").setOutput(null);
+        job = jobService.saveJob(job);
+
+        assertNull(reportJobService.getOutputFileOfJob(job));
+    }
+
+    @Test
+    public void test_getOutputFileOfJob_fileDoesNotExist(@TempDir File tempDir) {
+        String nonExistingFilename = tempDir.getAbsolutePath() + "/doesNotExist.file";
+        Job job = new Job().setJobType(REPORT).setStatus(COMPLETED).setOwner(adminUser).setQueue("")
+                .setOutput(nonExistingFilename.getBytes());
+        job = jobService.saveJob(job);
+
+        assertNull(reportJobService.getOutputFileOfJob(job));
+    }
+
+    @Test
+    public void test_getOutputFileOfJob_fileExists() throws IOException {
+        File tempFile = File.createTempFile("ReportJobServiceTest", "test2");
+        tempFile.deleteOnExit();
+        Job job = new Job().setJobType(REPORT).setStatus(COMPLETED).setOwner(adminUser).setQueue("")
+                .setOutput(tempFile.getAbsolutePath().getBytes());
+        job = jobService.saveJob(job);
+
+        File f = reportJobService.getOutputFileOfJob(job);
+
+        assertNotNull(f);
+        assertEquals(tempFile, f);
     }
 
     @Test

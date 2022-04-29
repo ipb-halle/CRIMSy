@@ -38,32 +38,36 @@
                 process="@this"
                 update="reportingJobsTableId"
                 action="#{reportingJobsBean.actionReloadTable()}"
-                value="Reload" />
+                value="Reload"
+                iconAwesome="refresh" />
             <b:dataTable
                 id="reportingJobsTableId"
                 value="#{reportingJobsBean.reportingJobs}"
-                var="job"
+                var="jobWrapper"
                 saveState="false"
                 striped="false"
-                row-style-class="#{job.rowStyleClass}">
+                row-style-class="#{jobWrapper.rowStyleClass}">
                 <b:dataTableColumn
                     label="Submission date"
                     order="desc">
                     <h:outputFormat
                         value="{0} ({1})">
-                        <o:param value="#{nwc:formatDateWithTimezone(job.submissionDate)}" />
+                        <o:param value="#{nwc:formatDateWithTimezone(jobWrapper.job.jobdate)}" />
                         <o:param
-                            value="#{job.submissionDate}"
+                            value="#{jobWrapper.job.jobdate}"
                             converter="org.ocpsoft.PrettyTimeConverter" />
                     </h:outputFormat>
                 </b:dataTableColumn>
                 <b:dataTableColumn
-                    value="#{reportingJobsBean.getJobStatus(job)}"
+                    value="#{reportingJobsBean.getJobStatusI18n(jobWrapper)}"
                     label="Status" />
-                <b:dataTableColumn label="Operations">
+                <b:dataTableColumn
+                    label="#{msgs.Tools}"
+                    width="10%"
+                    style="min-width:50px">
                     <b:commandButton
-                        action="#{reportingJobsBean.actionDownloadReport(job)}"
-                        rendered="#{job.downloadable}"
+                        action="#{reportingJobsBean.actionDownloadReport(jobWrapper)}"
+                        rendered="#{jobWrapper.downloadable}"
                         style="padding: 0 4px;"
                         iconAwesome="download"
                         look="link" />
@@ -71,8 +75,8 @@
                         ajax="true"
                         process="@this"
                         update="reportingJobsTableId"
-                        action="#{reportingJobsBean.actionDeleteReport(job)}"
-                        rendered="#{job.deleteable}"
+                        action="#{reportingJobsBean.actionDeleteReport(jobWrapper)}"
+                        rendered="#{jobWrapper.deleteable}"
                         style="padding: 0 4px;"
                         icon="trash"
                         look="link" />

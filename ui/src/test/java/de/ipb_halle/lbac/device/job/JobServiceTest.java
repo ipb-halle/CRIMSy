@@ -144,10 +144,12 @@ public class JobServiceTest extends TestBase {
         jobService.removeJob(job);
 
         assertThat(jobService.loadAllJobs(), hasSize(0));
+
+        jobService.removeJob(job);
     }
 
     @Test
-    public void test_removeJob_withJobId() {
+    public void test_removeJob_withId() {
         Job job = new Job().setJobType(PRINT).setStatus(PENDING).setOwner(adminUser).setQueue("queue1");
         job = jobService.saveJob(job);
 
@@ -156,6 +158,8 @@ public class JobServiceTest extends TestBase {
 
         jobService.removeJob(job.getJobId());
         assertThat(jobService.loadAllJobs(), hasSize(0));
+
+        jobService.removeJob(job.getJobId());
     }
 
     private void assertJobsEqual(Job job1, Job job2) {
