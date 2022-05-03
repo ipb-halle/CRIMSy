@@ -45,7 +45,7 @@
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
     </plain-parameter>
   </parameter-definition>
-  <data-source limit="-1" timeout="0" ref="datasources/compound-ds.xml"/>
+  <data-source report-query="molQuery" limit="-1" timeout="0" ref="datasources/compound-ds.xml"/>
   <expression name="PageofPages" class="org.pentaho.reporting.engine.classic.core.function.PageOfPagesFunction">
     <properties>
       <property name="format">{0} / {1}</property>
