@@ -46,6 +46,10 @@
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramItemLabel</attribute>
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
     </plain-parameter>
+    <plain-parameter name="paramRandom" mandatory="true" type="java.lang.Long">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
   </parameter-definition>
   <data-source report-query="itemQuery" limit="-1" timeout="0" ref="datasources/compound-ds.xml"/>
   <expression name="PageofPages" class="org.pentaho.reporting.engine.classic.core.function.PageOfPagesFunction">

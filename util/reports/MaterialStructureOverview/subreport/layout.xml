@@ -5,24 +5,16 @@
   </style:element-style>
   <report-header>
     <root-level-content designtime:visual-height="0.0">
-      <style:element-style>
-      </style:element-style>
     </root-level-content>
   </report-header>
   <group core:group-fields="">
-    <style:element-style>
-    </style:element-style>
     <fields>
     </fields>
     <group-header>
       <root-level-content designtime:hideInLayoutGUI="true">
-        <style:element-style>
-        </style:element-style>
       </root-level-content>
     </group-header>
     <data-body>
-      <style:element-style>
-      </style:element-style>
       <details-header designtime:hideInLayoutGUI="true">
         <style:element-style>
           <style:common-styles avoid-page-break="true"/>
@@ -30,8 +22,6 @@
       </details-header>
       <details>
         <root-level-content designtime:visual-height="54.0">
-          <style:element-style>
-          </style:element-style>
           <text-field core:field="value">
             <style:element-style>
               <style:content-styles dynamic-height="true"/>
@@ -50,8 +40,6 @@
       </details>
       <no-data>
         <root-level-content designtime:hideInLayoutGUI="true">
-          <style:element-style>
-          </style:element-style>
         </root-level-content>
       </no-data>
       <details-footer designtime:hideInLayoutGUI="true">
@@ -62,15 +50,11 @@
     </data-body>
     <group-footer>
       <root-level-content designtime:hideInLayoutGUI="true">
-        <style:element-style>
-        </style:element-style>
       </root-level-content>
     </group-footer>
   </group>
   <report-footer>
     <root-level-content designtime:visual-height="0.0">
-      <style:element-style>
-      </style:element-style>
     </root-level-content>
   </report-footer>
 </layout>

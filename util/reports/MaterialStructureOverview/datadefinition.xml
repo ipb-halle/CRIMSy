@@ -40,8 +40,12 @@
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramMaterialName</attribute>
       <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
     </plain-parameter>
+    <plain-parameter name="paramRandom" mandatory="true" type="java.lang.Long">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
   </parameter-definition>
-  <data-source report-query="molQuery" limit="-1" timeout="0" ref="datasources/compound-ds.xml"/>
+  <data-source limit="-1" timeout="0" ref="datasources/compound-ds.xml"/>
   <expression name="PageofPages" class="org.pentaho.reporting.engine.classic.core.function.PageOfPagesFunction">
     <properties>
       <property name="format">{0} / {1}</property>

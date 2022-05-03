@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.concurrent.Future;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
@@ -83,6 +84,8 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
 
                 report.getParameterValues().put(paramName, paramValue);
             }
+            // This circumvents Pentaho's caching.
+            report.getParameterValues().put("paramRandom", new Random().nextLong());
 
             reportJobPojo.getType().createReport(report, reportFilePath);
         } catch (Exception e) {

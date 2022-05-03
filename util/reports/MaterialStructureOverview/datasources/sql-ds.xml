@@ -1,25 +1,14 @@
 <data:sql-datasource xmlns:data="http://jfreereport.sourceforge.net/namespaces/datasources/sql">
   <data:config/>
-  <data:connection>
-    <data:driver>org.postgresql.Driver</data:driver>
-    <data:url>jdbc:postgresql://db:5432/lbac</data:url>
-    <data:properties>
-      <data:property name="user">lbac</data:property>
-      <data:property name="password">encrypted:5f0c4450</data:property>
-      <data:property name="::pentaho-reporting::port">5432</data:property>
-      <data:property name="::pentaho-reporting::name">lbacDB</data:property>
-      <data:property name="::pentaho-reporting-other-attribute::PORT_NUMBER">5432</data:property>
-      <data:property name="::pentaho-reporting::database-name">lbac</data:property>
-      <data:property name="::pentaho-reporting::hostname">db</data:property>
-      <data:property name="::pentaho-reporting::database-type">POSTGRESQL</data:property>
-    </data:properties>
-  </data:connection>
+  <data:jndi>
+    <data:path>java:openejb/Resource/uiDS</data:path>
+  </data:jndi>
   <data:query-definitions>
     <data:query name="molQuery">
       <data:static-query>SELECT DISTINCT mat.materialid, struc.moleculeid, mol.molecule, 
   bingo.cansmiles(mol.molecule) AS smiles 
   FROM materials AS mat 
-  JOIN material_indices AS matidx ON mat.materialid = matidx.materialid AND matidx.typeid &lt;&gt; 1
+  LEFT JOIN material_indices AS matidx ON mat.materialid = matidx.materialid AND matidx.typeid &lt;&gt; 1
   JOIN material_indices AS matname ON mat.materialid = matname.materialid AND matname.typeid = 1
   JOIN structures AS struc ON mat.materialid = struc.id
   JOIN molecules AS mol ON struc.moleculeid = mol.id 
@@ -35,7 +24,8 @@
   AND COALESCE(NULLIF(true, ${paramUserName}::VARCHAR IS NOT NULL), u.name ILIKE ${paramUserName})
   AND COALESCE(NULLIF(true, ${paramProjectName}::VARCHAR IS NOT NULL), p.name ILIKE ${paramProjectName})
   AND COALESCE(NULLIF(true, ${paramIndex}::VARCHAR IS NOT NULL), matidx.&quot;value&quot; ILIKE ${paramIndex})
-  AND COALESCE(NULLIF(true, ${paramMolQuery}::VARCHAR IS NOT NULL), substructure(mol.molecule, ${paramMolQuery}));
+  AND COALESCE(NULLIF(true, ${paramMolQuery}::VARCHAR IS NOT NULL), substructure(mol.molecule, ${paramMolQuery}))
+  AND ${paramRandom} = ${paramRandom};
 </data:static-query>
     </data:query>
   </data:query-definitions>
