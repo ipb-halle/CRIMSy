@@ -57,7 +57,7 @@
         Queue = 50
     </Resource>
     <Resource id="reportExecutorService" type="javax.enterprise.concurrent.ManagedExecutorService">
-        Core = 2
+        Core = 4
         Max = 4
         KeepAlive = 5 s
         Queue = 10

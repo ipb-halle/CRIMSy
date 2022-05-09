@@ -20,10 +20,10 @@ package de.ipb_halle.lbac.reporting.jobview;
 import static de.ipb_halle.lbac.device.job.JobStatus.COMPLETED;
 import static de.ipb_halle.lbac.device.job.JobStatus.FAILED;
 import static de.ipb_halle.lbac.device.job.JobStatus.PENDING;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;

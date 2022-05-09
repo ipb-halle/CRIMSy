@@ -223,7 +223,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     }
 
     private Map<String, Object> collectReportParameters() {
-        HashMap<String, Object> reportParams = new HashMap<String, Object>();
+        Map<String, Object> reportParams = new HashMap<String, Object>();
 
         reportParams.put("paramCurrentUserId", currentUser.getId());
         reportParams.put("paramOwnerId", GlobalAdmissionContext.OWNER_ACCOUNT_ID);

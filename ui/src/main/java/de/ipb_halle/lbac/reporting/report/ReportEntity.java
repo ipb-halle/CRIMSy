@@ -17,11 +17,6 @@
  */
 package de.ipb_halle.lbac.reporting.report;
 
-
-/**
- * This class represents a report template entity, which can be 
- * instantiated in a specific context.
- */
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -29,10 +24,15 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+/**
+ * This class represents a report template entity, which can be instantiated in
+ * a specific context.
+ *
+ * @author fbroda
+ */
 @Entity
 @Table(name = "reports")
 public class ReportEntity implements Serializable {
-
     private final static long serialVersionUID = 1L;
 
     @Id
@@ -54,65 +54,64 @@ public class ReportEntity implements Serializable {
      * @return report id
      */
     public Integer getId() {
-        return this.id;
+        return id;
     }
 
     /**
-     * @return context of the report (usually the page or 
-     * composite component displaying the report)
-     * 
+     * @return context of the report (usually the page or composite component
+     *         displaying the report)
      */
     public String getContext() {
-        return this.context;
+        return context;
     }
 
     /**
-     * @return the name of the report 
+     * @return the name of the report
      */
     public String getName() {
-        return this.name;
+        return name;
     }
 
     /**
-     * @return the source URL for the report
+     * @return the source URL for the report template
      */
     public String getSource() {
-        return this.source;
+        return source;
     }
 
     /**
-     * @param i the report id
-     * @return
+     * @param id the report id
+     * @return this
      */
-    public ReportEntity setId(Integer i) {
-        this.id = i;
+    public ReportEntity setId(Integer id) {
+        this.id = id;
         return this;
     }
 
     /**
-     * @param c the context of the report
-     * @return
+     * @param context the context of the report
+     * @return this
      */
-    public ReportEntity setContext(String c) {
-        this.context = c;
+    public ReportEntity setContext(String context) {
+        this.context = context;
         return this;
     }
 
     /**
-     * @param n the report name
-     * @return
+     * @param name the report name
+     * @return this
      */
-    public ReportEntity setName(String n) {
-        this.name = n;
+    public ReportEntity setName(String name) {
+        this.name = name;
         return this;
     }
 
     /**
-     * @param s the source for the report template
-     * @return
+     * @param source the source URL of the report template
+     * @return this
      */
-    public ReportEntity setSource(String s) {
-        this.source = s;
+    public ReportEntity setSource(String source) {
+        this.source = source;
         return this;
     }
 }

@@ -25,6 +25,7 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 
 /**
+ * Timer service for maintaining reporting jobs.
  * 
  * @author flange
  */
@@ -44,7 +45,7 @@ public class ReportSchedulingService {
         reportJobService.markBusyJobsAsPending();
 
         // Could cause heavy load on application startup?
-        // reportJobService.submitPendingTasksToExecutor();
+//        reportJobService.submitPendingTasksToExecutor();
     }
 
     /**
