@@ -25,6 +25,27 @@ BEGIN TRANSACTION;
 
 UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
 
+CREATE OR REPLACE FUNCTION getContainerLabel (INTEGER) RETURNS VARCHAR
+        AS $$
+        --
+        -- resolve the (nested) container location information via recursion. 
+        --
+                DECLARE
+                        cid     ALIAS FOR $1;
+                        pos     VARCHAR;
+                BEGIN
+                    WITH RECURSIVE recursive_containers AS (
+                            SELECT id, reverse(label) AS label, parentcontainer FROM containers WHERE id=cid
+                        UNION ALL
+                            SELECT c.id, reverse(c.label), c.parentcontainer
+                            FROM containers AS c, recursive_containers AS p
+                            WHERE p.parentcontainer IS NOT NULL AND c.id=p.parentcontainer
+                        )
+                    SELECT reverse(string_agg(label, ' > ')) INTO pos FROM recursive_containers;
+                    RETURN pos;
+                END;
+        $$ LANGUAGE plpgsql;
+
 
 CREATE OR REPLACE FUNCTION getDimensionLabel (BOOLEAN, BOOLEAN, INTEGER, INTEGER) RETURNS VARCHAR 
         AS $$
