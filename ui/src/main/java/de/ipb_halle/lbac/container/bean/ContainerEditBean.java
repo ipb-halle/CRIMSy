@@ -61,7 +61,6 @@ public class ContainerEditBean implements Serializable {
 
     private List<ContainerType> containerTypes = new ArrayList<>();
     private Integer containerWidth;
-    private User currentUser;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Mode mode = Mode.CREATE;
     private Container originalContainer;
@@ -74,8 +73,7 @@ public class ContainerEditBean implements Serializable {
         localizer = new ContainerLocalizer(messagePresenter);
     }
 
-    public void setCurrentAccount(@Observes LoginEvent evt) {
-        currentUser = evt.getCurrentAccount();
+    public void setCurrentAccount(@Observes LoginEvent evt) {       
         clearEditBean();
         initGmoSafetyLevels();
     }
@@ -90,6 +88,7 @@ public class ContainerEditBean implements Serializable {
         containerLocation = null;
         containerWidth = null;
         containerHeight = null;
+        mode = Mode.CREATE;
     }
 
     public Integer getContainerHeight() {
@@ -138,7 +137,7 @@ public class ContainerEditBean implements Serializable {
     public String getDialogTitle() {
         if (mode == Mode.CREATE) {
             return localizer.localizeString("container_edit_titel_create");
-        } else if (mode == Mode.EDIT) {
+        } else if (mode == Mode.EDIT && originalContainer!=null) {
             return localizer.localizeString("container_edit_titel_edit", originalContainer.getLabel());
         } else {
             return "";
