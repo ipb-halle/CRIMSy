@@ -24,9 +24,15 @@ import de.ipb_halle.lbac.navigation.Navigator;
  *
  * @author fmauz
  */
-public class NavigatorMock extends Navigator{
-    public NavigatorMock(UserBean userbean){
-        this.userBean=userbean;
+public class NavigatorMock extends Navigator {
+
+    public NavigatorMock(UserBean userbean) {
+        this.userBean = userbean;
     }
-    
+
+    @Override
+    public String navigate(String destination) {
+        return "";
+    }
+
 }

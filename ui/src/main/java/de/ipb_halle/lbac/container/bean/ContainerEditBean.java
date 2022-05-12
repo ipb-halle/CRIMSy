@@ -23,7 +23,6 @@ import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.bean.ContainerOverviewBean.Mode;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.material.MessagePresenter;
-import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,6 +45,8 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class ContainerEditBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     @Inject
     private transient MessagePresenter messagePresenter;
 
