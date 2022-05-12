@@ -368,7 +368,9 @@ public class MaterialBean implements Serializable {
                 for (Concentration c : compositionBean.getConcentrationsInComposition()) {
                     composition.addComponent(c.getMaterial(), c.getConcentration(), c.getUnit());
                 }
-                materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
+                
+                
+                materialService.saveMaterialToDB(composition,   materialEditState.getCurrentProject().getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(), new HashMap<>(), userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.SEQUENCE) {
                 Sequence sequence = new Sequence(
                         null,
@@ -377,7 +379,7 @@ public class MaterialBean implements Serializable {
                         hazards,
                         storageInformationBuilder.build(),
                         sequenceInfos.getSequenceData());
-                materialService.saveMaterialToDB(sequence, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
+                materialService.saveMaterialToDB(sequence, materialEditState.getCurrentProject().getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(), new HashMap<>(), userBean.getCurrentAccount());
             }
         } else {
             throw new Exception("Material not valide");

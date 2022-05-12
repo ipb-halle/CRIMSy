@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.consumable.Consumable;
@@ -75,7 +76,7 @@ public class MaterialCreationSaver implements Serializable {
         BioMaterial bm = new BioMaterial(0, names, project.getId(), hazards, storageInfos, taxonomy, tissue);
         materialService.saveMaterialToDB(
                 bm,
-                project.getUserGroups().getId(),
+                project.getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(),
                 project.getDetailTemplates(),
                 owner);
 
@@ -117,7 +118,7 @@ public class MaterialCreationSaver implements Serializable {
         struc.getIndices().addAll(indices);
         materialService.saveMaterialToDB(
                 struc,
-                project.getUserGroups().getId(),
+                project.getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(),
                 project.getDetailTemplates(),
                 owner
         );
@@ -142,7 +143,7 @@ public class MaterialCreationSaver implements Serializable {
             StorageInformation storageClassInformation,
             List<IndexEntry> indices,
             User owner) {
-        Consumable consumable = new Consumable(0, materialNameBean.getNames(), project.getId(), hazards, storageClassInformation);
+        Consumable consumable = new Consumable(0, materialNameBean.getNames(),  project.getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(), hazards, storageClassInformation);
         consumable.getIndices().addAll(indices);
         saveMaterialOverview(consumable, project, owner);
     }
