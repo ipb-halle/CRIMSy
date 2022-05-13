@@ -143,7 +143,7 @@ public class MaterialCreationSaver implements Serializable {
             StorageInformation storageClassInformation,
             List<IndexEntry> indices,
             User owner) {
-        Consumable consumable = new Consumable(0, materialNameBean.getNames(),  project.getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(), hazards, storageClassInformation);
+        Consumable consumable = new Consumable(0, materialNameBean.getNames(),  project.getId(), hazards, storageClassInformation);
         consumable.getIndices().addAll(indices);
         saveMaterialOverview(consumable, project, owner);
     }

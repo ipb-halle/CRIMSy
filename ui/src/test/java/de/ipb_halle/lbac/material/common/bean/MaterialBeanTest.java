@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import de.ipb_halle.lbac.admission.ACEntry;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
@@ -46,6 +47,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
@@ -437,15 +439,21 @@ public class MaterialBeanTest extends TestBase {
     @Test
     public void test008_saveNewComposition() {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, project.getACList());
         projectService.saveEditedProjectToDb(project);
         material = creationTools.createStructure(project);
         materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+        
         instance.startMaterialCreation();
         instance.getCompositionBean().actionAddMaterialToComposition(material);
-        instance.getMaterialEditState().setCurrentProject(project);
+    
+            
+        project.getACList().getACEntries().values().iterator().next().setPermEdit(true);
+        
         Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
         instance.getMaterialNameBean().getNames().get(0).setValue("Composition");
         instance.setCurrentMaterialType(MaterialType.COMPOSITION);
+        instance.getMaterialEditState().setCurrentProject(project);
         instance.actionSaveMaterial();
 
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
@@ -453,6 +461,8 @@ public class MaterialBeanTest extends TestBase {
         requestBuilder.addMaterialType(MaterialType.COMPOSITION);
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
         Assert.assertEquals(1, result.getAllFoundObjects().size());
+        
+        
     }
 
     @Test
@@ -507,6 +517,7 @@ public class MaterialBeanTest extends TestBase {
     @Test
     public void test010_saveNewStructure() {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, project.getACList());
         projectService.saveEditedProjectToDb(project);
 
         instance.startMaterialCreation();
@@ -515,7 +526,7 @@ public class MaterialBeanTest extends TestBase {
 
         instance.getMaterialNameBean().getNames().get(0).setValue("test-structure");
         instance.getMaterialIndexBean().getIndices().add(new IndexEntry(2, "XYZ", "de"));
-
+        instance.getMaterialEditState().setCurrentProject(project);
         instance.actionSaveMaterial();
 
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
@@ -538,12 +549,14 @@ public class MaterialBeanTest extends TestBase {
 
         //Create new Structure
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, project.getACList());
         projectService.saveEditedProjectToDb(project);
         instance.startMaterialCreation();
         instance.getMaterialEditState().setCurrentProject(project);
         instance.getMaterialNameBean().getNames().get(0).setValue("test_011-structure");
         instance.setAutoCalcFormularAndMasses(true);
         instance.getStructureInfos().setStructureModel(benzene);
+        instance.getMaterialEditState().setCurrentProject(project);
         instance.actionSaveMaterial();
 
         //Load structure
