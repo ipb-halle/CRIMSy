@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.base;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
@@ -53,6 +54,7 @@ public class ProjectCreator {
         project.setOwner(user);
         project.setACList(projectAcl);
         project.setDeactivated(deactivated);
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, projectAcl);
         project = projectService.saveProjectToDb(project);
         return project;
     }

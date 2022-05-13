@@ -70,6 +70,7 @@ import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import static de.ipb_halle.fasta_search_service.models.search.TranslationTable.EUPLOTID_NUCLEAR;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_LIBRARY_TYPE;
 import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_QUERY_STRING;
 import static de.ipb_halle.lbac.search.SearchCategory.SEQUENCE_QUERY_TYPE;
@@ -160,6 +161,7 @@ public class MaterialCompositionBeanTest extends TestBase {
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         project.setOwner(publicUser);
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, GlobalAdmissionContext.getPublicReadACL());
         projectService.saveProjectToDb(project);
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
 
