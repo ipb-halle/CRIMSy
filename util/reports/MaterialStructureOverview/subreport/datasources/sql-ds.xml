@@ -1,19 +1,8 @@
 <data:sql-datasource xmlns:data="http://jfreereport.sourceforge.net/namespaces/datasources/sql">
   <data:config/>
-  <data:connection>
-    <data:driver>org.postgresql.Driver</data:driver>
-    <data:url>jdbc:postgresql://db:5432/lbac</data:url>
-    <data:properties>
-      <data:property name="user">lbac</data:property>
-      <data:property name="password">encrypted:5f0c4450</data:property>
-      <data:property name="::pentaho-reporting::port">5432</data:property>
-      <data:property name="::pentaho-reporting::name">lbacDB</data:property>
-      <data:property name="::pentaho-reporting-other-attribute::PORT_NUMBER">5432</data:property>
-      <data:property name="::pentaho-reporting::database-name">lbac</data:property>
-      <data:property name="::pentaho-reporting::hostname">db</data:property>
-      <data:property name="::pentaho-reporting::database-type">POSTGRESQL</data:property>
-    </data:properties>
-  </data:connection>
+  <data:jndi>
+    <data:path>java:openejb/Resource/uiDS</data:path>
+  </data:jndi>
   <data:query-definitions>
     <data:query name="molQuery">
       <data:static-query>SELECT mol.id, mol.molecule, bingo.cansmiles(molecule) AS smiles FROM molecules AS mol LIMIT 25;
