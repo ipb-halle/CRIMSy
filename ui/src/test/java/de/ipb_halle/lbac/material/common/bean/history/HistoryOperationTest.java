@@ -138,7 +138,7 @@ public abstract class HistoryOperationTest extends TestBase {
                 currentDate,
                 composition,
                 composition,
-                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), MessagePresenterMock.getInstance()));
+                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), MessagePresenterMock.getInstance()),MessagePresenterMock.getInstance());
         mes.setCurrentVersiondate(d_20001220);
         return mes;
     }

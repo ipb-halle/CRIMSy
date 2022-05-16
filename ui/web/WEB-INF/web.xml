@@ -253,16 +253,6 @@
         <param-value>10485760</param-value><!-- 10 MiB -->
     </context-param>
 
-    <!-- Document Servlet -->
-    <servlet>
-        <servlet-name>DocumentServlet</servlet-name>
-        <servlet-class>de.ipb_halle.lbac.cloud.servlet.DocumentServlet</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>DocumentServlet</servlet-name>
-        <url-pattern>/servlet/document/*</url-pattern>
-    </servlet-mapping>
     <!-- Welcome files -->
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>

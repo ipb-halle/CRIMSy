@@ -32,6 +32,7 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.mocks.NavigatorMock;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
@@ -49,7 +50,6 @@ import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,11 +80,22 @@ public class ProjectEditBeanTest extends TestBase {
 
     private Group group1, group2;
 
+    @Inject
     private ProjectEditBean projectEditBean;
+
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
+    private ProjectBean projectBean;
+
+    @Inject
+    private Navigator navigator;
 
     @BeforeEach
     public void init() {
         this.publicUser = context.getPublicAccount();
+        projectBean.setCurrentAccount(new LoginEvent(publicUser));
         group1 = createGroup("test02_removeAceFromProjectACL_group_1",
                 nodeService.getLocalNode(),
                 memberService,
@@ -95,8 +106,7 @@ public class ProjectEditBeanTest extends TestBase {
                 memberService,
                 membershipService);
 
-        projectEditBean = new ProjectEditBean();
-        projectEditBean.setMemberService(memberService);
+        projectEditBean.setNavigator(new NavigatorMock(null));
         projectEditBean.init();
         projectEditBean.setCurrentAccount(new LoginEvent(publicUser));
     }
@@ -149,14 +159,36 @@ public class ProjectEditBeanTest extends TestBase {
     }
 
     @Test
-    public void test004_startProjectCreation() {
+    public void test004_createProject() {
         projectEditBean.startProjectCreation();
-
+        int originalProjectCount = projectBean.getReadableProjects().size();
         Assert.assertTrue(projectEditBean.getProjectName().isEmpty());
         Assert.assertEquals(2, projectEditBean.getACEntriesOfProject().size());
         Assert.assertEquals(ProjectType.CHEMICAL_PROJECT, projectEditBean.getCurrentProjectType());
         Assert.assertTrue(projectEditBean.getProjectDescription().isEmpty());
         Assert.assertEquals(publicUser.getId(), projectEditBean.getProjectOwner().getId());
+
+        projectEditBean.setProjectName("test004_createProject");
+
+        projectEditBean.setCurrentProjectType(ProjectType.BIOCHEMICAL_PROJECT);
+        projectEditBean.setProjectDescription("test004_createProject_desc");
+
+        for (ACEntry ace : projectEditBean.getACEntriesOfProject()) {
+            projectEditBean.removeAceFromRoleTemplateACL(ace, MaterialDetailType.COMMON_INFORMATION.toString());
+        }
+        for (ACEntry ace : projectEditBean.getACEntriesOfProject()) {
+            projectEditBean.removeAceFromProjectACL(ace);
+        }
+
+        projectEditBean.saveProject();
+        
+        Assert.assertEquals(originalProjectCount + 1, projectBean.getReadableProjects().size());
+        Project newProject = projectBean.getReadableProjects().get(originalProjectCount);
+        Assert.assertEquals(1, newProject.getACList().getACEntries().size());
+        Assert.assertEquals(1, newProject.getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getACEntries().size());
+        Assert.assertEquals("test004_createProject",newProject.getName());
+        Assert.assertEquals("test004_createProject_desc",newProject.getDescription());
+        Assert.assertEquals(ProjectType.BIOCHEMICAL_PROJECT,newProject.getProjectType());
     }
 
     @Test
@@ -179,25 +211,25 @@ public class ProjectEditBeanTest extends TestBase {
 
     @Test
     public void test006_testLocalUsers() {
-        try{
-        User u = new User();
-        u.setName("test006_testLocalUsers");
-        u.setLogin("test006_testLocalUsers");
-        u.setPassword("test006_testLocalUsers");
-        u.setNode(nodeService.getLocalNode());
-        u = memberService.save(u);
-        int currentLocalUsers = projectEditBean.getLocalUsers().size();
-        Assert.assertEquals(currentLocalUsers, projectEditBean.getLocalUsers().size());
-        u.setLogin(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER);
-        u.setEmail("");
-        u.setPassword("");
-        u.setPhone("");
-        u.setName(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER);
-        u.setSubSystemData("");
-        u.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        memberService.save(u);
-        Assert.assertEquals(currentLocalUsers - 1, projectEditBean.getLocalUsers().size());
-        }catch(Exception e){
+        try {
+            User u = new User();
+            u.setName("test006_testLocalUsers");
+            u.setLogin("test006_testLocalUsers");
+            u.setPassword("test006_testLocalUsers");
+            u.setNode(nodeService.getLocalNode());
+            u = memberService.save(u);
+            int currentLocalUsers = projectEditBean.getLocalUsers().size();
+            Assert.assertEquals(currentLocalUsers, projectEditBean.getLocalUsers().size());
+            u.setLogin(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER);
+            u.setEmail("");
+            u.setPassword("");
+            u.setPhone("");
+            u.setName(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER);
+            u.setSubSystemData("");
+            u.setSubSystemType(AdmissionSubSystemType.LOCAL);
+            memberService.save(u);
+            Assert.assertEquals(currentLocalUsers - 1, projectEditBean.getLocalUsers().size());
+        } catch (Exception e) {
             logger.error("Achtung!");
             logger.error(ExceptionUtils.getStackTrace(e));
         }
@@ -222,6 +254,7 @@ public class ProjectEditBeanTest extends TestBase {
                 .addClass(SearchService.class)
                 .addClass(SearchWebService.class)
                 .addClass(Updater.class)
+                .addClass(Navigator.class)
                 .addClass(ProjectEditBean.class);
         return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }

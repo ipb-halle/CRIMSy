@@ -32,12 +32,12 @@ import de.ipb_halle.lbac.util.units.Unit;
  * @author flange
  */
 class MassConcentrationCalculationsTest {
-    Quantity oneMeter = new Quantity(1, "m");
+    Quantity oneMeter = Quantity.create(1.0, "m");
 
     @Test
     public void test_calculateMassConcentration() {
-        Quantity mass = new Quantity(200, "mg");
-        Quantity volume = new Quantity(150, "µl");
+        Quantity mass = Quantity.create(200.0, "mg");
+        Quantity volume = Quantity.create(150.0, "µl");
         Quantity massConcentration;
 
         massConcentration = calculateMassConcentration(mass, volume);
@@ -58,8 +58,8 @@ class MassConcentrationCalculationsTest {
 
     @Test
     public void test_calculateMass() {
-        Quantity massConcentration = new Quantity(1333.333333, "g/l");
-        Quantity volume = new Quantity(150, "µl");
+        Quantity massConcentration = Quantity.create(1333.333333, "g/l");
+        Quantity volume = Quantity.create(150.0, "µl");
         Quantity mass;
 
         mass = calculateMass(massConcentration, volume);
@@ -80,8 +80,8 @@ class MassConcentrationCalculationsTest {
 
     @Test
     public void test_calculateVolume() {
-        Quantity mass = new Quantity(200, "mg");
-        Quantity massConcentration = new Quantity(1333.333333, "g/l");
+        Quantity mass = Quantity.create(200.0, "mg");
+        Quantity massConcentration = Quantity.create(1333.333333, "g/l");
         Quantity volume;
 
         volume = calculateVolume(mass, massConcentration);

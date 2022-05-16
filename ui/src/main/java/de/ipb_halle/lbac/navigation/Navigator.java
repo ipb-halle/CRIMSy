@@ -47,7 +47,7 @@ public class Navigator implements Serializable {
     private transient Logger logger;
 
     /**
-     * Initialize the Navigator for the session. 
+     * Initialize the Navigator for the session.
      */
     @PostConstruct
     private void initNavigator() {
@@ -56,17 +56,18 @@ public class Navigator implements Serializable {
     }
 
     /**
-     * check if access is granted. 
-     * @return true if either login is not enforced (SETTING_FORCE_LOGIN is false) 
-     * or current account is not the public account
+     * check if access is granted.
+     *
+     * @return true if either login is not enforced (SETTING_FORCE_LOGIN is
+     * false) or current account is not the public account
      */
     public boolean getAccess() {
         return getStartPage().equals(NavigationConstants.DEFAULT);
     }
 
     private String getStartPage() {
-        if (systemSettings.getBoolean(SystemSettings.SETTING_FORCE_LOGIN) 
-          && userBean.getCurrentAccount().isPublicAccount()) {
+        if (systemSettings.getBoolean(SystemSettings.SETTING_FORCE_LOGIN)
+                && userBean.getCurrentAccount().isPublicAccount()) {
             return NavigationConstants.LOGIN;
         } else {
             return NavigationConstants.DEFAULT;
@@ -77,8 +78,8 @@ public class Navigator implements Serializable {
         return NavigationConstants.TEMPLATE_FOLDER + nextPage + NavigationConstants.TEMPLATE_EXT;
     }
 
-    public void initStartPage() { 
-        this.nextPage = getStartPage(); 
+    public void initStartPage() {
+        this.nextPage = getStartPage();
     }
 
     public void setNextPage(String nextPage) {

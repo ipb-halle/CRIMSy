@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.reporting.report.ReportMgr;
 import de.ipb_halle.lbac.reporting.report.ReportType;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
+import de.ipb_halle.lbac.items.bean.aliquot.createsolution.CreateSolutionBean;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;

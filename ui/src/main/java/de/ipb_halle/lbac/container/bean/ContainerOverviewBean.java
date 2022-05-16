@@ -62,7 +62,6 @@ public class ContainerOverviewBean implements Serializable {
     protected ContainerSearchMaskBean searchMaskBean;
 
     private User currentUser;
-    private final Logger logger = LogManager.getLogger(this.getClass().getName());
     private Mode mode;
     private List<Container> readableContainer = new ArrayList<>();
     protected InputValidator validator;

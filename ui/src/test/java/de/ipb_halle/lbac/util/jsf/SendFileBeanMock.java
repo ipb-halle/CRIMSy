@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 
 import org.apache.commons.io.FileUtils;
@@ -32,7 +33,7 @@ import org.apache.commons.io.IOUtils;
  * 
  * @author flange
  */
-@RequestScoped
+@ApplicationScoped
 public class SendFileBeanMock extends SendFileBean {
     private byte[] content;
     private String filename;

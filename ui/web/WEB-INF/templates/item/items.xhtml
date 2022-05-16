@@ -315,6 +315,14 @@
                                                 disabled="#{createSolutionBean.isItemNotSoluble(item) or itemOverviewBean.isEditDeactivated(item)}"
                                                 action="#{createSolutionBean.actionStartCreateSolution(item)}"
                                                 tooltip="#{msgs.itemOverview_tooltip_createSolution}" />
+                                            <b:commandButton
+                                                style="padding: 0 4px;"
+                                                iconAwesome="fa-eyedropper"
+                                                look="link"
+                                                ajax="false"
+                                                disabled="#{itemOverviewBean.isEditDeactivated(item)}"
+                                                action="#{createAliquotBean.actionStartCreateAliquot(item)}"
+                                                tooltip="#{msgs.itemOverview_tooltip_createAliquot}" />
                                         </b:dataTableColumn>
                                     </b:dataTable>
                                 </b:column> 

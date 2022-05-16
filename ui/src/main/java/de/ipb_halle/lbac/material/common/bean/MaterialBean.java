@@ -134,7 +134,6 @@ public class MaterialBean implements Serializable {
 
     private boolean autoCalcFormularAndMasses = true;
 
-    protected MaterialEditState materialEditState = new MaterialEditState();
     protected HistoryOperation historyOperation;
 
     private MaterialEditPermission permission;
@@ -146,6 +145,8 @@ public class MaterialBean implements Serializable {
     private TissueController tissueController;
     @Inject
     private transient MessagePresenter messagePresenter;
+
+    protected MaterialEditState materialEditState;
 
     protected MaterialHazardBuilder hazardController;
     protected StorageInformationBuilder storageInformationBuilder;
@@ -169,7 +170,7 @@ public class MaterialBean implements Serializable {
         try {
             initState();
             compositionBean.clearBean();
-            materialEditState = new MaterialEditState();
+            materialEditState = new MaterialEditState(messagePresenter);
             mode = Mode.CREATE;
             possibleProjects.clear();
             possibleProjects.add(materialEditState.getDefaultProject());
@@ -205,7 +206,7 @@ public class MaterialBean implements Serializable {
                     m.getType(),
                     acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()),
                     m.getHazards().getHazards(), messagePresenter);
-            materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m.copyMaterial(), hazardController);
+            materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m.copyMaterial(), hazardController, messagePresenter);
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());
             currentMaterialType = m.getType();
@@ -367,7 +368,9 @@ public class MaterialBean implements Serializable {
                 for (Concentration c : compositionBean.getConcentrationsInComposition()) {
                     composition.addComponent(c.getMaterial(), c.getConcentration(), c.getUnit());
                 }
-                materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
+                
+                
+                materialService.saveMaterialToDB(composition,   materialEditState.getCurrentProject().getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(), new HashMap<>(), userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.SEQUENCE) {
                 Sequence sequence = new Sequence(
                         null,
@@ -376,7 +379,7 @@ public class MaterialBean implements Serializable {
                         hazards,
                         storageInformationBuilder.build(),
                         sequenceInfos.getSequenceData());
-                materialService.saveMaterialToDB(sequence, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
+                materialService.saveMaterialToDB(sequence, materialEditState.getCurrentProject().getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(), new HashMap<>(), userBean.getCurrentAccount());
             }
         } else {
             throw new Exception("Material not valide");

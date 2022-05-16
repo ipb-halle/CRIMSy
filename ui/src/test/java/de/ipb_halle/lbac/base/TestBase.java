@@ -25,6 +25,8 @@ import de.ipb_halle.lbac.admission.ACListEntity;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.entity.Cloud;
+import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.mock.GlobalAdmissionContextMock;
@@ -245,6 +247,20 @@ public class TestBase implements Serializable {
         return u;
     }
 
+    protected User createRemoteUser(User user) {
+        User u = new User();
+        u.setLogin(user.getLogin());
+        u.setName(user.getName());
+        u.setNode(user.getNode());
+        u.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
+        u.setSubSystemData(user.getId().toString());
+        u = memberService.save(u);
+
+        membershipService.addMembership(u, u);
+
+        return u;
+    }
+
     /**
      * Creates a local group which will be saved in the database.
      *
@@ -415,6 +431,10 @@ public class TestBase implements Serializable {
         return nodeService.save(newNode);
     }
     
+    protected CloudNode createCloudNode(Node node, Cloud cloud) {
+        return cloudNodeService.save(new CloudNode(cloud, node));
+    }
+
     protected void initializeBaseUrl() {
         Node n = this.nodeService.getLocalNode();
         n.setBaseUrl(this.baseUrl.toString());

@@ -56,6 +56,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.faces.component.UIOutput;
@@ -212,10 +213,18 @@ public class ContainerControllerTest extends TestBase {
         assertThat(controller.nameSuggestions(""), is(empty()));
         assertThat(controller.nameSuggestions("    "), is(empty()));
         assertThat(controller.nameSuggestions("abc"), is(empty()));
-        assertThat(controller.nameSuggestions("AINER"), hasSize(2));
-        assertThat(controller.nameSuggestions("AINER"), containsInAnyOrder(c1AutoComplete, c2AutoComplete));
-        assertThat(controller.nameSuggestions("AINER1"), hasSize(1));
-        assertThat(controller.nameSuggestions("AINER1"), contains(c1AutoComplete));
+
+        List<String> nameSuggestions = controller.nameSuggestions("AINER");
+        assertThat(nameSuggestions, hasSize(2));
+        assertThat(nameSuggestions, containsInAnyOrder(c1AutoComplete, c2AutoComplete));
+
+        nameSuggestions = controller.nameSuggestions("AINER1");
+        assertThat(nameSuggestions, hasSize(1));
+        assertThat(nameSuggestions, contains(c1AutoComplete));
+
+        nameSuggestions = controller.nameSuggestions("  AINER1   ");
+        assertThat(nameSuggestions, hasSize(1));
+        assertThat(nameSuggestions, contains(c1AutoComplete));
     }
 
     @Test

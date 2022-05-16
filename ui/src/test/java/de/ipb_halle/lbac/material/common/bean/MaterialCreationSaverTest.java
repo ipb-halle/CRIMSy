@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -109,6 +110,9 @@ public class MaterialCreationSaverTest extends TestBase {
         userBean.setCurrentAccount(publicUser);
 
         Project p = creationTools.createProject();
+        p.setName("test002_saveConsumable");
+        p.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, p.getACList());
+        projectService.saveProjectToDb(p);
         StorageInformation sci = new StorageInformation();
         saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList<>(), publicUser);
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");

@@ -396,9 +396,6 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
      * {@code unit} as unit or null if one of those is null
      */
     public Quantity getAmountAsQuantity() {
-        if ((amount == null) || (unit == null)) {
-            return null;
-        }
-        return new Quantity(amount, unit);
+        return Quantity.create(amount, unit);
     }
 }

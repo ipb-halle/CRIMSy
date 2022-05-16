@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class HistoryOperationIndexTest {
         indices = new ArrayList<>();
         s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
-        mes = new MaterialEditState();
+        mes = new MaterialEditState(MessagePresenterMock.getInstance());
         mes.setMaterialBeforeEdit(s);
         mes.setCurrentVersiondate(currentDate);
         mib = new MaterialIndexBean();

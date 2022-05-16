@@ -97,7 +97,7 @@ public class MolarConcentrationCalculations {
     }
 
     /**
-     * V = m / (c * M)
+     * V = (m / M) * c
      * 
      * @param mass               m
      * @param molarConcentration c
@@ -112,7 +112,7 @@ public class MolarConcentrationCalculations {
     }
 
     /**
-     * V = m / (c * M)
+     * V = (m / M) * c
      * 
      * @param mass               m
      * @param molarConcentration c
