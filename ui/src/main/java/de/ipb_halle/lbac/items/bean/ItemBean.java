@@ -426,46 +426,6 @@ public class ItemBean implements Serializable {
     }
 
     /**
-     * This method should be triggered when the amount unit changes. It
-     * transforms the amount and (if necessary) the container size of the
-     * currently edited item to the new unit if the new and old unit qualities
-     * match.
-     *
-     * @param event
-     */
-    public void amountUnitChanged(ValueChangeEvent event) {
-        /*
-         * Postpone this event to a later phase because we want to update some
-         * item values, which will be overwritten in the upcoming
-         * UPDATE_MODEL_VALUES phase. See https://stackoverflow.com/a/11883021
-         */
-        if (event.getPhaseId() != PhaseId.INVOKE_APPLICATION) {
-            event.setPhaseId(PhaseId.INVOKE_APPLICATION);
-            event.queue();
-            return;
-        }
-
-        Unit oldUnit = (Unit) event.getOldValue();
-        Unit newUnit = (Unit) event.getNewValue();
-
-        if (oldUnit == null) {
-            return;
-        }
-
-        if (oldUnit.getQuality() == newUnit.getQuality()) {
-            Item item = getState().getEditedItem();
-
-            if (item.getAmount() != null) {
-                item.setAmount(item.getAmount() * oldUnit.transform(newUnit));
-            }
-
-            if (isDirectContainer() && (item.getContainerSize() != null)) {
-                item.setContainerSize(item.getContainerSize() * oldUnit.transform(newUnit));
-            }
-        }
-    }
-
-    /**
      * This method should be triggered when the concentration unit changes. It
      * transforms the concentration of the currently edited item to the new unit
      * if the new and old unit qualities match.

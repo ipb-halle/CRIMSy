@@ -25,6 +25,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:o="http://omnifaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
@@ -114,18 +116,23 @@
                                     </b:inputText>
                                 </b:column>
                                 <b:column span="2">
+                                    <!-- See https://github.com/ipb-halle/CRIMSy/issues/184 for implementation notes. -->
                                     <b:selectOneMenu
+                                        id="amountUnitId"
                                         label="#{msgs.itemEdit_itemPanel_amount_unit}"
                                         value="#{itemBean.state.editedItem.unit}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
-                                        ajax="true"
-                                        valueChangeListener="#{itemBean.amountUnitChanged}"
-                                        process="@this itemAmountId boundContainerSizeId"
-                                        update="itemAmountId boundContainerSizeId boundContainerUnitId">
-                                        <f:selectItems
-                                            value="#{itemBean.availableAmountUnits}"
-                                            var="unit"
-                                            itemLabel="#{unit.unit}" />
+                                        onfocus="rememberPreviouslySelectedUnit(this);"
+                                        onchange="onChangeSelectedUnit(this);">
+                                        <c:forEach
+                                            items="#{itemBean.availableAmountUnits}"
+                                            var="unit">
+                                            <f:selectItem
+                                                itemValue="#{unit}"
+                                                itemLabel="#{unit.unit}"
+                                                pt:factor="#{unit.factor}"
+                                                pt:quality="#{unit.quality}" />
+                                        </c:forEach>
                                     </b:selectOneMenu>
                                 </b:column> 
                                 <b:column span="3">
@@ -142,12 +149,13 @@
                             <b:row>
                                 <b:column span="2" styleClass="boldSelectBooleanCheckboxCaption">
                                     <b:selectBooleanCheckbox
+                                        value="#{itemBean.directContainer}"
                                         caption="#{msgs.itemEdit_itemPanel_directContainer}"
+                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
                                         ajax="true"
                                         process="@this"
                                         update="@(.directContainerClass)"
-                                        value="#{itemBean.directContainer}"
-                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}" />
+                                        oncomplete="updateBoundContainerUnit();" />
                                 </b:column>
                                 <b:column span="2" styleClass="directContainerClass">
                                     <b:inputText
