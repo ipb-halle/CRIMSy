@@ -93,7 +93,7 @@
         <class>de.ipb_halle.lbac.forum.TopicEntity</class>
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
         <class>de.ipb_halle.lbac.util.pref.PreferenceEntity</class>
-        
+        <class>de.ipb_halle.lbac.reporting.report.ReportEntity</class>
 
         <!-- test only -->
         <class>de.ipb_halle.lbac.search.lang.HorrorEntity</class>

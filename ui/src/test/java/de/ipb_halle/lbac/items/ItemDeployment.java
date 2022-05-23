@@ -31,7 +31,11 @@ import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.reporting.job.ReportJobService;
+import de.ipb_halle.lbac.reporting.report.ReportMgr;
+import de.ipb_halle.lbac.reporting.report.ReportService;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
+import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
@@ -56,7 +60,11 @@ public class ItemDeployment {
                 .addClass(PrinterService.class)
                 .addClass(LabelService.class)
                 .addClass(PreferenceService.class)
-                .addClass(MaterialService.class);
+                .addClass(MaterialService.class)
+                .addClass(ReportMgr.class)
+                .addClass(ReportService.class)
+                .addClass(ReportJobService.class)
+                .addClass(SendFileBeanMock.class);
         return MaterialDeployment.add(d);
     }
 }

@@ -1,0 +1,32 @@
+<data:sql-datasource xmlns:data="http://jfreereport.sourceforge.net/namespaces/datasources/sql">
+  <data:config/>
+  <data:jndi>
+    <data:path>java:openejb/Resource/uiDS</data:path>
+  </data:jndi>
+  <data:query-definitions>
+    <data:query name="molQuery">
+      <data:static-query>SELECT DISTINCT mat.materialid, struc.moleculeid, mol.molecule, 
+  bingo.cansmiles(mol.molecule) AS smiles 
+  FROM materials AS mat 
+  LEFT JOIN material_indices AS matidx ON mat.materialid = matidx.materialid AND matidx.typeid &lt;&gt; 1
+  JOIN material_indices AS matname ON mat.materialid = matname.materialid AND matname.typeid = 1
+  JOIN structures AS struc ON mat.materialid = struc.id
+  JOIN molecules AS mol ON struc.moleculeid = mol.id 
+  JOIN aclists AS acl ON mat.aclist_id = acl.id
+  JOIN acentries AS ace ON acl.id = ace.aclist_id 
+  JOIN memberships AS acem ON ace.member_id = acem.group_id 
+  JOIN projects AS p ON mat.projectid = p.id
+  JOIN usersgroups AS u ON mat.owner_id = u.id
+ WHERE ace.permread AND (acem.member_id = ${paramCurrentUserId}
+    OR (acem.member_id = ${paramOwnerId} AND mat.owner_id = ${paramCurrentUserId}))
+  AND COALESCE(NULLIF(true, ${paramMaterialName}::VARCHAR IS NOT NULL), matname.&quot;value&quot; ILIKE ${paramMaterialName})
+  AND COALESCE(NULLIF(true, ${paramMaterialId}::INTEGER IS NOT NULL), mat.materialid = ${paramMaterialId})
+  AND COALESCE(NULLIF(true, ${paramUserName}::VARCHAR IS NOT NULL), u.name ILIKE ${paramUserName})
+  AND COALESCE(NULLIF(true, ${paramProjectName}::VARCHAR IS NOT NULL), p.name ILIKE ${paramProjectName})
+  AND COALESCE(NULLIF(true, ${paramIndex}::VARCHAR IS NOT NULL), matidx.&quot;value&quot; ILIKE ${paramIndex})
+  AND COALESCE(NULLIF(true, ${paramMolQuery}::VARCHAR IS NOT NULL), substructure(mol.molecule, ${paramMolQuery}))
+  AND ${paramRandom} = ${paramRandom};
+</data:static-query>
+    </data:query>
+  </data:query-definitions>
+</data:sql-datasource>

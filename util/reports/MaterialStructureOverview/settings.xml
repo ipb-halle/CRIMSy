@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://reporting.pentaho.org/namespaces/engine/classic/bundle/settings/1.0">
+  <configuration><property name="org.pentaho.reporting.engine.classic.core.layout.fontrenderer.UseMaxCharBounds">true</property><property name="org.pentaho.reporting.engine.classic.core.modules.output.table.xls.DynamicColors">true</property></configuration>
+  <runtime></runtime>
+</settings>

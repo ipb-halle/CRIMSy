@@ -25,7 +25,7 @@
 
     <groupId>de.ipb-halle</groupId>
     <artifactId>ui</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
@@ -45,6 +45,7 @@
         <tomee.classifier>plus</tomee.classifier>
         <tomee.servlet-engine>7.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
+        <pentaho.version>9.2.0.0-SNAPSHOT</pentaho.version>
         
         <!-- Flag allowing one or more executions of the assembly plugin to be configured as skipped for a particular build.
         This makes the assembly plugin more controllable from profiles. -->
@@ -64,7 +65,7 @@
             <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
             <url>https://nexus.pentaho.org/content/groups/omni</url>
             <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>false</enabled></snapshots>
+            <snapshots><enabled>true</enabled></snapshots>
         </repository>
         <repository>
             <id>primefaces themes</id>
@@ -266,8 +267,6 @@
             </plugin>
         </plugins>
     </build>
-
-
 
     <dependencies>
 
@@ -638,5 +637,46 @@
             <artifactId>fasta-search-service-models</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <!-- Pentaho Reporting -->
+        <dependency>
+            <groupId>org.pentaho.reporting.engine</groupId>
+            <artifactId>classic-core</artifactId>
+            <version>${pentaho.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pentaho.reporting.engine</groupId>
+            <artifactId>classic-extensions</artifactId>
+            <version>${pentaho.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pentaho.reporting.engine</groupId>
+            <artifactId>wizard-core</artifactId>
+            <version>${pentaho.version}</version>
+        </dependency>
+
+        <dependency>
+          <groupId>org.pentaho.reporting.library</groupId>
+          <artifactId>libfonts</artifactId>
+          <version>${pentaho.version}</version>
+          <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pentaho.reporting.library</groupId>
+            <artifactId>libloader</artifactId>
+            <version>${pentaho.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pentaho.reporting</groupId>
+            <artifactId>pentaho-reporting</artifactId>
+            <version>${pentaho.version}</version>
+            <type>pom</type>
+        </dependency>
+
     </dependencies>
 </project> 

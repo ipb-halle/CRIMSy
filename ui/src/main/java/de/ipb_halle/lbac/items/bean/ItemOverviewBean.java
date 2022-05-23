@@ -26,11 +26,16 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.reporting.report.Report;
+import de.ipb_halle.lbac.reporting.report.ReportMgr;
+import de.ipb_halle.lbac.reporting.report.ReportType;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.bean.aliquot.createsolution.CreateSolutionBean;
@@ -38,11 +43,14 @@ import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.NonEmpty;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -80,6 +88,10 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected NodeService nodeService;
     @Inject
     protected ACListService aclistService;
+    @Inject
+    protected ReportMgr reportMgr;
+    @Inject
+    private transient MessagePresenter messagePresenter;
 
     private ACObjectController acObjectController;
     protected User currentUser;
@@ -89,6 +101,9 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     private ItemLocaliser itemLocaliser = new ItemLocaliser();
     private SearchResult searchResult;
     private SearchMaskValues searchMaskValues = new SearchMaskValues();
+
+    private Report selectedReport;
+    private ReportType selectedReportType;
 
     public void actionApplySearchFilter() {
         actionFirstItems();
@@ -119,6 +134,51 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         firstResult = itemAmount - PAGE_SIZE;
         firstResult = Math.max(0, firstResult);
         reloadItems();
+    }
+
+    public List<Report> getAvailableReports() {
+        return reportMgr.getAvailableReports(this.getClass().getName());
+    }
+
+    public Report getSelectedReport() {
+        return selectedReport;
+    }
+
+    public void setSelectedReport(Report selectedReport) {
+        this.selectedReport = selectedReport;
+    }
+
+    public ReportType[] getReportTypes() {
+        return ReportType.values();
+    }
+
+    public ReportType getSelectedReportType() {
+        return selectedReportType;
+    }
+
+    public void setSelectedReportType(ReportType selectedReportType) {
+        this.selectedReportType = selectedReportType;
+    }
+
+    public void actionCreateReport() {
+        reportMgr.submitReport(selectedReport, collectReportParameters(), selectedReportType, currentUser);
+        messagePresenter.info("reporting_reportSumbittedGrowlMsg");
+    }
+
+    private Map<String, Object> collectReportParameters() {
+        Map<String, Object> reportParams = new HashMap<String, Object>();
+
+        reportParams.put("paramCurrentUserId", currentUser.getId());
+        reportParams.put("paramOwnerId", GlobalAdmissionContext.OWNER_ACCOUNT_ID);
+
+        reportParams.put("paramMaterialName", NonEmpty.nullOrNonEmpty(searchMaskValues.getMaterialName()));
+        reportParams.put("paramItemLabel", NonEmpty.nullOrNonEmpty(searchMaskValues.getLabel()));
+        reportParams.put("paramUserName", NonEmpty.nullOrNonEmpty(searchMaskValues.getUserName()));
+        reportParams.put("paramProjectName", NonEmpty.nullOrNonEmpty(searchMaskValues.getProjectName()));
+        reportParams.put("paramLocation", NonEmpty.nullOrNonEmpty(searchMaskValues.getLocation()));
+        reportParams.put("paramDescription", NonEmpty.nullOrNonEmpty(searchMaskValues.getDescription()));
+
+        return reportParams;
     }
 
     public void actionStartItemEdit(Item i) {

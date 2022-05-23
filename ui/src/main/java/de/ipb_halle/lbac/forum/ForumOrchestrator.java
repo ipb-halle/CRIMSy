@@ -38,7 +38,7 @@ import javax.inject.Inject;
 @Stateless
 public class ForumOrchestrator implements Serializable{
 
-    @Resource
+    @Resource(name = "lbacManagedExecutorService")
     ManagedExecutorService managedExecutorService;
 
     @Inject

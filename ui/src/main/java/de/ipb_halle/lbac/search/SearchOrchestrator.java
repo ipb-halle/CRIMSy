@@ -49,7 +49,7 @@ public class SearchOrchestrator implements Serializable {
     @Inject
     private SearchWebClient searchWebClient;
     
-    @Resource
+    @Resource(name = "lbacManagedExecutorService")
     private ManagedExecutorService managedExecutorService;
     
     private static final Logger logger = LogManager.getLogger(SearchOrchestrator.class);

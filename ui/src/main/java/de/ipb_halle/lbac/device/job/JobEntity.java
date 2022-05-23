@@ -29,6 +29,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 /**
  * Job entity
  * A job entity object collects information necessary 
@@ -58,6 +60,7 @@ public class JobEntity implements Serializable {
      * input data 
      */
     @Column
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] input;
 
     @Column
@@ -72,6 +75,7 @@ public class JobEntity implements Serializable {
      * output data (some jobs do not produce output data)
      */
     @Column
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] output;
 
     @Column

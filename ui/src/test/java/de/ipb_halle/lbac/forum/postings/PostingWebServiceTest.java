@@ -98,7 +98,6 @@ public class PostingWebServiceTest
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("PostingWebServiceTest.war")
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(KeyManager.class)
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(CollectionWebServiceMock.class)

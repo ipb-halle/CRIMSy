@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-definition xmlns="http://reporting.pentaho.org/namespaces/engine/classic/bundle/data/1.0">
+  <parameter-mapping>
+    <input-parameter name="materialid" alias="paramMaterialId"/>
+  </parameter-mapping>
+  <data-source report-query="MaterialNameQuery" limit="-1" timeout="0" ref="datasources/compound-ds.xml"/>
+</data-definition>

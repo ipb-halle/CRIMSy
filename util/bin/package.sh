@@ -198,6 +198,13 @@ function copyFiles {
     cp util/bin/update.sh target/dist/bin
 }
 
+function copyReports {
+    pushd $LBAC_REPO/util/reports >/dev/null
+    mkdir -p ../../target/dist/reports
+    find . -maxdepth 1 -mindepth 1 -type d -exec jar cf ../../target/dist/reports/{}.prpt -C {} . \;
+    popd >/dev/null
+}
+
 function error {
 	echo $1
 	cleanTmp
@@ -207,6 +214,7 @@ function error {
 function genDist {
     cleanUp
     copyFiles
+    copyReports
     packageBin
     cleanTmp
 }
@@ -236,7 +244,7 @@ function masterConfig {
 
 function packageBin {
 	pushd target >/dev/null
-	tar -czf - dist/bin dist/etc | base64 |\
+	tar -czf - dist/bin dist/etc dist/reports | base64 |\
         openssl smime -sign \
           -signer $LBAC_CA_DIR/$DEV_CERT.pem \
           -inkey $LBAC_CA_DIR/$DEV_CERT.key -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd \

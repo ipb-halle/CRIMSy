@@ -69,13 +69,13 @@ public class ContainerInfoPresenter {
     public String getContainerLocation() {
         if (container == null) {
             return "";
-        } else {
-            if (container.getLocation(true, true) == null) {
-                return "unknown";
-            } else {
-                return container.getLocation(true, true);
-            }
         }
+
+        String location = container.getLocation(true, true);
+        if (location == null) {
+            return "unknown";
+        }
+        return location;
     }
 
     /*
