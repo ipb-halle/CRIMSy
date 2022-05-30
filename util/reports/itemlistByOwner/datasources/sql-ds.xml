@@ -37,7 +37,7 @@ ip.itemrow, ip.itemcol) AS position,
 
 FROM items AS i
  JOIN containers AS c ON i.containerid = c.id
- JOIN item_positions AS ip ON i.id = ip.itemid AND i.containerid = ip.containerid
+ LEFT JOIN item_positions AS ip ON i.id = ip.itemid AND i.containerid = ip.containerid
  JOIN material_indices AS mi ON i.materialid = mi.materialid
  JOIN usersgroups AS u ON i.owner_id = u.id
  JOIN aclists AS acl ON i.aclist_id = acl.id

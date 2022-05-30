@@ -16,7 +16,6 @@
   <manifest:file-entry manifest:full-path="subreport/datasources/compound-ds.xml" manifest:media-type="text/xml"/>
   <manifest:file-entry manifest:full-path="subreport/datasources/direct-sql-ds.xml" manifest:media-type="text/xml"/>
   <manifest:file-entry manifest:full-path="subreport/datasources/sql-ds.xml" manifest:media-type="text/xml"/>
-  <manifest:file-entry manifest:full-path="subreport/datasources/sql-ds1.xml" manifest:media-type="text/xml"/>
   <manifest:file-entry manifest:full-path="subreport/layout.xml" manifest:media-type="text/xml"/>
   <manifest:file-entry manifest:full-path="subreport/styles.xml" manifest:media-type="text/xml"/>
   <manifest:file-entry manifest:sticky="true" manifest:full-path="translations.properties" manifest:media-type="text/plain"/>
