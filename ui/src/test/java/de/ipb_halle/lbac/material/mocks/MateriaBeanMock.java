@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
+import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.common.service.HazardService;
@@ -50,9 +51,10 @@ public class MateriaBeanMock extends MaterialBean {
 
     private static final long serialVersionUID = 1L;
 
-    public MateriaBeanMock(){        
-        this.materialEditState=new MaterialEditState(MessagePresenterMock.getInstance());
+    public MateriaBeanMock() {
+        this.materialEditState = new MaterialEditState(MessagePresenterMock.getInstance());
     }
+
     public void createStorageInformationBuilder(MessagePresenter messagePresenter,
             MaterialService materialService,
             Material material) {
@@ -138,6 +140,10 @@ public class MateriaBeanMock extends MaterialBean {
 
     public void setHistoryOperation(HistoryOperation historyOperation) {
         this.historyOperation = historyOperation;
+    }
+
+    public MaterialOverviewBean getMaterialOverviewBean() {
+        return overviewBean;
     }
 
 }

@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
@@ -56,6 +57,7 @@ import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
+import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
@@ -156,6 +158,8 @@ public class MaterialBeanTest extends TestBase {
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
         instance.setUserBean(userBean);
+        
+        instance.getMaterialOverviewBean().setCurrentAccount(new LoginEvent(publicUser));
 
         material = creationTools.createStructure(project);
         Structure s = (Structure) material;
@@ -460,9 +464,7 @@ public class MaterialBeanTest extends TestBase {
         requestBuilder.setMaterialName("Composition");
         requestBuilder.addMaterialType(MaterialType.COMPOSITION);
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
-        Assert.assertEquals(1, result.getAllFoundObjects().size());
-        
-        
+        Assert.assertEquals(1, result.getAllFoundObjects().size());                        
     }
 
     @Test
@@ -577,6 +579,36 @@ public class MaterialBeanTest extends TestBase {
         Structure editedStruc = (Structure) result.getAllFoundObjects().get(0).getSearchable();
         Assert.assertEquals(benzene, editedStruc.getMolecule().getStructureModel());
         Assert.assertNull(editedStruc.getAverageMolarMass());
+    }
+    
+    @Test
+    public void test012_createNewConsumable(){        
+        project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        int originalPermCode=project.getACList().getPermCode();
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, project.getACList());
+        project.getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getACEntries().get(1).setPermEdit(true);
+       
+        projectService.saveEditedProjectToDb(project);
+        
+        instance.startMaterialCreation();
+        instance.setCurrentMaterialType(MaterialType.CONSUMABLE);
+        instance.getMaterialEditState().setCurrentProject(project);
+        instance.getMaterialNameBean().getNames().get(0).setValue("test_012-consumable");
+        
+        
+        instance.actionSaveMaterial();
+        
+         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("test_012-consumable");
+        requestBuilder.addMaterialType(MaterialType.CONSUMABLE);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+
+        List<Consumable> foundObjects = result.getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, foundObjects.size());
+        
+        Consumable cons=foundObjects.get(0);
+        Assert.assertNotEquals(originalPermCode,cons.getACList().getPermCode());
+
 
     }
 
