@@ -181,6 +181,7 @@
                                         validator="#{itemBean.validateAmountVsContainerSize}"
                                         message="#{msgs.itemEdit_itemPanel_validationError_amount_greaterThan_containerSize}" />
                                 </b:column>
+                                <script>$(document).ready(function() { updateBoundContainerUnit(); });</script>
                                 <b:column span="2" styleClass="directContainerClass">
                                     <b:inputText
                                         id="boundContainerUnitId"
