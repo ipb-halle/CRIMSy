@@ -22,11 +22,13 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.bean.ContainerOverviewBean.Mode;
 import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -44,6 +46,10 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ContainerEditBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Inject
+    private transient MessagePresenter messagePresenter;
+
     @Inject
     protected ContainerService containerService;
 
@@ -56,16 +62,19 @@ public class ContainerEditBean implements Serializable {
 
     private List<ContainerType> containerTypes = new ArrayList<>();
     private Integer containerWidth;
-    private User currentUser;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Mode mode = Mode.CREATE;
     private Container originalContainer;
     protected final List<String> gmoSafetyLevels = new ArrayList<>();
     private String preferredProjectName;
-    protected ContainerLocalizer localizer = new ContainerLocalizer();
+    protected ContainerLocalizer localizer;
 
-    public void setCurrentAccount(@Observes LoginEvent evt) {
-        currentUser = evt.getCurrentAccount();
+    @PostConstruct
+    public void init() {
+        localizer = new ContainerLocalizer(messagePresenter);
+    }
+
+    public void setCurrentAccount(@Observes LoginEvent evt) {       
         clearEditBean();
         initGmoSafetyLevels();
     }
@@ -80,6 +89,7 @@ public class ContainerEditBean implements Serializable {
         containerLocation = null;
         containerWidth = null;
         containerHeight = null;
+        mode = Mode.CREATE;
     }
 
     public Integer getContainerHeight() {
@@ -128,7 +138,7 @@ public class ContainerEditBean implements Serializable {
     public String getDialogTitle() {
         if (mode == Mode.CREATE) {
             return localizer.localizeString("container_edit_titel_create");
-        } else if (mode == Mode.EDIT) {
+        } else if (mode == Mode.EDIT && originalContainer!=null) {
             return localizer.localizeString("container_edit_titel_edit", originalContainer.getLabel());
         } else {
             return "";

@@ -45,13 +45,17 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -123,7 +127,7 @@ public class ItemOverviewBeanTest extends TestBase {
         itemBean.setContainerPositionService(containerPositionService);
         itemBean.setNavigator(new NavigatorMock(userBean));
         itemBean.setUserBean(userBean);
-
+        itemBean.setACListService(aclistService);
     }
     
     @Test
@@ -133,64 +137,64 @@ public class ItemOverviewBeanTest extends TestBase {
         itemOverviewBean.setCurrentAccount(new LoginEvent(user));
 
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(3, itemOverviewBean.getItems().size());
+        assertEquals(3, itemOverviewBean.getItems().size());
 
         //Load items with restriction to materialname
         itemOverviewBean.getSearchMaskValues().setMaterialName("Wasserstoff");
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(1, itemOverviewBean.getItems().size());
+        assertEquals(1, itemOverviewBean.getItems().size());
 
         //Load items after clearing restrictions
         itemOverviewBean.actionClearSearchFilter();
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(3, itemOverviewBean.getItems().size());
+        assertEquals(3, itemOverviewBean.getItems().size());
 
         //Load items with a restricted item
         createAndSaveRestrictedItem();
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(3, itemOverviewBean.getItems().size());
+        assertEquals(3, itemOverviewBean.getItems().size());
 
         //Load item by label
         itemOverviewBean.getSearchMaskValues().setLabel(item1_Label);
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(1, itemOverviewBean.getItems().size());
+        assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by user
         itemOverviewBean.getSearchMaskValues().setUserName(user.getName());
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(3, itemOverviewBean.getItems().size());
+        assertEquals(3, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by project
         createItemWithProject();
         itemOverviewBean.getSearchMaskValues().setProjectName("biochemical-test-project");
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(1, itemOverviewBean.getItems().size());
+        assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by direct location
         createItemWithContainer();
         itemOverviewBean.getSearchMaskValues().setLocation("BOX");
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(1, itemOverviewBean.getItems().size());
+        assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by nested location
         itemOverviewBean.getSearchMaskValues().setLocation("ROOM");
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(1, itemOverviewBean.getItems().size());
+        assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by description 
         itemOverviewBean.getSearchMaskValues().setDescription("TestItem");
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(3, itemOverviewBean.getItems().size());
+        assertEquals(3, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         itemOverviewBean.getSearchMaskValues().setDescription("X");
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(0, itemOverviewBean.getItemAmount());
+        assertEquals(0, itemOverviewBean.getItemAmount());
     }
 
  
@@ -208,54 +212,54 @@ public class ItemOverviewBeanTest extends TestBase {
 
         //Initial table content
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals(10, itemOverviewBean.getItems().size());
-        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
-        Assert.assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
-        Assert.assertTrue(itemOverviewBean.isBackDeactivated());
-        Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals(1, itemOverviewBean.getLeftBorder());
-        Assert.assertEquals(10, itemOverviewBean.getRightBorder());
-        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
+        assertEquals(10, itemOverviewBean.getItems().size());
+        assertEquals(106, itemOverviewBean.getItemAmount());
+        assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
+        assertTrue(itemOverviewBean.isBackDeactivated());
+        assertFalse(itemOverviewBean.isForwardDeactivated());
+        assertEquals(1, itemOverviewBean.getLeftBorder());
+        assertEquals(10, itemOverviewBean.getRightBorder());
+        assertEquals(106, itemOverviewBean.getItemAmount());
 
         //go one step forward
         itemOverviewBean.actionNextItems();
-        Assert.assertEquals(10, itemOverviewBean.getItems().size());
-        Assert.assertEquals("TestItem 10", itemOverviewBean.getItems().get(0).getDescription());
-        Assert.assertFalse(itemOverviewBean.isBackDeactivated());
-        Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals(11, itemOverviewBean.getLeftBorder());
-        Assert.assertEquals(20, itemOverviewBean.getRightBorder());
-        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
+        assertEquals(10, itemOverviewBean.getItems().size());
+        assertEquals("TestItem 10", itemOverviewBean.getItems().get(0).getDescription());
+        assertFalse(itemOverviewBean.isBackDeactivated());
+        assertFalse(itemOverviewBean.isForwardDeactivated());
+        assertEquals(11, itemOverviewBean.getLeftBorder());
+        assertEquals(20, itemOverviewBean.getRightBorder());
+        assertEquals(106, itemOverviewBean.getItemAmount());
 
         //go to the end of the list
         itemOverviewBean.actionEndItems();
-        Assert.assertEquals(10, itemOverviewBean.getItems().size());
-        Assert.assertEquals("TestItem 96", itemOverviewBean.getItems().get(0).getDescription());
-        Assert.assertFalse(itemOverviewBean.isBackDeactivated());
-        Assert.assertTrue(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals(97, itemOverviewBean.getLeftBorder());
-        Assert.assertEquals(106, itemOverviewBean.getRightBorder());
-        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
+        assertEquals(10, itemOverviewBean.getItems().size());
+        assertEquals("TestItem 96", itemOverviewBean.getItems().get(0).getDescription());
+        assertFalse(itemOverviewBean.isBackDeactivated());
+        assertTrue(itemOverviewBean.isForwardDeactivated());
+        assertEquals(97, itemOverviewBean.getLeftBorder());
+        assertEquals(106, itemOverviewBean.getRightBorder());
+        assertEquals(106, itemOverviewBean.getItemAmount());
 
         //go one step back
         itemOverviewBean.actionLastItems();
-        Assert.assertEquals(10, itemOverviewBean.getItems().size());
-        Assert.assertEquals("TestItem 86", itemOverviewBean.getItems().get(0).getDescription());
-        Assert.assertFalse(itemOverviewBean.isBackDeactivated());
-        Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals(87, itemOverviewBean.getLeftBorder());
-        Assert.assertEquals(96, itemOverviewBean.getRightBorder());
-        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
+        assertEquals(10, itemOverviewBean.getItems().size());
+        assertEquals("TestItem 86", itemOverviewBean.getItems().get(0).getDescription());
+        assertFalse(itemOverviewBean.isBackDeactivated());
+        assertFalse(itemOverviewBean.isForwardDeactivated());
+        assertEquals(87, itemOverviewBean.getLeftBorder());
+        assertEquals(96, itemOverviewBean.getRightBorder());
+        assertEquals(106, itemOverviewBean.getItemAmount());
 
         //go to first item
         itemOverviewBean.actionFirstItems();
-        Assert.assertEquals(10, itemOverviewBean.getItems().size());
-        Assert.assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
-        Assert.assertTrue(itemOverviewBean.isBackDeactivated());
-        Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals(1, itemOverviewBean.getLeftBorder());
-        Assert.assertEquals(10, itemOverviewBean.getRightBorder());
-        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
+        assertEquals(10, itemOverviewBean.getItems().size());
+        assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
+        assertTrue(itemOverviewBean.isBackDeactivated());
+        assertFalse(itemOverviewBean.isForwardDeactivated());
+        assertEquals(1, itemOverviewBean.getLeftBorder());
+        assertEquals(10, itemOverviewBean.getRightBorder());
+        assertEquals(106, itemOverviewBean.getItemAmount());
     }
 
    
@@ -271,9 +275,9 @@ public class ItemOverviewBeanTest extends TestBase {
         itemOverviewBean.getAcObjectController().actionApplyChanges();
 
         Item loadedItem = itemService.loadItemById(item.getId());
-        Assert.assertTrue(loadedItem.getACList().getACEntries().isEmpty());
+        assertTrue(loadedItem.getACList().getACEntries().isEmpty());
         ItemHistory history = (ItemHistory) loadedItem.getHistory().get(loadedItem.getHistory().firstKey()).get(0);
-        Assert.assertEquals(aclist.getId(), history.getAcListOld().getId());
+        assertEquals(aclist.getId(), history.getAcListOld().getId());
 
         itemOverviewBean.cancelAclChanges();
     }
@@ -301,22 +305,22 @@ public class ItemOverviewBeanTest extends TestBase {
         Container box = containerCreator.createAndSaveContainer("BOX", room);
 
         List<String> containerNames = itemOverviewBean.getSimilarContainerNames("BO");
-        Assert.assertEquals(1, containerNames.size());
-        Assert.assertEquals("BOX", containerNames.get(0));
+        assertEquals(1, containerNames.size());
+        assertEquals("BOX", containerNames.get(0));
 
         List<String> projectNames = itemOverviewBean.getSimilarProjectNames("Project_X");
-        Assert.assertEquals(2, projectNames.size());
-        Assert.assertEquals("Project_X", projectNames.get(0));
-        Assert.assertEquals("Project_XY", projectNames.get(1));
+        assertEquals(2, projectNames.size());
+        assertEquals("Project_X", projectNames.get(0));
+        assertEquals("Project_XY", projectNames.get(1));
 
         List<String> usernames = itemOverviewBean.getSimilarUserNames("public");
-        Assert.assertEquals(1, usernames.size());
-        Assert.assertEquals("Public Account", usernames.get(0));
+        assertEquals(1, usernames.size());
+        assertEquals("Public Account", usernames.get(0));
 
         List<String> materialNames = itemOverviewBean.getSimilarMaterialNames("Wasser");
-        Assert.assertEquals(2, materialNames.size());
-        Assert.assertEquals("Wasser", materialNames.get(0));
-        Assert.assertEquals("Wasserstoff", materialNames.get(1));
+        assertEquals(2, materialNames.size());
+        assertEquals("Wasser", materialNames.get(0));
+        assertEquals("Wasserstoff", materialNames.get(1));
     }
 
     @Deployment

@@ -77,7 +77,7 @@ public class CollectionOrchestrator implements Serializable {
     @Inject
     private ACListService acListService;
 
-    @Resource
+    @Resource(name = "lbacManagedExecutorService")
     ManagedExecutorService managedExecutorService;
 
     private static final Logger LOGGER = LogManager.getLogger(CollectionOrchestrator.class);

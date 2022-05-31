@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-definition xmlns="http://reporting.pentaho.org/namespaces/engine/classic/bundle/data/1.0">
+  <parameter-definition>
+    <plain-parameter name="paramCurrentUserId" mandatory="false" type="java.lang.Integer" default-value="5">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramCurrentUserId</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramMaterialId" mandatory="false" type="java.lang.Integer">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramMaterialId</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramOwnerId" mandatory="false" type="java.lang.Integer" default-value="3">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramOwnerId</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramProjectName" mandatory="false" type="java.lang.String">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramProjectName</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramUserName" mandatory="false" type="java.lang.String">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramUserName</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramMolQuery" mandatory="false" type="java.lang.String">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramIndex" mandatory="false" type="java.lang.String">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramIndex</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramMaterialName" mandatory="false" type="java.lang.String">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="label">paramMaterialName</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+    <plain-parameter name="paramRandom" mandatory="true" type="java.lang.Long">
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="role">user</attribute>
+      <attribute namespace="http://reporting.pentaho.org/namespaces/engine/parameter-attributes/core" name="hidden">false</attribute>
+    </plain-parameter>
+  </parameter-definition>
+  <data-source report-query="molQuery" limit="-1" timeout="0" ref="datasources/compound-ds.xml"/>
+  <expression name="PageofPages" class="org.pentaho.reporting.engine.classic.core.function.PageOfPagesFunction">
+    <properties>
+      <property name="format">{0} / {1}</property>
+      <property name="pageIncrement">1</property>
+      <property name="startPage">1</property>
+    </properties>
+  </expression>
+  <expression name="Formula1" formula="=CONCATENATE(&quot;&lt;img src=&apos;&quot;; [svg] ; &quot;&apos;/&gt;&quot;)" failOnError="true"/>
+</data-definition>

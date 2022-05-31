@@ -22,7 +22,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:body>
         <ui:composition>
@@ -33,7 +35,15 @@
                     styleClass="navigationMenu"
                     style="z-index: 900;">
                     <b:flyOutMenu width="50px" styleClass="lbacDropDownMenu">
-                        <b:dropMenu value="BioCloud" styleClass="tstNavBioCloud">
+                        <p:remoteCommand
+                            name="navigateToSearch"
+                            action="#{navigator.navigate('default')}"
+                            process="@this"
+                            update="@all" />
+                        <b:dropMenu
+                            value="BioCloud"
+                            styleClass="tstNavBioCloud"
+                            pt:onclick="if (this.tagName == 'LI') { navigateToSearch(); return false; }">
                             <b:navCommandLink
                                 value="#{msgs.navigation_bioCloud_search}"
                                 styleClass="tstNavLBAC"
@@ -110,6 +120,9 @@
                                               value="#{msgs.navigation_admission_myAccount}"
                                               styleClass="tstNavMyAccount"
                                               actionListener="#{navigator.navigate('myAccount')}"/>
+                            <b:navCommandLink iconAwesome="file-text-o" 
+                                              value="#{msgs.navigation_admission_myReports}"
+                                              actionListener="#{navigator.navigate('myReports')}"/>
                             <b:navCommandLink iconAwesome="user"
                                               value="#{msgs.navigation_admission_userManagement}"
                                               styleClass="tstNavUserManager"

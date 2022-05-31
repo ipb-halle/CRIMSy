@@ -55,9 +55,10 @@ Zusätzlich zu einem minimalen Linux-System erfordern Installation und Betrieb e
 *   ssh (nur falls Remote-Administration gewünscht wird)
 *   sudo
 *   tar
-*   sharutils (uuencode / uudecode)
+*   sharutils (base64)
 *   uuidgen
 *   curl 
+*   rsync
 
 Benutzer
 --------

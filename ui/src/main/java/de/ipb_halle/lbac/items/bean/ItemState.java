@@ -30,43 +30,17 @@ public class ItemState {
     private Date currentHistoryDate = null;
 
     public ItemState() {
-
         originalItem = null;
         editedItem = new Item();
     }
 
     public ItemState(Item original) {
         originalItem = original;
-        editedItem = copyItem(original);
-
+        editedItem = original.copy();
     }
 
     private Item originalItem;
     private Item editedItem;
-
-    private Item copyItem(Item original) {
-        Item copiedItem = new Item();
-        copiedItem.setAmount(original.getAmount());
-        copiedItem.setArticle(original.getArticle());
-        copiedItem.setConcentration(original.getConcentration());
-        copiedItem.setContainer(original.getContainer());
-        copiedItem.setContainerSize(original.getContainerSize());
-        copiedItem.setContainerType(original.getContainerType());
-        copiedItem.setDescription(original.getDescription());
-        copiedItem.setId(original.getId());
-        copiedItem.setMaterial(original.getMaterial());
-        copiedItem.setOwner(original.getOwner());
-        copiedItem.setProject(original.getProject());
-        copiedItem.setPurity(original.getPurity());
-        copiedItem.setSolvent(original.getSolvent());
-        copiedItem.setUnit(original.getUnit());
-        copiedItem.setcTime(original.getcTime());
-        copiedItem.setHistory(original.getHistory());
-        copiedItem.setACList(original.getACList());
-        copiedItem.setOwner(original.getOwner());
-
-        return copiedItem;
-    }
 
     public Item getOriginalItem() {
         return originalItem;

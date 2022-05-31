@@ -25,8 +25,11 @@ import de.ipb_halle.lbac.admission.ACListEntity;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.entity.Cloud;
+import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.mock.GlobalAdmissionContextMock;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
@@ -76,7 +79,6 @@ import org.junit.jupiter.api.BeforeEach;
 public class TestBase implements Serializable {
     
     protected Logger logger;
-    protected String LBAC_PROPERTIES_PATH = "target/test-classes/keystore/lbac_properties.xml";
     protected String TEST_ROOT = "target/test-classes/";
     protected CreationTools creationTools;
     protected MaterialCreator materialCreator;
@@ -145,7 +147,7 @@ public class TestBase implements Serializable {
     
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
-                .addClass(GlobalAdmissionContext.class)
+                .addClass(GlobalAdmissionContextMock.class)
                 .addClass(GlobalVersions.class)
                 .addClass(ACListService.class)
                 .addClass(CloudService.class)
@@ -180,6 +182,7 @@ public class TestBase implements Serializable {
         
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
         cleanItemsFromDb();
+        cleanSolventsFromDb();
         this.entityManagerService.doSqlUpdate("Delete from containers");
         cleanMaterialsFromDB();
         materialCreator = new MaterialCreator(entityManagerService);
@@ -195,7 +198,8 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM files");
         
         entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
-        context.setLBAC_PROPERTIES_PATH("target/test-classes/keystore/lbac_properties.xml");
+        entityManagerService.doSqlUpdate("DELETE FROM jobs");
+        entityManagerService.doSqlUpdate("DELETE FROM reports");
         context.createAdminAccount();
         cleanExperimentsFromDB();
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -240,6 +244,20 @@ public class TestBase implements Serializable {
         membershipService.addMembership(u, u);
         membershipService.addMembership(g, u);
         
+        return u;
+    }
+
+    protected User createRemoteUser(User user) {
+        User u = new User();
+        u.setLogin(user.getLogin());
+        u.setName(user.getName());
+        u.setNode(user.getNode());
+        u.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
+        u.setSubSystemData(user.getId().toString());
+        u = memberService.save(u);
+
+        membershipService.addMembership(u, u);
+
         return u;
     }
 
@@ -369,6 +387,12 @@ public class TestBase implements Serializable {
         createTaxanomy(21, "Haarnixen", 7, userGroups, ownerId, 1, 16, 17);
         entityManagerService.doSqlUpdate("ALTER SEQUENCE materials_materialid_seq RESTART WITH 22");
     }
+
+    protected void createSolvents(String... solvents) {
+        for (String solvent : solvents) {
+            entityManagerService.doSqlUpdate(String.format("INSERT INTO solvents (name) VALUES('%s')", solvent));
+        }
+    }
     
     public void resetDB(MemberService memberService) {
         List<Collection> colls = collectionService.load(new HashMap<>());
@@ -407,6 +431,10 @@ public class TestBase implements Serializable {
         return nodeService.save(newNode);
     }
     
+    protected CloudNode createCloudNode(Node node, Cloud cloud) {
+        return cloudNodeService.save(new CloudNode(cloud, node));
+    }
+
     protected void initializeBaseUrl() {
         Node n = this.nodeService.getLocalNode();
         n.setBaseUrl(this.baseUrl.toString());
@@ -414,7 +442,7 @@ public class TestBase implements Serializable {
     }
     
     protected void initializeKeyStoreFactory() {
-        KeyStoreFactory.setLBAC_PROPERTIES_PATH(LBAC_PROPERTIES_PATH);
+        KeyStoreFactory.setLBAC_PROPERTIES_PATH(context.getLbacPropertiesPath());
         KeyStoreFactory ksf = KeyStoreFactory
                 .getInstance()
                 .setLOCAL_KEY_ALIAS("test")
@@ -445,6 +473,10 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("delete from item_positions");
         entityManagerService.doSqlUpdate("delete from items_history");
         entityManagerService.doSqlUpdate("delete from items");
+    }
+
+    private void cleanSolventsFromDb() {
+        entityManagerService.doSqlUpdate("DELETE FROM solvents");
     }
     
     protected void cleanMaterialsFromDB() {
@@ -492,5 +524,11 @@ public class TestBase implements Serializable {
     
     private void resetMessagePresenterMock() {
         MessagePresenterMock.getInstance().resetMessages();
+    }
+
+    private static final String INSERT_REPORT_FORMAT = "INSERT INTO reports (context, name, source) VALUES ('%s','%s','%s')";
+
+    protected void insertReport(String context, String name, String source) {
+        entityManagerService.doSqlUpdate(String.format(INSERT_REPORT_FORMAT, context, name, source));
     }
 }

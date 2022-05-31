@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.material.sequence.search.display;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultDisplayWrapper.AlignmentLine;
+import de.ipb_halle.lbac.util.ResourceUtils;
 
 /**
  * @author flange
@@ -38,7 +38,7 @@ public class FastaResultDisplayWrapperTest {
     private Sequence sequence = new Sequence(1, null, null, null, null, null);
 
     private Reader readerForResourceFile(String filename) {
-        return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("fastaresults/" + filename));
+        return ResourceUtils.readerForResourceFile("fastaresults/" + filename);
     }
 
     @Test

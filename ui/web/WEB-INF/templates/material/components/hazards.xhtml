@@ -66,6 +66,13 @@
                                 for="ghsHazardsId"
                                 itemIndex="#{status.index}"
                                 disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                            <h:panelGroup>
+                                <label
+                                    for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
+                                    <b:image 
+                                        name="#{materialBean.hazardController.getImageLocation(hazard)}"/>
+                                </label>
+                            </h:panelGroup>          
                             <!-- There is a bug in PrimeFaces 6.2 that causes p:outputLabel to reference
                                  the wrong target id in the previous p:selectManyCheckbox component. This 
                                  can also be observed in the PF showcase for this version and was solved
@@ -87,14 +94,7 @@
                                     <h:outputText 
                                         value="#{materialBean.hazardController.getLocalizedName(hazard)}"/>
                                 </label>
-                            </h:panelGroup>
-                            <h:panelGroup>
-                                <label
-                                    for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
-                                    <b:image 
-                                        name="#{materialBean.hazardController.getImageLocation(hazard)}"/>
-                                </label>
-                            </h:panelGroup>                                
+                            </h:panelGroup>                                                  
                         </c:forEach>
                     </p:panelGrid>
 

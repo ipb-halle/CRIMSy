@@ -42,6 +42,8 @@ public class ChemistryParserTest {
 
     @Test
     public void parseMDLV2000Model() throws IOException, CDKException {
+        String benzene = ResourceUtils.readResourceFile("molfiles/Benzene.mol");
+
         IAtomContainer molecule = parser.parseMolecule(benzene);
         Assert.assertEquals(6, StreamSupport.stream(molecule.atoms().spliterator(), false).count());
     }
@@ -51,19 +53,6 @@ public class ChemistryParserTest {
         IAtomContainer molecule = parser.parseMolecule(v3000Model);
         Assert.assertEquals(31, StreamSupport.stream(molecule.atoms().spliterator(), false).count());
     }
-
-    private String benzene = "\n" + "  Marvin  10310613082D          \n" + "\n"
-            + "  6  6  0  0  0  0            999 V2000\n"
-            + "    0.7145   -0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    0.0000   -0.8250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    0.7145    0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    0.0000    0.8250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "   -0.7145   -0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "   -0.7145    0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "  2  1  2  0  0  0  0\n" + "  3  1  1  0  0  0  0\n"
-            + "  4  3  2  0  0  0  0\n" + "  5  2  1  0  0  0  0\n"
-            + "  6  4  1  0  0  0  0\n" + "  5  6  2  0  0  0  0\n" + "M  END\n"
-            + "";
 
     private String v3000Model
             = " \n   "

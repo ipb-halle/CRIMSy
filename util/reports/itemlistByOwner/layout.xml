@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout xmlns="http://reporting.pentaho.org/namespaces/engine/classic/bundle/layout/1.0" xmlns:style="http://reporting.pentaho.org/namespaces/engine/classic/bundle/style/1.0" xmlns:core="http://reporting.pentaho.org/namespaces/engine/attributes/core" xmlns:html="http://reporting.pentaho.org/namespaces/engine/attributes/html" xmlns:swing="http://reporting.pentaho.org/namespaces/engine/attributes/swing" xmlns:pdf="http://reporting.pentaho.org/namespaces/engine/attributes/pdf" xmlns:wizard="http://reporting.pentaho.org/namespaces/engine/attributes/wizard" xmlns:designtime="http://reporting.pentaho.org/namespaces/report-designer/2.0" xmlns:crosstab="http://reporting.pentaho.org/namespaces/engine/attributes/crosstab" xmlns:pentaho="http://reporting.pentaho.org/namespaces/engine/attributes/pentaho" xmlns:table="http://reporting.pentaho.org/namespaces/engine/attributes/table" xmlns:internal="http://reporting.pentaho.org/namespaces/engine/attributes/internal" internal:compatibility-level="3.8.0" designtime:zoom="1.5399998" designtime:preview-dialog-bounds="379.0,109.0,700.0,700.0" pentaho:report-cache="false" wizard:template="/home/fblocal/pentaho/report-designer/templates/maple_4_left_aligned_grid.prpt">
+  <preprocessor class="org.pentaho.reporting.engine.classic.wizard.WizardProcessor">
+  </preprocessor>
+  <style:element-style>
+    <style:text-styles font-face="Arial" font-size="14"/>
+  </style:element-style>
+  <report-header>
+    <root-level-content designtime:visual-height="35.004">
+      <style:element-style>
+        <style:common-styles avoid-page-break="true" vertical-alignment="middle"/>
+        <style:content-styles color="#a5a297"/>
+      </style:element-style>
+      <message core:name="" core:null-value="">
+        <style:element-style>
+          <style:border-styles border-width="1" border-break-width="0" border-color="white" border-break-color="black" border-style="solid" border-break-style="none" border-radius-width="0" border-radius-height="0"/>
+          <style:common-styles alignment="left"/>
+          <style:content-styles dynamic-height="true"/>
+          <style:spatial-styles x="0" y="10.004" min-width="100%" min-height="25" max-width="32767" max-height="32767"/>
+          <style:text-styles font-face="Arial" bold="false" embedded="false" excel-text-wrapping="false" font-size="18" min-letter-spacing="2"/>
+        </style:element-style>
+        <core:value>Itemlist by Owner</core:value>
+      </message>
+    </root-level-content>
+  </report-header>
+  <group core:group-fields="owner_id" core:name="a">
+    <style:element-style>
+    </style:element-style>
+    <fields>
+      <field>owner_id</field>
+    </fields>
+    <group-header>
+      <root-level-content designtime:hideInLayoutGUI="false" designtime:visual-height="26.063">
+        <style:element-style>
+          <style:band-styles layout="block"/>
+          <style:common-styles avoid-page-break="true"/>
+          <style:content-styles color="black"/>
+          <style:text-styles bold="true" font-size="12"/>
+        </style:element-style>
+        <horizontal-line>
+          <style:element-style>
+            <style:content-styles draw-shape="true" scale="true"/>
+            <style:spatial-styles x="9" y="24" min-width="100%" min-height="1"/>
+          </style:element-style>
+        </horizontal-line>
+        <band wizard:generated-content-marker="true">
+          <style:element-style>
+            <style:border-styles padding-top="0" padding-bottom="0" border-top-width="0" border-top-color="#5985b6" border-top-style="solid"/>
+            <style:common-styles alignment="left" vertical-alignment="middle"/>
+            <style:content-styles dynamic-height="true"/>
+            <style:spatial-styles x="0" y="0" min-width="100%" min-height="1"/>
+          </style:element-style>
+          <band wizard:allow-metadata-styling="true" wizard:label-for="containerid">
+            <style:element-style>
+              <style:band-styles layout="inline"/>
+              <style:border-styles padding-top="8" padding-left="0" padding-bottom="3" padding-right="0"/>
+              <style:content-styles dynamic-height="true"/>
+              <style:spatial-styles min-width="100%"/>
+            </style:element-style>
+            <label>
+              <style:element-style>
+              </style:element-style>
+              <core:value>Owner:</core:value>
+            </label>
+            <text-field core:field="owner_name">
+              <style:element-style>
+                <style:border-styles padding-left="5"/>
+                <style:common-styles vertical-alignment="middle"/>
+                <style:spatial-styles x="70" y="0" min-width="93.404" min-height="20"/>
+              </style:element-style>
+            </text-field>
+          </band>
+        </band>
+      </root-level-content>
+    </group-header>
+    <data-body>
+      <style:element-style>
+        <style:text-styles font-size="12"/>
+      </style:element-style>
+      <details-header designtime:hideInLayoutGUI="false" designtime:visual-height="51.8182">
+        <style:element-style>
+          <style:border-styles background-color="#776a5b"/>
+          <style:common-styles avoid-page-break="true"/>
+          <style:content-styles color="black"/>
+          <style:page-band-styles repeat="true"/>
+          <style:spatial-styles min-height="2"/>
+          <style:text-styles font-size="12"/>
+        </style:element-style>
+        <band wizard:generated-content-marker="true">
+          <style:element-style>
+            <style:band-styles layout="row"/>
+            <style:border-styles background-color="#a5a297"/>
+            <style:common-styles alignment="left" vertical-alignment="middle"/>
+            <style:content-styles dynamic-height="true" color="white"/>
+            <style:spatial-styles x="0" y="0" min-width="100%" min-height="36.979"/>
+          </style:element-style>
+          <label wizard:label-for="label">
+            <style:element-style>
+              <style:content-styles dynamic-height="true"/>
+              <style:spatial-styles min-width="22%" min-height="100%"/>
+            </style:element-style>
+            <core:value>Barcode</core:value>
+          </label>
+          <band>
+            <style:element-style>
+              <style:spatial-styles x="156.903" y="0" min-width="58.176" min-height="45.757"/>
+            </style:element-style>
+            <label wizard:label-for="Amount" wizard:allow-metadata-styling="true" wizard:allow-metadata-attributes="true">
+              <style:element-style>
+                <style:content-styles dynamic-height="true"/>
+                <style:spatial-styles min-width="85%" min-height="20%"/>
+              </style:element-style>
+              <core:value>Amount</core:value>
+            </label>
+            <label wizard:label-for="Conc." wizard:allow-metadata-styling="true" wizard:allow-metadata-attributes="true">
+              <style:element-style>
+                <style:content-styles dynamic-height="true"/>
+                <style:spatial-styles x="0" y="28.126" min-width="85%" min-height="30%"/>
+              </style:element-style>
+              <core:value>Conc.</core:value>
+            </label>
+            <label>
+              <style:element-style>
+                <style:spatial-styles x="0" y="14.063" min-width="54.612" min-height="13.503"/>
+              </style:element-style>
+              <core:value>Size</core:value>
+            </label>
+          </band>
+          <label wizard:label-for="Pos.">
+            <style:element-style>
+              <style:content-styles dynamic-height="true"/>
+              <style:spatial-styles x="163.169" y="0" min-width="6%" min-height="100%"/>
+            </style:element-style>
+            <core:value>Pos.</core:value>
+          </label>
+          <label>
+            <style:element-style>
+              <style:spatial-styles x="307.792" y="4.545" min-width="241.836" min-height="20"/>
+            </style:element-style>
+            <core:value>Substance Name</core:value>
+          </label>
+          <band>
+            <style:element-style>
+              <style:spatial-styles x="459.74" y="0" min-width="125.623" min-height="100%"/>
+            </style:element-style>
+            <label>
+              <style:element-style>
+                <style:spatial-styles min-width="100%" min-height="30%"/>
+              </style:element-style>
+              <core:value>Owner</core:value>
+            </label>
+            <label>
+              <style:element-style>
+                <style:spatial-styles x="0" y="16" min-width="100%" min-height="30%"/>
+              </style:element-style>
+              <core:value>Project</core:value>
+            </label>
+            <label>
+              <style:element-style>
+                <style:spatial-styles y="31.818" min-width="100%" min-height="13.401"/>
+              </style:element-style>
+              <core:value>Container</core:value>
+            </label>
+          </band>
+        </band>
+      </details-header>
+      <details>
+        <root-level-content core:name="detailrows" designtime:visual-height="56.957308892822255" wizard:grid-style="solid" wizard:grid-color="#828d7e" wizard:grid-width="1.0" wizard:generated-content-marker="true">
+          <style:element-style>
+            <style:band-styles layout="row"/>
+            <style:common-styles avoid-page-break="true" vertical-alignment="middle"/>
+            <style:content-styles color="#828d7e"/>
+            <style:spatial-styles min-width="100%" min-height="18"/>
+            <style:text-styles ellipsis=".." font-size="10"/>
+          </style:element-style>
+          <band>
+            <style:element-style>
+              <style:border-styles border-width="1" border-color="#828d7e" border-break-color="black" border-style="solid"/>
+              <style:spatial-styles x="0" y="1" min-width="123.727" min-height="100%"/>
+            </style:element-style>
+            <sbarcodes:simple-barcodes core:field="label" xmlns:sbarcodes="http://reporting.pentaho.org/namespaces/engine/classic/extensions/sbarcodes/1.0" type="code128" checksum="false">
+              <style:element-style>
+                <style:border-styles border-width="1" border-color="#828d7e" border-break-color="#828d7e" border-style="none" border-break-style="none"/>
+                <style:common-styles invisible-consumes-space="true"/>
+                <style:content-styles color="black"/>
+                <style:spatial-styles x="0" y="6.494" min-width="100%" min-height="76%"/>
+              </style:element-style>
+            </sbarcodes:simple-barcodes>
+          </band>
+          <band designtime:hideInLayoutGUI="false">
+            <style:element-style>
+              <style:border-styles border-width="1" border-color="#828d7e" border-break-color="#828d7e" border-style="solid" border-break-style="none"/>
+              <style:content-styles color="#828d7e"/>
+              <style:spatial-styles x="123.727" y="1" min-width="62.169" min-height="100%"/>
+            </style:element-style>
+            <number-field core:field="amount" core:name="wizard::details-amount" core:format-string="###0.### ;" wizard:allow-metadata-styling="true" wizard:allow-metadata-attributes="false">
+              <style:element-style>
+                <style:border-styles border-width="1" border-color="#828d7e" border-style="none" border-break-style="none"/>
+                <style:content-styles dynamic-height="true"/>
+                <style:spatial-styles x="0" y="0" min-width="100%" min-height="30%"/>
+              </style:element-style>
+              <attribute-expression namespace="http://reporting.pentaho.org/namespaces/engine/attributes/core" name="format-string" formula="=CONCATENATE(&quot;###0.###&quot;; &quot; &quot;; [unit])"/>
+            </number-field>
+            <number-field core:field="containersize" core:name="wizard::details-containersize" wizard:allow-metadata-styling="true" wizard:allow-metadata-attributes="true">
+              <style:element-style>
+                <style:border-styles border-width="1" border-color="#828d7e" border-style="none" border-break-style="none"/>
+                <style:common-styles invisible-consumes-space="true"/>
+                <style:content-styles dynamic-height="true"/>
+                <style:spatial-styles x="0" y="16.326" min-width="100%" min-height="30%"/>
+              </style:element-style>
+            </number-field>
+            <number-field core:field="concentration" core:name="wizard::details-concentration" wizard:allow-metadata-styling="true" wizard:allow-metadata-attributes="false">
+              <style:element-style>
+                <style:border-styles border-width="1" border-color="#828d7e" border-style="none" border-break-style="none"/>
+                <style:content-styles dynamic-height="true"/>
+                <style:spatial-styles x="0" y="32.2" min-width="100%" min-height="30%"/>
+                <style:text-styles text-wrap="none" word-break="false"/>
+              </style:element-style>
+              <attribute-expression namespace="http://reporting.pentaho.org/namespaces/engine/attributes/core" name="format-string" formula="=CONCATENATE(&quot;##0.##&quot;; &quot; &apos;&quot;; [concentrationunit]; &quot;&apos;&quot;)"/>
+            </number-field>
+          </band>
+          <text-field core:field="position">
+            <style:element-style>
+              <style:border-styles border-width="1" border-color="#828d7e" border-break-color="black" border-style="solid"/>
+              <style:common-styles alignment="center"/>
+              <style:spatial-styles x="162.169" y="0" min-width="34.476" min-height="100%"/>
+            </style:element-style>
+          </text-field>
+          <text-field core:field="substance_name">
+            <style:element-style>
+              <style:border-styles border-width="1" border-color="#828d7e" border-break-color="#828d7e" border-style="solid" border-break-style="none"/>
+              <style:content-styles dynamic-height="true"/>
+              <style:spatial-styles x="261.58" y="0" min-width="42%" min-height="100%"/>
+            </style:element-style>
+          </text-field>
+          <band>
+            <style:element-style>
+              <style:border-styles border-width="1" border-color="#828d7e" border-break-color="#828d7e" border-style="solid" border-break-style="none"/>
+              <style:spatial-styles x="445.227" y="0" min-width="113.467" min-height="54.416"/>
+            </style:element-style>
+            <text-field core:field="owner_name">
+              <style:element-style>
+                <style:border-styles border-width="1" border-color="#828d7e" border-break-color="#828d7e" border-style="none" border-break-style="none"/>
+                <style:spatial-styles x="0" y="0" min-width="100%" min-height="30%"/>
+              </style:element-style>
+            </text-field>
+            <text-field core:field="project_name">
+              <style:element-style>
+                <style:spatial-styles x="0" y="16.377" min-width="100%" min-height="31%"/>
+              </style:element-style>
+            </text-field>
+            <text-field core:field="place">
+              <style:element-style>
+                <style:spatial-styles y="33.766" min-width="100%" min-height="14.564"/>
+              </style:element-style>
+            </text-field>
+          </band>
+        </root-level-content>
+      </details>
+      <no-data>
+        <root-level-content designtime:visual-height="91.4286" designtime:hideInLayoutGUI="true" wizard:generated-content-marker="false">
+          <style:element-style>
+            <style:common-styles avoid-page-break="true"/>
+          </style:element-style>
+        </root-level-content>
+      </no-data>
+      <details-footer designtime:hideInLayoutGUI="false" designtime:visual-height="1.8181802034378052">
+        <style:element-style>
+          <style:band-styles layout="row"/>
+          <style:common-styles avoid-page-break="true"/>
+          <style:page-band-styles repeat="true"/>
+        </style:element-style>
+        <band wizard:generated-content-marker="true">
+          <style:element-style>
+            <style:band-styles layout="row"/>
+            <style:border-styles background-color="#a5a297"/>
+            <style:common-styles alignment="left" vertical-alignment="middle"/>
+            <style:content-styles dynamic-height="true" color="white"/>
+            <style:spatial-styles x="0" y="0" min-width="100%" min-height="100%"/>
+            <style:text-styles bold="true"/>
+          </style:element-style>
+        </band>
+      </details-footer>
+    </data-body>
+    <group-footer>
+      <root-level-content designtime:hideInLayoutGUI="false" designtime:visual-height="24.0">
+        <style:element-style>
+          <style:band-styles layout="block"/>
+          <style:common-styles avoid-page-break="true"/>
+          <style:content-styles color="#003366"/>
+          <style:text-styles bold="true" font-size="12"/>
+        </style:element-style>
+        <band wizard:generated-content-marker="true">
+          <style:element-style>
+            <style:band-styles layout="row"/>
+            <style:common-styles alignment="left" vertical-alignment="middle"/>
+            <style:content-styles dynamic-height="true" color="black"/>
+            <style:spatial-styles x="0" y="26" min-width="100%" min-height="100%"/>
+          </style:element-style>
+        </band>
+        <horizontal-line>
+          <style:element-style>
+            <style:content-styles draw-shape="true" scale="true" color="black" stroke-weight="2" stroke-style="solid"/>
+            <style:spatial-styles x="25" y="30" min-width="100%" min-height="3"/>
+          </style:element-style>
+        </horizontal-line>
+        <horizontal-line>
+          <style:element-style>
+            <style:common-styles visible="false"/>
+            <style:content-styles draw-shape="true" scale="true" color="black"/>
+            <style:spatial-styles x="25" y="30" min-width="100%" min-height="1"/>
+          </style:element-style>
+        </horizontal-line>
+      </root-level-content>
+    </group-footer>
+  </group>
+  <report-footer>
+    <root-level-content designtime:visual-height="46.0">
+      <style:element-style>
+        <style:band-styles layout="block"/>
+        <style:common-styles avoid-page-break="true" alignment="center"/>
+        <style:content-styles color="#a5a297"/>
+        <style:spatial-styles min-height="20"/>
+        <style:text-styles font-size="12"/>
+      </style:element-style>
+      <band wizard:generated-content-marker="true">
+        <style:element-style>
+          <style:common-styles vertical-alignment="middle"/>
+          <style:spatial-styles min-width="100%" min-height="20"/>
+        </style:element-style>
+      </band>
+      <horizontal-line>
+        <style:element-style>
+          <style:content-styles draw-shape="true" scale="true" stroke-weight="2" stroke-style="solid"/>
+          <style:spatial-styles x="0" y="42" min-width="100%" min-height="3"/>
+        </style:element-style>
+      </horizontal-line>
+      <horizontal-line>
+        <style:element-style>
+          <style:content-styles draw-shape="true" scale="true"/>
+          <style:spatial-styles x="0" y="42" min-width="100%" min-height="3"/>
+        </style:element-style>
+      </horizontal-line>
+      <message>
+        <style:element-style>
+          <style:common-styles alignment="center"/>
+          <style:content-styles dynamic-height="true"/>
+          <style:spatial-styles x="0" y="20" min-width="100%" min-height="20"/>
+        </style:element-style>
+        <core:value>Report Footer</core:value>
+      </message>
+    </root-level-content>
+  </report-footer>
+</layout>

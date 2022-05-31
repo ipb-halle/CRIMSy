@@ -31,8 +31,7 @@ public final class NumberFunctions {
     }
 
     /**
-     * Formats a given number according to the format pattern in the English
-     * locale.
+     * Formats a given number according to the format pattern in the English locale.
      * <p>
      * This implementation is derived from OmniFaces' Numbers class, which is
      * licensed under the Apache License, Version 2.0, see
@@ -48,9 +47,33 @@ public final class NumberFunctions {
             return null;
         }
 
-        DecimalFormat formatter = (DecimalFormat) NumberFormat
-                .getNumberInstance(Locale.ENGLISH);
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
         formatter.applyPattern(pattern);
         return formatter.format(number);
+    }
+
+    /**
+     * Formats the given amount to the format "0.0##" in the English locale.
+     * <p>
+     * Examples:
+     * <ul>
+     * <li>10000 -> 10000.0</li>
+     * <li>10000.0 -> 10000.0</li>
+     * <li>10000.1 -> 10000.1</li>
+     * <li>10000.01 -> 10000.01</li>
+     * <li>10000.001 -> 10000.001</li>
+     * <li>10000.0001 -> 10000.0</li>
+     * <li>0.0 -> 0.0</li>
+     * <li>0.1 -> 0.1</li>
+     * <li>0.01 -> 0.01</li>
+     * <li>0.001 -> 0.001</li>
+     * <li>0.0001 -> 0.0</li>
+     * </ul>
+     * 
+     * @param amount
+     * @return formatted number
+     */
+    public static String formatAmount(Number amount) {
+        return formatNumberInEnglish(amount, "0.0##");
     }
 }

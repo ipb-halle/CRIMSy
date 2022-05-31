@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -48,6 +49,8 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class ContainerOverviewBean implements Serializable {
+    @Inject
+    private transient MessagePresenter messagePresenter;
 
     @Inject
     protected ContainerService containerService;
@@ -59,13 +62,11 @@ public class ContainerOverviewBean implements Serializable {
     protected ContainerSearchMaskBean searchMaskBean;
 
     private User currentUser;
-    private final Logger logger = LogManager.getLogger(this.getClass().getName());
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private Mode mode;
     private List<Container> readableContainer = new ArrayList<>();
     protected InputValidator validator;
 
-    protected ContainerLocalizer localizer = new ContainerLocalizer();
+    protected ContainerLocalizer localizer;
     protected CallBackController callBackController = new CallBackController();
     protected ValidatorFactory validatorFactory;
 
@@ -75,7 +76,8 @@ public class ContainerOverviewBean implements Serializable {
 
     @PostConstruct
     private void init() {
-        this.validatorFactory = new ValidatorFactory(containerService);
+        localizer = new ContainerLocalizer(messagePresenter);
+        validatorFactory = new ValidatorFactory(containerService);
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {

@@ -39,7 +39,6 @@ public class GlobalAdmissionContextTest extends TestBase {
 
     @Test
     public void test01_createNewGroup() {
-        context.setLBAC_PROPERTIES_PATH("target/test-classes/keystore/lbac_properties.xml");
         Object o = entityManagerService.doSqlQuery("Select id,name from usersgroups");
         for (Object oo : (List) o) {
             Object[] user = (Object[]) oo;

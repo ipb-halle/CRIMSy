@@ -1,0 +1,11 @@
+<data:sql-datasource xmlns:data="http://jfreereport.sourceforge.net/namespaces/datasources/sql">
+  <data:config/>
+  <data:jndi>
+    <data:path>java:openejb/Resource/uiDS</data:path>
+  </data:jndi>
+  <data:query-definitions>
+    <data:query name="MaterialNameQuery">
+      <data:static-query>SELECT &quot;value&quot; FROM material_indices WHERE typeid=1 AND materialid=${paramMaterialId} ORDER BY rank;</data:static-query>
+    </data:query>
+  </data:query-definitions>
+</data:sql-datasource>

@@ -43,6 +43,7 @@ import org.testcontainers.utility.MountableFile;
  * @author flange
  */
 public class PostgresqlContainerExtension implements BeforeAllCallback {
+    private static final String[] SCHEMA_FILES = { "00001.sql", "00002.sql", "00003.sql" };
     private static final String IMAGE_NAME = "ipbhalle/crimsydb:bingo_pg12";
 
     private static final AtomicBoolean FIRST_RUN = new AtomicBoolean(true);
@@ -66,10 +67,10 @@ public class PostgresqlContainerExtension implements BeforeAllCallback {
         logger.info("Starting Postgresql container with image " + customPostgresImage.toString());
         container.start();
 
-        copySchema("schema/00001.sql");
-        applySchema("00001.sql");
-        copySchema("schema/00002.sql");
-        applySchema("00002.sql");
+        for (String schemaFile : SCHEMA_FILES) {
+            copySchema("schema/" + schemaFile);
+            applySchema(schemaFile);
+        }
     }
 
     private void copySchema(String filename) {

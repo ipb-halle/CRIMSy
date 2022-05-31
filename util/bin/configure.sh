@@ -33,14 +33,15 @@ CLOUD_NAME="CLOUDCONFIG_CLOUD_NAME"
 
 #
 LBAC_CONFIG=config.sh
-LBAC_CONFIG_VERSION=6
-LBAC_CURRENT_CONFIG_VERSION=6
+LBAC_CONFIG_VERSION=8
+LBAC_CURRENT_CONFIG_VERSION=$LBAC_CONFIG_VERSION
 LBAC_INSTALLER=bin/install.sh
+LBAC_IMAGE_REGISTRY="ipbhalle"
 
 LBAC_ADMIN_PWFILE=admin.passwd
 LBAC_DB_PWFILE=db.passwd
 LBAC_SSL_DEVCERT=devcert.pem
-LBAC_SSL_CHAIN=chain.txt
+LBAC_SSL_CHAIN=chain.pem
 LBAC_SSL_KEYFILE=lbac_cert.key
 LBAC_SSL_PWFILE=lbac_cert.passwd
 LBAC_SSL_REQ=lbac_cert.req
@@ -254,6 +255,67 @@ function dialog_ADMIN_PASSWD {
         esac
 }
 
+function dialog_AUTO_UPDATE {
+        case "$LBAC_UPDATE_LEVEL" in
+            NONE)
+                tmp_none=ON
+                tmp_patch=OFF
+                tmp_minor=OFF
+                tmp_major=OFF
+                ;;
+            PATCH)
+                tmp_none=OFF
+                tmp_patch=ON
+                tmp_minor=OFF
+                tmp_major=OFF
+                ;;
+            MINOR)
+                tmp_none=OFF
+                tmp_patch=OFF
+                tmp_minor=ON
+                tmp_major=OFF
+                ;;
+            MAJOR)
+                tmp_none=OFF
+                tmp_patch=OFF
+                tmp_minor=OFF
+                tmp_major=ON
+                ;;
+            *)
+                LBAC_UPDATE_LEVEL=PATCH
+                tmp_none=OFF
+                tmp_patch=ON
+                tmp_minor=OFF
+                tmp_major=OFF
+                ;;
+        esac
+
+        dialog --backtitle "$CLOUD_NAME" \
+          --cancel-label "Abbrechen" \
+          --radiolist "Bitte wählen Sie, welche Art von Updates Ihr System automatisch durchführen darf. Wir empfehlen, automatische Updates mindestens auf Patchlevel-Ebene zu aktivieren. Auf diesem Level sind nur Bugfixes und Sicherheitspatches eingeschlossen; die Stufen Minor und Major enthalten zusätzlich kleinere bzw. größere Funktionserweiterungen." 17 72 4 \
+          NONE "Keine automatischen Updates" $tmp_none \
+          PATCH "Automatische Patchlevel-Updates" $tmp_patch \
+          MINOR "Automatische Minor-Level-Updates" $tmp_minor \
+          MAJOR "Automatische Major-Level-Updates" $tmp_major 2> $TMP_RESULT
+        case $? in
+                0)
+                        LBAC_UPDATE_LEVEL=`cat $TMP_RESULT | head -1 | tr -d $'\n'`
+                        case "$LBAC_INIT_TYPE" in
+                            NONE|PATCH|MINOR|MAJOR)
+                                    echo "LBAC_UPDATE_LEVEL=\"$LBAC_UPDATE_LEVEL\"" >> $TMP_CONFIG
+                                    ;;
+                            *)
+                                    echo "LBAC_UPDATE_LEVEL=\"PATCH\"" >> $TMP_CONFIG
+                                    ;;
+                        esac
+                        NEXT_FORM=DIALOG_INIT_TYPE
+                        ;;
+                *)
+                        NEXT_FORM=DIALOG_ABORT
+                        ;;
+        esac
+}
+
 function dialog_INTRANET_FQHN {
 	dialog --colors --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
@@ -316,7 +378,7 @@ function dialog_PROXY_HSTS {
                         else
                             echo "LBAC_PROXY_HSTS=\"OFF\"" >> $TMP_CONFIG
                         fi
-			NEXT_FORM=DIALOG_INIT_TYPE
+			NEXT_FORM=DIALOG_AUTO_UPDATE
 			;;
 		*)
 			NEXT_FORM=DIALOG_ABORT
@@ -612,10 +674,12 @@ function checkSoftware {
 	echo TEST | openssl md5 > /dev/null || return
         NEXT_FORM="ERROR: sudo nicht installiert."
         sudo -V >/dev/null || return
-        NEXT_FORM="ERROR: uudecode nicht installiert."
-        echo $'begin-base64 644 -\nQQo=\n====' | uudecode > /dev/null || return
+        NEXT_FORM="ERROR: base64 nicht installiert."
+        echo QQo= | base64 -di > /dev/null || return
         NEXT_FORM="ERROR: uuidgen nicht installiert."
         uuidgen > /dev/null || return
+        NEXT_FORM="ERROR: rsync nicht installiert."
+        rsync --version > /dev/null || return
 
 	NEXT_FORM=DIALOG_START
 }
@@ -683,26 +747,34 @@ if test "!" "(" -n "\$LBAC_DATASTORE" -a -d "\$LBAC_DATASTORE" \
 fi
 . \$LBAC_DATASTORE/etc/config.sh > /dev/null
 cd \$LBAC_DATASTORE
+
+DATE=\`date "+%Y%m%d%H%M%S"\`
 CLOUD=`cat \$LBAC_DATASTORE/etc/primary.cfg`
+URL=\`grep "\$CLOUD;" \$LBAC_DATASTORE/etc/clouds.cfg | cut -d';' -f2\`
 mkdir -p \$LBAC_DATASTORE/tmp 
 pushd \$LBAC_DATASTORE/tmp
 
-curl --silent --output configure.sh.sig \$LBAC_DISTRIBUTION_POINT/configure.sh.sig || (echo "Download fehlgeschlagen" && exit 1)
-openssl smime -verify -in configure.sh.sig -certfile ../etc/\$CLOUD/devcert.pem \
-  -CAfile ../etc/\$CLOUD/chain.txt -out configure.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
-  && rm configure.sh && exit 1)
+curl --silent --output dist-bin.tar.gz.asc.sig \$URL/dist-bin.tar.gz.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
+openssl smime -verify -in dist-bin.tar.gz.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
+  -CAfile ../etc/\$CLOUD/chain.pem -out dist-bin.tar.gz.asc || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
+  && rm dist-bin.tar.gz.asc && exit 1)
 
-curl --silent --output setup.asc.sig \$LBAC_DISTRIBUTION_POINT/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
-openssl smime -verify -in setup.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
- -CAfile ../etc/\$CLOUD/chain.txt | openssl smime -decrypt -inform PEM \
+curl --silent --output \$CLOUD.asc.sig \$URL/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
+openssl smime -verify -in \$CLOUD.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
+ -CAfile ../etc/\$CLOUD/chain.pem | openssl smime -decrypt -inform PEM \
  -inkey ../etc/lbac_cert.key -passin file:../etc/lbac_cert.passwd \
- -out setup.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" && rm setup.sh && exit 1)
-chmod +x setup.sh configure.sh
-mv configure.sh \$LBAC_DATASTORE/bin
-DATE=\`date "+%Y%m%d%H%M%S"\`
-./setup.sh \$* 2>&1 | tee "\$LBAC_DATASTORE/tmp/setup.\$DATE.log" \
- || ( echo "Setup abgebrochen" && exit 1)
+ -out \$CLOUD.tar.gz || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" && rm \$CLOUD.asc.sig \$CLOUD.tar.gz && exit 1)
+
 popd >/dev/null
+base64 -di tmp/dist-bin.tar.gz.asc | tar -xzf -
+tar -xzf tmp/\$CLOUD.tar.gz
+
+rm tmp/dist-bin.tar.gz.asc tmp/\$CLOUD.asc.sig tmp/\$CLOUD.tar.gz
+chmod +x dist/bin/configure.sh
+mv dist/bin/configure.sh bin/
+
+dist/bin/setup.sh \$* 2>&1 | tee "\$LBAC_DATASTORE/tmp/setup.\$DATE.log" \
+ || ( echo "Setup abgebrochen" && exit 1)
 echo "Setup-Log: \$LBAC_DATASTORE/tmp/setup.\$DATE.log"
 EOF
 chmod +x "$LBAC_DATASTORE/$LBAC_INSTALLER"
@@ -716,7 +788,7 @@ function encrypt {
             cat << EOF > "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc" && echo > $TMP_SSL_DATA && NEXT_FORM=DIALOG_END
 #
 # LBAC_INSTITUTION=$LBAC_INSTITUTION
-# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_SSL_DEVCERT" -text | \
+# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_SSL_DEVCERT" -text |\
           grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
 # `date`
 #
@@ -790,11 +862,12 @@ function makeDirectories {
             uuidgen -r | tr -d $'\n' > "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE"
         fi
 
-        echo /$CLOUD_NAME$'\t/d\ni\n'$CLOUD_NAME$';'$LBAC_DISTRIBUTION_POINT$'\n.\nw\nq\n' | \
+        echo /$CLOUD_NAME$';/d\ni\n'$CLOUD_NAME$';'$LBAC_DISTRIBUTION_POINT$'\n.\nw\nq\n' |\
             ed $LBAC_DATASTORE/etc/clouds.cfg
 
-        echo "$CLOUD_NAME;$LBAC_DISTRIBUTION_POINT" > $LBAC_DATASTORE/etc/clouds.cfg
-        echo "$CLOUD_NAME" > $LBAC_DATASTORE/etc/primary.cfg
+        if [ ! -s $LBAC_DATASTORE/etc/primary.cfg ] ; then
+            echo "$CLOUD_NAME" > $LBAC_DATASTORE/etc/primary.cfg
+        fi
 
 	# clean up certificates from download and 
 	# verification (see upload.sh)
@@ -814,7 +887,7 @@ function makeTempConfig {
 # `date`
 #
 LBAC_CONFIG_VERSION="$LBAC_CURRENT_CONFIG_VERSION"
-LBAC_DISTRIBUTION_POINT="$LBAC_DISTRIBUTION_POINT"
+LBAC_IMAGE_REGISTRY="$LBAC_IMAGE_REGISTRY"
 EOF
 }
 
@@ -848,6 +921,9 @@ function runDialogs {
 		;;
         DIALOG_ADMIN_PASSWD)
                 dialog_ADMIN_PASSWD
+                ;;
+        DIALOG_AUTO_UPDATE)
+                dialog_AUTO_UPDATE
                 ;;
 	DIALOG_CERT_REQUEST)
 		dialog_CERT_REQUEST
@@ -924,8 +1000,8 @@ function upgradeOldConfig {
                 # move certificates of primary cloud
                 test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/devcert.pem" && \
                     mv "$LBAC_DATASTORE/etc/devcert.pem" "$LBAC_DATASTORE/etc/$CLOUD_NAME/devcert.pem"
-                test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.txt" && \
-                    mv "$LBAC_DATASTORE/etc/chain.txt" "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.txt"
+                test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.pem" && \
+                    mv "$LBAC_DATASTORE/etc/chain.pem" "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.pem"
 
                 # remove old components
                 rm -rf "$LBAC_DATASTORE/dist/pgchem" 
@@ -936,6 +1012,10 @@ function upgradeOldConfig {
                 # touch $LBAC_DATASTORE/dist/dirty
 
 	fi
+
+        if test $LBAC_CONFIG_VERSION -lt 7 ; then
+            find dist etc -type f -name "chain.txt" -exec bash -c 'x="{}"; mv $x `dirname $x`/chain.pem' \;
+        fi
 }
 #
 #==========================================================

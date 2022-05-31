@@ -18,14 +18,10 @@
 package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
 import java.security.Key;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -33,8 +29,6 @@ import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.util.Base64;
-import java.util.Properties;
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
@@ -45,9 +39,6 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
  */
 @Stateless
 public class KeyManager {
-
-    protected String LBAC_PROPERTIES_PATH = "/install/etc/lbac_properties.xml";
-
     protected Logger logger;
 
     @Inject

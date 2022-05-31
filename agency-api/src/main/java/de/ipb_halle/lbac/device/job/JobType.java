@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlEnum;
  * <ul>
  * <li>PRINT</li>
  * <li>COMPUTE</li>
+ * <li>REPORT</li>
  * </ul>
  *
  * @author fbroda
@@ -32,7 +33,8 @@ import javax.xml.bind.annotation.XmlEnum;
 public enum JobType {
 
     PRINT(0),
-    COMPUTE(1);
+    COMPUTE(1),
+    REPORT(2);
 
     private int typeId;
 

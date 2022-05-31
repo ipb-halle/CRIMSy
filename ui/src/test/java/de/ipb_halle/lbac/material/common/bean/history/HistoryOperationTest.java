@@ -51,7 +51,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -138,7 +138,7 @@ public abstract class HistoryOperationTest extends TestBase {
                 currentDate,
                 composition,
                 composition,
-                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), MessagePresenterMock.getInstance()));
+                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), MessagePresenterMock.getInstance()),MessagePresenterMock.getInstance());
         mes.setCurrentVersiondate(d_20001220);
         return mes;
     }

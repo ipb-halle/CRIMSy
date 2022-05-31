@@ -23,15 +23,15 @@ import static de.ipb_halle.lbac.material.sequence.SequenceType.PROTEIN;
 import static de.ipb_halle.lbac.material.sequence.SequenceType.RNA;
 import static org.junit.Assert.*;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import de.ipb_halle.lbac.util.ResourceUtils;
 
 /**
  * 
@@ -56,7 +56,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
     }
 
     @Test
-    public void test001a_getAsObjectWithDNASequenceLinearWithoutFeatures() throws Exception {
+    public void test001a_getAsObjectWithDNASequenceLinearWithoutFeatures() throws IOException {
         json = readResourceFile("sequences/in_DNASequenceLinearWithoutFeatures.json");
         converter.setSequenceType(DNA);
         data = converter.getAsObject(context, component, json);
@@ -89,7 +89,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
     }
 
     @Test
-    public void test002a_getAsObjectWithDNASequenceCircularWithOneFeature() throws Exception {
+    public void test002a_getAsObjectWithDNASequenceCircularWithOneFeature() throws IOException {
         json = readResourceFile("sequences/in_DNASequenceCircularWithOneFeature.json");
         converter.setSequenceType(DNA);
         data = converter.getAsObject(context, component, json);
@@ -137,7 +137,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
     }
 
     @Test
-    public void test002b_getAsStringWithDNASequenceCircularWithOneFeature() throws Exception {
+    public void test002b_getAsStringWithDNASequenceCircularWithOneFeature() throws IOException {
 //        annotations = new ArrayList<>();
 //        annotation = new SequenceAnnotation();
 //        annotation.setStart(3);
@@ -170,7 +170,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
     }
 
     @Test
-    public void test003a_getAsObjectWithDNASequenceLinearWithThreeFeatures() throws Exception {
+    public void test003a_getAsObjectWithDNASequenceLinearWithThreeFeatures() throws IOException {
         json = readResourceFile("sequences/in_DNASequenceLinearWithThreeFeatures.json");
         converter.setSequenceType(DNA);
         data = converter.getAsObject(context, component, json);
@@ -260,7 +260,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
     }
 
     @Test
-    public void test003b_getAsStringWithDNASequenceLinearWithThreeFeatures() throws Exception {
+    public void test003b_getAsStringWithDNASequenceLinearWithThreeFeatures() throws IOException {
 //        annotations = new ArrayList<>();
 //
 //        annotation = new SequenceAnnotation();
@@ -328,7 +328,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
     }
 
     @Test
-    public void test004a_getAsObjectWithProteinSequenceWithOneFeature() throws Exception {
+    public void test004a_getAsObjectWithProteinSequenceWithOneFeature() throws IOException {
         json = readResourceFile("sequences/in_ProteinSequenceWithOneFeature.json");
         converter.setSequenceType(PROTEIN);
         data = converter.getAsObject(context, component, json);
@@ -376,7 +376,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
     }
 
     @Test
-    public void test004b_getAsStringWithProteinSequenceWithOneFeature() throws Exception {
+    public void test004b_getAsStringWithProteinSequenceWithOneFeature() throws IOException {
 //        annotations = new ArrayList<>();
 //        annotation = new SequenceAnnotation();
 //        annotation.setStart(6);
@@ -443,8 +443,7 @@ public class JsonSanitizingAndOVEJsonConverterTest {
         assertFalse(data.isCircular());
     }
 
-    private String readResourceFile(String resourceFile) throws Exception {
-        return new String(Files.readAllBytes(Paths.get(this.getClass()
-                .getClassLoader().getResource(resourceFile).toURI())));
+    private String readResourceFile(String resourceFile) throws IOException {
+        return ResourceUtils.readResourceFile(resourceFile);
     }
 }

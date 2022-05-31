@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Leibniz Bioactives Cloud 
-# Copyright 2018 Leibniz-Institut f. Pflanzenbiochemie 
+# Cloud Resource & Information Management System (CRIMSy)
+# Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie 
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,14 +22,14 @@
 # - script to be installed in container at /usr/local/bin
 #   and executed as user postgres
 #
-# - developer must update the value of CURRENT_SCHEMA_VERSION
+# - developer must update the value of EXPECTED_SCHEMA_VERSION
 #   and the list of update commands in the "case" section
 #
 # - the database update scripts (SQL) must include update 
 #   statements for the schema version
 #
 #
-CURRENT_SCHEMA_VERSION=00002
+EXPECTED_SCHEMA_VERSION=00003
 cd /docker-entrypoint-initdb.d/
 
 function getSchemaVersion {
@@ -40,9 +40,9 @@ function getSchemaVersion {
 
 getSchemaVersion
 echo "Found schema of database             : $LBAC_SCHEMA_VERSION"
-echo "Found target schema in filedefinition: $CURRENT_SCHEMA_VERSION "
+echo "Found target schema in filedefinition: $EXPECTED_SCHEMA_VERSION "
 
-while [ "$LBAC_SCHEMA_VERSION" != "$CURRENT_SCHEMA_VERSION" ] ; do
+while [ "$LBAC_SCHEMA_VERSION" != "$EXPECTED_SCHEMA_VERSION" ] ; do
     OLD_SCHEMA_VERSION=$LBAC_SCHEMA_VERSION
     NEXT_SCHEMA_VERSION=`printf '%05i' $(($LBAC_SCHEMA_VERSION + 1))`
 

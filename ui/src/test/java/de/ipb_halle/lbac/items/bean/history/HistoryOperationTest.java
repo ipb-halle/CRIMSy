@@ -18,30 +18,52 @@
 package de.ipb_halle.lbac.items.bean.history;
 
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
+import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.ItemPositionHistoryList;
 import de.ipb_halle.lbac.items.ItemPositionsHistory;
 import de.ipb_halle.lbac.items.bean.ContainerController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemState;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import javax.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-public class HistoryOperationTest {
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
+public class HistoryOperationTest extends TestBase {
 
+    @Inject
+    private ContainerService containerService;
+
+    @Inject
+    private UserBeanMock userBean;
     private User actor;
     private ItemBean bean;
     private Item item;
@@ -49,19 +71,24 @@ public class HistoryOperationTest {
     private ItemState state;
 
     @BeforeEach
-    public void setUp() {
+    public void init() {
         actor = new User();
         actor.setId(1);
         actor.setName("actor");
         item = new Item();
+        userBean.setCurrentAccount(actor);
         Container c = createContainer(10, "ContainerWithDimension");
         c.setRows(4);
         c.setColumns(4);
         c.setItems(new Item[4][4]);
+        item.setContainer(c);
         state = new ItemState(item);
         bean = new ItemBean();
         bean.setState(state);
-        bean.setContainerController(new ContainerController(bean, c));
+        bean.setContainerController(
+                new ContainerController(
+                        item, containerService,
+                        userBean, MessagePresenterMock.getInstance()));
         this.operation = new HistoryOperation(state, bean.getContainerController());
     }
 
@@ -285,6 +312,9 @@ public class HistoryOperationTest {
     }
 
     private void checkForPositions(boolean[][] positions, int[] expected) {
+        if (positions == null) {
+            return;
+        }
         for (int i = 0; i < positions.length; i++) {
             for (int j = 0; j < positions.length; j++) {
                 if (expected == null) {
@@ -355,5 +385,13 @@ public class HistoryOperationTest {
         item.getHistory().put(cal.getTime(), Arrays.asList(positions));
         return positions;
 
+    }
+
+    @Deployment
+    public static WebArchive createDeployment() {
+        WebArchive deployment = prepareDeployment("HistoryOperationTest.war")
+                .addClass(Navigator.class)
+                .addClass(ProjectService.class);
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

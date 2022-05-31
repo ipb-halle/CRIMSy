@@ -173,14 +173,14 @@ public class PrinterTest extends TestBase {
         cmap.put(JobService.CONDITION_QUEUE, queue);
         cmap.put(JobService.CONDITION_STATUS, JobStatus.PENDING);
         cmap.put(JobService.CONDITION_JOBTYPE, JobType.PRINT);
-        List<Job> jobs = this.jobService.load(cmap);
+        List<Job> jobs = this.jobService.loadJobs(cmap);
 
         assertEquals("testPrinting() active job count", 1, jobs.size());
         assertEquals("testPrinting() job queue", queue, jobs.get(0).getQueue());
 
         this.labelService.delete(l);
         this.printerService.delete(p);
-        this.jobService.remove(jobs.get(0));
+        this.jobService.removeJob(jobs.get(0));
     }
 
     @Test

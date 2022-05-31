@@ -167,6 +167,7 @@ public class CollectionWebClientTest extends TestBase {
                         u
                 );
         Assert.assertEquals(1, readableColls.size());
+        entityManagerService.doSqlUpdate("Delete from usersgroups where id="+u.getId());
 
     }
 }

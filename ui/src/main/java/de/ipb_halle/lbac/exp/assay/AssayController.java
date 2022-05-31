@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.datalink.LinkedDataType;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.util.UnitsValidator;
+import de.ipb_halle.lbac.util.units.UnitsValidator;
 
 import java.util.Arrays;
 import java.util.List;
