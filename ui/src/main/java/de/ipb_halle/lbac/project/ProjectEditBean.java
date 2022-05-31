@@ -33,7 +33,6 @@ import de.ipb_halle.lbac.i18n.UIMessage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,8 +130,8 @@ public class ProjectEditBean implements Serializable {
         mode = Mode.CREATE;
         projectOwner = currentUser;
         possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
-        projectName="";
-        projectDescription="";
+        projectName = "";
+        projectDescription = "";
         projectACL = new ACList();
         projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.OWNER_ACCOUNT_ID), ACPermission.values());
         projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.ADMIN_GROUP_ID), ACPermission.values());
@@ -152,9 +151,9 @@ public class ProjectEditBean implements Serializable {
         this.currentProjectType = p.getProjectType();
         this.projectName = p.getName();
         this.projectDescription = p.getDescription();
-        this.detailTemplates=p.getDetailTemplates();
+        this.detailTemplates = p.getDetailTemplates();
         this.possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
-        this.projectACL=p.getACList();
+        this.projectACL = p.getACList();
         this.projectOwner = p.getOwner();
     }
 
@@ -295,43 +294,45 @@ public class ProjectEditBean implements Serializable {
         }
 
         if (mode == Mode.CREATE) {
-           saveNewProject();
+            saveNewProject();
         }
         if (mode == Mode.EDIT) {
             saveEditedProject();
         }
         projectBean.reloadReadableProjects();
-        navigator.navigate("project/projectOverview");
-    }
-    
-    private void saveEditedProject(){
-         projectToEdit.setName(projectName);
-            projectToEdit.setDescription(projectDescription);
-            projectToEdit.setOwner(projectOwner);
-            projectToEdit.setACList(projectACL);
-            projectToEdit.setProjectType(currentProjectType);
-            projectToEdit.setDetailTemplates(detailTemplates);
-            projectService.saveEditedProjectToDb(projectToEdit);
-    }
-    
-    private void saveNewProject(){
-         Project p = new Project(currentProjectType, projectName);
-            p.setOwner(projectOwner);
-            p.setACList(projectACL);
 
-            if (isHasBudget()) {
-                p.setBudget(Double.parseDouble(projectBudget));
-            } else {
-                p.setBudget(null);
-            }
-            p.setDescription(projectDescription);
-            p.setDetailTemplates(detailTemplates);
-            try {
-                projectService.saveProjectToDb(p);
-            } catch (Exception e) {
-                UIMessage.error("projectEdit_duplicate_projectname");
-                return;
-            }
+        navigator.navigate("project/projectOverview");
+
+    }
+
+    private void saveEditedProject() {
+        projectToEdit.setName(projectName);
+        projectToEdit.setDescription(projectDescription);
+        projectToEdit.setOwner(projectOwner);
+        projectToEdit.setACList(projectACL);
+        projectToEdit.setProjectType(currentProjectType);
+        projectToEdit.setDetailTemplates(detailTemplates);
+        projectService.saveEditedProjectToDb(projectToEdit);
+    }
+
+    private void saveNewProject() {
+        Project p = new Project(currentProjectType, projectName);
+        p.setOwner(projectOwner);
+        p.setACList(projectACL);
+
+        if (isHasBudget()) {
+            p.setBudget(Double.parseDouble(projectBudget));
+        } else {
+            p.setBudget(null);
+        }
+        p.setDescription(projectDescription);
+        p.setDetailTemplates(detailTemplates);
+        try {
+            projectService.saveProjectToDb(p);
+        } catch (Exception e) {
+            UIMessage.error("projectEdit_duplicate_projectname");
+            return;
+        }
     }
 
     public String getProjectDescription() {
@@ -359,11 +360,21 @@ public class ProjectEditBean implements Serializable {
     }
 
     public List<User> getLocalUsers() {
-        return memberService.loadLocalUsers();
+        List<User> localUsers = memberService.loadLocalUsers();
+        for (int i = localUsers.size() - 1; i >= 0; i--) {
+            if (localUsers.get(i).isDeactivated()) {
+                localUsers.remove(i);
+            }
+        }
+        return localUsers;
     }
 
     public void changeOwner(User user) {
         this.projectOwner = user;
+    }
+
+    public void setNavigator(Navigator navigator) {
+        this.navigator = navigator;
     }
 
 }

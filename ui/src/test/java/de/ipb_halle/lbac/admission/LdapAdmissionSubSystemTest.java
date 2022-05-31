@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.admission.mock.LdapHelperMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.service.InfoObjectService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @author fmauz
  */
 @TestMethodOrder(MethodName.class)
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class LdapAdmissionSubSystemTest extends TestBase {
 

@@ -73,6 +73,8 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         setProjectName(values.projectName);
         setId(String.valueOf(values.id));
         setUserName(values.userName);
+        setIndex(values.index);
+
         setDeactivated(values.deactivated);
         if (values.sequenceInfos != null) {
             setSequenceInformation(
@@ -206,4 +208,6 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         this.sequenceQueryType = sequenceQueryType;
         this.sequenceTranslationTable = translationTable;
     }
+
+    
 }

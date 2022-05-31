@@ -201,7 +201,13 @@ public class MaterialIndexDifference implements MaterialDifference {
         return actorID;
     }
 
+    /**
+     *
+     * @param bean
+     * @return
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public IndexHistoryController createHistoryController(MaterialBean bean) {
         return new IndexHistoryController(bean);
     }

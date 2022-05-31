@@ -193,6 +193,12 @@ public class MaterialStorageDifference implements MaterialDifference {
         this.descriptionNew = descriptionNew;
     }
 
+    /**
+     *
+     * @param bean
+     * @return
+     */
+    @SuppressWarnings("unchecked")
     @Override
     public StorageHistoryController createHistoryController(MaterialBean bean) {
         return new StorageHistoryController(bean);

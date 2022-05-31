@@ -27,6 +27,8 @@ import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
+import de.ipb_halle.lbac.util.units.Quantity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -212,4 +214,11 @@ public class Structure extends Material {
         return new Type(SearchTarget.MATERIAL, MaterialType.STRUCTURE);
     }
 
+    /**
+     * @return new quantity with the average molar mass as value and the unit g/mol
+     *         or null if the average molar mass is null
+     */
+    public Quantity getAverageMolarMassAsQuantity() {
+        return Quantity.create(averageMolarMass, "g/mol");
+    }
 }

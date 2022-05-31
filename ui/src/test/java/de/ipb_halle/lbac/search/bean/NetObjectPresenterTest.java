@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.search.bean;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentDeployment;
@@ -40,7 +39,7 @@ import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import java.io.UnsupportedEncodingException;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.List;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -54,6 +53,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class NetObjectPresenterTest extends TestBase {
 
@@ -100,28 +100,6 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(9)));
         Assert.assertEquals("local", presenter.getNodeName(netObjects.get(10)));
         Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(11)));
-    }
-
-    @Test
-    public void test003_getLink() throws UnsupportedEncodingException {
-        String expectedPath = "/ui/servlet/document/GET?nodeId="
-                + netObjects.get(0).getNode().getId().toString()
-                + "&collectionId=1&contentType=pdf&originalName=localDoc&path=%2Fpath";
-        Assert.assertEquals(expectedPath, presenter.getLink(netObjects.get(0)));
-        expectedPath = "/ui/servlet/document/GET?nodeId="
-                + netObjects.get(1).getNode().getId().toString()
-                + "&collectionId=1&contentType=pdf&originalName=remoteDoc&path=%2Fpath";
-        Assert.assertEquals(expectedPath, presenter.getLink(netObjects.get(1)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(2)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(3)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(4)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(5)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(6)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(7)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(8)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(9)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(10)));
-        Assert.assertEquals("-", presenter.getLink(netObjects.get(11)));
     }
 
     @Test

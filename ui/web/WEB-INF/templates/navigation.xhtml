@@ -23,6 +23,7 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:body>
@@ -34,10 +35,16 @@
                     styleClass="navigationMenu"
                     style="z-index: 900;">
                     <b:flyOutMenu width="50px" styleClass="lbacDropDownMenu">
-                        <b:dropMenu 
+                        <p:remoteCommand
+                            name="navigateToSearch"
+                            action="#{navigator.navigate('default')}"
+                            process="@this"
+                            update="@all" />
+                        <b:dropMenu
                             pt:data-test-id="navigation:bioCloud"
                             value="BioCloud"
-                            styleClass="tstNavBioCloud">
+                            styleClass="tstNavBioCloud"
+                            pt:onclick="if (this.tagName == 'LI') { navigateToSearch(); return false; }">
                             <b:navCommandLink
                                 pt:data-test-id="navigation:search"
                                 value="#{msgs.navigation_bioCloud_search}"
@@ -144,6 +151,10 @@
                                 iconAwesome="pencil" 
                                 styleClass="tstNavMyAccount"
                                 actionListener="#{navigator.navigate('myAccount')}" />
+                            <b:navCommandLink 
+                                value="#{msgs.navigation_admission_myReports}"
+                                iconAwesome="file-text-o"
+                                actionListener="#{navigator.navigate('myReports')}" />
                             <b:navCommandLink
                                 pt:data-test-id="navigation:userManagement"
                                 value="#{msgs.navigation_admission_userManagement}"

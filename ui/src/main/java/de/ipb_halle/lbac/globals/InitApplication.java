@@ -54,7 +54,7 @@ public class InitApplication {
     private final static long serialVersionUID = 1L;
     private final static String PUBLIC_COLLECTION_NAME = "public";
 
-    @Resource
+    @Resource(name = "lbacManagedExecutorService")
     private ManagedExecutorService managedExecutorService;
 
     @Inject
@@ -89,7 +89,7 @@ public class InitApplication {
         try {
             healthCheck();
         } catch (Exception e) {
-            logger.error("Error at healthcheck", ExceptionUtils.getStackTrace(e));
+            logger.error("Error at healthcheck"+ ExceptionUtils.getStackTrace(e));
         }
         restCheck();
         initialiseKeyManager();
@@ -150,7 +150,7 @@ public class InitApplication {
                 keyManager.updatePublicKeyOfLocalNode();
             }
         } catch (Exception e) {
-            logger.error("Error at initialising keymanager", ExceptionUtils.getStackTrace(e));
+            logger.error("Error at initialising keymanager"+ ExceptionUtils.getStackTrace(e));
         }
     }
 }

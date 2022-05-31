@@ -25,7 +25,7 @@
 
     <groupId>de.ipb-halle</groupId>
     <artifactId>ui</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
@@ -41,10 +41,11 @@
     </organization>
 
     <properties>
-        <hibernate.version>5.3.20.Final</hibernate.version>
+        <hibernate.version>5.3.26.Final</hibernate.version>
         <tomee.classifier>plus</tomee.classifier>
         <tomee.servlet-engine>7.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
+        <pentaho.version>9.2.0.0-SNAPSHOT</pentaho.version>
         
         <!-- Flag allowing one or more executions of the assembly plugin to be configured as skipped for a particular build.
         This makes the assembly plugin more controllable from profiles. -->
@@ -64,7 +65,7 @@
             <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
             <url>https://nexus.pentaho.org/content/groups/omni</url>
             <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>false</enabled></snapshots>
+            <snapshots><enabled>true</enabled></snapshots>
         </repository>
         <repository>
             <id>primefaces themes</id>
@@ -139,6 +140,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
+                <configuration>
+                    <runOrder>random</runOrder>
+                </configuration>
             </plugin>
            
             <!-- A maven plugin to process annotation for jdk6 at compile time -->
@@ -263,8 +267,6 @@
             </plugin>
         </plugins>
     </build>
-
-
 
     <dependencies>
 
@@ -469,7 +471,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.16</version>
+            <version>42.3.3</version>
         </dependency>
         
         <!--hibernate support for postgres json, jsonb field types -->
@@ -483,9 +485,15 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.6</version>
+            <version>2.8.9</version>
         </dependency>
-        
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.2.2</version>
+        </dependency>
+
         <!-- tomee javaEE api-->
         <dependency>
             <groupId>org.apache.tomee</groupId>
@@ -517,11 +525,17 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- in memory db for testing -->
+        <!-- db for testing -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.200</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.16.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.16.3</version>
             <scope>test</scope>
         </dependency>
 
@@ -623,5 +637,46 @@
             <artifactId>fasta-search-service-models</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <!-- Pentaho Reporting -->
+        <dependency>
+            <groupId>org.pentaho.reporting.engine</groupId>
+            <artifactId>classic-core</artifactId>
+            <version>${pentaho.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pentaho.reporting.engine</groupId>
+            <artifactId>classic-extensions</artifactId>
+            <version>${pentaho.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pentaho.reporting.engine</groupId>
+            <artifactId>wizard-core</artifactId>
+            <version>${pentaho.version}</version>
+        </dependency>
+
+        <dependency>
+          <groupId>org.pentaho.reporting.library</groupId>
+          <artifactId>libfonts</artifactId>
+          <version>${pentaho.version}</version>
+          <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pentaho.reporting.library</groupId>
+            <artifactId>libloader</artifactId>
+            <version>${pentaho.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pentaho.reporting</groupId>
+            <artifactId>pentaho-reporting</artifactId>
+            <version>${pentaho.version}</version>
+            <type>pom</type>
+        </dependency>
+
     </dependencies>
 </project> 

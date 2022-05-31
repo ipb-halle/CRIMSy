@@ -72,6 +72,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -99,6 +100,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SearchServiceTest extends TestBase {
 
@@ -598,7 +600,7 @@ public class SearchServiceTest extends TestBase {
                 context.getNoAccessACL().getId(),
                 project1.getId(),
                 "Testmaterial-003-notReadable");
-        createTaxanomy(1000, "Life", 1, publicAclId, publicUser.getId());
+        createTaxanomy(0, "Life", 1, publicAclId, publicUser.getId());
         bioMaterial = creationTools.createBioMaterial(project1, "BioMaterial001", taxonomyService.loadRootTaxonomy(), null);
         materialService.saveMaterialToDB(bioMaterial, publicAclId, new HashMap<>(), publicUser.getId());
     }
@@ -775,7 +777,7 @@ public class SearchServiceTest extends TestBase {
 
     private Map<String, Object> createExperimentCMap(int id) {
         Map<String, Object> cmap = new HashMap<>();
-        cmap.put("EXPERIMENT_ID", String.valueOf(id));
+        cmap.put("EXPERIMENT_ID", id);
         return cmap;
     }
 

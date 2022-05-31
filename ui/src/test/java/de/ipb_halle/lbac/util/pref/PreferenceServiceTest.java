@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserEntity;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,6 +38,7 @@ import static org.junit.Assert.assertThrows;
 /**
  * This class will provide some test cases around PreferenceService.
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class PreferenceServiceTest extends TestBase {
 

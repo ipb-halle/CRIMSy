@@ -128,3 +128,79 @@ function _getLinkTagWithSpaces(linkText, textInQuill, pos) {
         return result;
     }
 }
+
+var _previouslySelectedIndex = 0;
+
+/**
+ * Stores the index of the selected <option> of the given <select> element.
+ */
+function rememberPreviouslySelectedUnit(selectElement) {
+    _previouslySelectedIndex = selectElement.selectedIndex;
+}
+
+/**
+ * Upon change of the selected amount unit
+ * - update the the bound container unit to the new unit,
+ * - transform the values of amount and bound container size to the new unit (only if the old and new qualities match).
+ */
+function onChangeSelectedUnit(selectElement) {
+    let newSelectedIndex = selectElement.selectedIndex;
+
+    let oldSelectedOption = _getSelectOptionByIndex(selectElement, _previouslySelectedIndex);
+    let newSelectedOption = _getSelectOptionByIndex(selectElement, newSelectedIndex);
+
+    _writeUnitIntoBoundContainerUnitInput(newSelectedOption.innerText);
+    _previouslySelectedIndex = newSelectedIndex;
+
+    let amountInput = document.getElementById("input_itemEditForm:itemTabViewId:itemAmountId");
+    let boundContainerSizeInput = document.getElementById("input_itemEditForm:itemTabViewId:boundContainerSizeId");
+    _transformUnit(amountInput, oldSelectedOption, newSelectedOption);
+    _transformUnit(boundContainerSizeInput, oldSelectedOption, newSelectedOption);
+}
+
+/**
+ * Returns the <option> child element with the given index from the given <select> element.
+ */
+function _getSelectOptionByIndex(selectElement, index) {
+    return selectElement.options[index];
+}
+
+function _writeUnitIntoBoundContainerUnitInput(unitText) {
+    let inputElement = document.getElementById("input_itemEditForm:itemTabViewId:boundContainerUnitId");
+    if (inputElement != null) {
+        inputElement.value = unitText;
+    }
+}
+
+function _transformUnit(inputElement, oldSelectedOption, newSelectedOption) {
+    if (inputElement == null) {
+        return;
+    }
+
+    let oldValue = inputElement.value;
+    if (!oldValue && isNaN()) {
+        return;
+    }
+
+    let oldUnitQuality = oldSelectedOption.getAttribute("quality");
+    let newUnitQuality = newSelectedOption.getAttribute("quality");
+    if (oldUnitQuality != newUnitQuality) {
+        return;
+    }
+
+    let oldUnitFactor = oldSelectedOption.getAttribute("factor");
+    let newUnitFactor = newSelectedOption.getAttribute("factor");
+
+    let newValue = oldValue * oldUnitFactor / newUnitFactor;
+    inputElement.value = newValue;
+}
+
+/**
+ * Sets the bound container unit from the selected option of the amount unit.
+ */
+function updateBoundContainerUnit() {
+    let selectElement = document.getElementById("itemEditForm:itemTabViewId:amountUnitIdInner");
+    let selectedOption = _getSelectOptionByIndex(selectElement, selectElement.selectedIndex);
+
+    _writeUnitIntoBoundContainerUnitInput(selectedOption.innerText);
+}

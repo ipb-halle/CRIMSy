@@ -37,6 +37,7 @@
             <b:row>
                 <b:column span="3">
                     <crimsy:materialSearchMask
+                        id="materialSearchMaskId"
                         searchController="#{materialOverviewBean.searchController}"
                         updateTargets="materialForm @(.materialOverviewTableContainer)" />
                 </b:column>
@@ -44,12 +45,32 @@
                     <b:form id="materialForm">
                         <b:container>
                             <b:row>
-                                <b:column span="1">
+                                <b:column span="2">
                                     <b:commandButton
                                         pt:data-test-id="materialOverview:newMaterial"
                                         value="#{msgs.materials_createNew}"
                                         styleClass="tstNewMaterial"
                                         action="#{materialOverviewBean.actionCreateNewMaterial()}" />
+                                </b:column>
+                                <b:column
+                                    offset="5"
+                                    span="3">
+                                    <b:selectOneMenu
+                                        id="reportSelectionId"
+                                        value="#{materialOverviewBean.selectedReport}">
+                                        <f:selectItems
+                                            value="#{materialOverviewBean.availableReports}"
+                                            var="report"
+                                            itemLabel="#{report.name}" />
+                                    </b:selectOneMenu>
+                                </b:column>
+                                <b:column span="2">
+                                    <b:commandButton
+                                        ajax="true"
+                                        process="reportSelectionId materialSearchMaskId"
+                                        update="growlMsg"
+                                        action="#{materialOverviewBean.actionCreateReport()}"
+                                        value="#{msgs.reporting_createReport}" />
                                 </b:column>
                             </b:row>
                             <b:row>

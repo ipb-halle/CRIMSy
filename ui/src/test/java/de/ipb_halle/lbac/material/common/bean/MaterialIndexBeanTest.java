@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.material.mocks.IndexServiceMock;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Arrays;
 import javax.inject.Inject;
 
@@ -40,6 +41,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialIndexBeanTest extends TestBase {
 

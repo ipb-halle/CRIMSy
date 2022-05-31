@@ -27,11 +27,12 @@ import de.ipb_halle.lbac.material.sequence.SequenceData;
 
 /**
  * DTO for the sequence history
- * 
+ *
  * @author flange
  */
 public class SequenceDifference
         implements MaterialDifference, DTO<SequenceHistoryEntity> {
+
     private static final long serialVersionUID = 1L;
 
     private static SequenceHistoryDifferenceEntityConverter converter = new SequenceHistoryDifferenceEntityConverter();
@@ -62,6 +63,7 @@ public class SequenceDifference
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public HistoryController<SequenceDifference> createHistoryController(
             MaterialBean bean) {
         return new SequenceHistoryController(bean);

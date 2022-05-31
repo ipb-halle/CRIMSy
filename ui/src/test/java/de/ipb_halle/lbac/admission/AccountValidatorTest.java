@@ -31,11 +31,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.container.mock.CallBackControllerMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
  * 
  * @author flange
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class AccountValidatorTest extends TestBase {
 

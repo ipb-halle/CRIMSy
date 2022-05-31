@@ -23,6 +23,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ContainerNestingServiceTest extends TestBase {
 
@@ -140,12 +142,12 @@ public class ContainerNestingServiceTest extends TestBase {
         Assert.assertFalse(getNested(c1.getId(), c0.getId(), "C1 -> C0"));  // C1 -> 03 (direct)
 
     }
-
+    @SuppressWarnings("unchecked")
     private int getNestedEntries() {
         List<BigInteger> amountList = (List) entityManagerService.doSqlQuery("SELECT COUNT(*) FROM nested_containers");
         return amountList.get(0).intValue();
     }
-
+    @SuppressWarnings("unchecked")
     private boolean getNested(int source, int target, String label) {
         List<Boolean> nestedList = (List) entityManagerService.doSqlQuery("SELECT nested FROM nested_containers WHERE sourceid=" + source + " AND targetid=" + target);
         if (nestedList.size() != 1) {

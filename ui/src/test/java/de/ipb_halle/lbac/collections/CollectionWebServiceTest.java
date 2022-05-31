@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Base64;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -49,6 +50,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class CollectionWebServiceTest
         extends TestBase {
@@ -98,22 +100,23 @@ public class CollectionWebServiceTest
 
         Assert.assertNotNull("Could not initialize WebService", collectionWebService);
 
-        User u = createUser("test", "testName");
-        User u2 = createUser("test2", "testName2");
+        User localRequestingUser = createUser("test", "testName");
+        User remoteRequestingUser = createRemoteUser(localRequestingUser);
+        User owner = createUser("test2", "testName2");
 
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
         cn.setPublicKey(Base64.getEncoder().encodeToString(keyManager.getLocalPublicKey(TESTCLOUD).getEncoded()));
         cn = cloudNodeService.save(cn);
 
         createLocalCollections(
-                createAcList(u, true), nodeService.getLocalNode(),
-                u2, "READ-COL1", "Readable Collection for User " + u2.getName(),
+                createAcList(remoteRequestingUser, true), nodeService.getLocalNode(),
+                owner, "READ-COL1", "Readable Collection for remote user " + remoteRequestingUser.getName(),
                 collectionService
         );
 
         createLocalCollections(
-                createAcList(u, false), nodeService.getLocalNode(),
-                u2, "NONREAD-COL1", "Non-Readable Collection for User " + u2.getName(),
+                createAcList(remoteRequestingUser, false), nodeService.getLocalNode(),
+                owner, "NONREAD-COL1", "Non-Readable Collection for remote user " + remoteRequestingUser.getName(),
                 collectionService
         );
 
@@ -123,7 +126,7 @@ public class CollectionWebServiceTest
         );
 
         CollectionWebRequest wr = new CollectionWebRequest();
-        wr.setUser(u);
+        wr.setUser(localRequestingUser);
         wr.setCloudName(TESTCLOUD);
         wr.setNodeIdOfRequest(TEST_NODE_ID);
         wr.setSignature(wrs);
@@ -132,6 +135,8 @@ public class CollectionWebServiceTest
         Response resp = collectionWebService.getReadableCollections(wr);
 
         Assert.assertEquals("Found Collectionssize does not match", 1, resp.readEntity(CollectionList.class).getCollectionList().size());
+        entityManagerService.doSqlUpdate("Delete from usersgroups where id=" + localRequestingUser.getId());
+        entityManagerService.doSqlUpdate("Delete from usersgroups where id=" + remoteRequestingUser.getId());
 
     }
 

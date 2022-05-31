@@ -31,7 +31,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStreamReader;
 import java.io.Reader;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -63,7 +62,9 @@ import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParser;
 import de.ipb_halle.lbac.material.sequence.search.display.FastaResultParserException;
 import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchService;
 import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchServiceMock;
+import de.ipb_halle.lbac.util.ResourceUtils;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +84,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SequenceSearchIntegrationTest extends TestBase {
     private static final long serialVersionUID = 1L;
@@ -109,7 +111,7 @@ public class SequenceSearchIntegrationTest extends TestBase {
     public void init() throws FastaResultParserException {
         messagePresenter.resetMessages();
 
-        Reader reader = readerForResourceFile("fastaresults/results7.txt");
+        Reader reader = ResourceUtils.readerForResourceFile("fastaresults/results7.txt");
         // This list is ordered by the E-value.
         List<FastaResult> parserResults = new FastaResultParser(reader).parse();
 
@@ -350,9 +352,5 @@ public class SequenceSearchIntegrationTest extends TestBase {
         valuesHolder.setTranslationTable(TranslationTable.EUPLOTID_NUCLEAR);
         valuesHolder.setMaxResults(42);
         // TODO: add filters for projects/material names/etc.
-    }
-
-    private Reader readerForResourceFile(String filename) {
-        return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));
     }
 }

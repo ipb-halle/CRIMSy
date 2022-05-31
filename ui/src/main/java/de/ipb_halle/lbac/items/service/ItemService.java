@@ -42,7 +42,6 @@ import de.ipb_halle.lbac.admission.MemberService;
 
 import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
-import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -58,6 +57,8 @@ import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.units.Quantity;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +89,7 @@ import org.apache.logging.log4j.Logger;
 public class ItemService {
 
     @Inject
-    private LabelService labelService;
+    private ItemLabelService labelService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -275,8 +276,14 @@ public class ItemService {
         return item;
     }
 
-    public Item saveEditedItem(Item editedItem, Item origItem, User user) {
-        return saveEditedItem(editedItem, origItem, user, new HashSet<>());
+    public Item saveItem(Item item, int[] position) {
+        Item savedItem = saveItem(item);
+
+        Container container = savedItem.getContainer();
+        if ((container != null) && (position != null)) {
+            containerPositionService.saveItemInContainer(savedItem.getId(), container.getId(), position[0], position[1]);
+        }
+        return savedItem;
     }
 
     public Item saveEditedItem(Item editedItem, Item origItem, User user, Set<int[]> newPositions) {
@@ -297,6 +304,25 @@ public class ItemService {
 
     public void saveItemHistory(ItemHistory history) {
         this.em.merge(history.createEntity());
+    }
+
+    public Item saveAliquot(Item item, int[] position, Quantity subtractFromParentAmount, User user) {
+        Item savedItem = saveItem(item, position);
+
+        Item parentItem = loadItemById(savedItem.getParentId());
+        Item originalParentItem = parentItem.copy();
+
+        Quantity newQuantityOfParent = parentItem.getAmountAsQuantity().subtract(subtractFromParentAmount);
+        if (newQuantityOfParent.getValue() < 0) {
+            throw new RuntimeException("Amount cannot become negative");
+        }
+        parentItem.setAmount(newQuantityOfParent.getValue());
+
+        Set<int[]> positionsOfParent = containerPositionService.getItemPositionsInContainer(parentItem);
+
+        saveEditedItem(parentItem, originalParentItem, user, positionsOfParent);
+
+        return savedItem;
     }
 
     public SortedMap<Date, ItemPositionHistoryList> loadItemPositionHistory(Item item) {

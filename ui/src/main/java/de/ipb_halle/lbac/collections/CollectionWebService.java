@@ -18,6 +18,9 @@
 package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
@@ -59,6 +62,9 @@ public class CollectionWebService extends LbacWebService {
     @Inject
     private ACListService aclistService;
 
+    @Inject
+    private MemberService memberService;
+
     /**
      * Returns a list of collections for a given user. The returned collections
      * are at least readable by the user. By the signature of the webRequest the
@@ -70,10 +76,11 @@ public class CollectionWebService extends LbacWebService {
     @POST
     @Produces(MediaType.APPLICATION_XML)
     public Response getReadableCollections(CollectionWebRequest request) {
+        Node node;
         try {
-            checkAuthenticityOfRequest(request);
+            node = checkAuthenticityOfRequest(request);
         } catch (NotAuthentificatedException e) {
-            logger.error("Error at athentificating request", ExceptionUtils.getStackTrace(e));
+            logger.error("Error at athentificating request"+ ExceptionUtils.getStackTrace(e));
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -84,10 +91,11 @@ public class CollectionWebService extends LbacWebService {
             Map<String, Object> cmap = new HashMap<>();
             cmap.put("local", Boolean.TRUE);
             List<Collection> collections = this.collectionService.load(cmap);
+            User localUser = memberService.mapRemoteUserToLocalUser(request.getUser(), node);
 
             List<Collection> filteredColls = collections
                     .stream()
-                    .filter(c -> aclistService.isPermitted(ACPermission.permREAD, c, request.getUser())) //remove Collections without read permission
+                    .filter(c -> aclistService.isPermitted(ACPermission.permREAD, c, localUser)) //remove Collections without read permission
                     .collect(Collectors.toCollection(ArrayList::new));
 
             for (Collection c : filteredColls) {
@@ -96,7 +104,7 @@ public class CollectionWebService extends LbacWebService {
             result.setCollectionList(filteredColls);
             return Response.ok(result).build();
         } catch (Exception e) {
-            logger.error("Error at fetching local collections", ExceptionUtils.getStackTrace(e));
+            logger.error("Error at fetching local collections"+ExceptionUtils.getStackTrace(e));
             return Response.serverError().build();
         }
     }

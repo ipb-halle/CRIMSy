@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
@@ -30,18 +31,26 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.reporting.report.Report;
+import de.ipb_halle.lbac.reporting.report.ReportMgr;
+import de.ipb_halle.lbac.reporting.report.ReportType;
 import de.ipb_halle.lbac.util.resources.ResourceLocation;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.composition.Concentration;
+import de.ipb_halle.lbac.material.structure.Molecule;
+import de.ipb_halle.lbac.util.NonEmpty;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -78,6 +87,8 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private final int HAZARD_ATTENTION_ID = 18;
     private final int HAZARD_DANGER_ID = 19;
 
+    private Report selectedReport;
+
     @Inject
     private ItemBean itemBean;
 
@@ -98,6 +109,9 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     @Inject
     protected HazardService hazardService;
+
+    @Inject
+    private ReportMgr reportMgr;
 
     /**
      * Creates the tablecontroller and the controller for managing the search
@@ -120,7 +134,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.STRUCTURE));
         namePresenter = new NamePresenter();
         messagePresenter = JsfMessagePresenter.getInstance();
-
     }
 
     /**
@@ -190,6 +203,44 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     public void actionCreateNewItem(Material m) {
         itemBean.actionStartItemCreation(m);
         navigator.navigate(NAVIGATION_ITEM_EDIT);
+    }
+
+    public List<Report> getAvailableReports() {
+        return reportMgr.getAvailableReports(this.getClass().getName());
+    }
+
+    public Report getSelectedReport() {
+        return selectedReport;
+    }
+
+    public void setSelectedReport(Report selectedReport) {
+        this.selectedReport = selectedReport;
+    }
+
+    public void actionCreateReport() {
+        reportMgr.submitReport(selectedReport, collectReportParameters(), ReportType.PDF, currentUser);
+        messagePresenter.info("reporting_reportSumbittedGrowlMsg");
+    }
+
+    private Map<String, Object> collectReportParameters() {
+        Map<String, Object> reportParams = new HashMap<String, Object>();
+
+        reportParams.put("paramCurrentUserId", currentUser.getId());
+        reportParams.put("paramOwnerId", GlobalAdmissionContext.OWNER_ACCOUNT_ID);
+
+        reportParams.put("paramMaterialName", NonEmpty.nullOrNonEmpty(searchController.getName()));
+        reportParams.put("paramMaterialId", NonEmpty.nullOrNonZero(searchController.getId()));
+        reportParams.put("paramUserName", NonEmpty.nullOrNonEmpty(searchController.getUserName()));
+        reportParams.put("paramProjectName", NonEmpty.nullOrNonEmpty(searchController.getProjectName()));
+        reportParams.put("paramIndex", NonEmpty.nullOrNonEmpty(searchController.getIndex()));
+
+        MaterialType materialType = searchController.getMaterialType();
+        reportParams.put("paramMaterialType", materialType == null ? null : materialType.getId());
+
+        String molfile = searchController.getMolecule();
+        reportParams.put("paramMolQuery", new Molecule(molfile, -1).isEmptyMolecule() ? null : molfile);
+
+        return reportParams;
     }
 
     public User getCurrentUser() {

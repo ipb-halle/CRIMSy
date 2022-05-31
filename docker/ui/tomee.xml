@@ -55,6 +55,11 @@
         Max = 100
         KeepAlive = 5 s
         Queue = 50
-        WaitAtShutdown = 30 seconds
+    </Resource>
+    <Resource id="reportExecutorService" type="javax.enterprise.concurrent.ManagedExecutorService">
+        Core = 4
+        Max = 4
+        KeepAlive = 5 s
+        Queue = 10
     </Resource>
 </tomee>

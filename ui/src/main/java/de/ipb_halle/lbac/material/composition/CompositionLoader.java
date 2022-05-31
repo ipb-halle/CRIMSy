@@ -28,7 +28,8 @@ import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Unit;
+
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -46,6 +47,7 @@ public class CompositionLoader implements MaterialLoader {
     private static final long serialVersionUID = 1L;
 
     @Override
+    @SuppressWarnings("unchecked")
     public Material loadMaterial(
             MaterialEntity entity,
             EntityManager em,

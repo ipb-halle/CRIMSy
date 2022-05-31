@@ -23,8 +23,6 @@ import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
-import java.io.File;
-
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -53,7 +51,8 @@ public class GlobalAdmissionContext implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     public final static String PUBLIC_NODE_ID = "1e0f832b-3d9e-4ebb-9e68-5a9fc2d9bee8";
-    protected String LBAC_PROPERTIES_PATH = "/install/etc/lbac_properties.xml";
+    private static final String LBAC_PROPERTIES_PATH = "/data/conf/lbac_properties.xml";
+    private static final String REPORTS_DIRECTORY = "/data/tmp/reports/";
 
     public final static Integer PUBLIC_GROUP_ID = 1;
     public final static Integer PUBLIC_ACCOUNT_ID = 2;
@@ -109,7 +108,7 @@ public class GlobalAdmissionContext implements Serializable {
      * initialization function.
      */
     @PostConstruct
-    private void init() {
+    protected void init() {
         try {
             /*
             this.logger.info("************ START REPAIR PERMCODES ***************");
@@ -132,7 +131,7 @@ public class GlobalAdmissionContext implements Serializable {
             createInfoEntity("LDAP_ENABLE", "false", this.adminOnlyACL);
             createInfoEntity(CollectionBean.getCollectionsPermKey(), "don't care", this.adminOnlyACL);
         } catch (Exception e) {
-            logger.error("Error at initialisiing", ExceptionUtils.getStackTrace(e));
+            logger.error("Error at initialisiing {}", e);
         }
 
     }
@@ -203,7 +202,7 @@ public class GlobalAdmissionContext implements Serializable {
                 u.setName("Admin");
                 u.setNode(this.nodeService.getLocalNode());
                 Properties prop = new Properties();
-                prop.loadFromXML(Files.newInputStream(Paths.get(LBAC_PROPERTIES_PATH), StandardOpenOption.READ));
+                prop.loadFromXML(Files.newInputStream(Paths.get(getLbacPropertiesPath()), StandardOpenOption.READ));
                 u.setPassword(this.credentialHandler.computeDigest(prop.getProperty("DEFAULT_ADMIN_PASSWORD")));
                 u.setSubSystemType(AdmissionSubSystemType.LOCAL);
                 u = this.memberService.save(u);
@@ -438,8 +437,17 @@ public class GlobalAdmissionContext implements Serializable {
         }
     }
 
-    public void setLBAC_PROPERTIES_PATH(String LBAC_PROPERTIES_PATH) {
-        this.LBAC_PROPERTIES_PATH = LBAC_PROPERTIES_PATH;
+    /**
+     * @return path of lbac_properties.xml
+     */
+    public String getLbacPropertiesPath() {
+        return LBAC_PROPERTIES_PATH;
     }
 
+    /**
+     * @return path of reports directory
+     */
+    public String getReportsDirectory() {
+        return REPORTS_DIRECTORY;
+    }
 }

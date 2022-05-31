@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.device.job.JobType;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.util.pref.Preference;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +53,7 @@ import static org.junit.Assert.assertEquals;
  * This test class covers substantial code portions of the job, label and
  * printing classes.
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class PrinterTest extends TestBase {
 
@@ -171,14 +173,14 @@ public class PrinterTest extends TestBase {
         cmap.put(JobService.CONDITION_QUEUE, queue);
         cmap.put(JobService.CONDITION_STATUS, JobStatus.PENDING);
         cmap.put(JobService.CONDITION_JOBTYPE, JobType.PRINT);
-        List<Job> jobs = this.jobService.load(cmap);
+        List<Job> jobs = this.jobService.loadJobs(cmap);
 
         assertEquals("testPrinting() active job count", 1, jobs.size());
         assertEquals("testPrinting() job queue", queue, jobs.get(0).getQueue());
 
         this.labelService.delete(l);
         this.printerService.delete(p);
-        this.jobService.remove(jobs.get(0));
+        this.jobService.removeJob(jobs.get(0));
     }
 
     @Test

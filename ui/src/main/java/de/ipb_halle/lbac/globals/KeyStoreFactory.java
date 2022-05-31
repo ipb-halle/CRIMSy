@@ -17,29 +17,14 @@
  */
 package de.ipb_halle.lbac.globals;
 
-import de.ipb_halle.lbac.entity.Cloud;
-import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.NodeService;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.security.Key;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.Certificate;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
@@ -53,7 +38,7 @@ public class KeyStoreFactory {
     // xxxxx LBAC_PROPERTIES_PATH
     // xxxxx this definition should move to some global location
     // xxxxx or should be replaced by a more general approach.
-    protected static String LBAC_PROPERTIES_PATH = "/install/etc/lbac_properties.xml";
+    protected static String LBAC_PROPERTIES_PATH = "/data/conf/lbac_properties.xml";
 
     private Map<String, KeyStore> keyStore;
     private Map<String, KeyStore> trustStore;
@@ -86,7 +71,7 @@ public class KeyStoreFactory {
             this.SSL_PROTOCOL =  prop.getProperty("SecureWebClient.SSL_PROTOCOL");
 
         } catch(Exception e) {
-            logger.error("Could not initialise KeyStoreFactory", ExceptionUtils.getStackTrace(e));
+            logger.error("Could not initialise KeyStoreFactory"+ ExceptionUtils.getStackTrace(e));
         }
         return this;
     }
@@ -113,7 +98,7 @@ public class KeyStoreFactory {
             this.trustStore.put(cloudName, ts);
 
         } catch (Exception e) {
-            logger.error("Could not load keystores", ExceptionUtils.getStackTrace(e));
+            logger.error("Could not load keystores"+ ExceptionUtils.getStackTrace(e));
         }
 
     }

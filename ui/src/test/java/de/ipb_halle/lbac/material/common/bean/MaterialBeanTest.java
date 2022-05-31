@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import de.ipb_halle.lbac.admission.ACEntry;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
@@ -37,6 +38,7 @@ import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
@@ -46,6 +48,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
@@ -54,11 +57,15 @@ import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
+import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.ResourceUtils;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -73,6 +80,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.primefaces.event.NodeExpandEvent;
@@ -83,6 +91,7 @@ import org.primefaces.model.TreeNode;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialBeanTest extends TestBase {
 
@@ -113,6 +122,7 @@ public class MaterialBeanTest extends TestBase {
 
     @Inject
     private MaterialCompositionBean compositionBean;
+   
 
     CreationTools creationTools;
     User publicUser;
@@ -148,6 +158,8 @@ public class MaterialBeanTest extends TestBase {
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
         instance.setUserBean(userBean);
+        
+        instance.getMaterialOverviewBean().setCurrentAccount(new LoginEvent(publicUser));
 
         material = creationTools.createStructure(project);
         Structure s = (Structure) material;
@@ -195,7 +207,7 @@ public class MaterialBeanTest extends TestBase {
 
         Material originalMaterial = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(originalMaterial.copyMaterial());
-        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController());
+        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController(),MessagePresenterMock.getInstance());
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
 
@@ -431,22 +443,28 @@ public class MaterialBeanTest extends TestBase {
     @Test
     public void test008_saveNewComposition() {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, project.getACList());
         projectService.saveEditedProjectToDb(project);
         material = creationTools.createStructure(project);
         materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+        
         instance.startMaterialCreation();
         instance.getCompositionBean().actionAddMaterialToComposition(material);
-        instance.getMaterialEditState().setCurrentProject(project);
+    
+            
+        project.getACList().getACEntries().values().iterator().next().setPermEdit(true);
+        
         Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
         instance.getMaterialNameBean().getNames().get(0).setValue("Composition");
         instance.setCurrentMaterialType(MaterialType.COMPOSITION);
+        instance.getMaterialEditState().setCurrentProject(project);
         instance.actionSaveMaterial();
 
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("Composition");
         requestBuilder.addMaterialType(MaterialType.COMPOSITION);
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
-        Assert.assertEquals(1, result.getAllFoundObjects().size());
+        Assert.assertEquals(1, result.getAllFoundObjects().size());                        
     }
 
     @Test
@@ -501,15 +519,16 @@ public class MaterialBeanTest extends TestBase {
     @Test
     public void test010_saveNewStructure() {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, project.getACList());
         projectService.saveEditedProjectToDb(project);
-       
+
         instance.startMaterialCreation();
         instance.getMaterialEditState().setCurrentProject(project);
         instance.setCurrentMaterialType(MaterialType.STRUCTURE);
 
         instance.getMaterialNameBean().getNames().get(0).setValue("test-structure");
         instance.getMaterialIndexBean().getIndices().add(new IndexEntry(2, "XYZ", "de"));
-      
+        instance.getMaterialEditState().setCurrentProject(project);
         instance.actionSaveMaterial();
 
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
@@ -523,6 +542,74 @@ public class MaterialBeanTest extends TestBase {
         Structure loadedStruc = foundObjects.get(0);
 
         Assert.assertEquals(1, loadedStruc.getIndices().size());
+    }
+
+    @DisplayName("Issue-based (#156) - Disappeared molecule")
+    @Test
+    public void test_011_bug_disappeared_molecule_156() throws IOException {
+        String benzene = ResourceUtils.readResourceFile("molfiles/Benzene.mol");
+
+        //Create new Structure
+        project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, project.getACList());
+        projectService.saveEditedProjectToDb(project);
+        instance.startMaterialCreation();
+        instance.getMaterialEditState().setCurrentProject(project);
+        instance.getMaterialNameBean().getNames().get(0).setValue("test_011-structure");
+        instance.setAutoCalcFormularAndMasses(true);
+        instance.getStructureInfos().setStructureModel(benzene);
+        instance.getMaterialEditState().setCurrentProject(project);
+        instance.actionSaveMaterial();
+
+        //Load structure
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("test_011-structure");
+        requestBuilder.addMaterialType(MaterialType.STRUCTURE);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+
+        //Edit structure
+        Structure originalStruc = (Structure) result.getAllFoundObjects().get(0).getSearchable();
+        instance.startMaterialEdit(originalStruc);
+        instance.setAutoCalcFormularAndMasses(false);
+        instance.getStructureInfos().setAverageMolarMass(null);
+        instance.actionSaveMaterial();
+
+        //Check if the molecule still exists but without  molar mass
+        result = materialService.loadReadableMaterials(requestBuilder.build());
+        Structure editedStruc = (Structure) result.getAllFoundObjects().get(0).getSearchable();
+        Assert.assertEquals(benzene, editedStruc.getMolecule().getStructureModel());
+        Assert.assertNull(editedStruc.getAverageMolarMass());
+    }
+    
+    @Test
+    public void test012_createNewConsumable(){        
+        project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        int originalPermCode=project.getACList().getPermCode();
+        project.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, project.getACList());
+        project.getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getACEntries().get(1).setPermEdit(true);
+       
+        projectService.saveEditedProjectToDb(project);
+        
+        instance.startMaterialCreation();
+        instance.setCurrentMaterialType(MaterialType.CONSUMABLE);
+        instance.getMaterialEditState().setCurrentProject(project);
+        instance.getMaterialNameBean().getNames().get(0).setValue("test_012-consumable");
+        
+        
+        instance.actionSaveMaterial();
+        
+         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("test_012-consumable");
+        requestBuilder.addMaterialType(MaterialType.CONSUMABLE);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+
+        List<Consumable> foundObjects = result.getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, foundObjects.size());
+        
+        Consumable cons=foundObjects.get(0);
+        Assert.assertNotEquals(originalPermCode,cons.getACList().getPermCode());
+
+
     }
 
     @Deployment

@@ -95,7 +95,7 @@ public class JobWebService {
         
         // query for concrete Id
         if (request.getJobId() != null) {
-            return jobService.loadById(request.getJobId()).createNetJob();
+            return jobService.loadJobById(request.getJobId()).createNetJob();
         }
 
         NetJob netjob = new NetJob();
@@ -114,7 +114,7 @@ public class JobWebService {
             cmap.put(JobService.CONDITION_STATUS, request.getStatus());
         }
 
-        for(Job job : jobService.load(cmap)) {
+        for(Job job : jobService.loadJobs(cmap)) {
             joblist.add(job.createNetJob());
         }
         return netjob.setJobList(joblist);
@@ -164,11 +164,11 @@ public class JobWebService {
      * process an update request
      */
     private NetJob processUpdate(NetJob request) {
-        Job job = jobService.loadById(request.getJobId());
+        Job job = jobService.loadJobById(request.getJobId());
         if (job != null) {
             job.setStatus(request.getStatus());
             job.setOutput(request.getOutput());
-            job = jobService.save(job);
+            job = jobService.saveJob(job);
             return job.createNetJob();
         }
         return null;

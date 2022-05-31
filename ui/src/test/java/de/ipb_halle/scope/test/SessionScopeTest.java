@@ -37,7 +37,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.scope.SessionScopeContext;
 import de.ipb_halle.scope.SessionScopeResetEvent;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class SessionScopeTest {
     private Bean bean1;

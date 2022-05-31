@@ -33,8 +33,10 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.consumable.Consumable;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -55,6 +57,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialCreationSaverTest extends TestBase {
 
@@ -99,15 +102,19 @@ public class MaterialCreationSaverTest extends TestBase {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test002_saveConsumable() {
         MaterialNameBean nameBean = new MaterialNameBean();
         MaterialCreationSaver saver = new MaterialCreationSaver(nameBean, materialService);
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-       
+
         Project p = creationTools.createProject();
+        p.setName("test002_saveConsumable");
+        p.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, p.getACList());
+        projectService.saveProjectToDb(p);
         StorageInformation sci = new StorageInformation();
-        saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList(),publicUser);
+        saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList<>(), publicUser);
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
         Assert.assertEquals(1, o.size());
 
@@ -115,8 +122,6 @@ public class MaterialCreationSaverTest extends TestBase {
         b.addMaterialType(MaterialType.CONSUMABLE);
 
         List<Consumable> c = materialService.loadReadableMaterials(b.build()).getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
-
-
 
         c.get(0);
     }

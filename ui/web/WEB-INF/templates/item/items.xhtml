@@ -159,6 +159,50 @@
                                         onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
                                 </b:column>
                             </b:row>
+
+                            <!-- Reporting -->
+                            <br />
+                            <b:row>
+                                <b:column>
+                                    <h:outputText
+                                        value="#{msgs.reporting_createReport}"
+                                        styleClass="searchFilterHeader" />
+                                </b:column>
+                            </b:row>
+                            <b:row styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <b:selectOneMenu
+                                        value="#{itemOverviewBean.selectedReport}"
+                                        styleClass="itemFilterInputfield">
+                                        <f:selectItems
+                                            value="#{itemOverviewBean.availableReports}"
+                                            var="report"
+                                            itemLabel="#{report.name}" />
+                                    </b:selectOneMenu>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column
+                                    span="1" 
+                                    styleClass="itemFilterButtonColumn">
+                                    <b:selectOneMenu
+                                        value="#{itemOverviewBean.selectedReportType}"
+                                        styleClass="itemFilterButton">
+                                        <f:selectItems value="#{itemOverviewBean.reportTypes}" />
+                                    </b:selectOneMenu>
+                                </b:column>
+                                <b:column
+                                    span="1"
+                                    styleClass="itemFilterButtonColumn itemFilterButtonRight">
+                                    <b:commandButton
+                                        ajax="true"
+                                        process="@form"
+                                        update="growlMsg"
+                                        action="#{itemOverviewBean.actionCreateReport()}"
+                                        styleClass="itemFilterButton"
+                                        value="#{msgs.reporting_report}" />
+                                </b:column>
+                            </b:row>
                         </b:container>
                     </b:column>    
                     <b:column span="10">  
@@ -217,14 +261,8 @@
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_amount}">
-                                            <!-- Number format "0.0##": 10000      -> 10000.0
-                                                                        10000.1    -> 10000.1 
-                                                                        10000.01   -> 10000.01
-                                                                        10000.001  -> 10000.001
-                                                                        10000.0001 -> 10000.0
-                                                                            0.001  ->     0.001 -->
                                             <h:outputFormat value="{0} {1}">
-                                                <f:param value="#{nwc:formatNumberInEnglish(item.amount, '0.0##')}" />
+                                                <f:param value="#{nwc:formatAmount(item.amount)}" />
                                                 <f:param value="#{item.unit.unit}" />
                                             </h:outputFormat>
                                         </b:dataTableColumn>
@@ -268,7 +306,23 @@
                                                              type="button"
                                                              onclick="ajax:itemOverviewBean.actionStartAclChange(item)"
                                                              oncomplete="PF('dlgAcl').show();"
-                                                             disabled="false"/>
+                                                             disabled="#{itemOverviewBean.isEditDeactivated(item)}"/>
+                                            <b:commandButton
+                                                style="padding: 0 4px;"
+                                                iconAwesome="fa-flask"
+                                                look="link"
+                                                ajax="false"
+                                                disabled="#{createSolutionBean.isItemNotSoluble(item) or itemOverviewBean.isEditDeactivated(item)}"
+                                                action="#{createSolutionBean.actionStartCreateSolution(item)}"
+                                                tooltip="#{msgs.itemOverview_tooltip_createSolution}" />
+                                            <b:commandButton
+                                                style="padding: 0 4px;"
+                                                iconAwesome="fa-eyedropper"
+                                                look="link"
+                                                ajax="false"
+                                                disabled="#{itemOverviewBean.isEditDeactivated(item)}"
+                                                action="#{createAliquotBean.actionStartCreateAliquot(item)}"
+                                                tooltip="#{msgs.itemOverview_tooltip_createAliquot}" />
                                         </b:dataTableColumn>
                                     </b:dataTable>
                                 </b:column> 

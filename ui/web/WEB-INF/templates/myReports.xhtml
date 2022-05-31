@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:nwc="http://ipb-halle.de/nwc">
+<h:body>
+    <ui:composition>
+        <h2>
+            <h:outputText value="#{msgs.myReports_title}" />
+        </h2>
+
+        <b:form>
+            <b:commandButton
+                ajax="true"
+                process="@this"
+                update="reportingJobsTableId"
+                action="#{reportingJobsBean.actionReloadTable()}"
+                value="#{msgs.Refresh}"
+                iconAwesome="refresh" />
+            <b:dataTable
+                id="reportingJobsTableId"
+                value="#{reportingJobsBean.reportingJobs}"
+                var="jobWrapper"
+                saveState="false"
+                striped="false"
+                row-style-class="#{jobWrapper.rowStyleClass}">
+                <b:dataTableColumn
+                    label="#{msgs.myReports_tableheader_submissionDate}"
+                    order="desc">
+                    <h:outputFormat
+                        value="{0} ({1})">
+                        <o:param value="#{nwc:formatDateWithTimezone(jobWrapper.job.jobdate)}" />
+                        <o:param
+                            value="#{jobWrapper.job.jobdate}"
+                            converter="org.ocpsoft.PrettyTimeConverter" />
+                    </h:outputFormat>
+                </b:dataTableColumn>
+                <b:dataTableColumn
+                    value="#{reportingJobsBean.getJobStatusI18n(jobWrapper)}"
+                    label="#{msgs.myReports_tableheader_status}" />
+                <b:dataTableColumn
+                    label="#{msgs.Tools}"
+                    width="10%"
+                    style="min-width:50px">
+                    <b:commandButton
+                        action="#{reportingJobsBean.actionDownloadReport(jobWrapper)}"
+                        rendered="#{jobWrapper.downloadable}"
+                        style="padding: 0 4px;"
+                        iconAwesome="download"
+                        look="link" />
+                    <b:commandButton
+                        ajax="true"
+                        process="@this"
+                        update="reportingJobsTableId"
+                        action="#{reportingJobsBean.actionDeleteReport(jobWrapper)}"
+                        rendered="#{jobWrapper.deleteable}"
+                        style="padding: 0 4px;"
+                        icon="trash"
+                        look="link" />
+                </b:dataTableColumn>
+            </b:dataTable>
+        </b:form>
+    </ui:composition>
+</h:body>
+</html>

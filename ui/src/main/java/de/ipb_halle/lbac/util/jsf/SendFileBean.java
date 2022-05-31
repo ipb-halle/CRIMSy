@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.util.jsf;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -41,6 +42,15 @@ public class SendFileBean {
      */
     public void sendFile(byte[] content, String filename) throws IOException {
         Faces.sendFile(content, filename, true);
+    }
+    /**
+     * Send the given file to the client.
+     * 
+     * @param file the file to send
+     * @throws IOException
+     */
+    public void sendFile(File file) throws IOException {
+        Faces.sendFile(file, true);
     }
 
     /**

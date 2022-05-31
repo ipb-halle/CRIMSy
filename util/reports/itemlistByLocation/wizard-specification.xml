@@ -1,0 +1,14 @@
+<wizard:wizard-specification xmlns:wizard="http://reporting.pentaho.org/namespaces/engine/classic/bundle/wizard-specification/1.0">
+  <wizard:detail-fields>
+    <wizard:detail-field field="amount"/>
+    <wizard:detail-field field="concentration"/>
+    <wizard:detail-field field="concentrationunit"/>
+    <wizard:detail-field field="containersize"/>
+    <wizard:detail-field field="label"/>
+    <wizard:detail-field field="unit"/>
+  </wizard:detail-fields>
+  <wizard:group-definitions>
+    <wizard:group-definition field="containerid" display-name="containerid" group-type="RELATIONAL"/>
+  </wizard:group-definitions>
+  <wizard:watermark-specification visible="true"/>
+</wizard:wizard-specification>

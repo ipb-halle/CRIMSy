@@ -39,7 +39,8 @@ import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Unit;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

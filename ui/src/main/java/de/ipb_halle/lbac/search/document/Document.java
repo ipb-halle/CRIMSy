@@ -116,39 +116,6 @@ public class Document implements Serializable, Comparable<Document>, Searchable 
         return this.size;
     }
 
-    public String getLink() throws UnsupportedEncodingException {
-        return getLink(UI_PATH);
-    }
-
-    /**
-     * Creates the REST API link to fetch the document from a remote server
-     *
-     * @param appPath location of the remote note
-     * @return Rest api link
-     * @throws UnsupportedEncodingException
-     */
-    public String getLink(String appPath) throws UnsupportedEncodingException {
-        try {
-            StringBuilder sb = new StringBuilder();
-            sb.append(appPath);
-            sb.append("/servlet/document/GET");
-            sb.append("?nodeId=");
-            sb.append(URLEncoder.encode(this.nodeId.toString(), UTF8));
-            sb.append("&collectionId=");
-            sb.append(URLEncoder.encode(this.collectionId.toString(), UTF8));
-            sb.append("&contentType=");
-            sb.append(URLEncoder.encode(this.contentType, UTF8));
-            sb.append("&originalName=");
-            sb.append(URLEncoder.encode(this.originalName, UTF8));
-            sb.append("&path=");
-            sb.append(URLEncoder.encode(this.path, UTF8));
-            return sb.toString();
-        } catch (Exception e) {
-            LOGGER.error("Fehler beim Auflösen der URL", e);
-        }
-        return "n.a.";
-    }
-
     public void setCollection(Collection c) {
         this.collection = c;
     }

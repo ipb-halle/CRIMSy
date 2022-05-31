@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -51,6 +52,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class CollectionWebClientTest extends TestBase {
 
@@ -165,6 +167,7 @@ public class CollectionWebClientTest extends TestBase {
                         u
                 );
         Assert.assertEquals(1, readableColls.size());
+        entityManagerService.doSqlUpdate("Delete from usersgroups where id="+u.getId());
 
     }
 }

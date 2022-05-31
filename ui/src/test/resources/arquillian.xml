@@ -26,8 +26,10 @@
             <property name="appWorkingDir">target/arquillian</property>
             <property name="properties">
                 apiDS = new://Resource?type=DataSource
-                apiDS.JdbcDriver = org.h2.Driver
-                apiDS.JdbcUrl = jdbc:h2:mem:;INIT=RUNSCRIPT FROM 'classpath:init.sql';
+                apiDS.JdbcDriver = org.postgresql.Driver
+                apiDS.JdbcUrl = jdbc:postgresql://localhost:65432/lbac?charSet=UTF-8
+                apiDS.UserName = lbac
+                apiDS.Password = lbac
                 apiDS.JtaManaged = true
                 apiDS.LogSql = true
             </property>

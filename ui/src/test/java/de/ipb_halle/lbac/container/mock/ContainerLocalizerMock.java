@@ -24,6 +24,9 @@ import de.ipb_halle.lbac.container.bean.ContainerLocalizer;
  * @author fmauz
  */
 public class ContainerLocalizerMock extends ContainerLocalizer {
+    public ContainerLocalizerMock() {
+        super(null);
+    }
 
     @Override
     public String localizeString(String toLocalize, Object... args) {

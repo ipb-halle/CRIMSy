@@ -26,41 +26,42 @@
 # the current (PRIMARY) cloud.
 #
 
-URL=$2
-TEST_ID=$3
 p=`dirname $0`
 LBAC_DATASTORE=`realpath $p`
+CRIMSY_HOST=$2
 
 #
 #==========================================================
 #
-# Provide test data (from nodeconfig.txt file) 
+# Provide test data (from nodeconfig.cfg file) 
 #
 function getTestData {
 
-    data=`grep $TEST_ID nodeconfig.txt`
-    PRIMARY_CLOUD=`echo "$data" | cut -c9-18 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    LBAC_CITY=`echo "$data" | cut -c20-35 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    LBAC_INSTITUTION=`echo "$data" | cut -c36-59 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
-    LBAC_INSTITUTION_SHORT=`echo "$data" | cut -c50-68 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+    . nodeconfig.cfg
     LBAC_INSTITUTION_MD5=`echo -n $LBAC_INSTITUTION | md5sum | cut -c1-32`
-    LBAC_MANAGER_EMAIL=`echo "$data" | cut -c70-105 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+    CRIMSYCI_URL=http://$CRIMSY_HOST:8000/$PRIMARY_CLOUD
+    CRIMSYREG_URL=$CRIMSY_HOST:5000
 
 }
 #
 #==========================================================
 #
 function createConfiguration {
-    curl --silent --output configure.sh.sig $URL/configure.sh.sig
-    curl --silent --output chain.txt $URL/chain.txt
-    curl --silent --output devcert.pem $URL/devcert.pem
-    curl --silent --output nodeconfig.txt $URL/nodeconfig.txt
+    getTestData
 
-    openssl verify -CAfile chain.txt devcert.pem || exit 1
-    openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.txt -out configure.sh || exit 1
+    curl --silent --output configure.sh.sig $CRIMSYCI_URL/configure.sh.sig
+    curl --silent --output chain.pem $CRIMSYCI_URL/chain.pem
+    curl --silent --output devcert.pem $CRIMSYCI_URL/devcert.pem
+
+    openssl verify -CAfile chain.pem devcert.pem || exit 1
+    openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.pem -out configure.sh || exit 1
     chmod +x configure.sh
 
     . configure.sh BATCH
+
+    # call getTestData 2nd time
+    getTestData
+    LBAC_IMAGE_REGISTRY=$CRIMSYREG_URL
     makeTempConfig
 
     # dialog_DATASTORE
@@ -79,10 +80,10 @@ function createConfiguration {
     # set default admin password (not for production use!)
     echo -n "admin" > "$LBAC_DATASTORE/etc/$LBAC_ADMIN_PWFILE"
 
-    getTestData
     LBAC_INTRANET_FQHN=`hostname -f`
     LBAC_INTERNET_FQHN=$LBAC_INTRANET_FQHN
 
+    echo "LBAC_UPDATE_LEVEL=\"$LBAC_UPDATE_LEVEL\"" >> $TMP_CONFIG
     echo "LBAC_INSTITUTION=\"$LBAC_INSTITUTION\"" >> $TMP_CONFIG
     echo "LBAC_INSTITUTION_SHORT=\"$LBAC_INSTITUTION_SHORT\"" >> $TMP_CONFIG
     echo "LBAC_INSTITUTION_MD5=\"$LBAC_INSTITUTION_MD5\"" >> $TMP_CONFIG
@@ -109,9 +110,27 @@ function createConfiguration {
     mv configure.sh $LBAC_DATASTORE/bin
 }
 
+#
+#==========================================================
+#
+function loadData {
+    # initialize database with test data
+    curl --silent --output /dev/null --insecure https://`hostname -f`/ui/index.xhtml
+    echo "waiting 5 sec. for webapp to initialize database ..."
+    sleep 5
+    docker cp tmp/initial_data.sql dist_db_1:/tmp
+    docker exec -i -u postgres dist_db_1 psql -Ulbac lbac -f /tmp/initial_data.sql
+}
+#
+#==========================================================
+#
 case $1 in 
     CONFIG)
         createConfiguration
+        exit 0
+        ;;
+    LOAD_DATA)
+        loadData
         exit 0
         ;;
     CLEANUP)

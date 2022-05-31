@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.search.wordcloud.mock.WordCloudWebServiceMock;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
@@ -45,6 +46,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class WordCloudWebClientTest extends TestBase {
 

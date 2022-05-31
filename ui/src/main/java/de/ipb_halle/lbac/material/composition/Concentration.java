@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.units.Unit;
 
 /**
  *

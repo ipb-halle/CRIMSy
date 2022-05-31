@@ -20,11 +20,9 @@ package de.ipb_halle.lbac.exp;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
-import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.exp.assay.Assay;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.mocks.ExperimentBeanMock;
@@ -46,6 +44,10 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.ResourceUtils;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,6 +67,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class MaterialAgentTest extends TestBase {
 
@@ -95,17 +98,6 @@ public class MaterialAgentTest extends TestBase {
 
     private Taxonomy taxo1;
     private Project project;
-
-    String benzene = "\n" + "Actelion Java MolfileCreator 1.0\n" + "\n"
-            + "  6  6  0  0  0  0  0  0  0  0999 V2000\n"
-            + "    5.9375  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    5.9375  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    7.2365  -12.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    8.5356  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    8.5356  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
-            + "    7.2365   -9.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n" + "  1  2  2  0  0  0  0\n"
-            + "  2  3  1  0  0  0  0\n" + "  3  4  2  0  0  0  0\n" + "  4  5  1  0  0  0  0\n"
-            + "  5  6  2  0  0  0  0\n" + "  6  1  1  0  0  0  0\n" + "M  END";
 
     @BeforeEach
     public void init() {
@@ -160,7 +152,8 @@ public class MaterialAgentTest extends TestBase {
     }
 
     @Test
-    public void test001_actionTriggerMaterialSearch() {
+    public void test001_actionTriggerMaterialSearch() throws IOException {
+        String benzene = ResourceUtils.readResourceFile("molfiles/Benzene.mol");
         holder.setLinkedDataIndex(0);   // select the assay target record
         List<Material> materials = materialAgent.getMaterialList();
 

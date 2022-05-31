@@ -55,4 +55,7 @@ public class EntityManagerService {
 
     }
 
+    public EntityManager getEntityManager() {
+        return em;
+    }
 }

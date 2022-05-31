@@ -144,10 +144,10 @@
                                 styleClass="foundObjectDataTable"
                                 saveState="false">
                                 <b:dataTableColumn label="#{msgs.searchMgr_resulttable_name}">
-                                    <b:navLink
+                                    <b:commandLink
                                         pt:data-test-id="search:searchResultsTable:link"
-                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}"
                                         value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                        action="#{documentDownloadBean.actionDownload(searchable)}"
                                         rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}" />
                                     <b:commandLink
                                         pt:data-test-id="search:searchResultsTable:link"

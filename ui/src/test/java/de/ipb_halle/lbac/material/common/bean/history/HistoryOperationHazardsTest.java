@@ -44,6 +44,7 @@ import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,6 +65,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class HistoryOperationHazardsTest extends TestBase {
 
@@ -82,7 +84,6 @@ public class HistoryOperationHazardsTest extends TestBase {
     MaterialIndexBean mib;
     Random random = new Random();
 
-   
     private MaterialCompositionBean compositionBean;
 
     @BeforeEach
@@ -90,14 +91,14 @@ public class HistoryOperationHazardsTest extends TestBase {
         indices = new ArrayList<>();
         s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
-        mes = new MaterialEditState();
+        mes = new MaterialEditState(MessagePresenterMock.getInstance());
         mes.setMaterialBeforeEdit(s);
         mes = new MaterialEditState(
                 new Project(),
                 currentDate,
                 s,
                 s,
-                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), MessagePresenterMock.getInstance()));
+                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), MessagePresenterMock.getInstance()), MessagePresenterMock.getInstance());
 
         mes.setCurrentVersiondate(currentDate);
         mib = new MaterialIndexBean();
@@ -187,7 +188,7 @@ public class HistoryOperationHazardsTest extends TestBase {
                 = prepareDeployment("HistoryOperationHazardsTest.war")
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
-        deployment = UserBeanDeployment.add(deployment);      
+        deployment = UserBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 }

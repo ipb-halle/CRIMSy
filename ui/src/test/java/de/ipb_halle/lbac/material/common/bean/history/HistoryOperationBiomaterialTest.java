@@ -17,49 +17,29 @@
  */
 package de.ipb_halle.lbac.material.common.bean.history;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
-import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
-import de.ipb_halle.lbac.material.common.history.HistoryOperation;
-import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
-import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
-import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,20 +48,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @author fmauz
  */
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
-
     private static final long serialVersionUID = 1L;
-
-    
 
     @Inject
     private TaxonomyService taxonomyService;
     @Inject
     private TissueService tissueService;
-    
-
-   
 
     /**
      * Description: The material is created without a Hazard. After that the
@@ -91,9 +66,9 @@ public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
      */
     @Test
     public void test01_BioMaterialDifferenceOperations() {
-        createMaterialEditState();        
+        createMaterialEditState();
         checkCurrentState();
-        
+
         //Go one step back (20.12.2000)
         instance.applyNextNegativeDifference();
         checkStateAt20001220();
@@ -109,21 +84,16 @@ public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
         checkCurrentState();
     }
 
-   
-
-   
     private MaterialEditState createMaterialEditState() {
         mes = new MaterialEditState(
                 new Project(),
                 currentDate,
                 biomaterial,
                 biomaterial,
-                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), MessagePresenterMock.getInstance()));
+                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), MessagePresenterMock.getInstance()), MessagePresenterMock.getInstance());
         mes.setCurrentVersiondate(d_20001220);
         return mes;
     }
-
-  
 
     @Override
     protected void checkCurrentState() {
