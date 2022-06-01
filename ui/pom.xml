@@ -102,11 +102,11 @@
                 <version>2.7</version>
                 <configuration>
                     <quiet>true</quiet>
-                    <cobertura.maxmem>1024m</cobertura.maxmem>
+                    <cobertura.maxmem>2048m</cobertura.maxmem>
                     <instrumentation>
-                        <maxmem>1024m</maxmem>
+                        <maxmem>2048m</maxmem>
                     </instrumentation>
-                    <argLine>-Xms1024m -Xmx4096m -XX:MaxPermSize=4096m</argLine>
+                    <argLine>-Xms2048m -Xmx4096m -XX:MaxPermSize=4096m</argLine>
                     <!-- <argLine>-Xmx2048m</argLine> -->
                 </configuration>
             </plugin>
@@ -142,6 +142,7 @@
                 <version>2.22.2</version>
                 <configuration>
                     <runOrder>random</runOrder>
+                    <forkedProcessExitTimeoutInSeconds>240</forkedProcessExitTimeoutInSeconds>
                 </configuration>
             </plugin>
            
