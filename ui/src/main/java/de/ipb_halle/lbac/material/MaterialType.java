@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.consumable.ConsumableFactory;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
+import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterialFactory;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceFactory;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -87,10 +88,19 @@ public enum MaterialType implements Serializable {
             MaterialDetailType.INDEX,
             MaterialDetailType.SEQUENCE_INFORMATION),
     TISSUE(
-            6, Tissue.class, new TissueFactory(), MaterialDetailType.COMMON_INFORMATION),
+            6,
+            Tissue.class,
+            new TissueFactory(),
+            MaterialDetailType.COMMON_INFORMATION),
     TAXONOMY(
-            7, Taxonomy.class, new TaxonomyFactory(), MaterialDetailType.COMMON_INFORMATION),
-    INACCESSIBLE(8, InaccessibleMaterial.class, null);
+            7,
+            Taxonomy.class,
+            new TaxonomyFactory(),
+            MaterialDetailType.COMMON_INFORMATION),
+    INACCESSIBLE(
+            8,
+            InaccessibleMaterial.class,
+            new InaccessibleMaterialFactory());
 
     private final List<MaterialDetailType> types;
     private static final Map<String, MaterialType> string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
