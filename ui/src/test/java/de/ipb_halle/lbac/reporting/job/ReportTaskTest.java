@@ -89,7 +89,7 @@ public class ReportTaskTest extends TestBase {
         assertTrue(isInTempReportsDir(reportFilename));
 
         File reportFile = new File(reportFilename);
-        assertEquals("42,abcdef\n", FileUtils.readFileToString(reportFile));
+        assertEquals(String.format("42,abcdef%n"), FileUtils.readFileToString(reportFile));
 
         reportFile.delete();
     }
