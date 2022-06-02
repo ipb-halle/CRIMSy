@@ -33,7 +33,6 @@ import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.DocumentCreator;
-import static de.ipb_halle.lbac.base.TestBase.TESTCLOUD;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
@@ -43,17 +42,14 @@ import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.mock.WordCloudWebServiceMock;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.BehaviorBase;
 import javax.inject.Inject;
+import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -83,12 +79,13 @@ public class WordCloudBeanTest extends TestBase {
 
     @BeforeEach
     public void before() throws IOException {
-        org.apache.openejb.loader.Files.delete(Paths.get("target/test-classes/collections").toFile());
+        initializeBaseUrl();
+        initializeKeyStoreFactory();
+        FileUtils.deleteDirectory(Paths.get("target/test-classes/collections").toFile());
         entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE from termvectors");
         entityManagerService.doSqlUpdate("DELETE from files");
-        org.apache.openejb.loader.Files.delete(Paths.get("target/test-classes/collections").toFile());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         userBean.setCurrentAccount(publicUser);
 
@@ -145,7 +142,7 @@ public class WordCloudBeanTest extends TestBase {
     }
 
     @Test
-    public void test002_selectWordInCloud() {
+    public void test003_selectWordInCloud() {
         wordCloudBean.setSearchTermInput("Java");
         wordCloudBean.startSearch();
 
@@ -153,7 +150,7 @@ public class WordCloudBeanTest extends TestBase {
         Assert.assertEquals(3, wordCloudBean.getDocSeachState().getFoundDocuments().size());
 
         wordCloudBean.onSelect(new SelectEventMock(new TagCloudItemMock("tiny")));
-        
+
         Assert.assertEquals(1, wordCloudBean.getDocSeachState().getFoundDocuments().size());
 
     }
@@ -186,12 +183,6 @@ public class WordCloudBeanTest extends TestBase {
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(WordCloudWebServiceMock.class));
 
-    }
-
-    @BeforeEach
-    public void init() {
-        initializeBaseUrl();
-        initializeKeyStoreFactory();
     }
 
     public class TagCloudItemMock implements TagCloudItem {
