@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchState;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.service.CloudNodeService; 
+import de.ipb_halle.lbac.service.CloudNodeService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.tagcloud.DefaultTagCloudItem;
 import org.primefaces.model.tagcloud.DefaultTagCloudModel;
@@ -132,7 +133,7 @@ public class WordCloudBean implements Serializable {
             startingDocuments = copyDocList(docSeachState.getFoundDocuments());
 
             createWordCloud(wordTerms);
-            
+
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
@@ -204,8 +205,8 @@ public class WordCloudBean implements Serializable {
     }
 
     /**
-     * This method observes login events and removes 
-     * all information/states from previous searching
+     * This method observes login events and removes all information/states from
+     * previous searching
      */
     public void clearCloudState(@Observes LoginEvent evt) {
         clearCloudState();
@@ -308,7 +309,7 @@ public class WordCloudBean implements Serializable {
                 }
                 WordCloudWebRequest req = tempClient.getWordCloudResponse(
                         userBean.getCurrentAccount(),
-                        cnl.get(0), 
+                        cnl.get(0),
                         tagList,
                         Stream.of(c.getId()).collect(Collectors.toSet())
                 );
@@ -428,5 +429,5 @@ public class WordCloudBean implements Serializable {
 
     public List<String> getTagsAsList() {
         return new ArrayList<>(tagList);
-    }
+    }  
 }

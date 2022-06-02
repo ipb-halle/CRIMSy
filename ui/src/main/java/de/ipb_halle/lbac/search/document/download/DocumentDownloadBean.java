@@ -45,12 +45,13 @@ import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 /**
- * 
+ *
  * @author flange
  */
 @RequestScoped
 @Named
 public class DocumentDownloadBean {
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Inject
@@ -74,19 +75,7 @@ public class DocumentDownloadBean {
     @Inject
     private SendFileBean sendFileBean;
 
-    /**
-     * Request a download of a local/remote document. The response is offered as
-     * file download to the user.
-     * 
-     * @param netObject
-     * @throws IOException
-     */
-    public void actionDownload(NetObject netObject) throws IOException {
-        if (netObject.getSearchable().getTypeToDisplay().getGeneralType() != SearchTarget.DOCUMENT) {
-            return;
-        }
-        Document document = (Document) netObject.getSearchable();
-
+    public void actionDownloadDocument(Document document) throws IOException {
         InputStream is = null;
         if (nodeService.isRemoteNode(document.getNode())) {
             is = downloadRemote(document);
@@ -97,6 +86,21 @@ public class DocumentDownloadBean {
         if (is != null) {
             sendFileBean.sendFile(is, document.getOriginalName());
         }
+    }
+
+    /**
+     * Request a download of a local/remote document. The response is offered as
+     * file download to the user.
+     *
+     * @param netObject
+     * @throws IOException
+     */
+    public void actionDownload(NetObject netObject) throws IOException {
+        if (netObject.getSearchable().getTypeToDisplay().getGeneralType() != SearchTarget.DOCUMENT) {
+            return;
+        }
+        Document document = (Document) netObject.getSearchable();
+        actionDownloadDocument(document);
     }
 
     private InputStream downloadLocal(Document document) throws IOException {

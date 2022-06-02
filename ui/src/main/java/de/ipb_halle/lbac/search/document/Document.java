@@ -31,8 +31,6 @@ import de.ipb_halle.lbac.search.bean.Type;
 import org.apache.johnzon.mapper.JohnzonConverter;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

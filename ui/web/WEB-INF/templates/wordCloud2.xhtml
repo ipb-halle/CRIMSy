@@ -98,7 +98,7 @@
                             <b:inputText styleClass="searchRequest"
                                          placeholder="#{msgs.searchMgr_searchtext_placeholder}"
                                          required="false"
-                                        
+
                                          id="searchTextInputField"
                                          value="#{wordCloudBean.searchTermInput}">
                                 <f:facet name="append">
@@ -171,7 +171,10 @@
                                          csv="false"
                                          saveState="false">
                                 <b:dataTableColumn label="#{msgs.searchMgr_resulttable_document}">
-                                    <b:navLink href="#{document.getLink()}" value="#{document.originalName}"/>
+                                    <b:commandLink
+                                        value="#{document.originalName}"
+                                        action="#{documentDownloadBean.actionDownloadDocument(document)}"                                     
+                                        />                                   
                                 </b:dataTableColumn>
                                 <b:dataTableColumn 
                                     value="#{document.getRichSourceInfo()}"

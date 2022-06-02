@@ -120,7 +120,7 @@
                                           icon-size="1x"
                                           look="info"
                                           onclick="$('tbody.files').find('tr').remove();
-                                              PF('fileUploadModal').show()"
+                                                  PF('fileUploadModal').show()"
                                           styleClass="documentUploadButton" 
                                           rendered="#{userBean.hasUploadPermission()}"/>
                             </b:column>
@@ -135,8 +135,8 @@
                                 saveState="false">
                                 <b:dataTableColumn
                                     label="#{msgs.searchMgr_resulttable_name}">
-                                    <b:commandLink
-                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                    <b:commandLink                                        
+                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"                                       
                                         action="#{documentDownloadBean.actionDownload(searchable)}"
                                         rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}"
                                         />
@@ -262,7 +262,7 @@
                                                     ajax="true"
                                                     value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
                                             </b:column>
-                                             <b:column span="1"
+                                            <b:column span="1"
                                                       offset="4"
                                                       styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
