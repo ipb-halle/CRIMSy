@@ -269,6 +269,12 @@
     </build>
 
     <dependencies>
+        <!-- crimsy i18n -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>i18n</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- crimsy-agency-api -->
         <dependency>

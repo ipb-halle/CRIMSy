@@ -32,6 +32,7 @@
     <modules>
         <module>agency-api</module>
         <module>agency</module>
+        <module>i18n</module>
         <module>snowball</module>
         <module>tx</module>
         <module>ui</module>
