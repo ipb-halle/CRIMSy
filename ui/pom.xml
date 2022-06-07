@@ -26,11 +26,10 @@
     <parent>
         <groupId>de.ipb-halle</groupId>
         <artifactId>crimsy</artifactId>
-        <version>1.0</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>ui</artifactId>
-    <version>2.1.1</version>
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
@@ -275,7 +274,7 @@
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>crimsy-agency-api</artifactId>
-            <version>1.0</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- OWASP java HTML sanitizer -->
@@ -597,9 +596,9 @@
             <version>1.2.4.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>de.ipb_halle</groupId>
+            <groupId>de.ipb-halle</groupId>
             <artifactId>tx</artifactId>
-            <version>1.0</version>
+            <version>${revision}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.cxf</groupId>

@@ -26,7 +26,7 @@
 
     <groupId>de.ipb-halle</groupId>
     <artifactId>crimsy</artifactId>
-    <version>1.0</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -38,6 +38,9 @@
     </modules>
 
     <properties>
+        <!-- CRIMSy version -->
+        <revision>2.1.1</revision>
+
         <hibernate.version>5.3.26.Final</hibernate.version>
         <jpa.version>2.2</jpa.version>
         <myfaces.version>2.2.14</myfaces.version>
