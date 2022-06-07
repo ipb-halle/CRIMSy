@@ -187,7 +187,7 @@
   <dependency>
     <groupId>de.ipb-halle</groupId>
     <artifactId>crimsy-agency-api</artifactId>
-    <version>${revision}</version>
+    <version>${project.version}</version>
   </dependency>
 
 

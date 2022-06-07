@@ -1,6 +1,7 @@
 config
 docs/_build
 documentation/**/*.pdf
+.flattened-pom.xml
 target
 agency/target
 agency/test

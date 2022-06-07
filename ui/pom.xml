@@ -274,7 +274,7 @@
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>crimsy-agency-api</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- OWASP java HTML sanitizer -->
@@ -598,7 +598,7 @@
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>tx</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.cxf</groupId>
