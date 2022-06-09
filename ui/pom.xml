@@ -366,49 +366,49 @@
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-core</artifactId>
-            <version>2.3</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-ctab</artifactId>
-            <version>2.3</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-data</artifactId>
-            <version>2.3</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-formula</artifactId>
-            <version>2.3</version>
+            <version>${cdk.version}</version>
         </dependency>
         
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-smiles</artifactId>
-            <version>2.3</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-interfaces</artifactId>
-            <version>2.3</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-io</artifactId>
-            <version>2.3</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-valencycheck</artifactId>
-            <version>2.3</version>
+            <version>${cdk.version}</version>
         </dependency>
 
 

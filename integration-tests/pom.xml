@@ -23,9 +23,13 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.ipb-halle</groupId>
+    <parent>
+        <groupId>de.ipb-halle</groupId>
+        <artifactId>crimsy</artifactId>
+        <version>${revision}</version>
+    </parent>
+
     <artifactId>integration-tests</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
@@ -90,31 +94,46 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
             <version>2.2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>selenide</artifactId>
-            <version>6.3.4</version>
+            <version>6.6.0</version>
         </dependency>
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.12.8</version>
+            <version>1.12.10</version>
         </dependency>
+        <!-- CRIMSy's message bundle -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
-            <artifactId>ui</artifactId>
-            <!-- TODO: Make this a constant in the parent POM.
-                       ... OOOPS! There is no parent POM ... -->
-            <version>2.1.0</version>
-            <type>war</type>
+            <artifactId>i18n</artifactId>
+            <version>${project.version}</version>
         </dependency>
+        <!-- JSF message bundle -->
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <!-- TODO: make this a constant in the parent -->
-            <version>2.2.14</version>
+            <version>${myfaces.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- CDK is required for Molfile comparison -->
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-core</artifactId>
+            <version>${cdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-ctab</artifactId>
+            <version>${cdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-data</artifactId>
+            <version>${cdk.version}</version>
         </dependency>
     </dependencies>
     <profiles>

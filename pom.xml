@@ -47,6 +47,7 @@
         <myfaces.version>2.2.14</myfaces.version>
         <hibernate-validator.version>5.3.6.Final</hibernate-validator.version>
         <postgresql.version>42.3.3</postgresql.version>
+        <cdk.version>2.3</cdk.version>
     </properties>
 
     <build>

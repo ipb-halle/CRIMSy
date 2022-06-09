@@ -80,7 +80,7 @@ public class MaterialNamesTable extends DataTable<MaterialNamesTable> {
         }
 
         // reset remaining entry
-        nameInput(0).setValue(null);
+        nameInput(0).setValue("");
         languageSelection(0).selectOption(0);
     }
 
