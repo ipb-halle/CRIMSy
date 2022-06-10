@@ -99,12 +99,7 @@
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>selenide</artifactId>
-            <version>6.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.12.10</version>
+            <version>6.6.1</version>
         </dependency>
         <!-- CRIMSy's message bundle -->
         <dependency>

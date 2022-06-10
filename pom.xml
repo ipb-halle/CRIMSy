@@ -52,7 +52,9 @@
 
     <build>
         <plugins>
-            <!-- https://maven.apache.org/maven-ci-friendly.html#install-deploy -->
+            <!-- See https://maven.apache.org/maven-ci-friendly.html#install-deploy
+                 The flatten-maven-plugin replaces the ${revision} variable in the
+                 final pom, including those of the child modules. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
