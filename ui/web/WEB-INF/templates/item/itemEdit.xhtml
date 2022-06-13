@@ -35,55 +35,64 @@
                 <b:panel>
                     <b:container>
                         <b:row>
-                            <b:column span="5"
-                                      styleClass="itemEditMaterialName">
-                                <h:outputFormat
-                                    value="#{msgs.itemEdit_itemEditPanel_materialName}">
+                            <b:column
+                                pt:data-test-id="itemEdit:materialName"
+                                span="5"
+                                styleClass="itemEditMaterialName">
+                                <h:outputFormat value="#{msgs.itemEdit_itemEditPanel_materialName}">
                                     <f:param value="#{itemBean.materialName}" />
                                 </h:outputFormat>
                             </b:column>
                             <b:column span="1">
                                 <b:commandButton
+                                    pt:data-test-id="itemEdit:backward"
                                     icon-awesome="fa-backward"
                                     disabled="#{itemBean.state.startingHistoryItem}"
                                     action="#{itemBean.actionApplyNextNegativeDifference()}">
                                     <o:skipValidators />
                                 </b:commandButton>
                             </b:column>
-                            <b:column span="3">
+                            <b:column
+                                pt:data-test-id="itemEdit:changedText"
+                                span="3">
                                 <ui:fragment rendered="#{!itemBean.createMode}">
                                     <h:outputFormat
                                         value="#{msgs.itemEdit_itemEditPanel_changed}"
                                         rendered="#{!itemBean.state.startingHistoryItem}">
-                                        <o:param value="#{itemBean.state.changeDate}"
-                                                 converter="org.ocpsoft.PrettyTimeConverter" />
+                                        <o:param
+                                            value="#{itemBean.state.changeDate}"
+                                            converter="org.ocpsoft.PrettyTimeConverter" />
                                         <o:param value="#{nwc:formatDateWithTimezone(itemBean.state.changeDate)}" />
                                     </h:outputFormat>
                                     <h:outputFormat
                                         value="#{msgs.itemEdit_itemEditPanel_created}"
                                         rendered="#{itemBean.state.startingHistoryItem}">
-                                        <o:param value="#{itemBean.state.originalItem.cTime}"
-                                                 converter="org.ocpsoft.PrettyTimeConverter" />
+                                        <o:param
+                                            value="#{itemBean.state.originalItem.cTime}"
+                                            converter="org.ocpsoft.PrettyTimeConverter" />
                                         <o:param value="#{nwc:formatDateWithTimezone(itemBean.state.originalItem.cTime)}" />
                                     </h:outputFormat>
                                 </ui:fragment>
                             </b:column>
                             <b:column span="1">
                                 <b:commandButton
+                                    pt:data-test-id="itemEdit:forward"
                                     icon-awesome="fa-forward"
                                     disabled="#{itemBean.state.lastHistoryItem}"
                                     action="#{itemBean.actionApplyNextPositiveDifference()}">
                                     <o:skipValidators />
                                 </b:commandButton>
                             </b:column>
-                            <b:column  span="1">
+                            <b:column span="1">
                                 <b:commandButton
+                                    pt:data-test-id="itemEdit:cancel"
                                     immediate="true"
                                     action="#{itemBean.actionCancel()}"
-                                    value="#{msgs.Cancel}"/>
+                                    value="#{msgs.Cancel}" />
                             </b:column>
                             <b:column span="1">
                                 <b:commandButton
+                                    pt:data-test-id="itemEdit:save"
                                     value="#{msgs.itemEdit_itemEditPanel_save}"
                                     disabled="#{itemBean.inDeactivatedMode}"
                                     action="#{itemBean.actionSave()}" />
@@ -91,18 +100,23 @@
                         </b:row>
                     </b:container>
                 </b:panel>
-                <b:messages />
+                <b:messages pt:data-test-id="itemEdit:errorMessages" />
                 <p:tabView
                     id="itemTabViewId"
                     styleClass="itemEditTabView">
-                    <p:tab title="#{msgs.itemEdit_itemPanel_title_basicInformation}">
+                    <p:tab
+                        pt:data-test-id="itemEdit:basicInformationTab"
+                        title="#{msgs.itemEdit_itemPanel_title_basicInformation}">
                         <b:container>
 
                             <!-- Amount and purity -->
                             <b:row>
-                                <b:column span="2" offset="2">
+                                <b:column
+                                    span="2"
+                                    offset="2">
                                     <b:inputText
                                         id="itemAmountId"
+                                        pt:data-test-id="basicInformationTab:amount"
                                         value="#{itemBean.state.editedItem.amount}"
                                         disabled="#{itemBean.inDeactivatedMode}"
                                         label="#{msgs.itemEdit_itemPanel_amount}"
@@ -116,9 +130,11 @@
                                     </b:inputText>
                                 </b:column>
                                 <b:column span="2">
-                                    <!-- See https://github.com/ipb-halle/CRIMSy/issues/184 for implementation notes. -->
+                                    <!-- See https://github.com/ipb-halle/CRIMSy/issues/184#issuecomment-1129921090
+                                         for implementation notes. -->
                                     <b:selectOneMenu
                                         id="amountUnitId"
+                                        pt:data-test-id="basicInformationTab:amountUnit"
                                         label="#{msgs.itemEdit_itemPanel_amount_unit}"
                                         value="#{itemBean.state.editedItem.unit}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
@@ -134,9 +150,10 @@
                                                 pt:quality="#{unit.quality}" />
                                         </c:forEach>
                                     </b:selectOneMenu>
-                                </b:column> 
+                                </b:column>
                                 <b:column span="3">
                                     <b:selectOneMenu
+                                        pt:data-test-id="basicInformationTab:purity"
                                         label="#{msgs.itemEdit_itemPanel_amount_purity}"
                                         value="#{itemBean.state.editedItem.purity}"
                                         disabled="#{itemBean.inDeactivatedMode}">
@@ -147,8 +164,11 @@
 
                             <!-- Bound (optional) -->
                             <b:row>
-                                <b:column span="2" styleClass="boldSelectBooleanCheckboxCaption">
+                                <b:column
+                                    span="2"
+                                    styleClass="boldSelectBooleanCheckboxCaption">
                                     <b:selectBooleanCheckbox
+                                        pt:data-test-id="basicInformationTab:directContainer"
                                         value="#{itemBean.directContainer}"
                                         caption="#{msgs.itemEdit_itemPanel_directContainer}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
@@ -160,6 +180,7 @@
                                 <b:column span="2" styleClass="directContainerClass">
                                     <b:inputText
                                         id="boundContainerSizeId"
+                                        pt:data-test-id="basicInformationTab:directContainerSize"
                                         rendered="#{itemBean.directContainer}"
                                         value="#{itemBean.state.editedItem.containerSize}"
                                         required="true"
@@ -182,34 +203,41 @@
                                         message="#{msgs.itemEdit_itemPanel_validationError_amount_greaterThan_containerSize}" />
                                 </b:column>
                                 <script>$(document).ready(function() { updateBoundContainerUnit(); });</script>
-                                <b:column span="2" styleClass="directContainerClass">
+                                <b:column
+                                    span="2"
+                                    styleClass="directContainerClass">
                                     <b:inputText
                                         id="boundContainerUnitId"
+                                        pt:data-test-id="basicInformationTab:directContainerUnit"
                                         rendered="#{itemBean.directContainer}"
                                         disabled="true"
                                         label="#{msgs.itemEdit_itemPanel_container_unit}"
                                         value="#{itemBean.state.editedItem.unit.unit}" />
                                 </b:column>
-                                <b:column span="3" styleClass="directContainerClass">
+                                <b:column
+                                    span="3"
+                                    styleClass="directContainerClass">
                                     <b:selectOneMenu
+                                        pt:data-test-id="basicInformationTab:directContainerType"
                                         rendered="#{itemBean.directContainer}"
                                         label="#{msgs.itemEdit_itemPanel_container_type}"
                                         value="#{itemBean.state.editedItem.containerType}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
-                                        <f:selectItems 
+                                        <f:selectItems
                                             value="#{itemBean.availableContainerTypes}"
                                             var ="ct"
-                                            itemLabel="#{ct.getLocalizedName()}"/>
+                                            itemLabel="#{ct.getLocalizedName()}" />
                                     </b:selectOneMenu>
-                                </b:column> 
+                                </b:column>
                             </b:row>
 
                             <!-- Solvent (optional) -->
                             <b:row styleClass="solventClass">
-                                <b:column 
+                                <b:column
                                     span="2"
                                     styleClass="boldSelectBooleanCheckboxCaption">
                                     <b:selectBooleanCheckbox
+                                        pt:data-test-id="basicInformationTab:solved"
                                         caption="#{msgs.itemEdit_itemPanel_solvent}"
                                         ajax="true"
                                         process="@this"
@@ -223,6 +251,7 @@
                                     rendered="#{itemBean.isSolventRowVisisble()}">
                                     <b:inputText
                                         id="concentrationId"
+                                        pt:data-test-id="basicInformationTab:concentration"
                                         label="#{msgs.itemEdit_itemPanel_concentration}"
                                         value="#{itemBean.state.editedItem.concentration}"
                                         disabled="#{itemBean.inDeactivatedMode}"
@@ -239,6 +268,7 @@
                                     span="2"
                                     rendered="#{itemBean.isSolventRowVisisble()}">
                                     <b:selectOneMenu
+                                        pt:data-test-id="basicInformationTab:concentrationUnit"
                                         label="#{msgs.itemEdit_itemPanel_concentration_unit}"
                                         value="#{itemBean.state.editedItem.concentrationUnit}"
                                         ajax="true"
@@ -251,18 +281,19 @@
                                             var="unit"
                                             itemLabel="#{unit.unit}" />
                                     </b:selectOneMenu>
-                                </b:column> 
+                                </b:column>
                                 <b:column
                                     span="3"
                                     rendered="#{itemBean.isSolventRowVisisble()}">
                                     <b:selectOneMenu
+                                        pt:data-test-id="basicInformationTab:solvent"
                                         label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
                                         value="#{itemBean.state.editedItem.solvent}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
-                                        <f:selectItems 
+                                        <f:selectItems
                                             value="#{itemBean.availableSolvents}"
                                             var="s"
-                                            itemLabel="#{s.getLocalizedName()}"/>
+                                            itemLabel="#{s.getLocalizedName()}" />
                                     </b:selectOneMenu>
                                 </b:column>
                             </b:row>
@@ -273,6 +304,7 @@
                                     span="2"
                                     styleClass="boldSelectBooleanCheckboxCaption">
                                     <b:selectBooleanCheckbox
+                                        pt:data-test-id="basicInformationTab:customLabel"
                                         ajax="true"
                                         caption="#{msgs.itemEdit_itemPanel_label_customLabel}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
@@ -283,6 +315,7 @@
                                     span="2" 
                                     styleClass="customLabelText">
                                     <b:inputText
+                                        pt:data-test-id="basicInformationTab:label"
                                         label="#{msgs.itemEdit_itemPanel_label}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
                                         rendered="#{itemBean.isLabelVisible()}"
@@ -296,6 +329,7 @@
                             <b:row>
                                 <b:column span="9">
                                     <b:inputTextarea
+                                        pt:data-test-id="basicInformationTab:description"
                                         label="#{msgs.itemEdit_itemPanel_description}"
                                         value="#{itemBean.state.editedItem.description}"
                                         placeholder="#{msgs.itemEdit_itemPanel_description_placeholder}"
@@ -307,7 +341,9 @@
                         </b:container>
                     </p:tab>
                     <!-- Project -->
-                    <p:tab title="#{msgs.itemEdit_itemPanel_title_project}">
+                    <p:tab
+                        pt:data-test-id="itemEdit:projectTab"
+                        title="#{msgs.itemEdit_itemPanel_title_project}">
                         <o:massAttribute name="disabled" value="#{itemBean.inDeactivatedMode}">
                             <b:container>
                                 <b:row>
@@ -315,9 +351,10 @@
                                         span="4"
                                         styleClass="rightLabeledCbxVendor">
                                         <b:selectOneMenu
+                                            pt:data-test-id="projectTab:project"
                                             label="#{msgs.itemEdit_projectPanel_name}"
                                             value="#{itemBean.state.editedItem.project}">
-                                            <f:selectItems 
+                                            <f:selectItems
                                                 value="#{itemBean.getProjects()}"
                                                 var="p"
                                                 itemLabel="#{p.toString()}"/>
@@ -328,17 +365,22 @@
                         </o:massAttribute>
                     </p:tab>
                     <!-- Container location -->
-                    <p:tab title="#{msgs.itemEdit_itemPanel_title_location}">
+                    <p:tab
+                        pt:data-test-id="itemEdit:locationTab"
+                        title="#{msgs.itemEdit_itemPanel_title_location}">
                         <crimsy:containerSelectionAndInfos
                             containerController="#{itemBean.containerController}"
                             historyMode="#{itemBean.inDeactivatedMode}" />
                     </p:tab>
-                    <p:tab title="Print">
+                    <p:tab
+                        pt:data-test-id="itemEdit:printTab"
+                        title="Print">
                         <b:container>
                             <b:row>
-                                <crimsy:labelPrinting id="labelPrintUI" 
-                                                      rendered="#{itemBean.labelPrintingEnabled}" 
-                                                      printbean="#{itemBean.printBean}" />
+                                <crimsy:labelPrinting
+                                    id="labelPrintUI" 
+                                    rendered="#{itemBean.labelPrintingEnabled}" 
+                                    printbean="#{itemBean.printBean}" />
                             </b:row>
                         </b:container>
                     </p:tab>

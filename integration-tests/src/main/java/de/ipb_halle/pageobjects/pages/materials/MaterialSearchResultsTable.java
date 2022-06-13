@@ -25,6 +25,7 @@ import com.codeborne.selenide.SelenideElement;
 import de.ipb_halle.pageobjects.components.PrimeFacesTooltip;
 import de.ipb_halle.pageobjects.components.table.DataTable;
 import de.ipb_halle.pageobjects.pages.composite.acobjectmodal.ACObjectModalPage;
+import de.ipb_halle.pageobjects.pages.items.ItemEditPage;
 
 /**
  * Page object for the search results table in
@@ -58,10 +59,10 @@ public class MaterialSearchResultsTable extends DataTable<MaterialSearchResultsT
         return page(MaterialEditPage.class);
     }
 
-//    public ItemEditPage createItem(int rowIndex) {
-//        getCell(3, rowIndex).$(CREATE_ITEM_BUTTON).click();
-//        return page(ItemEditPage.class);
-//    }
+    public ItemEditPage createItem(int rowIndex) {
+        getCell(3, rowIndex).$(CREATE_ITEM_BUTTON).click();
+        return page(ItemEditPage.class);
+    }
 
     public ACObjectModalPage changePermissions(int rowIndex) {
         getCell(3, rowIndex).$(CHANGE_PERMISSIONS_BUTTON).click();

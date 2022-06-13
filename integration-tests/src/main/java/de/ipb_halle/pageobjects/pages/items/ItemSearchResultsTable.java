@@ -53,10 +53,10 @@ public class ItemSearchResultsTable extends DataTable<ItemSearchResultsTable> {
         return this;
     }
 
-//    public ItemEditPage editItem(int rowIndex) {
-//        getCell(7, rowIndex).$(EDIT_ITEM_BUTTON).click();
-//        return page(ItemEditPage.class);
-//    }
+    public ItemEditPage editItem(int rowIndex) {
+        getCell(7, rowIndex).$(EDIT_ITEM_BUTTON).click();
+        return page(ItemEditPage.class);
+    }
 
     public ACObjectModalPage changePermissions(int rowIndex) {
         getCell(7, rowIndex).$(CHANGE_PERMISSIONS_BUTTON).click();
