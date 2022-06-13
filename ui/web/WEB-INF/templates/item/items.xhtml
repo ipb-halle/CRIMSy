@@ -25,6 +25,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:p="http://primefaces.org/ui"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
@@ -33,10 +34,9 @@
         <crimsy:acobjectModal
             acobjectController="#{itemOverviewBean.acObjectController}"
             groupsAgent="#{groupAgent}"
-            updateTargetClass="itemOverviewContainer"/>
-        <b:form 
-            id="itemForm">
-            <b:container 
+            updateTargetClass="itemOverviewContainer" />
+        <b:form id="itemForm">
+            <b:container
                 id="itemOverviewContainerId"
                 styleClass="itemOverviewContainer">
                 <b:row>
@@ -44,119 +44,124 @@
                         <b:container>
                             <b:row>
                                 <b:column>
-                                    <h:outputText value="#{msgs.itemOverview_searchFilter_title}"
-                                                  styleClass="searchFilterHeader"/>
+                                    <h:outputText
+                                        value="#{msgs.itemOverview_searchFilter_title}"
+                                        styleClass="searchFilterHeader" />
                                 </b:column>
                             </b:row>    
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="#{msgs.itemOverview_searchFilter_materialName}"
-                                                  />
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_materialName}" />
                                 </b:column>
                             </b:row>
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.materialName}"
-                                                    maxResults="10"
-                                                    completeMethod="#{itemOverviewBean.getSimilarMaterialNames}"
-                                                    styleClass="itemFilterInputfield"/>
+                                    <p:autoComplete
+                                        pt:data-test-id="itemSearchMask:materialName"
+                                        value="#{itemOverviewBean.searchMaskValues.materialName}"
+                                        maxResults="10"
+                                        completeMethod="#{itemOverviewBean.getSimilarMaterialNames}"
+                                        styleClass="itemFilterInputfield" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="#{msgs.itemOverview_searchFilter_label}"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_label}" />
                                 </b:column>
                             </b:row>
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <b:inputText
+                                        pt:data-test-id="itemSearchMask:label"
                                         value="#{itemOverviewBean.searchMaskValues.label}"
-                                        styleClass="itemFilterInputfield"/>
+                                        styleClass="itemFilterInputfield" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="#{msgs.itemOverview_searchFilter_user}"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_user}" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.userName}"
-                                                    maxResults="10"
-                                                    completeMethod="#{itemOverviewBean.getSimilarUserNames}"
-                                                    styleClass="itemFilterInputfield"/>
+                                    <p:autoComplete
+                                        pt:data-test-id="itemSearchMask:user"
+                                        value="#{itemOverviewBean.searchMaskValues.userName}"
+                                        maxResults="10"
+                                        completeMethod="#{itemOverviewBean.getSimilarUserNames}"
+                                        styleClass="itemFilterInputfield" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="#{msgs.itemOverview_searchFilter_project}"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_project}" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.projectName}"
-                                                    maxResults="10"
-                                                    completeMethod="#{itemOverviewBean.getSimilarProjectNames}"
-                                                    styleClass="itemFilterInputfield"/>
+                                    <p:autoComplete
+                                        pt:data-test-id="itemSearchMask:project"
+                                        value="#{itemOverviewBean.searchMaskValues.projectName}"
+                                        maxResults="10"
+                                        completeMethod="#{itemOverviewBean.getSimilarProjectNames}"
+                                        styleClass="itemFilterInputfield" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="#{msgs.itemOverview_searchFilter_location}"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_location}" />
                                 </b:column>
                             </b:row>  
                             <b:row
                                 styleClass="itemFilterRow">  
                                 <b:column span="2">
-                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.location}"
-                                                    maxResults="10"
-                                                    forceSelection="true"
-                                                    completeMethod="#{itemOverviewBean.getSimilarContainerNames}"
-                                                    styleClass="itemFilterInputfield"/>
+                                    <p:autoComplete
+                                        pt:data-test-id="itemSearchMask:location"
+                                        value="#{itemOverviewBean.searchMaskValues.location}"
+                                        maxResults="10"
+                                        forceSelection="true"
+                                        completeMethod="#{itemOverviewBean.getSimilarContainerNames}"
+                                        styleClass="itemFilterInputfield" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="#{msgs.itemOverview_searchFilter_remarks}"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_remarks}" />
                                 </b:column>
                             </b:row>
-                            <b:row
-                                styleClass="itemFilterRow">
+                            <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <b:inputText value="#{itemOverviewBean.searchMaskValues.description}"
-                                                 styleClass="itemFilterInputfield"/>
+                                    <b:inputText
+                                        pt:data-test-id="itemSearchMask:description"
+                                        value="#{itemOverviewBean.searchMaskValues.description}"
+                                        styleClass="itemFilterInputfield" />
                                 </b:column>
                             </b:row>
                             <b:row>
                                 <b:column
-                                    span="1" 
+                                    span="1"
                                     styleClass="itemFilterButtonColumn">
-                                    <b:commandButton 
+                                    <b:commandButton
+                                        pt:data-test-id="itemSearchMask:clear"
                                         styleClass="itemFilterButton"
                                         value="#{msgs.itemOverview_searchFilter_clear}"
                                         ajax="true"
                                         update="itemForm"
-                                        onclick="ajax:itemOverviewBean.actionClearSearchFilter();"/>
+                                        onclick="ajax:itemOverviewBean.actionClearSearchFilter();" />
                                 </b:column>
                                 <b:column
                                     span="1"
                                     styleClass="itemFilterButtonColumn itemFilterButtonRight">
-                                    <b:commandButton 
+                                    <b:commandButton
+                                        pt:data-test-id="itemSearchMask:search"
                                         styleClass="itemFilterButton"
                                         value="#{msgs.itemOverview_searchFilter_search}"
                                         update="itemForm"
                                         ajax="true"
-                                        onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
+                                        onclick="ajax:itemOverviewBean.actionApplySearchFilter();" />
                                 </b:column>
                             </b:row>
 
@@ -172,6 +177,7 @@
                             <b:row styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <b:selectOneMenu
+                                        pt:data-test-id="itemOverview:reportSelection"
                                         value="#{itemOverviewBean.selectedReport}"
                                         styleClass="itemFilterInputfield">
                                         <f:selectItems
@@ -183,9 +189,10 @@
                             </b:row>
                             <b:row>
                                 <b:column
-                                    span="1" 
+                                    span="1"
                                     styleClass="itemFilterButtonColumn">
                                     <b:selectOneMenu
+                                        pt:data-test-id="itemOverview:reportType"
                                         value="#{itemOverviewBean.selectedReportType}"
                                         styleClass="itemFilterButton">
                                         <f:selectItems value="#{itemOverviewBean.reportTypes}" />
@@ -195,6 +202,7 @@
                                     span="1"
                                     styleClass="itemFilterButtonColumn itemFilterButtonRight">
                                     <b:commandButton
+                                        pt:data-test-id="itemOverview:createReport"
                                         ajax="true"
                                         process="@form"
                                         update="growlMsg"
@@ -205,43 +213,50 @@
                             </b:row>
                         </b:container>
                     </b:column>    
-                    <b:column span="10">  
+                    <b:column span="10">
                         <b:container styleClass="itemOverviewTableContainer">
                             <b:row>
-                                <b:column span="12"
-                                          styleClass="itemDataTable">
+                                <b:column
+                                    span="12"
+                                    styleClass="itemDataTable">
                                     <b:dataTable
-                                        paginated="false"
+                                        pt:data-test-id="itemOverview:resultsTable"
                                         value="#{itemOverviewBean.items}"
-                                        searching="false"
                                         var="item"
+                                        paginated="false"
+                                        searching="false"
                                         saveState="false">
-                                        <b:dataTableColumn
-                                            label="Label">
+                                        <b:dataTableColumn label="Label">
                                             <h:outputText
                                                 id="itemLabel"
                                                 escape="false"
                                                 value="#{item.label}"
                                                 title="ID: #{item.id}" />
                                         </b:dataTableColumn>
-                                        <b:dataTableColumn
-                                            label="#{msgs.itemOverview_tableheader_material}">
-                                            <h:panelGroup id="materialNames">
-                                                <ui:repeat value="#{item.material.names}"
-                                                           size="#{nwc:min(item.material.names.size(), 3)}"
-                                                           var="name"
-                                                           varStatus="namesStatus">
+                                        <b:dataTableColumn label="#{msgs.itemOverview_tableheader_material}">
+                                            <h:panelGroup
+                                                id="materialNames"
+                                                pt:data-test-id="itemOverview:resultsTable:materialNames">
+                                                <ui:repeat
+                                                    value="#{item.material.names}"
+                                                    size="#{nwc:min(item.material.names.size(), 3)}"
+                                                    var="name"
+                                                    varStatus="namesStatus">
                                                     <h:outputText value="#{name.value}" />
                                                     <ui:fragment rendered="#{!namesStatus.last}">
                                                         <br />
                                                     </ui:fragment>
                                                 </ui:repeat>
                                             </h:panelGroup>
-                                            <p:tooltip for="materialNames" position="right">
-                                                <ui:repeat value="#{item.material.names}"
-                                                           size="#{nwc:min(item.material.names.size(), 10)}"
-                                                           var="name"
-                                                           varStatus="namesStatus">
+                                            <p:tooltip
+                                                pt:data-test-id="itemOverview:resultsTable:materialNamesTooltip"
+                                                for="materialNames"
+                                                position="right">
+                                                <ui:repeat
+                                                    value="#{item.material.names}"
+                                                    size="#{nwc:min(item.material.names.size(), 10)}"
+                                                    var="name"
+                                                    varStatus="namesStatus">
                                                     <h:outputText value="#{name.value}" />
                                                     <ui:fragment rendered="#{!namesStatus.last}">
                                                         <br />
@@ -252,62 +267,64 @@
                                                 </ui:fragment>
                                             </p:tooltip>
                                         </b:dataTableColumn>
-                                        <b:dataTableColumn
-                                            label="#{msgs.itemOverview_tableheader_projectOwner}">
+                                        <b:dataTableColumn label="#{msgs.itemOverview_tableheader_projectOwner}">
                                             <h:outputFormat value="{0}/{1}">
                                                 <f:param value="#{item.project}" />
                                                 <f:param value="#{item.owner.name}" />
                                             </h:outputFormat>
                                         </b:dataTableColumn>
-                                        <b:dataTableColumn
-                                            label="#{msgs.itemOverview_tableheader_amount}">
+                                        <b:dataTableColumn label="#{msgs.itemOverview_tableheader_amount}">
                                             <h:outputFormat value="{0} {1}">
                                                 <f:param value="#{nwc:formatAmount(item.amount)}" />
                                                 <f:param value="#{item.unit.unit}" />
                                             </h:outputFormat>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
-                                            label="#{msgs.itemOverview_tableheader_location}"
-                                            value="#{item.nestedLocation}">
+                                            value="#{item.nestedLocation}"
+                                            label="#{msgs.itemOverview_tableheader_location}">
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
-                                            label="#{msgs.itemOverview_tableheader_remarks}"
-                                            value="#{item.description}">
+                                            value="#{item.description}"
+                                            label="#{msgs.itemOverview_tableheader_remarks}">
                                         </b:dataTableColumn>
-                                        <b:dataTableColumn
-                                            label="#{msgs.itemOverview_tableheader_dates}">
+                                        <b:dataTableColumn label="#{msgs.itemOverview_tableheader_dates}">
                                             <h:panelGrid columns="3">
                                                 <h:outputText value="#{msgs.itemOverview_created}" />
                                                 <h:outputText value="&#160;" />
                                                 <h:outputText value="#{nwc:formatDateWithTimezone(item.cTime)}" />
-                                                <h:outputText value="#{msgs.itemOverview_modified}"
-                                                              rendered="#{!item.history.isEmpty()}" />
+                                                <h:outputText
+                                                    value="#{msgs.itemOverview_modified}"
+                                                    rendered="#{!item.history.isEmpty()}" />
                                                 <h:outputText value="&#160;" />
-                                                <h:outputText value="#{nwc:formatDateWithTimezone(item.history.lastKey())}"
-                                                              rendered="#{!item.history.isEmpty()}" />
+                                                <h:outputText
+                                                    value="#{nwc:formatDateWithTimezone(item.history.lastKey())}"
+                                                    rendered="#{!item.history.isEmpty()}" />
                                             </h:panelGrid>
                                         </b:dataTableColumn>
-                                        <b:dataTableColumn
-                                            label="#{msgs.materialOverview_tableheader_actions}">
-                                            <b:commandButton style="padding: 0 4px;"
-                                                             icon="pencil"
-                                                             look="link"
-                                                             type="submit"
-                                                             ajax="false"
-                                                             action="#{itemOverviewBean.actionStartItemEdit(item)}"
-                                                             />
-                                            <b:commandButton style="padding: 0 4px;"
-                                                             icon="glyphicon glyphicon-user"
-                                                             look="link"
-                                                             ajax="true"
-                                                             process="@this"
-                                                             tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                                                             update="@(.acoEditModal)"
-                                                             type="button"
-                                                             onclick="ajax:itemOverviewBean.actionStartAclChange(item)"
-                                                             oncomplete="PF('dlgAcl').show();"
-                                                             disabled="#{itemOverviewBean.isEditDeactivated(item)}"/>
+                                        <b:dataTableColumn label="#{msgs.materialOverview_tableheader_actions}">
                                             <b:commandButton
+                                                pt:data-test-id="itemOverview:resultsTable:editItem"
+                                                style="padding: 0 4px;"
+                                                icon="pencil"
+                                                look="link"
+                                                type="submit"
+                                                ajax="false"
+                                                action="#{itemOverviewBean.actionStartItemEdit(item)}" />
+                                            <b:commandButton
+                                                pt:data-test-id="itemOverview:resultsTable:changePermissions"
+                                                style="padding: 0 4px;"
+                                                icon="glyphicon glyphicon-user"
+                                                look="link"
+                                                ajax="true"
+                                                process="@this"
+                                                update="@(.acoEditModal)"
+                                                type="button"
+                                                onclick="ajax:itemOverviewBean.actionStartAclChange(item)"
+                                                oncomplete="PF('dlgAcl').show();"
+                                                disabled="#{itemOverviewBean.isEditDeactivated(item)}"
+                                                tooltip="#{msgs.collMgr_tooltip_changeUserPermission}" />
+                                            <b:commandButton
+                                                pt:data-test-id="itemOverview:resultsTable:createSolution"
                                                 style="padding: 0 4px;"
                                                 iconAwesome="fa-flask"
                                                 look="link"
@@ -316,6 +333,7 @@
                                                 action="#{createSolutionBean.actionStartCreateSolution(item)}"
                                                 tooltip="#{msgs.itemOverview_tooltip_createSolution}" />
                                             <b:commandButton
+                                                pt:data-test-id="itemOverview:resultsTable:createAliquot"
                                                 style="padding: 0 4px;"
                                                 iconAwesome="fa-eyedropper"
                                                 look="link"
@@ -325,49 +343,61 @@
                                                 tooltip="#{msgs.itemOverview_tooltip_createAliquot}" />
                                         </b:dataTableColumn>
                                     </b:dataTable>
-                                </b:column> 
+                                </b:column>
                             </b:row>
                             <b:row>
-                                <b:column span="1" styleClass="itemNavigationColumn"> 
-                                    <b:commandButton 
+                                <b:column
+                                    span="1"
+                                    styleClass="itemNavigationColumn"> 
+                                    <b:commandButton
+                                        pt:data-test-id="itemOverview:firstPageButton"
                                         styleClass="itemNavigationButton"
                                         disabled="#{itemOverviewBean.isBackDeactivated()}"
                                         onclick="ajax:itemOverviewBean.actionFirstItems();"
                                         icon-awesome="fa-fast-backward"
                                         ajax="true"
-                                        update="itemForm"
-                                        />
+                                        update="itemForm" />
                                 </b:column>
-                                <b:column span="1" styleClass="itemNavigationColumn"> 
-                                    <b:commandButton 
+                                <b:column
+                                    span="1"
+                                    styleClass="itemNavigationColumn"> 
+                                    <b:commandButton
+                                        pt:data-test-id="itemOverview:prevPageButton"
                                         styleClass="itemNavigationButton"
                                         disabled="#{itemOverviewBean.isBackDeactivated()}"
                                         onclick="ajax:itemOverviewBean.actionLastItems();"
                                         ajax="true"
                                         update="itemForm"
-                                        icon-awesome="fa-backward"/>
-                                </b:column> 
-                                <b:column span="1" styleClass="itemNavigationColumn"> 
-                                    <b:commandButton 
+                                        icon-awesome="fa-backward" />
+                                </b:column>
+                                <b:column
+                                    span="1"
+                                    styleClass="itemNavigationColumn"> 
+                                    <b:commandButton
+                                        pt:data-test-id="itemOverview:nextPageButton"
                                         styleClass="itemNavigationButton"
                                         disabled="#{itemOverviewBean.isForwardDeactivated()}"
                                         onclick="ajax:itemOverviewBean.actionNextItems();"
                                         ajax="true"
                                         update="itemForm"
-                                        icon-awesome="fa-forward"
-                                        />
-                                </b:column> 
-                                <b:column span="1" styleClass="itemNavigationColumn"> 
-                                    <b:commandButton 
+                                        icon-awesome="fa-forward" />
+                                </b:column>
+                                <b:column
+                                    span="1"
+                                    styleClass="itemNavigationColumn"> 
+                                    <b:commandButton
+                                        pt:data-test-id="itemOverview:lastPageButton"
                                         styleClass="itemNavigationButton"
                                         disabled="#{itemOverviewBean.isForwardDeactivated()}"
                                         onclick="ajax:itemOverviewBean.actionEndItems();"
                                         ajax="true"
                                         update="itemForm"
-                                        icon-awesome="fa-fast-forward"
-                                        />
-                                </b:column> 
-                                <b:column span="2" offset="1"> 
+                                        icon-awesome="fa-fast-forward" />
+                                </b:column>
+                                <b:column
+                                    pt:data-test-id="itemOverview:paginationInfoText"
+                                    span="2"
+                                    offset="1">
                                     <h:outputFormat
                                         value="#{msgs.itemOverview_itemsShownFormat}"
                                         rendered="#{itemOverviewBean.itemAmount gt 0}">
@@ -381,7 +411,7 @@
                                 </b:column> 
                             </b:row>
                         </b:container>
-                    </b:column> 
+                    </b:column>
                 </b:row>
             </b:container>
         </b:form>
