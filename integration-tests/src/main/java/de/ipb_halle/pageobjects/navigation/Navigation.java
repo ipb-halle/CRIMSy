@@ -44,6 +44,7 @@ public enum Navigation {
     EXPERIMENTS(LIMS, "navigation:experiments"),
     CONTAINERS_OVERVIEW(LIMS, "navigation:containers"),
     MY_ACCOUNT(SETTINGS, "navigation:myAccount"),
+    MY_REPORTS(SETTINGS, "navigation:myReports"),
     USER_MANAGEMENT(SETTINGS, "navigation:userManagement"),
     GROUP_MANAGEMENT(SETTINGS, "navigation:groupManagement"),
     LDAP_CONNECTION(SETTINGS, "navigation:ldapSettings"),

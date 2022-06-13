@@ -57,6 +57,7 @@
                                     span="3">
                                     <b:selectOneMenu
                                         id="reportSelectionId"
+                                        pt:data-test-id="materialOverview:reportSelection"
                                         value="#{materialOverviewBean.selectedReport}">
                                         <f:selectItems
                                             value="#{materialOverviewBean.availableReports}"
@@ -66,6 +67,7 @@
                                 </b:column>
                                 <b:column span="2">
                                     <b:commandButton
+                                        pt:data-test-id="materialOverview:createReport"
                                         ajax="true"
                                         process="reportSelectionId materialSearchMaskId"
                                         update="growlMsg"

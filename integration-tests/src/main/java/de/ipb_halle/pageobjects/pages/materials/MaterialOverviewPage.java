@@ -35,6 +35,8 @@ import de.ipb_halle.pageobjects.pages.composite.MaterialSearchMaskPage;
  */
 public class MaterialOverviewPage extends NavigablePage<MaterialOverviewPage> {
     private static final SelenideElement NEW_MATERIAL_BUTTON = $(testId("materialOverview:newMaterial"));
+    private static final SelenideElement REPORT_SELECTION = $(testId("select", "materialOverview:reportSelection"));
+    private static final SelenideElement CREATE_REPORT_BUTTON = $(testId("materialOverview:createReport"));
     private static final MaterialSearchResultsTable RESULTS_TABLE = new MaterialSearchResultsTable(
             "materialOverview:resultsTable");
     private static final SelenideElement FIRST_PAGE_BUTTON = $(testId("materialOverview:firstPageButton"));
@@ -66,6 +68,16 @@ public class MaterialOverviewPage extends NavigablePage<MaterialOverviewPage> {
         return page(MaterialEditPage.class);
     }
 
+    public MaterialOverviewPage selectReport(String report) {
+        REPORT_SELECTION.selectOption(report);
+        return this;
+    }
+
+    public MaterialOverviewPage createReport() {
+        CREATE_REPORT_BUTTON.click();
+        return this;
+    }
+
     public MaterialOverviewPage firstPage() {
         FIRST_PAGE_BUTTON.click();
         return this;
@@ -91,6 +103,10 @@ public class MaterialOverviewPage extends NavigablePage<MaterialOverviewPage> {
      */
     public MaterialSearchMaskPage getMaterialSearchMask() {
         return page(MaterialSearchMaskPage.class);
+    }
+
+    public SelenideElement getReportSelection() {
+        return REPORT_SELECTION;
     }
 
     public MaterialSearchResultsTable getResultsTable() {

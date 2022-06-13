@@ -25,6 +25,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:o="http://omnifaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:nwc="http://ipb-halle.de/nwc">
 <h:body>
     <ui:composition>
@@ -34,6 +35,7 @@
 
         <b:form>
             <b:commandButton
+                pt:data-test-id="myReports:refresh"
                 ajax="true"
                 process="@this"
                 update="reportingJobsTableId"
@@ -42,6 +44,7 @@
                 iconAwesome="refresh" />
             <b:dataTable
                 id="reportingJobsTableId"
+                pt:data-test-id="myReports:reportsTable"
                 value="#{reportingJobsBean.reportingJobs}"
                 var="jobWrapper"
                 saveState="false"
@@ -66,12 +69,14 @@
                     width="10%"
                     style="min-width:50px">
                     <b:commandButton
+                        pt:data-test-id="myReports:downloadReport"
                         action="#{reportingJobsBean.actionDownloadReport(jobWrapper)}"
                         rendered="#{jobWrapper.downloadable}"
                         style="padding: 0 4px;"
                         iconAwesome="download"
                         look="link" />
                     <b:commandButton
+                        pt:data-test-id="myReports:deleteReport"
                         ajax="true"
                         process="@this"
                         update="reportingJobsTableId"
