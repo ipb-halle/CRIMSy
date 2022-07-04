@@ -47,6 +47,8 @@ CREATE TABLE material_compositions(
     PRIMARY KEY (materialid, componentid)
 );
 
+INSERT INTO material_compositions (materialid, componentid) SELECT materialid, materialid FROM materials ON CONFLICT DO NOTHING;
+
 INSERT INTO materialdetailtypes(id,name) VALUES(7,'COMPOSITION');
 
 CREATE TABLE components_history(
