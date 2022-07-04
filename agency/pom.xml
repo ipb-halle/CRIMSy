@@ -34,7 +34,7 @@
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
   <!-- check Maven Central for latest versions! -->
-  <cxf.version>3.2.13</cxf.version>
+  <cxf.version>3.5.3</cxf.version>
  </properties>
 
  <!-- define (additional) repositories -->
@@ -198,19 +198,19 @@
   <dependency>
    <groupId>org.apache.cxf</groupId>
    <artifactId>cxf-core</artifactId>
-   <version>3.2.0</version>
+   <version>${cxf.version}</version>
   </dependency>
 
   <dependency>
    <groupId>org.apache.cxf</groupId>
    <artifactId>cxf-rt-rs-client</artifactId>
-   <version>3.2.0</version>
+   <version>${cxf.version}</version>
   </dependency>
 
   <dependency>
    <groupId>org.apache.cxf</groupId>
    <artifactId>cxf-rt-transports-http</artifactId>
-   <version>3.2.0</version>
+   <version>${cxf.version}</version>
   </dependency>
 
   <!-- needed on JDK 11: API, java.xml.bind module -->
