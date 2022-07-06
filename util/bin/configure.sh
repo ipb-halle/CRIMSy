@@ -300,7 +300,7 @@ function dialog_AUTO_UPDATE {
         case $? in
                 0)
                         LBAC_UPDATE_LEVEL=`cat $TMP_RESULT | head -1 | tr -d $'\n'`
-                        case "$LBAC_INIT_TYPE" in
+                        case "$LBAC_UPDATE_LEVEL" in
                             NONE|PATCH|MINOR|MAJOR)
                                     echo "LBAC_UPDATE_LEVEL=\"$LBAC_UPDATE_LEVEL\"" >> $TMP_CONFIG
                                     ;;
