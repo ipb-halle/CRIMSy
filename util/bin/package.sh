@@ -185,7 +185,7 @@ function copyFiles {
     cp -r util/etc/proxy_conf target/dist/etc
 
     if [ ! -r config/revision_info.cfg ] ; then error "Missing revision info file" ; fi
-    grep LATEST config/revision_info.cfg | tail -1 | cut -d';' -f1 > target/dist/etc/revision_info.cfg
+    grep STABLE config/revision_info.cfg | tail -1 | cut -d';' -f1 > target/dist/etc/revision_info.cfg
 
     sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh |\
     sed -e "s,CLOUDCONFIG_CLOUD_NAME,$LBAC_CLOUD," > target/dist/bin/configure.sh
