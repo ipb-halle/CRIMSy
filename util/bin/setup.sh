@@ -64,7 +64,7 @@ function getVersion {
             LBAC_VERSION=$MAJOR
             ;;
         MAJOR)
-            LBAC_VERSION=LATEST 
+            LBAC_VERSION=STABLE 
             ;;
         *)
             error "Undefined update level"

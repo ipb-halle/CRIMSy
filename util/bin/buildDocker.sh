@@ -10,8 +10,8 @@ function buildFunc {
         echo "Building image '$IMAGE'"
         docker build $PULL_FLAG -t $IMAGE .
         pushImage  $IMAGE_TAG
-        if echo $RELEASE_FLAGS | grep -q LATEST  ; then
-            pushImage LATEST
+        if echo $RELEASE_FLAGS | grep -q STABLE  ; then
+            pushImage STABLE
         fi
         if echo $RELEASE_FLAGS | grep -q MINOR ; then
             pushImage $MAJOR.$MINOR
@@ -71,18 +71,18 @@ ${BOLD}DESCRIPTION${REGULAR}
     A file containing the stages label, branches and respective flags 
     for tagging the images of a respective branch. Stages can be 
     filtered (used by testSetup.sh). Flags can be "MINOR", "MAJOR" 
-    and "LATEST" to to tag containers accordingly. 
+    and "STABLE" to to tag containers accordingly. 
 
       Format: 
         STAGE;BRANCH;FLAG[,FLAG] 
 
       Example file: 
         stage1;production_3;MINOR
-        stage1;production_31;MAJOR,LATEST
+        stage1;production_31;MAJOR,STABLE
         stage1;testing;
         stage2;production_3;MINOR
         stage2;production_31;MINOR
-        stage2;testing;MAJOR,LATEST
+        stage2;testing;MAJOR,STABLE
 
 -h|--help
     Print this help text.
@@ -102,7 +102,7 @@ EOF
 }
 
 #
-# push image to registry; apply additional tags (e.g. "LATEST" 
+# push image to registry; apply additional tags (e.g. "STABLE" 
 # if supplied) 
 #
 # note: in test setup, the REGISTRY must be registered in 
@@ -144,7 +144,7 @@ function buildDocker {
         git stash pop || echo "git stash returned with an error: ignored"
     else 
         # just compile the current branch and tag it latest
-        RELEASE_FLAGS='LATEST,MINOR,MAJOR'
+        RELEASE_FLAGS='STABLE,MINOR,MAJOR'
         BRANCH=$CURRENT_BRANCH
         compile "$RELEASE_FLAGS"
         buildFunc

@@ -5,5 +5,5 @@
 # 
 # Execution stages are executed in alphabetical order
 #
-stage1;auto_update;MINOR,MAJOR,LATEST
-stage2;LBAC-60-CloudLIMS;MINOR,MAJOR,LATEST
+stage1;auto_update;MINOR,MAJOR,STABLE
+stage2;LBAC-60-CloudLIMS;MINOR,MAJOR,STABLE
