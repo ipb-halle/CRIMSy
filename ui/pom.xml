@@ -592,11 +592,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <version>2.2.11.RELEASE</version>
-        </dependency>
-        <dependency>
             <groupId>de.ipb_halle</groupId>
             <artifactId>tx</artifactId>
             <version>1.0</version>
