@@ -472,7 +472,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.3</version>
+            <version>42.4.1</version>
         </dependency>
         
         <!--hibernate support for postgres json, jsonb field types -->
@@ -591,11 +591,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <version>1.2.4.RELEASE</version>
-        </dependency>
         <dependency>
             <groupId>de.ipb_halle</groupId>
             <artifactId>tx</artifactId>
