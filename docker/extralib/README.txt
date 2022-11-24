@@ -16,4 +16,4 @@ javassist-3.27.0-GA.jar
 javax.persistence-api-2.2.jar
 jboss-logging-3.4.2.Final.jar
 myfaces-bundle-2.2.14.jar
-postgresql-42.4.1.jar
+postgresql-42.4.3.jar
