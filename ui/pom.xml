@@ -45,7 +45,7 @@
         <tomee.classifier>plus</tomee.classifier>
         <tomee.servlet-engine>7.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
-        <pentaho.version>9.2.0.0-SNAPSHOT</pentaho.version>
+        <pentaho.version>9.2.0.4-591</pentaho.version>
         
         <!-- Flag allowing one or more executions of the assembly plugin to be configured as skipped for a particular build.
         This makes the assembly plugin more controllable from profiles. -->
@@ -63,7 +63,8 @@
         <repository>
             <id>pentaho-releases</id>
             <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
-            <url>https://nexus.pentaho.org/content/groups/omni</url>
+            <!-- address no longer valid <url>https://nexus.pentaho.org/content/groups/omni</url> -->
+            <url>https://repo.orl.eng.hitachivantara.com/artifactory/pnt-mvn</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
         </repository>
