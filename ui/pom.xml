@@ -598,7 +598,7 @@
         </dependency>
 
         <dependency>
-            <groupId>de.ipb_halle</groupId>
+            <groupId>de.ipb-halle</groupId>
             <artifactId>tx</artifactId>
             <version>${project.version}</version>
             <exclusions>
