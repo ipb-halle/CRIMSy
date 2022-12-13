@@ -42,7 +42,9 @@ public abstract class AbstractPage<SELF extends AbstractPage<SELF>> {
 
     /*
      * BootsFaces does not support JSF passthrough attributes in growls at the
-     * moment. The CSS class is a workaround.
+     * moment, see https://github.com/TheCoder4eu/BootsFaces-OSP/issues/1172
+     * 
+     * The CSS class is a workaround.
      */
     private static final ElementsCollection GROWL_DIVS = $$(elementWithCssClasses("div", "growlMessages"));
 

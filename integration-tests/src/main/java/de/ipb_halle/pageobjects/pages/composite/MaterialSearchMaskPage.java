@@ -99,6 +99,8 @@ public class MaterialSearchMaskPage extends AbstractPage<MaterialSearchMaskPage>
      * materialSearchMask.xhtml. This is not problematic in applyModel(),
      * because fields can simply be left null and the input elements are not
      * interacted with.
+     *
+     * A better approach would be to use a fluent assertion instead of a getter.
      */
     public MaterialSearchMaskModel getModel() {
         return new MaterialSearchMaskModel()

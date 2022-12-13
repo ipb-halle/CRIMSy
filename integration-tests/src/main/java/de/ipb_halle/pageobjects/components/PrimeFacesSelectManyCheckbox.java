@@ -22,9 +22,6 @@ import static com.codeborne.selenide.Selenide.$;
 import static de.ipb_halle.pageobjects.util.Selectors.elementWithCssClasses;
 import static de.ipb_halle.pageobjects.util.Selectors.testId;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openqa.selenium.By;
 
 import com.codeborne.selenide.ElementsCollection;
@@ -55,19 +52,6 @@ public class PrimeFacesSelectManyCheckbox {
         return this;
     }
 
-//    public PrimeFacesSelectManyCheckbox clickCheckbox(String label) {
-//        clickableDivs.get(getLabelIndex(label)).click();
-//        return this;
-//    }
-
-//    private int getLabelIndex(String label) {
-//        int index = getLabels().indexOf(label);
-//        if (index == -1) {
-//            throw new RuntimeException("No such label: " + label);
-//        }
-//        return index;
-//    }
-
     /*
      * Getters
      */
@@ -90,14 +74,6 @@ public class PrimeFacesSelectManyCheckbox {
     public boolean isSelected(int index) {
         return selectInput(index).isSelected();
     }
-
-//    public List<String> getLabels() {
-//        List<String> textLabels = new ArrayList<>();
-//        for (SelenideElement element : labels) {
-//            textLabels.add(element.text());
-//        }
-//        return textLabels;
-//    }
 
     /*
      * Fluent assertions
