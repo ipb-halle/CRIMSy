@@ -1,5 +1,5 @@
 ![](https://github.com/ipb-halle/CRIMSy/workflows/Java%20CI%20with%20Maven/badge.svg)
-[![codecov](https://codecov.io/gh/ipb-halle/CRIMSy/branch/LBAC-60-CloudLIMS/graph/badge.svg)](https://codecov.io/gh/ipb-halle/CRIMSy)
+[![codecov](https://codecov.io/gh/ipb-halle/CRIMSy/branch/master/graph/badge.svg)](https://codecov.io/gh/ipb-halle/CRIMSy)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # CRIMSy

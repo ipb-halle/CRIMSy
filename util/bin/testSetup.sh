@@ -46,10 +46,10 @@ function compile {
         $LBAC_REPO/util/bin/buildDocker.sh \
             --branch-file "$BRANCH_FILE" \
             --stage-label $stage \
-            --test-registry `hostname -f`:5000
+            --registry `hostname -f`:5000
     else 
         echo "No stage selected, calling buildDocker.sh directly"
-        $LBAC_REPO/util/bin/buildDocker.sh --test-registry `hostname -f`:5000
+        $LBAC_REPO/util/bin/buildDocker.sh --registry `hostname -f`:5000
     fi
 }
 

@@ -66,6 +66,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class DocumentDownloadBeanTest extends TestBase {
+
     @Inject
     private NodeService nodeService;
 
@@ -204,6 +205,20 @@ public class DocumentDownloadBeanTest extends TestBase {
         webClientMock.setBehaviour(() -> IOUtils.toInputStream(content));
 
         bean.actionDownload(netObject);
+
+        assertArrayEquals(content.getBytes(), sendFileBeanMock.getContent());
+        assertEquals("test.pdf", sendFileBeanMock.getFilename());
+    }
+
+    @Test
+    public void test_actionDownload_local_successfulDownload_Document() throws IOException {
+        String content = "Hello World";
+        String path = createTempFile(content);
+        FileObject fileObject = fileEntityService.save(createFileObject(path));
+        Document doc = new NetObjectFactory().createDocument("public", localNode, "test.pdf");
+        doc.setCollection(readableCollection);
+        doc.setId(fileObject.getId());       
+        bean.actionDownloadDocument(doc);
 
         assertArrayEquals(content.getBytes(), sendFileBeanMock.getContent());
         assertEquals("test.pdf", sendFileBeanMock.getFilename());

@@ -10,8 +10,8 @@ function buildFunc {
         echo "Building image '$IMAGE'"
         docker build $PULL_FLAG -t $IMAGE .
         pushImage  $IMAGE_TAG
-        if echo $RELEASE_FLAGS | grep -q LATEST  ; then
-            pushImage LATEST
+        if echo $RELEASE_FLAGS | grep -q STABLE  ; then
+            pushImage STABLE
         fi
         if echo $RELEASE_FLAGS | grep -q MINOR ; then
             pushImage $MAJOR.$MINOR
@@ -60,7 +60,7 @@ ${BOLD}NAME${REGULAR}
 
 ${BOLD}SYNOPSIS${REGULAR}
     buildDocker.sh [-b|branch-file FILE] [-h|--help] [-p|--pull] 
-        [-s|--stage-label LABEL] [-t|--test_registry REGISTRY] 
+        [-s|--stage-label LABEL] [-r|--registry REGISTRY] 
 
 ${BOLD}DESCRIPTION${REGULAR}
     Compile CRIMSy source code, build Docker containers and push them
@@ -71,18 +71,18 @@ ${BOLD}DESCRIPTION${REGULAR}
     A file containing the stages label, branches and respective flags 
     for tagging the images of a respective branch. Stages can be 
     filtered (used by testSetup.sh). Flags can be "MINOR", "MAJOR" 
-    and "LATEST" to to tag containers accordingly. 
+    and "STABLE" to to tag containers accordingly. 
 
       Format: 
         STAGE;BRANCH;FLAG[,FLAG] 
 
       Example file: 
         stage1;production_3;MINOR
-        stage1;production_31;MAJOR,LATEST
+        stage1;production_31;MAJOR,STABLE
         stage1;testing;
         stage2;production_3;MINOR
         stage2;production_31;MINOR
-        stage2;testing;MAJOR,LATEST
+        stage2;testing;MAJOR,STABLE
 
 -h|--help
     Print this help text.
@@ -95,29 +95,29 @@ ${BOLD}DESCRIPTION${REGULAR}
     alphabetic order. The stage label is reproduced in the flag section of 
     the file config/revision_info.cfg.
 
--t|--test-registry REGISTRY
-    Instead of the official docker registry (hub.docker.com), the resulting 
-    Docker images will be pushed to the specified registry. 
+-r|--registry REGISTRY
+    Push the image to the specified registry (either an account at 
+    hub.docker.com or the specified private registry).
 EOF
 }
 
 #
-# push image to registry; apply additional tags (e.g. "LATEST" 
+# push image to registry; apply additional tags (e.g. "STABLE" 
 # if supplied) 
 #
-# note: in test setup, the TEST_REGISTRY must be registered in 
+# note: in test setup, the REGISTRY must be registered in 
 # "insecure-registries" in daemon.json 
 function pushImage {
     IMAGE_TAG=$1
     echo "pushImage $IMAGE_BASE --> $IMAGE_TAG"
-    if [ -z "$TEST_REGISTRY" ] ; then
+    if [ -z "$REGISTRY" ] ; then
         IMAGE_DST=$IMAGE_BASE:$IMAGE_TAG
         if [ $IMAGE_DST != $IMAGE ] ; then
             docker image tag $IMAGE $IMAGE_DST
         fi
         docker push $IMAGE_DST
     else
-        IMAGE_DST=$TEST_REGISTRY/$IMAGE_BASE:$IMAGE_TAG
+        IMAGE_DST=$REGISTRY/$IMAGE_BASE:$IMAGE_TAG
         if [ $IMAGE_DST != $IMAGE ] ; then
             docker image tag $IMAGE $IMAGE_DST
         fi
@@ -144,7 +144,7 @@ function buildDocker {
         git stash pop || echo "git stash returned with an error: ignored"
     else 
         # just compile the current branch and tag it latest
-        RELEASE_FLAGS='LATEST,MINOR,MAJOR'
+        RELEASE_FLAGS='STABLE,MINOR,MAJOR'
         BRANCH=$CURRENT_BRANCH
         compile "$RELEASE_FLAGS"
         buildFunc
@@ -160,9 +160,9 @@ cd $LBAC_REPO
 BRANCH_FILE=''
 PULL_FLAG=''
 STAGE_LABEL=''
-TEST_REGISTRY=''
+REGISTRY=''
 
-GETOPT=$(getopt -o 'b:hps:t:' --longoptions 'branch-file:,help,pull,stage-label:,test-registry:' -n 'buildDocker.sh' -- "$@")
+GETOPT=$(getopt -o 'b:hps:r:' --longoptions 'branch-file:,help,pull,stage-label:,registry:' -n 'buildDocker.sh' -- "$@")
 
 if [ $? -ne 0 ]; then
         echo 'Error in commandline evaluation. Terminating...' >&2
@@ -193,8 +193,8 @@ while true ; do
         shift 2
         continue
         ;;
-    '-t'|'--test-registry')
-        TEST_REGISTRY="$2"
+    '-r'|'--registry')
+        REGISTRY="$2"
         shift 2
         continue
         ;;
