@@ -84,8 +84,8 @@ public class MaterialValidationTest {
     @DisplayName("After trying to save a SEQUENCE without names and sequence type, there should be validation errors.")
     @Test
     public void test_saveSequence_withoutNames_and_withoutSequenceType() {
-        String expectedError = I18n.getUIMessage("materialCreation_error_EMPTY_MATERIAL_NAME", locale) + "\n"
-                + I18n.getUIMessage("materialCreation_error_NO_SEQUENCETYPE_CHOSEN", locale);
+        String expectedError = I18n.getUIMessage("materialCreation_error_NO_SEQUENCETYPE_CHOSEN", locale) + "\n"
+                + I18n.getUIMessage("materialCreation_error_EMPTY_MATERIAL_NAME", locale);
         materialEditPage.selectMaterialType("SEQUENCE").save(MaterialEditPage.class).errorMessages()
                 .shouldBe(exactTextCaseSensitive(expectedError));
     }
