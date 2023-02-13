@@ -270,8 +270,8 @@ public class TaxonomyBeanTest extends TestBase {
         if (taxo.getFirstName().equals(name)) {
             nodeToOperateOn = tree;
         }
-        for (TreeNode n : tree.getChildren()) {
-            selectTaxonomyFromTree(name, n);
+        for (Object n : tree.getChildren()) {
+            selectTaxonomyFromTree(name, (TreeNode) n);
         }
     }
 
