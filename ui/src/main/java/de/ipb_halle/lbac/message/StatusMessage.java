@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.message;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * status message class

@@ -59,12 +59,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -244,7 +243,7 @@ public class MaterialBean implements Serializable {
 
             historyOperation = new HistoryOperation(this);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("startMaterialEdit() caught an exception:", (Throwable) e);
         }
     }
 
@@ -273,8 +272,8 @@ public class MaterialBean implements Serializable {
                 return materialEditState.getCurrentProject().getProjectType().getMaterialTypes();
             }
         } catch (Exception e) {
-            logger.error("Error in getMaterialTypes(): " + materialEditState.getCurrentProject().getName());
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("getMaterialTypes(): error in project {}.", materialEditState.getCurrentProject().getName());
+            logger.error("stack trace:", (Throwable) e);
         }
         return new ArrayList<>();
     }
@@ -310,8 +309,8 @@ public class MaterialBean implements Serializable {
             this.materialEditState.setCurrentProject(currentProject);
             currentMaterialType = currentProject.getProjectType().getMaterialTypes().get(0);
         } catch (Exception e) {
-            logger.error("Error in setCurrentProject(): " + currentProject.getName());
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("setCurrentProject(): error setting project '{}'", currentProject.getName());
+            logger.error("stack trace:", (Throwable) e);
         }
 
     }
@@ -460,7 +459,7 @@ public class MaterialBean implements Serializable {
         try {
             biomaterial.setTaxonomy((Taxonomy) taxonomyController.getSelectedTaxonomy().getData());
         } catch (Exception e) {
-            logger.error("Could not set taxonomy to biomaterial: " + ExceptionUtils.getStackTrace(e));
+            logger.error("setTaxonomyToBioMaterial() caught an exception:", (Throwable) e);
         }
     }
 
@@ -476,7 +475,7 @@ public class MaterialBean implements Serializable {
             overviewBean.getSearchController().actionStartMaterialSearch();
             navigator.navigate("/material/materials");
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("actionSaveMaterial() caught an exception:", (Throwable) e);
             messagePresenter.error("materialCreation_creation_error", getErrorMessages());
         }
     }

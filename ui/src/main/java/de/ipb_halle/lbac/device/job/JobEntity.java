@@ -20,16 +20,16 @@ package de.ipb_halle.lbac.device.job;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-import org.hibernate.annotations.Type;
+//import org.hibernate.annotations.Type;
 
 /**
  * Job entity
@@ -60,7 +60,7 @@ public class JobEntity implements Serializable {
      * input data 
      */
     @Column
-    @Type(type = "org.hibernate.type.BinaryType")
+//  @Type(type = "org.hibernate.type.BinaryType")
     private byte[] input;
 
     @Column
@@ -75,7 +75,7 @@ public class JobEntity implements Serializable {
      * output data (some jobs do not produce output data)
      */
     @Column
-    @Type(type = "org.hibernate.type.BinaryType")
+//  @Type(type = "org.hibernate.type.BinaryType")
     private byte[] output;
 
     @Column

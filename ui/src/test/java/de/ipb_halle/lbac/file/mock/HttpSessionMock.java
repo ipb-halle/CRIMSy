@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.file.mock;
 
 import de.ipb_halle.lbac.admission.User;
 import java.util.Enumeration;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -117,7 +117,7 @@ public class HttpSessionMock implements HttpSession {
 
     @SuppressWarnings("deprecation")
     @Override
-    public javax.servlet.http.HttpSessionContext getSessionContext() {
+    public jakarta.servlet.http.HttpSessionContext getSessionContext() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

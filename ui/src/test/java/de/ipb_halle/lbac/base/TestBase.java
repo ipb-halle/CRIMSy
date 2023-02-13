@@ -57,12 +57,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -168,8 +168,8 @@ public class TestBase implements Serializable {
                 .addClass(SessionScopeContext.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsResource("javax.enterprise.inject.spi.Extension",
-                        "META-INF/services/javax.enterprise.inject.spi.Extension");
+                .addAsResource("jakarta.enterprise.inject.spi.Extension",
+                        "META-INF/services/jakarta.enterprise.inject.spi.Extension");
         return archive;
     }
     

@@ -31,7 +31,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import java.util.List;
 import java.util.UUID;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 

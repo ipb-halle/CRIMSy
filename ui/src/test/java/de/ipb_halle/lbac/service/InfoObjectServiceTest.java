@@ -46,9 +46,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.transaction.UserTransaction;
+import jakarta.annotation.Resource;
+import jakarta.inject.Inject;
+import jakarta.transaction.UserTransaction;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

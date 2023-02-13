@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * Id class for ACList / Member / Permission associations

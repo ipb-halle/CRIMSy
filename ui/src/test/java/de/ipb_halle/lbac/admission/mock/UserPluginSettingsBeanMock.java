@@ -3,8 +3,8 @@ package de.ipb_halle.lbac.admission.mock;
 import de.ipb_halle.lbac.admission.UserPluginSettingsBean;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 
 /**
  *

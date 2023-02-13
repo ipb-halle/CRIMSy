@@ -20,11 +20,11 @@ package de.ipb_halle.scope.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -73,8 +73,8 @@ public class SessionScopeTest {
                 .addClass(SessionScopeContext.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
-                .addAsResource("javax.enterprise.inject.spi.Extension",
-                        "META-INF/services/javax.enterprise.inject.spi.Extension")
+                .addAsResource("jakarta.enterprise.inject.spi.Extension",
+                        "META-INF/services/jakarta.enterprise.inject.spi.Extension")
                 .addClass(ApplicationScopedBean.class);
     }
 

@@ -60,7 +60,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;

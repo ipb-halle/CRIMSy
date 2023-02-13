@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.material;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Produces;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.i18n.UIMessage;

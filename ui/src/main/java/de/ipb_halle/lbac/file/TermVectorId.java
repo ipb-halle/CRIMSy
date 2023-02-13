@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.file;
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  *

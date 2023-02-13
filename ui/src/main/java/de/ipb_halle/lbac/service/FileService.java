@@ -28,7 +28,7 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;

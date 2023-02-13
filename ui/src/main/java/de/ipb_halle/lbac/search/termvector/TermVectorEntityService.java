@@ -36,12 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -138,7 +137,7 @@ public class TermVectorEntityService implements Serializable {
             return getMostFrequentTerms(list, maxResult, results);
 
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("getTermVector() caught an exception:", (Throwable) e);
             return new HashMap<>();
         }
     }

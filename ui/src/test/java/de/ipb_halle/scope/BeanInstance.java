@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.scope;
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 /**
  * Wrapper class that holds the bean instance and its creational context.

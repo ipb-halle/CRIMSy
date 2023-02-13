@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.message;
 
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class TagWordMessage extends Message {

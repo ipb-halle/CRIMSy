@@ -24,8 +24,7 @@ import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.ejb.Stateless;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.ejb.Stateless;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -72,7 +71,7 @@ public class KeyStoreFactory {
             this.SSL_PROTOCOL =  prop.getProperty("SecureWebClient.SSL_PROTOCOL");
 
         } catch(Exception e) {
-            logger.error("Could not initialise KeyStoreFactory"+ ExceptionUtils.getStackTrace(e));
+            logger.error("Could not initialise KeyStoreFactory:", (Throwable) e);
         }
         return this;
     }
@@ -99,7 +98,7 @@ public class KeyStoreFactory {
             this.trustStore.put(cloudName, ts);
 
         } catch (Exception e) {
-            logger.error("Could not load keystores"+ ExceptionUtils.getStackTrace(e));
+            logger.error("Could not load keystores:", (Throwable) e);
         }
 
     }

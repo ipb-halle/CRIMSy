@@ -20,10 +20,10 @@ package de.ipb_halle.lbac.container.service;
 import de.ipb_halle.lbac.globals.NestingService;
 import java.io.Serializable;
 import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 /**
  * Service for manipulating the nesting of containers

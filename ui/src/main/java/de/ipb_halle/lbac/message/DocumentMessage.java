@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.message;
 
 import de.ipb_halle.lbac.search.document.Document;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * document message class for documents

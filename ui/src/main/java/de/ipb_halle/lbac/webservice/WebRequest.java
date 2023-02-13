@@ -21,9 +21,9 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import java.io.Serializable;
 import java.util.UUID;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  *

@@ -131,7 +131,7 @@ public class FastaResultDisplayWrapper {
             if (i < queryLines.size()) {
                 AlignmentLine line = queryLines.get(i);
 
-                if (!StringUtils.isBlank(line.getLine())) {
+                if (! line.getLine().isBlank()) {
                     // leading spaces
                     sb.append(StringUtils.leftPad("", "Subject".length() - "Query".length() + 1));
 
@@ -155,7 +155,7 @@ public class FastaResultDisplayWrapper {
             // consensus line
             if (i < consenusLines.size()) {
                 String line = consenusLines.get(i);
-                if (!StringUtils.isBlank(line)) {
+                if (! line.isBlank()) {
                     // leading spaces
                     sb.append(StringUtils.leftPad("",
                             "Subject".length() + 1 + maxPrefixLength + config.getPrefixSpaces()));
@@ -171,7 +171,7 @@ public class FastaResultDisplayWrapper {
             if (i < subjectLines.size()) {
                 AlignmentLine line = subjectLines.get(i);
 
-                if (!StringUtils.isBlank(line.getLine())) {
+                if (! line.getLine().isBlank()) {
                     // leading space
                     sb.append(" ");
 

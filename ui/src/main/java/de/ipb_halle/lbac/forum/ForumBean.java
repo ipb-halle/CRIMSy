@@ -31,12 +31,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Observes;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -128,7 +127,7 @@ public class ForumBean implements Serializable {
                     vFilter.filter(postingText),
                     currentUser, creationDate);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("addPostingToActiveTopic() caught an exception:", (Throwable) e);
         }
         postingText = "";
     }
@@ -144,7 +143,7 @@ public class ForumBean implements Serializable {
                     currentUser,
                     cloudOfTopic);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("createNewTopic() caught an exception:", (Throwable) e);
         }
         newTopicName = "";
         refreshForumState();

@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.message;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /***
  * basic class for websocket messages

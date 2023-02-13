@@ -29,7 +29,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.hibernate.usertype.ParameterizedType;
 
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.MappedSuperclass;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;

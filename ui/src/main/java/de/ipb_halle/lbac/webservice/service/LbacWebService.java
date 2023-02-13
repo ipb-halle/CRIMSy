@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.webservice.WebRequest;
 import java.io.Serializable;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * Generalized WebService which implements basic functionality e.g.

@@ -26,11 +26,11 @@ import de.ipb_halle.lbac.search.lang.AttributeType;
  * local or remote. (Serialized) node objects can be queried from the master
  * node to get information about all existing nodes.
  */
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.UUID;
 

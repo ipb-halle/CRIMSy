@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.file.TermVectorEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
-import javax.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.JoinType;
 
 /**
  *

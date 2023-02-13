@@ -29,12 +29,12 @@ import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.DependsOn;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
-import javax.ws.rs.core.MediaType;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.DependsOn;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.logging.log4j.Logger;

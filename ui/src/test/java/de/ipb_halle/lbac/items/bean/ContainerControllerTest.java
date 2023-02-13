@@ -59,9 +59,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.faces.component.UIOutput;
-import javax.faces.component.behavior.BehaviorBase;
-import javax.inject.Inject;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.behavior.BehaviorBase;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;

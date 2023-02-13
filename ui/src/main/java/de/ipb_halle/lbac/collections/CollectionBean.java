@@ -41,13 +41,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.faces.event.ActionEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.faces.event.ActionEvent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;

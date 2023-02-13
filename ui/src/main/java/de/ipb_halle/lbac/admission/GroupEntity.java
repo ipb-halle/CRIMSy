@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.admission;
 
 import java.io.Serializable;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 
 /**
  * Represents a List of Users or other Groups as members

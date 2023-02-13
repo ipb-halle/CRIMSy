@@ -24,14 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.servlet.AsyncContext;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.inject.Inject;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -85,7 +84,7 @@ public class FileDeleteWebService extends HttpServlet {
                 this.logger.warn("doDelete() caught an exception: ", e);
             }
         } catch (IllegalStateException e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("doDelete() caught an exception:", (Throwable) e);
         }
     }
 }

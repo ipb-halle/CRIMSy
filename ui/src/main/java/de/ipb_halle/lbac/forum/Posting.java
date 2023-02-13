@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.entity.Obfuscatable;
 import de.ipb_halle.lbac.admission.User;
 import java.io.Serializable;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  *

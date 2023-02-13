@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.admission;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  *

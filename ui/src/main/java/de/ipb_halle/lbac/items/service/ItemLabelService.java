@@ -20,11 +20,11 @@ package de.ipb_halle.lbac.items.service;
 import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import java.io.Serializable;
 import java.math.BigInteger;
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 
 /**
  *

@@ -57,7 +57,6 @@ import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import java.io.Serializable;
 import java.util.List;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -151,7 +150,7 @@ public class MaterialEditSaver implements Serializable {
 
             }
         } catch (Exception e) {
-            logger.error("Error in saveing edited taxonomy: " + ExceptionUtils.getStackTrace(e));
+            logger.error("saveEditedTaxonomy() caught an exception:", (Throwable) e);
         }
     }
 

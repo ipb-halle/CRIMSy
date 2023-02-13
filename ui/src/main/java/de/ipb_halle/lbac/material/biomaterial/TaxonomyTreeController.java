@@ -26,7 +26,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -144,9 +143,9 @@ public class TaxonomyTreeController implements Serializable {
             return new ArrayList<>();
         }
         List<TreeNode> children = new ArrayList<>();
-        for (TreeNode n : tn.getChildren()) {
-            children.addAll(getAllChildren(n));
-            children.add(n);
+        for (Object n : tn.getChildren()) {
+            children.addAll(getAllChildren((TreeNode) n));
+            children.add((TreeNode) n);
         }
         return children;
     }
@@ -187,7 +186,7 @@ public class TaxonomyTreeController implements Serializable {
         selectedTaxonomy = null;
         taxonomyTree = null;
         reloadTreeNode();
-        setSelectedTaxonomy(taxonomyTree.getChildren().get(0));
+        setSelectedTaxonomy((TreeNode) taxonomyTree.getChildren().get(0));
     }
 
     /**
@@ -216,7 +215,7 @@ public class TaxonomyTreeController implements Serializable {
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("reloadTreeNode() caught an exception:", (Throwable) e);
         }
     }
 
@@ -242,7 +241,7 @@ public class TaxonomyTreeController implements Serializable {
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("reloadTreeNode() caught an exception:", (Throwable) e);
         }
     }
 

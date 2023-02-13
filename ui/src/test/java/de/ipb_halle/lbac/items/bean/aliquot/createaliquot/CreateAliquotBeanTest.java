@@ -33,9 +33,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.event.Event;
-import javax.faces.component.UIInput;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Event;
+import jakarta.faces.component.UIInput;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;

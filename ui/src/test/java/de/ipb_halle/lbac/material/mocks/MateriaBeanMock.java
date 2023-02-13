@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 /**
  *

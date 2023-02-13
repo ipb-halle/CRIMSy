@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Controller for the composite component containerModal.xhtml.

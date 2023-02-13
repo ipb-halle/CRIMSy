@@ -51,12 +51,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -188,7 +187,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
             materialEditBean.startMaterialEdit(m);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("actionEditMaterial() caught an exception:", (Throwable) e);
         }
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
@@ -332,7 +331,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
             ACPermission permission = ACPermission.valueOf(accessRight);
             return materialService.getAcListService().isPermitted(permission, m, currentUser);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("hasAccessRight() caught an exception:", (Throwable) e);
             return false;
         }
     }

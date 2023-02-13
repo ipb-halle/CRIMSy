@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialSaver;

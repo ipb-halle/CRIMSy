@@ -18,10 +18,10 @@
 package de.ipb_halle.lbac.items.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 

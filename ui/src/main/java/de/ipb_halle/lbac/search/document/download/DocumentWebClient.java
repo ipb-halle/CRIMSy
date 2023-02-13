@@ -19,12 +19,11 @@ package de.ipb_halle.lbac.search.document.download;
 
 import java.io.InputStream;
 
-import javax.enterprise.context.Dependent;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.enterprise.context.Dependent;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,7 +73,7 @@ public class DocumentWebClient extends LbacWebClient {
             }
         } catch (Exception e) {
             cn.fail();
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("downloadDocument() caught an exception:", (Throwable) e);
             return null;
         } finally {
             cloudNodeService.save(cn);

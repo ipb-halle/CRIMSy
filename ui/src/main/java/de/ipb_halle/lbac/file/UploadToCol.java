@@ -26,18 +26,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import de.ipb_halle.lbac.file.save.AttachmentHolder;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -128,7 +127,7 @@ public class UploadToCol implements Runnable {
             response.getWriter().write(createJsonSuccessResponse(fileId, getFileNameFromRequest()));
         } catch (Exception e) {
             writeErrorMessage(e);
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("run() caught an exception:", (Throwable) e);
         } finally {
             asyncContext.complete();
         }
@@ -147,7 +146,7 @@ public class UploadToCol implements Runnable {
         try (PrintWriter writer = response.getWriter()) {
             writer.write(createJsonErrorResponse(outerException.getMessage()));
         } catch (IOException ex) {
-            logger.error(ExceptionUtils.getStackTrace(ex));
+            logger.error("writeErrorMessage() caught an exception:", (Throwable) ex);
         }
     }
 

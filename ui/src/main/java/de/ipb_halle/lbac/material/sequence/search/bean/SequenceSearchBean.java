@@ -27,11 +27,11 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  *

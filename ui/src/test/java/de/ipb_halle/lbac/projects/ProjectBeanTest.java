@@ -32,7 +32,7 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchService;

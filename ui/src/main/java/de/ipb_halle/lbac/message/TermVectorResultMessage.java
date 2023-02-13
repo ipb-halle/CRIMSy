@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.message;
 
 import java.util.Map;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * message class for termvectors

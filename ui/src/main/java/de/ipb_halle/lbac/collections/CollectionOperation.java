@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -105,7 +104,7 @@ public class CollectionOperation implements Serializable {
             LOGGER.info(String.format("collection delete all file entities: %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
 
         } catch (Exception e) {
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            LOGGER.error("clearCollection() caught an exception:", (Throwable) e);
             return OperationState.CLEAR_ERROR;
         }
         return OperationState.OPERATION_SUCCESS;

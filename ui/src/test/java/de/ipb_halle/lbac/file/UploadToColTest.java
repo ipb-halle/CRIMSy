@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;

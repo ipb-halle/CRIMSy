@@ -22,12 +22,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.ejb.EJBException;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.ejb.EJBException;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.event.FlowEvent;
@@ -181,7 +180,7 @@ public class CreateAliquotBean implements Serializable {
             navigator.navigate("/item/items");
         } catch (EJBException e) {
             messagePresenter.error("itemEdit_save_failed");
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("actionSave() caught an exception:", (Throwable) e);
         }
     }
 

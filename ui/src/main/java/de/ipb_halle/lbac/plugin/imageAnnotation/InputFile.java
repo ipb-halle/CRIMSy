@@ -25,11 +25,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.ConverterException;
-import javax.servlet.http.Part;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.ConverterException;
+import jakarta.servlet.http.Part;
 
 import org.omnifaces.el.functions.Numbers;
 import org.omnifaces.util.Ajax;
@@ -44,7 +44,7 @@ import org.omnifaces.util.Messages;
  * process. Thus, converters, validators and backing beans will receive a String
  * or a List&lt;String&gt; as value object. Additionally, converters are
  * invoked, which is not done in JSF's
- * {@link javax.faces.component.html.HtmlInputFile} component (at least in the
+ * {@link jakarta.faces.component.html.HtmlInputFile} component (at least in the
  * MyFaces implementation).
  * <p>
  * Most of this class' code is adoped from <a href=

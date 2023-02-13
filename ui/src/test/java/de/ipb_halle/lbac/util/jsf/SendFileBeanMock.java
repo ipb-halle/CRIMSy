@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

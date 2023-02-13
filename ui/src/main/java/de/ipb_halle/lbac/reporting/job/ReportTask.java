@@ -27,12 +27,11 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.Future;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedTask;
-import javax.enterprise.concurrent.ManagedTaskListener;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.ManagedTaskListener;
+import jakarta.enterprise.inject.spi.CDI;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
@@ -110,7 +109,8 @@ public class ReportTask implements Runnable, ManagedTask, ManagedTaskListener {
     }
 
     private void fail(Throwable exception) {
-        logger.warn("Task with jobId={} failed: {}", jobId, ExceptionUtils.getStackTrace(exception));
+        logger.warn("Task with jobId={} failed: {}", jobId);
+        logger.warn("stack trace:", (Throwable) exception);
         reportJobService().markJobAsFailed(jobId);
     }
 

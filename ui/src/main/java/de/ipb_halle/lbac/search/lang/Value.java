@@ -24,8 +24,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.UUID;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  *

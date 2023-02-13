@@ -20,11 +20,11 @@ package de.ipb_halle.lbac.material.sequence;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import javax.faces.convert.FacesConverter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
+import jakarta.faces.convert.FacesConverter;
 
 import de.ipb_halle.lbac.util.JsonSanitizingConverter;
 

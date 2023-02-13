@@ -36,11 +36,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 

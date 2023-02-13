@@ -35,8 +35,8 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
-import javax.faces.component.UIComponentBase;
-import javax.inject.Inject;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;

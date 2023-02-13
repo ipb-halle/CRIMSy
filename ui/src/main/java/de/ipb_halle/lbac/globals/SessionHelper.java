@@ -22,9 +22,8 @@ import de.ipb_halle.lbac.admission.User;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +44,7 @@ public class SessionHelper implements Serializable {
         try {
             return (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CU_KEY);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("getCurrentUser() caught an exception:", (Throwable) e);
             return null;
         }
     }
@@ -55,7 +54,7 @@ public class SessionHelper implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(CU_KEY, user);
             return true;
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("setCurrentUser() caught an exception:", (Throwable) e);
             return false;
         }
     }

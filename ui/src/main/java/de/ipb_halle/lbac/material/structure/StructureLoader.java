@@ -28,8 +28,8 @@ import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.util.ArrayList;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  *

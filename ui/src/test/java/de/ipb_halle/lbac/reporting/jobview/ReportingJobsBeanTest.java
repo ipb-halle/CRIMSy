@@ -29,7 +29,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;

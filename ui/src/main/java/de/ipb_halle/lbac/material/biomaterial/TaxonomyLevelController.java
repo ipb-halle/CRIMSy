@@ -62,8 +62,8 @@ public class TaxonomyLevelController implements Serializable {
         if (taxonomyBean.getSelectedTaxonomy() == null||taxonomyBean.getMode()==TaxonomyBean.Mode.CREATE) {
             return highestLevel;
         }
-        for (TreeNode b : taxonomyBean.getSelectedTaxonomy().getChildren()) {
-            Taxonomy t = (Taxonomy) b.getData();
+        for (Object b : taxonomyBean.getSelectedTaxonomy().getChildren()) {
+            Taxonomy t = (Taxonomy) ((TreeNode) b).getData();
             highestLevel = Math.min(highestLevel, t.getLevel().getRank());
         }
         return highestLevel;

@@ -19,9 +19,9 @@ package de.ipb_halle.lbac.admission;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 
 import java.util.Objects;
 

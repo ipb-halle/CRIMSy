@@ -42,9 +42,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.Dependent;
-import javax.faces.model.SelectItem;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;

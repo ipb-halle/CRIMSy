@@ -24,8 +24,8 @@ import de.ipb_halle.lbac.reporting.job.ReportJobService;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
 import org.omnifaces.util.Faces;
@@ -34,7 +34,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -111,7 +110,7 @@ public class ReportMgr {
         }
 
         String name = languageElement.getAsString();
-        if (StringUtils.isBlank(name)) {
+        if (name.isBlank()) {
             return null;
         }
 

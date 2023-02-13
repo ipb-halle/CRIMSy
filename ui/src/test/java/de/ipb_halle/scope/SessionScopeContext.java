@@ -20,11 +20,11 @@ package de.ipb_halle.scope;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.Observes;
 
 /**
  * This CDI context overrides the built-in session scope of JavaEE. It can be

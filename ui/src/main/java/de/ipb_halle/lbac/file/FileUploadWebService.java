@@ -22,17 +22,16 @@ import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.collections.CollectionService;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.servlet.AsyncContext;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -76,7 +75,7 @@ public class FileUploadWebService extends HttpServlet {
                     collectionService,
                     termVectorEntityService));
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("doPost() caught an exception:", (Throwable) e);
             if (asyncContext != null) {
                 asyncContext.complete();
             }
@@ -93,7 +92,7 @@ public class FileUploadWebService extends HttpServlet {
                     .build();
             out.write(json.toString());
         } catch (IOException e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("doGet() caught an exception:", (Throwable) e);
         }
     }
 }

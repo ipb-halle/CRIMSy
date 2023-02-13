@@ -28,9 +28,9 @@ import de.ipb_halle.lbac.exp.ExpRecordEntity;
 
 import java.io.Serializable;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;

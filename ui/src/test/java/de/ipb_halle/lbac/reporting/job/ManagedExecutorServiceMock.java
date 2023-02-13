@@ -27,7 +27,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 /**
  * Mock implementation of ManagedExecutorService that can hold two 2 submitted

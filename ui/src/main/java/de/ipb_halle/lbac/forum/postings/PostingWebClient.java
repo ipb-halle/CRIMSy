@@ -27,10 +27,9 @@ import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import java.io.Serializable;
-import javax.inject.Inject;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -82,7 +81,7 @@ public class PostingWebClient extends
             }
         } catch (Exception e) {
             cn.fail();
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("announcePostingToRemoteNode() caught an exception:", (Throwable) e);
         }
         this.cloudNodeService.save(cn);
     }

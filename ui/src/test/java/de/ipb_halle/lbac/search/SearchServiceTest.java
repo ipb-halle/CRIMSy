@@ -84,7 +84,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.openejb.loader.Files;
 
 import org.jboss.arquillian.container.test.api.Deployment;

@@ -19,9 +19,9 @@ package de.ipb_halle.lbac.globals;
 
 import java.util.Locale;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.WebXmlImpl;

@@ -22,10 +22,10 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.globals.NavigationConstants;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -31,7 +31,7 @@ import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.util.units.Unit;
 
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *

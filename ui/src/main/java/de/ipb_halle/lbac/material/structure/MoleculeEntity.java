@@ -19,11 +19,11 @@ package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  *

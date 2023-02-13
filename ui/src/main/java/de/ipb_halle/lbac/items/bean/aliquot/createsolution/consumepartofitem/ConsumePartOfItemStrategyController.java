@@ -22,11 +22,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.ejb.EJBException;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.ejb.EJBException;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
-import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.event.FlowEvent;
@@ -195,7 +194,7 @@ public class ConsumePartOfItemStrategyController implements Serializable {
             navigator.navigate("/item/items");
         } catch (EJBException e) {
             messagePresenter.error("itemEdit_save_failed");
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("actionSave() caught an exception:", (Throwable) e);
         }
     }
 

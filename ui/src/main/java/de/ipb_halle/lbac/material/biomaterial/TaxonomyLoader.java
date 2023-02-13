@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *

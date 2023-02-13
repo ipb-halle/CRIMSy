@@ -70,11 +70,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.ejb.EJBException;
-import javax.inject.Inject;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.ResponseProcessingException;
-import javax.ws.rs.core.Response;
+import jakarta.ejb.EJBException;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.client.ResponseProcessingException;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
 /**

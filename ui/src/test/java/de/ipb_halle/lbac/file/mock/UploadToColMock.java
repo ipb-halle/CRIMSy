@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.file.UploadToCol;
 import de.ipb_halle.lbac.file.save.AttachmentHolder;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.InputStream;
-import javax.servlet.AsyncContext;
+import jakarta.servlet.AsyncContext;
 
 /**
  *

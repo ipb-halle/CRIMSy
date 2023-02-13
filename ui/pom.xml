@@ -41,9 +41,9 @@
     </organization>
 
     <properties>
-        <hibernate.version>5.3.26.Final</hibernate.version>
+        <hibernate.version>6.1.7.Final</hibernate.version>
         <tomee.classifier>plus</tomee.classifier>
-        <tomee.servlet-engine>7.0.81</tomee.servlet-engine>
+        <tomee.servlet-engine>8.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
         <pentaho.version>9.2.0.4-591</pentaho.version>
         
@@ -148,6 +148,7 @@
             </plugin>
            
             <!-- A maven plugin to process annotation for jdk6 at compile time -->
+            <!--
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>
@@ -174,6 +175,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            -->
 
             <!-- javacc compilation -->
             <plugin>
@@ -296,9 +298,17 @@
         <!-- Provided dependencies by the server -->
         <!-- APIs for CDI (Contexts and Dependency Injection for Java)-->
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <version>2.0</version>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- commons lang3 (StringUtils) -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
             <scope>provided</scope>
         </dependency>
         
@@ -307,7 +317,7 @@
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <version>2.2.14</version>
+            <version>4.0.0-RC4</version>
             <scope>provided</scope>
         </dependency>
         
@@ -315,21 +325,21 @@
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>tomee-jaxrs</artifactId>
-            <version>7.0.5</version>
+            <version>9.0.0</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- Servlet API for DepictServlet -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
         
         <!-- Annotation Processor to generate JPA 2 static metamodel classes -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>${hibernate.version}</version>
             <scope>provided</scope>
@@ -338,9 +348,9 @@
         <!-- Dependencies needed at compile time -->
         <!-- JavaMail API (compat) -->
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4</version>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
         </dependency>
         
         <!-- Ui Library for jsf-->
@@ -412,14 +422,15 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>6.2</version>
+            <version>12.0.0</version>
+            <classifier>jakarta</classifier>
         </dependency>
 
         <!-- PrimeFaces FontAwesome 5.x -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
-            <version>5.12.0</version>
+            <version>6.2.1</version>
         </dependency>
         
         <!-- PrimeFaces Bootstrap Theme. Has its own repository -->
@@ -433,21 +444,24 @@
         <dependency>
             <groupId>org.omnifaces</groupId>
             <artifactId>omnifaces</artifactId>
-            <version>2.6.4</version>
+            <version>4.0.1</version>
         </dependency>
         
         <!-- Integration for using Ehcache 2.x as a 
         Hibernate second-level-cache provider  -->
+<!--
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-ehcache</artifactId>
+            <version>6.0.0.Alpha7</version>
             <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
+-->
 
         <!-- hibernate stuff -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
             <scope>provided</scope>
@@ -455,17 +469,17 @@
 
         <!-- Hibernate Validator Engine Relocation Artifact -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.3.6.Final</version>
+            <version>8.0.0.Final</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- jpa2.2 - replacement for jpa2.1 -->
+        <!-- jpa3.1 -->
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
         
@@ -479,8 +493,8 @@
         <!--hibernate support for postgres json, jsonb field types -->
         <dependency>
             <groupId>com.vladmihalcea</groupId>
-            <artifactId>hibernate-types-52</artifactId>
-            <version>2.10.4</version>
+            <artifactId>hibernate-types-60</artifactId>
+            <version>2.21.1</version>
         </dependency>
 
         <!-- Reference implementation of JSON encoders/decoders -->
@@ -500,14 +514,14 @@
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0-1</version>
+            <version>8.0-6</version>
         </dependency>
 
         <!-- Logging: log4j 2 -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.17.1</version>
+            <version>2.19.0</version>
         </dependency>
 
 
@@ -550,7 +564,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.junit5</groupId>
             <artifactId>arquillian-junit5-container</artifactId>
-            <version>1.7.0.Alpha6</version>
+            <version>1.7.0.Alpha14</version>
             <scope>test</scope>
         </dependency>
 
@@ -567,13 +581,13 @@
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>arquillian-openejb-embedded</artifactId>
-            <version>7.0.5</version>
+            <version>9.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>4.0.3</version>
+            <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
         <!-- Needed for shrinkwrap -->
@@ -582,13 +596,14 @@
             <artifactId>selenium-java</artifactId>
             <scope>test</scope>
             <version>2.44.0</version>
+<!-- ToDo: forward to 4.8.0 ? -->
         </dependency>
 
         <!-- Expression Language implementation (required by bean validation) -->
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>3.0.1-b12</version>
+            <artifactId>jakarta.el</artifactId>
+            <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -617,7 +632,7 @@
         <dependency>
             <groupId>com.mikesamuel</groupId>
             <artifactId>json-sanitizer</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
         </dependency>
 
         <!-- PrettyTime is used in conversion of date and time.
@@ -625,7 +640,7 @@
         <dependency>
             <groupId>org.ocpsoft.prettytime</groupId>
             <artifactId>prettytime-integration-jsf</artifactId>
-            <version>5.0.0.Final</version>
+            <version>5.0.6.Final</version>
         </dependency>
 
         <!-- Model classes used by the sequence search REST API -->

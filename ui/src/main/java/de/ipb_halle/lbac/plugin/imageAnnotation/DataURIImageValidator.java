@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.Base64;
 
 import javax.imageio.ImageIO;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * Validator implementation for the {@link DataURIImage} annotation.

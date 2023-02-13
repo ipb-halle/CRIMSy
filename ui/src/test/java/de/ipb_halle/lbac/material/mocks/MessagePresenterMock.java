@@ -20,8 +20,8 @@ package de.ipb_halle.lbac.material.mocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Produces;
 
 import de.ipb_halle.lbac.material.MessagePresenter;
 

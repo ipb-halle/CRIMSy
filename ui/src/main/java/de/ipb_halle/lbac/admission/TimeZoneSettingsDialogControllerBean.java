@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.annotation.PostConstruct;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.hibernate.validator.constraints.NotBlank;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;

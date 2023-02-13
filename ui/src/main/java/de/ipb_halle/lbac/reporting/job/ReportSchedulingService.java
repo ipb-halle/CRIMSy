@@ -17,12 +17,12 @@
  */
 package de.ipb_halle.lbac.reporting.job;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.DependsOn;
-import javax.ejb.Schedule;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.DependsOn;
+import jakarta.ejb.Schedule;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.inject.Inject;
 
 /**
  * Timer service for maintaining reporting jobs.

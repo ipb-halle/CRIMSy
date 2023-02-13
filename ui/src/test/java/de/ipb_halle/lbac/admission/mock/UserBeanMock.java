@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.service.NodeService;
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 /**
  *

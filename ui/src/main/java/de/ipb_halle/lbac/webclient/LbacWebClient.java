@@ -38,8 +38,8 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.util.Base64;
 import java.util.Date;
-import javax.inject.Inject;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.logging.log4j.Logger;
 

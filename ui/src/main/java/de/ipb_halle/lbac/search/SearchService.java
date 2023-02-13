@@ -33,11 +33,11 @@ import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.lbac.service.NodeService;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
 import java.util.HashSet;
 import java.util.Set;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

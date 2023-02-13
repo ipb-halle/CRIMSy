@@ -29,8 +29,7 @@ import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import javax.inject.Inject;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -84,7 +83,7 @@ public class KeyManagerTest extends TestBase {
             PublicKey publicKey = keymanager.getLocalPublicKey(TESTCLOUD);
             Assert.assertNotNull(publicKey);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e), e);
+            logger.error("testKeyManagerGetter() caught an exception:", (Throwable) e);
         }
     }
 

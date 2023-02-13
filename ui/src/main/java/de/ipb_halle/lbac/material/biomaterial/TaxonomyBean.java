@@ -25,12 +25,11 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import java.io.Serializable;
 import java.util.HashMap;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.primefaces.model.TreeNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -97,7 +96,7 @@ public class TaxonomyBean implements Serializable {
         levelController.setSelectedLevel(levelController.getRootLevel());
 
         treeController.initialise();
-        selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
+        selectedTaxonomy = (TreeNode) treeController.getTaxonomyTree().getChildren().get(0);
         initHistoryDate();
     }
 
@@ -117,7 +116,7 @@ public class TaxonomyBean implements Serializable {
                 treeController.disableTreeNodeEntries(taxonomyBeforeEdit);
                 levelController.setSelectedLevel(taxonomyToEdit.getLevel());
             } catch (Exception e) {
-                logger.error(ExceptionUtils.getStackTrace(e));
+                logger.error("actionClickFirstButton() caught an exception:", (Throwable) e);
             }
         }
     }
@@ -153,7 +152,7 @@ public class TaxonomyBean implements Serializable {
                 mode = Mode.SHOW;
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("actionClickSecondButton() caught an exception:", (Throwable) e);
             taxonomyBeforeEdit = null;
             taxonomyToEdit = null;
             mode = Mode.SHOW;

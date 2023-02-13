@@ -32,7 +32,7 @@ import java.security.PrivateKey;
 import java.security.SignatureException;
 import java.util.Set;
 import java.util.UUID;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * MembershipWebClient an instance of this object is constructed upon user login

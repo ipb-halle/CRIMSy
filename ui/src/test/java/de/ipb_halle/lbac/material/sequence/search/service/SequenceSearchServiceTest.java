@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.material.sequence.search.service;
 
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchResult;
 import de.ipb_halle.fasta_search_service.models.fastaresult.FastaResult;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -50,7 +50,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;

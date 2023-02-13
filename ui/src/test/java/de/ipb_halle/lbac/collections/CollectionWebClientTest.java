@@ -38,7 +38,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
