@@ -22,7 +22,9 @@ package de.ipb_halle.lbac.admission.group;
  */
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.webservice.WebRequest;
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 @XmlRootElement

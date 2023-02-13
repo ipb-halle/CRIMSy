@@ -45,7 +45,6 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-//import javax.naming.Context;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 

@@ -27,7 +27,8 @@ import java.util.Base64;
 import java.util.Date;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Takes a WebRequestSignature tries to authentificate it. Authentification

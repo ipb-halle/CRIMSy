@@ -39,7 +39,6 @@ import javax.persistence.criteria.Root;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-// import javax.persistence.Persistence;
 @Stateless
 public class CloudService implements Serializable {
 

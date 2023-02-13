@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.device.job;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 /**
  * This enum describes the type of a job:

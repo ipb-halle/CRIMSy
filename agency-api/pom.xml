@@ -110,5 +110,12 @@
             <version>1.7.30</version>
         </dependency>
 
+	<!-- Jakarta XML bind -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
   </dependencies>
 </project>

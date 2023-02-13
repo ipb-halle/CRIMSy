@@ -25,9 +25,14 @@ import java.util.ListIterator;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
-import javax.ejb.*;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Timer;
+import javax.ejb.TimerService;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Updater schedules queries to the master node for an updated list of nodes and

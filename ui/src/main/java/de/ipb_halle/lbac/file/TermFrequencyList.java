@@ -20,7 +20,8 @@ package de.ipb_halle.lbac.file;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Represents a list of termvectors and its frequency with the representations
