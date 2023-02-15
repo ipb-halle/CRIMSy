@@ -69,7 +69,7 @@ cat <<EOF > $TOMCAT_HOME/bin/setenv.sh
 # created during install by /setup.sh
 #
 export CATALINA_HOME=$TOMCAT_HOME
-export JRE_HOME=/usr/local/openjdk-8
+export JRE_HOME=/opt/java/openjdk
 /usr/local/bin/createTruststores.sh
 EOF
 
