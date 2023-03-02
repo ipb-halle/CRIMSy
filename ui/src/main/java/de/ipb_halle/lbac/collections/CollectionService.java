@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.NodeService;
-import java.math.BigInteger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,10 +109,9 @@ public class CollectionService {
      * @return
      */
     public long getFileCount(Integer collectionId) {
-        BigInteger cnt = (BigInteger) this.em.createNativeQuery(SQL_FILE_COUNT)
+        return (long) this.em.createNativeQuery(SQL_FILE_COUNT)
                 .setParameter("collectionId", collectionId)
                 .getSingleResult();
-        return cnt.longValue();
     }
 
     /**

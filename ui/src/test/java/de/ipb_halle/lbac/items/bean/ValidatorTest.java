@@ -66,7 +66,7 @@ public class ValidatorTest extends TestBase {
     public void init() {
         userBean.setCurrentAccount(publicUser);
         validator = new Validator(containerServiceMock, labelServiceMock);
-        validator.setMessagePresenter(MessagePresenterMock.getInstance());
+        validator.setMessagePresenter(getMessagePresenterMock());
         containerServiceMock.arePositionsFree = true;
         labelServiceMock.isLabelAvailable = true;
         isCustomLabel = false;
@@ -74,7 +74,7 @@ public class ValidatorTest extends TestBase {
                 item,
                 containerService,
                 userBean,
-                MessagePresenterMock.getInstance());
+                getMessagePresenterMock());
     }
 
     @Test

@@ -117,7 +117,7 @@ public class HistoryOperationStorageInformationTest extends HistoryOperationTest
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
-                = prepareDeployment("HistoryOperationBiomaterialTest.war")
+                = prepareDeployment("HistoryOperationStorageInformationTest.war")
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);

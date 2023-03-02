@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,10 +65,10 @@ public class FileEntityService implements Serializable {
      * @throws java.lang.Exception
      */
     public void checkIfFileAlreadyExists(String hash, Collection collection) throws Exception {
-        boolean fileExists = ((BigInteger) this.em.createNativeQuery("SELECT count(*) FROM files WHERE hash = :hash and collection_id = :c")
+        boolean fileExists = ((long) this.em.createNativeQuery("SELECT count(*) FROM files WHERE hash = :hash and collection_id = :c")
                 .setParameter("hash", hash)
                 .setParameter("c", collection.getId())
-                .getSingleResult()).longValue() > 0;
+                .getSingleResult()) > 0;
         if (fileExists) {
             throw new Exception("fileupload_error_duplicate_file");
         }
@@ -127,10 +126,9 @@ public class FileEntityService implements Serializable {
      */
     public long getDocumentCount(Collection collection) {
         try {
-            BigInteger cnt = (BigInteger) this.em.createNativeQuery("SELECT count(*) FROM files WHERE collection_id = :c")
+            return (long) this.em.createNativeQuery("SELECT count(*) FROM files WHERE collection_id = :c")
                     .setParameter("c", collection.getId())
                     .getSingleResult();
-            return cnt.longValue();
         } catch (Exception e) {
             this.logger.warn("getDocumentCount() caught an exception", e);
         }

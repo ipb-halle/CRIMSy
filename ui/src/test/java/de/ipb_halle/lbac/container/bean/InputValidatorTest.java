@@ -55,7 +55,7 @@ public class InputValidatorTest extends TestBase {
     public void init() {
         validator = new InputValidator(containerService);
         validator.setContainerService(containerService);
-        messagePresenter = MessagePresenterMock.getInstance();
+        messagePresenter = getMessagePresenterMock();
         messagePresenter.resetMessages();
         validator.setErrorMessagePresenter(messagePresenter);
         c = new Container();

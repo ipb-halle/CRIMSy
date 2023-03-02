@@ -90,7 +90,7 @@ public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
                 currentDate,
                 biomaterial,
                 biomaterial,
-                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), MessagePresenterMock.getInstance()), MessagePresenterMock.getInstance());
+                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), new MessagePresenterMock()), new MessagePresenterMock());
         mes.setCurrentVersiondate(d_20001220);
         return mes;
     }

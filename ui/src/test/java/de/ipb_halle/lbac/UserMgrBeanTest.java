@@ -42,12 +42,12 @@ public class UserMgrBeanTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         return UserBeanDeployment
-                .add(prepareDeployment("GroupMgrBeanTest.war"));
+                .add(prepareDeployment("UserMgrBeanTest.war"));
     }
 
     @Test
     public void test001_createNewUser() {
-        MessagePresenterMock presenterMock = MessagePresenterMock.getInstance();
+        MessagePresenterMock presenterMock = getMessagePresenterMock();
         userMgrBean = new UserMgrBean(
                 nodeService,
                 memberService,

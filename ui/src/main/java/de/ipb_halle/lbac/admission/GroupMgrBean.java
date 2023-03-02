@@ -48,6 +48,10 @@ public class GroupMgrBean implements Serializable {
     };
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    public final static String GROUP_ADDED = "groupMgr_group_added";
+    public final static String GROUP_DEACTIVATED = "groupMgr_group_deactivated";
+    public final static String GROUP_EDITED = "groupMgr_group_edited";
+    public final static String GROUP_INVALID_NAME = "groupMgr_no_valide_name";
 
     private final static Long serialVersionUID = 1L;
 
@@ -102,9 +106,9 @@ public class GroupMgrBean implements Serializable {
         if (groupNameValidator.isGroupNameValide(this.group.getName())) {
             this.memberService.save(this.group);
             initGroup();
-            messagePresenter.info("groupMgr_group_added");
+            messagePresenter.info(GROUP_ADDED);
         } else {
-            messagePresenter.error("groupMgr_no_valide_name");
+            messagePresenter.error(GROUP_INVALID_NAME); 
         }
         this.mode = MODE.READ;
 
@@ -120,7 +124,7 @@ public class GroupMgrBean implements Serializable {
 
         initGroup();
         this.mode = MODE.READ;
-        messagePresenter.info("groupMgr_group_deactivated");
+        messagePresenter.info(GROUP_DEACTIVATED);
     }
 
     public void actionDeleteMembership(Membership ms) {
@@ -142,9 +146,9 @@ public class GroupMgrBean implements Serializable {
         }
         if (groupNameValidator.isGroupNameValide(this.group.getName())) {
             this.memberService.save(this.group);
-            messagePresenter.info("groupMgr_group_edited");
+            messagePresenter.info(GROUP_EDITED);
         } else {
-            messagePresenter.error("groupMgr_no_valide_name");
+            messagePresenter.error(GROUP_INVALID_NAME);
         }
         initGroup();
         this.mode = MODE.READ;

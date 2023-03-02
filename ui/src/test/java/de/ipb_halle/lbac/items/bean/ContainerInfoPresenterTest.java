@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * @author fmauz
  */
 public class ContainerInfoPresenterTest {
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = new MessagePresenterMock();
 
     @Test
     public void test_getContainerName() {

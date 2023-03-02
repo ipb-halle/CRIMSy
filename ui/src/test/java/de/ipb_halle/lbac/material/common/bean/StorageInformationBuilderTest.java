@@ -87,14 +87,14 @@ public class StorageInformationBuilderTest extends TestBase {
         materialService.saveMaterialToDB(s, publicReadAcl.getId(), new HashMap<>(), publicUser);
 
         //Create a controller without a material. The use case is: creating a new material
-        StorageInformationBuilder controller = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService);
+        StorageInformationBuilder controller = new StorageInformationBuilder(getMessagePresenterMock(), materialService);
         Assert.assertEquals(23, controller.getPossibleStorageClasses().size());
         Assert.assertNotNull(controller.build());
         Assert.assertNull(controller.build().getStorageClass());
         Assert.assertTrue(controller.build().getStorageConditions().isEmpty());
 
         //Create a controller with a material. The use case is editing a material
-        controller = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService, s);
+        controller = new StorageInformationBuilder(getMessagePresenterMock(), materialService, s);
         Assert.assertEquals(23, controller.getPossibleStorageClasses().size());
         Assert.assertNotNull(controller.build());
         Assert.assertNotNull(controller.build().getStorageClass());
@@ -102,7 +102,7 @@ public class StorageInformationBuilderTest extends TestBase {
 
         Assert.assertEquals(1, controller.build().getStorageConditions().size(), 3);
 
-        controller = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService, s);
+        controller = new StorageInformationBuilder(getMessagePresenterMock(), materialService, s);
         Assert.assertEquals(23, controller.getPossibleStorageClasses().size());
         Assert.assertNotNull(controller.build());
         Assert.assertNotNull(controller.build().getStorageClass());
@@ -120,7 +120,7 @@ public class StorageInformationBuilderTest extends TestBase {
         materialService.saveMaterialToDB(s, publicReadAcl.getId(), new HashMap<>(), publicUser);
 
         //Activate storage class selection and set a storage class
-        StorageInformationBuilder controller = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService);
+        StorageInformationBuilder controller = new StorageInformationBuilder(getMessagePresenterMock(), materialService);
         controller.setStorageClassActivated(true);
         controller.setChoosenStorageClass(materialService.loadStorageClasses().get(0));
         controller.setRemarks("storage class remark");
@@ -132,7 +132,7 @@ public class StorageInformationBuilderTest extends TestBase {
 
     @Test
     public void isStorageClassDisabled() {
-        StorageInformationBuilder controller = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService);
+        StorageInformationBuilder controller = new StorageInformationBuilder(getMessagePresenterMock(), materialService);
 
         Assert.assertTrue(controller.isStorageClassDisabled());
 

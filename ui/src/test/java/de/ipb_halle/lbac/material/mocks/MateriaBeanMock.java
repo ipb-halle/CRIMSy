@@ -52,7 +52,7 @@ public class MateriaBeanMock extends MaterialBean {
     private static final long serialVersionUID = 1L;
 
     public MateriaBeanMock() {
-        this.materialEditState = new MaterialEditState(MessagePresenterMock.getInstance());
+        this.materialEditState = new MaterialEditState(new MessagePresenterMock());
     }
 
     public void createStorageInformationBuilder(MessagePresenter messagePresenter,

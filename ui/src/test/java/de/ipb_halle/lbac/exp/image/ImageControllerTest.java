@@ -72,7 +72,7 @@ public class ImageControllerTest extends TestBase {
     public void init() {
         experimentBean = new ExperimentBean(new ItemAgent(),
                 new MaterialAgent(), context, null, experimentService,
-                MessagePresenterMock.getInstance(), null);
+                getMessagePresenterMock(), null);
         experimentBean.init();
 
         publicUser = context.getPublicAccount();

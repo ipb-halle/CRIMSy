@@ -300,7 +300,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>4.0.1</version>
+            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -309,7 +309,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
-            <scope>provided</scope>
         </dependency>
         
         <!-- Apache MyFaces JSF -->
@@ -560,11 +559,11 @@
              @BeforeEach and @AfterEach in our tests. This is known 
              (https://github.com/arquillian/arquillian-core/issues/309).
              1.7.0.Alpha6 is the last version where this works (tested until 
-             1.7.0.Alpha10).-->
+             1.7.0.Alpha14).-->
         <dependency>
             <groupId>org.jboss.arquillian.junit5</groupId>
             <artifactId>arquillian-junit5-container</artifactId>
-            <version>1.7.0.Alpha14</version>
+            <version>1.7.0.Alpha6</version>
             <scope>test</scope>
         </dependency>
 
@@ -572,7 +571,7 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-depchain</artifactId>
-            <version>1.2.6</version>
+            <version>2.0.0-beta-1</version>
             <type>pom</type>
             <scope>test</scope> 
         </dependency>

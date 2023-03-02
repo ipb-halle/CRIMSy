@@ -36,7 +36,6 @@ import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -179,7 +178,7 @@ public class ProjectService implements Serializable {
     }
 
     public boolean isProjectNameAvailable(String name) {
-        BigInteger i = (BigInteger) this.em.createNativeQuery(
+        Long i = (Long) this.em.createNativeQuery(
                 SQL_GET_NAME_AVAILABLE)
                 .setParameter("name", name)
                 .getResultList().get(0);

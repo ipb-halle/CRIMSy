@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import java.io.Serializable;
-import java.math.BigInteger;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -61,7 +60,7 @@ public class ItemLabelService implements Serializable{
     public boolean isLabelAvailable(String labelToCheck) {
         Query q = em.createNativeQuery(SQL_LOAD_ITEMS_BY_LABEL);
         q.setParameter("label", labelToCheck);
-        return ((BigInteger) q.getResultList().get(0)).intValue() == 0;
+        return ((long) q.getResultList().get(0)) == 0L;
     }
 
 }

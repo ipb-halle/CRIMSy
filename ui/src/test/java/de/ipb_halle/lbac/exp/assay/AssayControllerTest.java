@@ -51,7 +51,7 @@ public class AssayControllerTest extends TestBase {
                 new ItemAgent(),
                 new MaterialAgent(),
                 context,
-                null, null, MessagePresenterMock.getInstance(), null
+                null, null, getMessagePresenterMock(), null
         );
 
         bean.init();

@@ -90,7 +90,7 @@ public class ContainerControllerTest extends TestBase {
     @Inject
     private UserBeanMock userBean;
 
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = getMessagePresenterMock();
     private Item item;
     private Container c1;
     private Container c2;

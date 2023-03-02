@@ -112,7 +112,7 @@ public class SearchOrchestratorTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("SearchService.war")
+        WebArchive deployment = prepareDeployment("SearchOrchestratorTest.war")
                 .addClass(SearchService.class)
                 .addClass(ProjectService.class)
                 .addClass(ArticleService.class)

@@ -79,7 +79,7 @@ public class MaterialEditPremissionTest extends TestBase {
         materialBean = new MateriaBeanMock();
         materialBean.setAcListService(aclistService);
         materialBean.setHazardService(hazardService);
-        materialBean.setMessagePresenter(MessagePresenterMock.getInstance());
+        materialBean.setMessagePresenter(getMessagePresenterMock());
         permissionBean = new MaterialEditPermission(materialBean);
         materialBean.setMode(MaterialBean.Mode.CREATE);
         userBean = new UserBeanMock();
@@ -229,7 +229,7 @@ public class MaterialEditPremissionTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
-                = prepareDeployment("MaterialOverviewBeanTest.war")
+                = prepareDeployment("MaterialEditPremissionTest.war")
                         .addClass(IndexService.class);
         deployment = UserBeanDeployment.add(deployment);
         deployment = ItemDeployment.add(deployment);

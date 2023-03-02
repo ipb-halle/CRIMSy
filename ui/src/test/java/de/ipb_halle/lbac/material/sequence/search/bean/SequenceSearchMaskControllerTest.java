@@ -46,7 +46,7 @@ import de.ipb_halle.lbac.search.SearchResultImpl;
  * @author flange
  */
 public class SequenceSearchMaskControllerTest {
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = new MessagePresenterMock();
     private SequenceSearchMaskController controller;
     private SequenceSearchMaskValuesHolder valuesHolder;
     private SequenceSearchResultsTableController sequenceSearchResultsTableController;

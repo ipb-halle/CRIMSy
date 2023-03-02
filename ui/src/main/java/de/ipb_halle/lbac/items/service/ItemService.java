@@ -59,7 +59,6 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.units.Quantity;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -164,7 +163,7 @@ public class ItemService {
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = countBuilder.query(condition);
         Query q = createQueryWithParams(countBuilder, sql);
-        BigInteger bi = (BigInteger) q.getResultList().get(0);
+        Long bi = (Long) q.getResultList().get(0);
         return bi.intValue();
     }
 

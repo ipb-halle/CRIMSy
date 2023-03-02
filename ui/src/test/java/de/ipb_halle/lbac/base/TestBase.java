@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -140,6 +141,9 @@ public class TestBase implements Serializable {
     
     @Inject
     private Event<SessionScopeResetEvent> event;
+
+    @Inject
+    private MessagePresenter messagePresenter;
     
     protected ACList acListReadable, acListNonReadable;
     protected User publicUser;
@@ -394,6 +398,10 @@ public class TestBase implements Serializable {
         }
     }
     
+    protected MessagePresenterMock getMessagePresenterMock() {
+        return (MessagePresenterMock) messagePresenter;
+    }
+
     public void resetDB(MemberService memberService) {
         List<Collection> colls = collectionService.load(new HashMap<>());
         termVectorEntityService.deleteTermVectors();
@@ -522,8 +530,8 @@ public class TestBase implements Serializable {
         event.fire(new SessionScopeResetEvent());
     }
     
-    private void resetMessagePresenterMock() {
-        MessagePresenterMock.getInstance().resetMessages();
+    protected void resetMessagePresenterMock() {
+        ((MessagePresenterMock) messagePresenter).resetMessages();
     }
 
     private static final String INSERT_REPORT_FORMAT = "INSERT INTO reports (context, name, source) VALUES ('%s','%s','%s')";

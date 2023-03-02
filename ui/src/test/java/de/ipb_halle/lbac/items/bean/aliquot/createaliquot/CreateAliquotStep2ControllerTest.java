@@ -37,7 +37,7 @@ import de.ipb_halle.lbac.util.units.Unit;
 public class CreateAliquotStep2ControllerTest {
     private static final double DELTA = 1e-6;
 
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = new MessagePresenterMock();
 
     @BeforeEach
     public void before() {

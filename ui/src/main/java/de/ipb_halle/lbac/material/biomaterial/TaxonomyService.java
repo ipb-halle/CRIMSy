@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,7 +159,7 @@ public class TaxonomyService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public int checkRootTaxonomy() {
-        List<BigInteger> results = this.em.createNativeQuery(SQL_CHECK_ROOT_TAXONOMY_PRESENT).getResultList();
+        List<Long> results = this.em.createNativeQuery(SQL_CHECK_ROOT_TAXONOMY_PRESENT).getResultList();
         return results.get(0).intValue();
     }
 

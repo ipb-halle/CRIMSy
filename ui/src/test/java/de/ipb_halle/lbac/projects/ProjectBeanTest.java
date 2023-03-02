@@ -152,7 +152,7 @@ public class ProjectBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ProjectEditBeanTest.war")
+        WebArchive deployment = prepareDeployment("ProjectBeanTest.war")
                 .addClass(ProjectBean.class)
                 .addClass(Navigator.class)
                 .addClass(ProjectService.class)

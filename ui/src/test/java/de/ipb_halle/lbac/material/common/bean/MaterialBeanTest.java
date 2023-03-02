@@ -207,7 +207,7 @@ public class MaterialBeanTest extends TestBase {
 
         Material originalMaterial = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(originalMaterial.copyMaterial());
-        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController(),MessagePresenterMock.getInstance());
+        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController(),getMessagePresenterMock());
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
 

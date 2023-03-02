@@ -38,7 +38,6 @@ import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -171,7 +170,7 @@ public class DocumentSearchService {
     private int loadTotalCountOfFiles() {
         Query q = em.createNativeQuery(SQL_LOAD_DOCUMENT_COUNT);
         @SuppressWarnings("unchecked")
-        List<BigInteger> result = q.getResultList();
+        List<Long> result = q.getResultList();
         return result.get(0).intValue();
     }
 
@@ -259,7 +258,7 @@ public class DocumentSearchService {
     }
 
     private int getLengthOfDocument(int documentId) {
-        return ((BigInteger) em.createNativeQuery(SQL_LOAD_DOCUMENT_LENGTH)
+        return ((Long) em.createNativeQuery(SQL_LOAD_DOCUMENT_LENGTH)
                 .setParameter("file_id", documentId).getResultList()
                 .get(0)).intValue();
     }

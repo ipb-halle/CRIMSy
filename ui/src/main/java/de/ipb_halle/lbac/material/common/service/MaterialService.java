@@ -66,7 +66,6 @@ import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -200,7 +199,7 @@ public class MaterialService implements Serializable {
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
         }
-        BigInteger bi = (BigInteger) q.getResultList().get(0);
+        Long bi = (Long) q.getResultList().get(0);
         return bi.intValue();
     }
 

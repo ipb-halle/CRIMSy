@@ -44,7 +44,7 @@ public class AccountValidatorTest extends TestBase {
     private static final long serialVersionUID = 1L;
     private FacesContext fc = null;
     private UIComponent comp = null;
-    private MessagePresenterMock presenterMock = MessagePresenterMock.getInstance();
+    private MessagePresenterMock presenterMock = getMessagePresenterMock();
 
     @Deployment
     public static WebArchive createDeployment() {

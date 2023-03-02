@@ -144,7 +144,7 @@ public class MaterialCompositionBeanTest extends TestBase {
     private Project project, project1;
     private int publicAclId;
     private int structureId1, structureId2, biomaterialId;
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = getMessagePresenterMock();
 
     @BeforeEach
     public void init() throws IOException {

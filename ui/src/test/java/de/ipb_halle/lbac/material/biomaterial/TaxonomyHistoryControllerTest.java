@@ -103,7 +103,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         TaxonomyNameController nameController = new TaxonomyNameController(bean);
         historyController = new TaxonomyHistoryController(bean, nameController, taxonomyService, memberService);
         levelController = new TaxonomyLevelController(bean);
-        renderController = new TaxonomyRenderController(bean, nameController, levelController, memberService, MessagePresenterMock.getInstance());
+        renderController = new TaxonomyRenderController(bean, nameController, levelController, memberService, getMessagePresenterMock());
         TaxonomyTreeController tc = new TaxonomyTreeController(node, taxonomyService, levelController);
 
         bean.setHistoryController(historyController);
@@ -114,7 +114,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         bean.setRenderController(renderController);
         bean.setTaxonomyService(taxonomyService);
         bean.setTreeController(tc);
-        bean.setValidityController(new TaxonomyValidityController(bean, MessagePresenterMock.getInstance()));
+        bean.setValidityController(new TaxonomyValidityController(bean, getMessagePresenterMock()));
         bean.initHistoryDate();
 
         Assert.assertEquals(d2, historyController.getDateOfShownHistory());

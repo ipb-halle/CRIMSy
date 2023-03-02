@@ -91,14 +91,14 @@ public class HistoryOperationHazardsTest extends TestBase {
         indices = new ArrayList<>();
         s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
-        mes = new MaterialEditState(MessagePresenterMock.getInstance());
+        mes = new MaterialEditState(getMessagePresenterMock());
         mes.setMaterialBeforeEdit(s);
         mes = new MaterialEditState(
                 new Project(),
                 currentDate,
                 s,
                 s,
-                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), MessagePresenterMock.getInstance()), MessagePresenterMock.getInstance());
+                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), getMessagePresenterMock()), getMessagePresenterMock());
 
         mes.setCurrentVersiondate(currentDate);
         mib = new MaterialIndexBean();

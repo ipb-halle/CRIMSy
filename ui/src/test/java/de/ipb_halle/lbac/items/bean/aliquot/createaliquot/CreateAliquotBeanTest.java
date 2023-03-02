@@ -92,7 +92,7 @@ public class CreateAliquotBeanTest extends TestBase {
     @Inject
     private Event<LoginEvent> loginEvent;
 
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = getMessagePresenterMock();
 
     private Structure material;
     private Item parentItem;

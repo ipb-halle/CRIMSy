@@ -204,12 +204,11 @@ public class TermVectorEntityService implements Serializable {
      * @return
      */
     public int getSumOfAllWordsFromAllDocs() {
-        java.math.BigInteger sum = (java.math.BigInteger) this.em.createNativeQuery(SQL_TOTAL_WORD_COUNT).getSingleResult();
+        Long sum = (Long) this.em.createNativeQuery(SQL_TOTAL_WORD_COUNT).getSingleResult();
         if (sum == null) {
             return 0;
-        } else {
-            return sum.intValue();
         }
+        return sum.intValue();
     }
 
     /**

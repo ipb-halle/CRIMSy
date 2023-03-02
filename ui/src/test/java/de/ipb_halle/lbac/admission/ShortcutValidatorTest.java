@@ -42,7 +42,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 public class ShortcutValidatorTest extends TestBase {
     private FacesContext fc = null;
     private UIComponent comp = null;
-    private MessagePresenterMock presenterMock = MessagePresenterMock.getInstance();
+    private MessagePresenterMock presenterMock = getMessagePresenterMock();
 
     @Deployment
     public static WebArchive createDeployment() {

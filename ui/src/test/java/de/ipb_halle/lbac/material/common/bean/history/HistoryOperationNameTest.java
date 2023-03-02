@@ -80,7 +80,7 @@ public class HistoryOperationNameTest extends TestBase {
         names = new ArrayList<>();
         s = new Structure("H2O", 0d, 0d, 0, names, 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
-        mes = new MaterialEditState(MessagePresenterMock.getInstance());
+        mes = new MaterialEditState(getMessagePresenterMock());
         mes.setMaterialBeforeEdit(s);
         mes.setCurrentVersiondate(currentDate);
         mnb = new MaterialNameBean();

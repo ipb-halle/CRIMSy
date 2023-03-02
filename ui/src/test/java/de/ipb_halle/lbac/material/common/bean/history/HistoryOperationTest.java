@@ -138,7 +138,7 @@ public abstract class HistoryOperationTest extends TestBase {
                 currentDate,
                 composition,
                 composition,
-                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), MessagePresenterMock.getInstance()),MessagePresenterMock.getInstance());
+                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), getMessagePresenterMock()),getMessagePresenterMock());
         mes.setCurrentVersiondate(d_20001220);
         return mes;
     }
@@ -205,14 +205,14 @@ public abstract class HistoryOperationTest extends TestBase {
         materialBeanMock.setAcListService(aclistService);
         materialBeanMock.setHistoryOperation(instance);
         materialBeanMock.setSequenceInfos(new SequenceInformation());
-        materialBeanMock.createStorageInformationBuilder(MessagePresenterMock.getInstance(), materialService, composition);
+        materialBeanMock.createStorageInformationBuilder(getMessagePresenterMock(), materialService, composition);
         taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, biomaterial.getTaxonomy());
         materialBeanMock.setTaxonomyController(taxonomyController);
-        compositionBean = new MaterialCompositionBean(materialService, MessagePresenterMock.getInstance(), userBean);
+        compositionBean = new MaterialCompositionBean(materialService, getMessagePresenterMock(), userBean);
         compositionBean.startCompositionEdit(composition);
         materialBeanMock.setCompositionBean(compositionBean);
         materialBeanMock.setHazardController(new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(),
-                MessagePresenterMock.getInstance()));
+                getMessagePresenterMock()));
         return materialBeanMock;
     }
 

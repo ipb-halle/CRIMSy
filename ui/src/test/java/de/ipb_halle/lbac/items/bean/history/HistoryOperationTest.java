@@ -88,7 +88,7 @@ public class HistoryOperationTest extends TestBase {
         bean.setContainerController(
                 new ContainerController(
                         item, containerService,
-                        userBean, MessagePresenterMock.getInstance()));
+                        userBean, getMessagePresenterMock()));
         this.operation = new HistoryOperation(state, bean.getContainerController());
     }
 

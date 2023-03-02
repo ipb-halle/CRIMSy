@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
  * @author flange
  */
 public class SequenceSearchMaskValuesHolderTest {
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = new MessagePresenterMock();
     private SequenceSearchMaskValuesHolder valuesHolder;
 
     @BeforeEach
