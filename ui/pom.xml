@@ -646,7 +646,7 @@
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>fasta-search-service-models</artifactId>
-            <version>1.0.0</version>
+            <version>2.0.0</version>
         </dependency>
 
         <!-- Pentaho Reporting -->
