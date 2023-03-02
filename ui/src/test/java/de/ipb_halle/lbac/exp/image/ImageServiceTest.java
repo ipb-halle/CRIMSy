@@ -34,7 +34,6 @@ import de.ipb_halle.lbac.exp.image.Image;
 import de.ipb_halle.lbac.exp.image.ImageService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import jakarta.inject.Inject;
@@ -111,7 +110,7 @@ public class ImageServiceTest extends TestBase {
         images = (List<Object>) entityManagerService.doSqlQuery(SQL_LOAD_IMAGES);
         Assert.assertEquals(1, images.size());
         o = (Object[]) images.get(0);
-        Assert.assertEquals(image.getExpRecordId(), ((BigInteger) o[0]).longValue(), 0);
+        Assert.assertEquals(image.getExpRecordId(), ((Long) o[0]).longValue(), 0);
         Assert.assertEquals("title-edited", o[1]);
         Assert.assertEquals("preview-edited", o[2]);
         Assert.assertEquals("image-edited", o[3]);

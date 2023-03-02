@@ -144,10 +144,11 @@ public class MaterialCompositionBeanTest extends TestBase {
     private Project project, project1;
     private int publicAclId;
     private int structureId1, structureId2, biomaterialId;
-    private MessagePresenterMock messagePresenter = getMessagePresenterMock();
+    private MessagePresenterMock messagePresenter;
 
     @BeforeEach
     public void init() throws IOException {
+        messagePresenter = getMessagePresenterMock();
         bean.clearBean();
 
         benzene = ResourceUtils.readResourceFile("molfiles/Benzene.mol");

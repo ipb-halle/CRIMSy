@@ -90,7 +90,7 @@ public class ContainerControllerTest extends TestBase {
     @Inject
     private UserBeanMock userBean;
 
-    private MessagePresenterMock messagePresenter = getMessagePresenterMock();
+    private MessagePresenterMock messagePresenter; 
     private Item item;
     private Container c1;
     private Container c2;
@@ -99,6 +99,7 @@ public class ContainerControllerTest extends TestBase {
 
     @BeforeEach
     public void init() {
+        messagePresenter = getMessagePresenterMock();
         item = new Item();
         item.setId(1);
 

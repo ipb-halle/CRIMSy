@@ -105,10 +105,11 @@ public class SequenceSearchIntegrationTest extends TestBase {
     private SequenceSearchMaskController searchMaskController;
     private SequenceSearchMaskValuesHolder valuesHolder;
     private SequenceSearchResultsTableController tableController;
-    private MessagePresenterMock messagePresenter = getMessagePresenterMock();
+    private MessagePresenterMock messagePresenter;
 
     @BeforeEach
     public void init() throws FastaResultParserException {
+        messagePresenter = getMessagePresenterMock();
         messagePresenter.resetMessages();
 
         Reader reader = ResourceUtils.readerForResourceFile("fastaresults/results7.txt");

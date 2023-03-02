@@ -97,13 +97,14 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
     @Inject
     private Event<LoginEvent> loginEvent;
 
-    private MessagePresenterMock messagePresenter = getMessagePresenterMock();
+    private MessagePresenterMock messagePresenter; 
 
     private Structure material;
     private Item parentItem;
 
     @BeforeEach
     public void before() {
+        messagePresenter = getMessagePresenterMock();
         userBeanMock.setCurrentAccount(publicUser);
 
         // initializes the user in ItemOverviewBean
