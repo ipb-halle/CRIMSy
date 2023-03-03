@@ -18,11 +18,17 @@
 package de.ipb_halle.lbac.file.mock;
 
 import de.ipb_halle.lbac.collections.Collection;
+import java.nio.file.Paths;
 
 /**
  *
  * @author fmauz
  */
 public class FileUploadCollectionMock extends Collection {
-    protected String COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
+    public static String COLLECTIONS_MOCK_FOLDER = "target/test-classes/collections";
+
+    @Override
+    public String getBaseFolder() {
+        return Paths.get(COLLECTIONS_MOCK_FOLDER, getName()).toString();
+    }
 }

@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
+import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.NodeService;
@@ -61,7 +62,7 @@ public class DocumentCreator {
     }
 
     public Collection uploadDocuments(User user, String collectionName, String... files) throws FileNotFoundException, InterruptedException {
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
         this.user = user;
         createAndSaveNewCol(collectionName);
         for (String file : files) {
@@ -80,7 +81,7 @@ public class DocumentCreator {
         col.setOwner(user);
         col.setStoragePath("/");
         col = collectionService.save(col);
-        col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
+        col.COLLECTIONS_BASE_FOLDER = FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER;
     }
 
     private void uploadDocument(String documentName) throws FileNotFoundException, InterruptedException {
@@ -94,7 +95,7 @@ public class DocumentCreator {
                 asynContext,
                 collectionService,
                 termVectorEntityService,
-                "target/test-classes/collections");
+                FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
 
         upload.run();
         while (!asynContext.isComplete()) {

@@ -45,6 +45,7 @@ import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
@@ -571,12 +572,12 @@ public class SearchServiceTest extends TestBase {
 
     private void deleteDocuments() {
 
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
         entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE from termvectors");
         entityManagerService.doSqlUpdate("DELETE from files");
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
     }
 
     private void createMaterials() {

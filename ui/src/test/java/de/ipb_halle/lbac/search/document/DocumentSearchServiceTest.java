@@ -21,12 +21,13 @@ package de.ipb_halle.lbac.search.document;
  *
  * @author fmauz
  */
-import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.base.DocumentCreator;
+import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
@@ -77,12 +78,12 @@ public class DocumentSearchServiceTest extends TestBase {
 
     @BeforeEach
     public void init() {
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
         entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE from termvectors");
         entityManagerService.doSqlUpdate("DELETE from files");
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
 
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
@@ -107,7 +108,7 @@ public class DocumentSearchServiceTest extends TestBase {
 
     @AfterEach
     public void cleanUp() {
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE FROM termvectors");
         if (col != null && col.getId() != null) {

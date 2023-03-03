@@ -24,6 +24,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
+import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
 import de.ipb_halle.lbac.file.mock.HttpServletResponseMock.WriterMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -63,13 +64,13 @@ public class UploadToColTest extends TestBase {
 
     @BeforeEach
     public void init() {
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
     @AfterEach
     public void cleanUp() {
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE FROM termvectors");
         if (col != null && col.getId() != null) {
@@ -89,7 +90,7 @@ public class UploadToColTest extends TestBase {
                         col.getName()),
                 collectionService,
                 termVectorEntityService,
-                "target/test-classes/collections");
+                FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
 
         upload.run();
         Map<String, Object> cmap = new HashMap<>();
@@ -124,7 +125,7 @@ public class UploadToColTest extends TestBase {
                         "test-coll-does-not-exist"),
                 collectionService,
                 termVectorEntityService,
-                "target/test-classes/collections");
+                FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
 
         upload.run();
         WriterMock writermock = ((WriterMock) upload.response.getWriter());
@@ -145,7 +146,7 @@ public class UploadToColTest extends TestBase {
                         col.getName()),
                 collectionService,
                 termVectorEntityService,
-                "target/test-classes/collections");
+                FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
 
         upload.run();
         Map<String, Integer> terms = termVectorEntityService.getTermVector(Arrays.asList(upload.fileId), 100);
@@ -190,7 +191,7 @@ public class UploadToColTest extends TestBase {
         col.setOwner(publicUser);
         col.setStoragePath("/");
         col = collectionService.save(col);
-        col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
+        col.COLLECTIONS_BASE_FOLDER = FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER;
     }
 
 }

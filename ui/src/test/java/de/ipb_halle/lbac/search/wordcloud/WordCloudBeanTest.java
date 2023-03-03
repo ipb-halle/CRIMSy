@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.globals.KeyManager;
@@ -25,6 +26,7 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
@@ -32,7 +34,6 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
-import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
@@ -81,7 +82,7 @@ public class WordCloudBeanTest extends TestBase {
     public void before() throws IOException {
         initializeBaseUrl();
         initializeKeyStoreFactory();
-        FileUtils.deleteDirectory(Paths.get("target/test-classes/collections").toFile());
+        FileUtils.deleteDirectory(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
         entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE from termvectors");
@@ -104,6 +105,7 @@ public class WordCloudBeanTest extends TestBase {
                     "Document18.pdf");
             collectionBean.getCollectionSearchState().addCollections(Arrays.asList(col));
         } catch (FileNotFoundException | InterruptedException ex) {
+            logger.error("File Upload Error", (Throwable) ex);
             throw new RuntimeException("Could not upload file");
         }
         Assert.assertNotNull(wordCloudBean);

@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.FileObject;
+import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -90,7 +91,7 @@ public class FileSaverTest extends TestBase {
         col.setOwner(publicUser);
         col.setStoragePath("/");
         col = collectionService.save(col);
-        col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
+        col.COLLECTIONS_BASE_FOLDER = FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER;
         
         File f = new File(exampleDocsRootFolder + "Document1.pdf");
         FileInputStream stream = new FileInputStream(f);
