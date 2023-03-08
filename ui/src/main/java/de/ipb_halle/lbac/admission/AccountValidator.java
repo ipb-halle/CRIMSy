@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 import java.io.Serializable;
@@ -39,6 +38,8 @@ import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("AccountValidator")
 public class AccountValidator implements Validator,Serializable {
+
+    @Inject
     private MessagePresenter presenter;
 
     @Inject
@@ -54,7 +55,6 @@ public class AccountValidator implements Validator,Serializable {
      */
     public AccountValidator() {
         logger = LogManager.getLogger(this.getClass().getName());
-        presenter = JsfMessagePresenter.getInstance();
     }
 
     /**

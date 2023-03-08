@@ -17,9 +17,8 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-
-import java.io.Serializable;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import java.io.Serializable;
 /**
  *
  * @author fmauz
@@ -30,11 +29,9 @@ public class TaxonomyValidityController implements Serializable {
 
     protected TaxonomyBean taxonomyBean;
 
-    public TaxonomyValidityController(
-            TaxonomyBean taxonomyBean,
-            MessagePresenter messagePresenter) {
+    public TaxonomyValidityController(TaxonomyBean taxonomyBean, MessagePresenter presenter) {
         this.taxonomyBean = taxonomyBean;
-        this.messagePresenter = messagePresenter;
+        this.messagePresenter = presenter;
     }
 
     public boolean checkInputValidity() {

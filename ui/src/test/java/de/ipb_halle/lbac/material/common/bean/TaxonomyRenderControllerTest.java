@@ -87,7 +87,7 @@ public class TaxonomyRenderControllerTest extends TestBase {
         diff.initialise(1, user_1.getId(), creationDate1);
         taxonomy_2.getHistory().addDifference(diff);
 
-        taxonomyBean = new TaxonomyBeanMock();
+        taxonomyBean = new TaxonomyBeanMock(getMessagePresenterMock());
         TreeNode treeNode = new DefaultTreeNode(taxonomy_1, null);
         taxonomyBean.setSelectedTaxonomy(treeNode);
         taxonomyBean.init(memberService, taxonomyService);

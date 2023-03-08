@@ -28,7 +28,6 @@ import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 /**
@@ -48,6 +47,7 @@ public class PluginSettingsDialogControllerBean implements Serializable {
 
     private Logger logger;
 
+    @Inject
     private MessagePresenter messagePresenter;
 
     private String molPluginType;
@@ -64,15 +64,12 @@ public class PluginSettingsDialogControllerBean implements Serializable {
     /**
      * Initializes the bean state:
      * <ul>
-     * <li>initialize the message presenter for i18n</li>
      * <li>set the plugin types to their preferred value</li>
      * <li>set the preview chemical structure to benzene</li>
      * </ul>
      */
     @PostConstruct
     public void init() {
-        this.messagePresenter = JsfMessagePresenter.getInstance();
-
         this.molPluginType = userBean.getPluginSettings()
                 .getPreferredMolPluginType();
         this.previewStructure = benzene;

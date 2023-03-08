@@ -142,8 +142,9 @@ public class MaterialBean implements Serializable {
 
     protected TaxonomySelectionController taxonomyController;
     private TissueController tissueController;
+
     @Inject
-    private transient MessagePresenter messagePresenter;
+    protected transient MessagePresenter messagePresenter;
 
     protected MaterialEditState materialEditState;
 
@@ -179,7 +180,8 @@ public class MaterialBean implements Serializable {
                     hazardService,
                     currentMaterialType,
                     true,
-                    new HashMap<>(), messagePresenter);
+                    new HashMap<>(),
+                    messagePresenter);
             storageInformationBuilder = new StorageInformationBuilder(
                     messagePresenter,
                     materialService
@@ -204,7 +206,8 @@ public class MaterialBean implements Serializable {
                     hazardService,
                     m.getType(),
                     acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()),
-                    m.getHazards().getHazards(), messagePresenter);
+                    m.getHazards().getHazards(),
+                    messagePresenter);
             materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m.copyMaterial(), hazardController, messagePresenter);
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());

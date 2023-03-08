@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -58,7 +58,6 @@ import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.consumable.Consumable;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -109,7 +108,7 @@ public class MaterialBeanTest extends TestBase {
     private TreeNode nodeToOperateOn;
 
     @Inject
-    private MateriaBeanMock instance;
+    private MaterialBeanMock instance;
 
     @Inject
     private IndexService indexService;
@@ -139,7 +138,7 @@ public class MaterialBeanTest extends TestBase {
         ACList publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
         createTaxonomyTreeInDB(publicReadAcl.getId(), publicUser.getId());
         /**
-         * instance = new MateriaBeanMock();
+         * instance = new MaterialBeanMock();
          * instance.setAcListService(aclistService);
          * instance.setHazardService(hazardService);
          *
@@ -159,6 +158,7 @@ public class MaterialBeanTest extends TestBase {
         userBean.setCurrentAccount(publicUser);
         instance.setUserBean(userBean);
         
+        instance.setMessagePresenter(getMessagePresenterMock());        // review - should work by injection
         instance.getMaterialOverviewBean().setCurrentAccount(new LoginEvent(publicUser));
 
         material = creationTools.createStructure(project);
@@ -624,9 +624,8 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(ItemBean.class)
                         .addClass(ItemOverviewBean.class)
                         .addClass(MaterialIndexBean.class)
-                        .addClass(MessagePresenterMock.class)
                         .addClass(MaterialCompositionBean.class)
-                        .addClass(MateriaBeanMock.class);
+                        .addClass(MaterialBeanMock.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));

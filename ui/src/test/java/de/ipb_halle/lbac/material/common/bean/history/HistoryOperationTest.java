@@ -46,7 +46,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.project.Project;
@@ -94,7 +94,7 @@ public abstract class HistoryOperationTest extends TestBase {
     protected MaterialIndexBean mib;
     protected Random random = new Random();
     protected TaxonomySelectionController taxonomyController;
-    protected MateriaBeanMock materialBeanMock;
+    protected MaterialBeanMock materialBeanMock;
     protected Date d_20001220, d_20001020;
     protected int structureId1, structureId2, biomaterialId;
     protected UserBeanMock userBean;
@@ -192,10 +192,11 @@ public abstract class HistoryOperationTest extends TestBase {
         d_20001020 = c.getTime();
     }
 
-    private MateriaBeanMock createMaterialBeanMock() {
+    private MaterialBeanMock createMaterialBeanMock() {
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-        materialBeanMock = new MateriaBeanMock();
+        materialBeanMock = new MaterialBeanMock();
+        materialBeanMock.setMessagePresenter(getMessagePresenterMock());
         materialBeanMock.setMaterialEditState(mes);
         materialBeanMock.setHazardService(hazardService);
         materialBeanMock.setTaxonomyService(taxonomyService);
@@ -205,7 +206,7 @@ public abstract class HistoryOperationTest extends TestBase {
         materialBeanMock.setAcListService(aclistService);
         materialBeanMock.setHistoryOperation(instance);
         materialBeanMock.setSequenceInfos(new SequenceInformation());
-        materialBeanMock.createStorageInformationBuilder(getMessagePresenterMock(), materialService, composition);
+        materialBeanMock.createStorageInformationBuilder(materialService, composition);
         taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, biomaterial.getTaxonomy());
         materialBeanMock.setTaxonomyController(taxonomyController);
         compositionBean = new MaterialCompositionBean(materialService, getMessagePresenterMock(), userBean);

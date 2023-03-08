@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.service.InfoObjectService;
 
@@ -60,7 +59,8 @@ public class SystemSettings implements Serializable {
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
 
-    protected MessagePresenter messagePresenter;
+//  @Inject
+//  protected MessagePresenter messagePresenter;
     private String customDsgvoText = "";
 
     public SystemSettings() {
@@ -81,7 +81,6 @@ public class SystemSettings implements Serializable {
         if (ie != null) {
             customDsgvoText = ie.getValue();
         }
-        messagePresenter = JsfMessagePresenter.getInstance();
     }
 
     /**
@@ -160,7 +159,7 @@ public class SystemSettings implements Serializable {
         io.setOwner(this.globalAdmissionContext.getAdminAccount());
         io.setACList(this.globalAdmissionContext.getAdminOnlyACL());
         infoObjectService.save(io);
-        messagePresenter.info("SETTINGS_SAVED");
+//      messagePresenter.info("SETTINGS_SAVED");
     }
 
     public void setCustomDsgvoString(String text) {

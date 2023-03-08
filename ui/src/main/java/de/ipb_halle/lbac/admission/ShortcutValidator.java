@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 import java.io.Serializable;
@@ -46,6 +45,7 @@ public class ShortcutValidator implements Validator,Serializable {
      */
     private static final Pattern pattern = Pattern.compile("^[A-Za-z]+$");
 
+    @Inject
     private MessagePresenter presenter;
 
     @Inject
@@ -61,7 +61,6 @@ public class ShortcutValidator implements Validator,Serializable {
      */
     public ShortcutValidator() {
         logger = LogManager.getLogger(this.getClass().getName());
-        presenter = JsfMessagePresenter.getInstance();
     }
 
     /**

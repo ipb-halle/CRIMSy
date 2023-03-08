@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.container.bean.CallBackController;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 import de.ipb_halle.lbac.service.NodeService;
@@ -85,6 +84,8 @@ public class UserMgrBean implements Serializable {
     private MODE mode;
 
     private String tempPassword;
+
+    @Inject
     private MessagePresenter messagePresenter;
     protected CallBackController callBackController = new CallBackController();
 
@@ -129,7 +130,6 @@ public class UserMgrBean implements Serializable {
     @PostConstruct
     private void initUserMgrBean() {
         // uses nodeService, which is not available in constructor!
-        messagePresenter = JsfMessagePresenter.getInstance();
         initUser();
     }
 

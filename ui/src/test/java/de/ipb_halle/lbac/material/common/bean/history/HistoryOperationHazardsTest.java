@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
@@ -111,7 +111,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(10, false, "GHS05", 1));
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
-        MateriaBeanMock mock = new MateriaBeanMock();
+        MaterialBeanMock mock = new MaterialBeanMock();
         mock.setMaterialEditState(mes);
         mock.setHazardService(hazardService);
         instance = new HistoryOperation(mock);

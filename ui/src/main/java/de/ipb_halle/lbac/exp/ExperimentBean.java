@@ -36,7 +36,6 @@ import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
 import de.ipb_halle.lbac.globals.ACObjectController;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -119,7 +118,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ExpProjectController projectController;
-    protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+
+    @Inject
+    protected MessagePresenter messagePresenter;
     private List<Experiment> experiments = new ArrayList<>();
     private List<Experiment> templates = new ArrayList<>();
     private CreationState creationState = CreationState.CREATE;

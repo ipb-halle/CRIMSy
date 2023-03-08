@@ -30,18 +30,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 
 /**
  * @author fmauz
  */
 public class MaterialNameValidatorTest {
-    private MateriaBeanMock materialBean;
+    private MaterialBeanMock materialBean;
     private MaterialNameValidator validator;
 
     @BeforeEach
     public void init() {
-        materialBean = new MateriaBeanMock();
+        materialBean = new MaterialBeanMock();
         materialBean.setMaterialNameBean(new MaterialNameBean());
 
         validator = new MaterialNameValidator();

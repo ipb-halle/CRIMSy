@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupOrchestrator;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 import de.ipb_halle.lbac.service.NodeService;

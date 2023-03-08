@@ -21,10 +21,10 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.service.ItemLabelService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import jakarta.inject.Inject;
 
 /**
  *
@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Validator {
 
+    @Inject
     private MessagePresenter messagePresenter;
     boolean valid = true;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -41,7 +42,6 @@ public class Validator {
     public Validator(ContainerPositionService containerPositionService, ItemLabelService labelService) {
         this.containerPositionService = containerPositionService;
         this.labelService = labelService;
-        messagePresenter = JsfMessagePresenter.getInstance();
     }
 
     public boolean itemValidToSave(

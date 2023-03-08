@@ -73,7 +73,7 @@ public class TaxonomyBeanTest extends TestBase {
         Integer userGroups = GlobalAdmissionContext.getPublicReadACL().getId();
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         createTaxonomyTreeInDB(userGroups, owner.getId());
-        bean = new TaxonomyBeanMock();
+        bean = new TaxonomyBeanMock(getMessagePresenterMock());
         bean.setTaxonomyService(taxonomyService);
         bean.init(memberService, taxonomyService);
 

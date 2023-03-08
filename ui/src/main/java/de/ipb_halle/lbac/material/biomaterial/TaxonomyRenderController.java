@@ -46,12 +46,12 @@ public class TaxonomyRenderController implements Serializable {
             TaxonomyNameController nameController,
             TaxonomyLevelController levelController,
             MemberService memberService,
-            MessagePresenter messagePresenter) {
+            MessagePresenter presenter) {
         this.taxonomyBean = taxonomyBean;
         this.nameController = nameController;
         this.levelController = levelController;
         this.memberService = memberService;
-        this.messagePresenter = messagePresenter;
+        this.messagePresenter = presenter;
     }
 
     /**

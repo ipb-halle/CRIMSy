@@ -24,7 +24,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.mocks.IndexServiceMock;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Arrays;
 import jakarta.inject.Inject;
@@ -48,13 +48,13 @@ public class MaterialIndexBeanTest extends TestBase {
     @Inject
     private IndexServiceMock indexServiceMock;
     private MaterialIndexBean instance;
-    private MateriaBeanMock materialEditBeanMock;
+    private MaterialBeanMock materialEditBeanMock;
 
     @BeforeEach
     public void init() {
         instance = new MaterialIndexBean();
         instance.setIndexService(indexServiceMock);
-        materialEditBeanMock = new MateriaBeanMock();
+        materialEditBeanMock = new MaterialBeanMock();
         materialEditBeanMock.setMode(MaterialBean.Mode.EDIT);
         instance.setMaterialEditBean(materialEditBeanMock);
         instance.init();

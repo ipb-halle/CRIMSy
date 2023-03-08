@@ -31,7 +31,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import org.hibernate.validator.constraints.NotBlank;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.timezone.TimeZonesBean;
 import de.ipb_halle.lbac.timezone.ZoneIdDisplayWrapper;
@@ -59,6 +58,7 @@ public class TimeZoneSettingsDialogControllerBean implements Serializable {
 
     private Locale clientLocale;
 
+    @Inject
     private MessagePresenter messagePresenter;
 
     /**
@@ -70,14 +70,12 @@ public class TimeZoneSettingsDialogControllerBean implements Serializable {
     /**
      * Initializes the bean state:
      * <ul>
-     * <li>initialize the message presenter for i18n</li>
      * <li>set the time zone from its preferred value</li>
      * <li>initialize the locale</li>
      * </ul>
      */
     @PostConstruct
     public void init() {
-        messagePresenter = JsfMessagePresenter.getInstance();
         timeZone = userBean.getTimeZoneSettings().getPreferredTimeZone();
         clientLocale = FacesContext.getCurrentInstance().getViewRoot()
                 .getLocale();

@@ -19,10 +19,10 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import java.io.Serializable;
 import java.util.HashMap;
 import jakarta.annotation.PostConstruct;
@@ -56,6 +56,8 @@ public class TaxonomyBean implements Serializable {
     protected MemberService memberService;
     @Inject
     protected TaxonomyService taxonomyService;
+    @Inject
+    protected MessagePresenter messagePresenter;
 
     protected User currentUser;
     protected TaxonomyHistoryController historyController;
@@ -78,9 +80,9 @@ public class TaxonomyBean implements Serializable {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
         levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
-        validityController = new TaxonomyValidityController(this, JsfMessagePresenter.getInstance());
+        validityController = new TaxonomyValidityController(this, messagePresenter);
         historyController = new TaxonomyHistoryController(this, nameController, taxonomyService, memberService);
-        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, JsfMessagePresenter.getInstance());
+        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, messagePresenter);
         treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
     }
 

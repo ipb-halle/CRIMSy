@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.navigation.Navigator;
@@ -123,7 +122,8 @@ public class ItemBean implements Serializable {
     private String customLabelValue;
     private boolean userHasEditRight = false;
 
-    protected transient MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+    @Inject
+    protected transient MessagePresenter messagePresenter;
 
     public enum Mode {
         CREATE, EDIT, HISTORY

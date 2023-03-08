@@ -36,7 +36,6 @@ import de.ipb_halle.lbac.reporting.report.ReportMgr;
 import de.ipb_halle.lbac.reporting.report.ReportType;
 import de.ipb_halle.lbac.util.resources.ResourceLocation;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.composition.Concentration;
@@ -78,6 +77,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private NamePresenter namePresenter;
     private MaterialSearchMaskController searchController;
     private MaterialTableController tableController;
+    @Inject
     private MessagePresenter messagePresenter;
 
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
@@ -132,7 +132,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.SEQUENCE,
                         MaterialType.STRUCTURE));
         namePresenter = new NamePresenter();
-        messagePresenter = JsfMessagePresenter.getInstance();
     }
 
     /**

@@ -40,28 +40,36 @@ import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 
 /**
  *
  * @author fmauz
  */
 @SessionScoped
-public class MateriaBeanMock extends MaterialBean {
+public class MaterialBeanMock extends MaterialBean {
 
     private static final long serialVersionUID = 1L;
 
-    public MateriaBeanMock() {
-        this.materialEditState = new MaterialEditState(new MessagePresenterMock());
+    boolean rightToEdit = true;
+
+    @PostConstruct
+    private void initMock() {
+        this.materialEditState = new MaterialEditState(messagePresenter);
     }
 
-    public void createStorageInformationBuilder(MessagePresenter messagePresenter,
-            MaterialService materialService,
+    public void createStorageInformationBuilder(MaterialService materialService,
             Material material) {
         this.storageInformationBuilder = new StorageInformationBuilder(messagePresenter, materialService, material);
     }
 
-    boolean rightToEdit = true;
+    public void setMessagePresenter(MessagePresenter p) {
+        this.messagePresenter = p;
+        this.materialEditState = new MaterialEditState(messagePresenter);
+    }
+
 
     public void setRightToEdit(boolean right) {
         this.rightToEdit = right;
