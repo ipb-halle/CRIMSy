@@ -81,6 +81,7 @@ public class HistoryOperationStructureTest extends TestBase {
         c.set(2000, 10, 20);
         d_20001020 = c.getTime();
         materialBean = new MaterialBeanMock();
+        materialBean.setMessagePresenter(getMessagePresenterMock());
         s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState(getMessagePresenterMock());
