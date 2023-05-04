@@ -17,12 +17,13 @@
  */
 package de.ipb_halle.lbac.material;
 
-import jakarta.enterprise.inject.Any;
-import jakarta.enterprise.inject.Produces;
-import jakarta.enterprise.context.SessionScoped;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.i18n.UIMessage;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.context.SessionScoped;
+import java.io.Serializable;
 
 /**
  *
@@ -36,7 +37,8 @@ import de.ipb_halle.lbac.i18n.UIMessage;
  */
 @SessionScoped
 @Any
-public class JsfMessagePresenter implements MessagePresenter {
+public class JsfMessagePresenter implements MessagePresenter, Serializable {
+    private final static long serialVersionUID = 1L;
     private static JsfMessagePresenter instance;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 

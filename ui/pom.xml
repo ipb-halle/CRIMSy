@@ -74,6 +74,12 @@
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
+        <repository>
+          <id>sonatype</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases><enabled>false</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
     </repositories>
 
     <!-- JavaDoc -->
@@ -364,7 +370,7 @@
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <version>3.0.2</version>
+            <version>4.0.0</version>
             <scope>provided</scope>
         </dependency>
         
@@ -380,7 +386,7 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
+            <version>4.0.4</version>
             <scope>provided</scope>
         </dependency>
         
@@ -404,7 +410,8 @@
         <dependency>
             <groupId>net.bootsfaces</groupId>
             <artifactId>bootsfaces</artifactId>
-            <version>1.4.2</version>
+            <version>1.6.0-SNAPSHOT</version>
+            <classifier>jakarta</classifier>
             <scope>compile</scope>
         </dependency>
 
@@ -670,7 +677,7 @@
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>molecularfaces</artifactId>
-            <version>0.4.0</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <!-- The OWASP JSON sanitizer is used by the

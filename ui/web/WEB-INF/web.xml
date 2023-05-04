@@ -17,7 +17,10 @@
   limitations under the License.
   
 -->
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+<web-app xmlns="http://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_4_0.xsd"
+         version="4.0">
     <description>Leibniz Bioactives Cloud</description>
     <display-name>Leibniz Bioactives Cloud (UI and REST)</display-name>
 
@@ -43,11 +46,9 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-<!-- 2023-03-07: revert to Jakarta.Faces 3.0.2 
     <listener>
         <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
     </listener>
--->
 
     <!--
         Tells Bootsfaces to download the components (Datatable, JQuery, 
