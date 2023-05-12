@@ -22,7 +22,10 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
+import java.util.LinkedHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,12 +45,16 @@ public class MaterialEditState implements Serializable {
     private Project defaultProject;
     private MaterialHazardBuilder hazardController;
 
+    private LinkedHashMap<Integer, Project> possibleProjects;
+
     private transient MessagePresenter messagePresenter;
 
     public MaterialEditState(MessagePresenter messagePresenter) {        
+        possibleProjects = new LinkedHashMap<> ();
         defaultProject = new Project(
                 ProjectType.DUMMY_PROJECT, 
                 messagePresenter.presentMessage("materialCreation_dummyProject"));
+        possibleProjects.put(0, defaultProject);
         currentProject = defaultProject;
     }
 
@@ -58,24 +65,38 @@ public class MaterialEditState implements Serializable {
             Material materialToEdit,
             MaterialHazardBuilder hazards,
             MessagePresenter messagePresenter) {
+        possibleProjects = new LinkedHashMap<> ();
         this.currentProject = currentProject;
         this.currentVersiondate = currentVersiondate;
         this.materialBeforeEdit = materialBeforeEdit;
         this.materialToEdit = materialToEdit;
         this.hazardController = hazards;
+    }
 
-        defaultProject = new Project(
-                ProjectType.DUMMY_PROJECT, 
-                messagePresenter.presentMessage("materialCreation_dummyProject"));
+    public Collection<Project> getPossibleProjects() {
+        return possibleProjects.values();
+    }
 
+    protected void addPossibleProjects(Collection<Project> projects) {
+        for(Project p : projects) {
+            possibleProjects.put(p.getId(), p);
+        }
     }
 
     public Project getCurrentProject() {
         return currentProject;
     }
 
-    public void setCurrentProject(Project currentProject) {
-        this.currentProject = currentProject;
+    public void setCurrentProject(Project p) {
+        currentProject = p;
+    }
+
+    public int getCurrentProjectId() {
+        return currentProject.getId();
+    }
+
+    public void setCurrentProjectId(int id) {
+        this.currentProject = Objects.requireNonNull(possibleProjects.get(id));
     }
 
     public Date getCurrentVersiondate() {
@@ -100,10 +121,6 @@ public class MaterialEditState implements Serializable {
 
     public void setMaterialToEdit(Material materialToEdit) {
         this.materialToEdit = materialToEdit;
-    }
-
-    public Project getDefaultProject() {
-        return defaultProject;
     }
 
     public void changeVersionDateToPrevious(Date date) {

@@ -68,7 +68,7 @@
         <param-value>false</param-value>
     </context-param>
     <context-param>
-        <param-name>facelets.LIBRARIES</param-name>
+        <param-name>jakarta.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/nwc.taglib.xml</param-value>
     </context-param>
     <context-param>

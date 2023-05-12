@@ -121,7 +121,6 @@ public class MaterialBean implements Serializable {
 
     protected MaterialType currentMaterialType = null;
 
-    protected List<Project> possibleProjects = new ArrayList<>();
     protected Mode mode;
     protected HazardInformation hazards;
 
@@ -171,10 +170,8 @@ public class MaterialBean implements Serializable {
             initState();
             compositionBean.clearBean();
             materialEditState = new MaterialEditState(messagePresenter);
+            materialEditState.addPossibleProjects(projectBean.getReadableProjects());
             mode = Mode.CREATE;
-            possibleProjects.clear();
-            possibleProjects.add(materialEditState.getDefaultProject());
-            possibleProjects.addAll(projectBean.getReadableProjects());
             taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, taxonomyService.loadTaxonomyById(1));
             hazardController = new MaterialHazardBuilder(
                     hazardService,
@@ -209,8 +206,7 @@ public class MaterialBean implements Serializable {
                     m.getHazards().getHazards(),
                     messagePresenter);
             materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m.copyMaterial(), hazardController, messagePresenter);
-            possibleProjects.clear();
-            possibleProjects.addAll(projectBean.getReadableProjects());
+            materialEditState.addPossibleProjects(projectBean.getReadableProjects());
             currentMaterialType = m.getType();
             materialNameBean.getNames().addAll(m.getCopiedNames());
             materialIndexBean.getIndices().addAll(m.getIndices());
@@ -316,10 +312,6 @@ public class MaterialBean implements Serializable {
             logger.error("stack trace:", (Throwable) e);
         }
 
-    }
-
-    public List<Project> getPossibleProjects() {
-        return possibleProjects;
     }
 
     public HazardInformation getHazards() {

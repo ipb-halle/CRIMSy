@@ -407,10 +407,13 @@
         </dependency>
         
         <!-- Ui Library for jsf-->
+        <!-- According to https://github.com/TheCoder4eu/BootsFaces-OSP/issues/1189 
+        there will be no official JakartaEE support BootsFaces, 
+        i.e. we need to get rid of Bootsfaces -->
         <dependency>
             <groupId>net.bootsfaces</groupId>
             <artifactId>bootsfaces</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
+            <version>1.6.0-JakartaEE</version>
             <classifier>jakarta</classifier>
             <scope>compile</scope>
         </dependency>
@@ -541,7 +544,8 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.4.3</version>
+            <version>42.6.0</version>
+            <scope>provided</scope>
         </dependency>
         
         <!--hibernate support for postgres json, jsonb field types -->
@@ -694,7 +698,8 @@
         <dependency>
             <groupId>org.ocpsoft.prettytime</groupId>
             <artifactId>prettytime-integration-jsf</artifactId>
-            <version>5.0.6.Final</version>
+            <!-- ToDo: version migrated to JakartaEE; available in local maven cache only -->
+            <version>5.1-JakartaEE</version>
         </dependency>
 
         <!-- Model classes used by the sequence search REST API -->

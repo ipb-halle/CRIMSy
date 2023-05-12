@@ -20,7 +20,6 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
@@ -46,7 +45,7 @@
                 modal="true"
                 resizable="false">
                 <div class="upload-collection-settings">
-                    <b:selectOneMenu
+                    <p:selectOneMenu
                         label="#{msgs.fileupload_modal_uploadToCollectionText}"
                         styleClass="upload-collection">
                         <f:selectItems
@@ -54,19 +53,19 @@
                             var="c"
                             itemLabel="#{c.name}"
                             itemValue="#{c.name}" />
-                    </b:selectOneMenu>
+                    </p:selectOneMenu>
                 </div>
                 <h:panelGroup
                     id="fine-uploader-manual-trigger"
                     layout="block" />
 
                 <f:facet name="footer">
-                    <b:button
+                    <p:button
                         value="#{msgs.fileupload_modal_button_clear}"
                         style="margin-bottom: 10px;"
                         look="primary"
                         onclick="$('#fine-uploader-manual-trigger').fineUploader('clearStoredFiles');" />
-                    <b:button
+                    <p:button
                         value="#{msgs.fileupload_modal_button_close}"
                         style="margin-bottom: 10px;"
                         look="primary"

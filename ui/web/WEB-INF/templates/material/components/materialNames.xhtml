@@ -21,7 +21,6 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -33,7 +32,7 @@
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
                 <p:outputPanel
                     rendered="#{materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
-                    <b:dataTable
+                    <p:dataTable
                         id="materialNameTable"
                         styleClass="materialNameTableClass materialNamesPanelClass"
                         paginated="false"
@@ -41,7 +40,7 @@
                         searching="false"
                         var="mName"
                         saveState="false">
-                        <b:dataTableColumn
+                        <p:column
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_name}"
                             styleClass="materialNameText">
@@ -55,24 +54,24 @@
                                 <f:converter converterId="InputConverter" />
                             </p:inputText>
 
-                        </b:dataTableColumn>
-                        <b:dataTableColumn
+                        </p:column>
+                        <p:column
                             styleClass="materialNameLanguage"
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_language}">
-                            <b:selectOneMenu
+                            <p:selectOneMenu
                                 disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
                                 value="#{mName.language}">
                                 <f:selectItems 
                                     value="#{materialBean.materialNameBean.getPossibleLanguages()}"/>
-                            </b:selectOneMenu>
-                        </b:dataTableColumn>
-                        <b:dataTableColumn
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column
                             styleClass="materialNameAction"
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_action}">
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-double-up "
+                            <p:commandButton style="padding: 0 4px;"
+                                             icon="fa fa-angle-double-up "
                                              look="link"
                                              ajax="true"
                                              process="@(.materialNameTableClass)"
@@ -83,8 +82,8 @@
                                              tooltip="#{msgs.materialCreation_panelNames_tooltip_highestRank}"
                                              onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHEST');"
                                              type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-up"
+                            <p:commandButton style="padding: 0 4px;"
+                                             icon="fa fa-angle-up"
                                              look="link"
                                              ajax="true"
                                              process="@(.materialNameTableClass)"
@@ -95,8 +94,8 @@
                                              tooltip="#{msgs.materialCreation_panelNames_tooltip_higher}"
                                              onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHER');"
                                              type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-down "
+                            <p:commandButton style="padding: 0 4px;"
+                                             icon="fa fa-angle-down "
                                              look="link"
                                              ajax="true"
                                              process="@(.materialNameTableClass)"
@@ -107,8 +106,8 @@
                                                          'LOWER')}"
                                              onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWER');"
                                              type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-double-down"
+                            <p:commandButton style="padding: 0 4px;"
+                                             icon="fa fa-angle-double-down"
                                              look="link"
                                              ajax="true"
                                              update="@(.materialNameTableClass)"
@@ -119,8 +118,8 @@
                                              tooltip="#{msgs.materialCreation_panelNames_tooltip_lowestRank}"
                                              onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWEST');"
                                              type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon="trash"
+                            <p:commandButton style="padding: 0 4px;"
+                                             icon="fa fa-trash"
                                              look="link"
                                              ajax="true"
                                              process="@(.materialNameTableClass)"
@@ -131,8 +130,8 @@
                                              onclick="ajax:materialBean.materialNameBean.removeName(mName);"
                                              tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"
                                              type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-plus "
+                            <p:commandButton style="padding: 0 4px;"
+                                             icon="fa fa-plus "
                                              look="link"
                                              onclick="ajax:materialBean.materialNameBean.addNewName();"
                                              ajax="true"
@@ -143,8 +142,8 @@
                                              update="@(.materialNameTableClass)"
                                              tooltip="#{msgs.materialCreation_panelNames_tooltip_add}"
                                              type="button"/>
-                        </b:dataTableColumn>
-                    </b:dataTable>
+                        </p:column>
+                    </p:dataTable>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>

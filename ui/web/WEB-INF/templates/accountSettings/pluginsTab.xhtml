@@ -34,12 +34,16 @@
                 <b:panel title="#{msgs.admission_plugins_molPlugin_title}" collapsible="false" look="info">
                     <b:panelGrid colSpans="2,5,5">
                         <h:panelGroup>
-                            <b:radiobutton id="molPluginSelection"
+
+<!-- JakartaEE ToDo: refactor the AJAX calls to work properly again -->
+
+                            <p:selectOneRadio id="molPluginSelection"
+                                           layout="grid" columns="1"
                                            value="#{pluginSettingsDialogControllerBean.molPluginType}"
                                            ajax="true"
                                            update="editorMolPluginPreview viewerMolPluginPreview">
                                 <f:selectItems value="#{pluginSettingsDialogControllerBean.availableMolPluginTypes}" />
-                            </b:radiobutton>
+                            </p:selectOneRadio>
 
                             <br />
                             <h:outputText value="#{msgs.admission_plugins_molPlugin_loadExamples}" />
@@ -78,7 +82,7 @@
                             <br />
 
                             <mol:molecule id="editorMolPluginPreview"
-                                          value="#{pluginSettingsDialogControllerBean.getPreviewStructure()}"
+                                          value="#{pluginSettingsDialogControllerBean.previewStructure}"
                                           pluginType="#{pluginSettingsDialogControllerBean.molPluginType}"
                                           format="MDLV2000"
                                           border="true" />
@@ -90,7 +94,7 @@
                             <br />
 
                             <mol:molecule id="viewerMolPluginPreview"
-                                          value="#{pluginSettingsDialogControllerBean.getPreviewStructure()}"
+                                          value="#{pluginSettingsDialogControllerBean.previewStructure}"
                                           pluginType="#{pluginSettingsDialogControllerBean.molPluginType}"
                                           format="MDLV2000"
                                           readonly="true"
@@ -100,7 +104,7 @@
                 </b:panel>
                 <b:column styleClass="text-center">
                     <b:commandButton ajax="true" process="molPluginSelection" update="growlMsg"
-                                     action="#{pluginSettingsDialogControllerBean.actionSave()}"
+                                     action="#{pluginSettingsDialogControllerBean.actionSave}"
                                      value="#{msgs.Save}"/>
                 </b:column>
             </b:form>

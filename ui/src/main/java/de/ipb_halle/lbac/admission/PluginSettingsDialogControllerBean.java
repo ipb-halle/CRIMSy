@@ -96,6 +96,10 @@ public class PluginSettingsDialogControllerBean implements Serializable {
         return previewStructure;
     }
 
+    public void setPreviewStructure(String struc) {
+        // discard
+    }
+
     /**
      * Saves the selected plugin types as preferred plugin types and notifies to
      * user upon success.

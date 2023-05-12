@@ -21,7 +21,6 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -69,7 +68,7 @@
                             <h:panelGroup>
                                 <label
                                     for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
-                                    <b:image 
+                                    <h:graphicImage
                                         name="#{materialBean.hazardController.getImageLocation(hazard)}"/>
                                 </label>
                             </h:panelGroup>          
@@ -98,28 +97,28 @@
                         </c:forEach>
                     </p:panelGrid>
 
-                    <b:row>
+                    <div> <!-- <b:row> -->
                         <h:outputText
                             styleClass="statementHeader"
                             value="#{msgs.hazard_HS}"/>
-                    </b:row>
-                    <b:row>
+                    </div> <!-- </b:row> -->
+                    <div> <!-- <b:row> -->
                         <p:inputText 
                             styleClass="hazardStatementRemark"
                             value="#{materialBean.hazardController.hStatements}"
                             disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
-                    </b:row>
-                    <b:row>
+                    </div> <!-- </b:row> -->
+                    <div> <!-- <b:row> -->
                         <h:outputText
                             styleClass="statementHeader"
                             value="#{msgs.hazard_PS}"/>
-                    </b:row>
-                    <b:row>
+                    </div> <!-- </b:row> -->
+                    <div> <!-- <b:row> -->
                         <p:inputText 
                             styleClass="hazardStatementRemark"
                             value="#{materialBean.hazardController.pStatements}"
                             disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
-                    </b:row>
+                    </div> <!-- <b:row> -->
                 </p:panel>
                 <p:panel
                     header="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"
@@ -133,7 +132,7 @@
                         for="@previous"
                         styleClass="radioactiveLabel"
                         value="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"/>
-                    <b:image 
+                    <h:graphicImage
                         styleClass="radioactiveImage"
                         name="#{materialBean.hazardController.radioactiveImageLocation}"/>   
                 </p:panel>
@@ -166,7 +165,7 @@
                             <p:outputLabel
                                 for="@previous" 
                                 value="#{bsl}"/>
-                            <b:image 
+                            <h:graphicImage
                                 styleClass="bioHazardImage"
                                 name="#{materialBean.hazardController.getImageLocationOfBls(status.index)}"/>   
                         </c:forEach>
