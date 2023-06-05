@@ -491,11 +491,13 @@
         </dependency>
         
         <!-- PrimeFaces Bootstrap Theme. Has its own repository -->
+<!--
         <dependency>
             <groupId>org.primefaces.themes</groupId>
             <artifactId>bootstrap</artifactId>
             <version>1.0.10</version>
         </dependency>
+-->
         
         <!-- Ui Library for jsf-->
         <dependency>

@@ -19,13 +19,21 @@
 
 /*
    customer styles
-
 */
 
 .jumbotron {
     height: 200px;
 }
 
+!important .panelTitleInfoColor .ui-panel-titlebar {
+    background-color: #029ACF;
+    color: #FFF;
+}
+
+!important .panelTitleWarningColor .ui-panel-titlebar {
+    background-color: #D9230F;
+    color: #FFF;
+}
 
 /*
  * center logo
