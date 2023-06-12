@@ -1,99 +1,169 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
 <h:body>
-    <ui:composition>
-        <p:tab title="#{msgs.admission_userProfile_tabTitle}">
-            <b:form id="accountChange">
-                <b:panel contentDisabled="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}" collapsible="false"
-                         look="info">
-                    <f:facet name="heading">
+      <ui:composition>
+        <p:tab title="#{msgs.admission_userProfile_tabTitle}"
+               disabled="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}"
+               >
+
+            <h:form id="accountChange" style="border:1px solid #029ACF;border-radius:3px;">
+
+                <p:panel header="#{msgs.admission_userProfile_editProfile}"
+                         collapsible="false"
+                         look="info"
+                         styleClass="panelTitleInfoColor"
+                         >
+
+                    <f:facet name="heading" >
                         <h:outputText value="#{msgs.admission_userProfile_editProfile}"
                                       rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"/>
                         <h:outputText value="#{msgs.admission_userProfile_viewProfile}"
                                       rendered="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}"/>
                     </f:facet>
 
-                    <b:inputText id="ID" value="#{userBean.currentAccount.id}" label="ID" renderLabel="true"
-                                 disabled="true" placeholder="" required="false">
-                        <f:facet name="prepend">
-                            <b:icon name="cloud"/>
-                        </f:facet>
-                    </b:inputText>
-                    <!-- name and login changes must be arranged by administrator --> 
-                    <b:inputText id="name" value="#{userBean.currentAccount.name}" label="#{msgs.Name}" renderLabel="true"
-                                 placeholder="Username" disabled="true">
-                        <f:facet name="prepend">
-                            <b:icon name="user"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="login" value="#{userBean.currentAccount.login}" label="#{msgs.Login}" renderLabel="true"
-                                 placeholder="login name" disabled="true">
-                        <f:facet name="prepend">
-                            <b:icon name="star"/>
-                        </f:facet>
-                    </b:inputText>
-                     <b:inputText 
-                         id="shortcut"
-                         value="#{userBean.currentAccount.shortcut}"
-                         label="#{msgs.userMgr_shortcut}"
-                         renderLabel="true"
-                         placeholder="#{msgs.userMgr_shortcut_placeholder}"
-                         disabled="true">
-                        <f:facet name="prepend">
-                            <b:icon name="star"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="email" value="#{userBean.currentAccount.email}" label="#{msgs.Email}" renderLabel="true"
-                                 type="email" required="false">
-                        <f:validator validatorId="EmailAddressValidator"/>
-                        <f:facet name="prepend">
-                            <b:icon name="envelope"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="phone" value="#{userBean.currentAccount.phone}" label="#{msgs.Phone}" renderLabel="true"
-                                 type="tel" required="false">
-                        <f:facet name="prepend">
-                            <b:icon name="phone"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:column styleClass="text-center">
-                        <b:commandButton type="submit" ajax="true" update="@form growlMsg"
+                    <p:outputLabel for="@next" value="ID" />
+                    <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="ui-inputgroup">
+                            <div class="ui-inputgroup-addon"><i class="pi pi-cloud"></i></div>
+                                <p:inputText id="ID"
+                                             value="#{userBean.currentAccount.id}"
+                                             label="ID"
+                                             renderLabel="true"
+                                             disabled="true"
+                                             placeholder=""
+                                             required="false"
+                                             style="width:100%;background:#dddddd;">
+                                </p:inputText>
+                        </div>
+                    </div>
+
+                    <p:outputLabel for="@next" value="Name" />
+                    <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="ui-inputgroup">
+                            <div class="ui-inputgroup-addon"><i class="pi pi-user"></i></div>
+                                <!-- name and login changes must be arranged by administrator -->
+                                <p:inputText id="name"
+                                             value="#{userBean.currentAccount.name}"
+                                             label="#{msgs.Name}"
+                                             renderLabel="true"
+                                             placeholder="Username"
+                                             disabled="true"
+                                             style="width:100%;background:#dddddd;">
+
+                                </p:inputText>
+
+                        </div>
+                    </div>
+                    <p:message for="@previous"/>
+
+                    <p:outputLabel for="@next" value="Login" />
+                    <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="ui-inputgroup">
+                            <div class="ui-inputgroup-addon"><i class="pi pi-star"></i></div>
+                                <p:inputText id="login"
+                                             value="#{userBean.currentAccount.login}"
+                                             label="#{msgs.Login}"
+                                             renderLabel="true"
+                                             placeholder="login name"
+                                             disabled="true"
+                                             style="width:100%;background:#dddddd;">
+
+                                </p:inputText>
+                        </div>
+                    </div>
+
+                    <p:outputLabel for="@next" value="Shortcut" />
+                    <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="ui-inputgroup">
+                            <div class="ui-inputgroup-addon"><i class="pi pi-star"></i></div>
+                                <p:inputText
+                                    id="shortcut"
+                                    value="#{userBean.currentAccount.shortcut}"
+                                    label="#{msgs.userMgr_shortcut}"
+                                    renderLabel="true"
+                                    placeholder="#{msgs.userMgr_shortcut_placeholder}"
+                                    disabled="true"
+                                    style="width:100%;background:#dddddd;">
+
+                                </p:inputText>
+
+                        </div>
+                    </div>
+                    <p:message for="@previous"/>
+
+                    <p:outputLabel for="@next" value="Email" />
+                    <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="ui-inputgroup">
+                            <div class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></div>
+                                <p:inputText id="email"
+                                             value="#{userBean.currentAccount.email}"
+                                             label="#{msgs.Email}"
+                                             renderLabel="true"
+                                             type="email"
+                                             required="false"
+                                             style="width:100%;background:#dddddd;">
+                                <f:validator validatorId="EmailAddressValidator"/>
+
+                                </p:inputText>
+
+                        </div>
+                    </div>
+                    <p:message for="@previous"/>
+
+                    <p:outputLabel for="@next" value="Phone" />
+                    <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="ui-inputgroup">
+                            <div class="ui-inputgroup-addon"><i class="pi pi-mobile"></i></div>
+                                <p:inputText id="phone"
+                                             value="#{userBean.currentAccount.phone}"
+                                             label="#{msgs.Phone}"
+                                             renderLabel="true"
+                                             type="tel"
+                                             required="false"
+                                             style="width:100%;background:#dddddd;">
+
+                                </p:inputText>
+
+                        </div>
+                    </div>
+                    <p:message for="@previous"/>
+
+                    <p:panel styleClass="text-center">
+                        <p:commandButton type="submit"
+                                         ajax="true"
+                                         update="@form growlMsg"
                                          rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"
                                          action="#{userBean.actionModify}"
                                          value="#{msgs.Save}"/>
-                    </b:column>
-                </b:panel>
-            </b:form>
+                    </p:panel>
+
+                </p:panel>
+            </h:form>
         </p:tab>
     </ui:composition>
 </h:body>

@@ -21,18 +21,27 @@
    customer styles
 */
 
+
+.ui-inputgroup, .ui-password{
+    padding-left: 0 !important;
+}
+
 .jumbotron {
     height: 200px;
 }
 
-!important .panelTitleInfoColor .ui-panel-titlebar {
-    background-color: #029ACF;
-    color: #FFF;
+html {
+    font-size: 0.9em !important;
 }
 
-!important .panelTitleWarningColor .ui-panel-titlebar {
-    background-color: #D9230F;
-    color: #FFF;
+.panelTitleInfoColor .ui-panel-titlebar {
+    background-color: #029ACF !important ;
+    color: #FFF !important ;
+}
+
+.panelTitleWarningColor .ui-panel-titlebar {
+    background-color: #D9230F !important;
+    color: #FFF !important;
 }
 
 /*
