@@ -654,3 +654,14 @@ body.waiting * {
 .report-completed {
 	background-image: linear-gradient(to bottom, #d9edf7 0%, #b9def0 100%);
 }
+
+.ui-datatable .ui-datatable-data{
+    padding: 4px 10px !important;
+}
+h4{
+   text-align: center;
+   color: #2196f3;
+}
+#modalGroupDialog{
+    font-size: 2rem;
+}

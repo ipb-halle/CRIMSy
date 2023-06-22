@@ -360,11 +360,13 @@ public class UserMgrBean implements Serializable {
         this.mode = MODE.CREATE;
     }
 
-    public void setModeDelete() {
+    public void setModeDelete(User u) {
+        setUser(u);
         this.mode = MODE.DELETE;
     }
 
-    public void setModeUpdate() {
+    public void setModeUpdate(User u) {
+        setUser(u);
         this.mode = MODE.UPDATE;
     }
 

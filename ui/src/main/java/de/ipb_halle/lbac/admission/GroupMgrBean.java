@@ -285,16 +285,18 @@ public class GroupMgrBean implements Serializable {
         this.group.setSubSystemType(AdmissionSubSystemType.LOCAL);
     }
 
-    public void setModeCreate() {
+    public void setModeCreate(Group g) {
         initGroup();
         this.mode = MODE.CREATE;
     }
 
-    public void setModeDelete() {
+    public void setModeDelete(Group g) {
+        setGroup(g);
         this.mode = MODE.DELETE;
     }
 
-    public void setModeUpdate() {
+    public void setModeUpdate(Group g) {
+        setGroup(g);
         this.mode = MODE.UPDATE;
     }
 

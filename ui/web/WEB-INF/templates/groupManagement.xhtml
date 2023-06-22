@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
@@ -28,7 +27,7 @@
 
 
     <h:body>
-        <ui:composition>
+        <!--<ui:composition>-->
             <h2>
                 <h:outputText value="#{msgs.groupMgr_formTitle}" />
             </h2>
@@ -45,83 +44,133 @@
                 width="600">
                 <!-- Note on style="z-index: auto;" for the b:inputTexts:
                      Putting an icon via the facet "prepend" or "append" in
-                     conjunction with p:dialog's modal="true" leads to an 
+                     conjunction with p:dialog's modal="true" leads to an
                      unresponsive input field (not clickable, no keyboard inputs). -->
-                <b:form id="frmModalGroupDialog">
+
+                <h:form id="frmModalGroupDialog" style="border:1px solid #029ACF;border-radius:">
+
+                   <p:panel  header="GroupData"
+                            collapsible="false"
+                            look="info"
+                            styleClass="panelTitleInfoColor">
 
                     <h:outputText
-                        value="#{msgs.groupMgr_viewOnly}" 
+                        value="#{msgs.groupMgr_viewOnly}"
                         rendered="#{groupMgrBean.getGroup().getSubSystemType().toString() != 'LOCAL'}"/>
 
-                    <b:inputText id="id"
-                                 value="#{groupMgrBean.getGroup().id}"
-                                 label="Id"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 disabled="true"
-                                 required="false">
-                        <f:facet name="prepend">
-                            <b:icon name="cloud"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="name"
-                                 value="#{groupMgrBean.getGroup().name}"
-                                 styleClass="tstGrpMgrNewName"
-                                 label="#{msgs.Name}"
-                                 style="z-index: auto;"
-                                 disabled="#{(groupMgrBean.getGroup().getSubSystemType().toString() != 'LOCAL') or (groupMgrBean.mode == 'DELETE')}"
-                                 renderLabel="true"
-                                 placeholder="#{msgs.Name}"
-                                 required="true">
-                        <f:facet name="prepend">
-                            <b:iconAwesome name="users"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="subsystem"
+<!--===============================================================================================================-->
+                    <p:outputLabel for="id" value="ID" />
+
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon" style="padding:0 auto;"><i class="pi pi-cloud"></i></div>
+
+                                <p:inputText id="id"
+                                             value="#{groupMgrBean.getGroup().id}"
+                                             label="Id"
+                                             style="z-index: auto;width: 100%;"
+                                             renderLabel="true"
+                                             disabled="true"
+                                             required="false">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <p:message for="@previous"/><br/>
+
+<!--===============================================================================================================-->
+                    <p:outputLabel for="name" value="#{msgs.Name}" />
+
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-user"></i></div>
+
+                                <p:inputText id="name"
+                                             icon="pi pi-users"
+                                             value="#{groupMgrBean.getGroup().name}"
+                                             styleClass="tstGrpMgrNewName"
+                                             label="#{msgs.Name}"
+                                             style="z-index: auto;width:100%;"
+                                             disabled="#{(groupMgrBean.getGroup().getSubSystemType().toString() != 'LOCAL') or (groupMgrBean.mode == 'DELETE')}"
+                                             renderLabel="true"
+                                             placeholder="#{msgs.Name}"
+                                             required="true">
+
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <p:message for="@previous"/><br/>
+
+<!--===============================================================================================================-->
+                <p:outputLabel for="name" value="#{msgs.Type}" />
+
+                    <p:inputText id="subsystem"
                                  value="#{groupMgrBean.getGroup().getSubSystemType().toString()}"
                                  label="#{msgs.Type}"
-                                 disabled="true" 
+                                 disabled="true"
+                                 style="width:100%;"
                                  renderLabel="true">
-                    </b:inputText>
-                    <b:message for="@previous"/>
+                    </p:inputText>
 
-                    <b:fetchBeanInfos/>
+                    <p:message for="@previous"/>
 
-                    <b:row styleClass="modal-footer">
-                        <b:button value="#{msgs.Close}" styleClass="tstGrpMgrEditClose" onclick="PF('groupEditDialogWidgetVar').hide()"/>
-                        <b:commandButton value="#{msgs.Save}"
+<!--===============================================================================================================-->
+                   </p:panel>
+
+
+                    <!--<b:fetchBeanInfos/>-->
+
+                    <p:panel styleClass="text-center">
+
+
+
+                        <p:commandButton value="#{msgs.Save}"
+                                         icon="pi pi-save"
                                          styleClass="tstGrpMgrCreate"
                                          rendered="#{groupMgrBean.mode == 'CREATE'}"
                                          type="submit"
                                          ajax="true"
                                          update="@form frmGroupList:groupList growlMsg"
-                                         onclick="ajax:groupMgrBean.actionCreate();"
+                                         action="#{groupMgrBean.actionCreate()}"
                                          oncomplete="javascript:if(!validationFailed){PF('groupEditDialogWidgetVar').hide()};return false;"
                                          look="primary"/>
-                        <b:commandButton value="#{msgs.Edit}"
+                                         <!--onclick="ajax:groupMgrBean.actionCreate();"-->
+
+                        <p:commandButton value="#{msgs.Edit}"
+                                         icon="pi pi-pencil"
                                          styleClass="tstGrpMgrUpdate"
                                          rendered="#{groupMgrBean.mode == 'UPDATE'}"
                                          type="submit"
                                          ajax="true"
                                          update="@form frmGroupList:groupList growlMsg"
-                                         onclick="ajax:groupMgrBean.actionUpdate();"
+                                         action="#{groupMgrBean.actionUpdate()}"
                                          oncomplete="if(!validationFailed){PF('groupEditDialogWidgetVar').hide()};return false;"
                                          look="primary"/>
-                        <b:commandButton value="#{msgs.Delete}"
+                                         <!--onclick="ajax:groupMgrBean.actionUpdate();"-->
+
+                        <p:commandButton value="#{msgs.Delete}"
+                                         icon="pi pi-trash"
                                          styleClass="tstGrpMgrDelete"
                                          rendered="#{groupMgrBean.mode == 'DELETE'}"
                                          update="frmGroupList:groupList growlMsg"
                                          type="submit"
                                          ajax="true"
-                                         onclick="ajax:groupMgrBean.actionDelete();"
+                                         action="#{groupMgrBean.actionDelete()}"
                                          oncomplete="PF('groupEditDialogWidgetVar').hide();"
                                          look="primary"/>
+                                         <!--onclick="ajax:groupMgrBean.actionDelete();"-->
 
-                    </b:row>
-                </b:form>
+                    </p:panel>
+                </h:form>
+
+<!--===============================================================================================================-->
+
+                <center>
+                        <p:commandButton value="#{msgs.Close}" icon="pi pi-times" styleClass="ui-button-secondary" onclick="PF('groupEditDialogWidgetVar').hide()"/>
+
+                </center>
             </p:dialog>
+
+<!--===============================================================================================================-->
 
             <!-- group memberships -->
 
@@ -133,10 +182,10 @@
                 resizable="false"
                 positionType="absolute"
                 width="900">
-                <b:form id="frmModalMembershipDialog">
+                <h:form id="frmModalMembershipDialog" style="border:1px solid #029ACF;border-radius:">
 
-                    <b:row>#{msgs.groupMgr_Members}</b:row>
-                    <b:dataTable id="membershipList"
+                    <p:outputLabel value="#{msgs.groupMgr_Members}"/>
+                    <p:dataTable id="membershipList"
                                  value="#{groupMgrBean.membershipList}"
                                  styleClass="membershipList"
                                  striped="true"
@@ -146,50 +195,62 @@
                                  customOptions="autoWidth:true"
                                  fixedHeader="true"
                                  var="ms"
+                                 widgetVar="customersTable"
                                  csv="false"
                                  columnVisibility="false"
                                  saveState="false">
+
                         <f:facet name="header">
+
                             <tr>
                                 <th colspan="5">
-                                    <b:commandButton style="padding: 0 4px;"
+                                    <p:commandButton style="padding: 0 4px;"
                                                      value="#{msgs.userMgr_showNested}"
-                                                     iconAwesome="#{groupMgrBean.nestedFlag ? 'toggle-on' : 'toggle-off'}"
+                                                     icon="pi pi-#{groupMgrBean.nestedFlag ? 'toggle-on' : 'toggle-off'}"
                                                      ajax="true"
-                                                     type="link"
                                                      update="frmModalMembershipDialog"
-                                                     onclick="ajax:groupMgrBean.actionToggleNestedFlag();" />
+                                                     action="#{groupMgrBean.actionToggleNestedFlag()}"/>
+                                                     <!--onclick="ajax:groupMgrBean.actionToggleNestedFlag();"-->
                                 </th>
                             </tr>
-                            <tr>
-                                <th>#{msgs.Name}</th>
-                                <th>#{msgs.Institution}</th>
-                                <th>#{msgs.Type}</th>
-                                <th>#{msgs.userMgr_nested}</th>
-                                <th style="min-width:30px">#{msgs.Tools}</th>
-                            </tr>
+
                         </f:facet>
 
-                        <b:dataTableColumn value="#{ms.getMember().getName()}" order="asc"/>
-                        <b:dataTableColumn value="#{ms.getMember().getNode().getInstitution()}"/>
-                        <b:dataTableColumn value="#{ms.getMember().getSubSystemType().toString()}"/>
-                        <b:dataTableColumn value="#{ms.nested ? msgs.YES : msgs.NO}"/>
-                        <b:dataTableColumn>
-                            <b:commandButton style="padding: 0 4px;"
+                        <p:column headerText="#{msgs.Name}" filterBy="#{ms.getMember().getName()}" filterMatchMode="contains">
+                            <h:outputText value="#{ms.getMember().getName()}" order="asc"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.Institution}" filterBy="#{ms.getMember().getNode().getInstitution()}" filterMatchMode="contains">
+                            <h:outputText  value="#{ms.getMember().getNode().getInstitution()}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.Type}" filterBy="#{ms.getMember().getSubSystemType().toString()}" filterMatchMode="contains">
+                            <h:outputText  value="#{ms.getMember().getSubSystemType().toString()}"/>
+                        </p:column>
+
+
+                        <p:column headerText="#{msgs.userMgr_nested}" filterBy="#{ms.nested ? msgs.YES : msgs.NO}" filterMatchMode="exact">
+                            <h:outputText  value="#{ms.nested ? msgs.YES : msgs.NO}"/>
+                        </p:column>
+
+                         <p:column headerText="#{msgs.Tools}" style="min-width:30px">
+                            <p:commandButton style="padding: 0 4px;"
                                              styleClass="tstGrpMgrRemoveMember"
-                                             icon="trash"
+                                             icon="pi pi-trash"
                                              look="link"
                                              ajax="true"
-                                             type="button"
                                              update="frmModalMembershipDialog"
                                              disabled="#{ms.nested || (ms.getGroup().getSubSystemType().toString() != 'LOCAL')}"
-                                             onclick="ajax:groupMgrBean.actionDeleteMembership(ms);" />
-                        </b:dataTableColumn>
-                    </b:dataTable>
+                                             action="#{groupMgrBean.actionDeleteMembership(ms)}"/>
+                                             <!--onclick="ajax:groupMgrBean.actionDeleteMembership(ms);"-->
 
+                        </p:column>
+                    </p:dataTable>
 
-                    <b:row>#{msgs.groupMgr_AvailableMembers}</b:row>
-                    <b:dataTable id="memberList"
+<!--===============================================================================================================-->
+
+                    <p:outputLabel value="#{msgs.groupMgr_AvailableMembers}"/>
+                    <p:dataTable id="memberList"
                                  value="#{groupMgrBean.availableMemberList}"
                                  styleClass="memberList"
                                  striped="true"
@@ -202,46 +263,52 @@
                                  csv="false"
                                  columnVisibility="false"
                                  saveState="false">
-                        <f:facet name="header">
-                            <tr>
-                                <th>#{msgs.Name}</th>
-                                <th>#{msgs.Institution}</th>
-                                <th>#{msgs.Type}</th>
-                                <th style="min-width:30px">#{msgs.Tools}</th>
-                            </tr>
-                        </f:facet>
 
-                        <b:dataTableColumn value="#{member.name}" order="asc"/>
-                        <b:dataTableColumn value="#{member.getNode().getInstitution()}"/>
-                        <b:dataTableColumn value="#{member.getSubSystemType().toString()}" />
-                        <b:dataTableColumn>
-                            <b:commandButton style="padding: 0 4px;"
+
+                         <p:column headerText="#{msgs.Name}" filterBy="#{member.name}" filterMatchMode="contains">
+                            <h:outputText value="#{member.name}" order="asc"/>
+                         </p:column>
+
+                         <p:column headerText="#{msgs.Name}" filterBy="#{member.getNode().getInstitution()}" filterMatchMode="contains">
+                            <h:outputText value="#{member.getNode().getInstitution()}"/>
+                         </p:column>
+
+                        <p:column headerText="#{msgs.Name}" filterBy="#{member.getSubSystemType().toString()}" filterMatchMode="contains">
+                            <h:outputText  value="#{member.getSubSystemType().toString()}" />
+                         </p:column>
+
+                         <p:column headerText="#{msgs.Tools}" style="min-width:30px">
+                            <p:commandButton style="padding: 0 4px;"
                                              styleClass="tstGrpMgrAddMember"
-                                             iconAwesome="user-plus"
+                                             icon="pi pi-user-plus"
                                              look="link"
                                              ajax="true"
-                                             type="button"
                                              update="frmModalMembershipDialog"
-                                             onclick="ajax:groupMgrBean.actionAddMembership(member)" />
-                        </b:dataTableColumn>
-                    </b:dataTable>
+                                             action="#{groupMgrBean.actionAddMembership(member)}"
+                                             />
+                                             <!--onclick="ajax:groupMgrBean.actionAddMembership(member)"-->
+                         </p:column>
+                    </p:dataTable>
 
 
-                    <b:message for="@previous"/>
+                    <p:message for="@previous"/>
 
-                    <b:fetchBeanInfos/>
+                    <!--<b:fetchBeanInfos/>-->
 
-                    <b:row styleClass="modal-footer">
-                        <b:button value="#{msgs.Close}" styleClass="tstGrpMgrMembershipClose" onclick="PF('groupGroupMembershipsDialogWidgetVar').hide()" />
-                    </b:row>
-                </b:form>
+                </h:form>
+                <center>
+                 <p:commandButton value="#{msgs.Close}" icon="pi pi-times" styleClass="ui-button-secondary" onclick="PF('groupGroupMembershipsDialogWidgetVar').hide()" />
+                </center>
+
             </p:dialog>
+
+<!--===============================================================================================================-->
 
 
             <!-- group list -->
 
-            <b:form id="frmGroupList">
-                <b:dataTable id="groupList"
+            <h:form id="frmGroupList" style="border:1px solid #029ACF;border-radius:3px;">
+                <p:dataTable id="groupList"
                              value="#{groupMgrBean.groupList}"
                              styleClass="groupList"
                              striped="true"
@@ -252,89 +319,118 @@
                              csv="false"
                              columnVisibility="false"
                              saveState="false">
+
                     <f:facet name="header">
                         <tr>
                             <th colspan="4">
-                                <b:commandButton
-                                    styleClass="pull-right tstGrpMgrNewGroup"
+                                <p:commandButton
+                                    styleClass="ui-button-Primary"
                                     style="margin:0 2px;"
-                                    iconAwesome="fa-plus-circle"
+                                    icon="pi pi-user-plus"
                                     value="#{msgs.groupMgr_newGroup}"
                                     look="primary"
                                     ajax="true"
-                                    type="button"
                                     update="modalGroupDialog frmModalGroupDialog"
                                     rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
-                                    onclick="ajax:groupMgrBean.setModeCreate();"
+                                    action="#{groupMgrBean.setModeCreate(group)}"
                                     oncomplete="PF('groupEditDialogWidgetVar').show();">
+
                                     <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                                </b:commandButton>
-                                <b:commandButton
-                                    styleClass="pull-right tstGrpMgrRefresh"
+                                </p:commandButton>
+
+                                    <!--onclick="ajax:groupMgrBean.setModeCreate();"-->
+
+                                <p:commandButton
+                                    styleClass="ui-button-warning"
                                     style="margin:0 2px;"
-                                    iconAwesome="refresh"
+                                    icon="pi pi-refresh"
                                     value="#{msgs.Refresh}"
                                     look="default"
                                     ajax="true"
-                                    type="button"
                                     update="@form"
                                     rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                    onclick="ajax:groupMgrBean.refreshGroupList();" />
+                                    action="#{groupMgrBean.refreshGroupList()}"
+                                    />
+
+                                <!--onclick="ajax:groupMgrBean.refreshGroupList();"-->
+
                             </th>
                         </tr>
-                        <tr>
-                            <th>#{msgs.Name}</th>
-                            <th>#{msgs.Type}</th>
-                            <th>#{msgs.Institution}</th>
-                            <th style="min-width:50px">#{msgs.Tools}</th>
-                        </tr>
+
                     </f:facet>
-                    <b:dataTableColumn value="#{group.name}" order="asc"/>
-                    <b:dataTableColumn value="#{group.getSubSystemType().toString()}"/>
-                    <b:dataTableColumn value="#{group.node.institution}"/>
-                    <b:dataTableColumn>
-                        <b:commandButton
-                            style="padding: 0 4px;"
-                            styleClass="tstGrpMgrEditDlg"
-                            icon="pencil"
+
+                     <p:column headerText="#{msgs.Name}" filterBy="#{group.name}" filterMatchMode="contains">
+                            <h:outputText value="#{group.name}" order="asc"/>
+                     </p:column>
+
+                     <p:column headerText="#{msgs.Type}" filterBy="#{group.getSubSystemType().toString()}" filterMatchMode="contains">
+                            <h:outputText value="#{group.getSubSystemType().toString()}"/>
+                     </p:column>
+
+                     <p:column headerText="#{msgs.Institution}" filterBy="#{group.node.institution}" filterMatchMode="contains">
+                            <h:outputText value="#{group.node.institution}"/>
+                     </p:column>
+
+
+                     <p:column headerText="#{msgs.Tools}"
+                                  style="display:flex; flex-direction: row;justify-content: center;align-items: center;">
+
+                        <p:commandButton
+                            style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
+                            styleClass="ui-button-success"
+                            icon="pi pi-pencil"
                             look="link"
                             ajax="true"
-                            type="button"
                             disabled="#{groupMgrBean.isOperationForbidden(group, 'edit')}"
                             update="modalGroupDialog frmModalGroupDialog"
-                            onclick="ajax:groupMgrBean.setModeUpdate();groupMgrBean.setGroup(group);"
+                            action="#{groupMgrBean.setModeUpdate(group)}"
                             oncomplete="PF('groupEditDialogWidgetVar').show();">
+
                             <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                        </b:commandButton>
-                        <!-- possibly 'modalMembershipDialog.DataTable().responsive.recalc();' could be 
+                        </p:commandButton>
+
+
+
+                            <!--onclick="ajax:groupMgrBean.setModeUpdate();groupMgrBean.setGroup(group);"-->
+
+                        <!-- possibly 'modalMembershipDialog.DataTable().responsive.recalc();' could be
                              necessary for responsive tables within a modal form -->
-                        <b:commandButton
-                            style="padding: 0 4px;"
-                            styleClass="tstGrpMgrMembershipDlg"
-                            iconAwesome="users"
+
+                        <p:commandButton
+                            style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
+                            styleClass="ui-button-info"
+                            icon="pi pi-users"
                             look="link"
                             ajax="true"
-                            type="button"
                             disabled="#{groupMgrBean.isOperationForbidden(group, groupMgrBean.getOPERATIONNAME_MANAGE_MEMBERS())}"
                             update="modalMembershipDialog frmModalMembershipDialog"
-                            onclick="ajax:groupMgrBean.setGroup(group);" 
+                            action="#{groupMgrBean.setModeUpdate(group)}"
                             oncomplete="PF('groupGroupMembershipsDialogWidgetVar').show();" />
-                        <b:commandButton
-                            style="padding: 0 4px;"
-                            styleClass="tstGrpMgrDeleteDlg"
-                            icon="trash"
+                            <!--onclick="ajax:groupMgrBean.setGroup(group);"-->
+
+                        <p:commandButton
+                            style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
+                            styleClass="ui-button-danger"
+                            icon="pi pi-trash"
                             look="link"
                             ajax="true"
-                            type="button"
                             disabled="#{groupMgrBean.isDeactivationForbidden(group)}"
                             update="modalGroupDialog frmModalGroupDialog"
-                            onclick="ajax:groupMgrBean.setModeDelete();groupMgrBean.setGroup(group);"
+                            action="#{groupMgrBean.setModeDelete(group)}"
                             oncomplete="PF('groupEditDialogWidgetVar').show();">
+
                             <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                        </b:commandButton>
-                    </b:dataTableColumn>
-                </b:dataTable>
-            </b:form>
-        </ui:composition>
+
+                        </p:commandButton>
+
+                            <!--onclick="ajax:groupMgrBean.setModeDelete();groupMgrBean.setGroup(group);"-->
+
+
+
+
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        <!--</ui:composition>-->
     </h:body>
 </html>

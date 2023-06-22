@@ -1,89 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
->
+      xmlns:p="http://primefaces.org/ui">
 
 <h:body>
-    <ui:composition>
-        <b:panelGrid colSpans="9,3" size="sm" id="labelDetailsPanelGridId">
-            <b:form id="labelSettings" horizontal="true" method="post">
-                <b:panel title="#{msgs.LabelSettings}" collapsible="false" look="info">
+    <!--<ui:composition>-->
+    <h:form id="labelSettings" horizontal="true" method="post" style="border:1px solid #029ACF;border-radius:3px;">
+        <p:panel header="#{msgs.LabelSettings}" collapsible="false" look="info" styleClass="panelTitleInfoColor" >
+            <p:panelGrid columnClasses="ui-g-12 ui-lg-9 ui-md-9, ui-g-12 ui-lg-3 ui-md-3" size="sm" id="printerDetailsPanelGridId">
 
-                    <b:inputText
-                                label="#{msgs.LabelName}:"
-                                title="#{msgs.LabelName_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().name}" colMd="7">
-                        <f:facet name="append">
-                            <b:iconAwesome name="th-list"/>
-                        </f:facet>
-                    </b:inputText>
+                <p:row>
 
-                    <b:inputText
+<!--===============================================================================================================-->
+
+                    <p:outputLabel for="labelName" value="#{msgs.LabelName}:" styleClass="ui-outputlabel-right" />
+                    <div class="col-12 md:col-4">
+                    <div class="ui-inputgroup">
+                    <p:inputText id="labelName" label="#{msgs.LabelName}:" title="#{msgs.LabelName_detail}" value="#{printAdminBean.getLabel().name}" styleClass="ui-inputfield-large" style="width:100%;"/>
+                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
+                    </div>
+                    </div>
+                    <br/>
+
+  <!--===============================================================================================================-->
+
+<!--                    <b:inputText
                                 label="#{msgs.LabelDescription}:"
                                 title="#{msgs.LabelDescription_detail}"
                                 labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().description}" colMd="7">
-                        <f:facet name="append">
-                            <b:iconAwesome name="th-list"/>
-                        </f:facet>
-                    </b:inputText>
 
-                    <b:inputText
+                    </b:inputText>-->
+
+                    <p:outputLabel for="labelDescription" value="#{msgs.LabelDescription}:" styleClass="ui-outputlabel-right" />
+                    <div class="col-12 md:col-4">
+                    <div class="ui-inputgroup">
+                    <p:inputText id="labelDescription" label="#{msgs.LabelDescription}:" title="#{msgs.LabelDescription_detail}" value="#{printAdminBean.getLabel().description}" styleClass="ui-inputfield-large" style="width:100%;"/>
+                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
+                    </div>
+                    </div>
+                    <br/>
+
+<!--===============================================================================================================-->
+
+<!--                    <b:inputText
                                 label="#{msgs.PrinterModel}:"
                                 title="#{msgs.PrinterModel_detail}"
                                 labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().printerModel}" colMd="7">
-                        <f:facet name="append">
-                            <b:iconAwesome name="th-list"/>
-                        </f:facet>
-                    </b:inputText>
 
-                    <b:inputText
+                    </b:inputText>-->
+
+                    <p:outputLabel for="printerModel" value="#{msgs.PrinterModel}:" styleClass="ui-outputlabel-right" />
+                    <div class="col-12 md:col-4">
+                    <div class="ui-inputgroup">
+                    <p:inputText id="printerModel" label="#{msgs.PrinterModel}:" title="#{msgs.PrinterModel_detail}" value="#{printAdminBean.getLabel().printerModel}" styleClass="ui-inputfield-large" style="width:100%;"/>
+                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
+                    </div>
+                    </div>
+                    <br/>
+ <!--===============================================================================================================-->
+
+<!--                    <b:inputText
                                 label="#{msgs.LabelType}:"
                                 title="#{msgs.LabelType_detail}"
                                 labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().labelType}" colMd="7">
-                        <f:facet name="append">
-                            <b:iconAwesome name="th-list"/>
-                        </f:facet>
-                    </b:inputText>
 
-                    <b:inputTextarea
+                    </b:inputText>-->
+                    <p:outputLabel for="labelType" value="#{msgs.LabelType}:" styleClass="ui-outputlabel-right" />
+                    <div class="col-12 md:col-4">
+                    <div class="ui-inputgroup">
+                    <p:inputText id="labelType" label="#{msgs.LabelType}:" title="#{msgs.LabelType_detail}" value="#{printAdminBean.getLabel().labelType}" styleClass="ui-inputfield-large" style="width:100%;"/>
+                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
+                    </div>
+                    </div>
+                    <br/>
+
+<!--===============================================================================================================-->
+
+<!--                    <b:inputTextarea
                                 label="#{msgs.LabelConfig}:"
                                 title="#{msgs.LabelConfig_detail}"
                                 labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().config}" colMd="7">
-                    </b:inputTextarea>
+                    </b:inputTextarea>-->
 
-                    <b:row>
-                        <b:commandButton type="submit" style="margin-right:3px;"
-                                action="#{printAdminBean.actionClose}" value="#{msgs.Close}"/>
+                    <p:outputLabel for="labelConfig" value="#{msgs.LabelConfig}:" styleClass="ui-outputlabel-right" />
 
-                        <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
-                                action="#{printAdminBean.actionSaveLabel}" value="#{msgs.LabelSettingsSave}"/>
-                    </b:row>
-                </b:panel>
-            </b:form>
-        </b:panelGrid>
-    </ui:composition>
+                    <p:inputTextarea id="labelConfig"  label="#{msgs.LabelConfig}:" title="#{msgs.LabelConfig_detail}" value="#{printAdminBean.getLabel().config}"  style="width:100%;" styleClass="ui-inputfield-large" />
+                     <br/>
+<!--===============================================================================================================-->
+
+                    <p:row style="align-items: center;">
+                        <br/>
+                        <p:commandButton type="submit"
+                                         ajax="false"
+                                         update="@form growlMsg"
+                                         style="margin-right:3px;"
+                                         action="#{printAdminBean.actionClose}"
+                                         value="#{msgs.Close}"/>
+
+                        <p:commandButton  type="submit"
+                                         ajax="true"
+                                         update="@form growlMsg"
+                                         icon="pi pi-save"
+                                         style="margin-right:3px;"
+                                         action="#{printAdminBean.actionSaveLabel}"
+                                         value="#{msgs.LabelSettingsSave}"/>
+                    </p:row>
+<!--===============================================================================================================-->
+
+                </p:row>
+            </p:panelGrid>
+        </p:panel>
+    </h:form>
+    <!--</ui:composition>-->
 </h:body>
 </html>

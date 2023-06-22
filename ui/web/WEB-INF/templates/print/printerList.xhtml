@@ -20,7 +20,6 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -32,148 +31,188 @@
             id="dlgPrinterAcl"
             acobjectController="#{printAdminBean.acObjectController}"
             groupsAgent="#{groupAgent}"
-            updateTargetClass="printerSettingsPanel" />
+            updateTargetClass="printerSettingsPanel" 
+            ajax="true"/>
 
-        <b:form id="printerSettings" horizontal="true" method="post">
+        <h:form id="printerSettings" horizontal="true" method="post" style="border:1px solid #029ACF;border-radius:3px;">
+            <p:panel collapsible="false" look="info" styleClass="panelTitleInfoColor" >
+<!--                <p:panelGrid id="printerPanelId" 
+                        colSpans="12"
+                        styleClass="printerSettingsPanel"
+                        style="background:greenyellow;"
+                        size="sm">-->
+                    <!--<p:row>-->
+<!--===============================================================================================================-->
+            <p:panel id="panelSettings" header="#{msgs.PrinterSettings}" collapsible="false" look="info" styleClass="panelTitleInfoColor">
 
-            <b:panelGrid id="printerPanelId" 
-                    colSpans="12"
-                    styleClass="printerSettingsPanel"
-                    size="sm">
-                <b:panel id="panelSettings" title="#{msgs.PrinterSettings}" collapsible="false" look="info">
-
-                    <b:dataTable id="printerList"
+                    <p:dataTable id="printerList"
                                  value="#{printAdminBean.printers}"
                                  styleClass="cloudNodeList"
-                                 striped="true"
+                                 rowClasses="row-striping"
                                  responsive="false"
                                  customOptions="autoWidth:true"
-                                 fixedHeader="true"
                                  var="pl"
-                                 csv="false"
-                                 columnVisibility="false"
-                                 saveState="false">
-                        <f:facet name="header">
-                            <tr>
-                                <th>#{msgs.PrinterQueue}</th>
-                                <th>#{msgs.PrinterName}</th>
-                                <th>#{msgs.PrinterModel}</th>
-                                <th>#{msgs.PrinterContact}</th>
-                                <th>#{msgs.PrinterPlace}</th>
-                                <th>#{msgs.PrinterStatus}</th>
-                                <th style="min-width:30px">#{msgs.Tools}</th>
-                            </tr>
-                        </f:facet>
-                        <b:dataTableColumn value="#{pl.queue}" order="asc"/>
-                        <b:dataTableColumn value="#{pl.name}"/>
-                        <b:dataTableColumn value="#{pl.model}"/>
-                        <b:dataTableColumn value="#{pl.contact}"/>
-                        <b:dataTableColumn value="#{pl.place}"/>
-                        <b:dataTableColumn value="#{msgs['PrinterStatus_'.concat(pl.status)]}" />
-                        <b:dataTableColumn>
-                            <b:commandButton id="btnSelectPrinter"
-                                             style="padding: 0 4px;"
-                                             icon="pencil"
+                                 widgetVar="customersTable"
+                                 csvExport="false"
+                                 columnToggler="false"
+                                 stateSaving="false">
+                        
+            
+                        
+                        <p:column headerText="#{msgs.PrinterQueue}" sortBy="#{pl.queue}" filterBy="#{pl.name}" filterMatchMode="contains">
+                            <h:outputText value="#{pl.queue}" />
+                        </p:column>
+                        <p:column headerText="#{msgs.PrinterName}">
+                            <h:outputText value="#{pl.name}" />
+                        </p:column>
+                        <p:column headerText="#{msgs.PrinterModel}">
+                            <h:outputText value="#{pl.model}" />
+                        </p:column>
+                        <p:column headerText="#{msgs.PrinterContact}">
+                            <h:outputText value="#{pl.contact}" />
+                        </p:column>
+                        <p:column headerText="#{msgs.PrinterPlace}">
+                            <h:outputText value="#{pl.place}" />
+                        </p:column>
+                        <p:column headerText="#{msgs.PrinterStatus}">
+                            <h:outputText value="#{msgs['PrinterStatus_'.concat(pl.status)]}" />
+                        </p:column>
+                        <p:column headerText="#{msgs.Tools}" >
+                            
+                            <p:commandButton id="btnSelectPrinter"
+                                             style="padding: 0 4px;margin: 1.5rem;"
+                                             styleClass="ui-button-success"
+                                             icon="pi pi-pencil"
                                              look="link"
+                                             ajax="false"
                                              type="submit"
                                              action="#{printAdminBean.actionSelectPrinter(pl)}" />
-                            <b:commandButton id="btnAclPrinter"
+                            
+                            
+                            <p:commandButton id="btnAclPrinter"
                                              style="padding: 0 4px;"
-                                             icon="glyphicon glyphicon-user"
+                                             icon="pi pi-user"
+                                             styleClass="ui-button-info"
                                              look="link"
                                              ajax="true"
+                                             type="submit"
                                              process="@this"
                                              tooltip="#{msgs.PrinterPermission_tooltip}"
-                                             update="@(.acoEditModal)"
-                                             type="button"
+                                             update="@(.mainPanel)"
+                                             title="#{msgs.PrinterPermission_tooltip}"
                                              action="#{printAdminBean.actionStartAclChange(pl)}"
                                              oncomplete="PF('dlgAcl').show();" 
                                              disabled="false" />
+                            
+                                             <!--process="@this"-->
+                            
+                                        
+<!--                                             update="acoEditModal"-->
+<!--update="@dlgPrinterAcl"  update="@printerSettings"-->
+                            
                             <p:commandButton id="btnDeletePrinter"
-                                             style="padding: 0 4px;"
-                                             styleClass="btn btn-link"
-                                             icon="fa fa-trash"
+                                             style="padding: 0 4px;margin: 1.5rem;"
+                                             icon="pi pi-trash"
+                                             styleClass="ui-button-danger"
                                              action="#{printAdminBean.actionDelete(pl)}"
                                              update="printerSettings">
+                                
                                 <p:confirm header="#{msgs.PrinterConfirmDelete}" 
-                                                    message="#{msgs.PrinterConfirmDelete_detail}"
-                                                    icon="fa fa-warning" />
+                                           message="#{msgs.PrinterConfirmDelete_detail}"
+                                           icon="pi pi-exclamation-triangle" />
+                                
                             </p:commandButton>
-                        </b:dataTableColumn>
-                    </b:dataTable>
+                            
+                        </p:column>
+                    </p:dataTable>
+                <br/>
+                <br/>
 
-                    <b:row>
-                        <b:commandButton 
+                    <p:row>
+                        <p:commandButton 
                                 id="btnAddPrinter"
                                 type="submit" 
-                                iconAwesome="plus" 
+                                icon="pi pi-plus"
+                                ajax="false"
                                 style="margin-right:3px;"
                                 action="#{printAdminBean.actionAddPrinter}" 
                                 value="#{msgs.PrinterAddPrinter}"/>
-                    </b:row>
-                </b:panel>
+                    </p:row>
+                </p:panel>
+                <br/>
+                <br/>
+<!--===============================================================================================================-->
 
-               <b:panel id="panelLabelSettings" title="#{msgs.LabelSettings}" collapsible="false" look="info">
+               <p:panel id="panelLabelSettings" header="#{msgs.LabelSettings}" collapsible="false" look="info" styleClass="panelTitleInfoColor">
 
-                    <b:dataTable id="labelList"
-                                 value="#{printAdminBean.labels}"
-                                 styleClass="cloudNodeList"
-                                 striped="true"
-                                 responsive="false"
-                                 customOptions="autoWidth:true"
-                                 fixedHeader="true"
-                                 var="ll"
-                                 csv="false"
-                                 columnVisibility="false"
-                                 saveState="false">
-                        <f:facet name="header">
-                            <tr>
-                                <th>#{msgs.LabelName}</th>
-                                <th>#{msgs.LabelType}</th>
-                                <th>#{msgs.PrinterModel}</th>
-                                <th style="min-width:30px">#{msgs.Tools}</th>
-                            </tr>
-                        </f:facet>
-                        <b:dataTableColumn value="#{ll.name}" order="asc"/>
-                        <b:dataTableColumn value="#{ll.labelType}"/>
-                        <b:dataTableColumn value="#{ll.printerModel}"/>
-                        <b:dataTableColumn>
-                            <b:commandButton id="btnSelectLabel"
-                                             style="padding: 0 4px;"
-                                             icon="pencil"
-                                             look="link"
-                                             type="submit"
-                                             action="#{printAdminBean.actionSelectLabel(ll)}" />
-                            <p:commandButton id="btnDeleteLabel"
-                                             style="padding: 0 4px;"
-                                             styleClass="btn btn-link"
-                                             icon="fa fa-trash"
-                                             action="#{printAdminBean.actionDelete(ll)}"
-                                             update="printerSettings">
-                                <p:confirm header="#{msgs.LabelConfirmDelete}" 
-                                                    message="#{msgs.LabelConfirmDelete_detail}"
-                                                    icon="fa fa-warning" />
-                            </p:commandButton>
-                        </b:dataTableColumn>
-                    </b:dataTable>
-
-                    <b:row>
-                        <b:commandButton  id="btnAddLabel"
+                    <p:dataTable id="labelList"
+                             value="#{printAdminBean.labels}"
+                             styleClass="cloudNodeList"
+                             rowClasses="row-striping"
+                             responsive="false"
+                             customOptions="autoWidth:true"
+                             var="ll"
+                             widgetVar="customersTable2"
+                             csvExport="false"
+                             columnToggler="false"
+                             stateSaving="false">
+       
+                        
+                    <p:column headerText="#{msgs.LabelName}" sortBy="#{ll.name}" filterBy="#{ll.name}" filterMatchMode="contains">
+                        <h:outputText value="#{ll.name}" />
+                    </p:column>
+                    <p:column headerText="#{msgs.LabelType}">
+                        <h:outputText value="#{ll.labelType}" />
+                    </p:column>
+                    <p:column headerText="#{msgs.PrinterModel}">
+                        <h:outputText value="#{ll.printerModel}" />
+                    </p:column>
+                    <p:column headerText="#{msgs.Tools}">
+                        
+                        <p:commandButton id="btnSelectLabel"
+                                         style="padding: 0 4px;margin: 1.5rem;"
+                                         icon="pi pi-pencil"
+                                         styleClass="ui-button-success"
+                                         type="submit"
+                                         ajax="false"
+                                         action="#{printAdminBean.actionSelectLabel(ll)}" />
+                        
+                        <p:commandButton id="btnDeleteLabel"
+                                         style="padding: 0 4px;"
+                                         icon="pi pi-trash"
+                                         styleClass="ui-button-danger"
+                                         action="#{printAdminBean.actionDelete(ll)}"
+                                         update="printerSettings">
+                            
+                            <p:confirm header="#{msgs.LabelConfirmDelete}" 
+                                       message="#{msgs.LabelConfirmDelete_detail}"
+                                       icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <br/>
+                <br/>
+                    <p:row>
+                        <p:commandButton  id="btnAddLabel"
                                 type="submit" 
-                                iconAwesome="plus" 
+                                icon="pi pi-plus" 
                                 style="margin-right:3px;"
+                                ajax="false"
                                 action="#{printAdminBean.actionAddLabel}" 
                                 value="#{msgs.LabelAddLabel}"/>
-                    </b:row>
-                </b:panel>
+                    </p:row>
+                </p:panel>
 
-            </b:panelGrid>
+<!--===============================================================================================================-->
 
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                <p:commandButton id="btnConfirmOk" value="#{msgs.Ok}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+                <p:commandButton id="btnConfirmOk" value="Ok" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
                 <p:commandButton id="btnConfirmCancel" value="#{msgs.Cancel}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
             </p:confirmDialog>
 
-        </b:form>
+                <!--</p:row>-->
+                <!--</p:panelGrid>-->
+                </p:panel>    
+        </h:form>
 </h:body>
 </html>

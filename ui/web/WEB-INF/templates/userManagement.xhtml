@@ -20,7 +20,6 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
@@ -42,7 +41,7 @@
         width='#{((userMgrBean.mode == "UPDATE") and (userMgrBean.user.getSubSystemType().toString() == "LOCAL")) ? "900" : "600" }'>
 
 
-        <b:panelGrid colSpans='#{((userMgrBean.mode == "UPDATE") and (userMgrBean.user.getSubSystemType().toString() == "LOCAL")) ? "6,6" : "12" }'>
+        <!--<b:panelGrid colSpans='#{((userMgrBean.mode == "UPDATE") and (userMgrBean.user.getSubSystemType().toString() == "LOCAL")) ? "6,6" : "12" }'>-->
         <!--<p:panelGrid columns="#{((userMgrBean.mode == 'UPDATE') and (userMgrBean.user.subSystemType.toString() == 'LOCAL')) ? '6,6' : '12'}">-->
 
 
@@ -297,7 +296,7 @@
 <!--===============================================================================================================-->
 
                 <!-- password -->
-                <h:form id="frmModalPassword"
+               <br/> <h:form id="frmModalPassword"
                         rendered="#{((userMgrBean.mode == 'UPDATE') and (userMgrBean.user.getSubSystemType().toString() == 'LOCAL'))}"
                         style="border:1px solid red;border-radius:3px;">
 
@@ -317,7 +316,7 @@
                                     value="#{userMgrBean.tempPassword}"
                                     styleClass="tstUserMgrChgPasswd1"
                                     label="#{msgs.userMgr_NewPassword}"
-                                    style="z-index: auto;width:100%;"
+                                    style="z-index: auto;width:100%; background:#e9ecef;"
                                     renderLabel="true"
                                     placeholder="#{msgs.userMgr_NewPasswordPlaceholder}"
                                     required="true"
@@ -377,14 +376,14 @@
                 </h:form>
 
             <!--</p:panelGrid>-->
-            </b:panelGrid>
+            <!--</b:panelGrid>-->
 
 <!--===============================================================================================================-->
 
             <center>
-              <br/><p:button value="#{msgs.Close}"
-                             style="background:#080C12; border: 1px solid #080C12;color:white;"
-                             onclick="PF('userDialogWidgetVar').hide()"/>
+              <br/><p:commandButton value="#{msgs.Close}"
+                                     styleClass="ui-button-secondary"
+                                     onclick="PF('userDialogWidgetVar').hide()"/>
             </center>
         </p:dialog>
 
@@ -405,16 +404,13 @@
 
 <!--===============================================================================================================-->
       <!--TABELLE 1 MEMBERSHIP-->
-                <br/>
-                <h:outputText ><h1>#{msgs.userMgr_Memberships}</h1></h:outputText>
-                <br/>
-                <br/>
+
+                <h:outputText ><h4><strong>#{msgs.userMgr_Memberships}</strong></h4></h:outputText>
 
                <p:dataTable id="membershipList"
                              value="#{userMgrBean.membershipList}"
                              var="ms"
                              widgetVar="customersTable"
-                             styleClass="membershipList"
                              striped="true"
                              responsive="false"
                              rows="5"
@@ -444,8 +440,10 @@
                         <p:columnGroup>
                             <p:row>
                                 <p:column colspan="5">
+
                                     <p:commandButton value="#{msgs.userMgr_showNested}"
                                                      ajax="true"
+                                                     type=''
                                                      look="link"
                                                      update="frmModalGroupDialog"
                                                      action="#{userMgrBean.actionToggleNestedFlag()}" />
@@ -488,11 +486,7 @@
 
 <!--===============================================================================================================-->
       <!--TABELLE 2 AVAILABLE GROUPS-->
-
-                <br/>
-                <h:outputText>#{msgs.userMgr_AvailableGroups}</h:outputText>
-                <br/>
-                <br/>
+                <h:outputText><h4><strong>#{msgs.userMgr_AvailableGroups}</strong></h4></h:outputText>
 
                 <p:dataTable id="groupList"
                              value="#{userMgrBean.groupList}"
@@ -527,122 +521,154 @@
                                          />
                         <!--onclick="PF('userMgrBean').actionAddMembership(group)"--><!--wird benutz um die seite neuzuladen, schließt das fenser -->
 
+                        <p:message for="@previous"/>
                     </p:column>
                 </p:dataTable>
 
-                <b:message for="@previous"/>
 
                 <!--<b:fetchBeanInfos/>-->
 
-                <b:row styleClass="modal-footer">
-                    <b:button value="#{msgs.Close}" styleClass="tstUserMgrMembershipClose" onclick="PF('groupMembershipsDialogWidgetVar').hide()" />
-                </b:row>
 
             </h:form>
+                    <center>
+                          <p:commandButton value="#{msgs.Close}"
+                                     styleClass="ui-button-secondary"
+                                     onclick="PF('userDialogWidgetVar').hide()"/>
+                    </center>
         </p:dialog>
 
 <!--===============================================================================================================-->
 
         <!-- user list -->
 
-        <b:form id="frmUserList">
-            <b:dataTable id="userList"
-                         value="#{userMgrBean.userList}"
-                         styleClass="userList"
-                         striped="true"
-                         responsive="false"
-                         customOptions="autoWidth:true"
-                         fixedHeader="true"
-                         var="user"
-                         saveState="false">
-                <f:facet name="header">
-                    <tr>
-                        <th colspan="9">
-                            <b:commandButton
-                                styleClass="pull-right tstUserMgrCreateDlg"
-                                style="margin:0 2px;"
-                                iconAwesome="fa-plus-circle"
-                                value="#{msgs.userMgr_newUser}"
-                                look="primary"
+        <h:form id="frmUserList"
+                style="border:1px solid #2196f3;border-radius:3px;">
+          <p:dataTable id="userList"
+                        value="#{userMgrBean.userList}"
+                        styleClass="userList"
+                        striped="true"
+                        responsive="false"
+                        customOptions="autoWidth:true"
+                        fixedHeader="true"
+                        var="user"
+                        saveState="false">
+
+                        <f:facet name="header">
+                            <tr>
+                                <th colspan="9">
+                                    <p:commandButton
+                                        styleClass="ui-button-Primary"
+                                        style="margin:0 2px;"
+                                        icon="pi pi-user-plus"
+                                        value="#{msgs.userMgr_newUser}"
+                                        look="primary"
+                                        ajax="true"
+                                        rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
+                                        update="modalUserDialog frmModalUserDialog frmModalPassword"
+                                        action="#{userMgrBean.setModeCreate()}"
+                                        oncomplete="PF('userDialogWidgetVar').show();">
+
+                                        <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                                    </p:commandButton>
+
+                                    <p:commandButton
+                                        styleClass="ui-button-warning"
+                                        style="margin:0 2px;"
+                                        icon="pi pi-refresh"
+                                        value="#{msgs.Refresh}"
+                                        look="default"
+                                        ajax="true"
+                                        update="@form"
+                                        rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                        action="#{userMgrBean.refreshUserList()}"
+                                        />
+                                        <!--onclick="ajax:userMgrBean.refreshUserList();"-->
+
+                                </th>
+                            </tr>
+
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="min-width:50px"></th>
+                                </tr>
+                        </f:facet>
+
+                        <p:column headerText="#{msgs.Name}">
+                            <h:outputText value="#{user.name}" />
+                        </p:column>
+
+                        <p:column headerText="#{msgs.Login}">
+                            <h:outputText value="#{user.login}" />
+                        </p:column>
+
+                        <p:column headerText="#{msgs.userMgr_shortcut}">
+                            <h:outputText value="#{user.shortcut}" />
+                        </p:column>
+
+                        <p:column headerText="#{msgs.Email}">
+                            <h:outputText value="#{user.email}" />
+                        </p:column>
+
+                        <p:column headerText="#{msgs.Phone}">
+                            <h:outputText value="#{user.phone}" />
+                        </p:column>
+
+                        <p:column headerText="#{msgs.Type}">
+                            <h:outputText value="#{user.getSubSystemType().toString()}" />
+                        </p:column>
+
+                        <p:column headerText="#{msgs.Institution}">
+                            <h:outputText value="#{user.node.institution}" />
+                        </p:column>
+
+                        <p:column headerText="#{msgs.Tools}"
+                                  style="display:flex; flex-direction: row;justify-content: space-around;">
+                            <p:commandButton
+                                style="padding: 0 4px;"
+                                styleClass="ui-button-success"
+                                icon="pi pi-pencil"
+                                look="link"
                                 ajax="true"
-                                type="button"
                                 update="modalUserDialog frmModalUserDialog frmModalPassword"
-                                rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
-                                onclick="ajax:userMgrBean.setModeCreate();"
+                                action="#{userMgrBean.setModeUpdate(user)}"
                                 oncomplete="PF('userDialogWidgetVar').show();">
+
                                 <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                            </b:commandButton>
-                            <b:commandButton
-                                styleClass="pull-right tstUserMgrRefresh"
-                                style="margin:0 2px;"
-                                iconAwesome="refresh"
-                                value="#{msgs.Refresh}"
-                                look="default"
+                            </p:commandButton>
+
+                            <p:commandButton
+                                style="padding: 0 4px;"
+                                styleClass="ui-button-info"
+                                icon="pi pi-users"
+                                look="link"
                                 ajax="true"
-                                type="button"
-                                update="@form"
-                                rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                onclick="ajax:userMgrBean.refreshUserList();" />
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.Name}</th>
-                        <th>#{msgs.Login}</th>
-                        <th>#{msgs.userMgr_shortcut}</th>
-                        <th>#{msgs.Email}</th>
-                        <th>#{msgs.Phone}</th>
-                        <th>#{msgs.Type}</th>
-                        <th>#{msgs.Institution}</th>
-                        <th style="min-width:50px">#{msgs.Tools}</th>
-                    </tr>
-                </f:facet>
-                <b:dataTableColumn value="#{user.name}" order="asc"/>
-                <b:dataTableColumn value="#{user.login}"/>
-                <b:dataTableColumn value="#{user.shortcut}"/>
-                <b:dataTableColumn value="#{user.email}"/>
-                <b:dataTableColumn value="#{user.phone}"/>
-                <b:dataTableColumn value="#{user.getSubSystemType().toString()}"/>
-                <b:dataTableColumn value="#{user.node.institution}"/>
-                <b:dataTableColumn>
-                    <b:commandButton
-                        style="padding: 0 4px;"
-                        styleClass="tstUserMgrEditDlg"
-                        icon="pencil"
-                        look="link"
-                        ajax="true"
-                        type="button"
-                        update="modalUserDialog frmModalUserDialog frmModalPassword"
-                        onclick="ajax:userMgrBean.setModeUpdate();userMgrBean.setUser(user);"
-                        oncomplete="PF('userDialogWidgetVar').show();">
-                        <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                    </b:commandButton>
-                    <!-- possibly 'modalGroupDialog.DataTable().responsive.recalc();' could be
-                         necessary for responsive tables within a modal form -->
-                    <b:commandButton
-                        style="padding: 0 4px;"
-                        styleClass="tstUserMgrMembershipDlg"
-                        iconAwesome="users"
-                        look="link"
-                        ajax="true"
-                        type="button"
-                        update="modalGroupDialog frmModalGroupDialog"
-                        onclick="ajax:userMgrBean.setUser(user);"
-                        oncomplete="PF('groupMembershipsDialogWidgetVar').show();" />
-                    <b:commandButton
-                        style="padding: 0 4px;"
-                        styleClass="tstUserMgrDeleteDlg"
-                        icon="trash"
-                        look="link"
-                        ajax="true"
-                        type="button"
-                        update="modalUserDialog frmModalUserDialog frmModalPassword"
-                        onclick="ajax:userMgrBean.setModeDelete();userMgrBean.setUser(user);"
-                        oncomplete="PF('userDialogWidgetVar').show();">
-                        <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                    </b:commandButton>
-                </b:dataTableColumn>
-            </b:dataTable>
-        </b:form>
+                                update="modalGroupDialog frmModalGroupDialog"
+                                action="#{userMgrBean.setUser(user)}"
+                                oncomplete="PF('groupMembershipsDialogWidgetVar').show();">
+                            </p:commandButton>
+
+                            <p:commandButton
+                                style="padding: 0 4px;"
+                                styleClass="ui-button-danger"
+                                icon="pi pi-trash"
+                                look="link"
+                                ajax="true"
+                                update="modalUserDialog frmModalUserDialog frmModalPassword"
+                                action="#{userMgrBean.setModeDelete(user)}"
+                                oncomplete="PF('userDialogWidgetVar').show();">
+
+                                <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+        </h:form>
     </ui:composition>
 </h:body>
 </html>
