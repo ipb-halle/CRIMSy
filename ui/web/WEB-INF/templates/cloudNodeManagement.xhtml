@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets">
 
@@ -32,8 +32,8 @@
 
         <!-- CloudNode list -->
 
-        <b:form id="frmCloudNodeList">
-            <b:dataTable id="cloudNodeList"
+        <h:form id="frmCloudNodeList" style="border:1px solid #029ACF;border-radius:3px;">
+            <p:dataTable id="cloudNodeList"
                          value="#{cloudNodeBean.cloudNodes}"
                          styleClass="cloudNodeList"
                          striped="true"
@@ -42,37 +42,37 @@
                          fixedHeader="true"
                          var="cn"
                          saveState="false">
-                <f:facet name="header">
-                    <!-- 
-                    <tr>
-                        <th colspan="xxxx NumCols xxxx">
-                        === top buttons (refresh, new, ...) go here ===
-                        </th>
-                    </tr>
-                    -->
-                    <tr>
-                        <th>#{msgs.Cloud}</th>
-                        <th>#{msgs.Institution}</th>
-                        <th>#{msgs.Rank}</th>
-                        <th>#{msgs.Status}</th>
-                        <th style="min-width:50px">#{msgs.Tools}</th>
-                    </tr>
-                </f:facet>
-                <b:dataTableColumn value="#{cn.cloud.name}" order="asc"/>
-                <b:dataTableColumn value="#{cn.node.institution}"/>
-                <b:dataTableColumn value="#{cn.rank}"/>
-                <b:dataTableColumn><div class="#{cn.status}">#{msgs[cn.status]}</div></b:dataTableColumn>
-                <b:dataTableColumn>
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon="pencil"
+
+                <p:column headerText="#{msgs.Cloud}" sortBy="#{cn.cloud.name}" filterBy="#{cn.cloud.name}" filterMatchMode="contains">
+                <h:outputText value="#{cn.cloud.name}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.Institution}">
+                <h:outputText value="#{cn.node.institution}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.Rank}">
+                <h:outputText value="#{cn.rank}" />
+                </p:column>
+
+                <p:column headerText="#{msgs.Status}">
+                    <div class="#{cn.status}">#{msgs[cn.status]}</div>
+                </p:column>
+
+                <p:column headerText="#{msgs.Tools}" style="min-width:50px">
+                    <p:commandButton style="padding: 0 4px;"
+                                     icon="pi pi-pencil"
                                      look="link"
                                      ajax="true"
-                                     type="button"
-                                     update="@form" 
-                                     onclick="ajax:cloudNodeBean.actionDoNothing(cn);" />
-                </b:dataTableColumn>
-            </b:dataTable>
-        </b:form>
+                                     type="submit"
+                                     update="@form"
+                                     action="#{cloudNodeBean.actionDoNothing(cn)}"
+                                     />
+                                     <!--onclick="ajax:cloudNodeBean.actionDoNothing(cn);"-->
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
     </ui:composition>
 </h:body>
 </html>

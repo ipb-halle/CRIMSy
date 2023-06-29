@@ -20,7 +20,6 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -29,138 +28,149 @@
     <h:body>
         <ui:composition>
             <h:outputScript target="body">colorCloudTerms();</h:outputScript>
-            <b:form id="socialForumFormId">
-                <b:container id="wordCloudPage">
-                    <b:row>
-                        <b:column span="12">
-                            <b:jumbotron>
-                                <b:row>
-                                    <b:column span="2"/>
-                                    <b:column span="1">
-                                        <b:image name="img/simpleCloud.svg" styleClass="img-cloud1" />
-                                    </b:column>
-                                    <b:column span="1">
-                                        <b:image name="img/wordcloudLogo.svg" styleClass="img-cloud2"/>
-
-                                    </b:column>
-                                </b:row>
-                            </b:jumbotron>
-                        </b:column>
-                    </b:row>
-
-                    <b:row>
-                        <b:column span="2">
-                        </b:column>
-                        <b:column span="1">
-                            <b:commandButton
+            <h:form id="socialForumFormId" style="border:1px solid #029ACF;border-radius:3px;">
+                <h:panelGroup  id="wordCloudPage">
+                    <p:panel style="background-color: #f4f4f4; margin: 2rem 0;" >
+                        <p:row >
+                            <p:column span="12">
+                            <!--<b:jumbotron>-->
+                                <p:row>
+                                    <p:column span="2" style="padding-left: 50rem;">
+                                    <p:column span="1" style="display:flex;">
+                                        <p:graphicImage name="img/simpleCloud.svg"  width="100px" style="margin: 0 -22rem 0 26rem"/>
+                                        </p:column>
+                                    <p:column span="1" style="display:flex;">
+                                        <p:graphicImage name="img/wordcloudLogo.svg" width="250px"/>
+                                    </p:column>
+                                    </p:column>
+                                </p:row>
+                            <!--</b:jumbotron>-->
+                            </p:column>
+                        </p:row>
+                    </p:panel>
+<!--===============================================================================================================-->
+                    <p:row >
+                    <div class="col-12 md:col-4">
+                    <div class="ui-inputgroup">
+                        <p:column span="2">
+                        </p:column>
+                        <p:column span="1">
+                            <p:commandButton
                                 look="primary"
-                                type="button"
+                                type="submit"
+                                icon="pi pi-refresh"
                                 ajax="true"
                                 action="#{wordCloudBean.clearCloudState()}"
                                 update="@form @(.tablePseudoClass)"
                                 value="clear">
-                                <b:iconAwesome 
+<!--                                <p:icon
                                     style="margin-left: 4px"
                                     styleClass="fa-rotate-left"
                                     name="refresh"
-                                    size="1x" />
-                            </b:commandButton>
-                        </b:column>
-                        <b:column span="1">
-                            <b:commandButton
+                                    size="1x" />-->
+                            </p:commandButton>
+                        </p:column>
+<!--===============================================================================================================-->
+                        <p:column span="1" >
+                            <p:commandButton
+                                style="margin: 0 0.5rem;"
                                 look="primary"
-                                type="button"
+                                type="submit"
+                                icon="pi pi-eye"
                                 ajax="true"
                                 update="@form"
                                 action="#{wordCloudBean.toggleWordCloudVisibility()}"
                                 oncomplete="colorCloudTerms();">
-                                <b:iconAwesome 
+<!--                                <b:iconAwesome
                                     style="margin-left: 4px"
                                     styleClass="fa-eye"
                                     name="refresh"
-                                    size="1x" />
-                            </b:commandButton>
-                        </b:column>
-                        <b:column span="1">
-                            <b:selectOneMenu 
-                                style="width: 70px"
+                                    size="1x" />-->
+                            </p:commandButton>
+                        </p:column>
+<!--===============================================================================================================-->
+                        <p:column span="1" >
+                            <p:selectOneMenu
+                                style="width: 70px; margin-right: 0.5rem;"
                                 value="#{wordCloudBean.maxTerms}"
                                 ajax="true"
                                 update="@form @(.tablePseudoClass)"
-                                onchange="ajax:wordCloudBean.startSearch()"
+                                action="#{wordCloudBean.startSearch()}"
                                 oncomplete="colorCloudTerms();">
                                 <f:selectItem itemLabel="150" itemValue="150"/>
                                 <f:selectItem itemLabel="300" itemValue="300"/>
                                 <f:selectItem itemLabel="450" itemValue="450"/>
-                            </b:selectOneMenu>
-                        </b:column >
-                        <b:column span="7">
-                            <b:inputText styleClass="searchRequest"
+                            </p:selectOneMenu>
+                                <!--onchange="ajax:wordCloudBean.startSearch()"-->
+                        </p:column >
+<!--===============================================================================================================-->
+                        <p:column span="7">
+                            <p:inputText styleClass="searchRequest"
+                                         style="width:100%;"
                                          placeholder="#{msgs.searchMgr_searchtext_placeholder}"
                                          required="false"
-
                                          id="searchTextInputField"
-                                         value="#{wordCloudBean.searchTermInput}">
-                                <f:facet name="append">
-                                    <b:commandButton look="primary"
-                                                     value=""
-                                                     type="submit"
-                                                     icon="search"
-                                                     ajax="true"
-                                                     id="startSearchButton"
-                                                     update="tagCloudId @form"
-                                                     action="#{wordCloudBean.startSearch()}"
-                                                     oncomplete="colorCloudTerms();"
-                                                     icon-align="left">
-                                    </b:commandButton>
-                                </f:facet>
-                            </b:inputText>
-                        </b:column>
-
-                    </b:row>
-                    <b:row rendered="#{wordCloudBean.wordCloudVisible}" id="wordCloudRow">
-                        <b:column span="12">
-                            <p:tagCloud 
+                                         value="#{wordCloudBean.searchTermInput}"/>
+                            <p:commandButton look="primary"
+                                             value=""
+                                             type="submit"
+                                             icon="pi pi-search"
+                                             ajax="true"
+                                             id="startSearchButton"
+                                             update="tagCloudId @form"
+                                             action="#{wordCloudBean.startSearch()}"
+                                             oncomplete="colorCloudTerms();" />
+                        </p:column>
+                    </div>
+                    </div>
+                    </p:row>
+<!--===============================================================================================================-->
+                    <p:row rendered="#{wordCloudBean.wordCloudVisible}" id="wordCloudRow">
+                        <p:column span="12">
+                            <p:tagCloud
                                 id="tagCloudId"
                                 model="#{wordCloudBean.model}"
                                 styleClass="wordCloud"
                                 >
-                                <p:ajax 
-                                    event="select" 
-                                    update="@form tags documentList" 
+                                <p:ajax
+                                    event="select"
+                                    update="@form tags documentList"
                                     oncomplete="colorCloudTerms();return false;"
                                     listener="#{wordCloudBean.onSelect}"/>
                             </p:tagCloud>
 
-                        </b:column>
-                    </b:row>
+                        </p:column>
+                    </p:row>
+<br/>
+<!--===============================================================================================================-->
+                    <p:row>
 
-                    <b:row>
-
-                        <b:column span="12" styleClass="tagInputForm text-center" id="tags">
+                        <p:column span="12" styleClass="tagInputForm text-center" id="tags">
                             <ui:repeat value="#{wordCloudBean.getTagsAsList()}" var="tag" id="badges">
-                                <b:badge value="#{tag.toString()}" style-class="tag-badge">
-                                    <b:commandButton 
+                                <p:badge value="#{tag.toString()}" style-class="tag-badge">
+                                    <p:commandButton
                                         styleClass="tag-badge-icon"
                                         ajax="true"
                                         action="#{wordCloudBean.removeTag(tag)}"
                                         oncomplete="colorCloudTerms();"
                                         update="@form"
-                                        > 
-                                        <b:iconAwesome 
-                                            name="fa-close"
-                                            size="1x" />#{'   '}
-                                    </b:commandButton>
+                                        icon="pi pi-close"
+                                        >
+                                       #{'   '}
+                                    </p:commandButton>
 
-                                </b:badge> 
+                                </p:badge>
                             </ui:repeat>
-                        </b:column>
+                        </p:column>
 
-                    </b:row>
+                    </p:row>
+<br/>
 
-                    <b:row>
-                        <b:column span="12">
-                            <b:dataTable id="documentList"
+<!--===============================================================================================================-->
+
+                    <p:row>
+                        <p:column span="12">
+                            <p:dataTable id="documentList"
                                          value="#{wordCloudBean.docSeachState.foundDocuments}"
                                          striped="true"
                                          styleClass="dataTablePseudoClass"
@@ -170,21 +180,22 @@
                                          var="document"
                                          csv="false"
                                          saveState="false">
-                                <b:dataTableColumn label="#{msgs.searchMgr_resulttable_document}">
-                                    <b:commandLink
+
+                                <p:column headerText="#{msgs.searchMgr_resulttable_document}" sortBy="#{document.originalName}" filterBy="#{document.originalName}" filterMatchMode="contains">
+                                    <p:commandLink
                                         value="#{document.originalName}"
-                                        action="#{documentDownloadBean.actionDownloadDocument(document)}"                                     
-                                        />                                   
-                                </b:dataTableColumn>
-                                <b:dataTableColumn 
-                                    value="#{document.getRichSourceInfo()}"
-                                    label="#{msgs.searchMgr_resulttable_source}"
-                                    />
-                            </b:dataTable>
-                        </b:column>
-                    </b:row>
-                </b:container>
-            </b:form>
+                                        action="#{documentDownloadBean.actionDownloadDocument(document)}"
+                                        />
+                                </p:column>
+
+                                <p:column headerText="#{msgs.searchMgr_resulttable_source}">
+                                    <h:outputText value="#{document.getRichSourceInfo()}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:column>
+                    </p:row>
+                </h:panelGroup>
+            </h:form>
         </ui:composition>
     </h:body>
 </html>

@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
@@ -28,150 +27,160 @@
 
     <h:body>
         <ui:composition>
-            <b:form>
-                <b:navBar
-                    position="top"
-                    sticky="true"
-                    styleClass="navigationMenu"
-                    style="z-index: 900;">
-                    <b:flyOutMenu width="50px" styleClass="lbacDropDownMenu">
+            <h:form style="display:flex; flex-direction: row; align-items: center; justify-content:space-evenly;margin: 0 auto;
+width: 40%;">
+                <p:growl id="growl" life="2000"/>
                         <p:remoteCommand
                             name="navigateToSearch"
                             action="#{navigator.navigate('default')}"
                             process="@this"
                             update="@all" />
-                        <b:dropMenu
+                        <p:menuButton
+                            styleClass="ui-button-success"
                             value="BioCloud"
-                            styleClass="tstNavBioCloud"
-                            pt:onclick="if (this.tagName == 'LI') { navigateToSearch(); return false; }">
-                            <b:navCommandLink
+                            >
+                            <!--pt:onclick="if (this.tagName == 'LI') { navigateToSearch(); return false; }"-->
+                            <p:menuitem
                                 value="#{msgs.navigation_bioCloud_search}"
+                                ajax="false"
                                 styleClass="tstNavLBAC"
-                                actionListener="#{navigator.navigate('default')}"/>
-                            <b:navCommandLink
+                                action="#{navigator.navigate('default')}"/>
+                            <p:menuitem
                                 value="#{msgs.navigation_bioCloud_wordCloudSearch}"
+                                ajax="false"
                                 styleClass="tstNavWordCloud"
-                                actionListener="#{navigator.navigate('wordCloud2')}"/>
-                            <b:navCommandLink
+                                action="#{navigator.navigate('wordCloud2')}"/>
+                            <p:menuitem
                                 value="#{msgs.navigation_bioCloud_sequenceSearch}"
-                                actionListener="#{navigator.navigate('sequence/sequenceSearch')}"/>
-                            <b:navCommandLink
+                                ajax="false"
+                                action="#{navigator.navigate('sequence/sequenceSearch')}"/>
+                            <p:menuitem
                                 value="#{msgs.navigation_bioCloud_forum}"
+                                ajax="false"
                                 styleClass="tstNavForum"
-                                actionListener="#{navigator.navigate('socialForum')}"/>
-                        </b:dropMenu>
-                        <b:navLink />
-                    </b:flyOutMenu>
+                                action="#{navigator.navigate('socialForum')}"/>
+                        </p:menuButton>
 
-                    <b:flyOutMenu
-                        width="50px" 
-                        rendered="#{userBean.isComponentAccessable('InhouseDB')}"
-                        styleClass="lbacDropDownMenu">
-                        <b:dropMenu value="LIMS" styleClass="tstNavLIMS">
-                            <b:navCommandLink 
+                        <p:menuButton
+                            value="LIMS"
+                            styleClass="ui-button-success"
+                            rendered="#{userBean.isComponentAccessable('InhouseDB')}"
+                            >
+
+                            <p:menuitem
                                 value="#{msgs.navigation_lims_materials}"
+                                ajax="false"
                                 styleClass="tstNavMaterials"
-                                actionListener="#{navigator.navigate('material/materials')}"/>
-                            <b:navCommandLink 
+                                action="#{navigator.navigate('material/materials')}"/>
+                            <p:menuitem
                                 value="#{msgs.navigation_lims_projects}"
+                                ajax="false"
                                 styleClass="tstNavProjects"
-                                actionListener="#{navigator.navigate('project/projectOverview')}"/>
-                            <b:navCommandLink 
+                                action="#{navigator.navigate('project/projectOverview')}"/>
+                            <p:menuitem
                                 value="#{msgs.navigation_lims_items}"
+                                ajax="false"
                                 styleClass="tstNavItems"
-                                actionListener="#{navigator.navigate('item/items')}"/>
-                            <b:navCommandLink 
+                                action="#{navigator.navigate('item/items')}"/>
+                            <p:menuitem
                                 value="#{msgs.navigation_lims_taxonomy}"
+                                ajax="false"
                                 styleClass="tstNavTaxonomy"
-                                actionListener="#{navigator.navigate('material/taxonomy')}"/>
-                            <b:navCommandLink 
+                                action="#{navigator.navigate('material/taxonomy')}"/>
+                            <p:menuitem
+                                ajax="false"
                                 value="#{msgs.navigation_lims_experiments}"
                                 styleClass="tstNavExperiments"
-                                actionListener="#{navigator.navigate('exp/experiments')}"/>
-                            <b:navCommandLink 
+                                action="#{navigator.navigate('exp/experiments')}"/>
+                            <p:menuitem
                                 value="#{msgs.navigation_lims_containers}"
+                                ajax="false"
                                 styleClass="tstNavContainers"
-                                actionListener="#{navigator.navigate('container/container')}"/>
-                        </b:dropMenu>
-                        <b:navLink />
-                    </b:flyOutMenu>
+                                action="#{navigator.navigate('container/container')}"/>
+                        </p:menuButton>
 
-                    <!-- Following line is needed for TBS 3.0.1 (panel content overflow issue) -->
-
-                    <b:navbarLinks pull="right">
-                        <b:navLink value="    " href="#"/>
-                    </b:navbarLinks>
 
                     <!-- ##################################################################### -->
 
-                    <b:navbarLinks pull="right" styleClass="tstProperties">
-                        <b:navCommandLink iconAwesome="log-in" rendered="#{userBean.currentAccount.isPublicAccount()}" value="Login"
-                                          styleClass="tstLoginCmdLink" actionListener="#{navigator.navigate('login')}"/>
-                        <b:navCommandLink iconAwesome="log-out" rendered="#{! userBean.currentAccount.isPublicAccount()}" value="Logout"
-                                          styleClass="tstLogoutCmdLink" actionListener="#{userBean.actionLogout}"/>
-                        <b:dropMenu value="#{msgs.navigation_admission_title}" 
-                                    styleClass="tstNavSettings"
-                                    rendered="#{! userBean.currentAccount.isPublicAccount()}" iconAwesome="cog"
-                                    iconAlign="left">
-                            <b:navLink header="#{userBean.currentAccount.name}"/>
 
+                         <p:commandLink  icon="pi pi-log-in"
+                                         rendered="#{userBean.currentAccount.isPublicAccount()}"
+                                         value="Login"
+                                        style="color:#4B0082"
+                                         ajax="false"
+                                         action="#{navigator.navigate('login')}"/>
+
+                         <p:commandLink icon="pi pi-log-out"
+                                        rendered="#{! userBean.currentAccount.isPublicAccount()}"
+                                        value="Logout"
+                                        style="color:#d32f2f"
+                                        ajax="false"
+                                        action="#{userBean.actionLogout}"/>
+                       <br/>
+                        <br/>
+                        <p:outputLabel value="#{userBean.currentAccount.name}"/>
+
+
+                        <p:menuButton
+                            value="#{msgs.navigation_admission_title}"
+                            rendered="#{! userBean.currentAccount.isPublicAccount()}"
+                            iconAwesome="pi pi-cog"
+                            styleClass="ui-button-danger"
+                            >
                             <!-- Admission -->
-                            <b:navCommandLink iconAwesome="pencil" 
+                            <p:menuitem icon="pi pi-pencil"
                                               value="#{msgs.navigation_admission_myAccount}"
                                               styleClass="tstNavMyAccount"
-                                              actionListener="#{navigator.navigate('myAccount')}"/>
-                            <b:navCommandLink iconAwesome="file-text-o" 
+                                              ajax="false"
+                                              action="#{navigator.navigate('myAccount')}"/>
+                            <p:menuitem  icon="pi pi-file-o"
                                               value="#{msgs.navigation_admission_myReports}"
-                                              actionListener="#{navigator.navigate('myReports')}"/>
-                            <b:navCommandLink iconAwesome="user"
+                                              ajax="false"
+                                              action="#{navigator.navigate('myReports')}"/>
+                            <p:menuitem  icon="pi pi-user"
                                               value="#{msgs.navigation_admission_userManagement}"
+                                              ajax="false"
                                               styleClass="tstNavUserManager"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              actionListener="#{navigator.navigate('userManagement')}"/>
-                            <b:navCommandLink iconAwesome="users"
+                                              action="#{navigator.navigate('userManagement')}"/>
+                            <p:menuitem  icon="pi pi-users"
                                               value="#{msgs.navigation_admission_groupManagement}"
+                                              ajax="false"
                                               styleClass="tstNavGroupManager"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              actionListener="#{navigator.navigate('groupManagement')}"/>
-                            <b:navCommandLink iconAwesome="fa-users"
+                                              action="#{navigator.navigate('groupManagement')}"/>
+                            <p:menuitem  icon="pi pi-users"
                                               value="#{msgs.navigation_admission_ldap}"
+                                              ajax="false"
                                               styleClass="tstNavLdapSettings"
                                               rendered="#{userBean.getPermission('LDAP_ENABLE', 'permEDIT')}"
-                                              actionListener="#{navigator.navigate('LdapAdminProperties')}"/>
-                            <b:navCommandLink iconAwesome="wrench"
+                                              action="#{navigator.navigate('LdapAdminProperties')}"/>
+                            <p:menuitem  icon="pi pi-wrench"
                                               value="#{msgs.navigation_admission_printerSettings}"
+                                              ajax="false"
                                               styleClass="tstNavPrinterSettings"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
-                                              actionListener="#{navigator.navigate('print/printerList')}"/>
-                            <b:navCommandLink iconAwesome="wrench"
+                                              action="#{navigator.navigate('print/printerList')}"/>
+                            <p:menuitem icon="pi pi-wrench"
                                               value="#{msgs.navigation_admission_systemSettings}"
+                                              ajax="false"
                                               styleClass="tstNavSystemSettings"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
-                                              actionListener="#{navigator.navigate('systemSettings')}"/>
-                            <b:navCommandLink iconAwesome="wrench"
+                                              action="#{navigator.navigate('systemSettings')}"/>
+                            <p:menuitem  icon="pi pi-wrench"
                                               value="#{msgs.navigation_admission_cloudNodeManagement}"
+                                              ajax="false"
                                               styleClass="tstNavCloudNodeManagement"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              actionListener="#{navigator.navigate('cloudNodeManagement')}"/>
-                            <b:navCommandLink iconAwesome="fa-file-archive-o"
+                                              action="#{navigator.navigate('cloudNodeManagement')}"/>
+                            <p:menuitem  icon="pi pi-file-o"
+                                              ajax="false"
                                               value="#{msgs.navigation_admission_collectionManagement}"
                                               styleClass="tstNavCollectionManagement"
-                                              actionListener="#{navigator.navigate('collectionManagement')}"/>
+                                              action="#{navigator.navigate('collectionManagement')}"/>
+                        </p:menuButton>
 
-                            <!-- LBAC-QSAR-35 playground -->
-
-                            <!--
-                            <b:navCommandLink iconAwesome="bar-chart" value="QSAR Admin"
-                                              actionListener="#{navigator.navigate('qsaradmin')}" />
-                            -->
-
-                            <!--  end playground -->
-
-
-                        </b:dropMenu>
-                    </b:navbarLinks>
-                </b:navBar>
-            </b:form>
+            </h:form>
         </ui:composition>
     </h:body>
 </html>
