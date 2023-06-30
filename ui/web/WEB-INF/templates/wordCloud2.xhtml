@@ -59,6 +59,7 @@
                                 look="primary"
                                 type="submit"
                                 icon="pi pi-refresh"
+                                styleClass="ui-button-danger"
                                 ajax="true"
                                 action="#{wordCloudBean.clearCloudState()}"
                                 update="@form @(.tablePseudoClass)"
@@ -77,6 +78,7 @@
                                 look="primary"
                                 type="submit"
                                 icon="pi pi-eye"
+                                styleClass="rounded-button ui-button-danger"
                                 ajax="true"
                                 update="@form"
                                 action="#{wordCloudBean.toggleWordCloudVisibility()}"
@@ -105,18 +107,20 @@
                         </p:column >
 <!--===============================================================================================================-->
                         <p:column span="7">
-                            <p:inputText styleClass="searchRequest"
-                                         style="width:100%;"
-                                         placeholder="#{msgs.searchMgr_searchtext_placeholder}"
-                                         required="false"
+                            <p:inputText
                                          id="searchTextInputField"
-                                         value="#{wordCloudBean.searchTermInput}"/>
+                                         style="width:100%;"
+                                         value="#{wordCloudBean.searchTermInput}"
+                                         placeholder="#{msgs.searchMgr_searchtext_placeholder}"
+                                         required="true"
+                                         />
                             <p:commandButton look="primary"
                                              value=""
                                              type="submit"
                                              icon="pi pi-search"
+                                             styleClass="ui-button-danger"
                                              ajax="true"
-                                             id="startSearchButton"
+                                             id="btn1"
                                              update="tagCloudId @form"
                                              action="#{wordCloudBean.startSearch()}"
                                              oncomplete="colorCloudTerms();" />
@@ -147,19 +151,20 @@
 
                         <p:column span="12" styleClass="tagInputForm text-center" id="tags">
                             <ui:repeat value="#{wordCloudBean.getTagsAsList()}" var="tag" id="badges">
-                                <p:badge value="#{tag.toString()}" style-class="tag-badge">
+                                <!--<p:badge value="#{tag.toString()}" style-class="tag-badge">-->
                                     <p:commandButton
-                                        styleClass="tag-badge-icon"
+                                        value="#{tag.toString()}"
+                                        styleClass="rounded-button ui-button-danger"
+                                        icon="pi pi-times-circle" iconPos="right"
+                                        style="margin:0.6rem 0.8rem;margin-bottom:1rem;"
                                         ajax="true"
                                         action="#{wordCloudBean.removeTag(tag)}"
                                         oncomplete="colorCloudTerms();"
                                         update="@form"
-                                        icon="pi pi-close"
                                         >
-                                       #{'   '}
                                     </p:commandButton>
 
-                                </p:badge>
+                                <!--</p:badge>-->
                             </ui:repeat>
                         </p:column>
 

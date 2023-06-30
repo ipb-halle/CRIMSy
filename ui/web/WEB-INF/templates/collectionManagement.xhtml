@@ -20,6 +20,7 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
@@ -33,10 +34,13 @@
                 groupsAgent="#{groupAgent}"
                 updateTargetClass="collectionList"
                 />
+
             <h2>
+
                 <h:outputText value="#{msgs.collMgr_header}" />
             </h2>
-            <p:dialog
+
+          <p:dialog
                 id="modalCollection"
                 widgetVar="collectionDialogWidgetVar"
                 header="#{collectionBean.modalDialogTitle}"
@@ -44,13 +48,17 @@
                 resizable="false"
                 positionType="absolute"
                 width="600">
+
                 <!-- Note on style="z-index: auto;" for the b:inputTexts:
                      Putting an icon via the facet "prepend" or "append" in
                      conjunction with p:dialog's modal="true" leads to an
                      unresponsive input field (not clickable, no keyboard inputs). -->
                 <h:form id="frmModalCollection" style="border:1px solid #029ACF;border-radius:6px;">
+                    <p:panel  header="#{collectionBean.modalDialogTitle}"
+                              collapsible="false"
+                              look="info"
+                              styleClass="panelTitleInfoColor">
 <!--===============================================================================================================-->
-
                     <p:outputLabel for="ID" value="ID" styleClass="ui-outputlabel-right" rendered="#{collectionBean.editMode != 'UPDATE'}"/>
                     <div class="col-12 md:col-4">
                     <div class="ui-inputgroup">
@@ -84,7 +92,7 @@
                                  disabled="#{collectionBean.editMode != 'CREATE'}"
                                  placeholder="#{msgs.collMgr_modal_name_placeholder}"
                                  required="#{collectionBean.editMode == 'CREATE'}">
-                        <f:validator validatorId="CollectionInputValidator"/>
+                        <!--<f:validator validatorId="CollectionInputValidator"/>-->
                     </p:inputText>
                     <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
                     </div>
@@ -115,7 +123,7 @@
                     <br/>
 
 <!--===============================================================================================================-->
-
+                <h:panelGroup rendered="#{collectionBean.editMode != 'CREATE'}">
                     <p:outputLabel for="indexpath" value="#{msgs.collMgr_modal_indexpath_label}" styleClass="ui-outputlabel-right"  rendered="#{collectionBean.editMode != 'CREATE'}"/>
                     <div class="col-12 md:col-4">
                     <div class="ui-inputgroup">
@@ -150,7 +158,7 @@
                     </div>
                     <p:message for="@previous"/>
                     <br/>
-
+                 </h:panelGroup>
 <!--===============================================================================================================-->
                 <h:panelGroup rendered="#{collectionBean.editMode == 'DELETE'}">
                     <p:outputLabel for="institut" value="#{msgs.collMgr_modal_institute_label}" styleClass="ui-outputlabel-right"  />
@@ -178,6 +186,7 @@
                                          update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
+                                         style="margin:0 0.5rem;"
                                          action ="#{collectionBean.actionCreate()}"
                                          oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
                                          look="primary"/>
@@ -200,7 +209,7 @@
                                          type="submit"
                                          ajax="true"
                                          styleClass="ui-button-danger"
-                                         style="margin-right: 0.5rem;"
+                                         style="margin: 0 0.5rem;"
                                          action="#{collectionBean.actionClear()}"
                                          oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
                                          look="primary"/>
@@ -212,11 +221,13 @@
                                          type="submit"
                                          ajax="true"
                                          styleClass="ui-button-danger"
+                                         style="margin:0 0.5rem;"
                                          action="#{collectionBean.actionDelete()}"
                                          oncomplete="PF('collectionDialogWidgetVar').hide();"
                                          look="primary"/>
                                          <!--onclick="ajax:collectionBean.actionDelete();"-->
                     </p:row>
+                  </p:panel>
                 </h:form>
             </p:dialog>
 
@@ -255,15 +266,15 @@
                                     value="#{msgs.collMgr_button_newCollection}"
                                     look="primary"
                                     ajax="true"
-                                    type="submit"
+                                    styleClass="ui-button-danger"
                                     process="@this"
-                                    update="growlMsg modalCollection frmModalCollection"
+                                    update="growlMsg modalCollection frmModalCollection @form"
+                                    action="#{collectionBean.actionShowNewCollectionDlg()}"
                                     rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}"
-                                    acition="#{collectionBean.actionShowNewCollectionDlg()}"
                                     oncomplete="PF('collectionDialogWidgetVar').show()">
                                     <!--onclick="ajax:collectionBean.actionShowNewCollectionDlg();"-->
 
-                                    <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                                    <!--<f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />-->
                                 </p:commandButton>
 
 <!--===============================================================================================================-->
@@ -298,7 +309,7 @@
                         </tr>-->
                     </f:facet>
 <!--===============================================================================================================-->
-                    <p:column headerText="#{msgs.collMgr_datatable_header_name}" order="asc">
+                    <p:column headerText="#{msgs.collMgr_datatable_header_name}" order="asc"  sortBy="#{collection.name}" filterBy="#{collection.name}" filterMatchMode="contains">
                     <p:badge value="i"
                              tooltip="id: #{collection.id}"
                              style="position:absolute;top:-7px; right:38px;background-color: #4e6aca;">

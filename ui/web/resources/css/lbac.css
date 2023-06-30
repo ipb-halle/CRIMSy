@@ -20,7 +20,9 @@
 /*
    customer styles
 */
-
+ body .ui-menubutton.ui-button-info > .ui-button {
+    font-size:5rem !important;
+}
 
 .ui-inputgroup, .ui-password{
     padding-left: 0 !important;
