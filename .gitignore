@@ -17,3 +17,6 @@ ui/target
 */.project
 */.settings/
 */.metadata/
+
+# IntelliJ
+**/.idea

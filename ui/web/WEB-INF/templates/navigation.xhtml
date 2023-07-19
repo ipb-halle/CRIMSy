@@ -25,160 +25,159 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
+
     <h:body>
         <ui:composition>
-            <h:form style="display:flex; flex-direction: row; align-items: center; justify-content:space-evenly;margin: 0 auto;
-width: 40%;">
+            <h:form style="display:flex; flex-direction: row; align-items: center; justify-content:space-evenly;margin: 0.9rem auto;
+                    width: 40%;">
                 <p:growl id="growl" life="2000"/>
-                        <p:remoteCommand
-                            name="navigateToSearch"
-                            action="#{navigator.navigate('default')}"
-                            process="@this"
-                            update="@all" />
-                        <p:menuButton
-                            styleClass="ui-button-success"
-                            value="BioCloud"
-                            >
-                            <!--pt:onclick="if (this.tagName == 'LI') { navigateToSearch(); return false; }"-->
-                            <p:menuitem
-                                value="#{msgs.navigation_bioCloud_search}"
-                                ajax="false"
-                                styleClass="tstNavLBAC"
-                                action="#{navigator.navigate('default')}"/>
-                            <p:menuitem
-                                value="#{msgs.navigation_bioCloud_wordCloudSearch}"
-                                ajax="false"
-                                styleClass="tstNavWordCloud"
-                                action="#{navigator.navigate('wordCloud2')}"/>
-                            <p:menuitem
-                                value="#{msgs.navigation_bioCloud_sequenceSearch}"
-                                ajax="false"
-                                action="#{navigator.navigate('sequence/sequenceSearch')}"/>
-                            <p:menuitem
-                                value="#{msgs.navigation_bioCloud_forum}"
-                                ajax="false"
-                                styleClass="tstNavForum"
-                                action="#{navigator.navigate('socialForum')}"/>
-                        </p:menuButton>
+                <p:remoteCommand
+                    name="navigateToSearch"
+                    action="#{navigator.navigate('default')}"
+                    process="@this"
+                    update="@all" />
+                <p:menuButton
+                    id="btn1"
+                    styleClass="ui-button-info"
+                    value="BioCloud">
+                    <!--pt:onclick="if (this.tagName == 'LI') { navigateToSearch(); return false; }"-->
+                    <p:menuitem
+                        value="#{msgs.navigation_bioCloud_search}"
+                        ajax="false"
+                        styleClass="tstNavLBAC"
+                        action="#{navigator.navigate('default')}"/>
+                    <p:menuitem
+                        value="#{msgs.navigation_bioCloud_wordCloudSearch}"
+                        ajax="false"
+                        styleClass="tstNavWordCloud"
+                        action="#{navigator.navigate('wordCloud2')}"/>
+                    <p:menuitem
+                        value="#{msgs.navigation_bioCloud_sequenceSearch}"
+                        ajax="false"
+                        action="#{navigator.navigate('sequence/sequenceSearch')}"/>
+                    <p:menuitem
+                        value="#{msgs.navigation_bioCloud_forum}"
+                        ajax="false"
+                        styleClass="tstNavForum"
+                        action="#{navigator.navigate('socialForum')}"/>
+                </p:menuButton>
 
-                        <p:menuButton
-                            value="LIMS"
-                            styleClass="ui-button-success"
-                            rendered="#{userBean.isComponentAccessable('InhouseDB')}"
-                            >
+                <p:menuButton
+                    value="LIMS"
+                    id="btn2"
+                    styleClass="ui-button-info"
+                    rendered="#{userBean.isComponentAccessable('InhouseDB')}"
+                    >
 
-                            <p:menuitem
-                                value="#{msgs.navigation_lims_materials}"
-                                ajax="false"
-                                styleClass="tstNavMaterials"
-                                action="#{navigator.navigate('material/materials')}"/>
-                            <p:menuitem
-                                value="#{msgs.navigation_lims_projects}"
-                                ajax="false"
-                                styleClass="tstNavProjects"
-                                action="#{navigator.navigate('project/projectOverview')}"/>
-                            <p:menuitem
-                                value="#{msgs.navigation_lims_items}"
-                                ajax="false"
-                                styleClass="tstNavItems"
-                                action="#{navigator.navigate('item/items')}"/>
-                            <p:menuitem
-                                value="#{msgs.navigation_lims_taxonomy}"
-                                ajax="false"
-                                styleClass="tstNavTaxonomy"
-                                action="#{navigator.navigate('material/taxonomy')}"/>
-                            <p:menuitem
-                                ajax="false"
-                                value="#{msgs.navigation_lims_experiments}"
-                                styleClass="tstNavExperiments"
-                                action="#{navigator.navigate('exp/experiments')}"/>
-                            <p:menuitem
-                                value="#{msgs.navigation_lims_containers}"
-                                ajax="false"
-                                styleClass="tstNavContainers"
-                                action="#{navigator.navigate('container/container')}"/>
-                        </p:menuButton>
-
-
-                    <!-- ##################################################################### -->
+                    <p:menuitem
+                        value="#{msgs.navigation_lims_materials}"
+                        ajax="false"
+                        styleClass="tstNavMaterials"
+                        action="#{navigator.navigate('material/materials')}"/>
+                    <p:menuitem
+                        value="#{msgs.navigation_lims_projects}"
+                        ajax="false"
+                        styleClass="tstNavProjects"
+                        action="#{navigator.navigate('project/projectOverview')}"/>
+                    <p:menuitem
+                        value="#{msgs.navigation_lims_items}"
+                        ajax="false"
+                        styleClass="tstNavItems"
+                        action="#{navigator.navigate('item/items')}"/>
+                    <p:menuitem
+                        value="#{msgs.navigation_lims_taxonomy}"
+                        ajax="false"
+                        styleClass="tstNavTaxonomy"
+                        action="#{navigator.navigate('material/taxonomy')}"/>
+                    <p:menuitem
+                        ajax="false"
+                        value="#{msgs.navigation_lims_experiments}"
+                        styleClass="tstNavExperiments"
+                        action="#{navigator.navigate('exp/experiments')}"/>
+                    <p:menuitem
+                        value="#{msgs.navigation_lims_containers}"
+                        ajax="false"
+                        styleClass="tstNavContainers"
+                        action="#{navigator.navigate('container/container')}"/>
+                </p:menuButton>
 
 
-                         <p:commandLink  icon="pi pi-log-in"
-                                         rendered="#{userBean.currentAccount.isPublicAccount()}"
-                                         value="Login"
-                                        style="color:#4B0082"
-                                         ajax="false"
-                                         action="#{navigator.navigate('login')}"/>
+                <!-- ##################################################################### -->
 
-                         <p:commandLink icon="pi pi-log-out"
-                                        rendered="#{! userBean.currentAccount.isPublicAccount()}"
-                                        value="Logout"
-                                        style="color:#d32f2f"
-                                        ajax="false"
-                                        action="#{userBean.actionLogout}"/>
-                       <br/>
-                        <br/>
-                        <p:outputLabel value="#{userBean.currentAccount.name}"/>
+                <h:commandLink
+                    rendered="#{userBean.currentAccount.isPublicAccount()}"
+                    style="color:#4B0082"
+                    action="#{navigator.navigate('login')}">
+                    <i class="fa fa-sign-in"></i> Login
+                </h:commandLink>
 
+                <p:menuButton
+                    value="#{msgs.navigation_admission_title}"
+                    rendered="#{! userBean.currentAccount.isPublicAccount()}"
+                    icon="pi pi-cog" iconPos="right"
+                    styleClass="ui-button-danger"
+                    >
 
-                        <p:menuButton
-                            value="#{msgs.navigation_admission_title}"
-                            rendered="#{! userBean.currentAccount.isPublicAccount()}"
-                            iconAwesome="pi pi-cog"
-                            styleClass="ui-button-danger"
-                            >
-                            <!-- Admission -->
-                            <p:menuitem icon="pi pi-pencil"
-                                              value="#{msgs.navigation_admission_myAccount}"
-                                              styleClass="tstNavMyAccount"
-                                              ajax="false"
-                                              action="#{navigator.navigate('myAccount')}"/>
-                            <p:menuitem  icon="pi pi-file-o"
-                                              value="#{msgs.navigation_admission_myReports}"
-                                              ajax="false"
-                                              action="#{navigator.navigate('myReports')}"/>
-                            <p:menuitem  icon="pi pi-user"
-                                              value="#{msgs.navigation_admission_userManagement}"
-                                              ajax="false"
-                                              styleClass="tstNavUserManager"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              action="#{navigator.navigate('userManagement')}"/>
-                            <p:menuitem  icon="pi pi-users"
-                                              value="#{msgs.navigation_admission_groupManagement}"
-                                              ajax="false"
-                                              styleClass="tstNavGroupManager"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              action="#{navigator.navigate('groupManagement')}"/>
-                            <p:menuitem  icon="pi pi-users"
-                                              value="#{msgs.navigation_admission_ldap}"
-                                              ajax="false"
-                                              styleClass="tstNavLdapSettings"
-                                              rendered="#{userBean.getPermission('LDAP_ENABLE', 'permEDIT')}"
-                                              action="#{navigator.navigate('LdapAdminProperties')}"/>
-                            <p:menuitem  icon="pi pi-wrench"
-                                              value="#{msgs.navigation_admission_printerSettings}"
-                                              ajax="false"
-                                              styleClass="tstNavPrinterSettings"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
-                                              action="#{navigator.navigate('print/printerList')}"/>
-                            <p:menuitem icon="pi pi-wrench"
-                                              value="#{msgs.navigation_admission_systemSettings}"
-                                              ajax="false"
-                                              styleClass="tstNavSystemSettings"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
-                                              action="#{navigator.navigate('systemSettings')}"/>
-                            <p:menuitem  icon="pi pi-wrench"
-                                              value="#{msgs.navigation_admission_cloudNodeManagement}"
-                                              ajax="false"
-                                              styleClass="tstNavCloudNodeManagement"
-                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
-                                              action="#{navigator.navigate('cloudNodeManagement')}"/>
-                            <p:menuitem  icon="pi pi-file-o"
-                                              ajax="false"
-                                              value="#{msgs.navigation_admission_collectionManagement}"
-                                              styleClass="tstNavCollectionManagement"
-                                              action="#{navigator.navigate('collectionManagement')}"/>
-                        </p:menuButton>
+                    <!-- Admission -->
+                    <p:menuitem value="#{userBean.currentAccount.name}" disabled="true"/>
+                    <p:divider/>
+                    <p:menuitem icon="pi pi-pencil"
+                                value="#{msgs.navigation_admission_myAccount}"
+                                styleClass="tstNavMyAccount"
+                                ajax="false"
+                                action="#{navigator.navigate('myAccount')}"/>
+                    <p:menuitem  icon="pi pi-file-o"
+                                 value="#{msgs.navigation_admission_myReports}"
+                                 ajax="false"
+                                 action="#{navigator.navigate('myReports')}"/>
+                    <p:menuitem  icon="pi pi-user"
+                                 value="#{msgs.navigation_admission_userManagement}"
+                                 ajax="false"
+                                 styleClass="tstNavUserManager"
+                                 rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                 action="#{navigator.navigate('userManagement')}"/>
+                    <p:menuitem  icon="pi pi-users"
+                                 value="#{msgs.navigation_admission_groupManagement}"
+                                 ajax="false"
+                                 styleClass="tstNavGroupManager"
+                                 rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                 action="#{navigator.navigate('groupManagement')}"/>
+                    <p:menuitem  icon="pi pi-users"
+                                 value="#{msgs.navigation_admission_ldap}"
+                                 ajax="false"
+                                 styleClass="tstNavLdapSettings"
+                                 rendered="#{userBean.getPermission('LDAP_ENABLE', 'permEDIT')}"
+                                 action="#{navigator.navigate('LdapAdminProperties')}"/>
+                    <p:menuitem  icon="pi pi-wrench"
+                                 value="#{msgs.navigation_admission_printerSettings}"
+                                 ajax="false"
+                                 styleClass="tstNavPrinterSettings"
+                                 rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
+                                 action="#{navigator.navigate('print/printerList')}"/>
+                    <p:menuitem icon="pi pi-wrench"
+                                value="#{msgs.navigation_admission_systemSettings}"
+                                ajax="false"
+                                styleClass="tstNavSystemSettings"
+                                rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
+                                action="#{navigator.navigate('systemSettings')}"/>
+                    <p:menuitem  icon="pi pi-wrench"
+                                 value="#{msgs.navigation_admission_cloudNodeManagement}"
+                                 ajax="false"
+                                 styleClass="tstNavCloudNodeManagement"
+                                 rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                 action="#{navigator.navigate('cloudNodeManagement')}"/>
+                    <p:menuitem  icon="pi pi-file-o"
+                                 ajax="false"
+                                 value="#{msgs.navigation_admission_collectionManagement}"
+                                 styleClass="tstNavCollectionManagement"
+                                 action="#{navigator.navigate('collectionManagement')}"/>
+                    <p:divider/>
+                    <p:menuitem icon="pi pi-power-off"
+                                value="Logout"
+                                ajax="false"
+                                action="#{userBean.actionLogout}"/>
+
+                </p:menuButton>
 
             </h:form>
         </ui:composition>

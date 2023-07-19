@@ -4,13 +4,13 @@
 
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,6 @@
 
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -32,250 +31,227 @@
             <ui:insert name="fileupload">
                 <ui:include src="/WEB-INF/templates/fileupload.xhtml"/>
             </ui:insert>
-            <b:form horizontal="true" id="form1">
-                <b:row>
-                    <b:column span="10">
-                        <b:jumbotron id="jumboHeader" styleClass="defaultFormat">
-                            <b:row id="lbac_logo">
-                                <b:image name="img/cloudlogo.svg"
-                                         id="cloudlogo"
-                                         styleClass="img-responsive,centerPanel"/>
-                            </b:row>
-                        </b:jumbotron>
+            <h:form id="form1">
+                <div class="card">
+                    <!--ANFANG SPLITTER===============================================================================================================-->
+                    <p:splitter style="height: 700px">
+                        <!--ANFANG PANEL 0===============================================================================================================-->
 
-                        <b:row styleClass="defaultFormat">
-                            <b:column colMd="#{searchBean.getTextFieldLength()}"
-                                      colXs="#{searchBean.getTextFieldLength()}" 
-                                      offset="1">
+                        <p:splitterPanel styleClass="flex align-items-center justify-content-center" size="60">
+                            <p:splitter layout="vertical">
 
-                                <b:poll id="searchPoll"
-                                        interval="#{searchBean.getPollIntervall()}" 
-                                        update="spinningIcon newDocumentsBadge searchPoll addDocumentButton"/>
+                                <!--ANFANG PANEL 1===============================================================================================================-->
+                                <p:splitterPanel style="display:flex; align-items:center; justify-content:center;background:#f4f4f4;" size="10">
+                                    <!--<h:panelGrid columns="1" style="width:90%; background: #f4f4f4; margin-bottom: 2rem;display: flex; justify-content:center;">-->
 
-                                <b:inputText styleClass="searchRequest"
-                                             placeholder="#{msgs.searchMgr_searchtext_placeholder}"
-                                             required="false" label=""
-                                             value="#{searchBean.searchFilter.searchTerms}"
-                                             labelColXs="0" labelColMd="0">
+                                    <p:graphicImage name="img/cloudlogo-forum.svg"
+                                                    id="forum-cloudlogo"
+                                                    styleClass="img-responsive"/>
 
-                                    <f:facet name="prepend">
-                                        <b:iconAwesome name="cloud"/>
-                                    </f:facet>
-                                    <f:facet name="append">
-                                        <b:commandButton look="primary"
-                                                         value=""
-                                                         style="margin-left: 8px"
-                                                         type="submit"
-                                                         action="#{searchBean.actionTriggerSearch()}"
-                                                         ajax="true"
-                                                         update="@form  spinningIcon newDocumentsBadge"
-                                                         icon="search"
-                                                         icon-align="left"/>
-                                    </f:facet>
-                                </b:inputText>
+                                    <!--</h:panelGrid>-->
+                                </p:splitterPanel>
+                                <!--ENDE PANEL 1===============================================================================================================-->
+
+                                <!--ANFANG PANEL 2===============================================================================================================-->
+                                <p:splitterPanel style="display: flex;flex-direction: row;justify-content: space-evenly;align-items: center;" size="15">
 
 
-                            </b:column>
-                            <b:column  col-xs="1"
-                                       col-lg="1"
-                                       col-md="1"
-                                       col-sm="1">
+                                    <div>
+                                        <p:poll id="searchPoll"
+                                                interval="#{searchBean.getPollIntervall()}"
+                                                intervalType="millisecond"
+                                                update=" newDocumentsBadge searchPoll addDocumentButton"/>
+                                    </div>
 
-                                <b:commandButton look="primary"
-                                                 styleClass="#{searchBean.getActualizeButtonStyleClass()}"
-                                                 tooltip="#{msgs.searchMgr_refreshButton_tooltip}"
-                                                 id="addDocumentButton"
-                                                 type="button"
-                                                 action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
-                                                 ajax="true"
-                                                 update="foundObjectDataTableId newDocumentsBadge spinningIcon addDocumentButton"
-                                                 icon-align="right"
-                                                 process="@form"
-                                                 rendered="true"
-                                                 value="#{msgs.searchMgr_fetchButton}">
-                                    <b:badge 
-                                        style="margin-left: 4px"
-                                        styleClass="pc_badge"
-                                        id="newDocumentsBadge"
-                                        value="#{searchBean.getAmountOfNotShownObjects()}" />
-                                    <b:iconAwesome 
-                                        style="margin-left: 4px"
-                                        styleClass="pc_icon"
-                                        id="spinningIcon"
-                                        name="refresh"
-                                        spin="#{searchBean.isSearchActive()}"
-                                        size="1x" />#{'   '}
-                                </b:commandButton>
+                                    <div class="col-12 md:col-4" style="width:60%;">
+                                        <div class="ui-inputgroup">
+                                            <div class="ui-inputgroup-addon"><i class="pi pi-cloud"></i></div>
 
-                            </b:column>
-                            <b:column 
-                                offset="1"
-                                col-xs="3"
-                                col-lg="3"
-                                col-md="3"
-                                col-sm="3">
-                                <b:button icon="cloud-upload"
-                                          value="#{msgs.searchMgr_uploadbutton}"
-                                          update="@none"
-                                          icon-size="1x"
-                                          look="info"
-                                          onclick="$('tbody.files').find('tr').remove();
-                                                  PF('fileUploadModal').show()"
-                                          styleClass="documentUploadButton" 
-                                          rendered="#{userBean.hasUploadPermission()}"/>
-                            </b:column>
+                                            <p:inputText styleClass="searchRequest"
+                                                         placeholder="#{msgs.searchMgr_searchtext_placeholder}"
+                                                         required="false"
+                                                         style="width:100%;"
+                                                         label=""
+                                                         value="#{searchBean.searchFilter.searchTerms}"
+                                                         />
 
-                        </b:row>
-                        <b:row  styleClass="defaultFormat">
-                            <b:dataTable
-                                styleClass="foundObjectDataTable"
-                                id="foundObjectDataTableId"
-                                var="searchable"
-                                value="#{searchBean.shownObjects}"
-                                saveState="false">
-                                <b:dataTableColumn
-                                    label="#{msgs.searchMgr_resulttable_name}">
-                                    <b:commandLink                                        
-                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"                                       
-                                        action="#{documentDownloadBean.actionDownload(searchable)}"
-                                        rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}"
-                                        />
-                                    <b:commandLink
-                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
-                                        action="#{searchBean.navigateToObject(searchable)}"
-                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
-                                        rendered="#{searchBean.netObjectPresenter.isInternalLinkVisible(searchable)}"
-                                        />
-                                    <b:commandLink
-                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
-                                        disabled="true"
-                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
-                                        rendered="#{searchBean.netObjectPresenter.isExternalLinkVisible(searchable)}"
-                                        />
+                                            <p:commandButton
+                                                value=""
+                                                style="margin-left: 8px"
+                                                type="submit"
+                                                action="#{searchBean.actionTriggerSearch()}"
+                                                ajax="true"
+                                                update="@form newDocumentsBadge"
+                                                icon="pi pi-search"
+                                                />
+                                        </div>
+                                    </div>
 
-                                </b:dataTableColumn>
-                                <b:dataTableColumn
-                                    label="#{msgs.searchMgr_resulttable_location}"
-                                    value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"/>
-                                <b:dataTableColumn
-                                    label="#{msgs.searchMgr_resulttable_type}"
-                                    value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"/>
-                                <b:dataTableColumn
-                                    label="#{msgs.searchMgr_resulttable_relevance}"
-                                    value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
-                            </b:dataTable>
 
-                        </b:row>
-                    </b:column>
-                    <b:column span="2"
-                              styleClass="advancedSearchColumn">
-                        <b:row>
-                            <b:column span="1">
-                                <b:commandButton
-                                    styleClass="advancedSearchButton"
-                                    ajax="true"
-                                    update="@(.advancedSearchColumn)"
-                                    action="#{searchBean.toogleAdvancedSearch()}"
-                                    icon-awesome="#{searchBean.getAdvancedSearchIcon()}"/>
-                            </b:column>
-                            <b:column span="9" offset="1">
-                                <h:outputText
-                                    styleClass="advancedSearchHeaderTitle"
-                                    value="#{msgs.searchMgr_advancedSearch_title}"/>
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="12">
+                                    <div>
+                                        <p:badge value="#{searchBean.getAmountOfNotShownObjects()}"
+                                                 style="margin-left: 4px"
+                                                 severity="danger"
+                                                 id="newDocumentsBadge">
+                                            <p:commandButton
+                                                styleClass="#{searchBean.getActualizeButtonStyleClass()}"
+                                                id="addDocumentButton"
+                                                type="submit"
+                                                action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
+                                                ajax="true"
+                                                update="foundObjectDataTableId newDocumentsBadge  addDocumentButton"
+                                                icon="pi pi-refresh"
+                                                process="@form"
+                                                rendered="true"
+                                                value="#{msgs.searchMgr_fetchButton}"/>
+                                                <!--tooltip="#{msgs.searchMgr_refreshButton_tooltip}"-->
+                                        </p:badge>
+                                    </div>
+                                    <div>
+                                        <p:commandButton  icon="pi pi-cloud-upload"
+                                                          value="#{msgs.searchMgr_uploadbutton}"
+                                                          update="@none"
+                                                          styleClass="ui-button-danger"
+                                                          onclick="$('tbody.files').find('tr').remove();
+                                                                          PF('fileUploadModal').show()"
+                                                          rendered="#{userBean.hasUploadPermission()}"/>
+                                    </div>
+
+                                </p:splitterPanel>
+                                <!--ENDE PANEL 2===============================================================================================================-->
+
+                                <!--ANFANG PANEL 3===============================================================================================================-->
+                                <p:splitterPanel styleClass="flex align-items-center justify-content-center" size="75">
+
+
+                                    <p:dataTable
+                                        styleClass="foundObjectDataTable"
+                                        id="foundObjectDataTableId"
+                                        var="searchable"
+                                        value="#{searchBean.shownObjects}"
+                                        >
+                                        <!--saveState="false"-->
+                                        <p:column headerText="#{msgs.searchMgr_resulttable_name}">
+                                            <h:commandLink
+                                                style="color:red;"
+                                                value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                                action="#{documentDownloadBean.actionDownload(searchable)}"
+                                                rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}"
+                                                />
+                                            <h:commandLink
+                                                style="color:blue;"
+                                                action="#{searchBean.navigateToObject(searchable)}"
+                                                value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                                rendered="#{searchBean.netObjectPresenter.isInternalLinkVisible(searchable)}"
+                                                />
+                                                <!--href="#{searchBean.netObjectPresenter.getLink(searchable)}"-->
+                                            <h:commandLink
+                                                style="color:green;"
+                                                disabled="true"
+                                                value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                                rendered="#{searchBean.netObjectPresenter.isExternalLinkVisible(searchable)}"
+                                                />
+                                                <!--href="#{searchBean.netObjectPresenter.getLink(searchable)}"-->
+
+                                        </p:column>
+                                        <p:column headerText="#{msgs.searchMgr_resulttable_location}">
+                                            <h:outputText value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msgs.searchMgr_resulttable_type}">
+                                            <h:outputText  value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msgs.searchMgr_resulttable_relevance}">
+                                            <h:outputText value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+
+                                    <!--</b:column>-->  </p:splitterPanel>
+                                <!--ENDE PANEL 3===============================================================================================================-->
+                            </p:splitter>
+                        </p:splitterPanel>
+                        <!--ENDE PANEL 0===============================================================================================================-->
+
+
+                        <!--ANFANG PANEL 4===============================================================================================================-->
+                        <p:splitterPanel styleClass="flex align-items-center justify-content-center" size="40">
+                            <p:panel styleClass="panel1">
+                                <div style="display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                                    <p:commandButton
+                                        styleClass="advancedSearchButton"
+                                        style="margin-left: 0;"
+                                        ajax="true"
+                                        update="@(.panel1)"
+                                        action="#{searchBean.toogleAdvancedSearch()}"
+                                        icon="pi pi-cloud"/>
+
+                                    <h:outputText
+                                        style="margin: 0 1rem;"
+                                        value="#{msgs.searchMgr_advancedSearch_title}"/>
+                                </div>
+
+
                                 <p:tabView
                                     rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
                                     <p:tab title="#{msgs.searchMgr_advancedSearch_types}">
-                                        <b:row>
-                                            <b:column span="1"
-                                                      styleClass="advancedSearchHeader">
+
+                                        <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                                            <div>
                                                 <h:outputText
                                                     value="#{msgs.searchMgr_advancedSearch_types}"/>
-                                            </b:column>
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="advancedSearchHeader">
-                                                #{msgs.searchMgr_advancedSearch_material_types}
-                                            </b:column>
-                                        </b:row>
-                                        <b:row>
-                                            <b:column span="1"
-                                                      styleClass="rightLabeledCbx">
-                                                <b:selectBooleanCheckbox
+
+                                                    #{msgs.searchMgr_advancedSearch_material_types}
+
+                                                <h5>#{msgs.search_category_DOCUMENT}</h5>
+                                                <p:selectBooleanCheckbox
                                                     label="#{msgs.search_category_DOCUMENT}"
-                                                    ajax="true"
                                                     value="#{searchBean.getSearchFilter().typeFilter.documents}"/>
-                                            </b:column>
-
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="rightLabeledCbx">
-                                                <b:selectBooleanCheckbox
+                                                <!--ajax="true"-->
+                                                <br/>
+                                                <h5>#{msgs.search_category_STRUCTURE}"</h5>
+                                                <p:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
-                                                    ajax="true"
                                                     label="#{msgs.search_category_STRUCTURE}"/>
-                                            </b:column>
-                                        </b:row>
-                                        <b:row>
-                                            <b:column span="1"
-                                                      styleClass="rightLabeledCbx">
-                                                <b:selectBooleanCheckbox
+                                                <!--ajax="true"-->
+                                                <h5>#{msgs.search_category_MATERIAL}</h5>
+                                                <p:selectBooleanCheckbox
                                                     label="#{msgs.search_category_MATERIAL}"
-                                                    ajax="true"
-                                                    update="@(.materialTypeFilter)"
                                                     value="#{searchBean.getSearchFilter().typeFilter.materials}"/>
-                                            </b:column>
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="rightLabeledCbx">
-                                                <b:selectBooleanCheckbox
+                                                <!--ajax="true"-->
+                                                <!--update="@(.materialTypeFilter)"-->
+                                                <h5>#{msgs.search_category_BIOMATERIAL}</h5>
+                                                <p:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
-                                                    ajax="true"
                                                     label="#{msgs.search_category_BIOMATERIAL}"/>
-                                            </b:column>
-                                        </b:row>
-                                        <b:row>
-                                            <b:column span="1"
-                                                      styleClass="rightLabeledCbx">
-                                                <b:selectBooleanCheckbox
+                                                <!--ajax="true"-->
+                                                <h5>#{msgs.search_category_ITEM}</h5>
+                                                <p:selectBooleanCheckbox
                                                     label="#{msgs.search_category_ITEM}"
-                                                    ajax="true"
                                                     value="#{searchBean.getSearchFilter().typeFilter.items}"/>
-                                            </b:column>
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="rightLabeledCbx">
-                                                <b:selectBooleanCheckbox
+                                                <!--ajax="true"-->
+                                                <h5>#{msgs.search_category_SEQUENCE}</h5>
+                                                <p:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
-                                                    ajax="true"
                                                     label="#{msgs.search_category_SEQUENCE}"/>
-                                            </b:column>
-                                        </b:row>
-                                        <b:row>
-                                            <b:column span="1"
-                                                      styleClass="rightLabeledCbx">
-                                                <b:selectBooleanCheckbox
+                                                <!--ajax="true"-->
+                                                <h5>#{msgs.search_category_EXPERIMENT}</h5>
+                                                <p:selectBooleanCheckbox
                                                     label="#{msgs.search_category_EXPERIMENT}"
-                                                    ajax="true"
                                                     value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
-                                            </b:column>
-                                            <b:column span="1"
-                                                      offset="4"
-                                                      styleClass="rightLabeledCbx">
-                                                <b:selectBooleanCheckbox
+                                                <!--ajax="true"-->
+                                                <h5>#{msgs.search_category_COMPOSITION}</h5>
+                                                <p:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.compositions}"
-                                                    ajax="true"
                                                     label="#{msgs.search_category_COMPOSITION}"/>
-                                            </b:column>
-                                        </b:row>
+                                                <!--ajax="true"-->
 
 
+                                            </div>
 
-                                        <b:row>
-                                            <b:column span="2">
+
+                                            <div style="display: flex;flex-direction: row;justify-content: center; align-items: center; margin: 0 70% 0 15%;">
+
                                                 <mol:molecule
                                                     id="molEditorSearchPage"
                                                     value="#{searchBean.getSearchFilter().structureString}"
@@ -284,15 +260,20 @@
                                                     border="true"
                                                     readonly="false">
                                                 </mol:molecule>
-                                            </b:column>
-                                        </b:row>
+
+                                            </div>
+                                        </div>
                                     </p:tab>
                                 </p:tabView>
-                            </b:column>
-                        </b:row>
-                    </b:column>
-                </b:row>
-            </b:form>
+                            </p:panel>
+
+
+                        </p:splitterPanel>
+                        <!--ENDE PANEL 4===============================================================================================================-->
+                    </p:splitter>
+                    <!--ENDE Splitter===============================================================================================================-->
+                </div>
+            </h:form>
 
         </ui:composition>
     </h:body>

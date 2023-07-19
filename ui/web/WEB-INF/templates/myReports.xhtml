@@ -23,74 +23,73 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:o="http://omnifaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:nwc="http://ipb-halle.de/nwc">
-<h:body>
-    <ui:composition>
-        <h2>
-            <h:outputText value="#{msgs.myReports_title}" />
-        </h2>
+    <h:body>
+        <ui:composition>
+            <h2>
+                <h:outputText value="#{msgs.myReports_title}" />
+            </h2>
 
-        <h:form style="border:1px solid #029ACF;border-radius:3px;">
-            <br/>
-            <p:commandButton
-                ajax="true"
-                process="@this"
-                update="reportingJobsTableId"
-                action="#{reportingJobsBean.actionReloadTable()}"
-                value="#{msgs.Refresh}"
-                icon="pi pi-refresh" />
+            <h:form style="border:1px solid #029ACF;border-radius:3px;">
+                <br/>
+                <p:commandButton
+                    ajax="true"
+                    process="@this"
+                    update="reportingJobsTableId"
+                    action="#{reportingJobsBean.actionReloadTable()}"
+                    value="#{msgs.Refresh}"
+                    icon="pi pi-refresh" />
 
-            <p:dataTable
-                id="reportingJobsTableId"
-                value="#{reportingJobsBean.reportingJobs}"
-                var="jobWrapper"
-                saveOnDataTableToggle="false"
-                rowStyleClass="#{jobWrapper.rowStyleClass}">
+                <p:dataTable
+                    id="reportingJobsTableId"
+                    value="#{reportingJobsBean.reportingJobs}"
+                    var="jobWrapper"
+                    rowStyleClass="#{jobWrapper.rowStyleClass}">
 
-                <p:column
-                    headerText="#{msgs.myReports_tableheader_submissionDate}"
-                    sortBy="#{jobWrapper.job.jobdate}"
-                    sortOrder="descending">
+                    <p:column
+                        headerText="#{msgs.myReports_tableheader_submissionDate}"
+                        sortBy="#{jobWrapper.job.jobdate}"
+                        sortOrder="descending">
 
-                    <h:outputFormat
-                        value="{0} ({1})">
-                        <f:param value="#{nwc:formatDateWithTimezone(jobWrapper.job.jobdate)}" />
-                        <f:param
-                            value="#{jobWrapper.job.jobdate}"
-                            converter="org.ocpsoft.PrettyTimeConverter" />
-                    </h:outputFormat>
+                        <h:outputFormat
+                            value="{0} ({1})">
+                            <f:param value="#{nwc:formatDateWithTimezone(jobWrapper.job.jobdate)}" />
+                            <f:param
+                                value="#{jobWrapper.job.jobdate}"
+                                />
+                            <!--converter="org.ocpsoft.PrettyTimeConverter"-->
+                        </h:outputFormat>
 
-                </p:column>
+                    </p:column>
 
-                <p:column headerText="#{msgs.myReports_tableheader_status}">
-                    <h:outputText value="#{reportingJobsBean.getJobStatusI18n(jobWrapper)}" />
-                </p:column>
+                    <p:column headerText="#{msgs.myReports_tableheader_status}">
+                        <h:outputText value="#{reportingJobsBean.getJobStatusI18n(jobWrapper)}" />
+                    </p:column>
 
-                <p:column
-                    headerText="#{msgs.Tools}"
-                    style="width: 10%; min-width: 50px;">
+                    <p:column
+                        headerText="#{msgs.Tools}"
+                        style="width: 10%; min-width: 50px;">
 
-                    <p:commandButton
-                        action="#{reportingJobsBean.actionDownloadReport(jobWrapper)}"
-                        rendered="#{jobWrapper.downloadable}"
-                        style="padding: 0 4px;"
-                        icon="pi pi-download"
-                        styleClass="ui-button-link" />
-                    <p:commandButton
-                        ajax="true"
-                        process="@this"
-                        update="reportingJobsTableId"
-                        action="#{reportingJobsBean.actionDeleteReport(jobWrapper)}"
-                        rendered="#{jobWrapper.deleteable}"
-                        style="padding: 0 4px;"
-                        icon="pi pi-trash"
-                        styleClass="ui-button-link" />
-                </p:column>
-            </p:dataTable>
-        </h:form>
-    </ui:composition>
-</h:body>
+                        <p:commandButton
+                            action="#{reportingJobsBean.actionDownloadReport(jobWrapper)}"
+                            rendered="#{jobWrapper.downloadable}"
+                            style="padding: 0 4px;"
+                            icon="pi pi-download"
+                            styleClass="ui-button-link" />
+                        <p:commandButton
+                            ajax="true"
+                            process="@this"
+                            update="reportingJobsTableId"
+                            action="#{reportingJobsBean.actionDeleteReport(jobWrapper)}"
+                            rendered="#{jobWrapper.deleteable}"
+                            style="padding: 0 4px;"
+                            icon="pi pi-trash"
+                            styleClass="ui-button-link" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </ui:composition>
+    </h:body>
 
 </html>

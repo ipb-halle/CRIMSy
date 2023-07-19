@@ -20,7 +20,7 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets">
 
@@ -54,7 +54,7 @@
 
 
 
-        <b:growl
+        <p:growl
             styleClass="growlMessages"
             id="growlMsg"
             globalOnly="true"
@@ -69,12 +69,12 @@
             <ui:include src="/WEB-INF/templates/navigation.xhtml"/>
         </ui:insert>
 
-        <b:container class="simplesearch">
+        <p:panel class="simplesearch" style="margin: 0  auto;">
             <ui:insert name="content">
                 <ui:include src="#{navigator.nextPage}"/>
             </ui:insert>
 
-        </b:container>
+        </p:panel>
         <ui:insert name="footer">
             <ui:include src="/WEB-INF/templates/footer.xhtml"/>
         </ui:insert>

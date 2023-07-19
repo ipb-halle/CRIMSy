@@ -20,8 +20,11 @@
 /*
    customer styles
 */
- body .ui-menubutton.ui-button-info > .ui-button {
-    font-size:5rem !important;
+.ui-menubutton .ui-button{
+    font-size: 1.5rem ;
+}
+body .ui-button.ui-button-text-icon-right .ui-button-text{
+    font-size: 0.9rem;
 }
 
 .ui-inputgroup, .ui-password{

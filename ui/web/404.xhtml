@@ -20,7 +20,7 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
 >
@@ -29,14 +29,10 @@
     <ui:include src="/WEB-INF/templates/head.xhtml" />
 </h:head>
 <h:body>
-    <b:container>
-        <p/>
-        <p/>
-        <p/>
+        <br/>
+        <br/>
+        <br/>
         <h2>#{msgs.errorPage_404_message}</h2>
-
-        <b:navLink href="/ui/index.xhtml" value="#{msgs.errorPage_backToIndex}"/>
-
-    </b:container>
+        <p:link href="/ui/index.xhtml" value="#{msgs.errorPage_backToIndex}"/>
 </h:body>
 </html>

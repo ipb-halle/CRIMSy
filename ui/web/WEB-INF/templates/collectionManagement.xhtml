@@ -18,9 +18,9 @@
   limitations under the License.
 
 -->
+<!-- ToDo: collection management form needs some additional polishing (layout, button functions) -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
@@ -40,7 +40,7 @@
                 <h:outputText value="#{msgs.collMgr_header}" />
             </h2>
 
-          <p:dialog
+            <p:dialog
                 id="modalCollection"
                 widgetVar="collectionDialogWidgetVar"
                 header="#{collectionBean.modalDialogTitle}"
@@ -55,358 +55,350 @@
                      unresponsive input field (not clickable, no keyboard inputs). -->
                 <h:form id="frmModalCollection" style="border:1px solid #029ACF;border-radius:6px;">
                     <p:panel  header="#{collectionBean.modalDialogTitle}"
-                              collapsible="false"
-                              look="info"
+                              collapsed="false"
                               styleClass="panelTitleInfoColor">
-<!--===============================================================================================================-->
-                    <p:outputLabel for="ID" value="ID" styleClass="ui-outputlabel-right" rendered="#{collectionBean.editMode != 'UPDATE'}"/>
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-                    <p:inputText id="ID"
-                                 value="#{collectionBean.activeCollection.id}"
-                                 label="ID"
-                                 style="z-index: auto;width:100%;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'UPDATE'}"
-                                 disabled="true"
-                                 placeholder=""
-                                 required="false"/>
-                    <div class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'UPDATE'}"><i class="pi pi-cloud"></i></div>
-                    </div>
-                    </div>
+                        <!--===============================================================================================================-->
+                        <p:outputLabel for="ID" value="ID" styleClass="ui-outputlabel-right" rendered="#{collectionBean.editMode != 'UPDATE'}"/>
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <p:inputText id="ID"
+                                             value="#{collectionBean.activeCollection.id}"
+                                             label="ID"
+                                             style="z-index: auto;width:100%;"
+                                             rendered="#{collectionBean.editMode != 'UPDATE'}"
+                                             disabled="true"
+                                             placeholder=""
+                                             required="false"/>
+                                <div class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'UPDATE'}"><i class="pi pi-cloud"></i></div>
+                            </div>
+                        </div>
 
-                    <p:message for="@previous"/>
-                    <br/>
+                        <p:message for="@previous"/>
+                        <br/>
 
-<!--===============================================================================================================-->
+                        <!--===============================================================================================================-->
 
-                    <p:outputLabel for="name" value="#{msgs.collMgr_modal_name_label}" styleClass="ui-outputlabel-right" />
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-                    <p:inputText id="name"
-                                 value="#{collectionBean.activeCollection.name}"
-                                 label="#{msgs.collMgr_modal_name_label}"
-                                 style="z-index: auto;width:100%;"
-                                 renderLabel="true"
-                                 rendered="true"
-                                 disabled="#{collectionBean.editMode != 'CREATE'}"
-                                 placeholder="#{msgs.collMgr_modal_name_placeholder}"
-                                 required="#{collectionBean.editMode == 'CREATE'}">
-                        <!--<f:validator validatorId="CollectionInputValidator"/>-->
-                    </p:inputText>
-                    <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
-                    </div>
-                    </div>
+                        <p:outputLabel for="name" value="#{msgs.collMgr_modal_name_label}" styleClass="ui-outputlabel-right" />
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <p:inputText id="name"
+                                             value="#{collectionBean.activeCollection.name}"
+                                             label="#{msgs.collMgr_modal_name_label}"
+                                             style="z-index: auto;width:100%;"
+                                             rendered="true"
+                                             disabled="#{collectionBean.editMode != 'CREATE'}"
+                                             placeholder="#{msgs.collMgr_modal_name_placeholder}"
+                                             required="#{collectionBean.editMode == 'CREATE'}">
+                                    <!--<f:validator validatorId="CollectionInputValidator"/>-->
+                                </p:inputText>
+                                <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
+                            </div>
+                        </div>
 
-                    <p:message for="@previous"/>
-                    <br/>
+                        <p:message for="@previous"/>
+                        <br/>
 
-<!--===============================================================================================================-->
+                        <!--===============================================================================================================-->
 
-                    <p:outputLabel for="description" value="#{msgs.collMgr_modal_description_label}" styleClass="ui-outputlabel-right" />
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-                    <p:inputText id="description"
-                                 value="#{collectionBean.activeCollection.description}"
-                                 label="#{msgs.collMgr_modal_description_label}"
-                                 style="z-index: auto;width:100%;"
-                                 renderLabel="true"
-                                 rendered="true"
-                                 disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR'}"
-                                 placeholder="#{msgs.collMgr_modal_description_placeholder}"
-                                 required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }"/>
+                        <p:outputLabel for="description" value="#{msgs.collMgr_modal_description_label}" styleClass="ui-outputlabel-right" />
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <p:inputText id="description"
+                                             value="#{collectionBean.activeCollection.description}"
+                                             label="#{msgs.collMgr_modal_description_label}"
+                                             style="z-index: auto;width:100%;"
+                                             rendered="true"
+                                             disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR'}"
+                                             placeholder="#{msgs.collMgr_modal_description_placeholder}"
+                                             required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }"/>
 
-                    <div class="ui-inputgroup-addon"><i class="pi pi-tag"></i></div>
-                    </div>
-                    </div>
-                    <p:message for="@previous"/>
-                    <br/>
+                                <div class="ui-inputgroup-addon"><i class="pi pi-tag"></i></div>
+                            </div>
+                        </div>
+                        <p:message for="@previous"/>
+                        <br/>
 
-<!--===============================================================================================================-->
-                <h:panelGroup rendered="#{collectionBean.editMode != 'CREATE'}">
-                    <p:outputLabel for="indexpath" value="#{msgs.collMgr_modal_indexpath_label}" styleClass="ui-outputlabel-right"  rendered="#{collectionBean.editMode != 'CREATE'}"/>
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-                    <p:inputText id="indexpath"
-                                 value="#{collectionBean.activeCollection.indexPath}"
-                                 label="#{msgs.collMgr_modal_indexpath_label}"
-                                 style="z-index: auto;width:100%"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'CREATE'}"
-                                 disabled="true"/>
-                    <div class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'CREATE'}"><i class="pi pi-list"></i></div>
-                    </div>
-                    </div>
-                    <p:message for="@previous"/>
-                    <br/>
+                        <!--===============================================================================================================-->
+                        <h:panelGroup rendered="#{collectionBean.editMode != 'CREATE'}">
+                            <p:outputLabel for="indexpath" value="#{msgs.collMgr_modal_indexpath_label}"
+                                           styleClass="ui-outputlabel-right"
+                                           rendered="#{collectionBean.editMode != 'CREATE'}"/>
+                            <div class="col-12 md:col-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText id="indexpath"
+                                                 value="#{collectionBean.activeCollection.indexPath}"
+                                                 label="#{msgs.collMgr_modal_indexpath_label}"
+                                                 style="z-index: auto;width:100%"
+                                                 rendered="#{collectionBean.editMode != 'CREATE'}"
+                                                 disabled="true"/>
+                                    <div class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'CREATE'}"><i class="pi pi-list"></i></div>
+                                </div>
+                            </div>
+                            <p:message for="@previous"/>
+                            <br/>
 
-<!--===============================================================================================================-->
+                            <!--===============================================================================================================-->
 
-                    <p:outputLabel for="storagepath" value="#{msgs.collMgr_modal_filepath_label}" styleClass="ui-outputlabel-right"  rendered="#{collectionBean.editMode != 'CREATE'}"/>
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-                    <p:inputText id="storagepath"
-                                 value="#{collectionBean.activeCollection.storagePath}"
-                                 label="#{msgs.collMgr_modal_filepath_label}"
-                                 style="z-index: auto;width:100%;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'CREATE'}"
-                                 disabled="true"/>
+                            <p:outputLabel for="storagepath" value="#{msgs.collMgr_modal_filepath_label}"
+                                           styleClass="ui-outputlabel-right"
+                                           rendered="#{collectionBean.editMode != 'CREATE'}"/>
+                            <div class="col-12 md:col-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText id="storagepath"
+                                                 value="#{collectionBean.activeCollection.storagePath}"
+                                                 label="#{msgs.collMgr_modal_filepath_label}"
+                                                 style="z-index: auto;width:100%;"
+                                                 rendered="#{collectionBean.editMode != 'CREATE'}"
+                                                 disabled="true"/>
 
-                    <div class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'CREATE'}"><i class="pi pi-folder-open"></i></div>
-                    </div>
-                    </div>
-                    <p:message for="@previous"/>
-                    <br/>
-                 </h:panelGroup>
-<!--===============================================================================================================-->
-                <h:panelGroup rendered="#{collectionBean.editMode == 'DELETE'}">
-                    <p:outputLabel for="institut" value="#{msgs.collMgr_modal_institute_label}" styleClass="ui-outputlabel-right"  />
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-                    <p:inputText id="institut" value="#{collectionBean.activeCollection.node.institution}"
-                                 label="#{msgs.collMgr_modal_institute_label}"
-                                 style="z-index: auto;width:100%;"
-                                 renderLabel="true"
-                                 required="false"
-                                 disabled="true"/>
-                    <div class="ui-inputgroup-addon" ><i class="pi pi-building" ></i></div>
-                    </div>
-                    </div>
-                    <p:message for="@previous"/>
-                    <br/>
-                </h:panelGroup>
-<!--===============================================================================================================-->
-                    <p:row styleClass="modal-footer">
-                        <p:button value="#{msgs.collMgr_modal_cancel}"
-                                  styleClass="ui-button-secondary"
-                                  onclick="PF('collectionDialogWidgetVar').hide()"/>
-                        <p:commandButton value="#{msgs.collMgr_modal_button_apply}"
-                                         rendered="#{collectionBean.getEditMode() == 'CREATE'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         type="submit"
-                                         ajax="true"
-                                         style="margin:0 0.5rem;"
-                                         action ="#{collectionBean.actionCreate()}"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                                         <!--onclick="ajax:collectionBean.actionCreate();"-->
+                                    <div class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'CREATE'}"><i class="pi pi-folder-open"></i></div>
+                                </div>
+                            </div>
+                            <p:message for="@previous"/>
+                            <br/>
+                        </h:panelGroup>
+                        <!--===============================================================================================================-->
+                        <h:panelGroup rendered="#{collectionBean.editMode == 'DELETE'}">
+                            <p:outputLabel for="institut" value="#{msgs.collMgr_modal_institute_label}"
+                                           styleClass="ui-outputlabel-right"  />
+                            <div class="col-12 md:col-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText id="institut" value="#{collectionBean.activeCollection.node.institution}"
+                                                 label="#{msgs.collMgr_modal_institute_label}"
+                                                 style="z-index: auto;width:100%;"
+                                                 required="false"
+                                                 disabled="true"/>
+                                    <div class="ui-inputgroup-addon" ><i class="pi pi-building" ></i></div>
+                                </div>
+                            </div>
+                            <p:message for="@previous"/>
+                            <br/>
+                        </h:panelGroup>
+                        <!--===============================================================================================================-->
+                        <p:row styleClass="modal-footer">
+                            <p:button value="#{msgs.collMgr_modal_cancel}"
+                                      styleClass="ui-button-secondary"
+                                      onclick="PF('collectionDialogWidgetVar').hide()"/>
+                            <p:commandButton value="#{msgs.collMgr_modal_button_apply}"
+                                             rendered="#{collectionBean.getEditMode() == 'CREATE'}"
+                                             update="growlMsg @form frmCollectionList:collectionList"
+                                             type="submit"
+                                             ajax="true"
+                                             style="margin:0 0.5rem;"
+                                             action ="#{collectionBean.actionCreate()}"
+                                             oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                            <!--onclick="ajax:collectionBean.actionCreate();"-->
 
-                        <p:commandButton value="#{msgs.collMgr_modal_button_edit}"
-                                         rendered="#{collectionBean.getEditMode() == 'UPDATE'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         type="submit"
-                                         ajax="true"
-                                         style="margin:0 0.5rem;"
-                                         action="#{collectionBean.actionUpdate()}"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                                         <!--onclick="ajax:collectionBean.actionUpdate();"-->
+                            <p:commandButton value="#{msgs.collMgr_modal_button_edit}"
+                                             rendered="#{collectionBean.getEditMode() == 'UPDATE'}"
+                                             update="growlMsg @form frmCollectionList:collectionList"
+                                             type="submit"
+                                             ajax="true"
+                                             style="margin:0 0.5rem;"
+                                             action="#{collectionBean.actionUpdate()}"
+                                             oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                            <!--onclick="ajax:collectionBean.actionUpdate();"-->
 
-                        <p:commandButton value="#{msgs.collMgr_modal_button_deletedocuments}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         rendered="#{collectionBean.getEditMode() == 'CLEAR'}"
-                                         type="submit"
-                                         ajax="true"
-                                         styleClass="ui-button-danger"
-                                         style="margin: 0 0.5rem;"
-                                         action="#{collectionBean.actionClear()}"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                                         <!--onclick="ajax:collectionBean.actionClear();"-->
+                            <p:commandButton value="#{msgs.collMgr_modal_button_deletedocuments}"
+                                             update="growlMsg @form frmCollectionList:collectionList"
+                                             rendered="#{collectionBean.getEditMode() == 'CLEAR'}"
+                                             type="submit"
+                                             ajax="true"
+                                             styleClass="ui-button-danger"
+                                             style="margin: 0 0.5rem;"
+                                             action="#{collectionBean.actionClear()}"
+                                             oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                            <!--onclick="ajax:collectionBean.actionClear();"-->
 
-                        <p:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
-                                         rendered="#{collectionBean.getEditMode() == 'DELETE'}"
-                                         type="submit"
-                                         ajax="true"
-                                         styleClass="ui-button-danger"
-                                         style="margin:0 0.5rem;"
-                                         action="#{collectionBean.actionDelete()}"
-                                         oncomplete="PF('collectionDialogWidgetVar').hide();"
-                                         look="primary"/>
-                                         <!--onclick="ajax:collectionBean.actionDelete();"-->
-                    </p:row>
-                  </p:panel>
+                            <p:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
+                                             update="growlMsg @form frmCollectionList:collectionList"
+                                             rendered="#{collectionBean.getEditMode() == 'DELETE'}"
+                                             type="submit"
+                                             ajax="true"
+                                             styleClass="ui-button-danger"
+                                             style="margin:0 0.5rem;"
+                                             action="#{collectionBean.actionDelete()}"
+                                             oncomplete="PF('collectionDialogWidgetVar').hide();"/>
+                            <!--onclick="ajax:collectionBean.actionDelete();"-->
+                        </p:row>
+                    </p:panel>
                 </h:form>
             </p:dialog>
 
-<!--===============================================================================================================-->
+            <!--===============================================================================================================-->
             <h:form id="frmCollectionList" style="border:1px solid #029ACF;border-radius:3px;">
                 <p:poll id="searchPoll"
                         process="@this"
                         interval="#{collectionBean.getPollIntervall()}"
                         intervalType="millisecond"
                         update="@this frmCollectionList:collectionList:collectionRefreshButton"/>
-                        <!--class="searchPollClass"-->
+                <!--class="searchPollClass"-->
 
                 <p:dataTable id="collectionList"
                              value="#{collectionBean.getLocalCollectionList()}"
                              styleClass="collectionList"
-                             striped="true"
-                             responsive="false"
-                             customOptions="autoWidth:true"
-                             fixedHeader="true"
-                             var="collection"
-                             saveState="false">
-<!--===============================================================================================================-->
+                             resizableColumns="false"
+                             stickyHeader="true"
+                             var="collection">
+                    <!--===============================================================================================================-->
                     <f:facet name="header" id="facetHeader">
-                    <p:panel>
+                        <p:panel>
 
 
-<!--===============================================================================================================-->
-                                <p:selectBooleanCheckbox
-                                    value="#{collectionBean.showLocalCollectionsOnly}"
-                                    itemLabel="#{msgs.collMgr_datatable_localCollections}"
-                                    update="@form frmCollectionList:collectionList" />
-<!--===============================================================================================================-->
-                                <p:commandButton
-                                    style="margin:0 2px;"
-                                    icon="pi pi-plus-circle"
-                                    value="#{msgs.collMgr_button_newCollection}"
-                                    look="primary"
-                                    ajax="true"
-                                    styleClass="ui-button-danger"
-                                    process="@this"
-                                    update="growlMsg modalCollection frmModalCollection @form"
-                                    action="#{collectionBean.actionShowNewCollectionDlg()}"
-                                    rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}"
-                                    oncomplete="PF('collectionDialogWidgetVar').show()">
-                                    <!--onclick="ajax:collectionBean.actionShowNewCollectionDlg();"-->
+                            <!--===============================================================================================================-->
+                            <p:selectBooleanCheckbox
+                                value="#{collectionBean.showLocalCollectionsOnly}"
+                                itemLabel="#{msgs.collMgr_datatable_localCollections}"
+                                />
+                            <!--update="@form frmCollectionList:collectionList"-->
+                            <!--===============================================================================================================-->
+                            <p:commandButton
+                                style="margin:0 2px;"
+                                icon="pi pi-plus-circle"
+                                value="#{msgs.collMgr_button_newCollection}"
+                                ajax="true"
+                                styleClass="ui-button-danger"
+                                process="@this"
+                                update="growlMsg modalCollection frmModalCollection @form"
+                                action="#{collectionBean.actionShowNewCollectionDlg()}"
+                                rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}"
+                                oncomplete="PF('collectionDialogWidgetVar').show()">
+                                <!--onclick="ajax:collectionBean.actionShowNewCollectionDlg();"-->
 
-                                    <!--<f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />-->
-                                </p:commandButton>
+                                <!--<f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />-->
+                            </p:commandButton>
 
-<!--===============================================================================================================-->
-                                <p:badge value="#{collectionBean.getNewDocumentsToShow()}" severity="danger">
+                            <!--===============================================================================================================-->
+                            <p:badge value="#{collectionBean.getNewDocumentsToShow()}" severity="danger">
                                 <p:commandButton
 
                                     style="margin:0 2px;"
                                     icon="pi pi-refresh"
                                     value="#{msgs.collMgr_button_refresh}"
-                                    look="default"
                                     ajax="true"
                                     type="submit"
                                     process="@this"
                                     id="collectionRefreshButton"
-                                    tooltip="#{collectionBean.getToolTipForRefresh()}"
                                     action="#{collectionBean.refreshCollectionSearch()}"
                                     update="growlMsg frmCollectionList:collectionList frmCollectionList:searchPoll"
                                     onclick="javascript:frmCollectionListCollectionListWidget.DataTable().destroy();ajax:collectionBean.refreshCollectionSearch();">
+                                    <!--tooltip="#{collectionBean.getToolTipForRefresh()}"-->
 
                                 </p:commandButton>
-                                </p:badge>
+                            </p:badge>
 
-                    </p:panel>
-<!--===============================================================================================================-->
-<!--                        <tr>
-                            <th>#{msgs.collMgr_datatable_header_name}</th>
-                            <th>#{msgs.collMgr_datatable_header_descr}</th>
-                            <th>#{msgs.collMgr_datatable_header_owner}</th>
-                            <th>#{msgs.collMgr_datatable_header_numDocs}</th>
-                            <th>#{msgs.collMgr_datatable_header_location}</th>
-                            <th style="min-width:68px">#{msgs.collMgr_datatable_header_tools}</th>
-                        </tr>-->
+                        </p:panel>
+                        <!--===============================================================================================================-->
+                        <!--                        <tr>
+                                                    <th>#{msgs.collMgr_datatable_header_name}</th>
+                                                    <th>#{msgs.collMgr_datatable_header_descr}</th>
+                                                    <th>#{msgs.collMgr_datatable_header_owner}</th>
+                                                    <th>#{msgs.collMgr_datatable_header_numDocs}</th>
+                                                    <th>#{msgs.collMgr_datatable_header_location}</th>
+                                                    <th style="min-width:68px">#{msgs.collMgr_datatable_header_tools}</th>
+                                                </tr>-->
                     </f:facet>
-<!--===============================================================================================================-->
-                    <p:column headerText="#{msgs.collMgr_datatable_header_name}" order="asc"  sortBy="#{collection.name}" filterBy="#{collection.name}" filterMatchMode="contains">
-                    <p:badge value="i"
-                             tooltip="id: #{collection.id}"
-                             style="position:absolute;top:-7px; right:38px;background-color: #4e6aca;">
+                    <!--===============================================================================================================-->
+                    <p:column headerText="#{msgs.collMgr_datatable_header_name}"
+                              sortBy="#{collection.name}"
+                              filterBy="#{collection.name}"
+                              filterMatchMode="contains">
 
-                        <h:outputText value="#{collection.name}" />
-                    </p:badge>
+                        <p:badge value="i"
+                                 style="position:absolute;top:-7px; right:38px;background-color: #4e6aca;">
+
+
+                            <h:outputText value="#{collection.name}" />
+                        </p:badge>
                     </p:column>
 
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
 
                     <p:column headerText="#{msgs.collMgr_datatable_header_descr}">
-                    <h:outputText value="#{collection.description}"/>
+                        <h:outputText value="#{collection.description}"/>
                     </p:column>
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
 
                     <p:column headerText="#{msgs.collMgr_datatable_header_owner}" >
-                    <h:outputText value="#{collection.getOwner().getName()}"/>
+                        <h:outputText value="#{collection.getOwner().getName()}"/>
                     </p:column>
 
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
                     <p:column headerText="#{msgs.collMgr_datatable_header_numDocs}">
-                        <p:badge tooltip="#{msgs.collMgr_tooltip_numDocs}"
+                        <p:badge
                                  rendered="#{collection.node.local}"
                                  styleClass="mr-2" size="large" severity="warning"
                                  value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
+                            <!--tooltip="#{msgs.collMgr_tooltip_numDocs}"-->
+
                         <h:outputText value="#{collection.indexPath}" />
                     </p:column>
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
                     <p:column headerText="#{msgs.collMgr_datatable_header_location}">
-                    <h:outputText value="#{collection.node.institution}"/>
+                        <h:outputText value="#{collection.node.institution}"/>
                     </p:column>
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
                     <p:column headerText="#{msgs.collMgr_datatable_header_tools}" >
                         <p:commandButton
                             style="padding: 0 4px;"
                             styleClass="ui-button-success"
                             disabled="#{!collectionBean.isEditAllowed(collection)}"
                             icon="pi pi-pencil"
-                            look="link"
                             ajax="true"
                             process="@this"
                             type="submit"
                             update="growlMsg modalCollection frmModalCollection"
-                            tooltip="#{msgs.collMgr_tooltip_editCollection}"
                             action="#{collectionBean.setEditMode('UPDATE')}"
                             oncomplete="PF('collectionDialogWidgetVar').show();">
                             <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                            <!--tooltip="#{msgs.collMgr_tooltip_editCollection}"-->
                             <!--onclick="ajax:collectionBean.setActiveCollection(collection);{collectionBean.setEditMode('UPDATE')}"-->
                         </p:commandButton>
-<!--===============================================================================================================-->
+                        <!--===============================================================================================================-->
                         <p:commandButton
                             style="padding: 0 4px; margin: 0 0.5rem;"
                             icon="pi pi-fast-backward"
-                            look="link"
                             ajax="true"
                             process="@this"
                             update="growlMsg modalCollection frmModalCollection"
                             disabled="#{!collectionBean.isClearAllowed(collection)}"
                             type="submit"
-                            tooltip="#{msgs.collMgr_tooltip_clearCollection}"
                             action="#{collectionBean.setEditMode('CLEAR')}"
                             oncomplete="PF('collectionDialogWidgetVar').show();" />
-                            <!--onclick="ajax:collectionBean.setEditMode('CLEAR');collectionBean.setActiveCollection(collection);"-->
-<!--===============================================================================================================-->
+                        <!--onclick="ajax:collectionBean.setEditMode('CLEAR');collectionBean.setActiveCollection(collection);"-->
+                            <!--tooltip="#{msgs.collMgr_tooltip_clearCollection}"-->
+                        <!--===============================================================================================================-->
                         <p:commandButton
                             style="padding: 0 4px;margin-right: 0.5rem;"
                             styleClass="ui-button-danger"
                             icon="pi pi-trash"
-                            look="link"
                             ajax="true"
                             process="@this"
-                            tooltip="#{msgs.collMgr_tooltip_deleteCollection}"
                             update="growlMsg modalCollection frmModalCollection"
                             type="submit"
                             disabled="#{!collectionBean.isDeleteAllowed(collection)}"
                             action="#{collectionBean.setEditMode('DELETE')}"
                             oncomplete="PF('collectionDialogWidgetVar').show();">
+                            <!--tooltip="#{msgs.collMgr_tooltip_deleteCollection}"-->
                             <!--onclick="ajax:collectionBean.setEditMode('DELETE');collectionBean.setActiveCollection(collection);"-->
                             <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                         </p:commandButton>
-<!--===============================================================================================================-->
+                        <!--===============================================================================================================-->
                         <p:commandButton
                             style="padding: 0 4px;"
                             icon="pi pi-user"
-                            look="link"
                             ajax="true"
                             process="@this"
-                            tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
                             update="@(.mainPanel)"
                             type="submit"
                             action="#{collectionBean.actionStartAclChange(collection)}"
                             oncomplete="PF('dlgAcl').show();"
                             disabled="#{!collectionBean.isPermissionEditAllowed(collection)}" />
+                            <!--tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"-->
                     </p:column>
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
                 </p:dataTable>
-<!--===============================================================================================================-->
+                <!--===============================================================================================================-->
             </h:form>
         </ui:composition>
     </h:body>
