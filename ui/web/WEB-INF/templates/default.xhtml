@@ -53,7 +53,7 @@
                                 <!--ENDE PANEL 1===============================================================================================================-->
 
                                 <!--ANFANG PANEL 2===============================================================================================================-->
-                                <p:splitterPanel style="display: flex;flex-direction: row;justify-content: space-evenly;align-items: center;" size="15">
+                                <p:splitterPanel style="display: flex;flex-wrap: wrap;justify-content: space-evenly;align-items: center;" size="15">
 
 
                                     <div>
@@ -113,7 +113,7 @@
                                                           update="@none"
                                                           styleClass="ui-button-danger"
                                                           onclick="$('tbody.files').find('tr').remove();
-                                                                          PF('fileUploadModal').show()"
+                                                                  PF('fileUploadModal').show()"
                                                           rendered="#{userBean.hasUploadPermission()}"/>
                                     </div>
 
@@ -199,69 +199,64 @@
                                         <div style="display: flex;flex-direction: row;justify-content: space-between;">
                                             <div>
                                                 <h:outputText
-                                                    value="#{msgs.searchMgr_advancedSearch_types}"/>
+                                                    value="#{msgs.searchMgr_advancedSearch_types}" style="margin-bottom:0.5rem;"/>
 
-                                                    #{msgs.searchMgr_advancedSearch_material_types}
+                                                #{msgs.searchMgr_advancedSearch_material_types}
 
-                                                <h5>#{msgs.search_category_DOCUMENT}</h5>
+                                                <h5 style="margin:5px 0;">#{msgs.search_category_DOCUMENT}</h5>
                                                 <p:selectBooleanCheckbox
                                                     label="#{msgs.search_category_DOCUMENT}"
                                                     value="#{searchBean.getSearchFilter().typeFilter.documents}"/>
                                                 <!--ajax="true"-->
                                                 <br/>
-                                                <h5>#{msgs.search_category_STRUCTURE}"</h5>
+                                                <h5 style="margin:5px 0;">#{msgs.search_category_STRUCTURE}"</h5>
                                                 <p:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
                                                     label="#{msgs.search_category_STRUCTURE}"/>
                                                 <!--ajax="true"-->
-                                                <h5>#{msgs.search_category_MATERIAL}</h5>
+                                                <h5 style="margin:5px 0;">#{msgs.search_category_MATERIAL}</h5>
                                                 <p:selectBooleanCheckbox
                                                     label="#{msgs.search_category_MATERIAL}"
                                                     value="#{searchBean.getSearchFilter().typeFilter.materials}"/>
                                                 <!--ajax="true"-->
                                                 <!--update="@(.materialTypeFilter)"-->
-                                                <h5>#{msgs.search_category_BIOMATERIAL}</h5>
+                                                <h5 style="margin:5px 0;">#{msgs.search_category_BIOMATERIAL}</h5>
                                                 <p:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
                                                     label="#{msgs.search_category_BIOMATERIAL}"/>
                                                 <!--ajax="true"-->
-                                                <h5>#{msgs.search_category_ITEM}</h5>
+                                                <h5 style="margin:5px 0;">#{msgs.search_category_ITEM}</h5>
                                                 <p:selectBooleanCheckbox
                                                     label="#{msgs.search_category_ITEM}"
                                                     value="#{searchBean.getSearchFilter().typeFilter.items}"/>
                                                 <!--ajax="true"-->
-                                                <h5>#{msgs.search_category_SEQUENCE}</h5>
+                                                <h5 style="margin:5px 0;">#{msgs.search_category_SEQUENCE}</h5>
                                                 <p:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
                                                     label="#{msgs.search_category_SEQUENCE}"/>
                                                 <!--ajax="true"-->
-                                                <h5>#{msgs.search_category_EXPERIMENT}</h5>
+                                                <h5 style="margin:5px 0;">#{msgs.search_category_EXPERIMENT}</h5>
                                                 <p:selectBooleanCheckbox
                                                     label="#{msgs.search_category_EXPERIMENT}"
                                                     value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
                                                 <!--ajax="true"-->
-                                                <h5>#{msgs.search_category_COMPOSITION}</h5>
+                                                <h5 style="margin:5px 0;">#{msgs.search_category_COMPOSITION}</h5>
                                                 <p:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.compositions}"
                                                     label="#{msgs.search_category_COMPOSITION}"/>
                                                 <!--ajax="true"-->
 
-
                                             </div>
 
+                                            <mol:molecule
+                                                id="molEditorSearchPage"
+                                                value="#{searchBean.getSearchFilter().structureString}"
+                                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                format="MDLV2000"
+                                                border="true"
+                                                readonly="false">
+                                            </mol:molecule>
 
-                                            <div style="display: flex;flex-direction: row;justify-content: center; align-items: center; margin: 0 70% 0 15%;">
-
-                                                <mol:molecule
-                                                    id="molEditorSearchPage"
-                                                    value="#{searchBean.getSearchFilter().structureString}"
-                                                    pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                                    format="MDLV2000"
-                                                    border="true"
-                                                    readonly="false">
-                                                </mol:molecule>
-
-                                            </div>
                                         </div>
                                     </p:tab>
                                 </p:tabView>

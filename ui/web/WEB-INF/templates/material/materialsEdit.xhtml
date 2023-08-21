@@ -32,17 +32,16 @@
             <p:panel>
                 <p:panelGrid>
                     <p:row>
-                        <p:column colspan="2">
-                            <h:outputText 
+                        <p:column >
+                            <h:outputText
                                 value="#{msgs.materialCreation_project}"/>
                         </p:column>
-                        <p:column colspan="3">
+                        <p:column >
                             <p:selectOneMenu
                                 value="#{materialBean.materialEditState.currentProjectId}"
                                 styleClass="tstProjectMenu"
                                 disabled="#{!materialBean.isProjectEditEnabled()}">
-
-                                <f:selectItems 
+                                <f:selectItems
                                     value="#{materialBean.materialEditState.possibleProjects}"
                                     var="p"
                                     itemValue="#{p.id}"
@@ -57,12 +56,13 @@
                                   >
                             <p:commandButton
                                 disabled="#{!materialBean.permission.isBackwardButtonEnabled()}"
-                                onclick="ajax:materialBean.switchOneVersionBack();"
-                                process="@form"
-                                update="@form"
-                                ajax="true"                               
-                                icon-awesome="backward"
+                                process="@this"
+                                update="@all"
+                                ajax="true"
+                                icon="pi pi-backward"
+                                action="#{materialBean.switchOneVersionBack()}"
                                 />
+                            <!--onclick="ajax:materialBean.switchOneVersionBack();"-->
                         </p:column>
                         <p:column colspan="3"
                                   rendered="#{materialBean.areRevisionElementsVisible()}">
@@ -87,19 +87,23 @@
                                   rendered="#{materialBean.areRevisionElementsVisible()}">
                             <p:commandButton
                                 disabled="#{!materialBean.permission.isForwardButtonEnabled()}"
-                                onclick="ajax:materialBean.switchOneVersionForward();"
-                                process="@form"
-                                update="@form"
-                                ajax="true"                                
-                                icon-awesome="forward"
+                                process="@this"
+                                update="@all"
+                                ajax="true"
+                                action="#{materialBean.switchOneVersionForward()}"
+                                icon="pi pi-forward"
                                 />
+                            <!--onclick="ajax:materialBean.switchOneVersionForward();"-->
                         </p:column>
 
                         <p:column colspan="1">
                             <p:commandButton
+                                value="#{msgs.materialCreation_cancel}"
+                                styleClass="ui-button-secondary"
                                 action="#{navigator.navigate('material/materials')}"
                                 update="@all"
-                                value="#{msgs.materialCreation_cancel}"/>
+                                process="@this"
+                                />
                         </p:column>
                         <p:column colspan="1">
                             <!-- The server side bean gets only access to the hidden input fields, so they must be updated before submitting their value to the server -->
@@ -107,27 +111,28 @@
                                 styleClass="tstMaterialCreate"
                                 value="#{materialBean.getCreateButtonText()}"
                                 disabled="#{!materialBean.isCreationAllowed()}"
-                                action="#{materialBean.actionSaveMaterial()}"/>
+                                action="#{materialBean.actionSaveMaterial()}"
+                                process="@this"
+                                update="@all"
+                                ajax="false"/>
                         </p:column>
                     </p:row>
 
                     <p:row
                         rendered="#{materialBean.isValideProjectChoosen()}">
-                        <p:column colspan="2">
+                        <p:column colspan="0">
                             <h:outputText
                                 value="#{msgs.materialCreation_type}"
                                 />
                         </p:column>
-                        <p:column span="3"
-                                  styleClass="materialTypeMenuClass">
+                        <p:column
+                            styleClass="materialTypeMenuClass">
                             <p:selectOneMenu
                                 value="#{materialBean.currentMaterialType}"
                                 styleClass="tstMaterialTypeMenu"
-                                ajax="true"
-                                process="@this"
                                 disabled="#{materialBean.isTypeChoiseDisabled()}"
-                                update="@form">
-                                <f:selectItems 
+                                >
+                                <f:selectItems
                                     value="#{materialBean.getMaterialTypes()}"/>
                             </p:selectOneMenu>
                         </p:column>
@@ -135,9 +140,8 @@
                             <h:outputText
                                 value="#{materialBean.getMode()}"/>
                         </p:column>
-                        <p:column colspan="4" offset="2">
+                        <p:column colspan="1">
                             <p:panel
-                                look="danger"
                                 rendered="#{not empty materialBean.errorMessages}">
                                 <ui:repeat
                                     value="#{materialBean.errorMessages}"
@@ -155,43 +159,36 @@
                 </p:panelGrid>
             </p:panel>
 
-            <p:panel
-                rendered="#{materialBean.isValideProjectChoosen()}"
-                style="width: 100%">
-                <!-- Note: This tabView needs to be dynamic (= lazy loading via
-                           AJAX) because some molecular structure plugins do not
-                           load properly when they are in hidden tabs. -->
+            <p:outputPanel rendered="#{materialBean.isValideProjectChoosen()}" style="width: 100%">
+                <!-- Note: This tabView needs to be dynamic (= lazy loading via AJAX) because some molecular structure plugins do not load properly when they are in hidden tabs. -->
                 <p:tabView styleClass="itemEditTabView" dynamic="true" style="width: 100%">
-                    <ui:insert> 
+                    <ui:insert>
                         <ui:include src="/WEB-INF/templates/material/components/materialNames.xhtml"/>
                     </ui:insert>
-<!--
-                    <ui:insert> 
+                    <ui:insert>
                         <ui:include src="/WEB-INF/templates/material/components/indices.xhtml"/>
                     </ui:insert>
-                    <ui:insert> 
+                    <ui:insert>
                         <ui:include src="/WEB-INF/templates/material/components/structures.xhtml"/>
                     </ui:insert>
-                    <ui:insert> 
+                    <ui:insert>
                         <ui:include src="/WEB-INF/templates/material/components/sequences.xhtml"/>
                     </ui:insert>
--->
-                    <ui:insert> 
+                    <ui:insert>
                         <ui:include src="/WEB-INF/templates/material/components/hazards.xhtml"/>
                     </ui:insert>
-<!--
-                    <ui:insert> 
+                    <ui:insert>
                         <ui:include src="/WEB-INF/templates/material/components/storageClasses.xhtml"/>
                     </ui:insert>
-                    <ui:insert> 
+                    <ui:insert>
                         <ui:include src="/WEB-INF/templates/material/components/biodata.xhtml"/>
                     </ui:insert>
-                    <ui:insert> 
+                    <ui:insert>
                         <ui:include src="/WEB-INF/templates/material/components/composition.xhtml"/>
                     </ui:insert>
--->
                 </p:tabView>
-            </p:panel>
+            </p:outputPanel>
+
 
         </h:form>
     </h:body>

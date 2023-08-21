@@ -33,111 +33,110 @@
                     <p:panel style="background-color: #f4f4f4; margin: 2rem 0;" >
                         <p:row >
                             <p:column colspan="12">
-                            <!--<b:jumbotron>-->
+                                <!--<b:jumbotron>-->
                                 <p:row>
                                     <p:column colspan="2" style="padding-left: 50rem;">
-                                    <p:column colspan="1" style="display:flex;">
-                                        <p:graphicImage name="img/simpleCloud.svg"  width="100px" style="margin: 0 -22rem 0 26rem"/>
-                                    </p:column>
-                                    <p:column colspan="1" style="display:flex;">
-                                        <p:graphicImage name="img/wordcloudLogo.svg" width="250px"/>
-                                    </p:column>
+                                        <p:column colspan="1" style="display:flex;">
+                                            <p:graphicImage name="img/simpleCloud.svg"  width="100px" style="margin: 0 -22rem 0 26rem"/>
+                                        </p:column>
+                                        <p:column colspan="1" style="display:flex;">
+                                            <p:graphicImage name="img/wordcloudLogo.svg" width="250px"/>
+                                        </p:column>
                                     </p:column>
                                 </p:row>
-                            <!--</b:jumbotron>-->
+                                <!--</b:jumbotron>-->
                             </p:column>
                         </p:row>
                     </p:panel>
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
                     <p:row >
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-                        <p:column colspan="7">
-                            <div class="col-12 md:col-4" style="width:100%;">
-                                <div class="ui-inputgroup">
-                                    <p:inputText
-                                                 id="searchTextInputField"
-                                                 style="width:100%;"
-                                                 label=""
-                                                 value="#{wordCloudBean.searchTermInput}"
-                                                 placeholder="#{msgs.searchMgr_searchtext_placeholder}"
-                                                 required="false"
-                                                 />
-                                   <p:commandButton
-                                                         id="startSearchButton"
-                                                         value=""
-                                                         icon="pi pi-search"
-                                                         style="margin-right:5px;"
-                                                         styleClass="ui-button-danger"
-                                                         look="primary"
-                                                         type="submit"
-                                                         ajax="true"
-                                                         update="tagCloudId @form"
-                                                         action="#{wordCloudBean.startSearch()}"
-                                                         oncomplete="colorCloudTerms();"
-                                                         />
-                                  </div>
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <p:column colspan="7">
+                                    <div class="col-12 md:col-4" style="width:100%;">
+                                        <div class="ui-inputgroup">
+                                            <p:inputText
+                                                id="searchTextInputField"
+                                                style="width:100%;"
+                                                label=""
+                                                value="#{wordCloudBean.searchTermInput}"
+                                                placeholder="#{msgs.searchMgr_searchtext_placeholder}"
+                                                required="false"
+                                                />
+                                            <p:commandButton
+                                                id="startSearchButton"
+                                                value=""
+                                                icon="pi pi-search"
+                                                style="margin-right:5px;"
+                                                styleClass="ui-button-danger"
+                                                type="submit"
+                                                ajax="true"
+                                                update="tagCloudId @form"
+                                                action="#{wordCloudBean.startSearch()}"
+                                                oncomplete="colorCloudTerms();"
+                                                />
+                                        </div>
+                                    </div>
+                                </p:column>
+                                <!--===============================================================================================================-->
+                                <p:column colspan="2">
+                                </p:column>
+                                <p:column colspan="1">
+                                    <p:commandButton
+                                        look="primary"
+                                        icon="pi pi-refresh"
+                                        styleClass="ui-button-danger"
+                                        ajax="false"
+                                        action="#{wordCloudBean.clearCloudState()}"
+                                        update="@form @(.tablePseudoClass)"
+                                        value="clear">
+                                        <!--                                <p:icon
+                                                                            style="margin-left: 4px"
+                                                                            styleClass="fa-rotate-left"
+                                                                            name="refresh"
+                                                                            size="1x" />-->
+                                    </p:commandButton>
+                                </p:column>
+                                <!--===============================================================================================================-->
+                                <p:column colspan="1" >
+                                    <p:commandButton
+                                        style="margin: 0 0.5rem;"
+                                        icon="pi pi-eye"
+                                        styleClass="rounded-button ui-button-danger"
+                                        ajax="false"
+                                        update="@form"
+                                        action="#{wordCloudBean.toggleWordCloudVisibility()}"
+                                        oncomplete="colorCloudTerms();">
+                                        <!--                                <b:iconAwesome
+                                                                            style="margin-left: 4px"
+                                                                            styleClass="fa-eye"
+                                                                            name="refresh"
+                                                                            size="1x" />-->
+                                    </p:commandButton>
+                                </p:column>
+                                <!--===============================================================================================================-->
+                                <p:column colspan="1" >
+                                    <div>
+                                        <p:selectOneMenu
+                                            style="width: 70px; margin-right: 0.5rem;"
+                                            value="#{wordCloudBean.maxTerms}"
+                                            >
+                                            <f:selectItem itemLabel="150" itemValue="150"/>
+                                            <f:selectItem itemLabel="300" itemValue="300"/>
+                                            <f:selectItem itemLabel="450" itemValue="450"/>
+                                            <p:ajax
+                                                listener="#{wordCloudBean.startSearch()}"
+                                                update="@form @(.tablePseudoClass)"
+                                                process="@this"
+                                                oncomplete="colorCloudTerms();"/>
+                                        </p:selectOneMenu>
+                                        <!--onchange="ajax:wordCloudBean.startSearch()"-->
+                                    </div>
+                                </p:column >
                             </div>
-                        </p:column>
-<!--===============================================================================================================-->
-                        <p:column colspan="2">
-                        </p:column>
-                        <p:column colspan="1">
-                            <p:commandButton
-                                look="primary"
-                                icon="pi pi-refresh"
-                                styleClass="ui-button-danger"
-                                ajax="false"
-                                action="#{wordCloudBean.clearCloudState()}"
-                                update="@form @(.tablePseudoClass)"
-                                value="clear">
-<!--                                <p:icon
-                                    style="margin-left: 4px"
-                                    styleClass="fa-rotate-left"
-                                    name="refresh"
-                                    size="1x" />-->
-                            </p:commandButton>
-                        </p:column>
-<!--===============================================================================================================-->
-                        <p:column colspan="1" >
-                            <p:commandButton
-                                style="margin: 0 0.5rem;"
-                                icon="pi pi-eye"
-                                styleClass="rounded-button ui-button-danger"
-                                ajax="false"
-                                update="@form"
-                                action="#{wordCloudBean.toggleWordCloudVisibility()}"
-                                oncomplete="colorCloudTerms();">
-<!--                                <b:iconAwesome
-                                    style="margin-left: 4px"
-                                    styleClass="fa-eye"
-                                    name="refresh"
-                                    size="1x" />-->
-                            </p:commandButton>
-                        </p:column>
-<!--===============================================================================================================-->
-                        <p:column colspan="1" >
-                            <div>
-                            <p:selectOneMenu
-                                style="width: 70px; margin-right: 0.5rem;"
-                                value="#{wordCloudBean.maxTerms}"
-                                >
-                                <f:selectItem itemLabel="150" itemValue="150"/>
-                                <f:selectItem itemLabel="300" itemValue="300"/>
-                                <f:selectItem itemLabel="450" itemValue="450"/>
-                                <p:ajax
-                                    listener="#{wordCloudBean.startSearch()}"
-                                    update="@form @(.tablePseudoClass)"
-                                    process="@this"
-                                    oncomplete="colorCloudTerms();"/>
-                            </p:selectOneMenu>
-                                <!--onchange="ajax:wordCloudBean.startSearch()"-->
-                             </div>
-                        </p:column >
-                    </div>
-                    </div>
+                        </div>
                     </p:row>
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
                     <p:row rendered="#{wordCloudBean.wordCloudVisible}" id="wordCloudRow">
                         <p:column colspan="12">
                             <p:tagCloud
@@ -154,33 +153,33 @@
 
                         </p:column>
                     </p:row>
-<br/>
-<!--===============================================================================================================-->
+                    <br/>
+                    <!--===============================================================================================================-->
                     <p:row>
 
                         <p:column colspan="12" styleClass="tagInputForm text-center" id="tags">
                             <ui:repeat value="#{wordCloudBean.getTagsAsList()}" var="tag" id="badges">
                                 <!--<p:badge value="#{tag.toString()}" style-class="tag-badge">-->
-                                    <p:commandButton
-                                        value="#{tag.toString()}"
-                                        styleClass="rounded-button ui-button-danger"
-                                        icon="pi pi-times-circle" iconPos="right"
-                                        style="margin:0.6rem 0.8rem;margin-bottom:1rem;"
-                                        ajax="true"
-                                        action="#{wordCloudBean.removeTag(tag)}"
-                                        oncomplete="colorCloudTerms();"
-                                        update="@form"
-                                        >
-                                    </p:commandButton>
+                                <p:commandButton
+                                    value="#{tag.toString()}"
+                                    styleClass="rounded-button ui-button-danger"
+                                    icon="pi pi-times-circle" iconPos="right"
+                                    style="margin:0.6rem 0.8rem;margin-bottom:1rem;"
+                                    ajax="true"
+                                    action="#{wordCloudBean.removeTag(tag)}"
+                                    oncomplete="colorCloudTerms();"
+                                    update="@form"
+                                    >
+                                </p:commandButton>
 
                                 <!--</p:badge>-->
                             </ui:repeat>
                         </p:column>
 
                     </p:row>
-<br/>
+                    <br/>
 
-<!--===============================================================================================================-->
+                    <!--===============================================================================================================-->
 
                     <p:row>
                         <p:column colspan="12">

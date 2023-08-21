@@ -20,6 +20,11 @@
 /*
    customer styles
 */
+
+body{
+    margin-bottom: 5rem !important;
+}
+
 .ui-menubutton .ui-button{
     font-size: 1.5rem ;
 }
