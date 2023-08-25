@@ -34,12 +34,17 @@ public enum ReportType {
             PdfReportUtil.createPDF(report, filename);
         }
     },
+/* 
+ * NOTE: disabled due to conflicting Apache POI releases 
+ * between org.pentaho and de.ipb_halle.tx
+ *
     XLSX(".xlsx") {
         @Override
         public void createReport(MasterReport report, String filename) throws Exception {
             ExcelReportUtil.createXLSX(report, filename);
         }
     },
+*/
     CSV(".csv") {
         @Override
         public void createReport(MasterReport report, String filename) throws Exception {

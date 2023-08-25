@@ -24,7 +24,7 @@
  
  <groupId>de.ipb_halle</groupId>
  <artifactId>tx</artifactId>
- <version>1.0</version>
+ <version>1.0.1</version>
  <packaging>jar</packaging>
  
  <name>tx</name>
@@ -33,6 +33,7 @@
  <properties>
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    <!-- check Maven Central for latest versions! -->
+   <tika.version>1.28.3</tika.version>
  </properties>
 
  <!-- define (additional) repositories -->
@@ -120,19 +121,19 @@
   <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
-      <version>1.24</version>
+      <version>${tika.version}</version>
   </dependency>
 
   <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-langdetect</artifactId>
-      <version>1.24</version>
+      <version>${tika.version}</version>
   </dependency>
 
   <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-parsers</artifactId>
-      <version>1.24</version>
+      <version>${tika.version}</version>
   </dependency>
 
   <!-- Rabin fingerprint -->
@@ -147,6 +148,14 @@
     <groupId>org.tartarus</groupId>
     <artifactId>snowball</artifactId>
     <version>2.0.0</version>
+  </dependency>
+
+  <!-- unit testing -->
+  <dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.13.1</version>
+    <scope>test</scope>
   </dependency>
 
   </dependencies>

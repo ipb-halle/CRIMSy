@@ -27,7 +27,7 @@ import static de.ipb_halle.lbac.device.job.JobType.REPORT;
 import static de.ipb_halle.lbac.reporting.job.ReportJobService.MAX_AGE;
 import static de.ipb_halle.lbac.reporting.report.ReportType.CSV;
 import static de.ipb_halle.lbac.reporting.report.ReportType.PDF;
-import static de.ipb_halle.lbac.reporting.report.ReportType.XLSX;
+//import static de.ipb_halle.lbac.reporting.report.ReportType.XLSX;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
@@ -101,7 +101,8 @@ public class ReportJobServiceTest extends TestBase {
 
         reportJobService.submit(new ReportJobPojo("report1 (busy)", CSV, params), adminUser);
         reportJobService.submit(new ReportJobPojo("report2 (busy)", PDF, new HashMap<>()), adminUser);
-        reportJobService.submit(new ReportJobPojo("report3 (pending)", XLSX, null), adminUser);
+//        reportJobService.submit(new ReportJobPojo("report3 (pending)", XLSX, null), adminUser);
+        reportJobService.submit(new ReportJobPojo("report3 (pending)", CSV, null), adminUser);
 
         assertThat(managedExecutorService.getSubmittedTasks(), hasSize(2));
 
@@ -124,7 +125,8 @@ public class ReportJobServiceTest extends TestBase {
 
         pojo = deserializeToReportJobPojo(pendingJobs.get(0).getInput());
         assertEquals("report3 (pending)", pojo.getReportURI());
-        assertEquals(XLSX, pojo.getType());
+//      assertEquals(XLSX, pojo.getType());
+        assertEquals(CSV, pojo.getType());      // XLSX temporarily removed
         assertNull(pojo.getParameters());
     }
 

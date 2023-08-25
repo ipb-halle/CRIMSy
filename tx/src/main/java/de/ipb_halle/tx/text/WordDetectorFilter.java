@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 public class WordDetectorFilter extends AbstractFilter {
 
     public final static String FILTER_TYPE = "WordDetectorFilter";
+    public final static String WORD_COUNT = "WordDetectorFilter.wordCount";
+
 
     private Logger                      logger;
     private BlockingQueue<TextRecord>   inputQueue;
@@ -59,6 +61,7 @@ public class WordDetectorFilter extends AbstractFilter {
      */
     public FilterState filter(FilterOperation op) {
 
+
         while (true) {
             if (this.textRecord != null) {
                 if (! this.outputQueue.offer(this.textRecord)) {
@@ -81,18 +84,29 @@ public class WordDetectorFilter extends AbstractFilter {
                 this.breakIterator.setText(rec.getText());
                 int start = this.breakIterator.current();
                 int end = this.breakIterator.current();
+                int wordCount = getWordCount();
                 while (end != BreakIterator.DONE) {
                     if (start != end) {
                         if((end-start != 1) || (rec.getText().charAt(start) != ' ')) {
                             rec.addProperty(new Word(start, end));
+                            wordCount++;
                         }
                     }
                     start = end;
                     end = this.breakIterator.next();
                 }
+                getFilterData().setValue(WORD_COUNT, wordCount);
                 this.textRecord = rec; 
             }
         }
+    }
+
+    private int getWordCount() {
+        Integer w = (Integer) getFilterData().getValue(WORD_COUNT);
+        if (w != null) {
+            return w;
+        }
+        return 0;
     }
 
     /**

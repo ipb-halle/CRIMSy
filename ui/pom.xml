@@ -25,7 +25,7 @@
 
     <groupId>de.ipb-halle</groupId>
     <artifactId>ui</artifactId>
-    <version>2.1.4</version>
+    <version>2.1.5</version>
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
@@ -583,6 +583,12 @@
             <artifactId>selenium-java</artifactId>
             <scope>test</scope>
             <version>2.44.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Expression Language implementation (required by bean validation) -->
@@ -596,7 +602,7 @@
         <dependency>
             <groupId>de.ipb_halle</groupId>
             <artifactId>tx</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.cxf</groupId>
@@ -604,6 +610,29 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- tika dependencies -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.36.0.3</version>
+        </dependency>
+
+        <dependency>
+            <!-- see seleniumhq -->
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+
+        <!-- tika dependency: possible conflict with pentaho -->
+        <dependency> 
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>5.0.3</version>
+        </dependency>
+
 
         <!-- MolecularFaces -->
         <dependency>
@@ -641,6 +670,25 @@
             <groupId>org.pentaho.reporting.engine</groupId>
             <artifactId>classic-core</artifactId>
             <version>${pentaho.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.xmlbeans</groupId>
+                    <artifactId>xmlbeans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.poi</groupId>
+                    <artifactId>poi-ooxml-schemas</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.poi</groupId>
+                    <artifactId>poi-ooxml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.poi</groupId>
+                    <artifactId>poi</artifactId>
+                </exclusion>
+            </exclusions>
+
         </dependency>
 
         <dependency>
