@@ -21,24 +21,22 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:body>
         <ui:composition>
-            <b:container
+            <div
                 styleClass="div-container-hazard">
+
                 <ui:repeat
                     var ="concentration"
                     value="#{material.getComponents()}">
-                    <b:row>
-                        <b:column>
+              
                             <h:outputText 
                                 value="#{materialOverviewBean.getComponentOfComposition(concentration)}"/>                            
-                        </b:column>
-                    </b:row>
+      
                 </ui:repeat>
-            </b:container>
+            </div>
         </ui:composition>
     </h:body>
 

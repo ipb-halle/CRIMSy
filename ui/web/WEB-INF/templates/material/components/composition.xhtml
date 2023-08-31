@@ -21,19 +21,21 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
-    <h:body>
+    <h:body style="margin-bottom: 5rem">
         <ui:composition>
             <p:tab
                 title="#{msgs.materialCreation_panelNames_composition}"
-                disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
-                <p:outputPanel rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
+                >
+                <!--disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}"-->
+                <p:outputPanel 
+                    >
+                    <!--rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}"-->
                     <p:panelGrid>
                         <p:row>
                             <p:column styleClass="borderless">
@@ -43,18 +45,22 @@
                                 </p:outputLabel>
                             </p:column>
                             <p:column
-                                styleClass="borderless compositionTypeSelectBox"
-                                style="width:60%">
-                                <b:selectOneMenu
-                                    ajax="true"
+                                styleClass="borderless"
+                                >
+                                <!--styleClass="borderless compositionTypeSelectBox"-->
+                                <!--style="width:60%"-->
+                                <p:selectOneMenu
                                     disabled="#{!materialCompositionBean.isCompositionTypeEditable()}"
-                                    update="@(.resultTable) @(.searchTabView)"
-                                    value="#{materialCompositionBean.choosenType}">
+                                    value="#{materialCompositionBean.choosenType}"
+
+                                    >
+                                    <!--ajax="true"-->
+                                    <!--update="@(.resultTable) @(.searchTabView)"-->
                                     <f:selectItems 
                                         value="#{materialCompositionBean.getCompositionTypes()}"
                                         itemLabel="#{materialCompositionBean.getLocalizedCompositionType(type)}"
                                         var="type"/>
-                                </b:selectOneMenu>                            
+                                </p:selectOneMenu>                            
                             </p:column>
                         </p:row>
                     </p:panelGrid>
@@ -63,157 +69,197 @@
                         class="wideBody"
                         id="searchPanelId">
                         <p:row styleClass="borderless">
-                            <p:column style="vertical-align: top;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;border-left-right: 2px;">
-                                <p:panelGrid>
-                                    <p:row styleClass="borderless">
-                                        <p:column styleClass="borderless">
-                                            <p:inputText
-                                                style="width: 450px"
-                                                styleClass="inputText"
-                                                value="#{materialCompositionBean.materialName}"
-                                                placeholder="#{msgs.materialCreation_composition_nameSearchPlaceholder}">
-                                            </p:inputText>            
-                                        </p:column>
-                                        <p:column styleClass="borderless">
-                                            <p:commandButton
-                                                ajax="true"
-                                                action="#{materialCompositionBean.actionStartSearch()}"
-                                                update="@(.resultTable) growlMsg"
-                                                value="#{msgs.materialCreation_composition_searchButton}">
-                                            </p:commandButton>          
-                                        </p:column>
-                                    </p:row>
-                                    <p:row styleClass="borderless">
-                                        <p:column styleClass="borderless">
-                                            <p:tabView
-                                                styleClass="searchTabView"
-                                                activeIndex="#{materialCompositionBean.activeIndex}"
-                                                id="searchTabViewId"
-                                                dynamic="true">
-                                                <p:ajax
-                                                    event="tabChange"
-                                                    listener="#{materialCompositionBean.onTabChange}"/>
-                                                <p:tab
-                                                    disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
-                                                    title="#{materialCompositionBean.getLocalizedTabTitle('STRUCTURE')}">
-                                                    <mol:molecule                                                        
-                                                        value="#{materialCompositionBean.searchMolecule}"
-                                                        pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                                        format="MDLV2000"
-                                                        border="true"
-                                                        readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                                        widgetVar="compositionStructurePlugin">
-                                                    </mol:molecule>
-                                                    <!-- This JS snippet guarantees proper plugin initialization after
-                                                         this p:tab is rendered by AJAX and the tab comes into focus. -->
-                                                    <script>compositionStructurePlugin.then(plugin => plugin.init());</script>
-                                                </p:tab>
-                                                <p:tab
-                                                    title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
-                                                    disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
-                                                    <crimsy:sequenceSearchMask 
-                                                        valuesHolder="#{materialCompositionBean.sequenceSearchMaskValuesHolder}"
-                                                        maxResultsFieldRendered="false" />
-                                                </p:tab>
-                                                <p:tab
-                                                    title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
-                                                    disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
-                                                </p:tab>
-                                            </p:tabView>
-                                        </p:column>             
-                                    </p:row>
-                                </p:panelGrid>
-                            </p:column>
-                            <p:column
-                                style="vertical-align: top;min-width:30%;max-width: 30%;text-align: center;"
-                                styleClass="borderless compositionMaterialTable">
+                            <!--<p:column style="vertical-align: top;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;border-left-right: 2px;">-->
+                            <p:panelGrid>
+                                <p:row styleClass="borderless">
+                                    <p:column styleClass="borderless">
+                                        <p:inputText
+                                            style="width: -moz-available;"
+                                            styleClass="inputText"
+                                            value="#{materialCompositionBean.materialName}"
+                                            placeholder="#{msgs.materialCreation_composition_nameSearchPlaceholder}">
+                                        </p:inputText>            
+                                    </p:column>
+                                    <p:column styleClass="borderless">
+                                        <p:commandButton
+                                            ajax="true"
+                                            action="#{materialCompositionBean.actionStartSearch()}"
+                                            update="@(.resultTable) growlMsg"
+                                            value="#{msgs.materialCreation_composition_searchButton}">
+                                        </p:commandButton>          
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+
+                            <p:row styleClass="borderless">
+                                <p:column styleClass="borderless">
+                                    <p:tabView
+                                        styleClass="searchTabView"
+                                        activeIndex="#{materialCompositionBean.activeIndex}"
+                                        id="searchTabViewId"
+                                        dynamic="true">
+                                        <p:ajax
+                                            event="tabChange"
+                                            listener="#{materialCompositionBean.onTabChange}"/>
+                                        <p:tab
+                                            disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
+                                            title="#{materialCompositionBean.getLocalizedTabTitle('STRUCTURE')}">
+                                            <mol:molecule                                                        
+                                                value="#{materialCompositionBean.searchMolecule}"
+                                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                format="MDLV2000"
+                                                border="true"
+                                                readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                                widgetVar="compositionStructurePlugin">
+                                            </mol:molecule>
+                                            <!-- This JS snippet guarantees proper plugin initialization after
+                                                 this p:tab is rendered by AJAX and the tab comes into focus. -->
+                                            <script>compositionStructurePlugin.then(plugin => plugin.init());</script>
+                                        </p:tab>
+                                        <p:tab
+                                            title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
+                                            disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
+                                            <crimsy:sequenceSearchMask 
+                                                valuesHolder="#{materialCompositionBean.sequenceSearchMaskValuesHolder}"
+                                                maxResultsFieldRendered="false" />
+                                        </p:tab>
+                                        <p:tab
+                                            title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
+                                            disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
+                                        </p:tab>
+                                    </p:tabView>
+                                </p:column>             
+                            </p:row>
+                            <!--</p:column>-->
+                            <!--========================================================================================================================================-->                         
+                            <!--                            <p:column
+                                                            style="vertical-align: top;min-width:30%;max-width: 30%;text-align: center;"
+                                                            styleClass="borderless compositionMaterialTable">-->
+                            <p:panelGrid columns="4" layout="flex"
+                                         columnClasses="col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4, col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4"
+                                         styleClass="customPanelGrid" contentStyleClass="ui-fluid">
                                 <h:outputText 
                                     value="#{msgs.materialCreation_composition_searchResultTitle}"
                                     style="font-weight: bold;font-size: 115%"/>
-                                <b:dataTable
+                                <p:dataTable
                                     styleClass="resultTable"
                                     value="#{materialCompositionBean.materialsThatCanBeAdded}"
-                                    searching="false"
-                                    var="material"
+                                    var="material">
+
+                                    <!--
                                     saveState="false"
-                                    paginated="true">
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsID}"
-                                        value="#{material.getId()}">
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        label="Name"
-                                        value="#{material.getFirstName()}">
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn label="#{msgs.materialCreation_composition_searchResultTable_Action}">
-                                        <b:commandButton
+                                    paginated="true"
+                                    searching="false"
+                                    -->
+
+                                    <p:column headerText="#{msgs.materialCreation_composition_concentrationsID}">
+                                        <h:outputText value="#{material.getId()}" />
+                                    </p:column>
+
+                                    <p:column headerText="Name">
+                                        <h:outputText value="#{material.getFirstName()}" />
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.materialCreation_composition_searchResultTable_Action}">
+                                        <p:commandButton
+                                            id="btn11"
                                             ajax="true"
-                                            look="link"
-                                            type="button"
-                                            disabled="#{!materialBean.permission.isEditAllowed()}"
-                                            tooltip="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"                                        
+                                            type="submit"
                                             action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
                                             update="@(.resultTable)"
-                                            icon="plus"/>
-                                    </b:dataTableColumn>
-                                </b:dataTable>
-                            </p:column>
+                                            process="@this"
+                                            icon="pi pi-plus" />
+                                        <!--look="link"-->
+                                            <!--disabled="#{!materialBean.permission.isEditAllowed()}"-->
 
-                            <p:column 
-                                styleClass="borderless compositionMaterialTable"
-                                style="vertical-align: top;
-                                min-width:30%;max-width: 30%;
-                                text-align: center;">
-                                <h:outputText
-                                    value="#{msgs.materialCreation_composition_concentrationsTitle}"
-                                    style="font-weight: bold;font-size: 115%"/>
-                                <b:dataTable
-                                    styleClass="resultTable"                                    
-                                    value="#{materialCompositionBean.concentrationsInComposition}"
-                                    searching="false"
-                                    var="concentration"
+                                        <p:tooltip id="uploaderCancelButtonToolTip"
+                                                   position="bottom"
+                                                   for="btn11"
+                                                   value="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"/>
+                                        <!--tooltip="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"-->
+                                    </p:column>
+
+                                </p:dataTable>
+
+                                <!--</p:column>-->
+                            </p:panelGrid>
+                            <!--========================================================================================================================================-->                         
+                            <p:panelGrid columns="4" layout="flex"
+                                         columnClasses="col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4, col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4"
+                                         styleClass="customPanelGrid" contentStyleClass="ui-fluid">
+
+                                <!--
+                                <p:column styleClass="borderless compositionMaterialTable"
+                                          style="vertical-align: top;
+                                                 min-width: 30%; max-width: 30%;
+                                                 text-align: center;">
+                                -->
+
+                                <h:outputText value="#{msgs.materialCreation_composition_concentrationsTitle}"
+                                              style="font-weight: bold; font-size: 115%" />
+
+                                <p:dataTable styleClass="resultTable"
+                                             value="#{materialCompositionBean.concentrationsInComposition}"
+                                             var="concentration">
+
+                                    <!--
                                     saveState="false"
-                                    paginated="true">
-                                    <b:dataTableColumn                                        
-                                        label="#{msgs.materialCreation_composition_concentrationsID}"
-                                        value="#{materialCompositionBean.getFormatedIdOfConcentration(concentration)}">
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsName}"
-                                        value="#{concentration.getMaterialName()}">
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        label="#{msgs.materialCreation_composition_concentrationsType}"
-                                        value="#{materialCompositionBean.getLocalizedMaterialType(concentration)}">
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn label="#{msgs.materialCreation_composition_concentrationsValue}">
-                                        <b:inputText
-                                            disabled="#{!materialBean.permission.isEditAllowed()}"
-                                            value="#{concentration.concentration}"/>
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn label="#{msgs.materialCreation_composition_concentrationsUnit}">
-                                        <b:selectOneMenu 
-                                            value="#{concentration.unit}"
-                                            disabled="#{!materialBean.permission.isEditAllowed()}">
-                                            <f:selectItems
-                                                value="#{materialCompositionBean.availableAmountUnits}"
-                                                var="unit"
-                                                itemLabel="#{unit.unit}" />
-                                        </b:selectOneMenu>
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn label="#{msgs.materialCreation_composition_searchResultTable_Action}">
-                                        <b:commandButton 
-                                            look="link"
-                                            type="button"
-                                            icon="minus"
-                                            tooltip="#{msgs.materialCreation_composition_concentrationsRemoveMaterial}"
+                                    paginated="true"
+                                    searching="false"
+                                    -->
+
+                                    <p:column headerText="#{msgs.materialCreation_composition_concentrationsID}">
+                                        <h:outputText value="#{materialCompositionBean.getFormatedIdOfConcentration(concentration)}" />
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.materialCreation_composition_concentrationsName}">
+                                        <h:outputText value="#{concentration.getMaterialName()}" />
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.materialCreation_composition_concentrationsType}">
+                                        <h:outputText value="#{materialCompositionBean.getLocalizedMaterialType(concentration)}" />
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.materialCreation_composition_concentrationsValue}">
+                                        <p:inputText disabled="#{!materialBean.permission.isEditAllowed()}"
+                                                     value="#{concentration.concentration}" />
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.materialCreation_composition_concentrationsUnit}">
+                                        <p:selectOneMenu value="#{concentration.unit}"
+                                                         disabled="#{!materialBean.permission.isEditAllowed()}">
+                                            <f:selectItems value="#{materialCompositionBean.availableAmountUnits}"
+                                                           var="unit"
+                                                           itemLabel="#{unit.unit}" />
+                                        </p:selectOneMenu>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.materialCreation_composition_searchResultTable_Action}">
+                                        <p:commandButton 
+                                            id="btn22"
+                                            type="submit"
+                                            icon="pi pi-minus"
                                             disabled="#{!materialBean.permission.isEditAllowed()}"
                                             action="#{materialCompositionBean.actionRemoveConcentrationFromComposition(concentration)}"
                                             update="@(.resultTable)"
-                                            ajax="true"/>
-                                    </b:dataTableColumn>
-                                </b:dataTable>
-                            </p:column>
+                                            process="@this"
+                                            ajax="true" />
+                                            <!--look="link"-->
+                                        <p:tooltip id="uploaderCancelButtonToolTip"
+                                                   position="bottom"
+                                                   for="btn22"
+                                                   value="#{msgs.materialCreation_composition_concentrationsRemoveMaterial}"/>
+                                                         <!--tooltip="#{msgs.materialCreation_composition_concentrationsRemoveMaterial}"-->
+                                    </p:column>
+
+                                </p:dataTable>
+                                <!--
+                                </p:column>
+                                -->
+                            </p:panelGrid>
+
+                            <!--========================================================================================================================================-->                         
+
                         </p:row>
                     </p:panelGrid>
                 </p:outputPanel>
