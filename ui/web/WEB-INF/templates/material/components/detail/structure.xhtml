@@ -21,50 +21,44 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:container
+            <div
                 styleClass="div-container-hazard">
-                <b:row>
                     <ui:repeat
                         var ="hazardLocation"
                         value="#{materialOverviewBean.getImageLocationOfHazards(material)}">
 
-                        <b:image 
-                            styleClass="hazardImage"
-                            name="#{hazardLocation}"
-                            />  
+                    <p:graphicImage
+                        styleClass="hazardImage"
+                        name="#{hazardLocation}"
+                        />  
                     </ui:repeat>
-                    <b:image 
+                    <p:graphicImage 
                         styleClass="hazardImage"
                         rendered="#{materialOverviewBean.isRadioactive(material)}"
                         name="#{materialOverviewBean.radioactiveImageLocation}"
                         />  
-                </b:row>
-                <b:row>
+ 
                     <h:outputText
                         value="#{materialOverviewBean.getHazardRemark(material, 10)}"/>
-                </b:row>
-                <b:row>
+   
                     <h:outputText
                         value="#{materialOverviewBean.getHazardRemark(material, 11)}"/>
-                </b:row>
-                <b:row>
+      
                     <h:outputText
                         rendered="#{materialOverviewBean.hasHazard(material, 18)}"
                         value="#{msgs.materialOverview_hazard_warning}"/>
-                </b:row>
-                                <b:row>
+      
                     <h:outputText
                         rendered="#{materialOverviewBean.hasHazard(material, 19)}"
                         value="#{msgs.materialOverview_hazard_danger}"/>
-                </b:row>
-            </b:container>
+          
+            </div>
         </ui:composition>
     </h:body>
 

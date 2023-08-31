@@ -53,8 +53,10 @@ public class ContainerController {
         this.messagePresenter = messagePresenter;
 
         List<Container> availableContainers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
-        containerSelectionDialogController = new ContainerSelectionDialogController(availableContainers,
-                (c) -> this.actionChangeContainer(c), messagePresenter);
+        containerSelectionDialogController = new ContainerSelectionDialogController(
+                availableContainers,
+                (c) -> this.actionChangeContainer(c), 
+                messagePresenter);
 
         loadNamesForAutoComplete(availableContainers);
 

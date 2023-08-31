@@ -19,67 +19,81 @@
   
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-    <composite:interface>
-        <composite:attribute
+<composite:interface>
+    <composite:attribute
             name="controller"
             type="de.ipb_halle.lbac.items.bean.ContainerSelectionDialogController"
-            required="true" />
-        <composite:attribute
+            required="true"/>
+    <composite:attribute
             name="widgetVar"
-            required="true" />
-        <composite:attribute
+            required="true"/>
+    <composite:attribute
             name="updateTargetClass"
-            required="false" />
-    </composite:interface>
+            required="false"/>
+</composite:interface>
 
-    <!-- Note: p:remoteCommand is invoked by all non-PrimeFaces components that have AJAX-activity.
-               This is due a bug in p:wizard (see comment in consumePartOfItem.xhtml). -->
-    <composite:implementation>
-        <p:dialog
+<!-- Note: p:remoteCommand is invoked by all non-PrimeFaces components that have AJAX-activity.
+           This is due a bug in p:wizard (see comment in consumePartOfItem.xhtml). -->
+<composite:implementation>
+    <p:dialog
             id="containerModalDialogId"
             styleClass="containerModal"
             widgetVar="#{cc.attrs.widgetVar}"
             modal="true"
             closable="true"
             header="#{msgs.container_dialog_title}">
-            <!-- The selected row index is used in the action method, see
-                 https://github.com/primefaces/primefaces/blob/master/docs/11_0_0/components/remotecommand.md#passing-parameters -->
-            <p:remoteCommand
-                name="containerModal_actionOnSelect"
-                process="@this"
-                update="growlMsg @(.#{cc.attrs.updateTargetClass})"
-                action="#{cc.attrs.controller.actionOnSelect()}"
-                oncomplete="PF('#{cc.attrs.widgetVar}').hide();" />
-            <b:dataTable
+        <!-- The selected row index is used in the action method, see
+             https://github.com/primefaces/primefaces/blob/master/docs/11_0_0/components/remotecommand.md#passing-parameters -->
+
+        <p:dataTable
                 value="#{cc.attrs.controller.availableContainers}"
-                var="container"
-                select="true"
-                onselect="containerModal_actionOnSelect([{name:'selectedRow', value:indexes}]);"
-                saveState="false">
-                <b:dataTableColumn value="#{container.id}" />
-                <b:dataTableColumn
-                    value="#{container.label}"
-                    label="#{msgs.container_dialog_label}" />
-                <b:dataTableColumn label="#{msgs.container_dialog_location}">
-                    <h:outputText
-                        value="#{container.getLocation(true,true)}"
-                        escape="false">
-                        <f:converter converterId="RichTextConverter" />
-                    </h:outputText>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    value="#{container.type.getLocalizedName()}"
-                    label="#{msgs.container_dialog_type}" />
-                <b:dataTableColumn
-                    value="#{cc.attrs.controller.getDimensionString(container)}"
-                    label="#{msgs.container_dialog_size}" />
-            </b:dataTable>
-        </p:dialog>
-    </composite:implementation>
+                var="container">
+
+            <p:column>
+                <h:outputText value="#{container.id}"/>
+            </p:column>
+
+
+            <p:column headerText="#{msgs.container_dialog_label}">
+                <h:outputText value="#{container.label}"/>
+            </p:column>
+
+
+            <p:column headerText="#{msgs.container_dialog_location}">
+
+                <h:outputText value="#{container.getLocation(true,true)}"
+                              escape="false">
+                    <f:converter converterId="RichTextConverter"/>
+                </h:outputText>
+
+            </p:column>
+
+            <p:column headerText="#{msgs.container_dialog_type}">
+                <h:outputText value="#{container.type.getLocalizedName()}"/>
+            </p:column>
+
+
+            <p:column headerText="#{msgs.container_dialog_size}">
+                <h:outputText value="#{cc.attrs.controller.getDimensionString(container)}"/>
+            </p:column>
+            <p:column headerText="#{msgs.container_dialog_label}">
+                <p:commandButton
+                        action="#{cc.attrs.controller.actionOnSelect(container)}"
+                        process="@this"
+                        value="choose location"
+                        update="growlMsg @(.#{cc.attrs.updateTargetClass})"
+                        oncomplete="PF('#{cc.attrs.widgetVar}').hide();"
+                />
+
+            </p:column>
+
+
+        </p:dataTable>
+    </p:dialog>
+</composite:implementation>
 </html>

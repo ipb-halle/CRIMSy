@@ -99,6 +99,12 @@ textarea.materialFilterInputfield {
     width: 10%;
     height: 10%;
 }
+@media only screen and (max-width: 1020px) {
+ .hazardImage{
+    width: 20%;
+    height: 20%;
+}
+}
 
 .borderlessGridPanel tbody tr{
     border-width: 0px;

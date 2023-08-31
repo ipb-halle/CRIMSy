@@ -63,22 +63,8 @@ public class ContainerSelectionDialogController {
     /*
      * Actions
      */
-    public void actionOnSelect() {
-        String indexAsString = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-                .get("selectedRow");
-        int index = -1;
-
-        try {
-            index = Integer.parseInt(indexAsString);
-        } catch (NumberFormatException e) {
-            return;
-        }
-        if ((index < 0) || index >= availableContainers.size()) {
-            return;
-        }
-
-        Container selectedContainer = availableContainers.get(index);
-        onSelectCallback.accept(selectedContainer);
+    public void actionOnSelect(Container container) {
+        onSelectCallback.accept(container);
     }
 
     /*

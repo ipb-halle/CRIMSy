@@ -127,6 +127,10 @@ public class ContainerEditBean implements Serializable {
         return filteredContainerTypes;
     }
 
+    public List<ContainerType> getContainerTypes() {
+        return containerTypes;
+    }
+    
     public Integer getContainerWidth() {
         return containerWidth;
     }

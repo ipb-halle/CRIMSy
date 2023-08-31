@@ -22,18 +22,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces"
       xmlns:nwc="http://ipb-halle.de/nwc">
-    <h:body>
-        <ui:composition>
-            <b:row>
-                <mol:openVectorEditor 
-                    value="#{agent.material.sequenceData}"
-                    readonly="true">
-                    <nwc:jsonSanitizingAndOVEJsonConverter sequenceType="#{agent.material.sequenceData.sequenceType}" />
-                </mol:openVectorEditor>
-            </b:row>
-        </ui:composition>
-    </h:body>
+<h:body>
+    <ui:composition>
+        <mol:openVectorEditor
+                value="#{agent.material.sequenceData}"
+                readonly="true">
+            <nwc:jsonSanitizingAndOVEJsonConverter sequenceType="#{agent.material.sequenceData.sequenceType}"/>
+        </mol:openVectorEditor>
+    </ui:composition>
+</h:body>
 </html>

@@ -23,42 +23,41 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
-    <h:body>
-        <ui:composition>
-            <b:row>
-                <b:column
+<h:body>
+    <ui:composition>
+        <p:row>
+            <p:column
                     span="11"
                     styleClass="dlgMaterialViewStructure">
-                    <mol:molecule
+                <mol:molecule
                         id="dlgMaterialView_molViewer"
                         rendered="#{agent.hasStructure}"
                         value="#{agent.material.molecule.structureModel}"
-                        border="true" 
+                        border="true"
                         pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                         format="MDLV2000"
                         readonly="true"
-                        widgetVar="dlg_MaterialView_molViewer" />
-                </b:column>
-                <b:column
+                        widgetVar="dlg_MaterialView_molViewer"/>
+            </p:column>
+            <p:column
                     span="1"
                     styleClass="dlgMaterialViewHazards dlgMaterialViewBorderLess">
-                    <p:panelGrid>
-                        <ui:repeat
+                <p:panelGrid>
+                    <ui:repeat
                             var="hazard"
                             value="#{agent.getHazards()}">
-                            <p:row>
-                                <p:column>
-                                    <b:image
+                        <p:row>
+                            <p:column>
+                                <p:graphicImage
                                         name="#{agent.getImageIconOf(hazard)}"
-                                        styleClass="img-hazard" />
-                                </p:column>
-                            </p:row>
-                        </ui:repeat>
-                    </p:panelGrid>
-                </b:column>
-            </b:row>
-        </ui:composition>
-    </h:body>
+                                        styleClass="img-hazard"/>
+                            </p:column>
+                        </p:row>
+                    </ui:repeat>
+                </p:panelGrid>
+            </p:column>
+        </p:row>
+    </ui:composition>
+</h:body>
 </html>

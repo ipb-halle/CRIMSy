@@ -286,7 +286,7 @@ public class ItemBean implements Serializable {
     }
 
     public boolean isInDeactivatedMode() {
-        return mode == Mode.HISTORY||!userHasEditRight;
+        return mode == Mode.HISTORY || !userHasEditRight;
     }
 
     public boolean isCustomLabelDisabled() {
