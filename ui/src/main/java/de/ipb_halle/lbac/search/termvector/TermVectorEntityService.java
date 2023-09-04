@@ -24,7 +24,6 @@ import de.ipb_halle.lbac.file.TermVectorEntity;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.message.TermVectorMessage;
-import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.search.document.TermOcurrence;
 
 import java.io.Serializable;
@@ -54,8 +53,6 @@ public class TermVectorEntityService implements Serializable {
 
     private Logger logger;
 
-    @Inject
-    private CollectionService collectionService;
 
     @Inject
     private FileEntityService fileEntityService;
