@@ -49,7 +49,7 @@
                     <!--Button Backward-->
                     <!--=========================================================================================-->
                     <div class="col-12 md:col-3">
-                        
+
                         <p:commandButton icon="fa fa-backward"
                                          style="margin:0.5rem;"
                                          disabled="#{itemBean.state.startingHistoryItem}"
@@ -84,7 +84,7 @@
                     <!--Button Forward-->
                     <!--=========================================================================================-->
                     <div class="col-12 md:col-3">
-                        
+
                         <p:commandButton icon="fa fa-forward"
                                          disabled="#{itemBean.state.lastHistoryItem}"
                                          action="#{itemBean.actionApplyNextPositiveDifference()}">
@@ -99,26 +99,28 @@
                     <div class="col-12 md:col-3" style="margin:0.5rem;">
 
                         <p:commandButton immediate="true"
-                                         
+                                         styleClass="ui-button-secondary"
+                                         update="@all"
+                                         process="@this"
                                          value="#{msgs.Cancel}"
                                          action="#{itemBean.actionCancel()}"
                                          />
                     </div>
                     <!--=========================================================================================-->
 
-                    
+
                     <!--Button Save-->
                     <!--=========================================================================================-->
                     <div class="col-12 md:col-3" style="margin-right: 0.5rem;">
 
                         <p:commandButton 
-                                         styleClass="ui-button-danger"
-                                         value="#{msgs.itemEdit_itemEditPanel_save}"
-                                         disabled="#{itemBean.inDeactivatedMode}" 
-                                         process="@form" 
-                                         ajax="false" 
-                                         action="#{itemBean.actionSave()}"
-                                         />
+                            styleClass="ui-button-danger"
+                            value="#{msgs.itemEdit_itemEditPanel_save}"
+                            disabled="#{itemBean.inDeactivatedMode}" 
+                            process="@form" 
+                            ajax="false" 
+                            action="#{itemBean.actionSave()}"
+                            />
                     </div>
                     <!--=========================================================================================-->
 
