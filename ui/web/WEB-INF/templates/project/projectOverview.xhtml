@@ -21,8 +21,8 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
         <crimsy:acobjectModal
@@ -30,82 +30,118 @@
             groupsAgent="#{groupAgent}"
             updateTargetClass="readableProjectTable"/>
 
-        <b:form id="projectOverviewFormId">
-            <b:container>
-                <b:row>
-                    <b:column span="1">
-                        <b:commandButton
+        <h:form id="projectOverviewFormId" style="border:1px solid #029ACF;border-radius:3px;">
+            <p:outputPanel>
+                <p:row>
+                    <p:outputPanel >
+
+                        <!--New Project-->
+                        <!--***********************************************************************-->
+                        <p:commandButton
+                            style="margin:0.7rem; margin-bottom: 0.5rem;"
+                            styleClass="ui-button-danger"
                             id="newProjectButton"
                             value="#{msgs.project_overview_button_new}"
+                            ajax="false"
                             action="#{projectBean.actionStartNewProjectCreation()}"
                             />
-                    </b:column>
-                </b:row>
-                <b:row>
-                    <b:column span="12">
-                        <b:dataTable
+
+                    </p:outputPanel>
+                </p:row>
+
+                <!--Table-->
+                <!--***********************************************************************-->
+                <p:row>
+                    <p:outputPanel >
+
+                        <p:dataTable
                             styleClass="readableProjectTable"
-                            paginated="false"
                             id="projectTableId"
                             value="#{projectBean.getReadableProjects()}"
                             var="project"
-                            saveState="false">
-                            <b:dataTableColumn
-                                label="#{msgs.project_overview_header_name}"
-                                value="#{project.name}">
-                            </b:dataTableColumn>
-                            <b:dataTableColumn
-                                label="#{msgs.project_overview_header_type}"
-                                value="#{project.projectType}">
-                            </b:dataTableColumn>
-                            <b:dataTableColumn
-                                label="#{msgs.project_overview_header_owner}"
-                                value="#{project.getOwnerName()}">
-                            </b:dataTableColumn>
-                            <b:dataTableColumn
-                                label=""
-                                orderable="false">
-                                <b:commandButton style="padding: 0 4px;"
-                                                 icon="pencil"
-                                                 look="link"
-                                                 type="submit"
-                                                 ajax="false"
-                                                 tooltip="#{msgs.project_overview_edit}"
-                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
-                                                 action="#{projectBean.actionStartProjectEdit(project)}"
-                                                 />
-                                <b:commandButton style="padding: 0 4px;"
-                                                 icon="glyphicon glyphicon-user"
-                                                 look="link"
-                                                 ajax="true"
-                                                 process="@this"
-                                                 tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                                                 update="@(.acoEditModal)"
-                                                 type="button"
-                                                 onclick="ajax:projectBean.actionStartAclChange(project)"
-                                                 oncomplete="PF('dlgAcl').show();"
-                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"/>
+                            >
 
-                                <b:commandButton style="padding: 0 4px;"
-                                                 icon="trash"
-                                                 look="link"
-                                                 ajax="true"
-                                                 process="@this"
-                                                 update="@(.readableProjectTable)"
-                                                 type="button"
-                                                 action="#{projectBean.actionDeleteProject(project)}"
-                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
-                                                 tooltip="#{msgs.project_overview_deactivate}"
-                                                 />
-                            </b:dataTableColumn>
-                        </b:dataTable>
+                            <!--Project name-->
+                            <!--*****************************************************-->
+                            <p:column headerText="#{msgs.project_overview_header_name}">
+                                <h:outputText value="#{project.name}"/>
+                            </p:column>
 
-                    </b:column>
+                            <!--Project type-->
+                            <!--*****************************************************-->
+                            <p:column headerText="#{msgs.project_overview_header_type}">
+                                <h:outputText value="#{project.projectType}"/>
+                            </p:column>
 
-                </b:row>
+                            <!--Project owner-->
+                            <!--*****************************************************-->
+                            <p:column headerText="#{msgs.project_overview_header_owner}">
+                                <h:outputText value="#{project.getOwnerName()}"/>
+                            </p:column>
 
-            </b:container>
-        </b:form>
+                            <!--Buttons-->
+                            <!--*****************************************************-->
+                            <p:column headerText="">
+
+                                <!--Edit project-->
+                                <p:commandButton
+                                    id="btn2"
+                                    style="padding: 0 4px;"
+                                    icon="pi pi-pencil"
+                                    styleClass="ui-button-success"
+                                    type="submit"
+                                    ajax="false"
+                                    disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
+                                    action="#{projectBean.actionStartProjectEdit(project)}"
+                                    >
+
+                                    <p:tooltip value="#{msgs.project_overview_edit}" for="btn2" position="top"/>
+
+                                </p:commandButton>
+
+                                <!--Change group permissions-->
+                                <p:commandButton
+                                    id="btn3"
+                                    style="margin: 0 0.5rem;"
+                                    icon="pi pi-user"
+                                    ajax="true"
+                                    process="@this"
+                                    update="@(.acoEditModal)"
+                                    type="submit"
+                                    oncomplete="PF('dlgAcl').show();"
+                                    disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
+                                    action="#{projectBean.actionStartAclChange(project)}"
+                                    >
+                                    <!--onclick="ajax:projectBean.actionStartAclChange(project)"-->
+
+                                    <p:tooltip value="#{msgs.collMgr_tooltip_changeUserPermission}" for="btn3" position="top"/>
+
+                                </p:commandButton>
+
+                                <!--deactivate project-->
+                                <p:commandButton
+                                    id="btn4"
+                                    style="padding: 0 4px;"
+                                    icon="pi pi-trash"
+                                    ajax="true"
+                                    styleClass="ui-button-danger"
+                                    process="@this"
+                                    type="submit"
+                                    update="@all"
+                                    action="#{projectBean.actionDeleteProject(project)}"
+                                    disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
+                                    >
+                                    <!--update="@(.readableProjectTable)"-->
+
+                                    <p:tooltip value="#{msgs.project_overview_deactivate}" for="btn4" position="top"/>
+
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:row>
+            </p:outputPanel>
+        </h:form>
     </h:body>
 
 </html>

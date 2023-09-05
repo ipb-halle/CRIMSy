@@ -21,16 +21,16 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
-        <b:form 
+        <h:form
             styleClass="defaultFormat"
-            id="frmProject">
-            <ui:insert> 
+            id="frmProject"
+            style="border:1px solid #029ACF;border-radius:3px; padding:0.5rem;">
+            <ui:insert>
                 <ui:include src="/WEB-INF/templates/project/components/commonProjectInformationContainer.xhtml"/>
             </ui:insert>
 
@@ -42,7 +42,7 @@
                     </ui:include>
                 </p:tab>
             </p:tabView>
-        </b:form>
+        </h:form>
     </h:body>
 
 </html>
