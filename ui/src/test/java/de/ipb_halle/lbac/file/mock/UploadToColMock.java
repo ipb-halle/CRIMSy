@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.UploadToCol;
-import de.ipb_halle.lbac.file.save.AttachmentHolder;
+import de.ipb_halle.tx.file.AttachmentHolder;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.InputStream;
 import javax.servlet.AsyncContext;

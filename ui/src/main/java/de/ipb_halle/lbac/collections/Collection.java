@@ -24,12 +24,12 @@ package de.ipb_halle.lbac.collections;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
 import java.io.Serializable;
 import java.nio.file.Paths;
-import de.ipb_halle.lbac.file.save.AttachmentHolder;
+import de.ipb_halle.tx.file.AttachmentHolder;
 
 public class Collection extends ACObject implements Serializable, Obfuscatable, DTO, AttachmentHolder {
 

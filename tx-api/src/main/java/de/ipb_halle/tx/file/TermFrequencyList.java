@@ -15,12 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file;
+package de.ipb_halle.tx.file;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Represents a list of termvectors and its frequency with the representations
@@ -31,7 +30,6 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 public class TermFrequencyList {
 
     private List<TermFrequency> termFreq = new ArrayList<>();
-    private Logger logger = LogManager.getLogger(TermFrequencyList.class);
     private List<StemmedWordOrigin> unstemmedWords = new ArrayList<>();
 
     /**

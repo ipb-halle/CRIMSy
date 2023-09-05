@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;

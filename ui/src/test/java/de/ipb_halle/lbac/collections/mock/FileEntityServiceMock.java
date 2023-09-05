@@ -18,9 +18,9 @@
 package de.ipb_halle.lbac.collections.mock;
 
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.tx.file.FileObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

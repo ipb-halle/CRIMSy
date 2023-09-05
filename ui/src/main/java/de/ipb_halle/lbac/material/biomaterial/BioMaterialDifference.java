@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.history.HistoryController;
 import de.ipb_halle.lbac.material.common.history.HistoryEntityId;

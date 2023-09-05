@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
-import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.crimsy_api.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 
 /**

@@ -15,40 +15,26 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file;
+package de.ipb_halle.crimsy_api;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Stores a stemmed word with its frequency in a corpus.
+ * Annotation for searchable fields 
  *
- * @author fmauz
+ * @author fbroda
  */
-public class TermFrequency {
+@Documented
+@Inherited
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AttributeTag {
 
-    private String term;
-    private Integer frequency;
-
-    public TermFrequency() {
-    }
-
-    public TermFrequency(String term, Integer frequency) {
-        this.term = term;
-        this.frequency = frequency;
-    }
-
-    public String getTerm() {
-        return term;
-    }
-
-    public void setTerm(String term) {
-        this.term = term;
-    }
-
-    public Integer getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(Integer frequency) {
-        this.frequency = frequency;
-    }
+    AttributeType type(); 
 
 }

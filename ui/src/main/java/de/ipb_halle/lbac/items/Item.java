@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.device.print.LabelData;
 import de.ipb_halle.lbac.device.print.LabelType;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.Material;

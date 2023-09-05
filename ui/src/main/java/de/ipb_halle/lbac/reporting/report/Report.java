@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.reporting.report;
 
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 
 /**
  * Report DTO

@@ -24,9 +24,9 @@ import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.tx.file.FileObject;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.File;
 import java.io.FileInputStream;
@@ -100,10 +100,10 @@ public class FileSaverTest extends TestBase {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("id", id);
         FileObject fo = fileEntityService.load(cmap).get(0);
-        Assert.assertEquals(col.getId(), fo.getCollection().getId());
+        Assert.assertEquals(col.getId(), fo.getCollectionId());
         Assert.assertEquals("en", fo.getDocument_language());
         Assert.assertEquals("Document1.pdf", fo.getName());
-        Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
+        Assert.assertEquals(publicUser.getId(), fo.getUserId());
         
         f = new File(exampleDocsRootFolder + "DocumentX.docx");
         stream = new FileInputStream(f);
@@ -111,10 +111,10 @@ public class FileSaverTest extends TestBase {
         Assert.assertEquals(2, fileEntityService.getDocumentCount(col));
         cmap.put("id", id);
         fo = fileEntityService.load(cmap).get(0);
-        Assert.assertEquals(col.getId(), fo.getCollection().getId());
+        Assert.assertEquals(col.getId(), fo.getCollectionId());
         Assert.assertEquals("en", fo.getDocument_language());
         Assert.assertEquals("DocumentX.docx", fo.getName());
-        Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
+        Assert.assertEquals(publicUser.getId(), fo.getUserId());
         
         f = new File(exampleDocsRootFolder + "TestTabelle.xlsx");
         stream = new FileInputStream(f);
@@ -122,10 +122,10 @@ public class FileSaverTest extends TestBase {
         Assert.assertEquals(3, fileEntityService.getDocumentCount(col));
         cmap.put("id", id);
         fo = fileEntityService.load(cmap).get(0);
-        Assert.assertEquals(col.getId(), fo.getCollection().getId());
+        Assert.assertEquals(col.getId(), fo.getCollectionId());
         Assert.assertEquals("en", fo.getDocument_language());
         Assert.assertEquals("TestTabelle.xlsx", fo.getName());
-        Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
+        Assert.assertEquals(publicUser.getId(), fo.getUserId());
         
         f = new File(exampleDocsRootFolder + "TestTabelle.xlsx");
         stream = new FileInputStream(f);
@@ -134,11 +134,11 @@ public class FileSaverTest extends TestBase {
         Assert.assertEquals(4, fileEntityService.getDocumentCount(col));
         cmap.put("id", id);
         fo = fileEntityService.load(cmap).get(0);
-        Assert.assertEquals(col.getId(), fo.getCollection().getId());
+        Assert.assertEquals(col.getId(), fo.getCollectionId());
         Assert.assertEquals("de", fo.getDocument_language());
         Assert.assertEquals("a9eed28584c7e6df1d061c77884820524a7d2b4c6644ef5d13b0c2daedaf4d10d040b7c7380df448f91a28eb7fba94cf0b4a964ae141032c63a0b571aeaa5ccf", fo.getHash());
         Assert.assertEquals("TestTabelle.xlsx", fo.getName());
-        Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
+        Assert.assertEquals(publicUser.getId(), fo.getUserId());
         // Assert.assertEquals(fileSaver.getFileLocation(), Paths.get(col.getBaseFolder(), "0", "0", fo.getFilename()).toString());
 
     }

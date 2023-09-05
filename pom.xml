@@ -30,9 +30,11 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>crimsy-api</module>
         <module>agency-api</module>
         <module>agency</module>
         <module>snowball</module>
+        <module>tx-api</module>
         <module>tx</module>
         <module>ui</module>
     </modules>

@@ -49,13 +49,13 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import de.ipb_halle.tx.file.FileObject;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
@@ -180,12 +180,12 @@ public class DocumentWebServiceTest extends TestBase {
 
     private FileObject createFileObject(String location, Collection collection) {
         FileObject fO = new FileObject();
-        fO.setCollection(collection);
+        fO.setCollectionId(collection.getId());
         fO.setCreated(new Date());
         fO.setDocument_language("en");
         fO.setFileLocation(location);
         fO.setName(location);
-        fO.setUser(adminUser);
+        fO.setUserId(adminUser.getId());
         return fO;
     }
 

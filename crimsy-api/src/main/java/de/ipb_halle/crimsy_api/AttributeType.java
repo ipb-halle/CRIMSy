@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search.lang;
+package de.ipb_halle.crimsy_api;
 
 /**
  * Attribute types for selection of search fields

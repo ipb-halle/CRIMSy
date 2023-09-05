@@ -15,26 +15,23 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search.lang;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package de.ipb_halle.tx.file;
 
 /**
- * Annotation for searchable fields 
  *
- * @author fbroda
+ * @author fmauz
  */
-@Documented
-@Inherited
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface AttributeTag {
+public class UnsupportedLanguageException extends Exception {
 
-    AttributeType type(); 
+    private String language;
+
+    public UnsupportedLanguageException(String message, String language, Exception e) {
+        super(message, e);
+        this.language = language;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
 
 }

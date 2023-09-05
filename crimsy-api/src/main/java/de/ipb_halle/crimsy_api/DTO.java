@@ -15,14 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file.save;
+package de.ipb_halle.crimsy_api;
 
-/**
- *
- * @author fmauz
- */
-public interface AttachmentHolder {
+public interface DTO<T> {
 
-    public String getBaseFolder();
-    public Integer getId();
+    public T createEntity();
+
 }

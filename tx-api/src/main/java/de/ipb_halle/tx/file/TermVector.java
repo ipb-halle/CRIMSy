@@ -15,9 +15,9 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file;
+package de.ipb_halle.tx.file;
 
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import java.io.Serializable;
 import java.util.Objects;
 

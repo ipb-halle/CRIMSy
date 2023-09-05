@@ -15,23 +15,40 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file;
+package de.ipb_halle.tx.file;
 
 /**
+ * Stores a stemmed word with its frequency in a corpus.
  *
  * @author fmauz
  */
-public class UnsupportedLanguageException extends Exception {
+public class TermFrequency {
 
-    private String language;
+    private String term;
+    private Integer frequency;
 
-    public UnsupportedLanguageException(String message, String language, Exception e) {
-        super(message, e);
-        this.language = language;
+    public TermFrequency() {
     }
 
-    public String getLanguage() {
-        return language;
+    public TermFrequency(String term, Integer frequency) {
+        this.term = term;
+        this.frequency = frequency;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public Integer getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(Integer frequency) {
+        this.frequency = frequency;
     }
 
 }

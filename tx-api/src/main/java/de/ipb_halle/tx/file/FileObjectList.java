@@ -15,10 +15,28 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.tx.file;
 
-public interface DTO<T> {
+import java.io.Serializable;
+import java.util.List;
 
-    public T createEntity();
+/**
+ * Collects File Entities into a list. Needed for transportation via the REST
+ * API.
+ *
+ * @author fbroda
+ */
+public class FileObjectList implements Serializable {
 
+    private final static long serialVersionUID = 1L;
+
+    List<FileObject> fileObjects;
+
+    public List<FileObject> getFileObjects() {
+        return fileObjects;
+    }
+
+    public void setFileObjects(List<FileObject> list) {
+        this.fileObjects = list;
+    }
 }

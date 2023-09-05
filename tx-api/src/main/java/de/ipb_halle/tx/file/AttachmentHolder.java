@@ -15,28 +15,14 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file;
-
-import java.io.Serializable;
-import java.util.List;
+package de.ipb_halle.tx.file;
 
 /**
- * Collects File Entities into a list. Needed for transportation via the REST
- * API.
  *
- * @author fbroda
+ * @author fmauz
  */
-public class FileEntityList implements Serializable {
+public interface AttachmentHolder {
 
-    private final static long serialVersionUID = 1L;
-
-    List<FileObject> fileEntities;
-
-    public List<FileObject> getFileEntities() {
-        return fileEntities;
-    }
-
-    public void setFileEntities(List<FileObject> fileEntities) {
-        this.fileEntities = fileEntities;
-    }
+    public String getBaseFolder();
+    public Integer getId();
 }

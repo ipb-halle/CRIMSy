@@ -18,11 +18,11 @@
 package de.ipb_halle.lbac.search.termvector;
 
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.FileObject;
-import de.ipb_halle.lbac.file.TermVector;
-import de.ipb_halle.lbac.file.TermVectorEntity;
+import de.ipb_halle.tx.file.FileObject;
+import de.ipb_halle.tx.file.TermVector;
+import de.ipb_halle.tx.file.TermVectorEntity;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.StemmedWordOrigin;
+import de.ipb_halle.tx.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.message.TermVectorMessage;
 import de.ipb_halle.lbac.search.document.TermOcurrence;
 

@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
 import de.ipb_halle.lbac.search.SearchTarget;

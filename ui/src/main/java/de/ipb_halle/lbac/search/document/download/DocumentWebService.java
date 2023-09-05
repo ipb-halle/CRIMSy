@@ -37,9 +37,10 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
+import de.ipb_halle.tx.file.FileObject;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 
@@ -57,6 +58,9 @@ public class DocumentWebService extends LbacWebService {
 
     @Inject
     private FileEntityService fileEntityService;
+    
+    @Inject
+    private CollectionService collectionService;
 
     @Inject
     private ACListService acListService;
@@ -86,7 +90,7 @@ public class DocumentWebService extends LbacWebService {
             return FILE_NOT_FOUND;
         }
 
-        Collection collection = (Collection) fileObject.getCollection();
+        Collection collection = collectionService.loadById(fileObject.getCollectionId());
         User localUser = memberService.mapRemoteUserToLocalUser(request.getUser(), node);
         if (!acListService.isPermitted(ACPermission.permREAD, collection, localUser)) {
             return FORBIDDEN;

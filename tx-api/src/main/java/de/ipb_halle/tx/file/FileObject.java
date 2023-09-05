@@ -15,15 +15,12 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file;
+package de.ipb_halle.tx.file;
 
-import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
-import de.ipb_halle.lbac.file.save.AttachmentHolder;
 
 public class FileObject implements Serializable, DTO {
 
@@ -33,8 +30,8 @@ public class FileObject implements Serializable, DTO {
     private String fileLocation;
     private String hash;
     private Date created;
-    private User user;
-    private AttachmentHolder collection;
+    private Integer userId;
+    private Integer collectionId;
     private String document_language;
 
     /**
@@ -49,30 +46,28 @@ public class FileObject implements Serializable, DTO {
      * Constructor
      *
      * @param entity
-     * @param col
-     * @param u
      */
-    public FileObject(FileObjectEntity entity, Collection col, User u) {
+    public FileObject(FileObjectEntity entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.fileLocation = entity.getFilename();
         this.hash = entity.getHash();
         this.created = entity.getCreated();
         this.document_language = entity.getDocument_language();
-        this.collection = col;
-        this.user = u;
+        this.collectionId = entity.getCollectionId();
+        this.userId = entity.getUserId();
     }
 
     @Override
     public FileObjectEntity createEntity() {
         return new FileObjectEntity()
-                .setCollection(collection.getId())
+                .setCollectionId(collectionId)
                 .setCreatedFromDate(created)
                 .setDocument_language(document_language)
                 .setFilename(fileLocation)
                 .setHash(hash)
                 .setName(name)
-                .setUser(user.getId())
+                .setUserId(userId)
                 .setId(id);
     }
 
@@ -123,22 +118,22 @@ public class FileObject implements Serializable, DTO {
         this.created = created;
     }
 
-    public User getUser() {
-        return user;
+    public Integer getCollectionId() {
+        return collectionId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCollectionId(Integer colId) {
+        this.collectionId = colId;
     }
 
-    public AttachmentHolder getCollection() {
-        return collection;
+    public Integer getUserId() {
+        return userId;
     }
-
-    public void setCollection(AttachmentHolder collection) {
-        this.collection = collection;
+    
+    public void setUserId(Integer uid) {
+        this.userId = uid;
     }
-
+    
     public String getDocument_language() {
         return document_language;
     }

@@ -19,8 +19,9 @@ package de.ipb_halle.lbac.file.save;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
+import de.ipb_halle.tx.file.FileObject;
 import de.ipb_halle.lbac.util.HexUtil;
+import de.ipb_halle.tx.file.AttachmentHolder;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,9 +72,9 @@ public class FileSaver {
         fileObject.setFileLocation("to be set");
         fileObject.setName(fileName);
         fileObject.setCreated(new Date());
-        fileObject.setUser(user);
+        fileObject.setUserId(user.getId());
         fileObject.setHash(hash);
-        fileObject.setCollection(objectOfAttachedFile);
+        fileObject.setCollectionId(objectOfAttachedFile.getId());
         fileObject = fileEntityService.save(fileObject);
         return fileObject.getId();
     }

@@ -80,7 +80,6 @@
         <class>de.ipb_halle.lbac.entity.CloudEntity</class>
         <class>de.ipb_halle.lbac.entity.CloudNodeEntity</class>
         <class>de.ipb_halle.lbac.collections.CollectionEntity</class>
-        <class>de.ipb_halle.lbac.file.FileObjectEntity</class>
         <class>de.ipb_halle.lbac.admission.GroupEntity</class>
         <class>de.ipb_halle.lbac.entity.InfoObjectEntity</class>
         <class>de.ipb_halle.lbac.admission.MemberEntity</class>
@@ -88,12 +87,13 @@
         <class>de.ipb_halle.lbac.admission.NestingPathEntity</class>
         <class>de.ipb_halle.lbac.admission.NestingPathSetEntity</class>
         <class>de.ipb_halle.lbac.entity.NodeEntity</class>
-        <class>de.ipb_halle.lbac.file.TermVectorEntity</class>
         <class>de.ipb_halle.lbac.admission.UserEntity</class>
         <class>de.ipb_halle.lbac.forum.TopicEntity</class>
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
         <class>de.ipb_halle.lbac.util.pref.PreferenceEntity</class>
         <class>de.ipb_halle.lbac.reporting.report.ReportEntity</class>
+        <class>de.ipb_halle.tx.file.FileObjectEntity</class>
+        <class>de.ipb_halle.tx.file.TermVectorEntity</class>
 
         <!-- test only -->
         <class>de.ipb_halle.lbac.search.lang.HorrorEntity</class>

@@ -48,7 +48,6 @@ import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.NetObjectImpl;
 import de.ipb_halle.lbac.search.bean.NetObjectFactory;
@@ -58,6 +57,7 @@ import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
+import de.ipb_halle.tx.file.FileObject;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
@@ -231,12 +231,12 @@ public class DocumentDownloadBeanTest extends TestBase {
 
     private FileObject createFileObject(String location) {
         FileObject fO = new FileObject();
-        fO.setCollection(readableCollection);
+        fO.setCollectionId(readableCollection.getId());
         fO.setCreated(new Date());
         fO.setDocument_language("en");
         fO.setFileLocation(location);
         fO.setName(location);
-        fO.setUser(publicUser);
+        fO.setUserId(publicUser.getId());
         return fO;
     }
 

@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.file.save;
 
-import de.ipb_halle.lbac.file.StemmedWordOrigin;
-import de.ipb_halle.lbac.file.TermVector;
+import de.ipb_halle.tx.file.StemmedWordOrigin;
+import de.ipb_halle.tx.file.TermVector;
 import de.ipb_halle.tx.text.LanguageDetectorFilter;
 import de.ipb_halle.tx.text.ParseTool;
 import de.ipb_halle.tx.text.TermVectorFilter;

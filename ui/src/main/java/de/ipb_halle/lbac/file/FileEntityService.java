@@ -20,6 +20,9 @@ package de.ipb_halle.lbac.file;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.tx.file.FileObject;
+import de.ipb_halle.tx.file.FileObjectEntity;
+import de.ipb_halle.tx.file.TermVector;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -109,13 +112,13 @@ public class FileEntityService implements Serializable {
         CriteriaQuery<FileObjectEntity> criteriaQuery = builder.createQuery(FileObjectEntity.class);
         Root<FileObjectEntity> fileRoot = criteriaQuery.from(FileObjectEntity.class);
         criteriaQuery.select(fileRoot);
-        criteriaQuery.where(builder.equal(fileRoot.get("collection"), collection.getId()));
+        criteriaQuery.where(builder.equal(fileRoot.get("collectionId"), collection.getId()));
 
         List<FileObjectEntity> entities = this.em.createQuery(criteriaQuery).getResultList();
         List<FileObject> results = new ArrayList<>();
 
         for (FileObjectEntity entity : entities) {
-            results.add(new FileObject(entity, collection, memberService.loadUserById(entity.getUser())));
+            results.add(new FileObject(entity));
         }
         return results;
     }
@@ -147,10 +150,7 @@ public class FileEntityService implements Serializable {
     public FileObject getFileEntity(Integer id) {
         FileObjectEntity entity = this.em.find(FileObjectEntity.class, id);
         if (entity != null) {
-            return new FileObject(
-                    entity,
-                    collectionService.loadById(entity.getCollection()),
-                    memberService.loadUserById(entity.getUser()));
+            return new FileObject(entity);
         }
         return null;
     }
@@ -204,16 +204,12 @@ public class FileEntityService implements Serializable {
             predicates.add(builder.equal(fileObjectRoot.get("hash"), cmap.get("hash")));
         }
         if (cmap.get("collection_id") != null) {
-            predicates.add(builder.equal(fileObjectRoot.get("collection"), cmap.get("collection_id")));
+            predicates.add(builder.equal(fileObjectRoot.get("collectionId"), cmap.get("collection_id")));
         }
         criteriaQuery.where(builder.and(predicates.toArray(new Predicate[]{})));
         List<FileObject> results = new ArrayList<>();
         for (FileObjectEntity entity : this.em.createQuery(criteriaQuery).getResultList()) {
-            results.add(
-                    new FileObject(
-                            entity,
-                            collectionService.loadById(entity.getCollection()),
-                            memberService.loadUserById(entity.getUser())));
+            results.add(new FileObject(entity));
         }
         return results;
     }

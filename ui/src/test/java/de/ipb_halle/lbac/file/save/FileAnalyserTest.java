@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.file.save;
 
 import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
-import de.ipb_halle.lbac.file.StemmedWordOrigin;
-import de.ipb_halle.lbac.file.TermVector;
+import de.ipb_halle.tx.file.StemmedWordOrigin;
+import de.ipb_halle.tx.file.TermVector;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;

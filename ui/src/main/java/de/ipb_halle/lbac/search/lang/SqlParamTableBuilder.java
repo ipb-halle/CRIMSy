@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import de.ipb_halle.crimsy_api.AttributeType;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;

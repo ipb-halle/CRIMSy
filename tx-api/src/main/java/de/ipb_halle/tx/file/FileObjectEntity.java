@@ -15,12 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file;
+package de.ipb_halle.tx.file;
 
-import de.ipb_halle.lbac.search.lang.AttributeTag;
-import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.crimsy_api.AttributeTag;
+import de.ipb_halle.crimsy_api.AttributeType;
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -37,26 +36,23 @@ public class FileObjectEntity implements Serializable {
     private Integer id;
 
     @Column
-    @Size(min = 1, max = 255)
     private String name;
 
     @Column
-    @Size(min = 1, max = 255)
     private String filename;
 
     @Column
-    @Size(min = 1, max = 255)
     private String hash;
 
     @Column
     private Timestamp created;
 
     @Column(name = "user_id")
-    private Integer user;
+    private Integer userId;
 
     @AttributeTag(type = AttributeType.COLLECTION)
     @Column(name = "collection_id")
-    private Integer collection;
+    private Integer collectionId;
 
     @Column
     private String document_language;
@@ -90,20 +86,20 @@ public class FileObjectEntity implements Serializable {
         return created;
     }
 
-    public Integer getUser() {
-        return user;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public Integer getCollection() {
-        return collection;
+    public Integer getCollectionId() {
+        return collectionId;
     }
 
     public String getDocument_language() {
         return document_language;
     }
 
-    public FileObjectEntity setCollection(Integer collection) {
-        this.collection = collection;
+    public FileObjectEntity setCollectionId(Integer colId) {
+        this.collectionId = colId;
         return this;
     }
 
@@ -142,8 +138,8 @@ public class FileObjectEntity implements Serializable {
         return this;
     }
 
-    public FileObjectEntity setUser(Integer user) {
-        this.user = user;
+    public FileObjectEntity setUserId(Integer uid) {
+        this.userId = uid;
         return this;
     }
 

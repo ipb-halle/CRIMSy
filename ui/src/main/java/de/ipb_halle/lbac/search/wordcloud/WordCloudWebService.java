@@ -19,13 +19,13 @@ package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.search.document.Document;
-import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchState;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
+import de.ipb_halle.tx.file.TermFrequencyList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.crimsy_api.DTO;
 import java.io.Serializable;
 
 import javax.xml.bind.annotation.*;

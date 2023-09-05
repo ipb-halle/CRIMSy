@@ -21,11 +21,11 @@ import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.TermFrequency;
+import de.ipb_halle.tx.file.TermFrequency;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
-import de.ipb_halle.lbac.file.FileObjectEntity;
+import de.ipb_halle.tx.file.FileObject;
+import de.ipb_halle.tx.file.FileObjectEntity;
 import de.ipb_halle.lbac.file.FileSearchRequest;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
@@ -195,10 +195,7 @@ public class DocumentSearchService {
         List<FileObjectEntity> entities = q.getResultList();
         for (FileObjectEntity entity : entities) {
             foundDocs.add(convertFileObjectToDocument(
-                    new FileObject(
-                            entity,
-                            collectionService.loadById(entity.getCollection()),
-                            memberService.loadUserById(entity.getUser()))));
+                    new FileObject(entity)));
 
         }
         result.addResults(foundDocs);
@@ -313,10 +310,7 @@ public class DocumentSearchService {
             if (count < limit) {
                 documents.add(
                         convertFileObjectToDocument(
-                                new FileObject(
-                                        foe,
-                                        collectionService.loadById(foe.getCollection()),
-                                        memberService.loadUserById(foe.getUser())))
+                                new FileObject(foe))
                 );
             }
         }
@@ -326,11 +320,11 @@ public class DocumentSearchService {
     private Document convertFileObjectToDocument(FileObject fo) {
         Document d = new Document();
         d.setId(fo.getId());
-        d.setCollectionId(fo.getCollection().getId());
+        d.setCollectionId(fo.getCollectionId());
         d.setNodeId(nodeService.getLocalNodeId());
         d.setNode(nodeService.getLocalNode());
         d.setLanguage(fo.getDocument_language());
-        d.setCollection((Collection) fo.getCollection());
+        d.setCollection(collectionService.loadById(fo.getCollectionId()));
         d.setPath(fo.getFileLocation());
         d.setContentType(fo.getName().split("\\.")[fo.getName().split("\\.").length - 1]);
         d.setOriginalName(fo.getName());

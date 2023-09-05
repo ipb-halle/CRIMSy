@@ -30,8 +30,10 @@ import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import de.ipb_halle.lbac.file.save.AttachmentHolder;
+import de.ipb_halle.tx.file.AttachmentHolder;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.tx.file.StemmedWordOrigin;
+import de.ipb_halle.tx.file.TermVector;
 import java.io.InputStream;
 import java.io.PrintWriter;
 

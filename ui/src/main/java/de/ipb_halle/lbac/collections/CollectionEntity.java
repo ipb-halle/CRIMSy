@@ -22,8 +22,8 @@ package de.ipb_halle.lbac.collections;
  * collection managment
  */
 import de.ipb_halle.lbac.admission.ACObjectEntity;
-import de.ipb_halle.lbac.search.lang.AttributeTag;
-import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.crimsy_api.AttributeTag;
+import de.ipb_halle.crimsy_api.AttributeType;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import javax.persistence.Column;

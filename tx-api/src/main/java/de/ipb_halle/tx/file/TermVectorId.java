@@ -15,10 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file;
+package de.ipb_halle.tx.file;
 
-import de.ipb_halle.lbac.search.lang.AttributeTag;
-import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.crimsy_api.AttributeTag;
+import de.ipb_halle.crimsy_api.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Embeddable;
 

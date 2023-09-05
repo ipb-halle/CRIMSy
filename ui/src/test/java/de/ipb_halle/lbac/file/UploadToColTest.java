@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.HttpServletResponseMock.WriterMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import de.ipb_halle.tx.file.FileObject;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;

@@ -36,13 +36,13 @@ import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
+import de.ipb_halle.tx.file.FileObject;
 
 /**
  *

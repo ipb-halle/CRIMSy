@@ -26,7 +26,9 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.tx.file.FileObject;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import de.ipb_halle.tx.file.TermVector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -95,13 +97,13 @@ public class FileEntityServiceTest extends TestBase {
         col=collectionService.save(col);
 
         FileObject fE = new FileObject();
-        fE.setCollection(col);
+        fE.setCollectionId(col.getId());
         fE.setCreated(new Date());
         fE.setDocument_language("en");
         fE.setFileLocation("testFile.pdf");
         fE.setHash("testHash");
         fE.setName("testFile");
-        fE.setUser(u);
+        fE.setUserId(u.getId());
 
         fE=fileEntityService.save(fE);
 

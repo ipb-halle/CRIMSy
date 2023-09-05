@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.file.mock;
 
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.tx.file.FileObject;
 
 /**
  *

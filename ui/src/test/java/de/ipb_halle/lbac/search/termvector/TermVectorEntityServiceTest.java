@@ -22,14 +22,14 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.FileObject;
-import de.ipb_halle.lbac.file.TermVector;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import de.ipb_halle.tx.file.FileObject;
+import de.ipb_halle.tx.file.TermVector;
+import de.ipb_halle.tx.file.StemmedWordOrigin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -193,13 +193,13 @@ public class TermVectorEntityServiceTest extends TestBase {
 
     private FileObject createFileObject(Collection col, String language, String fileName, User owner) {
         FileObject fO = new FileObject();
-        fO.setCollection(col);
+        fO.setCollectionId(col.getId());
         fO.setCreated(new Date());
         fO.setDocument_language(language);
         fO.setFileLocation(fileName);
         fO.setHash(fileName);
         fO.setName(fileName);
-        fO.setUser(owner);
+        fO.setUserId(owner.getId());
         return fO;
     }
 }

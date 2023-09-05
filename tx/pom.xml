@@ -22,7 +22,7 @@
  http://maven.apache.org/xsd/maven-4.0.0.xsd">
  <modelVersion>4.0.0</modelVersion>
  
- <groupId>de.ipb_halle</groupId>
+ <groupId>de.ipb-halle</groupId>
  <artifactId>tx</artifactId>
  <version>1.0.1</version>
  <packaging>jar</packaging>
@@ -95,6 +95,13 @@
 
 
   <dependencies>
+
+  <!-- TX api -->
+  <dependency>
+    <groupId>de.ipb-halle</groupId>
+    <artifactId>tx-api</artifactId>
+    <version>1.0.1</version>
+  </dependency>
 
   <!-- commons-cli -->
   <dependency>

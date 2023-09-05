@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.device.job;
 
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.admission.User;
 
 import java.util.Date;
