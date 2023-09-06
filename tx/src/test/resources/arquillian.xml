@@ -32,6 +32,12 @@
                 apiDS.Password = lbac
                 apiDS.JtaManaged = true
                 apiDS.LogSql = true
+                #
+                #
+                tomcat.util.scan.StandardJarScanFilter.jarsToSkip=*.jar
+                tomcat.util.scan.StandardJarScanFilter.jarsToScan=\
+                    postgresql*.jar,\
+                    log4j*.jar,slf4j*.jar,hibernate*.jar
             </property>
             <property name="debug">true</property>
 

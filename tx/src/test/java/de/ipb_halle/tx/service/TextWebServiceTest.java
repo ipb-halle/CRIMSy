@@ -29,6 +29,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -48,6 +49,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(ArquillianExtension.class)
 public class TextWebServiceTest {
    
+    @ArquillianResource
+    URL baseURL;
 
 //  @Inject
 //  private TextWebService textWebService;
@@ -61,8 +64,6 @@ public class TextWebServiceTest {
                 .addClass(TextWebService.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-//              .addAsResource("javax.enterprise.inject.spi.Extension",
-//                  "META-INF/services/javax.enterprise.inject.spi.Extension");
         return archive;
     }
     
@@ -75,7 +76,8 @@ public class TextWebServiceTest {
     @RunAsClient
     public void test001_TextWebService() throws IOException {
         // port number must match the arquillian setting
-        HttpUriRequest request = new HttpGet("http://localhost:8800/tx/process/");
+        HttpUriRequest request = new HttpGet(
+                new URL(baseURL, "process/1").toExternalForm());
         HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
         assertEquals(HttpStatus.OK_200, response.getStatusLine().getStatusCode());
