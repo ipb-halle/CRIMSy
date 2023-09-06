@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -28,40 +27,42 @@
       xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
         <ui:composition>
-            <b:form>
-                <b:panel>
-                    <b:container>
-                        <b:row styleClass="itemEditMaterialName">
-                            <b:column span="6">
+            <h:form>
+                <p:panel>
+                    <p:outputPanel>
+                        <p:row styleClass="itemEditMaterialName">
+                            <p:outputPanel >
                                 <h:outputFormat value="#{msgs.itemCreateAliquot_materialNameFormat_withoutMolarMass}">
                                     <f:param value="#{createAliquotBean.parentItem.material.firstName}" />
                                 </h:outputFormat>
-                            </b:column>
-                            <b:column span="3">
+                            </p:outputPanel>
+                            <p:outputPanel >
                                 <h:outputFormat
                                     value="#{msgs.itemCreateAliquot_itemLabelFormat}">
                                     <f:param value="#{createAliquotBean.parentItem.label}" />
                                 </h:outputFormat>
-                            </b:column>
-                            <b:column span="2">
+                            </p:outputPanel>
+                            <p:outputPanel >
                                 <h:outputFormat
                                     value="#{msgs.itemCreateAliquot_itemAmountFormat}">
                                     <f:param value="#{nwc:formatAmount(createAliquotBean.parentItem.amount)}" />
                                     <f:param value="#{createAliquotBean.parentItem.unit.unit}" />
                                 </h:outputFormat>
-                            </b:column>
-                            <b:column span="1">
-                                <b:commandButton
+                            </p:outputPanel>
+                            <p:outputPanel  style="display:flex; flex-direction: row-reverse;">
+                                <p:commandButton
                                     immediate="true"
+                                    styleClass="ui-button-secondary"
                                     action="#{createAliquotBean.actionCancel()}"
+                                    ajax="false"
                                     value="#{msgs.Cancel}"/>
-                            </b:column>
-                        </b:row>
-                    </b:container>
-                </b:panel>
+                            </p:outputPanel>
+                        </p:row>
+                    </p:outputPanel>
+                </p:panel>
 
-                <!-- Bug: BootsFaces'/JSF's AJAX handlers are not able to update DOM elements inside the 
-                          tabs of p:wizard (except the first one). This works for PF components (e.g. 
+                <!-- Bug: BootsFaces'/JSF's AJAX handlers are not able to update DOM elements inside the
+                          tabs of p:wizard (except the first one). This works for PF components (e.g.
                           <p:inputText> with <p:ajax>).
                      Workaround: Invoke a p:remoteCommand via a JavaScript call. -->
                 <p:wizard
@@ -98,7 +99,7 @@
                         </ui:include>
                     </p:tab>
                 </p:wizard>
-            </b:form>
+            </h:form>
         </ui:composition>
     </h:body>
 </html>
