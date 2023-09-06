@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.tx.service;
 
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.IOException;
+import java.net.URL;
 import javax.inject.Inject;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -36,42 +38,47 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 
+
 /**
  *
  * @author fblocal
  */
 
-// @ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class TextWebServiceTest {
    
-   @Inject
-   private TextWebService textWebService;
+
+//  @Inject
+//  private TextWebService textWebService;
     
     
-   @Deployment
+    @Deployment
     public static WebArchive createDeployment() {
+        System.setProperty("log4j.configurationFile", "log4j2-test.xml");
+
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "TextWebServiceTest.war")
                 .addClass(TextWebService.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsResource("javax.enterprise.inject.spi.Extension",
-                    "META-INF/services/javax.enterprise.inject.spi.Extension");
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+//              .addAsResource("javax.enterprise.inject.spi.Extension",
+//                  "META-INF/services/javax.enterprise.inject.spi.Extension");
         return archive;
     }
     
-    @BeforeEach
+    // @BeforeEach
     public void init() {
     
     }
     
     @Test
-//    @RunAsClient
+    @RunAsClient
     public void test001_TextWebService() throws IOException {
-        HttpUriRequest request = new HttpGet("localhost:8080/tx/process/500");
+        // port number must match the arquillian setting
+        HttpUriRequest request = new HttpGet("http://localhost:8800/tx/process/");
         HttpResponse response = HttpClientBuilder.create().build().execute(request);
-        
-        assertEquals(response.getStatusLine().getStatusCode(), HttpStatus.OK_200);
+
+        assertEquals(HttpStatus.OK_200, response.getStatusLine().getStatusCode());
     }
     
 }
