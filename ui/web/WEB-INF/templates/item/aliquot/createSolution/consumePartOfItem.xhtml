@@ -20,7 +20,6 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -31,11 +30,13 @@
                       tabs of p:wizard (except the first one). This works for PF components (e.g. 
                       <p:inputText> with <p:ajax>).
                  Workaround: Invoke a p:remoteCommand via a JavaScript call. -->
+            
             <p:wizard
                 flowListener="#{controller.onFlowProcess}"
                 styleClass="wizardCreateAliquot"
                 showNavBar="false"
                 widgetVar="consumePartOfItemWizard">
+                
                 <p:tab
                     id="step1_targetConcAndVol"
                     title="#{msgs.itemCreateSolution_consumePartOfItem_step1Title}">
