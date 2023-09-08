@@ -1,141 +1,197 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:container>
+            <p:outputPanel>
+
                 <!-- Wizard navigation -->
-                <b:row>
-                    <b:column span="1">
-                        <b:button
+                <!--********************************************************************-->
+                <p:outputPanel style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
+
+                    <p:outputPanel >
+
+                        <!-- Back button-->
+                        <!--*******************************************************************************-->
+                        <p:commandButton
+                            style="margin: 0.5rem;"
                             value="#{msgs.wizard_back}"
+                            styleClass="ui-button-secondary" 
                             onclick="PF('createAliquotWizard').back();" />
-                    </b:column>
-                    <b:column
-                        span="1"
-                        offset="9">
-                        <b:commandButton
+
+                    </p:outputPanel>
+
+                    <p:outputPanel >
+
+                        <!-- Save button-->
+                        <!--*******************************************************************************-->
+                        <p:commandButton
+                            style="margin: 0.5rem;"
                             value="#{msgs.Save}"
+                            process="@this"
+                            update="@all"
+                            styleClass="ui-button-danger"
                             action="#{controller.actionSave()}" />
-                    </b:column>
-                    <b:column span="1">
-                        <b:button
+
+                    </p:outputPanel>
+
+                    <p:outputPanel >
+
+                        <!-- Next button -->
+                        <!--*******************************************************************************-->
+                        <p:commandButton
+                            style="margin: 0.5rem;"
                             value="#{msgs.wizard_next}"
                             onclick="PF('createAliquotWizard').next();" />
-                    </b:column>
-                </b:row>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+
                 <!-- (direct) container -->
-                <b:row>
-                    <b:column
-                        span="2"
-                        offset="1"
-                        styleClass="boldSelectBooleanCheckboxCaption">
+
+                <!-- Bound -->
+                <!--****************************************************************************************-->
+                <p:outputPanel style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
+
+                    <p:outputPanel styleClass="boldSelectBooleanCheckboxCaption" style="min-width: 15%;">
+
                         <p:remoteCommand
                             name="createAliquot_step2_directContainerRenderedChange"
                             process="directContainerCheckboxId"
                             update="@(.directContainerClass)" />
-                        <b:selectBooleanCheckbox
+
+                        <p:selectBooleanCheckbox
                             id="directContainerCheckboxId"
                             value="#{controller.step2Controller.directContainer}"
-                            caption="#{msgs.itemEdit_itemPanel_directContainer}"
+                            itemLabel="#{msgs.itemEdit_itemPanel_directContainer}"
                             onchange="createAliquot_step2_directContainerRenderedChange();" />
-                    </b:column>
-                    <b:column
-                        span="2"
-                        styleClass="directContainerClass">
+
+                    </p:outputPanel>
+
+                    <p:outputPanel styleClass="directContainerClass">
+
                         <ui:fragment rendered="#{controller.step2Controller.directContainer}">
+
                             <p:remoteCommand
                                 name="createAliquot_step2_directContainerSizeChange"
                                 process="directContainerSizeInputId"
                                 update="@none"
                                 action="#{controller.step2Controller.actionOnChangeDirectContainerSize()}" />
-                            <b:inputText
+
+                            <p:inputText
                                 id="directContainerSizeInputId"
+                                style="margin: 0 10px; max-width: 90%;"
                                 value="#{controller.step2Controller.directContainerSize}"
                                 label="#{msgs.itemEdit_itemPanel_container_size}"
                                 required="true"
                                 onchange="createAliquot_step2_directContainerSizeChange();">
+
                                 <f:facet name="append">
                                     <h:outputText value="#{controller.step1Controller.amountUnit}" />
                                 </f:facet>
+
                                 <f:convertNumber
                                     type="number"
                                     groupingUsed="false"
                                     locale="#{globalLocaleBean.numberConverterLocale}" />
+
                                 <f:validateDoubleRange minimum="0" />
-                            </b:inputText>
+
+                            </p:inputText>
+
                         </ui:fragment>
-                    </b:column>
-                    <b:column
-                        span="3"
-                        styleClass="directContainerClass">
+
+                    </p:outputPanel>
+
+                    <p:outputPanel styleClass="directContainerClass">
+
                         <ui:fragment rendered="#{controller.step2Controller.directContainer}">
-                            <b:selectOneMenu
+
+                            <p:selectOneMenu
                                 value="#{controller.step2Controller.directContainerType}"
                                 label="#{msgs.itemEdit_itemPanel_container_type}"
-                                required="true">
+                                required="true"
+                                converter="containerTypeConverter">
+
                                 <f:selectItems
                                     value="#{controller.availableContainerTypes}"
                                     var="type"
                                     itemLabel="#{type.localizedName}" />
-                            </b:selectOneMenu>
+
+                            </p:selectOneMenu>
+
                         </ui:fragment>
-                    </b:column>
-                </b:row>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
                 <!-- Label -->
-                <b:row>
-                    <b:column
-                        span="2"
-                        offset="1"
-                        styleClass="boldSelectBooleanCheckboxCaption">
+                <!--****************************************************************************************-->
+                <p:outputPanel style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
+
+                    <p:outputPanel styleClass="boldSelectBooleanCheckboxCaption" style="min-width: 15%;">
+
                         <p:remoteCommand
                             name="createAliquot_step2_customLabelRenderedChange"
                             process="customLabelCheckboxId"
                             update="@(.customLabelText)" />
-                        <b:selectBooleanCheckbox
+
+                        <p:selectBooleanCheckbox
                             id="customLabelCheckboxId"
                             value="#{controller.step2Controller.customLabel}"
-                            caption="#{msgs.itemEdit_itemPanel_label_customLabel}"
+                            itemLabel="#{msgs.itemEdit_itemPanel_label_customLabel}"
                             onchange="createAliquot_step2_customLabelRenderedChange();" />
-                    </b:column>
-                    <b:column
-                        span="2" 
-                        styleClass="customLabelText">
+
+                    </p:outputPanel>
+
+                    <p:outputPanel styleClass="customLabelText">
+
                         <ui:fragment rendered="#{controller.step2Controller.customLabel}">
-                            <b:inputText
+
+                            <p:inputText
+                                style="margin: 0 10px; max-width: 90%;"
                                 value="#{controller.step2Controller.customLabelValue}"
                                 label="#{msgs.itemEdit_itemPanel_label}">
+
                                 <f:converter converterId="InputConverter" />
-                            </b:inputText>
+
+                            </p:inputText>
+
                         </ui:fragment>
-                    </b:column>
-                </b:row>
-                <b:messages auto-update="true" />
-            </b:container>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+                <p:messages />
+
+            </p:outputPanel>
         </ui:composition>
     </h:body>
 </html>

@@ -227,11 +227,14 @@
                                         requiredMessage="#{msgs.itemEdit_itemPanel_container_size_requiredtext}"
                                         label="#{msgs.itemEdit_itemPanel_container_size}"
                                         disabled="#{(itemBean.inDeactivatedMode or itemBean.editMode) and faces.renderResponse}">
+
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
                                             locale="#{globalLocaleBean.numberConverterLocale}" />
+
                                         <f:validateDoubleRange minimum="0" />
+
                                     </p:inputText>
 
 
@@ -267,10 +270,12 @@
                                         value="#{itemBean.state.editedItem.containerType}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
                                         converter="containerTypeConverter">
+                                        
                                         <f:selectItems
                                             value="#{itemBean.availableContainerTypes}"
                                             var ="ct"
                                             itemLabel="#{ct.getLocalizedName()}"/>
+                                        
                                     </p:selectOneMenu>
                                 </p:outputPanel>
 
@@ -369,8 +374,8 @@
                             <!--****************************************************************************************-->
                             <div class="ui-fluid" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
 
-                                <p:outputPanel
-                                    styleClass="boldSelectBooleanCheckboxCaption" style="min-width: 15%;">
+                                <p:outputPanel styleClass="boldSelectBooleanCheckboxCaption" style="min-width: 15%;">
+                                    
                                     <p:selectBooleanCheckbox
                                         itemLabel="#{msgs.itemEdit_itemPanel_label_customLabel}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
@@ -385,16 +390,19 @@
                                     </p:selectBooleanCheckbox>
                                 </p:outputPanel>
 
-                                <p:outputPanel
-                                    styleClass="customLabelText">
+                                <p:outputPanel styleClass="customLabelText">
+                                    
                                     <p:inputText
                                         style="margin: 0 10px; max-width: 90%;"
                                         label="#{msgs.itemEdit_itemPanel_label}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
                                         rendered="#{itemBean.isLabelVisible()}"
                                         value="#{itemBean.customLabelValue}">
+                                        
                                         <f:converter converterId="InputConverter" />
+                                        
                                     </p:inputText>
+                                    
                                 </p:outputPanel>
 
                             </div>
@@ -427,16 +435,19 @@
                         <o:massAttribute name="disabled" value="#{itemBean.inDeactivatedMode}">
                             <div>
 
-                                <p:outputPanel
-                                    styleClass="rightLabeledCbxVendor">
+                                <p:outputPanel styleClass="rightLabeledCbxVendor">
+                                    
                                     <p:selectOneMenu
-                                        converter="ExpProjectConverter"
+                                        converter="ProjectConverter"
                                         label="#{msgs.itemEdit_projectPanel_name}"
-                                        value="#{itemBean.state.editedItem.project}">
+                                        value="#{itemBean.state.editedItem.project}"
+                                        >
+                                        
                                         <f:selectItems
                                             value="#{itemBean.getProjects()}"
                                             var="p"
                                             itemLabel="#{p.toString()}"/>
+                                        <p:ajax/>
                                     </p:selectOneMenu>
                                 </p:outputPanel>
 

@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectService;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -29,15 +31,20 @@ import jakarta.inject.Inject;
  *
  * @author fmauz
  */
-@FacesConverter(value = "ExpProjectConverter")
+@FacesConverter(value = "ProjectConverter")
 public class ProjectConverter implements Converter {
 
     @Inject
-    private ExperimentBean experimentBean;
+    ProjectService service;
+
+    @Inject
+    private UserBean userBean;
 
     @Override
     public Project getAsObject(FacesContext fc, UIComponent uic, String string) throws ConverterException {
-        return experimentBean.getProjectController().getProjectByName(string);
+        ExpProjectController projectController = new ExpProjectController(service, userBean.getCurrentAccount());
+        Project p = projectController.getProjectByName(string);
+        return p;
     }
 
     @Override

@@ -37,7 +37,6 @@ public class ContainerTypeConverter implements Converter<ContainerType> {
 
     @Inject
     private ContainerEditBean containerEditBean;
-    Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Override
     public ContainerType getAsObject(FacesContext fc, UIComponent uic, String value) {

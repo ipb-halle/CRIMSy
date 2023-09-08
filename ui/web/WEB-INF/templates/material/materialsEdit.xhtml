@@ -108,7 +108,8 @@
                         <p:column colspan="1">
                             <!-- The server side bean gets only access to the hidden input fields, so they must be updated before submitting their value to the server -->
                             <p:commandButton
-                                styleClass="tstMaterialCreate"
+                                style="width: 9rem;"
+                                styleClass="tstMaterialCreate ui-button-danger"
                                 value="#{materialBean.getCreateButtonText()}"
                                 disabled="#{!materialBean.isCreationAllowed()}"
                                 action="#{materialBean.actionSaveMaterial()}"

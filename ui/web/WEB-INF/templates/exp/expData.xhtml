@@ -68,7 +68,7 @@
                             styleClass="expProjectCB"
                             label="#{msgs.expAddNew_dialog_project}"
                             value="#{experimentBean.getProjectController().choosenProject}"
-                            converter="ExpProjectConverter">
+                            converter="ProjectConverter">
                             <f:selectItems 
                                 var="project"
                                 value="#{experimentBean.getProjectController().getChoosableProjects()}"
