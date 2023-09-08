@@ -2,7 +2,7 @@
  * Leibniz Bioactives Cloud
  * Init script for database postgres 12.6
  * 
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2023 Leibniz-Institut f. Pflanzenbiochemie
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *  
- */
-
-/*
+ *=========================================================
+ *
+ * NOTE: TABLE CONSTRAINTS IN THIS FILE ARE RELAXED FOR TESTING PURPOSES:
+ *
+ *   - collection_id may be NULL in table 'files'
+ *   -
+ *
+ *=========================================================
+ *
  * define global vars 
  */
 \set LBAC_SCHEMA_VERSION '\'00001\''
@@ -251,7 +257,7 @@ CREATE TABLE files (
   hash          VARCHAR,
   created       TIMESTAMP DEFAULT now(),
   user_id       INTEGER REFERENCES usersGroups (id) ON DELETE SET NULL,
-  collection_id INTEGER NOT NULL REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  collection_id INTEGER REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE,
   document_language VARCHAR NOT NULL DEFAULT 'en'
 );
 
