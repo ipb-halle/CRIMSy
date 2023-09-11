@@ -21,90 +21,85 @@ limitations under the License.
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<h:body>
-    <h:form id="containerTableId">
-        <p:dataTable
+    <h:body>
+        <h:form id="containerTableId">
+            <p:dataTable
                 styleClass="containerDataTable"
                 value="#{containerOverviewBean.readableContainer}"
                 var="container"
-        >
+                >
 
-            <p:column headerText="#{msgs.container_table_title_id}">
+                <p:column headerText="#{msgs.container_table_title_id}">
 
-                <h:outputText
+                    <h:outputText
                         value="#{container.id}"/>
 
-            </p:column>
+                </p:column>
 
-            <p:column headerText="#{msgs.container_table_title_label}">
-                <h:outputText
+                <p:column headerText="#{msgs.container_table_title_label}">
+                    <h:outputText
                         value="#{container.label}"/>
-            </p:column>
+                </p:column>
 
-            <p:column headerText="#{msgs.container_table_title_type}">
-                <h:outputText
+                <p:column headerText="#{msgs.container_table_title_type}">
+                    <h:outputText
                         value="#{container.type.getLocalizedName()}"/>
-            </p:column>
+                </p:column>
 
-            <p:column headerText="#{msgs.container_table_title_location}">
-                <h:outputText
+                <p:column headerText="#{msgs.container_table_title_location}">
+                    <h:outputText
                         escape="false"
                         value="#{container.getLocation(true,true)}">
-                    <f:converter converterId="RichTextConverter"/>
-                </h:outputText>
-            </p:column>
+                        <f:converter converterId="RichTextConverter"/>
+                    </h:outputText>
+                </p:column>
 
-            <p:column headerText="#{msgs.container_table_title_project}">
-                <h:outputText
+                <p:column headerText="#{msgs.container_table_title_project}">
+                    <h:outputText
                         value="#{containerOverviewBean.getProjectName(container)}"/>
-            </p:column>
+                </p:column>
 
-            <p:column headerText="#{msgs.container_table_title_gmosafetylevel}">
-                <h:outputText
+                <p:column headerText="#{msgs.container_table_title_gmosafetylevel}">
+                    <h:outputText
                         value="#{container.getGmoSafetyLevel()}"/>
-            </p:column>
+                </p:column>
 
-            <p:column headerText="#{msgs.container_table_title_firearea}">
-                <h:outputText
+                <p:column headerText="#{msgs.container_table_title_firearea}">
+                    <h:outputText
                         value="#{container.getFireArea()}"/>
-            </p:column>
+                </p:column>
 
-            <p:column headerText="#{msgs.container_table_title_tools}">
+                <p:column headerText="#{msgs.container_table_title_tools}">
 
-                <p:commandButton style="padding: 0 4px;"
-                                 icon="pi pi-pencil"
+                    <p:commandButton
+                        icon="pi pi-pencil"
+                        type="submit"
+                        title="#{msgs.container_table_tooltip_edit}"
+                        update="
+                        editForm:editNameInputField
+                        @(.nameInputFieldClass)
+                        @(.containerTopRow)
+                        @(.containerEdit)
+                        @(.containerEditModal)"
+                        action="#{containerOverviewBean.actionContainerEdit(container)}"
+                        oncomplete="PF('dlgcontainerEdit').show();"/>
 
-                                 type="submit"
-                                 title="#{msgs.container_table_tooltip_edit}"
-                                 update="
-                                     editForm:editNameInputField
-                                     @(.nameInputFieldClass)
-                                     @(.containerTopRow)
-                                     @(.containerEdit)
-                                     @(.containerEditModal)"
-                                 action="#{containerOverviewBean.actionContainerEdit(container)}"
-                                 oncomplete="PF('dlgcontainerEdit').show();"
-                />
-
-                <p:commandButton style="padding: 0 4px;"
-                                 icon="pi pi-ban"
-                                 type="submit"
-                                 ajax="true"
-                                 title="#{msgs.container_table_tooltip_deactivate}"
-                                 update="
+                    <p:commandButton style="margin: 0 0.5rem;"
+                                     styleClass="ui-button-danger"
+                                     icon="pi pi-ban"
+                                     type="submit"
+                                     ajax="true"
+                                     title="#{msgs.container_table_tooltip_deactivate}"
+                                     update="
                                      containerOverviewId
                                      editForm
                                      searchMaskForm
                                      containerTableId
                                      @(.containerDataTable)
                                      @(.containerEditModal)"
-                                 action="#{containerOverviewBean.actionContainerDeactivate(container)}"
-                />
-
-            </p:column>
-
-        </p:dataTable>
-
-    </h:form>
-</h:body>
+                                     action="#{containerOverviewBean.actionContainerDeactivate(container)}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
 </html>
