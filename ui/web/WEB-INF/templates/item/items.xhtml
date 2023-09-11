@@ -21,7 +21,6 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -198,8 +197,8 @@
                                             <p:commandButton
                                                 styleClass="itemFilterButton"
                                                 value="#{msgs.itemOverview_searchFilter_search}"
-                                                process="@form"
-                                                update="@form"
+                                                process="@this"
+                                                update="itemForm"
                                                 ajax="true"
                                                 action="#{itemOverviewBean.actionApplySearchFilter()}"
                                                 />
@@ -287,8 +286,9 @@
                                         <!--*****************************************************************************************-->
                                         <p:dataTable
                                             style="margin-left: 0.5rem;"
-                                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                                            paginator="true" rows="5" styleClass="mt-2"
+                                            paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                            rowsPerPageTemplate="5,10,30" 
+                                            paginator="true" rows="50" 
                                             value="#{itemOverviewBean.items}"
                                             var="item">
 
@@ -341,7 +341,7 @@
                                             <p:column headerText="#{msgs.itemOverview_tableheader_projectOwner}">
 
                                                 <h:outputFormat value="{0}/{1}">
-                                                    <f:param value="#{item.project}" />
+                                                    <f:param value="#{item.project.name}" />
                                                     <f:param value="#{item.owner.name}" />
                                                 </h:outputFormat>
 
@@ -392,6 +392,7 @@
                                             <p:column headerText="#{msgs.materialOverview_tableheader_actions}">
 
                                                 <p:commandButton style="margin: 0.5rem; margin-right: 0;"
+                                                                 id="btnEdit"
                                                                  icon="pi pi-pencil"
                                                                  styleClass="ui-button-success"
                                                                  type="submit"
@@ -400,6 +401,7 @@
                                                                  ajax="true"
                                                                  action="#{itemOverviewBean.actionStartItemEdit(item)}"
                                                                  />
+                                                <p:tooltip for="btnEdit" value="#{msgs.collMgr_tooltip_changeUserPermission}" position="top"/>
 
                                                 <p:commandButton style="margin: 0.5rem; margin-right: 0;"
                                                                  id="btnUser"
@@ -457,57 +459,66 @@
                                     </p:outputPanel>
                                 </p:row>
                                 <p:row>
-                                    <div style="display: flex; flex-direction: row;">
+                                    <div style="display: flex; flex-direction: row;justify-content: center; ">
 
                                         <p:outputPanel  styleClass="itemNavigationColumn">
                                             <p:commandButton
-                                                styleClass="itemNavigationButton"
+                                                style="margin: 0.5rem -4.5rem; "
                                                 disabled="#{itemOverviewBean.isBackDeactivated()}"
                                                 icon="fa fa-fast-backward"
                                                 ajax="true"
+                                                process="@this"
                                                 update="itemForm"
                                                 action="#{itemOverviewBean.actionFirstItems()}"
                                                 />
+                                                <!--styleClass="itemNavigationButton"-->
                                             <!--onclick="ajax:itemOverviewBean.actionFirstItems();"-->
                                         </p:outputPanel>
 
                                         <p:outputPanel  styleClass="itemNavigationColumn">
                                             <p:commandButton
-                                                styleClass="itemNavigationButton"
+                                                style="margin: 0.5rem -1.5rem; "
                                                 disabled="#{itemOverviewBean.isBackDeactivated()}"
                                                 ajax="true"
+                                                process="@this"
                                                 update="itemForm"
                                                 icon="fa fa-backward"
                                                 action="#{itemOverviewBean.actionLastItems()}"/>
                                             <!--onclick="ajax:itemOverviewBean.actionLastItems();"-->
+                                                <!--styleClass="itemNavigationButton"-->
                                         </p:outputPanel>
 
                                         <p:outputPanel  styleClass="itemNavigationColumn">
                                             <p:commandButton
-                                                styleClass="itemNavigationButton"
+                                                style="margin: 0.5rem 1.5rem; "
                                                 disabled="#{itemOverviewBean.isForwardDeactivated()}"
                                                 ajax="true"
+                                                process="@this"
                                                 update="itemForm"
                                                 icon="fa fa-forward"
                                                 action="#{itemOverviewBean.actionNextItems()}"
                                                 />
+                                                <!--styleClass="itemNavigationButton"-->
                                             <!--onclick="ajax:itemOverviewBean.actionNextItems();"-->
                                         </p:outputPanel>
 
                                         <p:outputPanel  styleClass="itemNavigationColumn">
                                             <p:commandButton
-                                                styleClass="itemNavigationButton"
+                                                style="margin: 0.5rem 4.5rem; "
                                                 disabled="#{itemOverviewBean.isForwardDeactivated()}"
                                                 ajax="true"
+                                                process="@this"
                                                 update="itemForm"
                                                 icon="fa fa-fast-forward"
                                                 action="#{itemOverviewBean.actionEndItems()}"
                                                 />
+                                                <!--styleClass="itemNavigationButton"-->
                                             <!--onclick="ajax:itemOverviewBean.actionEndItems();"-->
                                         </p:outputPanel>
 
-                                        <p:outputPanel >
+                                        <p:outputPanel  style="margin: 1rem 8rem; ">
                                             <h:outputFormat
+                                                
                                                 value="#{msgs.itemOverview_itemsShownFormat}"
                                                 rendered="#{itemOverviewBean.itemAmount gt 0}">
                                                 <f:param value="#{itemOverviewBean.leftBorder}" />
@@ -516,6 +527,7 @@
                                             </h:outputFormat>
 
                                             <h:outputText
+                                                
                                                 value="#{msgs.itemOverview_noItemsFound}"
                                                 rendered="#{itemOverviewBean.itemAmount le 0}" />
                                         </p:outputPanel>
