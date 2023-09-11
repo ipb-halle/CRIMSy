@@ -38,8 +38,10 @@
                             styleClass="ui-button-danger"
                             style="margin: 0.5rem;"
                             value="#{msgs.Save}"
+                            process="@this"
+                            update="@all"
                             action="#{controller.actionSave()}"
-                            update="@all"/>
+                            />
                     </p:outputPanel>
 
                     <p:outputPanel >
