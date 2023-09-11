@@ -113,12 +113,12 @@
                     <!--=========================================================================================-->
                     <div class="col-12 md:col-3" style="margin-right: 0.5rem;">
 
-                        <p:commandButton 
+                        <p:commandButton
                             styleClass="ui-button-danger"
                             value="#{msgs.itemEdit_itemEditPanel_save}"
-                            disabled="#{itemBean.inDeactivatedMode}" 
-                            process="@form" 
-                            ajax="false" 
+                            disabled="#{itemBean.inDeactivatedMode}"
+                            process="@form"
+                            ajax="false"
                             action="#{itemBean.actionSave()}"
                             />
                     </div>
@@ -270,12 +270,12 @@
                                         value="#{itemBean.state.editedItem.containerType}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
                                         converter="containerTypeConverter">
-                                        
+
                                         <f:selectItems
                                             value="#{itemBean.availableContainerTypes}"
                                             var ="ct"
                                             itemLabel="#{ct.getLocalizedName()}"/>
-                                        
+
                                     </p:selectOneMenu>
                                 </p:outputPanel>
 
@@ -330,7 +330,7 @@
                                     >
 
                                     <p:selectOneMenu
-
+                                        converter="unitConverter"
                                         rendered="#{itemBean.isSolventRowVisisble()}"
                                         label="#{msgs.itemEdit_itemPanel_concentration_unit}"
                                         value="#{itemBean.state.editedItem.concentrationUnit}"
@@ -355,6 +355,7 @@
                                     >
 
                                     <p:selectOneMenu
+                                        converter="solventConverter"
                                         rendered="#{itemBean.isSolventRowVisisble()}"
                                         label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
                                         value="#{itemBean.state.editedItem.solvent}"
@@ -375,7 +376,7 @@
                             <div class="ui-fluid" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
 
                                 <p:outputPanel styleClass="boldSelectBooleanCheckboxCaption" style="min-width: 15%;">
-                                    
+
                                     <p:selectBooleanCheckbox
                                         itemLabel="#{msgs.itemEdit_itemPanel_label_customLabel}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
@@ -391,18 +392,18 @@
                                 </p:outputPanel>
 
                                 <p:outputPanel styleClass="customLabelText">
-                                    
+
                                     <p:inputText
                                         style="margin: 0 10px; max-width: 90%;"
                                         label="#{msgs.itemEdit_itemPanel_label}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
                                         rendered="#{itemBean.isLabelVisible()}"
                                         value="#{itemBean.customLabelValue}">
-                                        
+
                                         <f:converter converterId="InputConverter" />
-                                        
+
                                     </p:inputText>
-                                    
+
                                 </p:outputPanel>
 
                             </div>
@@ -436,19 +437,21 @@
                             <div>
 
                                 <p:outputPanel styleClass="rightLabeledCbxVendor">
-                                    
+
                                     <p:selectOneMenu
                                         converter="ProjectConverter"
                                         label="#{msgs.itemEdit_projectPanel_name}"
                                         value="#{itemBean.state.editedItem.project}"
                                         >
-                                        
+
                                         <f:selectItems
                                             value="#{itemBean.getProjects()}"
                                             var="p"
                                             itemLabel="#{p.toString()}"/>
                                         <p:ajax/>
+
                                     </p:selectOneMenu>
+
                                 </p:outputPanel>
 
                             </div>
