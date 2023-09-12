@@ -22,120 +22,163 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets">
-<h:body>
-    <ui:composition>
-        <p:panel
-                collapsible="false"
+    <h:body>
+        <ui:composition>
+
+            <!--Names of taxonomy entry-->
+            <!--********************************************************************************-->
+            <p:panel
                 rendered="#{taxonomyBean.renderController.isNamesVisible()}"
-                style="width:50%;"
-                title="#{msgs.taxonomy_label_names}">
-            <p:dataTable
+                styleClass="taxonomyInfos taxonomy-name-table"
+                header="#{msgs.taxonomy_label_names}">
+
+                <p:dataTable
                     id="materialNameTable"
                     styleClass="materialNameTableClass"
-                    paginated="false"
                     value="#{taxonomyBean.nameController.names}"
-                    searching="false"
                     var="mName"
-                    saveState="false">
-                <p:column
-                        orderable="false"
-                        headerText="#{msgs.taxonomy_names_panel_title}">
-                    <p:inputText
+                    >
+
+
+                    <!--Names-->
+                    <!--********************************************************************************-->
+                    <p:column headerText="#{msgs.taxonomy_names_panel_title}">
+
+                        <!--Inputfield Life-->
+                        <!--********************************************************************************-->
+                        <p:inputText
                             value="#{mName.value}"
                             disabled="#{!taxonomyBean.renderController.isNameEditable()}"
                             placeholder="#{msgs.materialCreation_panelNames_placeHolder}"
                             onkeypress="if (event.keyCode === 13) {
                                         return false;
                                     }">
-                        <f:converter converterId="InputConverter"/>
-                    </p:inputText>
-                </p:column>
-                <p:column
-                        orderable="false"
-                        headerText="#{msgs.materialCreation_panelNames_tableHeader_language}">
-                    <p:selectOneMenu
+                            <f:converter converterId="InputConverter" />
+                        </p:inputText>
+                    </p:column>
+
+
+                    <!--Language-->
+                    <!--********************************************************************************-->
+                    <p:column headerText="#{msgs.materialCreation_panelNames_tableHeader_language}">
+
+                        <!--En-->
+                        <!--********************************************************************************-->
+                        <p:selectOneMenu
                             value="#{mName.language}"
                             disabled="#{!taxonomyBean.renderController.isNameEditable()}">
-                        <f:selectItems
+                            <f:selectItems
                                 value="#{taxonomyBean.nameController.getPossibleLanguages()}"/>
-                    </p:selectOneMenu>
-                </p:column>
-                <p:column
-                        orderable="false"
-                        headerText="#{msgs.materialCreation_panelNames_tableHeader_action}">
-                    <p:commandButton style="padding: 0 4px;margin:0.5rem 0;"
-                                     icon="pi pi-angle-double-up "
-                                     look="link"
-                                     ajax="true"
-                                     disabled="#{!taxonomyBean.renderController.isMaterialNameOperationEnabled(mName,'HIGHEST')}"
-                                     process="@(.taxonomyInfos)"
-                                     update="@(.taxonomyInfos)"
-                                     action="#{taxonomyBean.nameController.swapPosition(mName, 'HIGHEST')}"
-                                     type="submit"/>
-                    <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'HIGHEST')"-->
+                        </p:selectOneMenu>
+                    </p:column>
 
-                    <p:commandButton style="padding: 0 4px;margin:0.5rem;"
-                                     icon="pi pi-angle-up"
-                                     look="link"
-                                     ajax="true"
-                                     disabled="#{!taxonomyBean.renderController.isMaterialNameOperationEnabled(mName,'HIGHER')}"
-                                     process="@(.taxonomyInfos)"
-                                     update="@(.taxonomyInfos)"
-                                     tooltip="#{msgs.materialCreation_panelNames_tooltip_higher}"
-                                     type="submit"
-                                     action="#{taxonomyBean.nameController.swapPosition(mName, 'HIGHER')}"/>
-                    <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'HIGHER')"-->
+                    <!--Actions-->
+                    <!--********************************************************************************-->
+                    <p:column headerText="#{msgs.materialCreation_panelNames_tableHeader_action}">
 
-                    <p:commandButton style="padding: 0 4px;margin:0.5rem 0;"
-                                     icon="pi pi-angle-down "
-                                     look="link"
-                                     ajax="true"
-                                     disabled="#{!taxonomyBean.renderController.isMaterialNameOperationEnabled(mName,'LOWER')}"
-                                     process="@(.taxonomyInfos)"
-                                     update="@(.taxonomyInfos)"
-                                     tooltip="#{msgs.materialCreation_panelNames_tooltip_lower}"
-                                     type="submit"
-                                     action="#{taxonomyBean.nameController.swapPosition(mName, 'LOWER')}"/>
-                    <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'LOWER')"-->
-                    <p:commandButton style="padding: 0 4px;margin:0.5rem;"
-                                     disabled="#{!taxonomyBean.renderController.isMaterialNameOperationEnabled(mName,'LOWEST')}"
-                                     icon="pi pi-angle-double-down"
-                                     look="link"
-                                     ajax="true"
-                                     update="@(.taxonomyInfos)"
-                                     process="@(.taxonomyInfos)"
-                                     tooltip="#{msgs.materialCreation_panelNames_tooltip_lowestRank}"
-                                     type="submit"
-                                     action="#{taxonomyBean.nameController.swapPosition(mName, 'LOWEST')}"/>
-                    <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'LOWEST')"-->
-                    <p:commandButton style="padding: 0 4px;margin:0.5rem 0;"
-                                     disabled="#{!taxonomyBean.renderController.isNameEditable()}"
-                                     icon="pi pi-trash"
-                                     look="link"
-                                     ajax="true"
-                                     process="@(.taxonomyInfos)"
-                                     update="@(.taxonomyInfos)"
-                                     tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"
-                                     type="submit"
-                                     action="#{taxonomyBean.nameController.removeName(mName)}"/>
-                    <!--onclick="ajax:taxonomyBean.nameController.removeName(mName)"-->
-                    <p:commandButton style="padding: 0 4px;margin:0.5rem;"
-                                     icon="pi pi-plus "
-                                     look="link"
-                                     disabled="#{!taxonomyBean.renderController.isNameEditable()}"
-                                     ajax="true"
-                                     process="@form"
-                                     update="@(.taxonomyInfos)"
-                                     tooltip="#{msgs.materialCreation_panelNames_tooltip_add}"
-                                     action="#{taxonomyBean.nameController.addNewName()}"
-                                     type="submit"/>
-                    <!--onclick="ajax:taxonomyBean.nameController.addNewName();"-->
-                </p:column>
-            </p:dataTable>
-        </p:panel>
-    </ui:composition>
-</h:body>
+                        <p:commandButton style="margin-bottom: 0.5rem;"
+                                         icon="fa fa-angle-double-up "
+                                         id="btn11"
+                                         ajax="true"
+                                         disabled="#{!taxonomyBean.renderController.isMaterialNameOperationEnabled(mName,'HIGHEST')}"
+                                         process="@(.taxonomyInfos)"
+                                         update="@(.taxonomyInfos)"
+                                         type="submit"
+                                         action="#{taxonomyBean.nameController.swapPosition(mName, 'HIGHEST')}"/>
+
+                        <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'HIGHEST')"-->
+
+
+                        <p:commandButton style="margin: 0.5rem;"
+                                         icon="fa fa-angle-up"
+                                         id="btn12"
+                                         ajax="true"
+                                         disabled="#{!taxonomyBean.renderController.isMaterialNameOperationEnabled(mName,'HIGHER')}"
+                                         process="@(.taxonomyInfos)"
+                                         update="@(.taxonomyInfos)"
+                                         type="submit"
+                                         action="#{taxonomyBean.nameController.swapPosition(mName, 'HIGHER')}">
+
+             <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_higher}"-->
+                            <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'HIGHER')"-->
+
+                            <p:tooltip for="btn12" value="#{msgs.materialCreation_panelNames_tooltip_higher}" position="top"/>
+                        </p:commandButton>
+
+                        <p:commandButton style="margin-bottom: 0.5rem;"
+                                         icon="fa fa-angle-down "
+                                         id="btn13"
+                                         ajax="true"
+                                         disabled="#{!taxonomyBean.renderController.isMaterialNameOperationEnabled(mName,'LOWER')}"
+                                         process="@(.taxonomyInfos)"
+                                         update="@(.taxonomyInfos)"
+                                         type="submit"
+                                         action="#{taxonomyBean.nameController.swapPosition(mName, 'LOWER')}">
+
+             <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_lower}"-->
+                            <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'LOWER')"-->
+
+                            <p:tooltip for="btn13" value="#{msgs.materialCreation_panelNames_tooltip_lower}" position="top"/>
+                        </p:commandButton>
+
+                        <br/>
+
+                        <p:commandButton style="padding: 0 4px;"
+                                         disabled="#{!taxonomyBean.renderController.isMaterialNameOperationEnabled(mName,'LOWEST')}"
+                                         icon="fa fa-angle-double-down"
+                                         id="btn14"
+                                         ajax="true"
+                                         update="@(.taxonomyInfos)"
+                                         process="@(.taxonomyInfos)"
+                                         type="submit"
+                                         action="#{taxonomyBean.nameController.swapPosition(mName, 'LOWEST')}">
+
+                            <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'LOWEST')"-->
+                            <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_lowestRank}"-->
+
+                            <p:tooltip for="btn14" value="#{msgs.materialCreation_panelNames_tooltip_lowestRank}" position="bottom"/>
+                        </p:commandButton>
+
+
+                        <p:commandButton style="margin: 0 0.5rem;"
+                                         disabled="#{!taxonomyBean.renderController.isNameEditable()}"
+                                         icon="pi pi-trash"
+                                         id="btn15"
+                                         ajax="true"
+                                         process="@(.taxonomyInfos)"
+                                         update="@(.taxonomyInfos)"
+                                         type="submit"
+                                         action="#{taxonomyBean.nameController.removeName(mName)}">
+                            <!--onclick="ajax:taxonomyBean.nameController.removeName(mName)"-->
+           <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"-->
+
+                            <p:tooltip for="btn15" value="#{msgs.materialCreation_panelNames_tooltip_delete}" position="bottom"/>
+                        </p:commandButton>
+
+
+                        <p:commandButton style="padding: 0 4px;"
+                                         icon="fa fa-plus "
+                                         id="btn16"
+                                         disabled="#{!taxonomyBean.renderController.isNameEditable()}"
+                                         ajax="true"
+                                         process="@form"
+                                         update="@(.taxonomyInfos)"
+                                         type="submit"
+                                         action="#{taxonomyBean.nameController.addNewName()}">
+                            <!--onclick="ajax:taxonomyBean.nameController.addNewName();"-->
+
+                        <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_add}"-->
+
+                            <p:tooltip for="btn16" value="#{msgs.materialCreation_panelNames_tooltip_add}" position="bottom"/>
+                        </p:commandButton>
+
+
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </ui:composition>
+    </h:body>
 </html>

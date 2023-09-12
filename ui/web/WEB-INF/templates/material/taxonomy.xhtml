@@ -246,7 +246,8 @@
                                 styleClass="taxonomyTree"
                                 dynamic="true"
                                 selection="#{taxonomyBean.selectedTaxonomy}">
-                                <p:ajax event="select" update="taxonomyForm:editButton" listener="#{taxonomyBean.onTaxonomySelect}" />
+
+                                <p:ajax event="select" update="taxonomyForm:editButton, @(.taxonomyInfos) " listener="#{taxonomyBean.onTaxonomySelect}" />
                                 <p:ajax event="expand"  listener="#{taxonomyBean.onTaxonomyExpand}" />
                                 <p:ajax event="collapse" listener="#{taxonomyBean.onTaxonomyCollapse}" />
                                 <p:treeNode >
@@ -254,6 +255,7 @@
                                 </p:treeNode>
                             </p:tree>
                         </p:outputPanel>
+                        <!--update="taxonomyForm:editButton "-->
 
                         <!--style="width: 100%;height: 300px;overflow: auto"-->
                         <!--Table Names-->
