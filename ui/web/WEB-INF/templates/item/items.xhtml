@@ -45,7 +45,7 @@
                     <div style="display: flex; flex-direction: row;">
 
                         <p:outputPanel >
-                            <p:outputPanel class="ddr">
+                            <p:outputPanel class="SearchField">
 
                                 <!--Search Filter title-->
                                 <!--*****************************************************************************************-->
@@ -178,12 +178,14 @@
                                         <!--Clear button-->
                                         <!--*****************************************************************************************-->
                                         <p:outputPanel styleClass="itemFilterButtonColumn">
+
                                             <p:commandButton
                                                 styleClass="itemFilterButton ui-button-secondary"
                                                 value="#{msgs.itemOverview_searchFilter_clear}"
-                                                process="@form"
+                                                ajax="true"
+                                                process="@this"
                                                 resetValues="true"
-                                                update="@form"
+                                                update="itemForm"
                                                 action="#{itemOverviewBean.actionClearSearchFilter()}"
                                                 />
                                             <!--update="@(.ddr, .itemFilterInputfield, .hello)"-->
@@ -197,8 +199,8 @@
                                             <p:commandButton
                                                 styleClass="itemFilterButton"
                                                 value="#{msgs.itemOverview_searchFilter_search}"
-                                                process="@this"
-                                                update="itemForm"
+                                                process="@form"
+                                                update="@(.itemOverviewTableContainer)"
                                                 ajax="true"
                                                 action="#{itemOverviewBean.actionApplySearchFilter()}"
                                                 />
@@ -224,33 +226,31 @@
                             <!-- SelectOneMenu Report-->
                             <!--*****************************************************************************************-->
                             <div>
-
                                 <p:row styleClass="itemFilterRow">
-                                    <p:outputPanel >
+                                    <p:outputPanel>
                                         <p:selectOneMenu
-                                            value="#{itemOverviewBean.selectedReport}"
+                                            id="reportSelectionId"
+                                            converter="reportConverter"
                                             styleClass="itemFilterInputfield"
-
-                                            >
+                                            value="#{itemOverviewBean.selectedReport}">
                                             <f:selectItems
                                                 value="#{itemOverviewBean.availableReports}"
                                                 var="report"
+                                                itemValue="#{report}"
                                                 itemLabel="#{report.name}" />
-                                            <p:ajax
-                                                update="@none" />
                                         </p:selectOneMenu>
                                     </p:outputPanel>
                                 </p:row>
-
                             </div>
 
                             <p:row>
                                 <div style="display: flex; flex-direction: row;">
 
-                                    <!-- SelectOneMenu PDF-->
+                                    <!-- SelectOneMenu ReportType: PDF/XLSX/CSV -->
                                     <!--*****************************************************************************************-->
                                     <p:outputPanel styleClass="itemFilterButtonColumn">
                                         <p:selectOneMenu
+                                            id="reportType"
                                             value="#{itemOverviewBean.selectedReportType}"
                                             styleClass="itemFilterButton">
                                             <f:selectItems value="#{itemOverviewBean.reportTypes}" />
@@ -262,7 +262,7 @@
                                     <p:outputPanel styleClass="itemFilterButtonColumn itemFilterButtonRight">
                                         <p:commandButton
                                             ajax="true"
-                                            process="@this"
+                                            process="reportSelectionId reportType"
                                             type="submit"
                                             update="growlMsg"
                                             action="#{itemOverviewBean.actionCreateReport()}"
@@ -471,7 +471,7 @@
                                                 update="itemForm"
                                                 action="#{itemOverviewBean.actionFirstItems()}"
                                                 />
-                                                <!--styleClass="itemNavigationButton"-->
+                                            <!--styleClass="itemNavigationButton"-->
                                             <!--onclick="ajax:itemOverviewBean.actionFirstItems();"-->
                                         </p:outputPanel>
 
@@ -485,7 +485,7 @@
                                                 icon="fa fa-backward"
                                                 action="#{itemOverviewBean.actionLastItems()}"/>
                                             <!--onclick="ajax:itemOverviewBean.actionLastItems();"-->
-                                                <!--styleClass="itemNavigationButton"-->
+                                            <!--styleClass="itemNavigationButton"-->
                                         </p:outputPanel>
 
                                         <p:outputPanel  styleClass="itemNavigationColumn">
@@ -498,7 +498,7 @@
                                                 icon="fa fa-forward"
                                                 action="#{itemOverviewBean.actionNextItems()}"
                                                 />
-                                                <!--styleClass="itemNavigationButton"-->
+                                            <!--styleClass="itemNavigationButton"-->
                                             <!--onclick="ajax:itemOverviewBean.actionNextItems();"-->
                                         </p:outputPanel>
 
@@ -512,13 +512,13 @@
                                                 icon="fa fa-fast-forward"
                                                 action="#{itemOverviewBean.actionEndItems()}"
                                                 />
-                                                <!--styleClass="itemNavigationButton"-->
+                                            <!--styleClass="itemNavigationButton"-->
                                             <!--onclick="ajax:itemOverviewBean.actionEndItems();"-->
                                         </p:outputPanel>
 
                                         <p:outputPanel  style="margin: 1rem 8rem; ">
                                             <h:outputFormat
-                                                
+
                                                 value="#{msgs.itemOverview_itemsShownFormat}"
                                                 rendered="#{itemOverviewBean.itemAmount gt 0}">
                                                 <f:param value="#{itemOverviewBean.leftBorder}" />
@@ -527,7 +527,7 @@
                                             </h:outputFormat>
 
                                             <h:outputText
-                                                
+
                                                 value="#{msgs.itemOverview_noItemsFound}"
                                                 rendered="#{itemOverviewBean.itemAmount le 0}" />
                                         </p:outputPanel>

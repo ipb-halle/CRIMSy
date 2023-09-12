@@ -63,6 +63,7 @@
 
                                     <p:selectOneMenu
                                         id="reportSelectionId"
+                                        converter="reportConverter"
                                         value="#{materialOverviewBean.selectedReport}">
                                         <f:selectItems
                                             value="#{materialOverviewBean.availableReports}"

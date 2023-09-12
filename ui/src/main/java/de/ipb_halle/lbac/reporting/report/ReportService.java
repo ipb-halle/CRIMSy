@@ -27,7 +27,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
 /**
- * 
+ *
  * @author fbroda
  */
 @Stateless
@@ -37,7 +37,7 @@ public class ReportService {
 
     /**
      * Loads available reports for the given context from the database.
-     * 
+     *
      * @param context the reporting context (the name of the class)
      * @return list of {@link Report} DTOs
      */
@@ -54,5 +54,9 @@ public class ReportService {
         }
 
         return results;
+    }
+
+    public Report loadById(Integer id) {
+        return new Report(em.find(ReportEntity.class, id));
     }
 }

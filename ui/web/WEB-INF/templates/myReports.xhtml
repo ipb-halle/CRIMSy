@@ -72,6 +72,7 @@
                         style="width: 10%; min-width: 50px;">
 
                         <p:commandButton
+                            ajax="false"
                             action="#{reportingJobsBean.actionDownloadReport(jobWrapper)}"
                             rendered="#{jobWrapper.downloadable}"
                             style="padding: 0 4px;"

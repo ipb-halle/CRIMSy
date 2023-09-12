@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.reporting.report;
 
 import de.ipb_halle.lbac.entity.DTO;
+import org.omnifaces.el.functions.Objects;
 
 /**
  * Report DTO
@@ -44,6 +45,34 @@ public class Report implements DTO {
                 .setContext(context)
                 .setName(name)
                 .setSource(source);
+    }
+
+    /**
+     *
+     * @param other
+     * @return true if both report Ids and both sources are not null and equal.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (! Objects.isInstance(this.getClass().getName(), other)) {
+            return false;
+        }
+
+        Report report = (Report) other;
+        return (other == this)
+                || ((id != null)
+                && id.equals(report.getId())
+                && (source != null)
+                && source.equals(report.getSource()));
+    }
+
+    @Override
+    public int hashCode() {
+        return ((id != null) ? id.hashCode() : 0)
+                + ((source != null) ? source.hashCode() : 0);
     }
 
     public Integer getId() {
