@@ -18,7 +18,6 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -27,16 +26,16 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <!-- plugin modules -->
-        
+
         <crimsy:dlgMaterialEdit
-            id="ccDlgMaterialEdit" 
+            id="ccDlgMaterialEdit"
             agent="#{experimentBean.materialAgent}" />
-  
+
         <crimsy:dlgMaterialView
             id="ccDlgMaterialView"
             agent="#{experimentBean.linkedDataAgent}" />
-        
-        
+
+
         <crimsy:dlgItemView
             id="ccDlgItemView"
             agent="#{experimentBean.linkedDataAgent}" />
@@ -49,8 +48,8 @@
             <crimsy:dlgLinkCreation
                 id="ccDlgLinkCreation"/>
         </h:panelGroup>
-        
-      
+
+
         <crimsy:acobjectModal
             acobjectController="#{experimentBean.acObjectController}"
             groupsAgent="#{groupAgent}"
@@ -67,87 +66,128 @@
                 <ui:param name="chartController" value="#{experimentBean}" />
             </ui:include>
         </ui:insert>
-     
-        <b:panel
+
+        <!--Experiments-->
+        <!--***************************************************************************-->
+        <p:panel
             id="experiments"
-            title="#{msgs.expExperiments}"
+            header="#{msgs.expExperiments}"
             styleClass="shownExperiments">
+
             <p:outputPanel deferred="false">
-                <b:row>
-                    <h:form id="experimentForm">
-                        <b:column id="experimentColumn" span="3">
-                            <p:tabMenu 
-                                id="experimentTabId"
-                                styleClass="ExpTabMenu"
-                                activeIndex="#{experimentBean.templateMode ? 0 : 1}">
-                                <p:menuitem value="#{msgs.expTemplates}" 
-                                            action="#{experimentBean.actionCancel()}" 
-                                            update="experimentForm expRecordsForm" 
-                                            process="@parent">
-                                    <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="True" />
-                                </p:menuitem>
-                                <p:menuitem value="#{msgs.expExperiments}" 
-                                            action="#{experimentBean.actionCancel()}" 
-                                            update="experimentForm expRecordsForm" 
-                                            process="@parent">
-                                    <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="False" />
-                                </p:menuitem>
-                            </p:tabMenu>
-                        <b:row>
-                            <b:column span="9">
-                                <b:inputText
-                                    value="#{experimentBean.searchTerm}"/>
-                            </b:column>
-                            <b:column span="3">
-                                <b:commandButton
-                                    action="#{experimentBean.actionActualizeExperimentsList()}"
-                                    ajax="true"
-                                    value="#{msgs.expSearchBtn}" 
-                                    update="experimentForm"/>
-                            </b:column>
-                        </b:row>
+
+                <p:row>
+                    <div style="display: flex; flex-direction: row;">
+
+                        <h:form id="experimentForm" style="border:1px solid #dee2e6;border-radius:3px; padding:0.5rem;width:29%;">
+
+                            <p:outputPanel id="experimentColumn" >
+
+                                <!--Tab Menu-->
+                                <!--**************************************************************************************-->
+                                <p:tabMenu
+                                    id="experimentTabId"
+                                    style="margin-bottom: 0.5rem;"
+                                    styleClass="ExpTabMenu"
+                                    activeIndex="#{experimentBean.templateMode ? 0 : 1}">
+
+                                    <p:menuitem value="#{msgs.expTemplates}"
+                                                action="#{experimentBean.actionCancel()}"
+                                                update="experimentForm expRecordsForm"
+                                                process="@parent">
+                                        <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="True" />
+                                    </p:menuitem>
+
+                                    <p:menuitem value="#{msgs.expExperiments}"
+                                                action="#{experimentBean.actionCancel()}"
+                                                update="experimentForm expRecordsForm"
+                                                process="@parent">
+                                        <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="False" />
+                                    </p:menuitem>
+
+                                </p:tabMenu>
+
+                                <p:row>
+                                    <div style="display: flex; flex-direction: row;">
+
+                                        <!--InputField-->
+                                        <!--************************************************************************-->
+                                        <p:outputPanel >
+                                            <p:inputText
+                                                value="#{experimentBean.searchTerm}"/>
+                                        </p:outputPanel>
+
+                                        <!--Search button-->
+                                        <!--************************************************************************-->
+                                        <p:outputPanel >
+                                            <p:commandButton
+                                                style="margin-left: 0.5rem;"
+                                                action="#{experimentBean.actionActualizeExperimentsList()}"
+                                                ajax="true"
+                                                process="@form"
+                                                value="#{msgs.expSearchBtn}"
+                                                update="experimentForm"/>
+                                        </p:outputPanel>
+                                    </div>
+                                </p:row>
+
                                 <ui:insert name="experimentList">
                                     <ui:include src="experimentList.xhtml"/>
                                 </ui:insert>
-                            <p:panelGrid styleClass="borderlessButtonTable">
-                                <p:row>
-                                    <p:column
-                                        styleClass="addEditExperimentButton"
-                                         id="newExpButtonColumn">
-                                        <p:commandButton 
-                                            ajax="true"
-                                            styleClass="experimentActionButton"
-                                            value="#{experimentBean.getCreateNewExperimentButtonLabel()}" 
-                                            action="#{experimentBean.actionNewExperiment()}"
-                                            update="@(.expDataClass)"
-                                            disabled="#{experimentBean.isNewExpButtonDisabled()}"
-                                            oncomplete="PF('dlg_experimentData').show();"/>
-                                        <p:tooltip
-                                            position="top"
-                                            for="newExpButtonColumn"
-                                            value="#{experimentBean.getNewExpToolTip()}">
-                                        </p:tooltip>
-                                    </p:column>
-                                </p:row>
-                            </p:panelGrid>
-                        </b:column> 
-                    </h:form>
-                    <!-- This form has "multipart/form-data" as enctype because the image editor
-                         component needs to use file uploads. The autocomplete="off" is needed
-                         because Firefox caches hidden input fields (also related to the image
-                         editor), see https://stackoverflow.com/questions/9787135/firefox-caches-hidden-inputs -->                                        
-                    <h:form id="expRecordsForm" enctype="multipart/form-data" pt:autocomplete="off">
-                        <b:column span="9">
-                            <b:panel collapsible="false" title="#{msgs.expExperimentRecords}">
-                                <ui:insert name="expRecords">
-                                    <ui:include src="expRecordList.xhtml" />
-                                </ui:insert>
-                            </b:panel>
-                        </b:column>
-                    </h:form>
-                </b:row> 
+
+                                <p:panelGrid styleClass="borderlessButtonTable">
+                                    <p:row>
+                                        <p:column
+                                            styleClass="addEditExperimentButton"
+                                            id="newExpButtonColumn">
+
+                                            <p:commandButton
+                                                ajax="true"
+                                                styleClass="experimentActionButton ui-button-danger"
+                                                value="#{experimentBean.getCreateNewExperimentButtonLabel()}"
+                                                action="#{experimentBean.actionNewExperiment()}"
+                                                update="@(.expDataClass)"
+                                                disabled="#{experimentBean.isNewExpButtonDisabled()}"
+                                                oncomplete="PF('dlg_experimentData').show();"/>
+
+                                            <p:tooltip
+                                                position="top"
+                                                for="newExpButtonColumn"
+                                                value="#{experimentBean.getNewExpToolTip()}">
+
+                                            </p:tooltip>
+                                        </p:column>
+                                    </p:row>
+                                </p:panelGrid>
+
+                            </p:outputPanel>
+
+                        </h:form>
+
+
+                        <!-- This form has "multipart/form-data" as enctype because the image editor
+                             component needs to use file uploads. The autocomplete="off" is needed
+                             because Firefox caches hidden input fields (also related to the image
+                             editor), see https://stackoverflow.com/questions/9787135/firefox-caches-hidden-inputs -->
+
+                        <!--Experiment records-->
+                        <!--********************************************************************************-->
+                        <h:form id="expRecordsForm" enctype="multipart/form-data" pt:autocomplete="off" style="width:69%;margin: 0 0.5rem;">
+                            <p:outputPanel >
+                                <p:panel  header="#{msgs.expExperimentRecords}" >
+                                    <ui:insert name="expRecords">
+                                        <ui:include src="expRecordList.xhtml" />
+                                    </ui:insert>
+                                </p:panel>
+                            </p:outputPanel>
+                        </h:form>
+
+
+                    </div>
+                </p:row>
+
             </p:outputPanel>
-        </b:panel>
+        </p:panel>
     </h:body>
 
 </html>
