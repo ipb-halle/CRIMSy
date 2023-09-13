@@ -96,6 +96,8 @@
                             <!--onclick="ajax:materialBean.switchOneVersionForward();"-->
                         </p:column>
 
+                        <!--Cancel Button-->
+                        <!--***********************************************************-->
                         <p:column colspan="1">
                             <p:commandButton
                                 value="#{msgs.materialCreation_cancel}"
@@ -105,6 +107,9 @@
                                 process="@this"
                                 />
                         </p:column>
+
+                        <!--Create button-->
+                        <!--****************************************************************-->
                         <p:column colspan="1">
                             <!-- The server side bean gets only access to the hidden input fields, so they must be updated before submitting their value to the server -->
                             <p:commandButton
@@ -126,8 +131,12 @@
                                 value="#{msgs.materialCreation_type}"
                                 />
                         </p:column>
+
                         <p:column
                             styleClass="materialTypeMenuClass">
+
+                            <!--Material Types SelectOneMenu-->
+                            <!--****************************************************-->
                             <p:selectOneMenu
                                 value="#{materialBean.currentMaterialType}"
                                 styleClass="tstMaterialTypeMenu"
@@ -135,15 +144,20 @@
                                 >
                                 <f:selectItems
                                     value="#{materialBean.getMaterialTypes()}"/>
+
+                                <p:ajax update="materialEditForm" />
+
                             </p:selectOneMenu>
+
                         </p:column>
+
                         <p:column colspan="1">
                             <h:outputText
                                 value="#{materialBean.getMode()}"/>
                         </p:column>
                         <p:column colspan="1">
-                            <p:panel
-                                rendered="#{not empty materialBean.errorMessages}">
+
+                            <p:panel rendered="#{not empty materialBean.errorMessages}">
                                 <ui:repeat
                                     value="#{materialBean.errorMessages}"
                                     var="errorMessage"
