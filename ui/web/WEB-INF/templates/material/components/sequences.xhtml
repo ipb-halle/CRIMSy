@@ -31,12 +31,12 @@
         <ui:composition>
             <p:tab
                 title="#{msgs.materialCreation_panelSequenceInfos_name}"
+                disabled="#{!materialBean.permission.isDetailPanelVisible('SEQUENCE_INFORMATION')}"
                 >
-                <!--disabled="#{!materialBean.permission.isDetailPanelVisible('SEQUENCE_INFORMATION')}"-->
                 <p:outputPanel
                     styleClass="structurePanelClass"
+                    rendered="#{materialBean.permission.isDetailPanelVisible('SEQUENCE_INFORMATION')}"
                     >
-                    <!--rendered="#{materialBean.permission.isDetailPanelVisible('SEQUENCE_INFORMATION')}"-->
                     <div>
                         <h:panelGrid >
                             <h:panelGrid
