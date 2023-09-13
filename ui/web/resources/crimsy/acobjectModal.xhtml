@@ -50,13 +50,16 @@
             header="#{cc.attrs.acobjectController.getTitleOfModal()}"
             widgetVar="dlgAcl"
             modal="true"
-            styleClass="panelTitleInfoColor"
-            width="66%">
-            <p:ajax event="close"  listener="#{cc.attrs.acobjectController.handleClose}" /><!--
+            width="100%"
+            >
+            <!--styleClass="panelTitleInfoColor"-->
+            
+            <p:ajax event="close"  listener="#{cc.attrs.acobjectController.handleClose}" />
+            
+            <!--
             <center>-->
-              <p:panel  header="Acces control list of:Test Printer"
-                        collapsible="false"
-                        look="info">
+            
+              <p:panel  header="Acces control list of:Test Printer">
                 <p:panelGrid  styleClass="mainPanel">
                     <p:row styleClass="mainPanelEntry">
 <!--===============================================================================================================-->
@@ -65,10 +68,8 @@
                             <h:form styleClass="acoEditModalForm">
                                 <p:dataTable
                                     var="ace"
-                                    scrollable="true"
-                                    scrollHeight="200"
-                                    styleClass="acEntriesTableClass"
                                     value="#{cc.attrs.acobjectController.getAcEntries()}">
+                          
                                     <p:column
                                         styleClass="textTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_groupname}"
