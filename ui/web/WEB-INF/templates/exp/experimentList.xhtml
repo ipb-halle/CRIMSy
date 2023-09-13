@@ -1,78 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-    <b:dataTable
-        value="#{experimentBean.experiments}"
-        var="experiment"
-        styleClass="experimentsDataTable"
-        searching="false"
-        saveState="false">
-    <b:dataTableColumn
-        label="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">
-            <p:outputPanel  styleClass="expListEntry #{experimentBean.getStyleClassOfLink(experiment)}">
-                <div title="#{experiment.description}">
-                    <p:commandLink
-                        action="#{experimentBean.actionToggleExperiment(experiment)}"
-                        process="@this"
-                        update="
-                        expRecordsForm
-                        @(.expListEntry)
-                        @(.experimentActionButton)"
-                        style="text-decoration: none;">
-                        <b:iconAwesome value="search" />
-                        <h:outputText value="&#160;#{experiment.code}" />
-                    </p:commandLink>
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon="glyphicon glyphicon-user"
-                                     look="link"
-                                     ajax="true"
-                                     process="@this"
-                                     tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                                     update="@(.acoEditModal)"
-                                     type="button"
-                                     disabled="#{!experimentBean.isExperimentEditable(experiment)}"
-                                     onclick="ajax:experimentBean.actionStartAclChange(experiment)"
-                                     oncomplete="PF('dlgAcl').show();"/>
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon="pencil"
-                                     look="link"
-                                     ajax="true"
-                                     process="@this"
-                                     disabled="#{!experimentBean.isExperimentEditable(experiment)}"
-                                     tooltip="#{experimentBean.templateMode ? 
-                                         msgs.expAddNew_dialog_editTemplate : msgs.expEdit_iconTooltip}"
-                                     update="@(.expDataClass)"
-                                     type="button"
-                                     action ="#{experimentBean.actionStartEditExperiment(experiment)}"
-                                     oncomplete="PF('dlg_experimentData').show()"/>
-                </div>
-            </p:outputPanel>
-    </b:dataTableColumn>
-       </b:dataTable>
+
+        <p:dataTable
+            value="#{experimentBean.experiments}"
+            var="experiment"
+            styleClass="experimentsDataTable"
+            >
+
+            <p:column headerText="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">
+
+                <p:outputPanel  styleClass="expListEntry #{experimentBean.getStyleClassOfLink(experiment)}">
+
+                    <div title="#{experiment.description}" style="display: flex; flex-direction: row; justify-content: flex-end;">
+
+                        <p:commandButton
+                            action="#{experimentBean.actionToggleExperiment(experiment)}"
+                            process="@this"
+                            icon="pi pi-search"
+                            update="
+                            expRecordsForm
+                            @(.expListEntry)
+                            @(.experimentActionButton)"
+                            style="margin:0 0.5rem">
+
+                            <h:outputText value="&#160;#{experiment.code}" />
+
+                        </p:commandButton >
+
+                        <p:commandButton
+                            style="margin-right: 0.5rem;"
+                            id="expBtn1"
+                            icon="pi pi-user"
+                            styleClass="ui-button-danger"
+                            ajax="true"
+                            process="@this"
+                            update="@(.acoEditModal)"
+                            type="submit"
+                            disabled="#{!experimentBean.isExperimentEditable(experiment)}"
+                            action="#{experimentBean.actionStartAclChange(experiment)}"
+                            oncomplete="PF('dlgAcl').show();"/>
+                        <!--onclick="ajax:experimentBean.actionStartAclChange(experiment)"-->
+
+                        <p:tooltip value="#{msgs.collMgr_tooltip_changeUserPermission}" for="expBtn1"/>
+
+                        <p:commandButton style="margin-right:  0.5rem"
+                                         icon="pi pi-pencil"
+                                         id="expBtn2"
+                                         styleClass="ui-button-success"
+                                         ajax="true"
+                                         process="@this"
+                                         disabled="#{!experimentBean.isExperimentEditable(experiment)}"
+                                         update="@(.expDataClass)"
+                                         type="submit"
+                                         action ="#{experimentBean.actionStartEditExperiment(experiment)}"
+                                         oncomplete="PF('dlg_experimentData').show()"/>
+
+                        <p:tooltip value="#{experimentBean.templateMode ? msgs.expAddNew_dialog_editTemplate : msgs.expEdit_iconTooltip}" for="expBtn2"/>
+
+                    </div>
+                </p:outputPanel>
+            </p:column>
+        </p:dataTable>
     </ui:composition>
 </html>
