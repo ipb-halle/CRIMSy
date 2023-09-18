@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -24,7 +24,6 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
 
     <composite:interface name="dlgItemView"
@@ -36,45 +35,42 @@
     </composite:interface>
 
     <composite:implementation >
+
         <h:form id="dlgItemViewForm">
+
             <p:dialog id="dlgItemView"
                       header="#{cc.attrs.agent.material.firstName}"
                       styleClass="dlgItemView"
                       widgetVar="dlg_ItemView"
-                      modal="true" 
+                      modal="true"
                       width="600"
                       height="600">
 
-                <b:container
-                    styleClass="materialView">
-                    <b:row>
-                        <b:column 
-                            span="2"
-                            styleClass="dlgItemViewHeader dlgItemViewText">
+                <p:outputPanel  styleClass="materialView">
+
+                    <p:outputPanel>
+                        <p:outputPanel styleClass="dlgItemViewHeader dlgItemViewText">
                             <h:outputText value="#{msgs.dlgItemView_itemAmount}" />
-                        </b:column>    
-                        <b:column 
-                            styleClass="dlgItemViewText"
-                            span="4">
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="dlgItemViewText"  >
                             <h:outputText value="#{cc.attrs.agent.getAmountOfItem()}" />
-                        </b:column>
-                    </b:row>
-                    <b:row>    
-                        <b:column
-                            styleClass="dlgItemViewHeader dlgItemViewText"
-                            span="2">
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <p:outputPanel>
+                        <p:outputPanel styleClass="dlgItemViewHeader dlgItemViewText" >
                             <h:outputText value="#{msgs.dlgItemView_itemLabel}" />
-                        </b:column>    
-                        <b:column 
-                            styleClass="dlgItemViewText"
-                            span="4">
+                        </p:outputPanel>
+
+                        <p:outputPanel  styleClass="dlgItemViewText">
                             <h:outputText value="#{cc.attrs.agent.getItemLabel()}" />
-                        </b:column>
-                    </b:row>
-                    <b:row>
-                        <b:column
-                            span="12"
-                            styleClass="dlgMaterialViewStructure">
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <p:outputPanel>
+                        <p:outputPanel styleClass="dlgMaterialViewStructure">
+
                             <mol:molecule id="dlgItemView_molViewer"
                                           rendered="#{cc.attrs.agent.hasStructure}"
                                           value="#{cc.attrs.agent.material.molecule.structureModel}"
@@ -83,23 +79,26 @@
                                           format="MDLV2000"
                                           readonly="true"
                                           widgetVar="dlg_ItemView_molViewer"/>
-                        </b:column>
-                    </b:row>
-                    <b:row>
-                        <b:column
-                            span="2"
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <p:outputPanel>
+                        <p:outputPanel
+
                             styleClass="dlgItemViewHeader dlgItemViewText">
                             <h:outputText value="#{msgs.dlgItemView_itemPosition}" />
-                        </b:column>    
-                        <b:column
-                            styleClass="dlgItemViewText"
-                            span="9">
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="dlgItemViewText" >
+
                             <h:outputText
                                 escape="false"
-                                value="#{cc.attrs.agent. getLocationOfItem() }"/>           
-                        </b:column>    
-                    </b:row>
-                </b:container>
+                                value="#{cc.attrs.agent. getLocationOfItem() }"/>
+
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                </p:outputPanel>
             </p:dialog>
         </h:form>
     </composite:implementation>
