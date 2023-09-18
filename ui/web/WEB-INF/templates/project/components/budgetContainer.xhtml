@@ -21,44 +21,48 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:panel
-                title="Budgeteinstellungen"
+            <p:panel
+                header="Budgeteinstellungen"
                 id="budgetMainPanel">
-                <b:container>
-                    <b:row>
-                        <b:column span="1">
-                            <b:selectBooleanCheckbox 
+                <p:outputPanel>
+                    <p:outputPanel>
+                        <p:outputPanel >
+                            <p:selectBooleanCheckbox
                                 id="budgetCheckBox"
                                 value="#{projectEditBean.hasBudget}"
-                                label="Projekt mit Budget" 
-                                process="@this"
-                                ajax="true"
-                                update="budgetAmount"/>
-                        </b:column>
-                        <b:column span="4">
-                            <b:container >
-                                <b:row
+                                label="Projekt mit Budget"
+                                >
+                                <p:ajax
+                                    process="@this"
+                                    update="budgetAmount"
+                                    />
+                            </p:selectBooleanCheckbox>
+                        </p:outputPanel>
+                        <p:outputPanel >
+                            <p:outputPanel >
+                                <p:outputPanel
                                     id="budgetAmount"
                                     rendered="#{projectEditBean.hasBudget}"
                                     >
-                                    <b:column span="2">
-                                        <b:inputText
-                                            placeholder="Bitte das Projektbudget angeben"/>
-                                    </b:column>
-                                </b:row>
-                            </b:container>
-                        </b:column>
-                    </b:row>
+                                    <p:outputPanel >
 
-                </b:container>
-            </b:panel>
+                                        <p:inputText
+                                            placeholder="Bitte das Projektbudget angeben"/>
+
+                                    </p:outputPanel>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                </p:outputPanel>
+            </p:panel>
 
         </ui:composition>
     </h:body>
