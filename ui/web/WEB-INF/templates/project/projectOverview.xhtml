@@ -105,10 +105,10 @@
                                     style="margin: 0 0.5rem;"
                                     icon="pi pi-user"
                                     ajax="true"
-                                    process="@this"
-                                    update="@(.acoEditModal)"
                                     type="submit"
                                     oncomplete="PF('dlgAcl').show();"
+                                    process="@this"
+                                    update="@(.mainPanel)"
                                     disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
                                     action="#{projectBean.actionStartAclChange(project)}"
                                     >
