@@ -38,6 +38,9 @@
 
                     <div title="#{experiment.description}" style="display: flex; flex-direction: row; justify-content: flex-end;">
 
+
+                        <!--Search button-->
+                        <!--************************************************************************-->
                         <p:commandButton
                             action="#{experimentBean.actionToggleExperiment(experiment)}"
                             process="@this"
@@ -52,6 +55,9 @@
 
                         </p:commandButton >
 
+
+                        <!--Group Permissions button-->
+                        <!--************************************************************************-->
                         <p:commandButton
                             style="margin-right: 0.5rem;"
                             id="expBtn1"
@@ -59,7 +65,7 @@
                             styleClass="ui-button-danger"
                             ajax="true"
                             process="@this"
-                            update="@(.acoEditModal)"
+                            update="@(.mainPanel)"
                             type="submit"
                             disabled="#{!experimentBean.isExperimentEditable(experiment)}"
                             action="#{experimentBean.actionStartAclChange(experiment)}"
@@ -68,6 +74,9 @@
 
                         <p:tooltip value="#{msgs.collMgr_tooltip_changeUserPermission}" for="expBtn1"/>
 
+
+                        <!--Edit experiment button-->
+                        <!--************************************************************************-->
                         <p:commandButton style="margin-right:  0.5rem"
                                          icon="pi pi-pencil"
                                          id="expBtn2"

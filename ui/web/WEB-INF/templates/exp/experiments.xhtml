@@ -43,6 +43,7 @@
         <crimsy:dlgItemEdit
             id="ccDlgItemEdit"
             agent="#{experimentBean.itemAgent}" />
+
         <h:panelGroup
             styleClass="linkCreationPanelGroup">
             <crimsy:dlgLinkCreation
@@ -131,6 +132,9 @@
                                     </div>
                                 </p:row>
 
+
+                                <!--Liste der Experimente-->
+                                <!--************************************************************************-->
                                 <ui:insert name="experimentList">
                                     <ui:include src="experimentList.xhtml"/>
                                 </ui:insert>
@@ -141,6 +145,9 @@
                                             styleClass="addEditExperimentButton"
                                             id="newExpButtonColumn">
 
+
+                                            <!--New Experiment-->
+                                            <!--************************************************************************-->
                                             <p:commandButton
                                                 ajax="true"
                                                 styleClass="experimentActionButton ui-button-danger"
