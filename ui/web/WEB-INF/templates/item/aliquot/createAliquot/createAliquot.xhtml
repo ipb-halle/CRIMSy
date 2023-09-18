@@ -61,10 +61,6 @@
                     </p:outputPanel>
                 </p:panel>
 
-                <!-- Bug: BootsFaces'/JSF's AJAX handlers are not able to update DOM elements inside the
-                          tabs of p:wizard (except the first one). This works for PF components (e.g.
-                          <p:inputText> with <p:ajax>).
-                     Workaround: Invoke a p:remoteCommand via a JavaScript call. -->
                 <p:wizard
                     flowListener="#{createAliquotBean.onFlowProcess}"
                     styleClass="wizardCreateAliquot"

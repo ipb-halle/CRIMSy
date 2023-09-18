@@ -877,11 +877,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * experiment record "save" commandButton before executing its AJAX call.
      * This includes the onclick code specified via the specific experiment
      * record controller's {@link ExpRecordController#getSaveButtonOnClick()}
-     * method plus an AJAX call to {@link #actionDoNothing()} using the <a href=
-     * "https://showcase.bootsfaces.net/forms/ajax.jsf#basic_usage">BootsFaces-specific
-     * prefixes</a>. The default onclick action of &lt;b:commandButton&gt; (AJAX
-     * call) is suppressed by a terminating JavaScript 'return false'. The
-     * actionListener and action of the commandButton are called afterwards.
+     * method. 
+     * The call to actionDoNothing() in former releases is now skipped!
+     * The actionListener and action of the commandButton are called afterwards.
      *
      * @return JavaScript code to be executed
      */
@@ -895,8 +893,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 sb.append(";");
             }
         }
-        sb.append("ajax:experimentBean.actionDoNothing();javascript:return false;");
-
         return sb.toString();
     }
 

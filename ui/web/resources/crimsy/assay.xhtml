@@ -223,7 +223,8 @@
                 <p:selectOneMenu
                     disabled="#{!assayRecord.edit}"
                     value="#{assayRecord.payload.unit}"
-                    converter="unitConverter">
+                    converter="unitConverter"
+                    >
                     <f:selectItems value="#{cc.attrs.assay.getPossibleUnits()}" />
                 </p:selectOneMenu>
             </p:column>
