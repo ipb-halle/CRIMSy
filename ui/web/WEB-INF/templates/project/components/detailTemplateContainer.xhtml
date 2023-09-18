@@ -21,58 +21,59 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:panel
-                title="#{msgs.projectEdit_detailinfo_header}"
+            <p:panel
+                header="#{msgs.projectEdit_detailinfo_header}"
                 id="roleMainPanel">
-                <b:container
+                <p:outputPanel
                     styleClass="roleMainPanelClass">
-                    <b:row>
-                        <b:column span="11">
-                            <b:accordion>
-                                <ui:insert> 
+                    <p:outputPanel>
+                        <p:outputPanel >
+
+                            <p:accordionPanel>
+                                <ui:insert>
                                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
                                         <ui:param name="action" value="COMMON_INFORMATION"/>
                                     </ui:include>
                                 </ui:insert>
-                                <ui:insert> 
+                                <ui:insert>
                                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
                                         <ui:param name="action" value="INDEX"/>
                                     </ui:include>
                                 </ui:insert>
-                                <ui:insert> 
+                                <ui:insert>
                                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
                                         <ui:param name="action" value="STRUCTURE_INFORMATION"/>
                                     </ui:include>
                                 </ui:insert>
-                                <ui:insert> 
+                                <ui:insert>
                                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
                                         <ui:param name="action" value="HAZARD_INFORMATION"/>
                                     </ui:include>
                                 </ui:insert>
-                                <ui:insert> 
+                                <ui:insert>
                                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
                                         <ui:param name="action" value="STORAGE_CLASSES"/>
                                     </ui:include>
                                 </ui:insert>
-                                <ui:insert> 
+                                <ui:insert>
                                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
                                         <ui:param name="action" value="TAXONOMY"/>
                                     </ui:include>
                                 </ui:insert>
 
-                            </b:accordion>
-                        </b:column>
+                            </p:accordionPanel>
 
-                    </b:row>
-                </b:container>
-            </b:panel>
+                        </p:outputPanel>
+
+                    </p:outputPanel>
+                </p:outputPanel>
+            </p:panel>
 
         </ui:composition>
     </h:body>
