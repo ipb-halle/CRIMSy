@@ -17,9 +17,8 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.lbac.service.FileService;
-
-import de.ipb_halle.tx.file.FileObject;
 
 import java.io.InputStream;
 import java.io.OutputStream;

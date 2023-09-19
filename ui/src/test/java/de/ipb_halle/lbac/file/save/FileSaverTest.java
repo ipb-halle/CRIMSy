@@ -101,7 +101,7 @@ public class FileSaverTest extends TestBase {
         cmap.put("id", id);
         FileObject fo = fileEntityService.load(cmap).get(0);
         Assert.assertEquals(col.getId(), fo.getCollectionId());
-        Assert.assertEquals("en", fo.getDocument_language());
+        Assert.assertEquals("en", fo.getDocumentLanguage());
         Assert.assertEquals("Document1.pdf", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUserId());
         
@@ -112,7 +112,7 @@ public class FileSaverTest extends TestBase {
         cmap.put("id", id);
         fo = fileEntityService.load(cmap).get(0);
         Assert.assertEquals(col.getId(), fo.getCollectionId());
-        Assert.assertEquals("en", fo.getDocument_language());
+        Assert.assertEquals("en", fo.getDocumentLanguage());
         Assert.assertEquals("DocumentX.docx", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUserId());
         
@@ -123,7 +123,7 @@ public class FileSaverTest extends TestBase {
         cmap.put("id", id);
         fo = fileEntityService.load(cmap).get(0);
         Assert.assertEquals(col.getId(), fo.getCollectionId());
-        Assert.assertEquals("en", fo.getDocument_language());
+        Assert.assertEquals("en", fo.getDocumentLanguage());
         Assert.assertEquals("TestTabelle.xlsx", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUserId());
         
@@ -135,7 +135,7 @@ public class FileSaverTest extends TestBase {
         cmap.put("id", id);
         fo = fileEntityService.load(cmap).get(0);
         Assert.assertEquals(col.getId(), fo.getCollectionId());
-        Assert.assertEquals("de", fo.getDocument_language());
+        Assert.assertEquals("de", fo.getDocumentLanguage());
         Assert.assertEquals("a9eed28584c7e6df1d061c77884820524a7d2b4c6644ef5d13b0c2daedaf4d10d040b7c7380df448f91a28eb7fba94cf0b4a964ae141032c63a0b571aeaa5ccf", fo.getHash());
         Assert.assertEquals("TestTabelle.xlsx", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUserId());

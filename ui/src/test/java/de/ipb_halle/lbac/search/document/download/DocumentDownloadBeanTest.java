@@ -233,7 +233,7 @@ public class DocumentDownloadBeanTest extends TestBase {
         FileObject fO = new FileObject();
         fO.setCollectionId(readableCollection.getId());
         fO.setCreated(new Date());
-        fO.setDocument_language("en");
+        fO.setDocumentLanguage("en");
         fO.setFileLocation(location);
         fO.setName(location);
         fO.setUserId(publicUser.getId());

@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import de.ipb_halle.kx.termvector.TermFrequency;
 import de.ipb_halle.lbac.search.document.Document;
-import de.ipb_halle.tx.file.TermFrequency;
 import java.io.Serializable;
 import java.util.List;
 

@@ -34,8 +34,9 @@
         <module>agency-api</module>
         <module>agency</module>
         <module>snowball</module>
-        <module>tx-api</module>
         <module>tx</module>
+        <module>kx-api</module>
+        <module>kx-web</module>
         <module>ui</module>
     </modules>
 

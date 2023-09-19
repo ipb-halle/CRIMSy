@@ -17,12 +17,12 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectEntity;
+import de.ipb_halle.kx.termvector.TermVector;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.tx.file.FileObject;
-import de.ipb_halle.tx.file.FileObjectEntity;
-import de.ipb_halle.tx.file.TermVector;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;

@@ -99,7 +99,7 @@ public class FileEntityServiceTest extends TestBase {
         FileObject fE = new FileObject();
         fE.setCollectionId(col.getId());
         fE.setCreated(new Date());
-        fE.setDocument_language("en");
+        fE.setDocumentLanguage("en");
         fE.setFileLocation("testFile.pdf");
         fE.setHash("testHash");
         fE.setName("testFile");

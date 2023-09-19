@@ -182,7 +182,7 @@ public class DocumentWebServiceTest extends TestBase {
         FileObject fO = new FileObject();
         fO.setCollectionId(collection.getId());
         fO.setCreated(new Date());
-        fO.setDocument_language("en");
+        fO.setDocumentLanguage("en");
         fO.setFileLocation(location);
         fO.setName(location);
         fO.setUserId(adminUser.getId());

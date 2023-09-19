@@ -17,6 +17,18 @@
  */
 package de.ipb_halle.lbac.search.document.download;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.lbac.webservice.service.LbacWebService;
+import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
+
 import java.io.File;
 import java.io.InputStream;
 
@@ -31,18 +43,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.tx.file.FileObject;
-import de.ipb_halle.lbac.webservice.service.LbacWebService;
-import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 
 /**
  * Webservice for download of documents.

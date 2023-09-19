@@ -17,6 +17,10 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.kx.file.AttachmentHolder;
+import de.ipb_halle.kx.termvector.StemmedWordOrigin;
+import de.ipb_halle.kx.termvector.TermVector;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.save.FileAnalyser;
 import de.ipb_halle.lbac.collections.Collection;
@@ -30,10 +34,6 @@ import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import de.ipb_halle.tx.file.AttachmentHolder;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.tx.file.StemmedWordOrigin;
-import de.ipb_halle.tx.file.TermVector;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
@@ -58,7 +58,7 @@ public class UploadToCol implements Runnable {
     protected String fileName;
     protected FileSaver fileSaver;
     protected FileAnalyser fileAnalyser;
-    protected TermVectorEntityService termVectorService;
+    protected TermVectorService termVectorService;
     protected Integer fileId;
     protected FileEntityService fileEntityService;
     private final Logger logger;
@@ -69,7 +69,7 @@ public class UploadToCol implements Runnable {
             User user,
             AsyncContext asyncContext,
             CollectionService collectionService,
-            TermVectorEntityService termVectorService) {
+            TermVectorService termVectorService) {
         fileAnalyser = new FileAnalyser(filterDefinition);
         fileSaver = new FileSaver(fileEntityService, user);
         this.asyncContext = asyncContext;

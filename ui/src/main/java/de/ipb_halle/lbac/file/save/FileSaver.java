@@ -17,11 +17,11 @@
  */
 package de.ipb_halle.lbac.file.save;
 
+import de.ipb_halle.kx.file.AttachmentHolder;
+import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.tx.file.FileObject;
 import de.ipb_halle.lbac.util.HexUtil;
-import de.ipb_halle.tx.file.AttachmentHolder;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,7 +105,7 @@ public class FileSaver {
     }
 
     public void updateLanguageOfFile(String language) {
-        fileObject.setDocument_language(language);
+        fileObject.setDocumentLanguage(language);
         fileEntityService.save(fileObject);
     }
 

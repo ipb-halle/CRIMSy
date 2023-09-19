@@ -33,8 +33,7 @@
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
     </scm>
-    <packaging>war</packaging>
-    <!-- <packaging>jar</packaging> -->
+    <packaging>jar</packaging>
 
  
     <properties>
@@ -84,7 +83,6 @@
             </plugin>
 
             <!-- assembly plugin -->
-            <!--
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.6</version>
@@ -108,7 +106,6 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
 
             <!-- automatic build number -->
             <plugin>
@@ -138,69 +135,11 @@
                 </configuration>
             </plugin>
 
-           <!-- A maven plugin to process annotation for jdk6 at compile time -->
-<!--
-            <plugin>
-                <groupId>org.bsc.maven</groupId>
-                <artifactId>maven-processor-plugin</artifactId>
-                <version>2.0.5</version>
-                <executions>
-                    <execution>
-                        <id>process</id>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <processors>
-                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-                            </processors>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-jpamodelgen</artifactId>
-                        <version>${hibernate.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
--->
-
-            <!-- web application packaging -->
-
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <warSourceDirectory>web</warSourceDirectory>
-                    <failOnMissingWebXml>true</failOnMissingWebXml>
-                    <warName>ui</warName>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Build>${buildNumber}</Implementation-Build>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-
-
         </plugins>
     </build>
 
 
     <dependencies>
-
-        <!-- TX api -->
-        <dependency>
-            <groupId>de.ipb-halle</groupId>
-            <artifactId>tx-api</artifactId>
-            <version>1.0.1</version>
-        </dependency>
 
         <!-- commons-cli -->
         <dependency>

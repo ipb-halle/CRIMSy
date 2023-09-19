@@ -23,7 +23,6 @@ package de.ipb_halle.lbac.search.document;
  * instance of SearchRequest in the ui and to transmit it in xml serialized form
  * to the backend.
  */
-import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import de.ipb_halle.lbac.webservice.WebRequest;
 
 import java.io.Serializable;

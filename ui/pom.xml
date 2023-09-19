@@ -605,23 +605,10 @@
             <version>1.0.0</version>
         </dependency>
 
-
         <dependency>
             <groupId>de.ipb-halle</groupId>
-            <artifactId>tx</artifactId>
-            <version>1.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-rt-rs-client</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>de.ipb-halle</groupId>
-            <artifactId>tx-api</artifactId>
-            <version>1.0.1</version>
+            <artifactId>kx-api</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- tika dependencies -->

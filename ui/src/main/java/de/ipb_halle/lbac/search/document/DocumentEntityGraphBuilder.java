@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.search.document;
 
+import de.ipb_halle.kx.file.FileObjectEntity;
+import de.ipb_halle.kx.termvector.TermVectorEntity;
 import de.ipb_halle.lbac.collections.CollectionEntity;
-import de.ipb_halle.tx.file.FileObjectEntity;
-import de.ipb_halle.tx.file.TermVectorEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.crimsy_api.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;

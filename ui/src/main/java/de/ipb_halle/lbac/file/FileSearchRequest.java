@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.tx.file.AttachmentHolder;
+import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 
 /**

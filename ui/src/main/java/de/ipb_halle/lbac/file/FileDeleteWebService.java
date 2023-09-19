@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.tx.file.FileObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

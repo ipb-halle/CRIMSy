@@ -17,15 +17,16 @@
  */
 package de.ipb_halle.lbac.search.document;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectEntity;
+import de.ipb_halle.kx.termvector.TermFrequency;
+
 import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.tx.file.TermFrequency;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.tx.file.FileObject;
-import de.ipb_halle.tx.file.FileObjectEntity;
 import de.ipb_halle.lbac.file.FileSearchRequest;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
@@ -154,7 +155,7 @@ public class DocumentSearchService {
             docIds.add(d.getId());
         }
 
-        TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
+        TermOccurrence totalTerms = getTermOccurrence(
                 docIds,
                 normalizedTerms.getAllStemmedWords());
 
@@ -167,6 +168,29 @@ public class DocumentSearchService {
         }
         return searchState;
     }
+
+    /**
+     * getTermOccurrence with aggregation, grouping and order result
+     *
+     * @param fileIds - document ids
+     * @param searchTerms
+     * @return - list (String word, Integer wordCount)
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    public TermOccurrence getTermOccurrence(
+            List<Integer> fileIds,
+            Set<String> searchTerms) {
+        TermOccurrence occurence = new TermOccurrence();
+        for (Integer fileId : fileIds) {
+            List<TermFrequency> frequencies = termVectorService.getTermFrequencies(fileId, searchTerms);
+            for (TermFrequency freq : frequencies) {
+                occurrence.addOccurrence(fileId, freq.getTerm(), freq.getFrequency());
+            }
+        }
+        return occurrence;
+    }
+
 
     private int loadTotalCountOfFiles() {
         Query q = em.createNativeQuery(SQL_LOAD_DOCUMENT_COUNT);
@@ -201,7 +225,7 @@ public class DocumentSearchService {
         result.addResults(foundDocs);
         List<Integer> docIds = getDocIds(foundDocs);
 
-        TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
+        TermOccurrence totalTerms = getTermOccurence(
                 docIds,
                 getWordRoots(request));
         calculateWordCountOfDocs(foundDocs, totalTerms);
@@ -227,7 +251,7 @@ public class DocumentSearchService {
         return new HashSet<>();
     }
 
-    private void calculateWordCountOfDocs(List<Searchable> foundDocs, TermOcurrence totalTerms) {
+    private void calculateWordCountOfDocs(List<Searchable> foundDocs, TermOccurrence totalTerms) {
         for (Searchable searchable : foundDocs) {
             Document d = (Document) searchable;
             d.setWordCount(getLengthOfDocument(d.getId()));
@@ -323,7 +347,7 @@ public class DocumentSearchService {
         d.setCollectionId(fo.getCollectionId());
         d.setNodeId(nodeService.getLocalNodeId());
         d.setNode(nodeService.getLocalNode());
-        d.setLanguage(fo.getDocument_language());
+        d.setLanguage(fo.getDocumentLanguage());
         d.setCollection(collectionService.loadById(fo.getCollectionId()));
         d.setPath(fo.getFileLocation());
         d.setContentType(fo.getName().split("\\.")[fo.getName().split("\\.").length - 1]);
