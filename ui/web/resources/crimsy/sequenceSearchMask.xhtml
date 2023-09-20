@@ -48,74 +48,88 @@ limitations under the License.
 
     <composite:implementation>
         <ui:fragment rendered="#{cc.attrs.queryFieldRendered}">
-                    <br/>
+            <br/>
 
-                    <h:outputText value="#{msgs.sequenceSearch_searchMask_query}" />
-                    <br/>
-                    <p:inputTextarea
-                        value="#{cc.attrs.valuesHolder.query}"
-                        styleClass="materialFilterInputfield"
-                        style="resize:none" />
-                    <br/>
-                    <br/>
+            <!--Query-->
+            <!--********************************************************************-->
+            <h:outputText value="#{msgs.sequenceSearch_searchMask_query}" />
+            <br/>
+
+            <p:inputTextarea
+                value="#{cc.attrs.valuesHolder.query}"
+                styleClass="materialFilterInputfield"
+                style="resize:none" />
+            <br/>
+            <br/>
 
         </ui:fragment>
 
         <ui:fragment rendered="#{cc.attrs.searchModeFieldRendered}">
 
-                    <h:outputText value="#{msgs.sequenceSearch_searchMask_searchMode}" />
-                    <br/>
+            <h:outputText value="#{msgs.sequenceSearch_searchMask_searchMode}" />
+            <br/>
 
-                    <p:selectOneMenu
-                        value="#{cc.attrs.valuesHolder.searchMode}"
-                        styleClass="materialFilterInputfield"
-                        ajax="true"
-                        process="@this"
-                        update="translationTableId">
-                        <f:selectItems
-                            value="#{cc.attrs.valuesHolder.searchModeItems}"
-                            var="item"
-                            itemValue="#{item}"
-                            itemLabel="#{cc.attrs.valuesHolder.getLocalizedSearchModeLabel(item)}" />
-                    </p:selectOneMenu>
-                    <br/>
-                    <br/>
+            <!--Search mode-->
+            <!--****************************************************************************-->
+            <p:selectOneMenu
+                value="#{cc.attrs.valuesHolder.searchMode}"
+                styleClass="materialFilterInputfield"
+                >
+                <f:selectItems
+                    value="#{cc.attrs.valuesHolder.searchModeItems}"
+                    var="item"
+                    itemValue="#{item}"
+                    itemLabel="#{cc.attrs.valuesHolder.getLocalizedSearchModeLabel(item)}" />
+
+                <p:ajax
+                    process="@this"
+                    update="translationTableId"/>
+            </p:selectOneMenu>
+            <br/>
+            <br/>
 
         </ui:fragment>
 
         <ui:fragment rendered="#{cc.attrs.translationTableFieldRendered}">
 
-                    <h:outputText value="#{msgs.sequenceSearch_searchMask_translationTable}" />
-                    <br/>
+            <!--Translation table -->
+            <!--****************************************************************************-->
+            <h:outputText value="#{msgs.sequenceSearch_searchMask_translationTable}" />
+            <br/>
 
-                    <p:selectOneMenu
-                        id="translationTableId"
-                        value="#{cc.attrs.valuesHolder.translationTable}"
-                        style="width: 100%;"
-                        styleClass="materialFilterInputfield"
-                        disabled="#{cc.attrs.valuesHolder.translationTableDisabled}">
-                        <f:selectItems
-                            value="#{cc.attrs.valuesHolder.translationTableItems}"
-                            var="item"
-                            itemValue="#{item}"
-                            itemLabel="#{item}" />
-                    </p:selectOneMenu>
-                    <br/>
-                    <br/>
+            <p:selectOneMenu
+                id="translationTableId"
+                value="#{cc.attrs.valuesHolder.translationTable}"
+                style="width: 100%;"
+                styleClass="materialFilterInputfield"
+                disabled="#{cc.attrs.valuesHolder.translationTableDisabled}">
+                <f:selectItems
+                    value="#{cc.attrs.valuesHolder.translationTableItems}"
+                    var="item"
+                    itemValue="#{item}"
+                    itemLabel="#{item}" />
+            </p:selectOneMenu>
+            <br/>
+            <br/>
         </ui:fragment>
 
+        <!--Maximum number of results-->
+        <!--***************************************************************************-->
         <ui:fragment rendered="#{cc.attrs.maxResultsFieldRendered}">
 
-                    <h:outputText value="#{msgs.sequenceSearch_searchMask_maxResults}" />
-                    <br/>
+            <h:outputText value="#{msgs.sequenceSearch_searchMask_maxResults}" />
+            <br/>
 
-                    <p:selectOneMenu
-                        value="#{cc.attrs.valuesHolder.maxResults}"
-                        styleClass="materialFilterInputfield">
-                        <f:selectItems value="#{cc.attrs.valuesHolder.maxResultItems}" />
-                    </p:selectOneMenu>
-                    <br/>
-                   <br/>
+            <p:selectOneMenu
+                value="#{cc.attrs.valuesHolder.maxResults}"
+                styleClass="materialFilterInputfield">
+
+                <f:selectItems value="#{cc.attrs.valuesHolder.maxResultItems}" />
+
+            </p:selectOneMenu>
+            <br/>
+            <br/>
         </ui:fragment>
+
     </composite:implementation>
 </html>

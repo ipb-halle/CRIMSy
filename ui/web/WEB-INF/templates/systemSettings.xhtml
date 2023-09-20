@@ -26,51 +26,83 @@
       xmlns:p="http://primefaces.org/ui">
 
     <h:body>
-    <!--<ui:composition>-->
-        <h:form id="systemSettings" horizontal="true" method="post" style="border:1px solid #029ACF;border-radius:3px;">
-            <p:panel header="#{msgs.SystemSettings}" collapsible="false" look="info" styleClass="panelTitleInfoColor">
-                <!--<p:panelGrid columns="2" size="sm" id="systemSettingPanel">-->
-                    <!--<p:outputLabel value="#{msgs.SystemSettings}" styleClass="panelTitleInfoColor" colspan="2"/>-->
-                    <br/>
+        <ui:composition>
+            <h:form id="systemSettings"
+                    style="border:1px solid #029ACF;border-radius:3px;">
+
+                <!--System Settings Panek-->
+                <p:panel header="#{msgs.SystemSettings}"
+                         styleClass="panelTitleInfoColor">
 
                     <ui:repeat id="systemSettingsString" value="#{systemSettings.stringSettings}" var="p" varStatus="status">
-                                            <br/>
 
+                        <!--Repeat: label-->
+                        <!--********************************************-->
+                        <br/>
                         <p:outputLabel value="#{msgs[p.key]}:"/>
+                        <br/>
 
-                        <p:inputText  label="#{msgs[p.key]}:" title="#{msgs[p.key.concat('_detail')]}" value="#{p.value}" styleClass="form-control" />
+                        <!--Repeat Text-->
+                        <p:inputText
+                            style="margin:0.5rem 0;"
+                            label="#{msgs[p.key]}:"
+                            title="#{msgs[p.key.concat('_detail')]}"
+                            value="#{p.value}"
+                            styleClass="form-control" />
+
                     </ui:repeat>
-
                     <br/>
 
                     <ui:repeat id="systemSettingsBool" value="#{systemSettings.boolSettings}" var="p" varStatus="status">
+
+                        <!--Infotext at login label-->
+                        <!--**********************************************-->
+                        <br/>
                         <p:outputLabel value="#{msgs[p.key]}:"/>
-                        <p:selectBooleanCheckbox value="#{p.value}"  label="#{msgs[p.key]}:" caption="#{msgs[p.key.concat('_detail')]}" ajax="false"/>
+                        <br/>
+
+                        <p:selectBooleanCheckbox
+                            value="#{p.value}"
+                            label="#{msgs[p.key]}:"
+                            label="#{msgs[p.key.concat('_detail')]}"
+                            >
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+
                     </ui:repeat>
-
                     <br/>
                     <br/>
 
+
+                    <!--Label-->
+                    <!--**********************************************-->
                     <p:outputLabel for="customDsvgoText" value="#{msgs.customDsgvoText}:" />
                     <br/>
 
-
-                    <p:inputTextarea id="customDsvgoText" label="#{msgs.customDsgvoText}: " value="#{systemSettings.customDsgvoString}" style="width:100%;" />
+                    <!--DSGVO supplement:-->
+                    <!--****************************************-->
+                    <p:inputTextarea
+                        id="customDsvgoText"
+                        label="#{msgs.customDsgvoText}: "
+                        value="#{systemSettings.customDsgvoString}"
+                        style="width:100%;" />
                     <br/>
                     <br/>
 
+                    <!--Save Button-->
+                    <!--************************************************-->
                     <p:row>
                         <p:commandButton type="submit"
                                          icon="pi pi-save"
-                                         styleClass="btn btn-primary"
+                                         ajax="false"
+                                         styleClass=" ui-button-danger"
                                          action="#{systemSettings.save}"
                                          value="#{msgs.SystemSettingsSave}"/>
                     </p:row>
-                <!--</p:panelGrid>-->
-            </p:panel>
-        </h:form>
+                </p:panel>
+            </h:form>
 
 
-        <!--</ui:composition>-->
+        </ui:composition>
     </h:body>
 </html>

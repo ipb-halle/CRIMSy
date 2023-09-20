@@ -26,9 +26,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <p:outputPanel styleClass="materialOverviewTableContainer">
-            <p:outputPanel>
-
-                <p:outputPanel >
+            <p:panelGrid
+                columnClasses="ui-g-12 ui-lg-4 ui-md-4, ui-g-12 ui-lg-8 ui-md-8"
+                columns='2'
+                style="width:100%;">
+                <p:column>
                     <crimsy:materialSearchMask
                         searchController="#{sequenceSearchBean.searchMaskController}"
                         updateTargets="sequenceSearchResultsTableId growlMsg"
@@ -41,15 +43,14 @@
                         </p:outputPanel>
                         <crimsy:sequenceSearchMask valuesHolder="#{sequenceSearchBean.searchMaskController.valuesHolder}" />
                     </crimsy:materialSearchMask>
-                </p:outputPanel>
+                </p:column>
 
-                <p:outputPanel >
+                <p:column>
                     <crimsy:sequenceSearchResultsTable
                         id="sequenceSearchResultsTableId"
                         resultsTableController="#{sequenceSearchBean.resultsTableController}" />
-                </p:outputPanel>
-
-            </p:outputPanel>
+                </p:column>
+            </p:panelGrid>
         </p:outputPanel>
     </h:body>
 </html>

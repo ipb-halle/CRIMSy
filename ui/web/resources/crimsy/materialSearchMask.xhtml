@@ -65,127 +65,142 @@ limitations under the License.
             <div class="card">
                 <composite:insertChildren />
 
-                        <h:outputText
-                            value="#{msgs.materialOverview_searchFilter_title}"
-                            styleClass="materialFilterHeader" />
-                        <br/>
+                <!--Search filter-->
+                <!--*************************************************************-->
+                <h:outputText
+                    value="#{msgs.materialOverview_searchFilter_title}"
+                    styleClass="materialFilterHeader" />
+                <br/>
 
                 <ui:fragment rendered="#{cc.attrs.nameFieldRendered}">
 
-                            <h:outputText value="#{msgs.materialOverview_searchFilter_name}" />
-                            <br/>
+                    <!--Name-->
+                    <!--*************************************************************-->
+                    <h:outputText value="#{msgs.materialOverview_searchFilter_name}" />
+                    <br/>
 
-                            <p:autoComplete
-                                value="#{cc.attrs.searchController.name}"
-                                maxResults="10"
-                                completeMethod="#{cc.attrs.searchController.getSimilarMaterialNames}"
-                                styleClass="materialFilterInputfield" />
-                            <br/>
+                    <p:autoComplete
+                        value="#{cc.attrs.searchController.name}"
+                        maxResults="10"
+                        completeMethod="#{cc.attrs.searchController.getSimilarMaterialNames}"
+                        styleClass="materialFilterInputfield" />
+                    <br/>
 
                 </ui:fragment>
 
                 <ui:fragment rendered="#{cc.attrs.idFieldRendered}">
 
-                            <h:outputText value="ID"/>
-                            <br/>
+                    <!--ID-->
+                    <!--*************************************************************-->
+                    <h:outputText value="ID"/>
+                    <br/>
 
-                            <p:inputText
-                                value="#{cc.attrs.searchController.id}"
-                                styleClass="materialFilterInputfield" />
-                            <br/>
+                    <p:inputText
+                        value="#{cc.attrs.searchController.id}"
+                        styleClass="materialFilterInputfield" />
+                    <br/>
                 </ui:fragment>
 
                 <ui:fragment rendered="#{cc.attrs.userFieldRendered}">
 
-                            <h:outputText value="#{msgs.materialOverview_searchFilter_user}" />
-                            <br/>
+                    <!--User-->
+                    <!--*************************************************************-->
+                    <h:outputText value="#{msgs.materialOverview_searchFilter_user}" />
+                    <br/>
 
-                            <p:autoComplete
-                                value="#{cc.attrs.searchController.userName}"
-                                maxResults="10"
-                                completeMethod="#{cc.attrs.searchController.getSimilarUserNames}"
-                                styleClass="materialFilterInputfield" />
-                            <br/>
+                    <p:autoComplete
+                        value="#{cc.attrs.searchController.userName}"
+                        maxResults="10"
+                        completeMethod="#{cc.attrs.searchController.getSimilarUserNames}"
+                        styleClass="materialFilterInputfield" />
+                    <br/>
                 </ui:fragment>
 
                 <ui:fragment rendered="#{cc.attrs.projectFieldRendered}">
 
-                            <h:outputText value="#{msgs.materialOverview_searchFilter_project}" />
-                            <br/>
+                    <!--Project-->
+                    <!--*************************************************************-->
+                    <h:outputText value="#{msgs.materialOverview_searchFilter_project}" />
+                    <br/>
 
-                            <p:autoComplete
-                                value="#{cc.attrs.searchController.projectName}"
-                                maxResults="10"
-                                completeMethod="#{cc.attrs.searchController.getSimilarProjectNames}"
-                                styleClass="materialFilterInputfield" />
-                            <br/>
+                    <p:autoComplete
+                        value="#{cc.attrs.searchController.projectName}"
+                        maxResults="10"
+                        completeMethod="#{cc.attrs.searchController.getSimilarProjectNames}"
+                        styleClass="materialFilterInputfield" />
+                    <br/>
 
                 </ui:fragment>
 
                 <ui:fragment rendered="#{cc.attrs.indexFieldRendered}">
 
-                            <h:outputText value="#{msgs.materialOverview_searchFilter_index}"/>
-                            <br/>
+                    <!--Index-->
+                    <!--*************************************************************-->
+                    <h:outputText value="#{msgs.materialOverview_searchFilter_index}"/>
+                    <br/>
 
-                            <p:inputText
-                                value="#{cc.attrs.searchController.index}"
-                                styleClass="materialFilterInputfield" />
-                            <br/>
+                    <p:inputText
+                        value="#{cc.attrs.searchController.index}"
+                        styleClass="materialFilterInputfield" />
+                    <br/>
 
                 </ui:fragment>
 
                 <ui:fragment rendered="#{cc.attrs.materialTypeFieldRendered}">
 
-                            <h:outputText value="#{msgs.materialOverview_searchFilter_materialType}" />
-                            <br/>
+                    <h:outputText value="#{msgs.materialOverview_searchFilter_materialType}" />
+                    <br/>
 
-                            <p:selectOneMenu
-                                styleClass="materialFilterInputfield"
-                                value="#{cc.attrs.searchController.materialType}">
-                                <f:selectItem
-                                    noSelectionOption="true"
-                                    itemValue=""
-                                    itemLabel="#{cc.attrs.searchController.getLocalizedMaterialTypeName(null)}" />
-                                <f:selectItems
-                                    value="#{cc.attrs.searchController.materialTypes}"
-                                    var="mt"
-                                    itemValue="#{mt}"
-                                    itemLabel="#{cc.attrs.searchController.getLocalizedMaterialTypeName(mt)}" />
-                            </p:selectOneMenu>
-                            <br/>
+                    <p:selectOneMenu
+                        styleClass="materialFilterInputfield"
+                        value="#{cc.attrs.searchController.materialType}">
+                        <f:selectItem
+                            noSelectionOption="true"
+                            itemValue=""
+                            itemLabel="#{cc.attrs.searchController.getLocalizedMaterialTypeName(null)}" />
+                        <f:selectItems
+                            value="#{cc.attrs.searchController.materialTypes}"
+                            var="mt"
+                            itemValue="#{mt}"
+                            itemLabel="#{cc.attrs.searchController.getLocalizedMaterialTypeName(mt)}" />
+                    </p:selectOneMenu>
+                    <br/>
 
                 </ui:fragment>
 
                 <ui:fragment rendered="#{cc.attrs.moleditorRendered}">
-                            <br/>
+                    <br/>
 
-                            <mol:molecule
-                                id="molEditorSearchMask"
-                                value="#{cc.attrs.searchController.molecule}"
-                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                format="MDLV2000"
-                                border="true"
-                                readonly="false" />
-                            <br/>
+                    <mol:molecule
+                        id="molEditorSearchMask"
+                        value="#{cc.attrs.searchController.molecule}"
+                        pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                        format="MDLV2000"
+                        border="true"
+                        readonly="false" />
+                    <br/>
                 </ui:fragment>
 
+                <!--Clear button-->
+                <!--*************************************************************-->
+                <p:commandButton
+                    style="margin:1rem;"
+                    styleClass="ui-button-secondary"
+                    value="#{msgs.materialOverview_searchFilter_clear}"
+                    ajax="true"
+                    update="materialSearchMaskForm #{cc.attrs.updateTargets}"
+                    action="#{cc.attrs.searchController.actionClearSearchFilter()}"/>
 
-                        <p:commandButton
-                            style="margin:1rem;"
-                            styleClass="ui-button-secondary"
-                            value="#{msgs.materialOverview_searchFilter_clear}"
-                            ajax="true"
-                            update="materialSearchMaskForm #{cc.attrs.updateTargets}"
-                            action="#{cc.attrs.searchController.actionClearSearchFilter()}"/>
-
-                        <p:commandButton
-                            style="margin:1rem 0;"
-                            styleClass="materialFilterButton"
-                            value="#{msgs.materialOverview_searchFilter_search}"
-                            ajax="true"
-                            process="@form"
-                            update="materialSearchMaskForm #{cc.attrs.updateTargets}"
-                            action="#{cc.attrs.searchController.actionStartMaterialSearch()}"/>
+                <!--Search button-->
+                <!--*************************************************************-->
+                <p:commandButton
+                    style="margin:1rem 0;"
+                    styleClass="materialFilterButton"
+                    value="#{msgs.materialOverview_searchFilter_search}"
+                    ajax="true"
+                    process="@all"
+                    update="materialSearchMaskForm #{cc.attrs.updateTargets}"
+                    action="#{cc.attrs.searchController.actionStartMaterialSearch()}"/>
 
             </div>
         </h:form>
