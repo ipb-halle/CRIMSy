@@ -43,7 +43,7 @@ public class Taxonomy extends Material {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private TaxonomyLevel level;
-    private List<Taxonomy> taxHierarchy = new ArrayList<>();
+    private List<Taxonomy> taxHierachy = new ArrayList<>();
 
     public Taxonomy(int id,
             List<MaterialName> names,
@@ -56,7 +56,7 @@ public class Taxonomy extends Material {
         this.setOwner(owner);
         this.creationTime = creationDate;
         this.type = MaterialType.TAXONOMY;
-        this.taxHierarchy = hierarchy;
+        this.taxHierachy = hierarchy;
 
     }
 
@@ -66,9 +66,9 @@ public class Taxonomy extends Material {
         for (MaterialName mn : names) {
             copiedNames.add(new MaterialName(mn.getValue(), mn.getLanguage(), mn.getRank()));
         }
-        Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierarchy, getOwner(), creationTime);
-        copiedTaxonomy.setTaxHierarchy(new ArrayList<>());
-        for (Taxonomy t : taxHierarchy) {
+        Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierachy, getOwner(), creationTime);
+        copiedTaxonomy.setTaxHierachy(new ArrayList<>());
+        for (Taxonomy t : taxHierachy) {
             copiedTaxonomy.getTaxHierarchy().add(t);
         }
 
@@ -90,11 +90,11 @@ public class Taxonomy extends Material {
     }
 
     public List<Taxonomy> getTaxHierarchy() {
-        return taxHierarchy;
+        return taxHierachy;
     }
 
-    public void setTaxHierarchy(List<Taxonomy> taxHierarchy) {
-        this.taxHierarchy = taxHierarchy;
+    public void setTaxHierachy(List<Taxonomy> taxHierachy) {
+        this.taxHierachy = taxHierachy;
     }
 
     public void setLevel(TaxonomyLevel level) {
