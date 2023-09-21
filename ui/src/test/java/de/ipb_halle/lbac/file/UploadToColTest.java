@@ -61,7 +61,7 @@ public class UploadToColTest extends TestBase {
     @Inject
     private FileObjectService fileObjectService;
 
-    protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
+    protected String exampleDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
     protected Collection col;
 
@@ -88,7 +88,7 @@ public class UploadToColTest extends TestBase {
                 fileObjectService,
                 publicUser,
                 new AsyncContextMock(
-                        new File(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
+                        new File(exampleDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
                         col.getName()),
                 collectionService,
                 "target/test-classes/collections");
@@ -120,7 +120,7 @@ public class UploadToColTest extends TestBase {
                 fileObjectService,
                 publicUser,
                 new AsyncContextMock(
-                        new File(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
+                        new File(exampleDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
                         "test-coll-does-not-exist"),
                 collectionService,
                 "target/test-classes/collections");
@@ -139,7 +139,7 @@ public class UploadToColTest extends TestBase {
                 fileObjectService,
                 publicUser,
                 new AsyncContextMock(
-                        new File(examplaDocsRootFolder + "ShotNumberExample.docx"),
+                        new File(exampleDocsRootFolder + "ShortNumberExample.docx"),
                         col.getName()),
                 collectionService,
                 "target/test-classes/collections");

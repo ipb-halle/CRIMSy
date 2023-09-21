@@ -69,7 +69,7 @@ public class DocumentSearchServiceTest extends TestBase {
 
     protected Collection col;
 
-    protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
+    protected String exampleDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
     protected AsyncContextMock asynContext;
     private DocumentCreator documentCreator;

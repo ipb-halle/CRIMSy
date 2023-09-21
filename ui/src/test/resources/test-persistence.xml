@@ -92,8 +92,8 @@
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
         <class>de.ipb_halle.lbac.util.pref.PreferenceEntity</class>
         <class>de.ipb_halle.lbac.reporting.report.ReportEntity</class>
-        <class>de.ipb_halle.tx.file.FileObjectEntity</class>
-        <class>de.ipb_halle.tx.file.TermVectorEntity</class>
+        <class>de.ipb_halle.kx.file.FileObjectEntity</class>
+        <class>de.ipb_halle.kx.termvector.TermVectorEntity</class>
 
         <!-- test only -->
         <class>de.ipb_halle.lbac.search.lang.HorrorEntity</class>

@@ -164,6 +164,7 @@ public class TermVectorService implements Serializable {
         this.em.createNativeQuery(SQL_DELETE_UNSTEMMED_WORDS_OF_COLLECTION)
             .setParameter("collectionId", collectionId)
             .executeUpdate();
+        this.em.flush();
     }
 
     public void deleteTermVector(FileObject fileObject) {

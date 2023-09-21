@@ -97,8 +97,8 @@
         <class>de.ipb_halle.lbac.items.entity.ItemEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ItemHistoryEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ItemPositionsHistoryEntity</class>
-        <class>de.ipb_halle.tx.file.FileObjectEntity</class>
-        <class>de.ipb_halle.tx.file.TermVectorEntity</class>
+        <class>de.ipb_halle.kx.file.FileObjectEntity</class>
+        <class>de.ipb_halle.kx.termvector.TermVectorEntity</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

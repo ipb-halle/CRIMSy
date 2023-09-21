@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.kx.service;
 
+import de.ipb_halle.kx.service.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.kx.termvector.StemmedWordOrigin;
 import de.ipb_halle.kx.termvector.TermVector;
-import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
