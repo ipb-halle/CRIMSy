@@ -166,71 +166,95 @@
                     </div>
                 </p:row>
 
-                <p:outputPanel styleClass="taxonomyInfos">
-                    <div style="display:flex; flex-direction: row;justify-content: space-between;">
+                <p:outputPanel styleClass="taxonomyInfos"
+                               style="display:flex; flex-direction: column;align-items: end;">
 
-                        <!--Parent othe new taxonomy-->
+
+                    <!--Parent ot he new taxonomy-->
+                    <!--********************************************************************************-->
+                    <p:outputPanel
+                        style="margin:0.5rem;"
+                        styleClass="taxonomyInfos"
+                        rendered="#{taxonomyBean.renderController.isParentVisible()}"
+                        >
+
+                        <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                        <br/>
+
+                        <!--Life (Inputfield)-->
                         <!--********************************************************************************-->
-                        <p:outputPanel styleClass="taxonomyInfos"
-                                       rendered="#{taxonomyBean.renderController.isParentVisible()}">
+                        <p:inputText
+                            style="margin:0.5rem 0;"
+                            label="#{msgs.taxonomy_label_new_parent}"
+                            value="#{taxonomyBean.renderController.getParentFirstName()}"
+                            disabled="true"
+                            >
+                            <f:converter converterId="InputConverter" />
+                        </p:inputText>
 
-                            <!--Life (Inputfield)-->
-                            <!--********************************************************************************-->
-                            <p:inputText
-                                label="#{msgs.taxonomy_label_new_parent}"
-                                value="#{taxonomyBean.renderController.getParentFirstName()}"
-                                disabled="true"
-                                >
-                                <f:converter converterId="InputConverter" />
-                            </p:inputText>
+                    </p:outputPanel>
 
-                        </p:outputPanel>
+                    <!--Please enter the new level-->
+                    <!--********************************************************************************-->
+                    <p:outputPanel rendered="#{taxonomyBean.renderController.isNewParentRendered()}"
+                                   styleClass="taxonomyInfos"
+                                   style="margin:0.5rem;"
+                                   >
 
-                        <!--Please enter the new level-->
+                        <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                        <br/>
+
+
+                        <!--Taxonomy choosen-->
                         <!--********************************************************************************-->
-                        <p:outputPanel rendered="#{taxonomyBean.renderController.isNewParentRendered()}"
-                                       styleClass="taxonomyInfos">
+                        <p:inputText
+                            style="margin:0.5rem 0;"
+                            disabled="true"
+                            label="#{msgs.taxonomy_label_new_parent}"
+                            value="#{taxonomyBean.renderController.getParentFirstName()}">
+                            <f:converter converterId="InputConverter" />
+                        </p:inputText>
 
-                            <!--Kingdom etc-->
-                            <!--********************************************************************************-->
-                            <p:inputText
-                                disabled="true"
-                                label="#{msgs.taxonomy_label_new_parent}"
-                                value="#{taxonomyBean.renderController.getParentFirstName()}">
-                                <f:converter converterId="InputConverter" />
-                            </p:inputText>
+                    </p:outputPanel>
 
-                        </p:outputPanel>
+                    <!--???????????????-->
+                    <!--********************************************************************************-->
+                    <p:outputPanel rendered="#{taxonomyBean.renderController.isCategoryVisible()}"
+                                   styleClass="taxonomyInfos">
 
-                        <!--???????????????-->
-                        <!--********************************************************************************-->
-                        <p:outputPanel rendered="#{taxonomyBean.renderController.isCategoryVisible()}"
-                                       styleClass="taxonomyInfos">
+                        <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                        <br/>
 
-                            <p:inputText
-                                disabled="true"
-                                label="#{msgs.taxonomy_label_level}"
-                                value="#{taxonomyBean.renderController.getCategoryOfChoosenTaxo()}">
-                                <f:converter converterId="InputConverter" />
-                            </p:inputText>
-                        </p:outputPanel>
+                        <p:inputText
+                            style="margin:0.5rem 0;"
+                            disabled="true"
+                            label="#{msgs.taxonomy_label_level}"
+                            value="#{taxonomyBean.renderController.getCategoryOfChoosenTaxo()}">
+                            <f:converter converterId="InputConverter" />
+                        </p:inputText>
+                    </p:outputPanel>
 
-                        <!--???????????????-->
-                        <!--********************************************************************************-->
-                        <p:outputPanel rendered="#{taxonomyBean.renderController.isCategorySelectionVisible()}"
-                                       styleClass="taxonomyInfos">
-                            <p:selectOneMenu
-                                label="#{msgs.taxonomy_label_new_level}"
-                                value="#{taxonomyBean.levelController.selectedLevel}"
-                                converter="taxonomyLevelConverter">
-                                <f:selectItems
-                                    var="level"
-                                    value="#{taxonomyBean.levelController.levels}"
-                                    itemLabel="#{level.getName()}" />
-                            </p:selectOneMenu>
-                        </p:outputPanel>
+                    <!--Select menu by Edit-->
+                    <!--********************************************************************************-->
+                    <p:outputPanel rendered="#{taxonomyBean.renderController.isCategorySelectionVisible()}"
+                                   styleClass="taxonomyInfos"
+                                   >
+                        <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                        <br/>
 
-                    </div>
+                        <p:selectOneMenu
+                            style="margin: 0 0.5rem 0.5rem 0; "
+                            label="#{msgs.taxonomy_label_new_level}"
+                            value="#{taxonomyBean.levelController.selectedLevel}"
+                            converter="taxonomyLevelConverter">
+                            <f:selectItems
+                                var="level"
+                                value="#{taxonomyBean.levelController.levels}"
+                                itemLabel="#{level.getName()}" />
+                        </p:selectOneMenu>
+                    </p:outputPanel>
+
+
                 </p:outputPanel>
 
                 <p:row>
