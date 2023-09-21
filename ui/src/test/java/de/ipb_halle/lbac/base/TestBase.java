@@ -406,7 +406,7 @@ public class TestBase implements Serializable {
         List<Collection> colls = collectionService.load(null);
         for (Collection c : colls) {
             if (!c.getName().equals("public")) {
-                termVectorService.deleteTermVectorsOfCollection(c);
+                termVectorService.deleteTermVectorsOfCollection(c.getId());
                 fileObjectService.deleteCollectionFiles(c.getId());
                 collectionService.delete(c);
             }

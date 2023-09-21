@@ -59,13 +59,15 @@ public class TermVectorService implements Serializable {
     protected final String SQL_DELETE_ALL_TERMVECTORS
             = "DELETE from termvectors";
 
-    private final String SQL_DELETE_TERMVECTORS_OF_COLLECTION
-            = "DELETE from termvectors AS tv ... "
-            + " WHERE fo.collection_id=:collectionId";
 
-    private final String SQL_DELETE_ORIGINAL_WORDS_OF_COLLECTION
-            = "DELETE FROM unstemmed_words AS stem ... ";
-            + " WHERE fo.collection_id=:collectionId";
+    private final String SQL_DELETE_UNSTEMMED_WORDS_OF_COLLECTION
+            = "DELETE FROM unstemmed_words AS us USING files AS f"
+            + " WHERE us.file_id=f.id AND f.collection_id=:collectionId";
+
+    private final String SQL_DELETE_TERMVECTORS_OF_COLLECTION
+            = "DELETE FROM termvectors AS tv USING files AS f"
+            + " WHERE tv.file_id=f.id AND f.collection_id=:collectionId";
+
 
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -159,7 +161,7 @@ public class TermVectorService implements Serializable {
         this.em.createNativeQuery(SQL_DELETE_TERMVECTORS_OF_COLLECTION)
             .setParameter("collectionId", collectionId)
             .executeUpdate();
-        this.em.createNativeQuery(SQL_DELETE_ORIGINAL_WORDS_OF_COLLECTION)
+        this.em.createNativeQuery(SQL_DELETE_UNSTEMMED_WORDS_OF_COLLECTION)
             .setParameter("collectionId", collectionId)
             .executeUpdate();
     }
@@ -245,8 +247,8 @@ public class TermVectorService implements Serializable {
      * Deletes all termvectors and all unstemmed words from database.
      */
     public void deleteTermVectors() {
-        this.em.createNativeQuery(SQL_DELETE_ALL_UNSTEMMED_WORDS).executeUpdate();
         this.em.createNativeQuery(SQL_DELETE_ALL_TERMVECTORS).executeUpdate();
+        this.em.createNativeQuery(SQL_DELETE_ALL_UNSTEMMED_WORDS).executeUpdate();
         this.em.flush();
     }
 }
