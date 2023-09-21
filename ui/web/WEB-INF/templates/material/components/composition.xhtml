@@ -33,7 +33,7 @@
                 title="#{msgs.materialCreation_panelNames_composition}"
                 >
                 <!--disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}"-->
-                <p:outputPanel 
+                <p:outputPanel
                     >
                     <!--rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}"-->
                     <p:panelGrid>
@@ -41,7 +41,7 @@
                             <p:column styleClass="borderless">
                                 <p:outputLabel
                                     style="border-width: 0px"
-                                    value="#{msgs.materialCreation_composition_chooseTypeLabel}">                                    
+                                    value="#{msgs.materialCreation_composition_chooseTypeLabel}">
                                 </p:outputLabel>
                             </p:column>
                             <p:column
@@ -49,18 +49,20 @@
                                 >
                                 <!--styleClass="borderless compositionTypeSelectBox"-->
                                 <!--style="width:60%"-->
+
                                 <p:selectOneMenu
                                     disabled="#{!materialCompositionBean.isCompositionTypeEditable()}"
                                     value="#{materialCompositionBean.choosenType}"
-
                                     >
-                                    <!--ajax="true"-->
-                                    <!--update="@(.resultTable) @(.searchTabView)"-->
-                                    <f:selectItems 
+
+                                    <f:selectItems
                                         value="#{materialCompositionBean.getCompositionTypes()}"
                                         itemLabel="#{materialCompositionBean.getLocalizedCompositionType(type)}"
                                         var="type"/>
-                                </p:selectOneMenu>                            
+
+                                    <p:ajax update="@(.resultTable) @(.searchTabView)"/>
+
+                                </p:selectOneMenu>
                             </p:column>
                         </p:row>
                     </p:panelGrid>
@@ -78,15 +80,20 @@
                                             styleClass="inputText"
                                             value="#{materialCompositionBean.materialName}"
                                             placeholder="#{msgs.materialCreation_composition_nameSearchPlaceholder}">
-                                        </p:inputText>            
+                                        </p:inputText>
                                     </p:column>
+
+                                    <!--Search Button-->
+                                    <!--Doesnt Work-->
+                                    <!--*****************************************************************-->
                                     <p:column styleClass="borderless">
                                         <p:commandButton
                                             ajax="true"
+                                            process="@all"
                                             action="#{materialCompositionBean.actionStartSearch()}"
                                             update="@(.resultTable) growlMsg"
                                             value="#{msgs.materialCreation_composition_searchButton}">
-                                        </p:commandButton>          
+                                        </p:commandButton>
                                     </p:column>
                                 </p:row>
                             </p:panelGrid>
@@ -104,7 +111,7 @@
                                         <p:tab
                                             disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
                                             title="#{materialCompositionBean.getLocalizedTabTitle('STRUCTURE')}">
-                                            <mol:molecule                                                        
+                                            <mol:molecule
                                                 value="#{materialCompositionBean.searchMolecule}"
                                                 pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                                 format="MDLV2000"
@@ -119,7 +126,7 @@
                                         <p:tab
                                             title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
                                             disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
-                                            <crimsy:sequenceSearchMask 
+                                            <crimsy:sequenceSearchMask
                                                 valuesHolder="#{materialCompositionBean.sequenceSearchMaskValuesHolder}"
                                                 maxResultsFieldRendered="false" />
                                         </p:tab>
@@ -128,17 +135,17 @@
                                             disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
                                         </p:tab>
                                     </p:tabView>
-                                </p:column>             
+                                </p:column>
                             </p:row>
                             <!--</p:column>-->
-                            <!--========================================================================================================================================-->                         
+                            <!--========================================================================================================================================-->
                             <!--                            <p:column
                                                             style="vertical-align: top;min-width:30%;max-width: 30%;text-align: center;"
                                                             styleClass="borderless compositionMaterialTable">-->
                             <p:panelGrid columns="4" layout="flex"
                                          columnClasses="col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4, col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4"
                                          styleClass="customPanelGrid" contentStyleClass="ui-fluid">
-                                <h:outputText 
+                                <h:outputText
                                     value="#{msgs.materialCreation_composition_searchResultTitle}"
                                     style="font-weight: bold;font-size: 115%"/>
                                 <p:dataTable
@@ -183,7 +190,7 @@
 
                                 <!--</p:column>-->
                             </p:panelGrid>
-                            <!--========================================================================================================================================-->                         
+                            <!--========================================================================================================================================-->
                             <p:panelGrid columns="4" layout="flex"
                                          columnClasses="col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4, col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4"
                                          styleClass="customPanelGrid" contentStyleClass="ui-fluid">
@@ -235,7 +242,7 @@
                                     </p:column>
 
                                     <p:column headerText="#{msgs.materialCreation_composition_searchResultTable_Action}">
-                                        <p:commandButton 
+                                        <p:commandButton
                                             id="btn22"
                                             type="submit"
                                             icon="pi pi-minus"
@@ -244,7 +251,7 @@
                                             update="@(.resultTable)"
                                             process="@this"
                                             ajax="true" />
-                                            <!--look="link"-->
+                                        <!--look="link"-->
                                         <p:tooltip id="uploaderCancelButtonToolTip"
                                                    position="bottom"
                                                    for="btn22"
@@ -258,7 +265,7 @@
                                 -->
                             </p:panelGrid>
 
-                            <!--========================================================================================================================================-->                         
+                            <!--========================================================================================================================================-->
 
                         </p:row>
                     </p:panelGrid>

@@ -432,15 +432,15 @@ public class MaterialServiceTest extends TestBase {
         names = new ArrayList<>();
         names.add(new MaterialName("red rose", "en", 1));
         Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), publicUser, new Date());
-        t2.getTaxHierachy().add(t);
+        t2.getTaxHierarchy().add(t);
         t2.setLevel(levels.get(1));
         instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("small red rose", "en", 1));
         Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), publicUser, new Date());
-        t3.getTaxHierachy().add(t);
-        t3.getTaxHierachy().add(t2);
+        t3.getTaxHierarchy().add(t);
+        t3.getTaxHierarchy().add(t2);
         t3.setLevel(levels.get(2));
         instance.saveMaterialToDB(t3, p.getUserGroups().getId(), new HashMap<>(), publicUser);
         @SuppressWarnings("unchecked")

@@ -71,8 +71,7 @@ limitations under the License.
 
                             <p:commandButton
                                 value="#{msgs.sequenceSearch_results_downloadAllAsFasta}"
-                                process="@this"
-                                ajax="true"
+                                ajax="false"
                                 action="#{cc.attrs.resultsTableController.actionDownloadAllResultsAsFasta()}"
                                 icon="fa fa-download"/>
                         </p:row>
@@ -104,52 +103,53 @@ limitations under the License.
 
                                 </f:facet>
 
-                                <p:outputPanel>
-                                    <p:commandButton
-                                        style="margin:0.5rem 0.5rem 0.5rem 0;"
-                                        value="#{msgs.sequenceSearch_results_downloadResultAsFasta}"
-                                        action="#{cc.attrs.resultsTableController.actionDownloadResultAsFasta(result, status.index + 1)}"
-                                        icon="fa fa-download"
-                                        />
-                                    <br/>
+                                <!--<p:row>-->
+                                <p:commandButton
+                                    ajax="false"
+                                    style="margin:0.5rem 0.5rem 0.5rem 0;"
+                                    value="#{msgs.sequenceSearch_results_downloadResultAsFasta}"
+                                    action="#{cc.attrs.resultsTableController.actionDownloadResultAsFasta(result, status.index + 1)}"
+                                    icon="fa fa-download"
+                                    />
+                                <br/>
 
-                                    <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_eValue}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_identity}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_similarity}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_overlap}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_frame}" />
-                                    <br/>
+                                <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" />
+                                <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" />
+                                <h:outputText value="#{msgs.sequenceSearch_results_eValue}" />
+                                <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" />
+                                <h:outputText value="#{msgs.sequenceSearch_results_identity}" />
+                                <h:outputText value="#{msgs.sequenceSearch_results_similarity}" />
+                                <h:outputText value="#{msgs.sequenceSearch_results_overlap}" />
+                                <h:outputText value="#{msgs.sequenceSearch_results_frame}" />
+                                <br/>
 
-                                    <p:commandButton
-                                        value="#{msgs.materialOverview_actions_edit}"
-                                        action="#{materialOverviewBean.actionEditMaterial(result.sequence)}"
-                                        style="margin:0.5rem 0.5rem 0.5rem 0;"
-                                        icon="pi pi-pencil"
-                                        styleClass="ui-button-success"
-                                        ajax="false" />
-                                    <br/>
+                                <p:commandButton
+                                    value="#{msgs.materialOverview_actions_edit}"
+                                    action="#{materialOverviewBean.actionEditMaterial(result.sequence)}"
+                                    style="margin:0.5rem 0.5rem 0.5rem 0;"
+                                    icon="pi pi-pencil"
+                                    styleClass="ui-button-success"
+                                    ajax="false" />
+                                <br/>
 
-                                    <h:outputText value="#{result.fastaResult.subjectSequenceLength}" />
-                                    <h:outputText value="#{result.fastaResult.bitScore}" />
-                                    <h:outputText value="#{result.fastaResult.expectationValue}" />
-                                    <h:outputText value="#{result.fastaResult.smithWatermanScore}" />
-                                    <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" />
-                                    <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" />
-                                    <h:outputText value="#{result.fastaResult.overlap}" />
-                                    <h:outputText value="#{result.fastaResult.frame}" />
-                                </p:outputPanel>
+                                <h:outputText value="#{result.fastaResult.subjectSequenceLength}" />
+                                <h:outputText value="#{result.fastaResult.bitScore}" />
+                                <h:outputText value="#{result.fastaResult.expectationValue}" />
+                                <h:outputText value="#{result.fastaResult.smithWatermanScore}" />
+                                <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" />
+                                <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" />
+                                <h:outputText value="#{result.fastaResult.overlap}" />
+                                <h:outputText value="#{result.fastaResult.frame}" />
+                                <!--</p:row>-->
                                 <hr />
 
-                                <p:row>
-                                    <p:column>
-                                        <h:outputText
-                                            value="#{result.alignments}"
-                                            style="white-space:pre; font-family:monospace;" />
-                                    </p:column>
-                                </p:row>
+                                <!--<p:row>-->
+                                <p:column>
+                                    <h:outputText
+                                        value="#{result.alignments}"
+                                        style="white-space:pre; font-family:monospace;" />
+                                </p:column>
+                                <!--</p:row>-->
 
                             </p:outputPanel>
                         </ui:repeat>
