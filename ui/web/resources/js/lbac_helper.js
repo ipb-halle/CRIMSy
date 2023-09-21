@@ -16,6 +16,28 @@
  *
  */
 
+
+//Hide the outputPanel in sequenceSearchResultTable.xhtml
+//*************************************************************
+function hideFastaResultPanel() {
+    var elements = document.querySelectorAll('.fastaResultPanel');
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
+    }
+}
+
+//Show the outputPanel in sequenceSearchResultTable.xhtml
+//*************************************************************
+function showFastaResultPanel() {
+    var elements = document.querySelectorAll('.fastaResultPanel');
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.display = "block";
+    }
+}
+
+
+
+
 /*
  * used by UIAugmentedText
  * determine the styleclass ('.dlgXxxx') and 

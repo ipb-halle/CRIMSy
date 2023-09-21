@@ -60,13 +60,13 @@ limitations under the License.
                             <p:commandButton
                                 style="margin:0 0.5rem;"
                                 value="#{msgs.sequenceSearch_results_collapseAllResults}"
-                                onclick="document.querySelector('.fastaResultPanel').style.display = 'none'"
+                                onclick="hideFastaResultPanel()"
+                             
                                 />
-
                             <p:commandButton
                                 style="margin-right:0.5rem;"
                                 value="#{msgs.sequenceSearch_results_expandAllResults}"
-                                onclick="document.querySelector('.fastaResultPanel').style.display = 'block'"
+                                onclick="showFastaResultPanel()"
                                 />
 
                             <p:commandButton
