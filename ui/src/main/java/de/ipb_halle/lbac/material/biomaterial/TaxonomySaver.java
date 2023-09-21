@@ -34,7 +34,7 @@ public class TaxonomySaver implements MaterialSaver {
     public void saveMaterial(Material m, EntityManager em) {
         Taxonomy t = (Taxonomy) m;
         em.persist(t.createEntity());
-        for (Taxonomy th : t.getTaxHierachy()) {
+        for (Taxonomy th : t.getTaxHierarchy()) {
             em.createNativeQuery(SQL_SAVE_EFFECTIVE_TAXONOMY)
                     .setParameter("tid", t.getId())
                     .setParameter("pid", th.getId())

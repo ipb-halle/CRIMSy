@@ -197,7 +197,7 @@ public class TaxonomyTreeController implements Serializable {
      * @return
      */
     private boolean isTaxonomyInHierarchy(int id, Taxonomy taxo) {
-        for (Taxonomy t : taxo.getTaxHierachy()) {
+        for (Taxonomy t : taxo.getTaxHierarchy()) {
             if (t.getId() == id) {
                 return false;
             }
@@ -228,7 +228,7 @@ public class TaxonomyTreeController implements Serializable {
         try {
             shownTaxonomies = loadShownTaxos();
             addAbsentTaxo(t);
-            for(Taxonomy ht:t.getTaxHierachy()){
+            for(Taxonomy ht:t.getTaxHierarchy()){
                 List<Taxonomy> childrenOfHierEntry=taxonomyService.loadDirectChildrenOf(ht.getId());
                 List<Taxonomy> grandChildrenOfHierEntry=new ArrayList<>();
                 for(Taxonomy ce:childrenOfHierEntry){
@@ -237,7 +237,7 @@ public class TaxonomyTreeController implements Serializable {
                 addAbsentTaxos(childrenOfHierEntry);
                 addAbsentTaxos(grandChildrenOfHierEntry);
             }
-            addAbsentTaxos(t.getTaxHierachy());
+            addAbsentTaxos(t.getTaxHierarchy());
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {
@@ -253,8 +253,8 @@ public class TaxonomyTreeController implements Serializable {
         reorderTaxonomies();
         for (Taxonomy t : shownTaxonomies) {
             TreeNode newNode = null;
-            if (!t.getTaxHierachy().isEmpty()) {
-                TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
+            if (!t.getTaxHierarchy().isEmpty()) {
+                TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierarchy().get(0).getId());
                 newNode = new DefaultTreeNode(t, parent);
             } else {
                 newNode = new DefaultTreeNode(t, taxonomyTree);

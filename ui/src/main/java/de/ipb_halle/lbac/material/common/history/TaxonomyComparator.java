@@ -41,9 +41,9 @@ public class TaxonomyComparator extends IMaterialComparator {
             td.setNewLevelId(editedTaxonomy.getLevel().getId());
 
         }
-        if (originalTaxonomy.getTaxHierachy().get(0).getId() != editedTaxonomy.getTaxHierachy().get(0).getId()) {
+        if (originalTaxonomy.getTaxHierarchy().get(0).getId() != editedTaxonomy.getTaxHierarchy().get(0).getId()) {
             differenceFound = true;
-            for (Taxonomy t : editedTaxonomy.getTaxHierachy()) {
+            for (Taxonomy t : editedTaxonomy.getTaxHierarchy()) {
                 td.getNewHierarchy().add(t.getId());
             }
 

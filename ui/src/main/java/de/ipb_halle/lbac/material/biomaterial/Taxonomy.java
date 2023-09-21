@@ -43,7 +43,7 @@ public class Taxonomy extends Material {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private TaxonomyLevel level;
-    private List<Taxonomy> taxHierachy = new ArrayList<>();
+    private List<Taxonomy> taxHierarchy = new ArrayList<>();
 
     public Taxonomy(int id,
             List<MaterialName> names,
@@ -56,7 +56,7 @@ public class Taxonomy extends Material {
         this.setOwner(owner);
         this.creationTime = creationDate;
         this.type = MaterialType.TAXONOMY;
-        this.taxHierachy = hierarchy;
+        this.taxHierarchy = hierarchy;
 
     }
 
@@ -66,10 +66,10 @@ public class Taxonomy extends Material {
         for (MaterialName mn : names) {
             copiedNames.add(new MaterialName(mn.getValue(), mn.getLanguage(), mn.getRank()));
         }
-        Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierachy, getOwner(), creationTime);
-        copiedTaxonomy.setTaxHierachy(new ArrayList<>());
-        for (Taxonomy t : taxHierachy) {
-            copiedTaxonomy.getTaxHierachy().add(t);
+        Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierarchy, getOwner(), creationTime);
+        copiedTaxonomy.setTaxHierarchy(new ArrayList<>());
+        for (Taxonomy t : taxHierarchy) {
+            copiedTaxonomy.getTaxHierarchy().add(t);
         }
 
         copiedTaxonomy.setLevel(new TaxonomyLevel(level.getId(), level.getName(), level.getRank()));
@@ -89,12 +89,12 @@ public class Taxonomy extends Material {
         return level;
     }
 
-    public List<Taxonomy> getTaxHierachy() {
-        return taxHierachy;
+    public List<Taxonomy> getTaxHierarchy() {
+        return taxHierarchy;
     }
 
-    public void setTaxHierachy(List<Taxonomy> taxHierachy) {
-        this.taxHierachy = taxHierachy;
+    public void setTaxHierarchy(List<Taxonomy> taxHierarchy) {
+        this.taxHierarchy = taxHierarchy;
     }
 
     public void setLevel(TaxonomyLevel level) {

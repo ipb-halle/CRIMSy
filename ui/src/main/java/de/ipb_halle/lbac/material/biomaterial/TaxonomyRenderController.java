@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -236,7 +237,11 @@ public class TaxonomyRenderController implements Serializable {
 
     public String getParentFirstName() {
         if (taxonomyBean.getMode() == Mode.EDIT) {
-            return taxonomyBean.getTaxonomyToEdit().getTaxHierachy().get(0).getFirstName();
+            List<Taxonomy> hierarchy = taxonomyBean.getTaxonomyToEdit().getTaxHierarchy();
+            if ((hierarchy != null) && (!hierarchy.isEmpty())) {
+                return hierarchy.get(0).getFirstName();
+            }
+            return "";
         }
         if (taxonomyBean.getSelectedTaxonomy() != null) {
             Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();

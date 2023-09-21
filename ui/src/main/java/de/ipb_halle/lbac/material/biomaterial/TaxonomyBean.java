@@ -255,9 +255,9 @@ public class TaxonomyBean implements Serializable {
     public void onTaxonomySelect(NodeSelectEvent event) {
         if (mode == Mode.EDIT) {
             Taxonomy t = (Taxonomy) event.getTreeNode().getData();
-            taxonomyToEdit.getTaxHierachy().clear();
-            taxonomyToEdit.getTaxHierachy().add(t);
-            taxonomyToEdit.getTaxHierachy().addAll(t.getTaxHierachy());
+            taxonomyToEdit.getTaxHierarchy().clear();
+            taxonomyToEdit.getTaxHierarchy().add(t);
+            taxonomyToEdit.getTaxHierarchy().addAll(t.getTaxHierarchy());
         } else {
             selectedTaxonomy = event.getTreeNode();
             parentOfNewTaxo = (Taxonomy) selectedTaxonomy.getData();
@@ -272,8 +272,8 @@ public class TaxonomyBean implements Serializable {
         taxonomyToCreate.setLevel(levelController.getSelectedLevel());
         if (selectedTaxonomy != null) {
             Taxonomy parent = (Taxonomy) selectedTaxonomy.getData();
-            taxonomyToCreate.getTaxHierachy().add(parent);
-            taxonomyToCreate.getTaxHierachy().addAll(parent.getTaxHierachy());
+            taxonomyToCreate.getTaxHierarchy().add(parent);
+            taxonomyToCreate.getTaxHierarchy().addAll(parent.getTaxHierarchy());
         }
         materialService.saveMaterialToDB(
                 taxonomyToCreate,

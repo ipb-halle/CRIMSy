@@ -41,7 +41,7 @@ public class TaxonomyLevelController implements Serializable {
             List<TaxonomyLevel> valideLevels = new ArrayList<>();
             Taxonomy t;
             if (taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
-                t = taxonomyBean.getTaxonomyToEdit().getTaxHierachy().get(0);
+                t = taxonomyBean.getTaxonomyToEdit().getTaxHierarchy().get(0);
             } else {
                 t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
             }

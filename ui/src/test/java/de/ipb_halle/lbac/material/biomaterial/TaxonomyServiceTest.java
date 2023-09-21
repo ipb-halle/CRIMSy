@@ -92,7 +92,7 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals("test001: 21 taxonomies must be found", 21, taxonomies.size());
 
         Taxonomy life = taxonomies.get(0);
-        Assert.assertTrue(life.getTaxHierachy().isEmpty());
+        Assert.assertTrue(life.getTaxHierarchy().isEmpty());
         Assert.assertEquals(1, life.getLevel().getId());
         Assert.assertEquals("Leben_de", life.getFirstName());
 
@@ -100,21 +100,21 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(7, wulstlinge.getLevel().getId());
         Assert.assertEquals("Wulstlinge_de", wulstlinge.getFirstName());
         Assert.assertEquals(6, (int) wulstlinge.getId());
-        Assert.assertEquals(5, (int) wulstlinge.getTaxHierachy().size());
-        Assert.assertEquals(5, (int) wulstlinge.getTaxHierachy().get(0).getId());
-        Assert.assertEquals(4, (int) wulstlinge.getTaxHierachy().get(1).getId());
-        Assert.assertEquals(3, (int) wulstlinge.getTaxHierachy().get(2).getId());
-        Assert.assertEquals(2, (int) wulstlinge.getTaxHierachy().get(3).getId());
-        Assert.assertEquals(1, (int) wulstlinge.getTaxHierachy().get(4).getId());
+        Assert.assertEquals(5, (int) wulstlinge.getTaxHierarchy().size());
+        Assert.assertEquals(5, (int) wulstlinge.getTaxHierarchy().get(0).getId());
+        Assert.assertEquals(4, (int) wulstlinge.getTaxHierarchy().get(1).getId());
+        Assert.assertEquals(3, (int) wulstlinge.getTaxHierarchy().get(2).getId());
+        Assert.assertEquals(2, (int) wulstlinge.getTaxHierarchy().get(3).getId());
+        Assert.assertEquals(1, (int) wulstlinge.getTaxHierarchy().get(4).getId());
 
         Taxonomy ohrlappenpilze = taxonomies.get(9);
         Assert.assertEquals(6, ohrlappenpilze.getLevel().getId());
         Assert.assertEquals("Gallerttränenverwandte_de", ohrlappenpilze.getFirstName());
         Assert.assertEquals(11, (int) ohrlappenpilze.getId());
-        Assert.assertEquals(3, (int) ohrlappenpilze.getTaxHierachy().size());
-        Assert.assertEquals(8, (int) ohrlappenpilze.getTaxHierachy().get(0).getId());
-        Assert.assertEquals(2, (int) ohrlappenpilze.getTaxHierachy().get(1).getId());
-        Assert.assertEquals(1, (int) ohrlappenpilze.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(3, (int) ohrlappenpilze.getTaxHierarchy().size());
+        Assert.assertEquals(8, (int) ohrlappenpilze.getTaxHierarchy().get(0).getId());
+        Assert.assertEquals(2, (int) ohrlappenpilze.getTaxHierarchy().get(1).getId());
+        Assert.assertEquals(1, (int) ohrlappenpilze.getTaxHierarchy().get(2).getId());
     }
 
     @Test
@@ -130,9 +130,9 @@ public class TaxonomyServiceTest extends TestBase {
         editedTaxonomy.getNames().get(0).setValue("Haarnixen_de_edited");
         editedTaxonomy.getNames().add(new MaterialName("english_name", "en", 2));
 
-        editedTaxonomy.getTaxHierachy().clear();
-        editedTaxonomy.getTaxHierachy().add(taxonomies.get(3));
-        editedTaxonomy.getTaxHierachy().addAll(taxonomies.get(3).getTaxHierachy());
+        editedTaxonomy.getTaxHierarchy().clear();
+        editedTaxonomy.getTaxHierarchy().add(taxonomies.get(3));
+        editedTaxonomy.getTaxHierarchy().addAll(taxonomies.get(3).getTaxHierarchy());
 
         editedTaxonomy.setLevel(levels.get(2));
         materialService.saveEditedMaterial(
@@ -145,9 +145,9 @@ public class TaxonomyServiceTest extends TestBase {
         Taxonomy t = taxonomies.get(4);
         Assert.assertEquals("Haarnixen_de_edited", t.getNames().get(0).getValue());
         Assert.assertEquals("english_name", t.getNames().get(1).getValue());
-        Assert.assertEquals(2, t.getTaxHierachy().size());
-        Assert.assertEquals(16, (int) t.getTaxHierachy().get(0).getId());
-        Assert.assertEquals(1, (int) t.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(2, t.getTaxHierarchy().size());
+        Assert.assertEquals(16, (int) t.getTaxHierarchy().get(0).getId());
+        Assert.assertEquals(1, (int) t.getTaxHierarchy().get(1).getId());
 
         Assert.assertEquals(3, t.getLevel().getId());
 
@@ -159,12 +159,12 @@ public class TaxonomyServiceTest extends TestBase {
         //Scenario : change the parent of 'Champignonartige' from 'Agaricomycetes' to 'Dacrymytes'
         Taxonomy champignonartigeOrig = taxonomies.get(7).copyMaterial();
         Taxonomy champignonartigeEdit = taxonomies.get(7).copyMaterial();
-        champignonartigeEdit.getTaxHierachy().clear();
-        champignonartigeEdit.getTaxHierachy().add(taxonomies.get(6));
-        champignonartigeEdit.getTaxHierachy().add(taxonomies.get(1));
-        champignonartigeEdit.getTaxHierachy().add(taxonomies.get(0));
+        champignonartigeEdit.getTaxHierarchy().clear();
+        champignonartigeEdit.getTaxHierarchy().add(taxonomies.get(6));
+        champignonartigeEdit.getTaxHierarchy().add(taxonomies.get(1));
+        champignonartigeEdit.getTaxHierarchy().add(taxonomies.get(0));
 
-        champignonartigeEdit.getTaxHierachy();
+        champignonartigeEdit.getTaxHierarchy();
 
         materialService.saveEditedMaterial(
                 champignonartigeEdit,
@@ -205,37 +205,37 @@ public class TaxonomyServiceTest extends TestBase {
         Taxonomy t3 = service.loadTaxonomyById(3);
         Taxonomy t2 = service.loadTaxonomyById(2);
         Taxonomy t3_copy = t3.copyMaterial();
-        List<Taxonomy> hierarchy = t2.getTaxHierachy();
+        List<Taxonomy> hierarchy = t2.getTaxHierarchy();
         hierarchy.add(0, t2);
         t3_copy.setTaxHierachy(hierarchy);
 
         materialService.saveEditedMaterial(t3_copy, t3, project.getACList().getId(), owner.getId());
 
         t3 = service.loadTaxonomyById(3);
-        Assert.assertEquals(2, (int) t3.getTaxHierachy().size());
-        Assert.assertEquals(2, (int) t3.getTaxHierachy().get(0).getId());
-        Assert.assertEquals(0, (int) t3.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(2, (int) t3.getTaxHierarchy().size());
+        Assert.assertEquals(2, (int) t3.getTaxHierarchy().get(0).getId());
+        Assert.assertEquals(0, (int) t3.getTaxHierarchy().get(1).getId());
         Assert.assertEquals(14, (int) t3.getLevel().getId());
 
         Taxonomy t4 = service.loadTaxonomyById(4);
-        Assert.assertEquals(3, (int) t4.getTaxHierachy().size());
-        Assert.assertEquals(3, (int) t4.getTaxHierachy().get(0).getId());
-        Assert.assertEquals(2, (int) t4.getTaxHierachy().get(1).getId());
-        Assert.assertEquals(0, (int) t4.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(3, (int) t4.getTaxHierarchy().size());
+        Assert.assertEquals(3, (int) t4.getTaxHierarchy().get(0).getId());
+        Assert.assertEquals(2, (int) t4.getTaxHierarchy().get(1).getId());
+        Assert.assertEquals(0, (int) t4.getTaxHierarchy().get(2).getId());
         Assert.assertEquals(18, (int) t4.getLevel().getId());
 
         Taxonomy t5 = service.loadTaxonomyById(5);
-        Assert.assertEquals(3, (int) t5.getTaxHierachy().size());
-        Assert.assertEquals(3, (int) t5.getTaxHierachy().get(0).getId());
-        Assert.assertEquals(2, (int) t5.getTaxHierachy().get(1).getId());
-        Assert.assertEquals(0, (int) t5.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(3, (int) t5.getTaxHierarchy().size());
+        Assert.assertEquals(3, (int) t5.getTaxHierarchy().get(0).getId());
+        Assert.assertEquals(2, (int) t5.getTaxHierarchy().get(1).getId());
+        Assert.assertEquals(0, (int) t5.getTaxHierarchy().get(2).getId());
         Assert.assertEquals(18, (int) t5.getLevel().getId());
 
         Taxonomy t6 = service.loadTaxonomyById(6);
-        Assert.assertEquals(3, (int) t6.getTaxHierachy().size());
-        Assert.assertEquals(3, (int) t6.getTaxHierachy().get(0).getId());
-        Assert.assertEquals(2, (int) t6.getTaxHierachy().get(1).getId());
-        Assert.assertEquals(0, (int) t6.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(3, (int) t6.getTaxHierarchy().size());
+        Assert.assertEquals(3, (int) t6.getTaxHierarchy().get(0).getId());
+        Assert.assertEquals(2, (int) t6.getTaxHierarchy().get(1).getId());
+        Assert.assertEquals(0, (int) t6.getTaxHierarchy().get(2).getId());
         Assert.assertEquals(18, t6.getLevel().getId());
     }
 
