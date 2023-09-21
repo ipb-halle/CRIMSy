@@ -30,7 +30,7 @@
             <h:form id="systemSettings"
                     style="border:1px solid #029ACF;border-radius:3px;">
 
-                <!--System Settings Panek-->
+                <!--System Settings -->
                 <p:panel header="#{msgs.SystemSettings}"
                          styleClass="panelTitleInfoColor">
 
@@ -63,9 +63,9 @@
 
                         <p:selectBooleanCheckbox
                             value="#{p.value}"
-                            label="#{msgs[p.key]}:"
                             label="#{msgs[p.key.concat('_detail')]}"
                             >
+                            <!--label="#{msgs[p.key]}:"-->
                             <p:ajax/>
                         </p:selectBooleanCheckbox>
 
