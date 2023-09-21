@@ -17,12 +17,9 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.search.document.StemmedWordGroup;
-import de.ipb_halle.tx.text.ParseTool;
-import de.ipb_halle.tx.text.TextRecord;
-import de.ipb_halle.tx.text.properties.Language;
-import de.ipb_halle.tx.text.properties.TextProperty;
-import de.ipb_halle.tx.text.properties.Word;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -32,6 +29,12 @@ public class SearchQueryStemmer {
 
     protected String filterDefinition = "queryParserFilterDefinition.json";
 
+    public Set<String> stemmQuery(String queryString) {
+        return new HashSet<String> (Arrays.asList("Not", "implemented", "yet"));
+    } 
+    
+    
+    /*
     public StemmedWordGroup stemmQuery(String queryString) {
         StemmedWordGroup back = new StemmedWordGroup();
         TextRecord tr = new TextRecord(queryString);
@@ -53,4 +56,5 @@ public class SearchQueryStemmer {
         }
         return back;
     }
+*/
 }

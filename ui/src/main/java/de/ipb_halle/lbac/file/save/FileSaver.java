@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.file.save;
 
 import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.util.HexUtil;
 import java.io.File;
 import java.io.IOException;
@@ -42,15 +42,15 @@ public class FileSaver {
     protected Path fileLocation;
     protected Integer fileId;
     protected AttachmentHolder objectOfAttachedFile;
-    protected FileEntityService fileEntityService;
+    protected FileObjectService fileObjectService;
     protected User user;
     protected String hash;
     protected static final String HASH_ALGO = "SHA-512";
     protected Integer MAX_FILES_IN_FOLDER = 100;
     protected FileObject fileObject;
 
-    public FileSaver(FileEntityService fileEntityService, User user) {
-        this.fileEntityService = fileEntityService;
+    public FileSaver(FileObjectService fileObjectService, User user) {
+        this.fileObjectService = fileObjectService;
         this.user = user;
     }
 
@@ -75,7 +75,7 @@ public class FileSaver {
         fileObject.setUserId(user.getId());
         fileObject.setHash(hash);
         fileObject.setCollectionId(objectOfAttachedFile.getId());
-        fileObject = fileEntityService.save(fileObject);
+        fileObject = fileObjectService.save(fileObject);
         return fileObject.getId();
     }
 
@@ -89,7 +89,7 @@ public class FileSaver {
     protected void updateFileInDB(Path fileName, String hash) {
         fileObject.setFileLocation(fileName.toString());
         fileObject.setHash(hash);
-        fileEntityService.save(fileObject);
+        fileObjectService.save(fileObject);
     }
 
     protected void saveFileToFileSystem(InputStream inputStream, Path fileLocation) throws IOException, NoSuchAlgorithmException {
@@ -106,7 +106,7 @@ public class FileSaver {
 
     public void updateLanguageOfFile(String language) {
         fileObject.setDocumentLanguage(language);
-        fileEntityService.save(fileObject);
+        fileObjectService.save(fileObject);
     }
 
     public Path getFileLocation() {

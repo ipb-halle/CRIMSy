@@ -19,11 +19,6 @@ package de.ipb_halle.kx.termvector;
 
 import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.kx.file.FileObjectService;
-/*
-import de.ipb_halle.kx.termvector.StemmedWordOrigin;
-import de.ipb_halle.kx.termvector.TermFrequency;
-import de.ipb_halle.kx.termvector.TermVectorEntity;
-*/
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,6 +59,13 @@ public class TermVectorService implements Serializable {
     protected final String SQL_DELETE_ALL_TERMVECTORS
             = "DELETE from termvectors";
 
+    private final String SQL_DELETE_TERMVECTORS_OF_COLLECTION
+            = "DELETE from termvectors AS tv ... "
+            + " WHERE fo.collection_id=:collectionId";
+
+    private final String SQL_DELETE_ORIGINAL_WORDS_OF_COLLECTION
+            = "DELETE FROM unstemmed_words AS stem ... ";
+            + " WHERE fo.collection_id=:collectionId";
 
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -145,6 +147,21 @@ public class TermVectorService implements Serializable {
         } else {
             return sum.intValue();
         }
+    }
+
+    /**
+     * Delete all TermVectors for a given collectionId
+     * NOTE: Future implementations should not have references to
+     * Collections
+     */
+    @Deprecated
+    public void deleteTermVectorsOfCollection(Integer collectionId) {
+        this.em.createNativeQuery(SQL_DELETE_TERMVECTORS_OF_COLLECTION)
+            .setParameter("collectionId", collectionId)
+            .executeUpdate();
+        this.em.createNativeQuery(SQL_DELETE_ORIGINAL_WORDS_OF_COLLECTION)
+            .setParameter("collectionId", collectionId)
+            .executeUpdate();
     }
 
     public void deleteTermVector(FileObject fileObject) {

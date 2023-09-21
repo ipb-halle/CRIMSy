@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.base;
 
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
@@ -30,13 +32,11 @@ import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.mock.GlobalAdmissionContextMock;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
@@ -118,10 +118,10 @@ public class TestBase implements Serializable {
     protected NodeService nodeService;
     
     @Inject
-    protected TermVectorEntityService termVectorEntityService;
+    protected TermVectorService termVectorService;
     
     @Inject
-    protected FileEntityService fileEntityService;
+    protected FileObjectService fileObjectService;
     
     @Inject
     protected CollectionService collectionService;
@@ -158,9 +158,9 @@ public class TestBase implements Serializable {
                 .addClass(MemberService.class)
                 .addClass(MembershipService.class)
                 .addClass(NodeService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(FileService.class)
-                .addClass(TermVectorEntityService.class)
+                .addClass(TermVectorService.class)
                 .addClass(CollectionService.class)
                 .addClass(ProjectService.class)
                 .addClass(KeyStoreFactory.class)
@@ -396,9 +396,9 @@ public class TestBase implements Serializable {
     
     public void resetDB(MemberService memberService) {
         List<Collection> colls = collectionService.load(new HashMap<>());
-        termVectorEntityService.deleteTermVectors();
+        termVectorService.deleteTermVectors();
         for (Collection c : colls) {
-            fileEntityService.delete(c);
+            fileObjectService.deleteCollectionFiles(c.getId());
         }
     }
     
@@ -406,8 +406,8 @@ public class TestBase implements Serializable {
         List<Collection> colls = collectionService.load(null);
         for (Collection c : colls) {
             if (!c.getName().equals("public")) {
-                termVectorEntityService.deleteTermVectorOfCollection(c);
-                fileEntityService.delete(c);
+                termVectorService.deleteTermVectorsOfCollection(c);
+                fileObjectService.deleteCollectionFiles(c.getId());
                 collectionService.delete(c);
             }
         }

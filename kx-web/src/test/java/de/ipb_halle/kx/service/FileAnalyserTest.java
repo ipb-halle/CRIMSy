@@ -15,11 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file.save;
+package de.ipb_halle.kx.service;
 
+import de.ipb_halle.kx.termvector.StemmedWordOrigin;
+import de.ipb_halle.kx.termvector.TermVector;
 import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
-import de.ipb_halle.tx.file.StemmedWordOrigin;
-import de.ipb_halle.tx.file.TermVector;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;

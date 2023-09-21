@@ -18,11 +18,11 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.kx.file.AttachmentHolder;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.termvector.StemmedWordOrigin;
 import de.ipb_halle.kx.termvector.TermVector;
 import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.save.FileAnalyser;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.save.FileSaver;
@@ -57,27 +57,21 @@ public class UploadToCol implements Runnable {
     protected static final String HTTP_PARAMETER_COLLECTION = "collection";
     protected String fileName;
     protected FileSaver fileSaver;
-    protected FileAnalyser fileAnalyser;
-    protected TermVectorService termVectorService;
     protected Integer fileId;
-    protected FileEntityService fileEntityService;
+    protected FileObjectService fileObjectService;
     private final Logger logger;
 
     public UploadToCol(
-            InputStream filterDefinition,
-            FileEntityService fileEntityService,
+            FileObjectService fileObjectService,
             User user,
             AsyncContext asyncContext,
-            CollectionService collectionService,
-            TermVectorService termVectorService) {
-        fileAnalyser = new FileAnalyser(filterDefinition);
-        fileSaver = new FileSaver(fileEntityService, user);
+            CollectionService collectionService) {
+        this.fileSaver = new FileSaver(fileObjectService, user);
         this.asyncContext = asyncContext;
         this.collectionService = collectionService;
         this.request = (HttpServletRequest) asyncContext.getRequest();
         this.response = (HttpServletResponse) asyncContext.getResponse();
-        this.termVectorService = termVectorService;
-        this.fileEntityService = fileEntityService;
+        this.fileObjectService = fileObjectService;
         this.logger = LogManager.getLogger(UploadToCol.class);
     }
 
@@ -123,11 +117,12 @@ public class UploadToCol implements Runnable {
                     getAttachmentTarget(),
                     getFileNameFromRequest(),
                     request.getPart(HTTP_PART_FILENAME).getInputStream());
-            fileAnalyser.analyseFile(fileSaver.getFileLocation().toString(), fileId);
-            saveTermVector(fileAnalyser.getTermVector());
-            saveOriginalWords(fileAnalyser.getWordOrigins());
-            fileSaver.updateLanguageOfFile(fileAnalyser.getLanguage());
-            response.getWriter().write(createJsonSuccessResponse(fileId, getFileNameFromRequest()));
+            
+            
+            throw new RuntimeException("xxxxx Need to do async call to KX-Web service");
+
+            
+//            response.getWriter().write(createJsonSuccessResponse(fileId, getFileNameFromRequest()));
         } catch (Exception e) {
             writeErrorMessage(e);
             logger.error(ExceptionUtils.getStackTrace(e));
@@ -135,14 +130,6 @@ public class UploadToCol implements Runnable {
             asyncContext.complete();
         }
 
-    }
-
-    protected void saveOriginalWords(List<StemmedWordOrigin> originals) {
-        termVectorService.saveUnstemmedWordsOfDocument(originals, fileId);
-    }
-
-    protected void saveTermVector(List<TermVector> termVector) {
-        fileEntityService.saveTermVectors(termVector);
     }
 
     private void writeErrorMessage(Exception outerException) {

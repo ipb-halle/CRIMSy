@@ -46,6 +46,9 @@ public class FileAnalyser {
 
     protected ParseTool parseTool = new ParseTool();
     protected InputStream filterDefinition;
+
+    private FileObjectService fileObjectService;
+
     private Logger logger = LogManager.getLogger(this.getClass());
 
     public FileAnalyser(InputStream filterDefinition) {
@@ -90,8 +93,10 @@ public class FileAnalyser {
         List<StemmedWordOrigin> wordOrigins = new ArrayList<>();
         @SuppressWarnings("unchecked")
         Map<String, Set<String>> map = (Map) parseTool.getFilterData().getValue(TermVectorFilter.STEM_DICT);
-        for (String s : map.keySet()) {
-            wordOrigins.add(new StemmedWordOrigin(s, map.get(s)));
+        for (String root : map.keySet()) {
+            for (String original : map.get(root)) {
+                wordOrigins.add(new StemmedWordOrigin(root, original));
+            }
         }
         return wordOrigins;
     }

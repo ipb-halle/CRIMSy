@@ -17,12 +17,12 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -85,8 +84,7 @@ public class CollectionWebServiceTest
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(CollectionWebServiceMock.class)
                 .addClass(FileService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(FileEntityService.class);
+                .addClass(FileObjectService.class);
         return ItemDeployment.add(ExperimentDeployment.add(UserBeanDeployment.add(deployment)));
     }
 

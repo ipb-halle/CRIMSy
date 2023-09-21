@@ -17,17 +17,16 @@
  */
 package de.ipb_halle.lbac.search.relevance;
 
-import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.document.Document;
-import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of the Okapi BM25 Ranking
  * {@link https://en.wikipedia.org/wiki/Okapi_BM25)} with an modification of the
  * inverse document frequency term to avoid negative weights function for
- * calculating a relevanzfactor for documents.
+ * calculating a relevanceFactor for documents.
  *
  * @author fmauz
  */
@@ -35,13 +34,12 @@ public class RelevanceCalculator implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private StemmedWordGroup searchTerms;
+    private Set<String> stemmedTerms;
     private final float k1 = 1.2f;
     private final float b = 0.75f;
-    private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
 
-    public RelevanceCalculator(List<String> originalTerms) {
-        searchTerms = searchQueryStemmer.stemmQuery(String.join(" ", originalTerms));
+    public RelevanceCalculator(Set<String> terms) {
+        stemmedTerms = terms;
     }
 
     /**
@@ -60,7 +58,7 @@ public class RelevanceCalculator implements Serializable {
 
         for (Document d : docsToUpdate) {
             d.setRelevance(0);
-            for (String word : searchTerms.getAllStemmedWords()) {
+            for (String word : stemmedTerms) {
                 double docsWithHit = getDocAmountWithHit(docsToUpdate, word);
                 if(docsWithHit==0){
                     continue;
@@ -96,13 +94,8 @@ public class RelevanceCalculator implements Serializable {
         }
         return docs;
     }
-
-    public StemmedWordGroup getSearchTerms() {
-        return searchTerms;
+    
+    public void setStemmedTerms(Set<String> terms) {
+        stemmedTerms = terms;
     }
-
-    public void setSearchTerms(StemmedWordGroup searchTerms) {
-        this.searchTerms = searchTerms;
-    }
-
 }

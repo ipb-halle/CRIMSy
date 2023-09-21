@@ -21,8 +21,7 @@ package de.ipb_halle.lbac.search;
  *
  * @author fmauz
  */
-import de.ipb_halle.lbac.search.document.StemmedWordGroup;
-import java.io.FileNotFoundException;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -30,17 +29,12 @@ public class SearchQueryStemmerTest {
 
 
     @Test
-    public void test001_stemmQuery() throws FileNotFoundException {
+    public void test001_stemmQuery() {
         SearchQueryStemmer sqs=new SearchQueryStemmer();
-        StemmedWordGroup results=sqs.stemmQuery("Werkzeuge gebrauchen");
-        Assert.assertTrue(results.getStemmedWordsFor("Werkzeuge").contains("werkzeug"));
-        Assert.assertTrue(results.getStemmedWordsFor("gebrauchen").contains("gebrauch"));
-        Assert.assertEquals(sqs.stemmQuery("").getStemmedWordsFor("").size(), 0);
-        results=sqs.stemmQuery("*");
-        results=sqs.stemmQuery("    ");
-        results=sqs.stemmQuery("a");
-        results=sqs.stemmQuery("\n \r");
-        int i=0;
+        Set<String> results=sqs.stemmQuery("Werkzeuge gebrauchen");
+        Assert.assertTrue(results.contains("werkzeug"));
+        Assert.assertTrue(results.contains("gebrauch"));
+        Assert.assertEquals(sqs.stemmQuery("").size(), 0);
     }
 
 }

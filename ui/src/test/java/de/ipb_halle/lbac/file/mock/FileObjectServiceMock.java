@@ -17,23 +17,17 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
-import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.tx.file.FileObject;
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
 
 /**
  *
  * @author fmauz
  */
-public class FileEntityServiceMock extends FileEntityService {
+public class FileObjectServiceMock extends FileObjectService {
 
     @Override
-    public void checkIfFileAlreadyExists(String hash, Collection collection) throws Exception {
-
-    }
-
-    @Override
-    public FileObject save(FileObject fileEntity) {
+    public FileObject save(FileObject fileObject) {
         return null;
     }
 

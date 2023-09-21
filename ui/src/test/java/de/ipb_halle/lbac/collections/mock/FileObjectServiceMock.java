@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.collections.mock;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.tx.file.FileObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,36 +29,22 @@ import java.util.Map;
  *
  * @author fmauz
  */
-public class FileEntityServiceMock extends FileEntityService {
+public class FileObjectServiceMock extends FileObjectService {
 
     private boolean deleteSuccess = true;
     private boolean fileAvailable = true;
-
-    public void FileEntityServiceInit() {
-
-    }
 
     public Boolean delete(User user) {
         return deleteSuccess;
     }
 
     @Override
-    public List<FileObject> getAllFilesInCollection(Collection collection) {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public FileObject getFileEntity(Integer id) {
+    public FileObject loadFileObjectById(Integer id) {
         return new FileObject();
     }
 
     public Boolean isFileAvailable(String hash) {
         return fileAvailable;
-    }
-
-    @Override
-    public void checkIfFileAlreadyExists(String hash, Collection collection) throws Exception {
-
     }
 
     @Override
@@ -72,8 +58,7 @@ public class FileEntityServiceMock extends FileEntityService {
     }
 
     @Override
-    public void delete(Collection collection) {
+    public void deleteCollectionFiles(Integer collectionId) {
 
     }
-
 }

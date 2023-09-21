@@ -17,17 +17,17 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
-import de.ipb_halle.lbac.collections.mock.FileEntityServiceMock;
+import de.ipb_halle.lbac.collections.mock.FileObjectServiceMock;
 import de.ipb_halle.lbac.collections.mock.FileServiceMock;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class CollectionOperationTest extends TestBase {
     private final String PUBLIC_COLL_NAME = "public";
 
     @Inject
-    private TermVectorEntityService termVectorEntityService;
+    private TermVectorService termVectorService;
 
     @Inject
     CollectionService collectionService;
@@ -71,16 +71,16 @@ public class CollectionOperationTest extends TestBase {
         Assert.assertNotNull("CollectionService not injected", collectionService);
 
         FileServiceMock fileServiceMock = new FileServiceMock();
-        FileEntityServiceMock fileEntityMock = new FileEntityServiceMock();
+        FileObjectServiceMock fileObjectServiceMock = new FileObjectServiceMock();
 
         instance = new CollectionOperation(
                 fileServiceMock,
-                fileEntityMock,
+                fileObjectServiceMock,
                 globalAdmissionContext,
                 nodeService,
                 collectionService,
                 PUBLIC_COLL_NAME,
-                termVectorEntityService);
+                termVectorService);
 
         resetDB(memberService);
     }
@@ -191,12 +191,11 @@ public class CollectionOperationTest extends TestBase {
                 .addClass(Navigator.class)
                 .addClass(CollectionWebServiceMock.class)
                 .addClass(CollectionSearchState.class)
-                .addClass(TermVectorEntityService.class)
                 .addClass(EntityManager.class)
                 .addClass(FileService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(CollectionService.class)
-                .addClass(TermVectorEntityService.class);
+                .addClass(TermVectorService.class);
         return UserBeanDeployment.add(deployment);
     }
 

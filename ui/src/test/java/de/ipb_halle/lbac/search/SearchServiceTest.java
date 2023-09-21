@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.service.*;
@@ -44,7 +46,6 @@ import de.ipb_halle.lbac.exp.assay.Assay;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
@@ -69,9 +70,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
-
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
@@ -547,10 +546,10 @@ public class SearchServiceTest extends TestBase {
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
         DocumentCreator documentCreator = new DocumentCreator(
-                fileEntityService,
+                fileObjectService,
                 collectionService,
                 nodeService,
-                termVectorEntityService);
+                termVectorService);
 
         try {
             Collection col = documentCreator.uploadDocuments(
@@ -790,9 +789,9 @@ public class SearchServiceTest extends TestBase {
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(TermVectorEntityService.class)
+                .addClass(TermVectorService.class)
                 .addClass(CollectionService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(ExperimentService.class)
                 .addClass(ExpRecordService.class)
                 .addClass(AssayService.class)

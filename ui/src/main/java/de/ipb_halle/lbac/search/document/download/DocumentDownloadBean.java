@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search.document.download;
 
 import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -27,13 +28,23 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,7 +74,7 @@ public class DocumentDownloadBean {
     private NodeService nodeService;
 
     @Inject
-    private FileEntityService fileEntityService;
+    private FileObjectService fileObjectService;
 
     @Inject
     private DocumentWebClient client;
@@ -111,7 +122,7 @@ public class DocumentDownloadBean {
             return null;
         }
 
-        FileObject fileObject = fileEntityService.getFileEntity(document.getId());
+        FileObject fileObject = fileObjectService.loadFileObjectById(document.getId());
         if ((fileObject == null) || (fileObject.getFileLocation() == null)) {
             return null;
         }

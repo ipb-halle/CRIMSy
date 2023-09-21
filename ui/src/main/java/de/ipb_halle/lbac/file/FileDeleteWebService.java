@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.CollectionService;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class FileDeleteWebService extends HttpServlet {
     private CollectionService collectionService;
 
     @Inject
-    private FileEntityService fileEntityService;
+    private FileObjectService fileObjectService;
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
@@ -72,10 +73,10 @@ public class FileDeleteWebService extends HttpServlet {
                 //*** getting fileEntity ***
                 logger.info("file uuid: " + req.getPathInfo().substring(1));
                 cmap.put("id", req.getPathInfo().substring(1));
-                List<FileObject> fe = this.fileEntityService.load(cmap);
+                List<FileObject> fe = this.fileObjectService.load(cmap);
 
                 if ((fe != null) && (fe.size() > 0)) {
-                    asyncContext.start(new FileDeleteExec(fe.get(0), fileEntityService, asyncContext));
+                    asyncContext.start(new FileDeleteExec(fe.get(0), fileObjectService, asyncContext));
 
                 } else {
                     this.logger.warn("doDelete(): could not obtain fileEntity");

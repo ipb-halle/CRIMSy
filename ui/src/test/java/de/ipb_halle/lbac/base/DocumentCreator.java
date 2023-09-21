@@ -17,15 +17,14 @@
  */
 package de.ipb_halle.lbac.base;
 
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,22 +41,22 @@ public class DocumentCreator {
     protected AsyncContextMock asynContext;
     protected String exampleDocsRootFolder = "target/test-classes/exampledocs/";
 
-    protected FileEntityService fileEntityService;
+    protected FileObjectService fileObjectService;
     protected CollectionService collectionService;
     protected NodeService nodeService;
-    protected TermVectorEntityService termVectorEntityService;
+    protected TermVectorService termVectorService;
     protected User user;
 
     public DocumentCreator(
-            FileEntityService fileEntityService,
+            FileObjectService fileObjectService,
             CollectionService collectionService,
             NodeService nodeService,
-            TermVectorEntityService termVectorEntityService) {
+            TermVectorService termVectorService) {
 
-        this.fileEntityService = fileEntityService;
+        this.fileObjectService = fileObjectService;
         this.collectionService = collectionService;
         this.nodeService = nodeService;
-        this.termVectorEntityService = termVectorEntityService;
+        this.termVectorService = termVectorService;
     }
 
     public Collection uploadDocuments(User user, String collectionName, String... files) throws FileNotFoundException, InterruptedException {
@@ -88,12 +87,10 @@ public class DocumentCreator {
                 new File(exampleDocsRootFolder + documentName),
                 col.getName());
         UploadToColMock upload = new UploadToColMock(
-                FilterDefinitionInputStreamFactory.getFilterDefinition(),
-                fileEntityService,
+                fileObjectService,
                 user,
                 asynContext,
                 collectionService,
-                termVectorEntityService,
                 "target/test-classes/collections");
 
         upload.run();

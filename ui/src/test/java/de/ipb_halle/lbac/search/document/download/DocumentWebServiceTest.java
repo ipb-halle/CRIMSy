@@ -17,8 +17,26 @@
  */
 package de.ipb_halle.lbac.search.document.download;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.entity.CloudNode;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.globals.KeyManager;
+import de.ipb_halle.lbac.service.CloudNodeService;
+import de.ipb_halle.lbac.service.CloudService;
+import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.webclient.LbacWebClient;
+import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,26 +55,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.admission.MembershipService;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.CloudService;
-import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.webclient.LbacWebClient;
-import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
-import de.ipb_halle.tx.file.FileObject;
-import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author flange
@@ -133,7 +133,7 @@ public class DocumentWebServiceTest extends TestBase {
     @Test
     public void test_downloadDocument_userIsNotPermitted() throws Exception {
         String nonexistingFilename = tmpPath + "/nonexistingFile";
-        FileObject fileObject = fileEntityService.save(createFileObject(nonexistingFilename, nonReadableCollection));
+        FileObject fileObject = fileObjectService.save(createFileObject(nonexistingFilename, nonReadableCollection));
         DocumentWebRequest request = new DocumentWebRequest();
         request.setFileObjectId(fileObject.getId());
         signRequest(request, localNode, localRequestingUser);
@@ -147,7 +147,7 @@ public class DocumentWebServiceTest extends TestBase {
     @Test
     public void test_downloadDocument_fileDoesNotExistInFilesystem() throws Exception {
         String nonexistingFilename = tmpPath + "/nonexistingFile";
-        FileObject fileObject = fileEntityService.save(createFileObject(nonexistingFilename, readableCollection));
+        FileObject fileObject = fileObjectService.save(createFileObject(nonexistingFilename, readableCollection));
         DocumentWebRequest request = new DocumentWebRequest();
         request.setFileObjectId(fileObject.getId());
         signRequest(request, localNode, localRequestingUser);
@@ -162,7 +162,7 @@ public class DocumentWebServiceTest extends TestBase {
     public void test_downloadDocument_successfulDownload() throws Exception {
         String content = "Hello World";
         String path = createTempFile(content);
-        FileObject fileObject = fileEntityService.save(createFileObject(path, readableCollection));
+        FileObject fileObject = fileObjectService.save(createFileObject(path, readableCollection));
         DocumentWebRequest request = new DocumentWebRequest();
         request.setFileObjectId(fileObject.getId());
         signRequest(request, localNode, localRequestingUser);
@@ -209,7 +209,7 @@ public class DocumentWebServiceTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("DocumentWebServiceTest.war")
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(CollectionService.class)
                 .addClass(ACListService.class)
                 .addClass(MembershipService.class)

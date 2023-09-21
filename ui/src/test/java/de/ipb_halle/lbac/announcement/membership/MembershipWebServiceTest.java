@@ -34,9 +34,7 @@ import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.Membership;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
@@ -94,10 +92,7 @@ public class MembershipWebServiceTest extends TestBase {
         return prepareDeployment("MembershipWebServiceTest.war")
                 .addClass(MembershipWebService.class)
                 .addClass(WebRequestAuthenticator.class)
-                .addClass(FileService.class)
-                .addClass(KeyManager.class)
-                .addClass(KeyManager.class)
-                .addClass(FileEntityService.class);
+                .addClass(KeyManager.class);
 
     }
 

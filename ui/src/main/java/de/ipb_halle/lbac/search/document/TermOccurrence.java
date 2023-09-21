@@ -21,7 +21,7 @@ public class TermOccurrence {
         return termOccurences.keySet();
     }
 
-    public void addOccurence(Integer fileId, String word, Integer amount) {
+    public void addOccurrence(Integer fileId, String word, Integer amount) {
         if (termOccurences.get(fileId) == null) {
             termOccurences.put(fileId, new HashMap<>());
         }

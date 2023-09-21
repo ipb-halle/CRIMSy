@@ -20,10 +20,8 @@ package de.ipb_halle.lbac.globals;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -59,8 +57,6 @@ public class KeyManagerTest extends TestBase {
                 .addClass(CloudNodeService.class)
                 .addClass(NodeService.class)
                 .addClass(WebRequestAuthenticator.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class)
                 .addClass(KeyManager.class);
     }
 

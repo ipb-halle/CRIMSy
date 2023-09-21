@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.service.FileService;
 
 import java.io.InputStream;
@@ -37,16 +38,16 @@ public class FileDeleteExec implements Runnable {
     private FileObject fileObject;
     private Logger logger;
 
-    private FileEntityService fileEntityService;
+    private FileObjectService fileObjectService;
     private FileService fs;
 
-    public FileDeleteExec(FileObject fo, FileEntityService fes, AsyncContext asyncContext) {
+    public FileDeleteExec(FileObject fo, FileObjectService fos, AsyncContext asyncContext) {
 
         this.logger = LogManager.getLogger(FileDeleteExec.class);
         this.asyncContext = asyncContext;
 
         this.fileObject = fo;
-        this.fileEntityService = fes;
+        this.fileObjectService = fos;
 
         fs = new FileService();
     }
@@ -74,7 +75,7 @@ public class FileDeleteExec implements Runnable {
             }
 
             try {
-                fileEntityService.delete(fileObject);
+                fileObjectService.delete(fileObject);
                 this.logger.info(String.format("file %s in db deleted.", fileObject.getName()));
             } catch (Exception e) {
                 this.logger.warn(String.format("Error deleting file entity  %s in db.", fileObject.getName()));
