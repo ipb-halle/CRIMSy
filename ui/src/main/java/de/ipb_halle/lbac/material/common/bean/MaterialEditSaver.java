@@ -135,7 +135,7 @@ public class MaterialEditSaver implements Serializable {
                     updateEffectiveTaxonomy(diff);
                     the.setParentid_new(diff.getNewHierarchy().get(0));
                     Taxonomy t = (Taxonomy) oldMaterial;
-                    the.setParentid_old(t.getTaxHierachy().get(0).getId());
+                    the.setParentid_old(t.getTaxHierarchy().get(0).getId());
                 }
                 if (diff.isLevelChanged()) {
                     materialService.getEm().createNativeQuery(SQL_UPDATE_TAXONOMY_LEVEL)
@@ -268,7 +268,7 @@ public class MaterialEditSaver implements Serializable {
 
     protected void updateEffectiveTaxonomy(TaxonomyDifference diff) {
         Taxonomy t = (Taxonomy) newMaterial;
-        taxonomyNestingService.updateParentOfTaxonomy(newMaterial.getId(), t.getTaxHierachy().get(0).getId());
+        taxonomyNestingService.updateParentOfTaxonomy(newMaterial.getId(), t.getTaxHierarchy().get(0).getId());
     }
 
     public void saveEditedMaterialOverview() {
