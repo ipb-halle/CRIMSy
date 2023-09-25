@@ -877,8 +877,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * experiment record "save" commandButton before executing its AJAX call.
      * This includes the onclick code specified via the specific experiment
      * record controller's {@link ExpRecordController#getSaveButtonOnClick()}
-     * method. 
-     * The call to actionDoNothing() in former releases is now skipped!
+     * method. The call to actionDoNothing() in former releases is now skipped!
      * The actionListener and action of the commandButton are called afterwards.
      *
      * @return JavaScript code to be executed
@@ -893,7 +892,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 sb.append(";");
             }
         }
+        sb.append("PrimeFaces.oncomplete=function(xhr, status, args) { experimentBean.actionDoNothing(); return false; };");
+
         return sb.toString();
+
     }
 
     public void setSearchTerm(String searchTerm) {

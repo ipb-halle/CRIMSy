@@ -226,17 +226,15 @@
                                     <p:column style="width:10%">
 
                                         <p:commandButton
-                                            ajax="true"
-                                            styleClass="rightAligned ui-button-danger"
                                             value="#{msgs.Save}"
-                                            onclick="#{experimentBean.saveButtonOnClick}"
-                                            oncomplete="if (OmniFaces.Ajax.data.validationFailed) { #{scrollBean.scrollToCSS('expRecordEdit', -100)} }
-                                            else { #{scrollBean.scrollToCSS('expRecordLastSaved', -100)} }"
+                                            actionListener="#{experimentBean.actionDoNothing}"
                                             action="#{experimentBean.expRecordController.actionSaveRecord}"
+                                            onclick="#{experimentBean.saveButtonOnClick}"
+                                            oncomplete="return false;"
+                                            process="@form"
                                             update="@form growlMsg @(.assayTargetRow)" />
 
                                     </p:column>
-
                                     <!--==========================================================================================-->
                                 </p:row>
 
