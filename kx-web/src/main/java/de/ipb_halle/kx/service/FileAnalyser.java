@@ -38,24 +38,29 @@ import java.util.SortedSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 /**
  *
  * @author fmauz
  */
-public class FileAnalyser {
+public class FileAnalyser implements Runnable {
 
-    protected ParseTool parseTool = new ParseTool();
+    public final String FILTER_DEFINITION = "fileParserFilterDefinition.json";
+
+    protected ParseTool parseTool;
     protected InputStream filterDefinition;
-
-    private FileObjectService fileObjectService;
+    private FileObject  fileObject;
+    private TextWebStatus status;
 
     private Logger logger = LogManager.getLogger(this.getClass());
 
     public FileAnalyser(InputStream filterDefinition) {
-        this.filterDefinition = filterDefinition;
+        this.parseTool = new ParseTool();
+        this.filterDefinition = this.getClass().getResourceAsStream(FILTER_DEFINITION);
+        this.status = TextWebStatus.BUSY;
     }
 
-    private String getLanguage() {
+    public String getLanguage() {
         @SuppressWarnings("unchecked")
         SortedSet<Language> languages = (SortedSet) this.parseTool
                 .getFilterData()
@@ -89,7 +94,25 @@ public class FileAnalyser {
         parseTool.parse();
     }
 
-    protected List<StemmedWordOrigin> getWordOrigins() {
+    public FileObject getFileObject() {
+        return fileObject;
+    }
+
+    public TextWebStatus getStatus() {
+        return status;
+    }
+
+    public List<TermVector> getTermVector() {
+        List<TermVector> termVectors = new ArrayList<>();
+        @SuppressWarnings("unchecked")
+        Map<String, Integer> termvectorMap = (Map) parseTool.getFilterData().getValue(TermVectorFilter.TERM_VECTOR);
+        for (String tv : termvectorMap.keySet()) {
+            termVectors.add(new TermVector(tv, fileObject.getId(), termvectorMap.get(tv)));
+        }
+        return termVectors;
+    }
+
+    public List<StemmedWordOrigin> getWordOrigins() {
         List<StemmedWordOrigin> wordOrigins = new ArrayList<>();
         @SuppressWarnings("unchecked")
         Map<String, Set<String>> map = (Map) parseTool.getFilterData().getValue(TermVectorFilter.STEM_DICT);
@@ -101,43 +124,24 @@ public class FileAnalyser {
         return wordOrigins;
     }
 
-    protected List<TermVector> getTermVector(Integer fileId) {
-        List<TermVector> termVectors = new ArrayList<>();
-        @SuppressWarnings("unchecked")
-        Map<String, Integer> termvectorMap = (Map) parseTool.getFilterData().getValue(TermVectorFilter.TERM_VECTOR);
-        for (String tv : termvectorMap.keySet()) {
-            termVectors.add(new TermVector(tv, fileId, termvectorMap.get(tv)));
-        }
-        return termVectors;
-    }
-
-    public void processFile(Integer fileId) {
+    public void run() {
         try {
-            FileObject fileObj = fileObjectService.loadFileObjectById(fileId);
-            FileInputStream is = new FileInputStream(fileObj.getFileLocation());
+            FileInputStream is = new FileInputStream(fileObject.getFileLocation());
             analyseFile(is);
-            saveResults(fileObj);
+            status = TextWebStatus.DONE;
         } catch (Exception e) {
-            
+            logger.warn((Throwable e)
+            status = TextWebStatus.ERROR;
         }
     }
 
-    private void saveResults(FileObject fileObj) {
-        saveTermVector();
-        saveWordOrigins();
-        updateLanguage(fileObj);
-    }
-    
-    private void saveTermVector() {
-        
+    public FileAnalyser setFileObject(FileObject f) {
+        fileObject = f;
+        return this;
     }
 
-    private void saveWordOrigins() {
-        
-    }
-
-    private void updateLanguage(FileObject fileObj) {
-        fileObj.setDocumentLanguage(getLanguage());
-        fileObjectService.save(fileObj);
+    public FileAnalyser setFilterDefinition(InputStream def) {
+        filterDefinition = def;
+        return this;
     }
 }
