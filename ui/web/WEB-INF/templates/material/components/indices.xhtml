@@ -57,13 +57,15 @@
                             <p:column colspan="4"
                                       styleClass="selectOneMenuIndexCategoriesClass">
 
+
                                 <p:inputText
+                                    id="inTxt"
                                     style="margin:0 1rem;"
                                     rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
                                     value="#{materialBean.materialIndexBean.indexValue}"
                                     validator="IndexValidator"
-                                    
-                                   />
+                                    />
+                                <h:message for="inTxt" errorClass="errors"/>
 
                             </p:column>
                             <!--=================================================================================-->
@@ -79,7 +81,7 @@
                                                  update="@all"
                                                  process="@form"
                                                  action="#{materialBean.materialIndexBean.addNewIndex()}"
-                                                 
+
                                                  />
                             </p:column>
                             <!--=================================================================================-->
