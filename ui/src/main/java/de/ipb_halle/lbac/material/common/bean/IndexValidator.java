@@ -4,6 +4,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
@@ -34,7 +35,10 @@ public class IndexValidator implements Validator<String> {
         try {
             createValidator(indexType).validate(stringToValidate);
         } catch (Exception ex) {
-            throw new ValidatorException(new ArrayList<>(), ex);
+
+            ArrayList<FacesMessage> errorMessg = new ArrayList<FacesMessage>();
+            errorMessg.add(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ": The input is not valid!"));
+            throw new ValidatorException(errorMessg, ex);
 
         }
     }

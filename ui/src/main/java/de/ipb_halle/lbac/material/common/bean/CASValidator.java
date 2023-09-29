@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.ipb_halle.lbac.material.common.bean;
 
 /**
@@ -12,27 +8,36 @@ public class CASValidator implements IndexValidatorInterface {
 
     @Override
     public boolean validate(String casNumber) throws Exception {
+        casNumber = casNumber.trim();
 
-        casNumber = casNumber.replace("-", "");
+        checkPattern(casNumber);
 
-        if (!casNumber.matches("\\d{5}")) {
-//        if (!(casNumber.length() < 2 && casNumber.length() > 7)) {
-            throw new Exception("Number is not valid");
-        }
-
+        casNumber = casNumber.replaceAll("-", "");
         int checkDigit = Integer.parseInt(casNumber.substring(casNumber.length() - 1));
-        casNumber = casNumber.substring(0, casNumber.length() - 1);
+        String casNumberWithoutCheckDigit = casNumber.substring(0, casNumber.length() - 1);
+
+        validateChecksum(casNumberWithoutCheckDigit, checkDigit);
+
+        return true;
+
+    }
+
+    private void validateChecksum(String casNumberWithoutCheckDigit, int checkDigit) throws Exception, NumberFormatException {
         double result = 0;
 
-        for (int i = 1; i <= casNumber.length(); i++) {
-            int digit = Integer.parseInt(casNumber.substring(casNumber.length() - i, casNumber.length() - i + 1));
-            result += digit * i;
+        for (int i = 0; i < casNumberWithoutCheckDigit.length(); i++) {
+            int numberAtIndex = Integer.parseInt(String.valueOf(((casNumberWithoutCheckDigit.charAt(i)))));
+            result += (casNumberWithoutCheckDigit.length() - i) * numberAtIndex;
         }
 
         if (result % 10 != checkDigit) {
-            throw new Exception("Number is not valid");
-        } else {
-            return true;
+            throw new Exception("Checknumber is not valid");
+        }
+    }
+
+    private void checkPattern(String casNumber) throws Exception {
+        if (!casNumber.matches("\\d{2,7}-\\d{2}-\\d{1}")) {
+            throw new Exception("Numberpattern is not valid");
         }
     }
 }

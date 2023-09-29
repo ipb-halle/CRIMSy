@@ -69,6 +69,18 @@ public class MaterialIndexBean implements Serializable {
         indexValue = "";
     }
 
+    public String createPattern() {
+        String indexType = getIndexCatergory();
+        return switch (indexType) {
+            case "CAS/RN" ->
+                "0000000-00-0";
+            case "GESTIS/ZVG" ->
+                "switch to another";
+            default ->
+                indexType;
+        };
+    }
+
     public List<String> getIndexCategories() {
         List<String> values = new ArrayList<>();
 
@@ -121,7 +133,7 @@ public class MaterialIndexBean implements Serializable {
             }
         }
         if (!alreadyIn) {
-            if(!indexCategoriesReversed.containsKey(indexCatergory)){
+            if (!indexCategoriesReversed.containsKey(indexCatergory)) {
                 return;
             }
             IndexEntry ie = new IndexEntry(indexCategoriesReversed.get(indexCatergory), indexValue, null);

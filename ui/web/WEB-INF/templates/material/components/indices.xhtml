@@ -34,8 +34,8 @@
                     rendered="#{materialBean.permission.isDetailPanelVisible('INDEX')}">
                     <div>
                         <p:row>
-                            <!--=================================================================================-->  
-                            <p:column 
+                            <!--=================================================================================-->
+                            <p:column
                                 colspan="4"
                                 styleClass="selectOneMenuIndexCategoriesClass">
 
@@ -47,7 +47,7 @@
                                     <f:selectItem itemLabel="Select an option" itemValue="" />
                                     <f:selectItems
                                         value="#{materialBean.materialIndexBean.indexCategories}"/>
-                                    <p:ajax/>
+                                    <p:ajax process="@form" update="inTxt"/>
                                 </p:selectOneMenu>
 
                             </p:column>
@@ -64,8 +64,8 @@
                                     rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
                                     value="#{materialBean.materialIndexBean.indexValue}"
                                     validator="IndexValidator"
+                                    placeholder="#{materialBean.materialIndexBean.createPattern()}"
                                     />
-                                <h:message for="inTxt" errorClass="errors"/>
 
                             </p:column>
                             <!--=================================================================================-->
@@ -83,6 +83,7 @@
                                                  action="#{materialBean.materialIndexBean.addNewIndex()}"
 
                                                  />
+                                <p:messages for="inTxt" showDetail="true" closable="true"/>
                             </p:column>
                             <!--=================================================================================-->
 
