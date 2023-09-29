@@ -13,8 +13,10 @@ public class CASValidatorTest {
 
     @Test
     public void cas_test_invalid_numbers() throws Exception{
-        Assert.assertThrows(Exception.class, ()->{validator.validate(null);});
-        Assert.assertThrows(Exception.class, ()->{validator.validate("");});
+        Assert.assertThrows(Exception.class, ()->{validator.validate(null); });
+        Assert.assertThrows(Exception.class, ()->{validator.validate(""); });
+        Assert.assertThrows(Exception.class, ()->{validator.validate("64-17-6"); });
+        Assert.assertThrows(Exception.class, ()->{validator.validate("64--17-5"); });
     }
 
     @Test

@@ -20,3 +20,4 @@ ui/target
 
 # IntelliJ
 **/.idea
+/ui/nbproject/

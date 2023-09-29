@@ -10,6 +10,6 @@ package de.ipb_halle.lbac.material.common.bean;
  */
 interface IndexValidatorInterface {
       
-    public boolean validate(String indexValue) throws Exception ;
-    
+    public boolean validate(String indexValue) throws Exception;
+
 }

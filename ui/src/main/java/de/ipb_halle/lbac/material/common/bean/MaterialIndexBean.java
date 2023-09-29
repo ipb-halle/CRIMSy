@@ -75,7 +75,7 @@ public class MaterialIndexBean implements Serializable {
             case "CAS/RN" ->
                 "0000000-00-0";
             case "GESTIS/ZVG" ->
-                "switch to another";
+                "GESTIS/ZVG number";
             default ->
                 indexType;
         };

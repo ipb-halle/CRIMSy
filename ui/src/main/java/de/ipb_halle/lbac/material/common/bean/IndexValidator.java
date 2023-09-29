@@ -4,6 +4,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import de.ipb_halle.lbac.i18n.UIMessage;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -12,9 +13,9 @@ import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -23,7 +24,9 @@ import org.apache.logging.log4j.LogManager;
 @FacesValidator("IndexValidator")
 public class IndexValidator implements Validator<String> {
 
-    private org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getName());
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Inject
     private MaterialIndexBean materialIndexBean;
@@ -36,9 +39,13 @@ public class IndexValidator implements Validator<String> {
             createValidator(indexType).validate(stringToValidate);
         } catch (Exception ex) {
 
-            ArrayList<FacesMessage> errorMessg = new ArrayList<FacesMessage>();
-            errorMessg.add(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ": The input is not valid!"));
-            throw new ValidatorException(errorMessg, ex);
+            throw new ValidatorException(
+                        UIMessage.getErrorMessage(MESSAGE_BUNDLE, "index_validator_error", null), 
+                        ex);
+
+//            ArrayList<FacesMessage> errorMessg = new ArrayList<FacesMessage>();
+//            errorMessg.add(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ": The input is not valid!"));
+//            throw new ValidatorException(errorMessg, ex);
 
         }
     }
@@ -50,12 +57,8 @@ public class IndexValidator implements Validator<String> {
                 new CASValidator();
 
             default ->
-                doSomething("");
+                new AlwaysTrueValidator();
         };
-    }
-
-    private IndexValidatorInterface doSomething(String s) throws Exception {
-        return new AlwaysTrueValidator();
     }
 
     private class AlwaysTrueValidator implements IndexValidatorInterface {
