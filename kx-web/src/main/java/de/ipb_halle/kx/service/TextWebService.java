@@ -17,10 +17,14 @@
  */
 package de.ipb_halle.kx.service;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.annotation.Resource;
 import javax.inject.Inject;
-
 import javax.servlet.AsyncContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,10 +39,8 @@ public class TextWebService extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
 
-    private final Logger logger = LogManager.getLogger(TextWebService.class);
-
     @Resource(name = "kxExecutorService")
-    private ManagedExecutorService managedExecutorService;
+    private ManagedExecutorService executorService;
 
     @Inject
     private JobTracker jobTracker;
@@ -49,22 +51,34 @@ public class TextWebService extends HttpServlet {
     @Inject
     private TermVectorService termVectorService;
 
+
+    static class FileAnalyserFactory implements IFileAnalyserFactory {
+        public IFileAnalyser buildFileAnalyser() {
+            return new FileAnalyser();
+        }
+    }
+
+    private static IFileAnalyserFactory fileAnalyserFactory = new FileAnalyserFactory();
+    private final Logger logger = LogManager.getLogger(TextWebService.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         logger.info("doGet(): request received.");
         try {
-            final TextWebRequestType requestType = TextWebRequestType.valueOf(req.getParameter(TextWebRequestType.PARAMETER));
-            final Integer fileId = Integer.parseInt(req.getParameter("fileId"));
             final PrintWriter out = resp.getWriter();
-            out.write(processRequest.toString());
+            out.write(
+                processRequest(req)
+                .toString());
         } catch (IOException e) {
             logger.error((Throwable) e);
         }
     }
 
-    private TextWebStatus processRequest(Integer fileId, TextWebRequestType requestType) {
+    private TextWebStatus processRequest(HttpServletRequest req) {
         try {
-            if (requestType == SUBMIT) {
+            final TextWebRequestType requestType = TextWebRequestType.valueOf(req.getParameter(TextWebRequestType.PARAMETER));
+            final Integer fileId = Integer.parseInt(req.getParameter("fileId"));
+            if (requestType == TextWebRequestType.SUBMIT) {
                 return processSubmitRequest(fileId);
             } else {
                 return processQueryRequest(fileId);
@@ -72,23 +86,27 @@ public class TextWebService extends HttpServlet {
         } catch (Exception e) {
             logger.warn((Throwable) e);
         }
-        return TextWebStatus.ERROR;
+        return TextWebStatus.PARAMETER_ERROR;
     }
 
     private TextWebStatus processSubmitRequest(Integer fileId) {
         FileObject fileObj = fileObjectService.loadFileObjectById(fileId);
-
-        FileAnalyser analyser = new FileAnalyser()
-            .setFileObject(fileObj);
-        jobTracker.putJob(fileId, analyser);
-        managedExecutorService.submit(analyser);
-        return analyser.getStatus();
+        if (fileObj != null) {
+            IFileAnalyser analyser = fileAnalyserFactory.buildFileAnalyser()
+                .setFileObject(fileObj);
+            jobTracker.putJob(fileId, analyser);
+            executorService.submit(analyser);
+            return analyser.getStatus();
+        } else {
+            logger.info("Could not obtain FileObject for fileId=" + fileId.toString());
+        }
+        return TextWebStatus.NO_INPUT_ERROR;
     }
 
     private TextWebStatus processQueryRequest(Integer fileId) {
-        FileAnalyser analyser = jobTracker.getJob(fileId);
+        IFileAnalyser analyser = jobTracker.getJob(fileId);
         if (analyser == null) {
-            return TextWebStatus.ERROR;
+            return TextWebStatus.NO_SUCH_JOB_ERROR;
         }
         TextWebStatus status = analyser.getStatus();
 
@@ -105,7 +123,7 @@ public class TextWebService extends HttpServlet {
         return status;
     }
 
-    private void saveResults(FileAnalyser analyser) {
+    private void saveResults(IFileAnalyser analyser) {
         saveLanguage(analyser);
         termVectorService.saveUnstemmedWordsOfDocument(
             analyser.getWordOrigins(), 
@@ -113,16 +131,20 @@ public class TextWebService extends HttpServlet {
         termVectorService.saveTermVectors(analyser.getTermVector());
     }
 
-    private void saveLanguage(FileAnalyser analyser) {
+    private void saveLanguage(IFileAnalyser analyser) {
         FileObject fileObj = fileObjectService.loadFileObjectById(
             analyser.getFileObject().getId());
-        fileObj.setLanguage(
+        fileObj.setDocumentLanguage(
             analyser.getLanguage());
         fileObjectService.save(fileObj);
     }
 
     // for testing
-    protected void setExecutorService(ManagedExecutorService mes) {
-        managedExecutorService = mes;
+    protected void setExecutorService(ManagedExecutorService es) {
+        executorService = es;
+    }
+
+    protected void setFileAnalyserFactory(IFileAnalyserFactory factory) {
+        fileAnalyserFactory = factory;
     }
 }

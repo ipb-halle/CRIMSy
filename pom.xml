@@ -30,6 +30,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>crimsy-test</module>
         <module>crimsy-api</module>
         <module>agency-api</module>
         <module>agency</module>

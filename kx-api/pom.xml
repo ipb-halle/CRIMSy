@@ -114,6 +114,14 @@
             <version>1.0.0</version>
         </dependency>
 
+        <!-- CRIMSy testing -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>crimsy-test</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- unit testing -->
         <dependency>
             <groupId>junit</groupId>

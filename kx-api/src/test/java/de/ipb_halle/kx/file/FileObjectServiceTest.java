@@ -6,7 +6,7 @@
 package de.ipb_halle.kx.file;
 
 import de.ipb_halle.kx.file.FileObject;
-import de.ipb_halle.testcontainers.EntityManagerService;
+import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -54,6 +54,7 @@ public class FileObjectServiceTest {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "FileObjectServiceTest.war")
                 .addClass(FileObjectService.class)
                 .addClass(EntityManagerService.class)
+                .addAsResource("PostgresqlContainerSchemaFiles")
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;

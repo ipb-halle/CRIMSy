@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2023 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.reporting.job;
+package de.ipb_halle.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,17 +30,23 @@ import java.util.concurrent.TimeoutException;
 import javax.enterprise.concurrent.ManagedExecutorService;
 
 /**
- * Mock implementation of ManagedExecutorService that can hold two 2 submitted
+ * Mock implementation of ManagedExecutorService that can hold maxTasks submitted
  * tasks.
  * 
  * @author flange
  */
 public class ManagedExecutorServiceMock implements ManagedExecutorService {
+
+    private int maxTasks;
     private List<Runnable> submittedTasks = new ArrayList<>();
+
+    public ManagedExecutorServiceMock(int maxTasks) {
+        this.maxTasks = maxTasks;
+    }
 
     @Override
     public Future<?> submit(Runnable task) {
-        if (submittedTasks.size() < 2) {
+        if (submittedTasks.size() < maxTasks) {
             submittedTasks.add(task);
         } else {
             throw new RejectedExecutionException();

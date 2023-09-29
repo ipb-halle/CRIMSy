@@ -168,13 +168,6 @@
 
     <dependencies>
 
-        <!-- TX api -->
-        <dependency>
-            <groupId>de.ipb-halle</groupId>
-            <artifactId>kx-api</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
         <!-- commons-cli -->
         <dependency>
             <groupId>commons-cli</groupId>
@@ -203,6 +196,7 @@
             <version>1.5</version>
         </dependency>
 
+        <!-- kx -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>kx-api</artifactId>
@@ -296,6 +290,14 @@
 -->
 
         <!-- Dependencies for testing -->
+        <!-- crimsy-test -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>crimsy-test</artifactId>
+            <version>1.0.0</version>
+       </dependency>
+
+
         <!-- unit testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

@@ -27,5 +27,8 @@ public enum TextWebStatus {
 
     BUSY,
     DONE,
-    ERROR;
+    PARAMETER_ERROR,
+    PROCESSING_ERROR,
+    NO_INPUT_ERROR,
+    NO_SUCH_JOB_ERROR;
 }

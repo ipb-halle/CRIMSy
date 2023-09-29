@@ -17,11 +17,16 @@
  */
 package de.ipb_halle.testcontainers;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.testcontainers.containers.Container.ExecResult;
@@ -43,13 +48,13 @@ import org.testcontainers.utility.MountableFile;
  * @author flange
  */
 public class PostgresqlContainerExtension implements BeforeAllCallback {
-    private static final String[] SCHEMA_FILES = { "00001.sql" };
+    private static final String SCHEMA_FILE_RESOURCE = "/PostgresqlContainerSchemaFiles";
     private static final String IMAGE_NAME = "ipbhalle/crimsydb:bingo_pg12";
 
     private static final AtomicBoolean FIRST_RUN = new AtomicBoolean(true);
     private PostgreSQLContainer<?> container;
 
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
@@ -67,10 +72,28 @@ public class PostgresqlContainerExtension implements BeforeAllCallback {
         logger.info("Starting Postgresql container with image " + customPostgresImage.toString());
         container.start();
 
-        for (String schemaFile : SCHEMA_FILES) {
+        for (String schemaFile : getSchemaFiles()) {
             copySchema("schema/" + schemaFile);
             applySchema(schemaFile);
         }
+    }
+
+    private List<String> getSchemaFiles() {
+        List<String> schemaFileNames = new ArrayList<> ();
+        try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(
+                        this.getClass().getResourceAsStream(SCHEMA_FILE_RESOURCE)))) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (! line.startsWith("#")) {
+                    schemaFileNames.add(line /* .strip() */ );
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error configuring schema files for PostgresqlContainerExtension", (Throwable) e);
+        } 
+
+        return schemaFileNames;
     }
 
     private void copySchema(String filename) {

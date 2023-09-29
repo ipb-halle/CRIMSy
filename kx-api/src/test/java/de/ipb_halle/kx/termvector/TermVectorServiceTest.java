@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.kx.termvector;
 
-import de.ipb_halle.testcontainers.EntityManagerService;
+import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.file.FileObject;
@@ -75,6 +75,7 @@ public class TermVectorServiceTest {
                 .addClass(TermVectorService.class)
                 .addClass(TermVector.class)
                 .addClass(EntityManagerService.class)
+                .addAsResource("PostgresqlContainerSchemaFiles")
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;

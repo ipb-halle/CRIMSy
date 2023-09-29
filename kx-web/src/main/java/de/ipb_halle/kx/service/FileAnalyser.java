@@ -18,7 +18,6 @@
 package de.ipb_halle.kx.service;
 
 import de.ipb_halle.kx.file.FileObject;
-import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.termvector.StemmedWordOrigin;
 import de.ipb_halle.kx.termvector.TermVector;
 import de.ipb_halle.tx.text.LanguageDetectorFilter;
@@ -43,7 +42,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class FileAnalyser implements Runnable {
+public class FileAnalyser implements IFileAnalyser, Runnable {
 
     public final String FILTER_DEFINITION = "fileParserFilterDefinition.json";
 
@@ -54,7 +53,7 @@ public class FileAnalyser implements Runnable {
 
     private Logger logger = LogManager.getLogger(this.getClass());
 
-    public FileAnalyser(InputStream filterDefinition) {
+    public FileAnalyser() {
         this.parseTool = new ParseTool();
         this.filterDefinition = this.getClass().getResourceAsStream(FILTER_DEFINITION);
         this.status = TextWebStatus.BUSY;
@@ -130,17 +129,17 @@ public class FileAnalyser implements Runnable {
             analyseFile(is);
             status = TextWebStatus.DONE;
         } catch (Exception e) {
-            logger.warn((Throwable e)
-            status = TextWebStatus.ERROR;
+            logger.warn((Throwable) e);
+            status = TextWebStatus.PROCESSING_ERROR;
         }
     }
 
-    public FileAnalyser setFileObject(FileObject f) {
+    public IFileAnalyser setFileObject(FileObject f) {
         fileObject = f;
         return this;
     }
 
-    public FileAnalyser setFilterDefinition(InputStream def) {
+    public IFileAnalyser setFilterDefinition(InputStream def) {
         filterDefinition = def;
         return this;
     }

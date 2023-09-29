@@ -18,15 +18,11 @@
 package de.ipb_halle.kx.service;
 
 /**
- * Provisional result type class for TextWebService (module kx-web) until 
- * job API gets refactored.
+ * Factory interface for FileAnalyser to enable mocking for test cases.
  *
  * @author fbroda
  */
-public enum TextWebRequestType {
+public interface IFileAnalyserFactory {
 
-    SUBMIT,
-    QUERY;
-
-    public final static String PARAMETER="type";
+    public IFileAnalyser buildFileAnalyser();
 }

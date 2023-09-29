@@ -17,16 +17,26 @@
  */
 package de.ipb_halle.kx.service;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.termvector.StemmedWordOrigin;
+import de.ipb_halle.kx.termvector.TermVector;
+import java.io.InputStream;
+import java.util.List;
+
+
 /**
- * Provisional result type class for TextWebService (module kx-web) until 
- * job API gets refactored.
+ * Interface of FileAnalyser to enabel Mocking for test cases.
  *
  * @author fbroda
  */
-public enum TextWebRequestType {
+public interface IFileAnalyser extends Runnable {
 
-    SUBMIT,
-    QUERY;
-
-    public final static String PARAMETER="type";
+    public String getLanguage();
+    public FileObject getFileObject();
+    public TextWebStatus getStatus();
+    public List<TermVector> getTermVector();
+    public List<StemmedWordOrigin> getWordOrigins();
+    public void run();
+    public IFileAnalyser setFileObject(FileObject f);
+    public IFileAnalyser setFilterDefinition(InputStream def);
 }

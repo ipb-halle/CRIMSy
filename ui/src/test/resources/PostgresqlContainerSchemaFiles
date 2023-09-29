@@ -1,0 +1,7 @@
+#
+# Configuration of PostgresqlContainerExtension:
+# schema files for testing
+#
+00001.sql
+00002.sql
+00003.sql

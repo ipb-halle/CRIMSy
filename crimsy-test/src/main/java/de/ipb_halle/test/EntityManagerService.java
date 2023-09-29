@@ -15,18 +15,23 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.kx.service;
+package de.ipb_halle.test;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
- * Provisional result type class for TextWebService (module kx-web) until 
- * job API gets refactored.
  *
  * @author fbroda
  */
-public enum TextWebRequestType {
+@Stateless
+public class EntityManagerService {
 
-    SUBMIT,
-    QUERY;
+    @PersistenceContext(name = "de.ipb_halle.lbac")
+    private EntityManager em;
 
-    public final static String PARAMETER="type";
+    public EntityManager getEntityManager() {
+        return em;
+    }
 }

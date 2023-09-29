@@ -15,23 +15,16 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.testcontainers;
-
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+package de.ipb_halle.kx.service;
 
 /**
+ * Factory for FileAnalyserMock objects
  *
  * @author fbroda
  */
-@Stateless
-public class EntityManagerService {
+public class FileAnalyserFactoryMock implements IFileAnalyserFactory {
 
-    @PersistenceContext(name = "de.ipb_halle.lbac")
-    private EntityManager em;
-
-    public EntityManager getEntityManager() {
-        return em;
+    public IFileAnalyser buildFileAnalyser() {
+        return new FileAnalyserMock();
     }
 }
