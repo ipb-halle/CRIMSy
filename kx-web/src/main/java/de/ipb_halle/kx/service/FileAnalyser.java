@@ -102,13 +102,13 @@ public class FileAnalyser implements IFileAnalyser, Runnable {
     }
 
     public List<TermVector> getTermVector() {
-        List<TermVector> termVectors = new ArrayList<>();
+        List<TermVector> termVector = new ArrayList<>();
         @SuppressWarnings("unchecked")
         Map<String, Integer> termvectorMap = (Map) parseTool.getFilterData().getValue(TermVectorFilter.TERM_VECTOR);
         for (String tv : termvectorMap.keySet()) {
-            termVectors.add(new TermVector(tv, fileObject.getId(), termvectorMap.get(tv)));
+            termVector.add(new TermVector(tv, fileObject.getId(), termvectorMap.get(tv)));
         }
-        return termVectors;
+        return termVector;
     }
 
     public List<StemmedWordOrigin> getWordOrigins() {

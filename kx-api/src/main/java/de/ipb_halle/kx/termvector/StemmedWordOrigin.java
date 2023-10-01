@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.kx.termvector;
 
+import java.util.Objects;
+
 /**
  *
  * @see TermVectorEntity for SqlResultSetMapping
@@ -35,20 +37,44 @@ public class StemmedWordOrigin {
     public StemmedWordOrigin() {
     }
 
-    public String getStemmedWord() {
-        return stemmedWord;
-    }
-
-    public void setStemmedWord(String s) {
-        this.stemmedWord = s;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final StemmedWordOrigin other = (StemmedWordOrigin) obj;
+        if (!Objects.equals(this.originalWord, other.originalWord)) {
+            return false;
+        }
+        if (!Objects.equals(this.stemmedWord, other.stemmedWord)) {
+            return false;
+        }
+        return true;
     }
 
     public String getOriginalWord() {
         return originalWord;
     }
 
+
+    public String getStemmedWord() {
+        return stemmedWord;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(originalWord) + Objects.hashCode(stemmedWord);
+    }
+
     public void setOriginalWord(String o) {
         this.originalWord = o;
     }
-
+    public void setStemmedWord(String s) {
+        this.stemmedWord = s;
+    }
 }

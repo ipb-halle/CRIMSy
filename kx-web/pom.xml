@@ -147,9 +147,8 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <warSourceDirectory>web</warSourceDirectory>
                     <failOnMissingWebXml>true</failOnMissingWebXml>
-                    <warName>ui</warName>
+                    <warName>kx</warName>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>

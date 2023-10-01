@@ -22,8 +22,13 @@ import de.ipb_halle.kx.service.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.kx.termvector.StemmedWordOrigin;
 import de.ipb_halle.kx.termvector.TermVector;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -35,18 +40,28 @@ public class FileAnalyserTest {
 
     protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
 
-    public FileObject createMockFile(Integer id, String path) {
+    private FileObject createMockFile(Integer id, String path) {
         FileObject fileObject = new FileObject();
         fileObject.setId(id);
         fileObject.setFileLocation(path);
         return fileObject;
     }
 
+    private FileAnalyser setupAnalyser(String fileName) {
+        FileAnalyser analyser = new FileAnalyser();
+        analyser.setFileObject(createMockFile(1, examplaDocsRootFolder + fileName));
+        analyser.run();
+        return analyser;
+    }
+
+    private boolean compareTermVectors(TermVector tv1, TermVector tv2) {
+        return tv1.equals(tv2) 
+            && (tv1.getTermFrequency() == tv2.getTermFrequency());
+    }
+
     @Test
     public void test001_analyseEnglishPdf() throws FileNotFoundException, Exception {
-        FileAnalyser analyser = new FileAnalyser();
-        analyser.setFileObject(createMockFile(1, examplaDocsRootFolder + "Document1.pdf"));
-        analyser.run();
+        FileAnalyser analyser = setupAnalyser("Document1.pdf");
         List<TermVector> tvs = null;
         try {
             tvs = analyser.getTermVector();
@@ -85,11 +100,10 @@ public class FileAnalyserTest {
         Assert.assertEquals("undefined", analyser.getLanguage());
 
     }
-/*
+
     @Test
     public void test002_analyseGermanXls() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
-        analyser.analyseFile(examplaDocsRootFolder + "TestTabelle.xlsx", 1);
+        FileAnalyser analyser = setupAnalyser("TestTabelle.xlsx");
         //Assert.assertEquals(20, analyser.getWordOrigins().size());
         //Assert.assertEquals(20, analyser.getTermVector().size());
         Assert.assertEquals("de", analyser.getLanguage());
@@ -97,8 +111,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test003_analyseFrenchWord() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
-        analyser.analyseFile(examplaDocsRootFolder + "Document_FR.docx", 1);
+        FileAnalyser analyser = setupAnalyser("Document_FR.docx");
         // Assert.assertEquals(210, analyser.getWordOrigins().size());
         // Assert.assertEquals(210, analyser.getTermVector().size());
         Assert.assertEquals("fr", analyser.getLanguage());
@@ -106,17 +119,13 @@ public class FileAnalyserTest {
 
     @Test
     public void test004_analyseStemming() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
-        analyser.analyseFile(examplaDocsRootFolder + "Document_wordStemming.docx", 1);
+        FileAnalyser analyser = setupAnalyser("Document_wordStemming.docx");
         //  Assert.assertEquals(12, analyser.getWordOrigins().size());
         //  Assert.assertEquals(12, analyser.getTermVector().size());
         for (StemmedWordOrigin swo : analyser.getWordOrigins()) {
             if (swo.getStemmedWord().equals("saur")) {
-                Set<String> originWords = swo.getOriginalWord();
-                Assert.assertEquals(2, originWords.size());
-                for (String s : originWords) {
-                    Assert.assertTrue(s.equals("säuren") || s.equals("säure"));
-                }
+                Assert.assertTrue(swo.getOriginalWord().equals("säuren") 
+                        || swo.getOriginalWord().equals("säure"));
             }
         }
         Assert.assertEquals("de", analyser.getLanguage());
@@ -124,17 +133,57 @@ public class FileAnalyserTest {
 
     @Test
     public void test005_checkUniqueWordOrigins() throws FileNotFoundException, Exception {
-        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
-        analyser.analyseFile(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf", 1);
-        List<TermVector> tvs = analyser.getTermVector();
-        //  Assert.assertEquals(5428, tvs.size());
+        FileAnalyser analyser =  setupAnalyser("IPB_Jahresbericht_2004.pdf");
+        Assert.assertEquals(5319, analyser.getTermVector().size());
         Assert.assertEquals("de", analyser.getLanguage());
     }
 
     @Test
     public void test006_analyseRealWorldText() throws FileNotFoundException, Exception {
-        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
-        analyser.analyseFile(examplaDocsRootFolder + "ShortRealText.docx", 1);
+        FileAnalyser analyser = setupAnalyser("ShortRealText.docx");
+
+        Map<String, TermVector> expectedTV = Arrays.asList(
+                        // TermVector(stem, fileId, frequency)
+                        new TermVector("rafft", 1, 1),
+                        new TermVector("menschheit", 1, 1),
+                        new TermVector("gurk", 1, 1),
+                        new TermVector("nikotin", 1, 1),
+                        new TermVector("alkohol", 1, 1),
+                        new TermVector("hopfenkaltschal", 1, 1),
+                        new TermVector("schnitzel", 1, 1),
+                        new TermVector("saur", 1, 1),
+                        new TermVector("grundnahrungsmittel", 1, 1),
+                        new TermVector("halb", 1, 1))
+                .stream()
+                .collect(Collectors.toMap(TermVector::getWordRoot, Function.identity()));
+
+        List<TermVector> resultTV = analyser.getTermVector();
+        Assert.assertEquals(expectedTV.size(), resultTV.size());
+
+        for (TermVector tv : resultTV) {
+            Assert.assertTrue(compareTermVectors(tv, expectedTV.get(tv.getWordRoot())));
+        }
+
+        Set<StemmedWordOrigin> expectedSWO = new HashSet<> ();
+        expectedSWO.addAll(Arrays.asList(
+                        new StemmedWordOrigin("rafft", "rafft"),
+                        new StemmedWordOrigin("menschheit", "menschheit"),
+                        new StemmedWordOrigin("gurk", "gurken"),
+                        new StemmedWordOrigin("nikotin", "nikotin"),
+                        new StemmedWordOrigin("alkohol", "alkohol"),
+                        new StemmedWordOrigin("hopfenkaltschal", "hopfenkaltschale"),
+                        new StemmedWordOrigin("schnitzel", "schnitzel"),
+                        new StemmedWordOrigin("saur", "saure"),
+                        new StemmedWordOrigin("grundnahrungsmittel", "grundnahrungsmittel"),
+                        new StemmedWordOrigin("halb", "halbe")));
+        Set<StemmedWordOrigin> resultSWO = new HashSet<> ();
+        resultSWO.addAll(analyser.getWordOrigins());
+        Assert.assertTrue(expectedSWO.equals(resultSWO));
     }
-*/
+
+    @Test
+    public void test007_smallNumberFilteringTest() throws Exception {
+        FileAnalyser analyser = setupAnalyser("ShortNumberExample.docx");
+        Assert.assertEquals(analyser.getTermVector().size(), 4);
+    }
 }

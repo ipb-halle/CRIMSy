@@ -88,7 +88,7 @@ public class UploadToColTest extends TestBase {
                 fileObjectService,
                 publicUser,
                 new AsyncContextMock(
-                        new File(exampleDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
+                        new File(exampleDocsRootFolder + "Document1.pdf"),
                         col.getName()),
                 collectionService,
                 "target/test-classes/collections");
@@ -102,15 +102,15 @@ public class UploadToColTest extends TestBase {
 
         Assert.assertTrue(!termVectorService.getTermVector(Arrays.asList(upload.fileId), 10).isEmpty());
         Assert.assertEquals(
-                "informatik",
+                "java",
                 termVectorService.loadUnstemmedWordsOfDocument(
-                        upload.fileId, "informat").get(0)
+                        upload.fileId, "java").get(0)
                         .getOriginalWord());
                         
 
         WriterMock writermock = ((WriterMock) upload.response.getWriter());
         String json = writermock.getJson();
-        Assert.assertEquals(String.format("{\"success\":true,\"newUuid\":\"%s\",\"uploadName\":\"IPB_Jahresbericht_2004.pdf\"}", upload.fileId), json);
+        Assert.assertEquals(String.format("{\"success\":true,\"newUuid\":\"%s\",\"uploadName\":\"Document1.pdf\"}", upload.fileId), json);
 
     }
 
@@ -120,7 +120,7 @@ public class UploadToColTest extends TestBase {
                 fileObjectService,
                 publicUser,
                 new AsyncContextMock(
-                        new File(exampleDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
+                        new File(exampleDocsRootFolder + "Document1.pdf"),
                         "test-coll-does-not-exist"),
                 collectionService,
                 "target/test-classes/collections");
@@ -133,25 +133,7 @@ public class UploadToColTest extends TestBase {
     }
 
     @Test
-    public void test003_fileUploadWithSmallNumbers() throws Exception {
-        createAndSaveNewCol();
-        UploadToColMock upload = new UploadToColMock(
-                fileObjectService,
-                publicUser,
-                new AsyncContextMock(
-                        new File(exampleDocsRootFolder + "ShortNumberExample.docx"),
-                        col.getName()),
-                collectionService,
-                "target/test-classes/collections");
-
-        upload.run();
-        List<TermFrequency> terms = termVectorService.getTermVector(Arrays.asList(upload.fileId), 100);
-        Assert.assertEquals(4, terms.size());
-
-    }
-
-    @Test
-    public void test004_regExForNumbers() {
+    public void test003_regExForNumbers() {
         String replacement = " ";
         String regEx = "(\\[|<||-|,| |^|\\(|\\{)\\d+([\\W])*\\d*( |$|\\)|,|\\}|-|\\.|\\%|\\]|>)";
 
