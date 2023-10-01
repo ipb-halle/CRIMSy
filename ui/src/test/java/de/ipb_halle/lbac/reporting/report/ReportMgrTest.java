@@ -45,7 +45,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
-import de.ipb_halle.lbac.reporting.job.ManagedExecutorServiceMock;
+import de.ipb_halle.test.ManagedExecutorServiceMock;
 import de.ipb_halle.lbac.reporting.job.ReportJobPojo;
 import de.ipb_halle.lbac.reporting.job.ReportJobService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -74,7 +74,7 @@ public class ReportMgrTest extends TestBase {
 
     @BeforeEach
     private void before() {
-        managedExecutorService = new ManagedExecutorServiceMock();
+        managedExecutorService = new ManagedExecutorServiceMock(2);
         reportJobService.setManagedExecutorService(managedExecutorService);
     }
 

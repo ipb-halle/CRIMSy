@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.reporting.job;
 
+import de.ipb_halle.test.ManagedExecutorServiceMock;
 import static de.ipb_halle.lbac.device.job.JobService.CONDITION_JOBTYPE;
 import static de.ipb_halle.lbac.device.job.JobService.CONDITION_STATUS;
 import static de.ipb_halle.lbac.device.job.JobStatus.BUSY;
@@ -90,7 +91,7 @@ public class ReportJobServiceTest extends TestBase {
 
     @BeforeEach
     private void before() {
-        managedExecutorService = new ManagedExecutorServiceMock();
+        managedExecutorService = new ManagedExecutorServiceMock(2);
         reportJobService.setManagedExecutorService(managedExecutorService);
     }
 

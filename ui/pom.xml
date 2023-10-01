@@ -280,6 +280,15 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- crimsy testing -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>crimsy-test</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
         <!-- OWASP java HTML sanitizer -->
         <dependency>
             <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
