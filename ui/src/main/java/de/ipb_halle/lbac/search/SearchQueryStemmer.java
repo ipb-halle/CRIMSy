@@ -27,34 +27,7 @@ import java.util.Set;
  */
 public class SearchQueryStemmer {
 
-    protected String filterDefinition = "queryParserFilterDefinition.json";
-
     public Set<String> stemmQuery(String queryString) {
-        return new HashSet<String> (Arrays.asList("Not", "implemented", "yet"));
+        throw new RuntimeException("xxxxx  ToDo: SearchQueryStemmer not implemented");
     } 
-    
-    
-    /*
-    public StemmedWordGroup stemmQuery(String queryString) {
-        StemmedWordGroup back = new StemmedWordGroup();
-        TextRecord tr = new TextRecord(queryString);
-        int rank = 0;
-        for (String lang : new String[]{"en", "de", "fr", "es", "pt"}) {
-            tr.addProperty(new Language(0, queryString.length(), lang, rank));
-            rank++;
-        }
-        ParseTool pt = new ParseTool();
-        pt.setFilterDefinition(getClass().getResourceAsStream(filterDefinition));
-        pt.initFilter();
-        tr = pt.parseSingleTextRecord(tr);
-        for (TextProperty prop : tr.getProperties(Word.TYPE)) {
-            Word w = (Word) prop;
-            String wStr = queryString.substring(w.getStart(), w.getEnd());
-            if (wStr.trim().length() > 0) {
-                back.addStemmedWord(wStr, w.getStemSet());
-            }
-        }
-        return back;
-    }
-*/
 }

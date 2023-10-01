@@ -32,10 +32,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.eclipse.jetty.http.HttpStatus;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -125,7 +125,7 @@ public class TextWebServiceTest {
                 ).toExternalForm());
         HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
-        assertEquals(HttpStatus.OK_200, response.getStatusLine().getStatusCode(), "match HTTP status code");
+        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode(), "match HTTP status code");
 
         return streamToString(response.getEntity().getContent());
     }
