@@ -175,4 +175,8 @@ public class SearchService {
         }
     }
 
+    // for testing purposes
+    public void setSearchQueryStemmer(SearchQueryStemmer stemmer) {
+        searchQueryStemmer = stemmer;
+    }
 }

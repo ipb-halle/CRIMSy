@@ -47,6 +47,7 @@ import de.ipb_halle.lbac.search.SearchOrchestrator;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.SearchWebClient;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.search.mocks.SearchQueryStemmerMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -150,6 +151,7 @@ public class SearchBeanTest extends TestBase {
     
     @Test
     public void test002_actionTriggerSearch() {
+        searchService.setSearchQueryStemmer(new SearchQueryStemmerMock("java"));
         SearchBean bean = new SearchBean(searchService, publicUser, nodeService);
         bean.getSearchFilter().setSearchTerms("java");
         bean.setOrchestrator(orchestrator);
