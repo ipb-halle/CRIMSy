@@ -19,13 +19,16 @@ package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.service.TextWebStatus;
 import de.ipb_halle.kx.termvector.TermFrequency;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.file.mock.AnalyseClientMock;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.HttpServletResponseMock.WriterMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
@@ -65,10 +68,17 @@ public class UploadToColTest extends TestBase {
     protected User publicUser;
     protected Collection col;
 
+    private DocumentCreator documentCreator;
+
     @BeforeEach
     public void init() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        documentCreator = new DocumentCreator(
+                    fileObjectService,
+                    collectionService,
+                    nodeService,                // nodeService from TestBase
+                    termVectorService);         // termVectorService from TestBase
     }
 
     @AfterEach
@@ -83,20 +93,25 @@ public class UploadToColTest extends TestBase {
 
     @Test
     public void test001_fileUploadTest() throws Exception {
+        String docName = "Document1.pdf";
         createAndSaveNewCol();
         UploadToColMock upload = new UploadToColMock(
                 fileObjectService,
                 publicUser,
                 new AsyncContextMock(
-                        new File(exampleDocsRootFolder + "Document1.pdf"),
+                        new File(exampleDocsRootFolder + docName),
                         col.getName()),
                 collectionService,
                 "target/test-classes/collections");
+        upload.analyseClient = new AnalyseClientMock(
+            Arrays.asList(TextWebStatus.BUSY, TextWebStatus.DONE));
 
         upload.run();
+        // mock termvector and unstemmed words
+        documentCreator.saveTermVectors(docName, upload.fileId);
+
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("id", upload.fileId);
-
         FileObject file = fileObjectService.load(cmap).get(0);
         Assert.assertNotNull(file);
 

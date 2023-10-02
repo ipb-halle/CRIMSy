@@ -102,15 +102,20 @@ public class DocumentCreator {
         fileObj = fileObjectService.save(fileObj);
 
         saveTermVectors(name, fileObj.getId());
-        termVectorService.saveUnstemmedWordsOfDocument(stemmedWordsMap.get(name), fileObj.getId());
     }
 
-    private void saveTermVectors(String name, Integer fileId) {
+    /**
+     * mock TermVector and unstemmed words for a given file
+     * @param name document file name
+     * @param fileId id of FileObject
+     */
+    public void saveTermVectors(String name, Integer fileId) {
         List<TermVector> tvl = termVectorMap.get(name);
         for (TermVector tv : tvl) {
             tv.setFileId(fileId);
         }
         termVectorService.saveTermVectors(tvl);
+        termVectorService.saveUnstemmedWordsOfDocument(stemmedWordsMap.get(name), fileId);
     }
     
     private void setupTermVectorMap() {

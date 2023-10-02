@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.service.TextWebRequestType;
+import de.ipb_halle.kx.service.TextWebStatus;
 import de.ipb_halle.kx.termvector.StemmedWordOrigin;
 import de.ipb_halle.kx.termvector.TermVector;
 import de.ipb_halle.kx.termvector.TermVectorService;
@@ -59,6 +61,7 @@ public class UploadToCol implements Runnable {
     protected FileSaver fileSaver;
     protected Integer fileId;
     protected FileObjectService fileObjectService;
+    protected AnalyseClient analyseClient = new AnalyseClient();
     private final Logger logger;
 
     public UploadToCol(
@@ -119,10 +122,16 @@ public class UploadToCol implements Runnable {
                     request.getPart(HTTP_PART_FILENAME).getInputStream());
             
             
-            throw new RuntimeException("xxxxx Need to do async call to KX-Web service");
+            TextWebStatus status = analyseClient.analyseFile(fileId, TextWebRequestType.SUBMIT);
+            while (status == TextWebStatus.BUSY) {
+                Thread.sleep(400);
+                status = analyseClient.analyseFile(fileId, TextWebRequestType.QUERY);
+            } 
+            if (status != TextWebStatus.DONE) {
+                throw new Exception("Analysis returned an unexpected status code: " + status.toString());
+            } 
+            response.getWriter().write(createJsonSuccessResponse(fileId, getFileNameFromRequest()));
 
-            
-//            response.getWriter().write(createJsonSuccessResponse(fileId, getFileNameFromRequest()));
         } catch (Exception e) {
             writeErrorMessage(e);
             logger.error(ExceptionUtils.getStackTrace(e));

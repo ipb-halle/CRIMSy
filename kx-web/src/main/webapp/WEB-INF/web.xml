@@ -32,7 +32,4 @@
         <url-pattern>/process/*</url-pattern>
     </servlet-mapping>
 
-
-
-
-</webapp>
+</web-app>

@@ -13,7 +13,7 @@
 
     <RollingFile
         name="LOGFILE"
-        fileName="${LOG_DIR}/tx.log"
+        fileName="${LOG_DIR}/kx.log"
         filePattern="${LOG_DIR}/tx.%d{yyyy-MM-dd}.log"
         ignoreExceptions="false">
         <PatternLayout>

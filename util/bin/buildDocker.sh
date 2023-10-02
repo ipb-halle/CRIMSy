@@ -41,6 +41,7 @@ function compile {
     cp -r docker target/
     cp -r target/extralib target/docker/ui/
     cp ui/target/ui.war target/docker/ui/
+    cp kx-web/target/kx.war target/docker/ui/
 
     if [ -n "$STAGE_LABEL" ] ; then
         flags="$flags,$STAGE_LABEL"
