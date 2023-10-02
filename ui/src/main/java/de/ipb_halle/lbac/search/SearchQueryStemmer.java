@@ -17,9 +17,24 @@
  */
 package de.ipb_halle.lbac.search;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 
 /**
  *
@@ -27,7 +42,31 @@ import java.util.Set;
  */
 public class SearchQueryStemmer {
 
+    private final String baseURL = "http://localhost:8080/kx-web/";
+    private final Logger logger = LogManager.getLogger(SearchQueryStemmer.class.getName());
+
     public Set<String> stemmQuery(String queryString) {
-        throw new RuntimeException("xxxxx  ToDo: SearchQueryStemmer not implemented");
+        return new HashSet<> (Arrays.asList(doRequest(queryString).trim().split(" ")));
     } 
+
+    private String doRequest(String query) {
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {;
+            HttpPost post = new HttpPost(
+                    new URL(new URL(baseURL), "query").toExternalForm());
+
+            HttpEntity entity = new ByteArrayEntity(query.getBytes("UTF-8"));
+            post.setEntity(entity);
+            HttpResponse response = client.execute(post);
+            String result = EntityUtils.toString(response.getEntity());
+
+            int httpStatus = response.getStatusLine().getStatusCode();
+            if (httpStatus != HttpStatus.SC_OK) {
+                throw new Exception(String.format("Unexpected HTTP status: %d", httpStatus));
+            }
+            return result;
+        } catch (Exception e) {
+            logger.warn("doRequest caught an exception: ", (Throwable) e);
+        }
+        return "";
+    }
 }

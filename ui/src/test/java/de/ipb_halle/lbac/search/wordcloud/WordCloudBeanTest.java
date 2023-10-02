@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.search.mocks.SearchQueryStemmerMock;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
@@ -111,6 +112,7 @@ public class WordCloudBeanTest extends TestBase {
 
     @Test
     public void test001_startSearch() {
+        wordCloudBean.getDocumentSearchService().setSearchQueryStemmer(new SearchQueryStemmerMock("java"));
         wordCloudBean.setSearchTermInput("Java");
         wordCloudBean.startSearch();
 
@@ -122,6 +124,7 @@ public class WordCloudBeanTest extends TestBase {
 
     @Test
     public void test002_clearCloudState() {
+        wordCloudBean.getDocumentSearchService().setSearchQueryStemmer(new SearchQueryStemmerMock("java"));
         wordCloudBean.setSearchTermInput("Java");
         wordCloudBean.startSearch();
 
@@ -142,6 +145,7 @@ public class WordCloudBeanTest extends TestBase {
 
     @Test
     public void test003_selectWordInCloud() {
+        wordCloudBean.getDocumentSearchService().setSearchQueryStemmer(new SearchQueryStemmerMock("java"));
         wordCloudBean.setSearchTermInput("Java");
         wordCloudBean.startSearch();
 

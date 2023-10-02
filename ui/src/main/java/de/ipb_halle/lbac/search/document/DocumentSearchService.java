@@ -84,7 +84,7 @@ public class DocumentSearchService {
     private boolean development = false;
 
     private String uriOfPublicColl;
-    protected SearchQueryStemmer searchQueryStemmer;
+    private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
     private DocumentEntityGraphBuilder graphBuilder;
 
     @PostConstruct
@@ -128,7 +128,6 @@ public class DocumentSearchService {
 
         this.uriOfPublicColl = uriOfPublicColl;
         searchState.clearState();
-        searchQueryStemmer = new SearchQueryStemmer();
         // fetches all documents of the collection and adds the total 
         // number of documents in the collection to the search state
         Set<String> normalizedTerms = searchQueryStemmer.stemmQuery(searchText);
@@ -353,5 +352,10 @@ public class DocumentSearchService {
     private EntityGraph createEntityGraph() {
         graphBuilder = new DocumentEntityGraphBuilder();
         return graphBuilder.buildEntityGraph(true);
+    }
+
+    // for test purposes
+    public void setSearchQueryStemmer(SearchQueryStemmer stemmer) {
+        searchQueryStemmer = stemmer;
     }
 }

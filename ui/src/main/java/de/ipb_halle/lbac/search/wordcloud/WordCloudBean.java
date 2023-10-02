@@ -430,4 +430,9 @@ public class WordCloudBean implements Serializable {
     public List<String> getTagsAsList() {
         return new ArrayList<>(tagList);
     }  
+
+    // for injecting of mock objects during test 
+    protected DocumentSearchService getDocumentSearchService() {
+        return searchService;
+    }
 }
