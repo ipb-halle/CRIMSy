@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-@WebServlet(name = "QueryWebService", urlPatterns = {"/query/*"}, asyncSupported = true)
+@WebServlet(urlPatterns = {"/query"})
 public class QueryWebService extends HttpServlet {
 
     private final static long serialVersionUID = 1L;

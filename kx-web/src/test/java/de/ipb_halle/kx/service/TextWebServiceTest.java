@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 import javax.inject.Inject;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -146,10 +146,15 @@ public class TextWebServiceTest {
 
         FileAnalyserMock mock = (FileAnalyserMock) jobTracker.getJob(fo.getId());
         mock.setStatus(TextWebStatus.DONE);
-        mock.setLanguage("en");
-        mock.setTermVectors(new ArrayList<TermVector> ());
-        mock.setWordOrigins(new ArrayList<StemmedWordOrigin> ());
-
+        mock.setLanguage("de");
+        mock.setTermVectors(Arrays.asList(
+                    // root, file, freq
+                    new TermVector ("kapsel", fo.getId(), 1), 
+                    new TermVector ("gefund", fo.getId(), 2)));
+        mock.setWordOrigins(Arrays.asList(
+                    // stem, origin
+                    new StemmedWordOrigin ("kapsel", "kapselung"),
+                    new StemmedWordOrigin ("gefund", "gefunden")));
         result = doRequest(fo.getId(), TextWebRequestType.QUERY);
         assertEquals(TextWebStatus.DONE.toString(), result, "successful job completion");
 

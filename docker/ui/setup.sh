@@ -51,11 +51,16 @@ adduser --no-create-home --gecos TomEE --home /usr/local/tomee \
 #
 cat <<EOF >> $TOMCAT_HOME/conf/system.properties
 #
-# Disable CDI for Hibernate JPA
-# (http://http://tomee-openejb.979440.n4.nabble.com/CDI-issues-tomee-7-0-2-td4680584.html)
+# CRIMSy Settings
+# - set path for file upload
+# - define deploymentId format (otherwise ...)
+#   (https://stackoverflow.com/questions/4265762/tomcat-application-cannot-be-deployed-as-it-contains-deployment-ids-error)
+# - disable CDI for Hibernate JPA
+#   (http://http://tomee-openejb.979440.n4.nabble.com/CDI-issues-tomee-7-0-2-td4680584.html)
 #
-tomee.jpa.cdi = false
 de.ipb_halle.lbac.cloud.servlet.FileUploadExec.Path = /data/ui
+openejb.deploymentId.format={moduleId}/{ejbName}"
+tomee.jpa.cdi = false
 EOF
 
 chown -R tomee:tomee $TOMCAT_HOME

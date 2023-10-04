@@ -32,7 +32,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 public class AnalyseClient {
 
-    private final String baseURL = "http://localhost:8080/kx/";
+    private final String baseURL = "http://localhost:8080/kx-web/";
 
     /**
      * make a GET request to the remote knowledge extractor 

@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-@WebServlet(name = "TextWebService", urlPatterns = {"/process/*"}, asyncSupported = true)
+@WebServlet(urlPatterns = {"/process"}, asyncSupported = true)
 public class TextWebService extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
@@ -125,10 +125,10 @@ public class TextWebService extends HttpServlet {
 
     private void saveResults(IFileAnalyser analyser) {
         saveLanguage(analyser);
+        termVectorService.saveTermVectors(analyser.getTermVector());
         termVectorService.saveUnstemmedWordsOfDocument(
             analyser.getWordOrigins(), 
             analyser.getFileObject().getId());
-        termVectorService.saveTermVectors(analyser.getTermVector());
     }
 
     private void saveLanguage(IFileAnalyser analyser) {
