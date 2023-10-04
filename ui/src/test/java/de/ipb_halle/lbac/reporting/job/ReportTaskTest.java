@@ -21,7 +21,7 @@ import static de.ipb_halle.lbac.device.job.JobStatus.COMPLETED;
 import static de.ipb_halle.lbac.device.job.JobStatus.FAILED;
 import static de.ipb_halle.lbac.device.job.JobStatus.PENDING;
 import static de.ipb_halle.lbac.device.job.JobType.REPORT;
-import static de.ipb_halle.lbac.reporting.report.ReportType.CSV;
+import static de.ipb_halle.reporting.report.ReportType.CSV;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

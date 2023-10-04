@@ -26,8 +26,9 @@ import static de.ipb_halle.lbac.device.job.JobStatus.FAILED;
 import static de.ipb_halle.lbac.device.job.JobStatus.PENDING;
 import static de.ipb_halle.lbac.device.job.JobType.REPORT;
 import static de.ipb_halle.lbac.reporting.job.ReportJobService.MAX_AGE;
-import static de.ipb_halle.lbac.reporting.report.ReportType.CSV;
-import static de.ipb_halle.lbac.reporting.report.ReportType.PDF;
+import static de.ipb_halle.reporting.report.ReportType.CSV;
+import static de.ipb_halle.reporting.report.ReportType.PDF;
+// xxxxx re-enable XLSX!!!
 //import static de.ipb_halle.lbac.reporting.report.ReportType.XLSX;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;

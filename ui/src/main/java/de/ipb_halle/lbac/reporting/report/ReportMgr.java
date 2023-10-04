@@ -20,6 +20,9 @@ package de.ipb_halle.lbac.reporting.report;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.reporting.job.ReportJobPojo;
 import de.ipb_halle.lbac.reporting.job.ReportJobService;
+import de.ipb_halle.reporting.report.Report;
+import de.ipb_halle.reporting.report.ReportService;
+import de.ipb_halle.reporting.report.ReportType;
 
 import java.util.Comparator;
 import java.util.List;

@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.reporting.report;
 
 import static de.ipb_halle.lbac.device.job.JobStatus.BUSY;
 import static de.ipb_halle.lbac.reporting.report.ReportMgr.DEFAULT_NAME;
-import static de.ipb_halle.lbac.reporting.report.ReportType.PDF;
+import static de.ipb_halle.reporting.report.ReportType.PDF;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
@@ -48,6 +48,10 @@ import de.ipb_halle.lbac.device.job.JobService;
 import de.ipb_halle.test.ManagedExecutorServiceMock;
 import de.ipb_halle.lbac.reporting.job.ReportJobPojo;
 import de.ipb_halle.lbac.reporting.job.ReportJobService;
+import de.ipb_halle.reporting.report.Report;
+import de.ipb_halle.reporting.report.ReportEntity;
+import de.ipb_halle.reporting.report.ReportService;
+import de.ipb_halle.reporting.report.ReportType;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**

@@ -23,11 +23,11 @@
  <modelVersion>4.0.0</modelVersion>
  
  <groupId>de.ipb-halle</groupId>
- <artifactId>kx-api</artifactId>
+ <artifactId>reporting-api</artifactId>
  <version>1.0.0</version>
  <packaging>jar</packaging>
  
- <name>KX-API</name>
+ <name>REPORTING-API</name>
  <url>http://github.com/ipb-halle/CRIMSy</url>
  
  <properties>
@@ -35,6 +35,7 @@
 
   <!-- check Maven Central for latest versions! -->
   <hibernate.version>5.3.26.Final</hibernate.version>
+  <pentaho.version>9.2.0.4-591</pentaho.version>
  </properties>
 
  <!-- define (additional) repositories -->
@@ -47,8 +48,16 @@
      <id>sonatype public</id>
      <url>https://oss.sonatype.org/content/groups/public/</url>
    </repository>
- </repositories>
+   <repository>
+       <id>pentaho-releases</id>
+       <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
+       <!-- address no longer valid <url>https://nexus.pentaho.org/content/groups/omni</url> -->
+       <url>https://repo.orl.eng.hitachivantara.com/artifactory/pnt-mvn</url>
 
+       <releases><enabled>true</enabled></releases>
+       <snapshots><enabled>true</enabled></snapshots>
+   </repository>
+ </repositories>
  
  <build>
   <plugins>
@@ -120,6 +129,14 @@
             <artifactId>crimsy-test</artifactId>
             <version>1.0.0</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Pentaho Reporting API -->
+        <dependency>
+            <groupId>org.pentaho.reporting.engine</groupId>
+            <artifactId>classic-core</artifactId>
+            <version>${pentaho.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- unit testing -->

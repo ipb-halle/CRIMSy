@@ -280,6 +280,13 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- crimsy reporting api -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>reporting-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!-- crimsy testing -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
@@ -287,7 +294,6 @@
             <version>1.0.0</version>
             <scope>test</scope>
         </dependency>
-
 
         <!-- OWASP java HTML sanitizer -->
         <dependency>

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.test;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,4 +35,14 @@ public class EntityManagerService {
     public EntityManager getEntityManager() {
         return em;
     }
+
+    public void doSqlUpdate(String query) {
+        em.createNativeQuery(query).executeUpdate();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Object> doSqlQuery(String query) {
+        return em.createNativeQuery(query).getResultList();
+    }
+
 }

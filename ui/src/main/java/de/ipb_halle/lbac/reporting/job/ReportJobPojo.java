@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.reporting.job;
 import java.io.Serializable;
 import java.util.Map;
 
-import de.ipb_halle.lbac.reporting.report.ReportType;
+import de.ipb_halle.reporting.report.ReportType;
 
 /**
  * Serializable data class to be used as input data of reporting jobs.

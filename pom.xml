@@ -38,6 +38,7 @@
         <module>tx</module>
         <module>kx-api</module>
         <module>kx-web</module>
+        <module>reporting-api</module>
         <module>ui</module>
     </modules>
 
