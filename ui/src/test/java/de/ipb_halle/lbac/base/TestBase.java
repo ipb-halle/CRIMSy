@@ -46,6 +46,7 @@ import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.reporting.mocks.ReportsDirectoryMock;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.scope.SessionScopeContext;
 import de.ipb_halle.scope.SessionScopeResetEvent;
@@ -148,6 +149,7 @@ public class TestBase implements Serializable {
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
                 .addClass(GlobalAdmissionContextMock.class)
+                .addClass(ReportsDirectoryMock.class)
                 .addClass(GlobalVersions.class)
                 .addClass(ACListService.class)
                 .addClass(CloudService.class)

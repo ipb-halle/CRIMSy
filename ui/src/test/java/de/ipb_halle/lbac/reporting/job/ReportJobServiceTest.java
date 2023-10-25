@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.reporting.job;
 
+import de.ipb_halle.reporting.report.ReportsDirectory;
 import de.ipb_halle.test.ManagedExecutorServiceMock;
 import static de.ipb_halle.lbac.device.job.JobService.CONDITION_JOBTYPE;
 import static de.ipb_halle.lbac.device.job.JobService.CONDITION_STATUS;
@@ -60,7 +61,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
@@ -81,7 +81,7 @@ public class ReportJobServiceTest extends TestBase {
     private JobService jobService;
 
     @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
+    private ReportsDirectory reportsDirectory;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -352,7 +352,7 @@ public class ReportJobServiceTest extends TestBase {
     }
 
     private File createTempFileInReportsDirectory() throws IOException {
-        File reportsDir = new File(globalAdmissionContext.getReportsDirectory());
+        File reportsDir = new File(reportsDirectory.getReportsDirectory());
         File tempFile = File.createTempFile("ReportJobServiceTest", "test", reportsDir);
         tempFile.deleteOnExit();
         return tempFile;

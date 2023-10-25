@@ -15,37 +15,26 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.admission.mock;
+package de.ipb_halle.reporting.report;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
-import javax.annotation.PostConstruct;
+import java.io.Serializable;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-
 /**
  * 
- * @author flange
+ * @author fbroda
  */
-@Singleton(name = "globalAdmissionContext")
+@Singleton(name="reportsDirectory")
 @Startup
-public class GlobalAdmissionContextMock extends GlobalAdmissionContext {
+public class ReportsDirectory implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    private static final String TEST_LBAC_PROPERTIES_PATH = "target/test-classes/keystore/lbac_properties.xml";
 
-    @PostConstruct
-    private void initialize() {
-        super.init();
-    }
+    private static final String REPORTS_DIRECTORY = "/data/tmp/reports/";
 
-
-    @Override
-    public String getLbacPropertiesPath() {
-        return TEST_LBAC_PROPERTIES_PATH;
+    public String getReportsDirectory() {
+        return REPORTS_DIRECTORY;
     }
 }

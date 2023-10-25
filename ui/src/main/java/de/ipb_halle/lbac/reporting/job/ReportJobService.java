@@ -52,6 +52,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.reporting.report.ReportsDirectory;
 
 /**
  * 
@@ -71,7 +72,7 @@ public class ReportJobService {
     private ManagedExecutorService managedExecutorService;
 
     @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
+    private ReportsDirectory reportsDirectory;
 
     @Inject
     private JobService jobService;
@@ -235,7 +236,7 @@ public class ReportJobService {
     }
 
     private String getReportsDirectory() {
-        return globalAdmissionContext.getReportsDirectory();
+        return reportsDirectory.getReportsDirectory();
     }
 
     private byte[] serialize(Object o) {
