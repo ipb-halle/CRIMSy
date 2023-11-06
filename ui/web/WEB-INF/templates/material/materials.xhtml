@@ -89,8 +89,7 @@
                             <p:dataTable
                                 value="#{materialOverviewBean.readableMaterials}"
                                 var="material"
-                                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                                paginator="true" rows="5" styleClass="mt-2"
+                                rows="10"
                                 >
                                 <p:column headerText="#{msgs.materialOverview_tableheader_name}" sortBy="#{materialOverviewBean.getWrappedNames(material, 3)}" >
                                     <h:outputText
@@ -204,48 +203,71 @@
                                 </p:column>
                             </p:dataTable>
                         </div>
-                        <!--                        <div>
-                                                    <p:commandButton
-                                                        style="margin:0.5rem 0;"
-                                                        styleClass="navigationButton"
-                                                        disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
-                                                        action="#{materialOverviewBean.tableController.tableController.actionFirstResult()}"
-                                                        icon="pi pi-fast-backward"
-                                                        ajax="true"
-                                                        update="@(.materialOverviewTableContainer)"
-                                                        />
+                        <div style="display: flex; flex-direction: row;justify-content: center; ">
 
-                                                    <p:commandButton
-                                                        style="margin:0.5rem;"
-                                                        styleClass="navigationButton"
-                                                        disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
-                                                        action="#{materialOverviewBean.tableController.tableController.actionPriorResults()}"
-                                                        ajax="true"
-                                                        update="@(.materialOverviewTableContainer)"
-                                                        icon="pi pi-backward"/>
+                            <p:outputPanel  styleClass="navigationButton">
+                                <p:commandButton
+                                    style="margin: 0.5rem -4.5rem; "
+                                    disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
+                                    icon="fa fa-fast-backward"
+                                    ajax="true"
+                                    process="@this"
+                                    update="materialForm"
+                                    action="#{materialOverviewBean.tableController.tableController.actionFirstResult()}"
+                                    />
+                            </p:outputPanel>
+                            <!--styleClass="navigationButton"-->
+                            <!--update="@(.materialOverviewTableContainer)"-->
 
-                                                    <p:commandButton
-                                                        style="margin:0.5rem 0;"
-                                                        styleClass="navigationButton"
-                                                        disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
-                                                        action="#{materialOverviewBean.tableController.tableController.actionNextResults()}"
-                                                        ajax="true"
-                                                        update="@(.materialOverviewTableContainer)"
-                                                        icon="pi pi-forward"
-                                                        />
+                            <p:outputPanel  styleClass="navigationButton">
+                                <p:commandButton
+                                    style="margin: 0.5rem -1.5rem; "
+                                    disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
+                                    ajax="true"
+                                    process="@this"
+                                    update="materialForm"
+                                    icon="fa fa-backward"
+                                    action="#{materialOverviewBean.tableController.tableController.actionPriorResults()}"
+                                    />
 
-                                                    <p:commandButton
-                                                        style="margin:0.5rem;"
-                                                        styleClass="navigationButton"
-                                                        action="#{materialOverviewBean.tableController.tableController.actionLastResult()}"
-                                                        disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
-                                                        ajax="true"
-                                                        update="@(.materialOverviewTableContainer)"
-                                                        icon="pi pi-fast-forward"
-                                                        />
+                            </p:outputPanel>
+                            <!--update="@(.materialOverviewTableContainer)"-->
+                            <!--styleClass="navigationButton"-->
 
-                                                    <h:outputText value="#{materialOverviewBean.tableController.tableController.getNavigationInfos()}"/>
-                                                </div>-->
+                            <p:outputPanel  styleClass="navigationButton">
+                                <p:commandButton
+                                    style="margin: 0.5rem 1.5rem; margin-right: 0.6rem; "
+                                    disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
+                                    ajax="true"
+                                    process="@this"
+                                    update="materialForm"
+                                    icon="fa fa-forward"
+                                    action="#{materialOverviewBean.tableController.tableController.actionNextResults()}"
+                                    />
+                            </p:outputPanel>
+                            <!--update="@(.materialOverviewTableContainer)"-->
+                            <!--styleClass="navigationButton"-->
+
+                            <p:outputPanel styleClass="navigationButton">
+                                <p:commandButton
+                                    style="margin: 0.5rem 1.5rem 0.5rem 0 ; "
+                                    disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
+                                    ajax="true"
+                                    process="@this"
+                                    update="materialForm"
+                                    icon="fa fa-fast-forward"
+                                    action="#{materialOverviewBean.tableController.tableController.actionLastResult()}"
+                                    />
+                                <!--update="@(.materialOverviewTableContainer)"-->
+                            </p:outputPanel>
+
+                            <p:outputPanel  style="margin: 1rem 0; ">
+                                <h:outputText value="#{materialOverviewBean.tableController.tableController.getNavigationInfos()}"/>
+                            </p:outputPanel>
+
+                            <!--styleClass="navigationButton"-->
+
+                        </div>
                     </h:form>
                 </p:splitterPanel>
             </p:splitter>
