@@ -44,7 +44,6 @@ public class SystemSettings implements Serializable {
     private final static long serialVersionUID = 1L;
 
     public final static String SETTING_FORCE_LOGIN = "SETTING_FORCE_LOGIN";
-    public final static String SETTING_AGENCY_SECRET = "SETTING_AGENCY_SECRET";
     public static final String SETTING_LOGIN_CUSTOM_TEXT = "SETTING_LOGIN_CUSTOM_TEXT";
     public static final String SETTING_INSTITUTION_WEB = "SETTING_INSTITUTION_WEB";
     public static final String SETTING_GDPR_CONTACT = "SETTING_GDPR_CONTACT";

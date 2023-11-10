@@ -31,69 +31,68 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!--    <class>de.ipb_halle.lbac.api.ACObject</class> -->
-        <class>de.ipb_halle.lbac.exp.ExpRecordEntity</class>
-        <class>de.ipb_halle.lbac.exp.ExperimentEntity</class>
+        <class>de.ipb_halle.job.JobEntity</class>
+        <class>de.ipb_halle.kx.file.FileObjectEntity</class>
+        <class>de.ipb_halle.kx.termvector.TermVectorEntity</class>
+        <class>de.ipb_halle.lbac.admission.ACEntryEntity</class>
+        <class>de.ipb_halle.lbac.admission.ACListEntity</class>
+        <class>de.ipb_halle.lbac.admission.GroupEntity</class>
+        <class>de.ipb_halle.lbac.admission.MemberEntity</class>
+        <class>de.ipb_halle.lbac.admission.MembershipEntity</class>
+        <class>de.ipb_halle.lbac.admission.NestingPathEntity</class>
+        <class>de.ipb_halle.lbac.admission.NestingPathSetEntity</class>
+        <class>de.ipb_halle.lbac.admission.UserEntity</class>
+        <class>de.ipb_halle.lbac.collections.CollectionEntity</class>
+        <class>de.ipb_halle.lbac.container.entity.ContainerEntity</class>
+        <class>de.ipb_halle.lbac.container.entity.ContainerNestingEntity</class>
+        <class>de.ipb_halle.lbac.container.entity.ContainerTypeEntity</class>
         <class>de.ipb_halle.lbac.datalink.LinkedDataEntity</class>
+        <class>de.ipb_halle.lbac.device.print.LabelEntity</class>
+        <class>de.ipb_halle.lbac.device.print.PrinterEntity</class>
+        <class>de.ipb_halle.lbac.entity.CloudEntity</class>
+        <class>de.ipb_halle.lbac.entity.CloudNodeEntity</class>
+        <class>de.ipb_halle.lbac.entity.InfoObjectEntity</class>
+        <class>de.ipb_halle.lbac.entity.NodeEntity</class>
+        <class>de.ipb_halle.lbac.exp.ExperimentEntity</class>
+        <class>de.ipb_halle.lbac.exp.ExpRecordEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.AssayEntity</class>
-        <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
         <class>de.ipb_halle.lbac.exp.image.ImageEntity</class>
-        
-        <class>de.ipb_halle.lbac.project.ProjectEntity</class>
-        <class>de.ipb_halle.lbac.project.ProjectTemplateEntity</class>
+        <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
+        <class>de.ipb_halle.lbac.forum.PostingEntity</class>
+        <class>de.ipb_halle.lbac.forum.TopicEntity</class>
+        <class>de.ipb_halle.lbac.items.entity.ItemEntity</class>
+        <class>de.ipb_halle.lbac.items.entity.ItemHistoryEntity</class>
+        <class>de.ipb_halle.lbac.items.entity.ItemPositionsHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TissueEntity</class>
-        <class>de.ipb_halle.lbac.material.composition.MaterialCompositionEntity</class>
-        <class>de.ipb_halle.lbac.material.composition.CompositionHistoryEntity</class>
-        <class>de.ipb_halle.lbac.material.common.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity</class>
+        <class>de.ipb_halle.lbac.material.common.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity</class>
-        <class>de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity</class>
-        <class>de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity</class>
-        <class>de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity</class>
-        <class>de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity</class>
-        <class>de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialHistEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.hazard.HazardEntity</class>
+        <class>de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialHistEntity</class>
+        <class>de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity</class>
+        <class>de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity</class>
+        <class>de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity</class>
+        <class>de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity</class>
+        <class>de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageConditionHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity</class>
-        <class>de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageEntity</class>
+        <class>de.ipb_halle.lbac.material.composition.CompositionHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.composition.CompositionEntity</class>
+        <class>de.ipb_halle.lbac.material.composition.MaterialCompositionEntity</class>
         <class>de.ipb_halle.lbac.material.sequence.SequenceEntity</class>
         <class>de.ipb_halle.lbac.material.sequence.history.SequenceHistoryEntity</class>                
         <class>de.ipb_halle.lbac.material.structure.StructureEntity</class>
         <class>de.ipb_halle.lbac.material.structure.StructureHistEntity</class>
-        <class>de.ipb_halle.lbac.container.entity.ContainerEntity</class>
-        <class>de.ipb_halle.lbac.container.entity.ContainerNestingEntity</class>
-        <class>de.ipb_halle.lbac.container.entity.ContainerTypeEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ItemEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ItemHistoryEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ItemPositionsHistoryEntity</class>
-        <class>de.ipb_halle.lbac.device.job.JobEntity</class>
-        <class>de.ipb_halle.lbac.device.print.LabelEntity</class>
-        <class>de.ipb_halle.lbac.device.print.PrinterEntity</class>
-        <class>de.ipb_halle.lbac.admission.ACEntryEntity</class>
-        <class>de.ipb_halle.lbac.admission.ACListEntity</class>
-        <class>de.ipb_halle.lbac.entity.CloudEntity</class>
-        <class>de.ipb_halle.lbac.entity.CloudNodeEntity</class>
-        <class>de.ipb_halle.lbac.collections.CollectionEntity</class>
-        <class>de.ipb_halle.lbac.admission.GroupEntity</class>
-        <class>de.ipb_halle.lbac.entity.InfoObjectEntity</class>
-        <class>de.ipb_halle.lbac.admission.MemberEntity</class>
-        <class>de.ipb_halle.lbac.admission.MembershipEntity</class>
-        <class>de.ipb_halle.lbac.admission.NestingPathEntity</class>
-        <class>de.ipb_halle.lbac.admission.NestingPathSetEntity</class>
-        <class>de.ipb_halle.lbac.entity.NodeEntity</class>
-        <class>de.ipb_halle.lbac.admission.UserEntity</class>
-        <class>de.ipb_halle.lbac.forum.TopicEntity</class>
-        <class>de.ipb_halle.lbac.forum.PostingEntity</class>
+        <class>de.ipb_halle.lbac.project.ProjectEntity</class>
+        <class>de.ipb_halle.lbac.project.ProjectTemplateEntity</class>
         <class>de.ipb_halle.lbac.util.pref.PreferenceEntity</class>
-        <class>de.ipb_halle.kx.file.FileObjectEntity</class>
-        <class>de.ipb_halle.kx.termvector.TermVectorEntity</class>
-        <class>de.ipb_halle.reporting.report.ReportEntity</class>
+        <class>de.ipb_halle.reporting.ReportEntity</class>
 
         <!-- test only -->
         <class>de.ipb_halle.lbac.search.lang.HorrorEntity</class>

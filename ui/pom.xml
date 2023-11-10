@@ -45,7 +45,6 @@
         <tomee.classifier>plus</tomee.classifier>
         <tomee.servlet-engine>7.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
-        <pentaho.version>9.2.0.4-591</pentaho.version>
         
         <!-- Flag allowing one or more executions of the assembly plugin to be configured as skipped for a particular build.
         This makes the assembly plugin more controllable from profiles. -->
@@ -59,15 +58,6 @@
             <url>https://repo.maven.apache.org/maven2/</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>pentaho-releases</id>
-            <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
-            <!-- address no longer valid <url>https://nexus.pentaho.org/content/groups/omni</url> -->
-            <url>https://repo.orl.eng.hitachivantara.com/artifactory/pnt-mvn</url>
-
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
         </repository>
         <repository>
             <id>primefaces themes</id>
@@ -273,10 +263,17 @@
 
     <dependencies>
 
-        <!-- crimsy-agency-api -->
+        <!-- crimsy-job-api -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
-            <artifactId>crimsy-agency-api</artifactId>
+            <artifactId>crimsy-job-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- crimsy-job-api -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>crimsy-job-storage</artifactId>
             <version>1.0</version>
         </dependency>
 
@@ -641,14 +638,19 @@
         </dependency>
 
 
-        <!-- tika dependency: possible conflict with pentaho -->
+        <!-- kx & reporting -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+<!--
         <dependency> 
             <groupId>org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
             <version>5.0.3</version>
         </dependency>
-
-
+-->
         <!-- MolecularFaces -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
@@ -678,65 +680,6 @@
             <groupId>de.ipb-halle</groupId>
             <artifactId>fasta-search-service-models</artifactId>
             <version>1.0.0</version>
-        </dependency>
-
-        <!-- Pentaho Reporting -->
-        <dependency>
-            <groupId>org.pentaho.reporting.engine</groupId>
-            <artifactId>classic-core</artifactId>
-            <version>${pentaho.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.xmlbeans</groupId>
-                    <artifactId>xmlbeans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi-ooxml-schemas</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi-ooxml</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi</artifactId>
-                </exclusion>
-            </exclusions>
-
-        </dependency>
-
-        <dependency>
-            <groupId>org.pentaho.reporting.engine</groupId>
-            <artifactId>classic-extensions</artifactId>
-            <version>${pentaho.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.pentaho.reporting.engine</groupId>
-            <artifactId>wizard-core</artifactId>
-            <version>${pentaho.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.pentaho.reporting.library</groupId>
-          <artifactId>libfonts</artifactId>
-          <version>${pentaho.version}</version>
-          <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.pentaho.reporting.library</groupId>
-            <artifactId>libloader</artifactId>
-            <version>${pentaho.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.pentaho.reporting</groupId>
-            <artifactId>pentaho-reporting</artifactId>
-            <version>${pentaho.version}</version>
-            <type>pom</type>
         </dependency>
 
     </dependencies>

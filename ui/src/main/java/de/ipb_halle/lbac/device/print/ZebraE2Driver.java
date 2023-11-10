@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.device.print;
 
-import de.ipb_halle.lbac.device.job.Job;
-
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.Logger;

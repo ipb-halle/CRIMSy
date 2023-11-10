@@ -32,7 +32,8 @@
     <modules>
         <module>crimsy-test</module>
         <module>crimsy-api</module>
-        <module>agency-api</module>
+        <module>crimsy-job-api</module>
+        <module>crimsy-job-storage</module>
         <module>agency</module>
         <module>snowball</module>
         <module>tx</module>

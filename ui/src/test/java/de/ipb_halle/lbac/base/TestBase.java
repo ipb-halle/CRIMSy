@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.base;
 
 import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.termvector.TermVectorService;
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.ACList;
@@ -46,10 +45,10 @@ import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.reporting.mocks.ReportsDirectoryMock;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.scope.SessionScopeContext;
 import de.ipb_halle.scope.SessionScopeResetEvent;
+import de.ipb_halle.test.EntityManagerService;
 
 import java.io.Serializable;
 import java.net.URL;
@@ -149,7 +148,6 @@ public class TestBase implements Serializable {
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
                 .addClass(GlobalAdmissionContextMock.class)
-                .addClass(ReportsDirectoryMock.class)
                 .addClass(GlobalVersions.class)
                 .addClass(ACListService.class)
                 .addClass(CloudService.class)

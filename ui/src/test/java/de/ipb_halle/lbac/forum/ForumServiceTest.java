@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.forum;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.Cloud;
@@ -29,6 +28,7 @@ import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Date;

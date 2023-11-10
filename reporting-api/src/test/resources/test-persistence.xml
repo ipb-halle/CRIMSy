@@ -30,7 +30,7 @@
 
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>de.ipb_halle.reporting.report.ReportEntity</class>
+        <class>de.ipb_halle.reporting.ReportEntity</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

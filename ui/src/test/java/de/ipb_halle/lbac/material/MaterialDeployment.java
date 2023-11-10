@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material;
 
-import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.lbac.device.job.PrintJobService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -29,10 +29,10 @@ import de.ipb_halle.lbac.material.sequence.search.service.FastaRESTSearchService
 import de.ipb_halle.lbac.material.sequence.search.service.SearchParameterService;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.reporting.job.ReportJobService;
-import de.ipb_halle.lbac.reporting.report.ReportMgr;
+import de.ipb_halle.lbac.reporting.ReportJobService;
+import de.ipb_halle.lbac.reporting.ReportMgr;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
-import de.ipb_halle.reporting.report.ReportService;
+import de.ipb_halle.reporting.ReportService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
@@ -58,7 +58,7 @@ public class MaterialDeployment {
                 .addClass(ReportMgr.class)
                 .addClass(ReportService.class)
                 .addClass(ReportJobService.class)
-                .addClass(JobService.class)
+                .addClass(PrintJobService.class)
                 .addClass(SendFileBeanMock.class)
                 .addClass(TaxonomyNestingService.class);
     }

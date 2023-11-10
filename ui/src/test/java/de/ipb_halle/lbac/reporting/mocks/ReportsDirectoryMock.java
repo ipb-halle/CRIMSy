@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.reporting.mocks;
 
-import de.ipb_halle.reporting.report.ReportsDirectory;
+import de.ipb_halle.reporting.ReportsDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +37,7 @@ import org.apache.commons.io.FileUtils;
  * @author fbroda, flange
  */
 @Singleton(name="reportsDirectory")
-@Startup
+//@Startup
 public class ReportsDirectoryMock extends ReportsDirectory {
 
     private static final long serialVersionUID = 1L;

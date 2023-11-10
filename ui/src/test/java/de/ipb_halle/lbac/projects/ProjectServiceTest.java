@@ -34,7 +34,9 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -214,13 +216,23 @@ public class ProjectServiceTest extends TestBase {
     }
 
     private void cleanUp(User user2, ACList projectAcList, Project p) {
+        Map<String, Object> params = new HashMap<> ();
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
-        entityManagerService.doSqlUpdate("delete from acentries where aclist_id=" + projectAcList.getId().toString());
-        entityManagerService.doSqlUpdate("delete from projects where id=" + p.getId());
-        entityManagerService.doSqlUpdate("delete from aclists where id=" + projectAcList.getId().toString());
-        entityManagerService.deleteUserWithAllMemberships(user2.getId().toString());
-        entityManagerService.doSqlUpdate("delete from usersgroups where name='" + user2.getName() + "'");
+        params.put("aclist", projectAcList.getId());
+        entityManagerService.doSqlUpdate("delete from acentries where aclist_id=:aclist", params);
+        params.clear();
+        params.put("id", p.getId());
+        entityManagerService.doSqlUpdate("delete from projects where id=:id", params);
+        params.clear();
+        params.put("aclist", projectAcList.getId());
+        entityManagerService.doSqlUpdate("delete from aclists where id=:aclist", params);
+        params.clear();
+        params.put("id", user2.getId());
+        entityManagerService.doSqlUpdate("delete from memberships where member_id=:id", params);
+        params.clear();
+        params.put("name", user2.getName());
+        entityManagerService.doSqlUpdate("delete from usersgroups where name=:name", params);
     }
 
     @Deployment

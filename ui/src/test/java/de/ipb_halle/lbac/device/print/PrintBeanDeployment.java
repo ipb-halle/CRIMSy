@@ -17,7 +17,8 @@
  */
 package de.ipb_halle.lbac.device.print;
 
-import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.job.JobService;
+import de.ipb_halle.lbac.device.job.PrintJobService;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,10 +30,11 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 public class PrintBeanDeployment {
 
     public static WebArchive add(WebArchive deployment) {
-        return deployment.addClass(JobService.class)
+        return deployment.addClass(PrintJobService.class)
                 .addClass(LabelService.class)
                 .addClass(PrintBean.class)
                 .addClass(PrinterService.class)
-                .addClass(PreferenceService.class);
+                .addClass(PreferenceService.class)
+                .addClass(JobService.class);
     }
 }

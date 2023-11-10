@@ -22,8 +22,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
-import de.ipb_halle.lbac.device.job.Job;
-import de.ipb_halle.lbac.device.job.JobType;
+import de.ipb_halle.lbac.device.job.PrintJob;
 import de.ipb_halle.lbac.util.HexUtil;
 
 import java.awt.Color;
@@ -188,12 +187,12 @@ public abstract class AbstractPrintDriver implements PrintDriver {
      * calls the transform() method and creates a print job.
      * @return the Job
      */
-    public Job createJob() {
+    public PrintJob createJob() {
         transform();
-        return new Job()
-            .setJobType(JobType.PRINT)
-            .setQueue(this.printer.getQueue())
+        PrintJob job = new PrintJob();
+        job.setQueue(this.printer.getQueue())
             .setInput(Arrays.copyOf(this.buffer.array(), this.buffer.position()));
+        return job;
     }
 
     /**

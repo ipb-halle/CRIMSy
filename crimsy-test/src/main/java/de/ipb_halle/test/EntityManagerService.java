@@ -18,8 +18,10 @@
 package de.ipb_halle.test;
 
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -32,17 +34,34 @@ public class EntityManagerService {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public EntityManager getEntityManager() {
-        return em;
+    @SuppressWarnings("unchecked")
+    public List<Object> doSqlQuery(String query) {
+        return em.createNativeQuery(query).getResultList();
     }
 
     public void doSqlUpdate(String query) {
         em.createNativeQuery(query).executeUpdate();
     }
 
-    @SuppressWarnings("unchecked")
-    public List<Object> doSqlQuery(String query) {
-        return em.createNativeQuery(query).getResultList();
+    public void doSqlUpdate(String queryString, Map<String, Object> param) {
+        Query query = em.createNativeQuery(queryString);
+        for (Map.Entry<String,Object> entry : param.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        query.executeUpdate();
     }
 
+    public void flush() {
+        this.em.flush();
+    }
+
+    public EntityManager getEntityManager() {
+        return em;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void removeEntity(Class clazz, Object id) {
+        this.em.remove(this.em.find(clazz, id));
+
+    }
 }

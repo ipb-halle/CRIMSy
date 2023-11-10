@@ -26,13 +26,13 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
