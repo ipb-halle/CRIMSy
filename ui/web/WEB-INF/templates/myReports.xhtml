@@ -52,9 +52,9 @@
                     order="desc">
                     <h:outputFormat
                         value="{0} ({1})">
-                        <o:param value="#{nwc:formatDateWithTimezone(job.job.jobdate)}" />
+                        <o:param value="#{nwc:formatDateWithTimezone(job.jobDate)}" />
                         <o:param
-                            value="#{job.job.jobdate}"
+                            value="#{job.jobDate}"
                             converter="org.ocpsoft.PrettyTimeConverter" />
                     </h:outputFormat>
                 </b:dataTableColumn>

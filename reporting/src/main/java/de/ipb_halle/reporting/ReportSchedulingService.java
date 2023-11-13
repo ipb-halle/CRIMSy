@@ -24,6 +24,9 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Timer service for maintaining reporting jobs.
  * 
@@ -32,6 +35,8 @@ import javax.inject.Inject;
 @Singleton
 @Startup
 public class ReportSchedulingService {
+
+    private Logger logger = LogManager.getLogger(ReportSchedulingService.class.getName());
 
     @Inject
     private ReportingJobService reportJobService;
@@ -42,6 +47,7 @@ public class ReportSchedulingService {
      */
     @PostConstruct
     public void startUp() {
+        logger.info("ReportSchedulingService has been started ...");
         reportJobService.markBusyJobsAsPending();
 
         // Could cause heavy load on application startup?

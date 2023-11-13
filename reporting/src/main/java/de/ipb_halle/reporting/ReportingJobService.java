@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
@@ -71,6 +72,14 @@ public class ReportingJobService extends JobService<ReportingJob> {
     @Inject
     private ReportsDirectory reportsDirectory;
 
+    @PostConstruct
+    private void init() {
+        if (managedExecutorService != null) {
+            logger.info("ManagedExecutorService has been injected sucessfully into ReportingJobService");
+        } else {
+            logger.info("ManagedExecutorService MISSING in ReportingJobService");
+        }
+    }
 
     protected ReportingJob buildJob(JobEntity e) {
         if (e != null) {
@@ -95,11 +104,17 @@ public class ReportingJobService extends JobService<ReportingJob> {
      * tasks.
      */
     public void submitPendingJobsToExecutor() {
-        for (ReportingJob job : pendingJobs()) {
+        List<ReportingJob> jobs = pendingJobs();
+        int countSubmitted = 0;
+        for (ReportingJob job : jobs) {
             boolean submitSuccessful = submitJob(job);
             if (!submitSuccessful) {
                 break;
             }
+            countSubmitted++;
+        }
+        if (countSubmitted > 0) {
+            logger.info("Successfully submitted {} of {} reporting jobs to execution", countSubmitted, jobs.size());
         }
     }
 
