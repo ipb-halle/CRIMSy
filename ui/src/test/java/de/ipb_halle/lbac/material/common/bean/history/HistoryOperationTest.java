@@ -51,6 +51,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
@@ -84,6 +85,8 @@ public abstract class HistoryOperationTest extends TestBase {
     protected TissueService tissueService;
     @Inject
     protected ACListService aclistService;
+    @Inject
+    private LoggingProfiler loggingProfiler;
 
     protected List<IndexEntry> indices;
     protected BioMaterial biomaterial;
@@ -207,7 +210,7 @@ public abstract class HistoryOperationTest extends TestBase {
         materialBeanMock.setHistoryOperation(instance);
         materialBeanMock.setSequenceInfos(new SequenceInformation());
         materialBeanMock.createStorageInformationBuilder(materialService, composition);
-        taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, biomaterial.getTaxonomy());
+        taxonomyController = new TaxonomySelectionController(loggingProfiler, taxonomyService, tissueService, biomaterial.getTaxonomy());
         materialBeanMock.setTaxonomyController(taxonomyController);
         compositionBean = new MaterialCompositionBean(materialService, getMessagePresenterMock(), userBean);
         compositionBean.startCompositionEdit(composition);

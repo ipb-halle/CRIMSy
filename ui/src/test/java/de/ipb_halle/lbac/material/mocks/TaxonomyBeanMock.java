@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyRenderController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyTreeController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyValidityController;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
@@ -34,11 +35,12 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyValidityController;
  */
 public class TaxonomyBeanMock extends TaxonomyBean {
 
-    
     private MessagePresenter messagePresenter;
 
-    public TaxonomyBeanMock(MessagePresenter presenter) {
+    public TaxonomyBeanMock(MessagePresenter presenter, LoggingProfiler profiler) {
+        super(profiler);
         messagePresenter = presenter;
+
     }
 
     public void init(
@@ -50,7 +52,7 @@ public class TaxonomyBeanMock extends TaxonomyBean {
         validityController = new TaxonomyValidityController(this, messagePresenter);
         historyController = new TaxonomyHistoryController(this, nameController, taxonomieService, memberService);
         renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, messagePresenter);
-        treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomieService, levelController);
+        treeController = new TaxonomyTreeController(new LoggingProfiler(), selectedTaxonomy, taxonomieService, levelController);
     }
 
 }

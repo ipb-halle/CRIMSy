@@ -35,7 +35,7 @@ public class SimpleTaxonomyLevelControllerTest {
         levels.add(new TaxonomyLevel(1, "level 2", 2));
         levels.add(new TaxonomyLevel(2, "level 4", 4));
         SimpleTaxonomyLevelController controller = new SimpleTaxonomyLevelController(levels);
-        Assert.assertEquals(3, controller.getLevels().size());
+        Assert.assertEquals(3, controller.getPossibleLevels().size());
 
     }
 }

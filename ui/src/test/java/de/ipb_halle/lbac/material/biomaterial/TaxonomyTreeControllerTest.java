@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class TaxonomyTreeControllerTest {
 
     @BeforeEach
     public void init() {
-        controller = new TaxonomyTreeController(
+        controller = new TaxonomyTreeController(new LoggingProfiler(),
                 new Taxonomy(0, new ArrayList<>(), new HazardInformation(), new StorageInformation(), new ArrayList<>(), new User(), new Date()), null, null);
     }
 

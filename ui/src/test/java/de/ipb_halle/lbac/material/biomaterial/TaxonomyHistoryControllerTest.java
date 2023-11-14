@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +61,8 @@ public class TaxonomyHistoryControllerTest extends TestBase {
     private TaxonomyService taxonomyService;
     @Inject
     private MaterialService materialService;
+    @Inject
+    private LoggingProfiler loggingProfiler;
 
     @BeforeEach
     public void init() {
@@ -104,7 +107,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         historyController = new TaxonomyHistoryController(bean, nameController, taxonomyService, memberService);
         levelController = new TaxonomyLevelController(bean);
         renderController = new TaxonomyRenderController(bean, nameController, levelController, memberService, getMessagePresenterMock());
-        TaxonomyTreeController tc = new TaxonomyTreeController(node, taxonomyService, levelController);
+        TaxonomyTreeController tc = new TaxonomyTreeController(loggingProfiler, node, taxonomyService, levelController);
 
         bean.setHistoryController(historyController);
         bean.setLevelController(levelController);
