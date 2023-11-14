@@ -117,45 +117,62 @@ public class TaxonomyService implements Serializable {
     @SuppressWarnings("unchecked")
     public List<Taxonomy> loadTaxonomy(Map<String, Object> queryParameters, boolean shouldChildrenBeLoaded) {
         List<Taxonomy> loadedTaxonomies = new ArrayList<>();
-        Query query = this.em.createNativeQuery(SQL_GET_TAXONOMY, TaxonomyEntity.class);
-        query.setParameter("level", queryParameters.containsKey("level") ? queryParameters.get("level") : -1);
-        query.setParameter("id", queryParameters.containsKey("id") ? queryParameters.get("id") : -1);
-        List<TaxonomyEntity> loadedTaxonomyEntities = query.getResultList();
+
+        List<TaxonomyEntity> loadedTaxonomyEntities = queryTaxonomyByParamater(queryParameters);
+
         for (TaxonomyEntity entity : loadedTaxonomyEntities) {
             List<Taxonomy> childrenTaxonomiesOfLoadedTaxonomy = new ArrayList<>();
             if (shouldChildrenBeLoaded) {
-                List<Integer> idsOfCildrenTaxonomies = em.createNativeQuery(SQL_GET_NESTED_TAXONOMIES).setParameter("id", entity.getId()).getResultList();
-                for (Integer childId : idsOfCildrenTaxonomies) {
-                    Map<String, Object> parameterOfChildQuery = new HashMap<>();
-                    parameterOfChildQuery.put("id", childId);
-                    childrenTaxonomiesOfLoadedTaxonomy.addAll(loadTaxonomy(parameterOfChildQuery, false));
-                }
+                childrenTaxonomiesOfLoadedTaxonomy.addAll(loadChildrensOfTaxonomy(entity));
                 Collections.sort(childrenTaxonomiesOfLoadedTaxonomy, (o1, o2) -> o1.getLevel().getRank() > o2.getLevel().getRank() ? -1 : 1);
             }
-            List<Object> materialEntityList = this.em.createNativeQuery(SQL_GET_MATERIAL_INFOS)
-                    .setParameter("mid", entity.getId())
-                    .getResultList();
+            MaterialAttributes materialAttributes = loadMaterialAttributes(entity);
 
-            Object[] materialEntitityAttributes = (Object[]) materialEntityList.get(0);
-
-            int parameterIndexOfOwnerId=2;
-            int parameterIndexOfCreationTime=0;
-            Integer ownerId = (Integer) (materialEntitityAttributes[parameterIndexOfOwnerId]);
             Taxonomy loadedTaxonomy = new Taxonomy(
                     entity.getId(),
                     materialService.loadMaterialNamesById(entity.getId()),
                     new HazardInformation(),
                     new StorageInformation(),
                     childrenTaxonomiesOfLoadedTaxonomy,
-                    memberService.loadUserById(ownerId),
-                    new Date(((Timestamp) materialEntitityAttributes[parameterIndexOfCreationTime]).getTime()));
-            
+                    memberService.loadUserById(materialAttributes.getOwnerId()),
+                    materialAttributes.getCreationTime());
+
             loadedTaxonomy.setLevel(new TaxonomyLevel(em.find(TaxonomyLevelEntity.class, entity.getLevel())));
 
             loadedTaxonomy.setHistory(materialService.loadHistoryOfMaterial(entity.getId()));
             loadedTaxonomies.add(loadedTaxonomy);
         }
         return loadedTaxonomies;
+    }
+
+    private MaterialAttributes loadMaterialAttributes(TaxonomyEntity entity) {
+        List<Object> materialEntityList = this.em.createNativeQuery(SQL_GET_MATERIAL_INFOS)
+                .setParameter("mid", entity.getId())
+                .getResultList();
+
+        MaterialAttributes materialAttributes = new MaterialAttributes(materialEntityList);
+        return materialAttributes;
+    }
+
+    private List<Taxonomy> loadChildrensOfTaxonomy(TaxonomyEntity entity) {
+        List<Taxonomy> loadedChildren = new ArrayList<>();
+        List<Integer> idsOfCildrenTaxonomies = em.createNativeQuery(SQL_GET_NESTED_TAXONOMIES).setParameter("id", entity.getId()).getResultList();
+        for (Integer childId : idsOfCildrenTaxonomies) {
+            Map<String, Object> parameterOfChildQuery = new HashMap<>();
+            parameterOfChildQuery.put("id", childId);
+            loadedChildren.addAll(loadTaxonomy(parameterOfChildQuery, false));
+        }
+
+        return loadedChildren;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<TaxonomyEntity> queryTaxonomyByParamater(Map<String, Object> queryParameters) {
+        Query query = this.em.createNativeQuery(SQL_GET_TAXONOMY, TaxonomyEntity.class);
+        query.setParameter("level", queryParameters.containsKey("level") ? queryParameters.get("level") : -1);
+        query.setParameter("id", queryParameters.containsKey("id") ? queryParameters.get("id") : -1);
+        List<TaxonomyEntity> loadedTaxonomyEntities = (List<TaxonomyEntity>) query.getResultList();
+        return loadedTaxonomyEntities;
     }
 
     @SuppressWarnings("unchecked")
@@ -191,6 +208,24 @@ public class TaxonomyService implements Serializable {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("level", loadTaxonomyLevel().get(0).getId());
         return loadTaxonomy(cmap, false).get(0);
+    }
+
+    private class MaterialAttributes {
+
+        private Object[] parameter;
+
+        MaterialAttributes(List<Object> parameter) {
+            this.parameter = (Object[]) parameter.get(0);
+        }
+
+        public int getOwnerId() {
+            return (int) parameter[2];
+        }
+
+        public Date getCreationTime() {
+            return new Date(((Timestamp) parameter[0]).getTime());
+        }
+
     }
 
 }
