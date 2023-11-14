@@ -40,6 +40,7 @@
         <module>kx-api</module>
         <module>kx-web</module>
         <module>reporting-api</module>
+        <module>reporting</module>
         <module>ui</module>
     </modules>
 

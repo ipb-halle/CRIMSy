@@ -32,7 +32,7 @@ function compile {
 
     mvn --batch-mode -DskipTests clean install
     pushd ui
-    REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
+    REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate --batch-mode -Dexpression=project.version -q -DforceStdout`
     MAJOR=`echo $REVISION | cut -d. -f1`
     MINOR=`echo $REVISION | cut -d. -f2`
     popd
