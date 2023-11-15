@@ -17,15 +17,14 @@
  */
 package de.ipb_halle.lbac.search.document;
 
-import de.ipb_halle.lbac.webclient.XmlSetWrapper;
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectEntity;
+import de.ipb_halle.kx.termvector.TermFrequency;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
-import de.ipb_halle.lbac.file.FileObjectEntity;
 import de.ipb_halle.lbac.file.FileSearchRequest;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
@@ -37,7 +36,7 @@ import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,9 +68,6 @@ public class DocumentSearchService {
     private EntityManager em;
 
     @Inject
-    private FileEntityService fileEntityService;
-
-    @Inject
     private NodeService nodeService;
 
     @Inject
@@ -81,14 +77,14 @@ public class DocumentSearchService {
     private MemberService memberService;
 
     @Inject
-    private TermVectorEntityService termVectorEntityService;
+    private TermVectorService termVectorService;
 
     private final int MAX_TERMS = Integer.MAX_VALUE;
 
     private boolean development = false;
 
     private String uriOfPublicColl;
-    protected SearchQueryStemmer searchQueryStemmer;
+    private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
     private DocumentEntityGraphBuilder graphBuilder;
 
     @PostConstruct
@@ -132,10 +128,9 @@ public class DocumentSearchService {
 
         this.uriOfPublicColl = uriOfPublicColl;
         searchState.clearState();
-        searchQueryStemmer = new SearchQueryStemmer();
         // fetches all documents of the collection and adds the total 
         // number of documents in the collection to the search state
-        StemmedWordGroup normalizedTerms = searchQueryStemmer.stemmQuery(searchText);
+        Set<String> normalizedTerms = searchQueryStemmer.stemmQuery(searchText);
         searchState.setSearchWords(normalizedTerms);
         for (Collection coll : collsToSearchIn) {
             if (coll.getNode().equals(nodeService.getLocalNode())) {
@@ -154,9 +149,9 @@ public class DocumentSearchService {
             docIds.add(d.getId());
         }
 
-        TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
+        TermOccurrence totalTerms = getTermOccurrence(
                 docIds,
-                normalizedTerms.getAllStemmedWords());
+                normalizedTerms);
 
         for (Document d : searchState.getFoundDocuments()) {
             d.setWordCount(getLengthOfDocument(d.getId()));
@@ -166,6 +161,28 @@ public class DocumentSearchService {
             }
         }
         return searchState;
+    }
+
+    /**
+     * getTermOccurrence with aggregation, grouping and order result
+     *
+     * @param fileIds - document ids
+     * @param searchTerms
+     * @return - list (String word, Integer wordCount)
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    public TermOccurrence getTermOccurrence(
+            List<Integer> fileIds,
+            Set<String> searchTerms) {
+        TermOccurrence occurrence = new TermOccurrence();
+        for (Integer fileId : fileIds) {
+            List<TermFrequency> frequencies = termVectorService.getTermFrequencies(fileId, searchTerms);
+            for (TermFrequency freq : frequencies) {
+                occurrence.addOccurrence(fileId, freq.getTerm(), freq.getFrequency());
+            }
+        }
+        return occurrence;
     }
 
     private int loadTotalCountOfFiles() {
@@ -195,16 +212,13 @@ public class DocumentSearchService {
         List<FileObjectEntity> entities = q.getResultList();
         for (FileObjectEntity entity : entities) {
             foundDocs.add(convertFileObjectToDocument(
-                    new FileObject(
-                            entity,
-                            collectionService.loadById(entity.getCollection()),
-                            memberService.loadUserById(entity.getUser()))));
+                    new FileObject(entity)));
 
         }
         result.addResults(foundDocs);
         List<Integer> docIds = getDocIds(foundDocs);
 
-        TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
+        TermOccurrence totalTerms = getTermOccurrence(
                 docIds,
                 getWordRoots(request));
         calculateWordCountOfDocs(foundDocs, totalTerms);
@@ -230,7 +244,7 @@ public class DocumentSearchService {
         return new HashSet<>();
     }
 
-    private void calculateWordCountOfDocs(List<Searchable> foundDocs, TermOcurrence totalTerms) {
+    private void calculateWordCountOfDocs(List<Searchable> foundDocs, TermOccurrence totalTerms) {
         for (Searchable searchable : foundDocs) {
             Document d = (Document) searchable;
             d.setWordCount(getLengthOfDocument(d.getId()));
@@ -255,7 +269,7 @@ public class DocumentSearchService {
      * @return
      */
     public long getSumOfWordsOfAllDocs() {
-        return termVectorEntityService.getSumOfAllWordsFromAllDocs();
+        return termVectorService.getSumOfAllWordsFromAllDocs();
     }
 
     private int getLengthOfDocument(int documentId) {
@@ -304,8 +318,8 @@ public class DocumentSearchService {
         @SuppressWarnings("unchecked")
         List<FileObjectEntity> results = this.em.createNativeQuery(SQL_LOAD_DOCUMENTS, FileObjectEntity.class)
                 .setParameter("collectionid", request.holder.getId())
-                .setParameter("termvectorLength", request.wordsToSearchFor.getAllStemmedWords().size())
-                .setParameter("termvector", request.wordsToSearchFor.getAllStemmedWords())
+                .setParameter("termvectorLength", request.wordsToSearchFor.size())
+                .setParameter("termvector", request.wordsToSearchFor)
                 .getResultList();
 
         int count = 0;
@@ -313,10 +327,7 @@ public class DocumentSearchService {
             if (count < limit) {
                 documents.add(
                         convertFileObjectToDocument(
-                                new FileObject(
-                                        foe,
-                                        collectionService.loadById(foe.getCollection()),
-                                        memberService.loadUserById(foe.getUser())))
+                                new FileObject(foe))
                 );
             }
         }
@@ -326,11 +337,11 @@ public class DocumentSearchService {
     private Document convertFileObjectToDocument(FileObject fo) {
         Document d = new Document();
         d.setId(fo.getId());
-        d.setCollectionId(fo.getCollection().getId());
+        d.setCollectionId(fo.getCollectionId());
         d.setNodeId(nodeService.getLocalNodeId());
         d.setNode(nodeService.getLocalNode());
-        d.setLanguage(fo.getDocument_language());
-        d.setCollection((Collection) fo.getCollection());
+        d.setLanguage(fo.getDocumentLanguage());
+        d.setCollection(collectionService.loadById(fo.getCollectionId()));
         d.setPath(fo.getFileLocation());
         d.setContentType(fo.getName().split("\\.")[fo.getName().split("\\.").length - 1]);
         d.setOriginalName(fo.getName());
@@ -338,27 +349,13 @@ public class DocumentSearchService {
 
     }
 
-    public String createSqlReplaceString(Map<String, Set<String>> stemmedWords) {
-        if (stemmedWords.isEmpty()) {
-            return "";
-        }
-        List<String> subClauses = new ArrayList<>();
-        for (String word : stemmedWords.keySet()) {
-            List<String> stemmedWordsWithQuotationMark = new ArrayList<>();
-            for (String w : stemmedWords.get(word)) {
-                stemmedWordsWithQuotationMark.add("'" + w + "'");
-            }
-
-            subClauses.add(
-                    String.format(" tv.wordroot IN (%s) ",
-                            String.join(",", stemmedWordsWithQuotationMark)));
-        }
-
-        return " AND (" + String.join(" OR ", subClauses) + ")";
-    }
-
     private EntityGraph createEntityGraph() {
         graphBuilder = new DocumentEntityGraphBuilder();
         return graphBuilder.buildEntityGraph(true);
+    }
+
+    // for test purposes
+    public void setSearchQueryStemmer(SearchQueryStemmer stemmer) {
+        searchQueryStemmer = stemmer;
     }
 }

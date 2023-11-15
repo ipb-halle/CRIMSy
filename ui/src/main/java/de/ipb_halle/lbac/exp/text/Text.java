@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.exp.text;
 
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
 import java.util.HashSet;

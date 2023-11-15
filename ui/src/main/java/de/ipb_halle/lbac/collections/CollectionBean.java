@@ -18,12 +18,12 @@
 package de.ipb_halle.lbac.collections;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.admission.ACList;
@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
 
@@ -110,7 +109,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
     protected FileService fileService;
 
     @Inject
-    protected FileEntityService fileEntityService;
+    protected FileObjectService fileObjectService;
 
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
@@ -122,7 +121,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
     protected ACListService acListService;
 
     @Inject
-    protected TermVectorEntityService termVectorEntityService;
+    protected TermVectorService termVectorService;
 
     @Override
     public void applyAclChanges() {
@@ -159,12 +158,12 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
         collectionOperation = new CollectionOperation(
                 fileService,
-                fileEntityService,
+                fileObjectService,
                 globalAdmissionContext,
                 nodeService,
                 collectionService,
                 PUBLIC_COLLECTION_NAME,
-                termVectorEntityService);
+                termVectorService);
 
         collPermAnalyser = new CollectionPermissionAnalyser(
                 PUBLIC_COLLECTION_NAME,

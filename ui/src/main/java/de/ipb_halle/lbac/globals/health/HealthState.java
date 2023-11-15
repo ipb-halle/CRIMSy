@@ -33,6 +33,7 @@ public class HealthState {
     public State publicCollectionFileState = State.UNCHECKED;
     public State publicCollectionFileSyncState = State.UNCHECKED;
     public State rootTaxonomy = State.UNCHECKED;
+    public State jobSecretState = State.UNCHECKED;
 
     public Map<String, State> collectionFileSyncList = new HashMap<>();
 

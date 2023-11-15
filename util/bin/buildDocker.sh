@@ -32,7 +32,9 @@ function compile {
 
     mvn --batch-mode -DskipTests clean install
     pushd ui
-    REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout`
+    # maven 3.8.7 does output ANSI escape sequences, even in batch mode
+    REVISION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate --batch-mode -Dexpression=project.version -q -DforceStdout | \
+                    sed -Ee 's/(\x1b...)?([1-9]\.[0-9]+\.[[:alnum:]_\-]+)(\x1b...)?/\2/'`
     MAJOR=`echo $REVISION | cut -d. -f1`
     MINOR=`echo $REVISION | cut -d. -f2`
     popd
@@ -41,6 +43,8 @@ function compile {
     cp -r docker target/
     cp -r target/extralib target/docker/ui/
     cp ui/target/ui.war target/docker/ui/
+    cp kx-web/target/kx-web.war target/docker/ui/
+    cp reporting/target/reporting.war target/docker/ui/
 
     if [ -n "$STAGE_LABEL" ] ; then
         flags="$flags,$STAGE_LABEL"

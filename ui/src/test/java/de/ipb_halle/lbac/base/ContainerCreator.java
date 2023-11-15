@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.base;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.test.EntityManagerService;
 
 /**
  *

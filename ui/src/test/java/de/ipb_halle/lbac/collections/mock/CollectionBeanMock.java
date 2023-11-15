@@ -17,13 +17,13 @@
  */
 package de.ipb_halle.lbac.collections.mock;
 
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 
 /**
@@ -49,8 +49,8 @@ public class CollectionBeanMock extends CollectionBean {
         return this;
     }
 
-    public CollectionBeanMock setFileEntityService(FileEntityService service) {
-        this.fileEntityService = service;
+    public CollectionBeanMock setFileObjectService(FileObjectService service) {
+        this.fileObjectService = service;
         return this;
     }
 
@@ -64,8 +64,8 @@ public class CollectionBeanMock extends CollectionBean {
         return this;
     }
 
-    public CollectionBeanMock setTermVectorEntityService(TermVectorEntityService service) {
-        this.termVectorEntityService = service;
+    public CollectionBeanMock setTermVectorService(TermVectorService service) {
+        this.termVectorService = service;
         return this;
     }
 

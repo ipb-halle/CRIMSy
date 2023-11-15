@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
@@ -34,7 +35,6 @@ import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
@@ -47,7 +47,7 @@ import de.ipb_halle.lbac.search.SearchOrchestrator;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.SearchWebClient;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.lbac.search.mocks.SearchQueryStemmerMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -96,10 +96,10 @@ public class SearchBeanTest extends TestBase {
         netObjects = factory.createNetObjects();
         publicUser = context.getPublicAccount();
         documentCreator = new DocumentCreator(
-                fileEntityService,
+                fileObjectService,
                 collectionService,
                 nodeService,
-                termVectorEntityService);
+                termVectorService);
         
         try {
             col = documentCreator.uploadDocuments(
@@ -151,6 +151,7 @@ public class SearchBeanTest extends TestBase {
     
     @Test
     public void test002_actionTriggerSearch() {
+        searchService.setSearchQueryStemmer(new SearchQueryStemmerMock("java"));
         SearchBean bean = new SearchBean(searchService, publicUser, nodeService);
         bean.getSearchFilter().setSearchTerms("java");
         bean.setOrchestrator(orchestrator);
@@ -175,9 +176,8 @@ public class SearchBeanTest extends TestBase {
                 .addClass(TissueService.class)
                 .addClass(SearchOrchestrator.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(TermVectorEntityService.class)
                 .addClass(CollectionService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(SearchWebClient.class)
                 .addClass(ExperimentService.class)
                 .addClass(ExpRecordService.class)

@@ -17,10 +17,28 @@
  */
 package de.ipb_halle.lbac.search.document.download;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
+import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.search.NetObjectImpl;
+import de.ipb_halle.lbac.search.bean.NetObjectFactory;
+import de.ipb_halle.lbac.search.document.Document;
+import de.ipb_halle.lbac.search.document.download.mocks.DocumentWebClientMock;
+import de.ipb_halle.lbac.service.CloudNodeService;
+import de.ipb_halle.lbac.service.CloudService;
+import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,29 +54,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.admission.MembershipService;
-import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.mock.UserBeanMock;
-import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
-import de.ipb_halle.lbac.search.NetObject;
-import de.ipb_halle.lbac.search.NetObjectImpl;
-import de.ipb_halle.lbac.search.bean.NetObjectFactory;
-import de.ipb_halle.lbac.search.document.Document;
-import de.ipb_halle.lbac.search.document.download.mocks.DocumentWebClientMock;
-import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.CloudService;
-import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
-import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author flange
@@ -74,7 +72,7 @@ public class DocumentDownloadBeanTest extends TestBase {
     private CollectionService collectionService;
 
     @Inject
-    private FileEntityService fileEntityService;
+    private FileObjectService fileObjectService;
 
     @Inject
     private DocumentDownloadBean bean;
@@ -154,7 +152,7 @@ public class DocumentDownloadBeanTest extends TestBase {
     @Test
     public void test_actionDownload_local_fileDoesNotExistInFilesystem() throws IOException {
         String nonexistingFilename = tmpPath + "/nonexistingFile";
-        FileObject fileObject = fileEntityService.save(createFileObject(nonexistingFilename));
+        FileObject fileObject = fileObjectService.save(createFileObject(nonexistingFilename));
         Document doc = new NetObjectFactory().createDocument("public", localNode, "test.pdf");
         doc.setCollection(readableCollection);
         doc.setId(fileObject.getId());
@@ -169,7 +167,7 @@ public class DocumentDownloadBeanTest extends TestBase {
     public void test_actionDownload_local_successfulDownload() throws IOException {
         String content = "Hello World";
         String path = createTempFile(content);
-        FileObject fileObject = fileEntityService.save(createFileObject(path));
+        FileObject fileObject = fileObjectService.save(createFileObject(path));
         Document doc = new NetObjectFactory().createDocument("public", localNode, "test.pdf");
         doc.setCollection(readableCollection);
         doc.setId(fileObject.getId());
@@ -214,7 +212,7 @@ public class DocumentDownloadBeanTest extends TestBase {
     public void test_actionDownload_local_successfulDownload_Document() throws IOException {
         String content = "Hello World";
         String path = createTempFile(content);
-        FileObject fileObject = fileEntityService.save(createFileObject(path));
+        FileObject fileObject = fileObjectService.save(createFileObject(path));
         Document doc = new NetObjectFactory().createDocument("public", localNode, "test.pdf");
         doc.setCollection(readableCollection);
         doc.setId(fileObject.getId());       
@@ -231,12 +229,12 @@ public class DocumentDownloadBeanTest extends TestBase {
 
     private FileObject createFileObject(String location) {
         FileObject fO = new FileObject();
-        fO.setCollection(readableCollection);
+        fO.setCollectionId(readableCollection.getId());
         fO.setCreated(new Date());
-        fO.setDocument_language("en");
+        fO.setDocumentLanguage("en");
         fO.setFileLocation(location);
         fO.setName(location);
-        fO.setUser(publicUser);
+        fO.setUserId(publicUser.getId());
         return fO;
     }
 
@@ -253,7 +251,7 @@ public class DocumentDownloadBeanTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("DocumentDownloadBeanTest.war")
                 .addClass(NodeService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(CollectionService.class)
                 .addClass(ACListService.class)
                 .addClass(MembershipService.class)

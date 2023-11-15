@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.container;
 
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;

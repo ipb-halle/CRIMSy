@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.container;
 
 import de.ipb_halle.lbac.container.entity.ContainerTypeEntity;
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import java.io.Serializable;
 import java.util.Objects;
 

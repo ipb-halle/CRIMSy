@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.datalink.LinkedDataType;
-import de.ipb_halle.lbac.search.lang.AttributeTag;
-import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.crimsy_api.AttributeTag;
+import de.ipb_halle.crimsy_api.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;

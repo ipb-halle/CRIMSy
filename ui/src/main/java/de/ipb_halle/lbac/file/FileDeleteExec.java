@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.service.FileService;
 
 import java.io.InputStream;
@@ -33,19 +35,19 @@ import org.apache.logging.log4j.LogManager;
 public class FileDeleteExec implements Runnable {
 
     private AsyncContext asyncContext;
-    private FileObject fileEntity;
+    private FileObject fileObject;
     private Logger logger;
 
-    private FileEntityService fileEntityService;
+    private FileObjectService fileObjectService;
     private FileService fs;
 
-    public FileDeleteExec(FileObject fe, FileEntityService fes, AsyncContext asyncContext) {
+    public FileDeleteExec(FileObject fo, FileObjectService fos, AsyncContext asyncContext) {
 
         this.logger = LogManager.getLogger(FileDeleteExec.class);
         this.asyncContext = asyncContext;
 
-        this.fileEntity = fe;
-        this.fileEntityService = fes;
+        this.fileObject = fo;
+        this.fileObjectService = fos;
 
         fs = new FileService();
     }
@@ -65,21 +67,21 @@ public class FileDeleteExec implements Runnable {
             response.setContentType("text/html");
 
             try {
-                fs.deleteFile(fileEntity.getFileLocation());
-                this.logger.info(String.format("File %s in repository deleted.", fileEntity.getName()));
+                fs.deleteFile(fileObject.getFileLocation());
+                this.logger.info(String.format("File %s in repository deleted.", fileObject.getName()));
             } catch (Exception e) {
-                this.logger.warn(String.format("Error deleting file %s in repository.", fileEntity.getName()));
+                this.logger.warn(String.format("Error deleting file %s in repository.", fileObject.getName()));
                 this.logger.warn(e.getMessage());
             }
 
             try {
-                fileEntityService.delete(fileEntity);
-                this.logger.info(String.format("file %s in db deleted.", fileEntity.getName()));
+                fileObjectService.delete(fileObject);
+                this.logger.info(String.format("file %s in db deleted.", fileObject.getName()));
             } catch (Exception e) {
-                this.logger.warn(String.format("Error deleting file entity  %s in db.", fileEntity.getName()));
+                this.logger.warn(String.format("Error deleting file entity  %s in db.", fileObject.getName()));
                 this.logger.warn(e.getMessage());
             }
-            this.logger.info(String.format("delete File %s complete.", fileEntity.getName()));
+            this.logger.info(String.format("delete File %s complete.", fileObject.getName()));
             response.setStatus(HttpServletResponse.SC_OK);
 
         } catch (Exception e) {

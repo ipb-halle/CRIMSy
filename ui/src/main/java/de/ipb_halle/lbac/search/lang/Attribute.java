@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import de.ipb_halle.crimsy_api.AttributeType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;

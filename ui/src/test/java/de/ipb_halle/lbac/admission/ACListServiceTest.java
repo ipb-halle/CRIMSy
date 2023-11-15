@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionBean;
@@ -27,7 +26,6 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.CloudService;
@@ -89,12 +87,10 @@ public class ACListServiceTest extends TestBase {
                 .addClass(Updater.class)
                 .addClass(CollectionSearchState.class)
                 .addClass(ACListService.class)
-                .addClass(FileEntityService.class)
                 .addClass(FileService.class)
                 .addClass(NodeService.class)
                 .addClass(CollectionBean.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(TermVectorEntityService.class)
                 .addClass(MembershipOrchestrator.class);
     }
 

@@ -21,12 +21,12 @@ package de.ipb_halle.lbac.search.document;
  *
  * @author fmauz
  */
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
@@ -38,9 +38,9 @@ import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.mocks.SearchQueryStemmerMock;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
@@ -70,7 +70,6 @@ public class DocumentSearchServiceTest extends TestBase {
 
     protected Collection col;
 
-    protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
     protected AsyncContextMock asynContext;
     private DocumentCreator documentCreator;
@@ -87,10 +86,10 @@ public class DocumentSearchServiceTest extends TestBase {
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
         documentCreator = new DocumentCreator(
-                fileEntityService,
+                fileObjectService,
                 collectionService,
                 nodeService,
-                termVectorEntityService);
+                termVectorService);
 
         try {
             col = documentCreator.uploadDocuments(
@@ -128,13 +127,15 @@ public class DocumentSearchServiceTest extends TestBase {
     @Test
     public void test002_loadDocuments_withOneWordRoot() throws FileNotFoundException, InterruptedException {
 
-        RelevanceCalculator calculator = new RelevanceCalculator(Arrays.asList("java"));
+        RelevanceCalculator calculator = new RelevanceCalculator(new HashSet<String> (Arrays.asList("java", "jav")));
 
         DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
         builder.setCollectionId(col.getId());
         builder.setWordRoots(new HashSet<>(Arrays.asList("java")));
         SearchRequest request = builder.build();
 
+        documentSearchService.setSearchQueryStemmer(
+                new SearchQueryStemmerMock("java"));
         SearchResult result = documentSearchService.loadDocuments(request);
         List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
         List<Document> documents = new ArrayList<>();
@@ -157,6 +158,8 @@ public class DocumentSearchServiceTest extends TestBase {
         builder.setWordRoots(new HashSet<>(Arrays.asList("java", "failure")));
         SearchRequest request = builder.build();
         Object o=entityManagerService.doSqlQuery("SELECT id,name,collection_id from files");
+        documentSearchService.setSearchQueryStemmer(
+                new SearchQueryStemmerMock("java failure"));
         SearchResult result = documentSearchService.loadDocuments(request);
         List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
         Assert.assertEquals(3, netObjects.size());
@@ -181,7 +184,7 @@ public class DocumentSearchServiceTest extends TestBase {
     public static WebArchive createDeployment() {
         return prepareDeployment("DocumentSearchServiceTest.war")
                 .addClass(DocumentSearchService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(CloudService.class)
                 .addClass(CloudNodeService.class)
                 .addClass(NodeService.class)
@@ -189,8 +192,7 @@ public class DocumentSearchServiceTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(FileService.class)
                 .addClass(MembershipService.class)
-                .addClass(MemberService.class)
-                .addClass(TermVectorEntityService.class);
+                .addClass(MemberService.class);
     }
 
 }

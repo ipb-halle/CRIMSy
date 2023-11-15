@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
@@ -26,7 +27,6 @@ import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
@@ -38,7 +38,6 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.List;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -175,9 +174,8 @@ public class NetObjectPresenterTest extends TestBase {
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(TermVectorEntityService.class)
                 .addClass(CollectionService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(ExpRecordService.class)
                 .addClass(AssayService.class)
                 .addClass(TextService.class)

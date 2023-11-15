@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.ACList;
@@ -26,14 +28,12 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.mock.WordCloudWebServiceMock;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -55,7 +55,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class WordCloudWebServiceTest extends TestBase {
 
     @Inject
-    private TermVectorEntityService termVectorEntityService;
+    private TermVectorService termVectorService;
 
     @Inject
     private WordCloudWebService instance;
@@ -83,7 +83,7 @@ public class WordCloudWebServiceTest extends TestBase {
 
         return prepareDeployment("WordCloudWebServiceTest.war")
                 .addClass(DocumentSearchService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(NodeService.class)
                 .addClass(CloudService.class)
                 .addClass(CloudNodeService.class)
@@ -93,12 +93,10 @@ public class WordCloudWebServiceTest extends TestBase {
                 .addClass(MembershipService.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(MemberService.class)
-                .addClass(TermVectorEntityService.class)
+                .addClass(TermVectorService.class)
                 .addClass(KeyManager.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(WordCloudWebService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(FileEntityService.class)
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(WordCloudWebServiceMock.class);
 

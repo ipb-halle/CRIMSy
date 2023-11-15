@@ -27,8 +27,8 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.globals.NavigationConstants;
-import de.ipb_halle.lbac.device.job.Job;
-import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.lbac.device.job.PrintJob;
+import de.ipb_halle.lbac.device.job.PrintJobService;
 import de.ipb_halle.lbac.navigation.Navigator;
 
 import java.io.Serializable;
@@ -66,7 +66,7 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
     private GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
-    private JobService jobService;
+    private PrintJobService printJobService;
 
     @Inject
     private LabelService labelService;
@@ -273,11 +273,11 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
     }
 
     /**
-     * submit a job for printing
+     * submit the test label for printing
      */
-    public void submitJob(PrintDriver driver) {
-        Job job = driver.createJob();
-        job.setOwner(userBean.getCurrentAccount());
-        this.jobService.saveJob(job);
+    private void submitJob(PrintDriver driver) {
+        PrintJob printJob = driver.createJob();
+        printJob.setOwner(userBean.getCurrentAccount());
+        this.printJobService.saveJob(printJob);
     }
 }

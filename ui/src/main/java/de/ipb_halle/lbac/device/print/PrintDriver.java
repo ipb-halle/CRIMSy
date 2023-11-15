@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.device.print;
 
-import de.ipb_halle.lbac.device.job.Job;
+import de.ipb_halle.lbac.device.job.PrintJob;
 
 import java.awt.image.Raster;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import java.util.List;
 public interface PrintDriver { 
 
     public PrintDriver clear();
-    public Job createJob();
+    public PrintJob createJob();
 
     public String getDefaultFontName();
     public int getDefaultFontSize();

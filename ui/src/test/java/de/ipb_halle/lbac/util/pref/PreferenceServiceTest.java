@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.util.pref;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserEntity;
+import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;

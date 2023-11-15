@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.container.entity;
 
-import de.ipb_halle.lbac.search.lang.AttributeTag;
-import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.crimsy_api.AttributeTag;
+import de.ipb_halle.crimsy_api.AttributeType;
 
 import java.io.Serializable;
 import javax.persistence.Column;
