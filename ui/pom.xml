@@ -624,12 +624,13 @@
         </dependency>
 
         <!-- tika dependencies -->
+<!--
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.41.2.2</version>
         </dependency>
-
+-->
         <dependency>
             <!-- see seleniumhq -->
             <groupId>commons-io</groupId>
@@ -644,13 +645,7 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.14</version>
         </dependency>
-<!--
-        <dependency> 
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>5.0.3</version>
-        </dependency>
--->
+
         <!-- MolecularFaces -->
         <dependency>
             <groupId>de.ipb-halle</groupId>

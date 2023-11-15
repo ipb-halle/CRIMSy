@@ -110,7 +110,7 @@
                     <doUpdate>true</doUpdate>
                     <shortRevisionLength>8</shortRevisionLength>
 
-                    <format>{0} KX (git-sha1:{2} * {1,date,yyyy-MM-dd HH:mm:ss})</format>
+                    <format>{0} reporting (git-sha1:{2} * {1,date,yyyy-MM-dd HH:mm:ss})</format>
                     <items>
                         <item >${project.version}</item>
                         <item>timestamp</item>
@@ -288,14 +288,6 @@
             <version>3.0.1-b12</version>
             <scope>test</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>3.0.1-b06</version>
-            <scope>provided</scope>
-        </dependency>
--->
 
         <!-- Dependencies for testing -->
         <!-- crimsy-test -->
@@ -364,21 +356,7 @@
             <version>7.0.9</version>
             <scope>test</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.apache.tomee</groupId>
-            <artifactId>tomee-embedded</artifactId>
-            <version>7.0.9</version>
-            <scope>test</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>org.apache.tomee</groupId>
-            <artifactId>tomee-webservices</artifactId>
-            <version>7.0.9</version>
-            <scope>test</scope>
-        </dependency>
--->
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>

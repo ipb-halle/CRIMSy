@@ -184,16 +184,6 @@
             </exclusions>
         </dependency>
 
-
-        <!-- SLF4J -->
-<!--
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.30</version>
-        </dependency>
--->
-
         <!-- Annotation Processor to generate JPA 2 static metamodel classes -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -249,14 +239,6 @@
             <version>3.0.1-b12</version>
             <scope>test</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>3.0.1-b06</version>
-            <scope>provided</scope>
-        </dependency>
--->
 
         <!-- Dependencies for testing -->
         <!-- crimsy-test -->
@@ -326,21 +308,7 @@
             <version>7.0.9</version>
             <scope>test</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.apache.tomee</groupId>
-            <artifactId>tomee-embedded</artifactId>
-            <version>7.0.9</version>
-            <scope>test</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>org.apache.tomee</groupId>
-            <artifactId>tomee-webservices</artifactId>
-            <version>7.0.9</version>
-            <scope>test</scope>
-        </dependency>
--->
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
