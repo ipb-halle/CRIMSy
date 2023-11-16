@@ -137,69 +137,67 @@
                                         </ui:insert>
                                     </ui:fragment>
                                 </p:column>
-                                <p:column
-                                    headerText="#{msgs.materialOverview_tableheader_actions}">
-                                    <p:toolbar >
-                                        <p:toolbarGroup style="display:flex; flex-direction: row; justify-content: center;width:100%;">
+                                <p:column headerText="#{msgs.materialOverview_tableheader_actions}">
+                                    <div style="display:flex; flex-direction: row; justify-content: center;width:100%;">
 
-                                            <p:commandButton id="btn1"
-                                                             style="padding: 0 4px;margin: 0; margin-bottom: 4px;"
-                                                             icon="pi pi-pencil"
-                                                             styleClass="ui-button-success"
-                                                             type="submit"
-                                                             process="@this"
-                                                             update="@all"
-                                                             action="#{materialOverviewBean.actionEditMaterial(material)}"
-                                                             />
-                                            <p:tooltip for="btn1" value="#{msgs.materialOverview_actions_edit}" position="top"/>
-                                                             <!--tooltip="#{msgs.materialOverview_actions_edit}"-->
+                                        <p:commandButton id="btn1"
+                                                         style="padding: 0 4px;margin: 0; margin-bottom: 4px;"
+                                                         icon="pi pi-pencil"
+                                                         styleClass="ui-button-success"
+                                                         type="submit"
+                                                         process="@this"
+                                                         update="@all"
+                                                         action="#{materialOverviewBean.actionEditMaterial(material)}"
+                                                         />
+                                        <p:tooltip for="btn1" value="#{msgs.materialOverview_actions_edit}" position="top"/>
+                                                         <!--tooltip="#{msgs.materialOverview_actions_edit}"-->
 
-                                            <p:commandButton id="btn2"
-                                                             style="padding: 0 4px;margin:0 1rem; margin-bottom: 4px;"
-                                                             icon="fa fa-flask"
-                                                             type="submit"
-                                                             process="@this"
-                                                             update="@all"
-                                                             disabled="#{!materialOverviewBean.hasAccessRight(material,'permCREATE')}"
-                                                             action="#{materialOverviewBean.actionCreateNewItem(material)}"
-                                                             />
-                                            <p:tooltip for="btn2" value="#{msgs.materialOverview_actions_createItem}" position="top"/>
+                                        <p:commandButton id="btn2"
+                                                         style="padding: 0 4px;margin:0 1rem; margin-bottom: 4px;"
+                                                         icon="fa fa-flask"
+                                                         type="submit"
+                                                         process="@this"
+                                                         update="@all"
+                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permCREATE')}"
+                                                         action="#{materialOverviewBean.actionCreateNewItem(material)}"
+                                                         />
+                                        <p:tooltip for="btn2" value="#{msgs.materialOverview_actions_createItem}" position="top"/>
 
                                                              <!--tooltip="#{msgs.materialOverview_actions_createItem}"-->
 
 
-                                            <p:commandButton id="user"
-                                                             style="padding: 0 4px;margin:0;margin-bottom: 4px;"
-                                                             icon="pi pi-user"
-                                                             ajax="true"
-                                                             process="@this"
-                                                             update="@(.mainPanel)"
-                                                             type="submit"
-                                                             action="#{materialOverviewBean.actionStartAclChange(material)}"
-                                                             oncomplete="PF('dlgAcl').show();"
-                                                             disabled="#{!materialOverviewBean.hasAccessRight(material,'permGRANT')}"/>
-                                            <p:tooltip for="user" value="#{msgs.materialOverview_actions_changeRights}" position="top"/>
+                                        <p:commandButton id="user"
+                                                         style="padding: 0 4px;margin:0;margin-bottom: 4px;"
+                                                         icon="pi pi-user"
+                                                         ajax="true"
+                                                         process="@this"
+                                                         update="@(.mainPanel)"
+                                                         type="submit"
+                                                         action="#{materialOverviewBean.actionStartAclChange(material)}"
+                                                         oncomplete="PF('dlgAcl').show();"
+                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permGRANT')}"/>
+                                        <p:tooltip for="user" value="#{msgs.materialOverview_actions_changeRights}" position="top"/>
 
                                                              <!--tooltip="#{msgs.materialOverview_actions_changeRights}"-->
 
 
-                                            <p:commandButton id="trash"
-                                                             style="padding: 0 4px;margin:0 1rem; margin-bottom: 4px;"
-                                                             icon="pi pi-trash"
-                                                             styleClass="ui-button-danger"
-                                                             type="submit"
-                                                             ajax="true"
-                                                             process="@this"
-                                                             update="@form"
-                                                             disabled="#{!materialOverviewBean.hasAccessRight(material,'permDELETE')}"
-                                                             action="#{materialOverviewBean.actionDeactivateMaterial(material)}"
-                                                             />
-                                            <p:tooltip for="trash" value="#{msgs.materialOverview_actions_deactivate}" position="top"/>
+                                        <p:commandButton id="trash"
+                                                         style="padding: 0 4px;margin:0 1rem; margin-bottom: 4px;"
+                                                         icon="pi pi-trash"
+                                                         styleClass="ui-button-danger"
+                                                         type="submit"
+                                                         ajax="true"
+                                                         process="@this"
+                                                         update="@form"
+                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permDELETE')}"
+                                                         action="#{materialOverviewBean.actionDeactivateMaterial(material)}"
+                                                         />
+                                        <p:tooltip for="trash" value="#{msgs.materialOverview_actions_deactivate}" position="top"/>
 
                                                             <!--tooltip="#{msgs.materialOverview_actions_deactivate}"-->
-                                            <!--onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"-->
-                                        </p:toolbarGroup>
-                                    </p:toolbar>
+                                        <!--onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"-->
+
+                                    </div>
                                 </p:column>
                             </p:dataTable>
                         </div>
@@ -207,7 +205,6 @@
 
                             <p:outputPanel  styleClass="navigationButton">
                                 <p:commandButton
-                                    style="margin: 0.5rem -4.5rem; "
                                     disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
                                     icon="fa fa-fast-backward"
                                     ajax="true"
@@ -221,7 +218,6 @@
 
                             <p:outputPanel  styleClass="navigationButton">
                                 <p:commandButton
-                                    style="margin: 0.5rem -1.5rem; "
                                     disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
                                     ajax="true"
                                     process="@this"
@@ -236,7 +232,6 @@
 
                             <p:outputPanel  styleClass="navigationButton">
                                 <p:commandButton
-                                    style="margin: 0.5rem 1.5rem; margin-right: 0.6rem; "
                                     disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
                                     ajax="true"
                                     process="@this"
@@ -250,7 +245,6 @@
 
                             <p:outputPanel styleClass="navigationButton">
                                 <p:commandButton
-                                    style="margin: 0.5rem 1.5rem 0.5rem 0 ; "
                                     disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
                                     ajax="true"
                                     process="@this"
@@ -261,7 +255,7 @@
                                 <!--update="@(.materialOverviewTableContainer)"-->
                             </p:outputPanel>
 
-                            <p:outputPanel  style="margin: 1rem 0; ">
+                            <p:outputPanel >
                                 <h:outputText value="#{materialOverviewBean.tableController.tableController.getNavigationInfos()}"/>
                             </p:outputPanel>
 

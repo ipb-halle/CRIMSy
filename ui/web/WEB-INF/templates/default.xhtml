@@ -129,6 +129,11 @@
                                         id="foundObjectDataTableId"
                                         var="searchable"
                                         value="#{searchBean.shownObjects}"
+                                        rows="10"
+                                        paginator="true" paginatorPosition="both"
+                                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                        currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                        rowsPerPageTemplate="5,10,{ShowAll|'All'}"
                                         >
                                         <!--saveState="false"-->
                                         <p:column headerText="#{msgs.searchMgr_resulttable_name}">
