@@ -29,6 +29,8 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchState;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.CloudNodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import jakarta.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,6 +94,9 @@ public class WordCloudBean implements Serializable {
     @Inject
     private UserBean userBean;
 
+    @Inject
+    private LoggingProfiler loggingProfiler; 
+    
     /**
      * Starts the word cloud functionality
      * <ul>
@@ -208,7 +213,11 @@ public class WordCloudBean implements Serializable {
      * previous searching
      */
     public void clearCloudState(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("WordCloudBean.clearCloudState");
+
         clearCloudState();
+        loggingProfiler.profilerStop("WordCloudBean.clearCloudState");
+
     }
 
     /**
@@ -428,5 +437,5 @@ public class WordCloudBean implements Serializable {
 
     public List<String> getTagsAsList() {
         return new ArrayList<>(tagList);
-    }  
+    }
 }

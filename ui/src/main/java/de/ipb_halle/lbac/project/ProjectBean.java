@@ -28,6 +28,8 @@ import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import jakarta.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,6 +76,10 @@ public class ProjectBean implements Serializable, ACObjectBean {
     @Inject
     private Navigator navigator;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
+    
     public void reloadReadableProjects() {
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
         builder.setDeactivated(false);
@@ -117,8 +123,11 @@ public class ProjectBean implements Serializable, ACObjectBean {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ProjectBean.setCurrentAccount");
         this.user = evt.getCurrentAccount();
         reloadReadableProjects();
+        loggingProfiler.profilerStop("ProjectBean.setCurrentAccount");
+        
     }
 
     @Override

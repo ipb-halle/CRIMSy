@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.CloudService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,6 +66,9 @@ public class ForumBean implements Serializable {
     @Inject
     private ForumService forumService;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private String cloudOfTopic;
     private User currentUser;
     private Set<String> availableClouds;
@@ -73,7 +77,9 @@ public class ForumBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("ForumBean");
         vFilter = new RichTextConverter();
+        loggingProfiler.profilerStop("ForumBean");
     }
 
     /**
@@ -83,6 +89,8 @@ public class ForumBean implements Serializable {
      * @param evt the LoginEvent scheduled by UserBean
      */
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ForumBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         availableClouds = new HashSet<>();
         for (Cloud c : cloudService.load()) {
@@ -91,6 +99,8 @@ public class ForumBean implements Serializable {
 
         cloudOfTopic = availableClouds.iterator().next();
         refreshForumState();
+        loggingProfiler.profilerStop("ForumBean.setCurrentAccount");
+
     }
 
     /**

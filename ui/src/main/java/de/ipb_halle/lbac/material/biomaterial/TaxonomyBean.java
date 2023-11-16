@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.HashMap;
 import jakarta.annotation.PostConstruct;
@@ -30,6 +31,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.Date;
 import org.primefaces.model.TreeNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,11 +60,13 @@ public class TaxonomyBean implements Serializable {
     protected TaxonomyService taxonomyService;
     @Inject
     protected MessagePresenter messagePresenter;
+    @Inject
+    private LoggingProfiler loggingProfiler;
 
     protected User currentUser;
     protected TaxonomyHistoryController historyController;
     protected TaxonomyLevelController levelController;
-    protected final Logger logger = LogManager.getLogger(this.getClass().getName());
+    protected transient Logger logger = LogManager.getLogger(this.getClass().getName());
     protected final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     protected TaxonomyNameController nameController;
     protected Mode mode;
@@ -75,15 +79,40 @@ public class TaxonomyBean implements Serializable {
     protected TaxonomyTreeController treeController;
     protected TaxonomyValidityController validityController;
 
+    public TaxonomyBean() {
+
+    }
+
+    public TaxonomyBean(LoggingProfiler profiler) {
+        this.loggingProfiler = profiler;
+    }
+
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("TaxonomyBean.nameController");
         nameController = new TaxonomyNameController(this);
+        loggingProfiler.profilerStop("TaxonomyBean.nameController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.levelController");
         levelController = new TaxonomyLevelController(this);
         levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
+        loggingProfiler.profilerStop("TaxonomyBean.levelController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.validityController");
         validityController = new TaxonomyValidityController(this, messagePresenter);
+        loggingProfiler.profilerStop("TaxonomyBean.validityController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.historyController");
         historyController = new TaxonomyHistoryController(this, nameController, taxonomyService, memberService);
+        loggingProfiler.profilerStop("TaxonomyBean.historyController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.renderController");
         renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, messagePresenter);
-        treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
+        loggingProfiler.profilerStop("TaxonomyBean.renderController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.treeController");
+        treeController = new TaxonomyTreeController(loggingProfiler, selectedTaxonomy, taxonomyService, levelController);
+        loggingProfiler.profilerStop("TaxonomyBean.treeController");
     }
 
     /**
@@ -92,14 +121,24 @@ public class TaxonomyBean implements Serializable {
      * @param evt
      */
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("TaxonomyBean.setCurrentAccount");
+
         mode = Mode.SHOW;
+
         currentUser = evt.getCurrentAccount();
+
         levelController.setLevels(taxonomyService.loadTaxonomyLevel());
+
         levelController.setSelectedLevel(levelController.getRootLevel());
 
         treeController.initialise();
+
         selectedTaxonomy = (TreeNode) treeController.getTaxonomyTree().getChildren().get(0);
+
         initHistoryDate();
+
+        loggingProfiler.profilerStop("TaxonomyBean.setCurrentAccount");
+
     }
 
     /**

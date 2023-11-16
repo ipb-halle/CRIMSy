@@ -44,6 +44,8 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.NonEmpty;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import jakarta.annotation.PostConstruct;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,7 +69,7 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ItemOverviewBean implements Serializable, ACObjectBean {
 
-    private final Logger logger = LogManager.getLogger(this.getClass().getName());
+    private transient Logger logger;
     private final int PAGE_SIZE = 10;
 
     @Inject
@@ -92,18 +94,29 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected ReportMgr reportMgr;
     @Inject
     private transient MessagePresenter messagePresenter;
-
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private ACObjectController acObjectController;
     protected User currentUser;
     private int firstResult;
     private int itemAmount;
     private Item itemInFocus;
-    private ItemLocaliser itemLocaliser = new ItemLocaliser();
+    private ItemLocaliser itemLocaliser;
     private SearchResult searchResult;
-    private SearchMaskValues searchMaskValues = new SearchMaskValues();
+    private SearchMaskValues searchMaskValues;
 
     private Report selectedReport;
     private ReportType selectedReportType;
+   
+    @PostConstruct
+    public void init() {
+        loggingProfiler.profilerStart("ItemOverviewBean");
+        logger = LogManager.getLogger(this.getClass().getName());
+        itemLocaliser = new ItemLocaliser();
+        searchMaskValues = new SearchMaskValues();
+        loggingProfiler.profilerStop("ItemOverviewBean");
+    }
 
     public void actionApplySearchFilter() {
         actionFirstItems();
@@ -203,10 +216,14 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ItemOverviewBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         firstResult = 0;
         searchMaskValues = new SearchMaskValues();
         reloadItems();
+        loggingProfiler.profilerStop("ItemOverviewBean.setCurrentAccount");
+
     }
 
     public int getItemAmount() {

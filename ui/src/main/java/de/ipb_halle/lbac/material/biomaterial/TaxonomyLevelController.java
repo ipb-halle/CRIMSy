@@ -36,37 +36,21 @@ public class TaxonomyLevelController implements Serializable {
         this.taxonomyBean = taxonomyBean;
     }
 
-    public List<TaxonomyLevel> getLevels() {
-        if (taxonomyBean.getSelectedTaxonomy() != null) {
-            List<TaxonomyLevel> valideLevels = new ArrayList<>();
-            Taxonomy t;
-            if (taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
-                t = taxonomyBean.getTaxonomyToEdit().getTaxHierarchy().get(0);
-            } else {
-                t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-            }
-            for (TaxonomyLevel l : levels) {
-                if (l.getRank() > t.getLevel().getRank()
-                        && l.getRank() < getHighestPossibleRank()) {
-                    valideLevels.add(l);
-                }
-            }
-            return valideLevels;
-        } else {
+    public List<TaxonomyLevel> getPossibleLevels() {
+        if (taxonomyBean.getSelectedTaxonomy() == null) {
             return levels;
         }
-    }
 
-    private int getHighestPossibleRank() {
-        int highestLevel = Integer.MAX_VALUE;
-        if (taxonomyBean.getSelectedTaxonomy() == null||taxonomyBean.getMode()==TaxonomyBean.Mode.CREATE) {
-            return highestLevel;
+        List<TaxonomyLevel> valideLevels = new ArrayList<>();
+
+        Taxonomy currentTaxo = getTaxonomyByMode();
+
+        for (TaxonomyLevel level : levels) {
+            if (checkIfTaxoLevelIsValide(level, currentTaxo, valideLevels)) {
+                valideLevels.add(level);
+            }
         }
-        for (Object b : taxonomyBean.getSelectedTaxonomy().getChildren()) {
-            Taxonomy t = (Taxonomy) ((TreeNode) b).getData();
-            highestLevel = Math.min(highestLevel, t.getLevel().getRank());
-        }
-        return highestLevel;
+        return valideLevels;
     }
 
     public TaxonomyLevel getSelectedLevel() {
@@ -88,9 +72,35 @@ public class TaxonomyLevelController implements Serializable {
     public void setLevels(List<TaxonomyLevel> levels) {
         this.levels = levels;
     }
-    
-    public TaxonomyLevel getRootLevel(){
+
+    public TaxonomyLevel getRootLevel() {
         return levels.get(0);
     }
 
+    private boolean checkIfTaxoLevelIsValide(TaxonomyLevel level, Taxonomy currentTaxo, List<TaxonomyLevel> valideLevels) {
+        return (level.getRank() > currentTaxo.getLevel().getRank()
+                && level.getRank() < getHighestPossibleRank());
+    }
+
+    private Taxonomy getTaxonomyByMode() {
+        Taxonomy t;
+        if (taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
+            t = taxonomyBean.getTaxonomyToEdit().getTaxHierarchy().get(0);
+        } else {
+            t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
+        }
+        return t;
+    }
+
+    private int getHighestPossibleRank() {
+        int highestLevel = Integer.MAX_VALUE;
+        if (taxonomyBean.getSelectedTaxonomy() == null || taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE) {
+            return highestLevel;
+        }
+        for (Object b : taxonomyBean.getSelectedTaxonomy().getChildren()) {
+            Taxonomy t = (Taxonomy) ((TreeNode) b).getData();
+            highestLevel = Math.min(highestLevel, t.getLevel().getRank());
+        }
+        return highestLevel;
+    }
 }

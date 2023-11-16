@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+
 import java.io.Serializable;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +35,9 @@ import org.primefaces.model.TreeNode;
 public class TaxonomySelectionController implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
+    private LoggingProfiler loggingProfiler;
+    
     protected TaxonomyTreeController treeController;
     protected TreeNode selectedTaxonomy;
     protected Tissue selectedTissue;
@@ -42,11 +46,14 @@ public class TaxonomySelectionController implements Serializable {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public TaxonomySelectionController(
+            LoggingProfiler lp,
             TaxonomyService taxonomyService,
             TissueService tissueService,
             Taxonomy taxonomyOfMaterial) {
+        this.loggingProfiler = lp;
         this.tissueService = tissueService;
         treeController = new TaxonomyTreeController(
+                lp,
                 taxonomyOfMaterial,
                 taxonomyService,
                 new SimpleTaxonomyLevelController(taxonomyService.loadTaxonomyLevel()));

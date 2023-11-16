@@ -54,6 +54,7 @@ import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,6 +118,9 @@ public class MaterialBean implements Serializable {
     @Inject
     protected TissueService tissueService;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     protected MaterialType currentMaterialType = null;
@@ -156,11 +160,11 @@ public class MaterialBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("MaterialBean");
+
         permission = new MaterialEditPermission(this);
         tissueController = new TissueController(this);
-    }
-
-    public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStop("MaterialBean");
 
     }
 
@@ -172,7 +176,7 @@ public class MaterialBean implements Serializable {
             materialEditState = new MaterialEditState(messagePresenter);
             materialEditState.addPossibleProjects(projectBean.getReadableProjects());
             mode = Mode.CREATE;
-            taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, taxonomyService.loadTaxonomyById(1));
+            taxonomyController = new TaxonomySelectionController(loggingProfiler, taxonomyService, tissueService, taxonomyService.loadTaxonomyById(1));
             hazardController = new MaterialHazardBuilder(
                     hazardService,
                     currentMaterialType,
@@ -222,7 +226,7 @@ public class MaterialBean implements Serializable {
             }
             if (m.getType() == MaterialType.BIOMATERIAL) {
                 BioMaterial bm = (BioMaterial) m;
-                taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, bm.getTaxonomy());
+                taxonomyController = new TaxonomySelectionController(loggingProfiler, taxonomyService, tissueService, bm.getTaxonomy());
             }
             if (m.getType() == MaterialType.COMPOSITION) {
                 compositionBean.startCompositionEdit((MaterialComposition) m);
@@ -362,9 +366,8 @@ public class MaterialBean implements Serializable {
                 for (Concentration c : compositionBean.getConcentrationsInComposition()) {
                     composition.addComponent(c.getMaterial(), c.getConcentration(), c.getUnit());
                 }
-                
-                
-                materialService.saveMaterialToDB(composition,   materialEditState.getCurrentProject().getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(), new HashMap<>(), userBean.getCurrentAccount());
+
+                materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId(), new HashMap<>(), userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.SEQUENCE) {
                 Sequence sequence = new Sequence(
                         null,

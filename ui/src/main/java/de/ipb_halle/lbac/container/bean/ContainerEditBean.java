@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.container.bean.ContainerOverviewBean.Mode;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,9 @@ public class ContainerEditBean implements Serializable {
     @Inject
     protected ProjectService projectService;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private Integer containerHeight;
     private Container containerLocation;
     private Container containerToCreate = new Container();
@@ -68,15 +72,23 @@ public class ContainerEditBean implements Serializable {
     protected final List<String> gmoSafetyLevels = new ArrayList<>();
     private String preferredProjectName;
     protected ContainerLocalizer localizer;
-
+    
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("ContainerEditBean");
+
         localizer = new ContainerLocalizer(messagePresenter);
+        loggingProfiler.profilerStop("ContainerEditBean");
+
     }
 
-    public void setCurrentAccount(@Observes LoginEvent evt) {       
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ContainerEditBean.setCurrentAccount");
+
         clearEditBean();
         initGmoSafetyLevels();
+        loggingProfiler.profilerStop("ContainerEditBean.setCurrentAccount");
+
     }
 
     /**
@@ -130,7 +142,7 @@ public class ContainerEditBean implements Serializable {
     public List<ContainerType> getContainerTypes() {
         return containerTypes;
     }
-    
+
     public Integer getContainerWidth() {
         return containerWidth;
     }
@@ -142,7 +154,7 @@ public class ContainerEditBean implements Serializable {
     public String getDialogTitle() {
         if (mode == Mode.CREATE) {
             return localizer.localizeString("container_edit_titel_create");
-        } else if (mode == Mode.EDIT && originalContainer!=null) {
+        } else if (mode == Mode.EDIT && originalContainer != null) {
             return localizer.localizeString("container_edit_titel_edit", originalContainer.getLabel());
         } else {
             return "";

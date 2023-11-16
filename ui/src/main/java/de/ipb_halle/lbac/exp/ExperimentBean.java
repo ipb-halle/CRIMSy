@@ -39,6 +39,7 @@ import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -101,6 +102,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     @Inject
     protected ProjectService projectService;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private Experiment experiment;
 
     private List<ExpRecord> expRecords;
@@ -143,6 +147,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public ExperimentBean() {
     }
 
+    //Test Contructor
     public ExperimentBean(
             ItemAgent itemAgent,
             MaterialAgent materialAgent,
@@ -150,7 +155,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             ProjectService projectService,
             ExperimentService experimentService,
             MessagePresenter messagePresenter,
-            ExpRecordService expRecordService) {
+            ExpRecordService expRecordService
+    ) {
+        loggingProfiler.profilerStart("ExperimentBean Contructor");
+
         this.itemAgent = itemAgent;
         this.materialAgent = materialAgent;
         this.globalAdmissionContext = globalAdmissionContext;
@@ -158,19 +166,31 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.experimentService = experimentService;
         this.messagePresenter = messagePresenter;
         this.expRecordService = expRecordService;
+
+        loggingProfiler.profilerStop("ExperimentBean Contructor");
+
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ExperimentBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         templates = loadExperiments(true);
         experiments = loadExperiments(false);
         cleanup();
         initEmptyExperiment();
+        loggingProfiler.profilerStop("ExperimentBean.setCurrentAccount");
+
     }
 
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("ExperimentBean Postcontructor");
+
         experimentBeanInit();
+
+        loggingProfiler.profilerStop("ExperimentBean Postcontructor");
+
     }
 
     protected void experimentBeanInit() {

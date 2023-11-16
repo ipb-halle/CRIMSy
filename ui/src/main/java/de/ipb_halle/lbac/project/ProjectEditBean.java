@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,6 +83,9 @@ public class ProjectEditBean implements Serializable {
     @Inject
     private ProjectBean projectBean;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private User currentUser;
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
@@ -91,12 +95,20 @@ public class ProjectEditBean implements Serializable {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ProjectEditBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
+        loggingProfiler.profilerStop("ProjectEditBean.setCurrentAccount");
+
     }
 
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("ProjectEditBean");
+
         startProjectCreation();
+
+        loggingProfiler.profilerStop("ProjectEditBean");
     }
 
     public List<ACEntry> getACEntriesOfProject() {

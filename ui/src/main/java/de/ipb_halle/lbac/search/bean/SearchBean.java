@@ -37,6 +37,8 @@ import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import jakarta.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,10 +96,17 @@ public class SearchBean implements Serializable {
 
     @Inject
     private MessagePresenter messagePresenter;
+    
+    @Inject
+    private LoggingProfiler loggingProfiler;
 
+
+    /*
+     * empty default constructor for testing purposes
+     */
     public SearchBean() {
     }
-
+    
     /**
      * Constructor for tests
      *
@@ -120,9 +129,13 @@ public class SearchBean implements Serializable {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("SearchBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         searchFilter = new SearchFilter(currentUser);
         this.netObjectPresenter = new NetObjectPresenter(currentUser, messagePresenter);
+        loggingProfiler.profilerStop("SearchBean.setCurrentAccount");
+
     }
 
     public void actionAddFoundObjectsToShownObjects() {

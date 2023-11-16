@@ -22,6 +22,8 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import jakarta.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,11 +45,23 @@ import org.primefaces.event.SelectEvent;
 @Named
 public class ContainerSearchMaskBean implements Serializable {
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private String containerSearchName;
     private String containerSearchId;
     private String searchProject;
     private String searchLocation;
     private User currentUser;
+
+    public ContainerSearchMaskBean() {
+    }
+
+    @PostConstruct
+    public void init() {
+        loggingProfiler.profilerStart("ContainerSearchMaskBean");
+        loggingProfiler.profilerStop("ContainerSearchMaskBean");
+    }
 
     @Inject
     protected ContainerOverviewBean overviewBean;
@@ -121,6 +135,10 @@ public class ContainerSearchMaskBean implements Serializable {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ContainerSearchMaskBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
+        loggingProfiler.profilerStop("ContainerSearchMaskBean.setCurrentAccount");
+
     }
 }

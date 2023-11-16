@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.admission.group.DeactivateGroupOrchestrator;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import org.apache.logging.log4j.LogManager;
 @Named("groupMgrBean")
 @SessionScoped
 public class GroupMgrBean implements Serializable {
+
     private String oldGroupName;
 
     private enum MODE {
@@ -69,6 +71,9 @@ public class GroupMgrBean implements Serializable {
     @Inject
     private DeactivateGroupOrchestrator deactivateOrchestrator;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private Group group;
     private transient Logger logger;
     private boolean nestedFlag;
@@ -93,8 +98,10 @@ public class GroupMgrBean implements Serializable {
      */
     @PostConstruct
     private void InitGroupMgrBean() {
+        loggingProfiler.profilerStart("GroupMgrBean Postcontructor");
         this.groupNameValidator = new GroupNameValidator(memberService);
         initGroup();
+        loggingProfiler.profilerStop("GroupMgrBean Postcontructor");
     }
 
     public void actionAddMembership(Member m) {
@@ -107,7 +114,7 @@ public class GroupMgrBean implements Serializable {
             initGroup();
             messagePresenter.info(GROUP_ADDED);
         } else {
-            messagePresenter.error(GROUP_INVALID_NAME); 
+            messagePresenter.error(GROUP_INVALID_NAME);
         }
         this.mode = MODE.READ;
 

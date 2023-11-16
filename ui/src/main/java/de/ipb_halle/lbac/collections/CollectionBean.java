@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -123,6 +124,9 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     @Inject
     protected TermVectorEntityService termVectorEntityService;
+    
+    @Inject
+    private LoggingProfiler loggingProfiler;
 
     @Override
     public void applyAclChanges() {
@@ -155,6 +159,8 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     @PostConstruct
     public void initCollectionBean() {
+        loggingProfiler.profilerStart("CollectionBean");
+
         this.mode = MODE.READ;
 
         collectionOperation = new CollectionOperation(
@@ -173,6 +179,9 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
         shownCollections = -1;
         initCollection();
+
+        loggingProfiler.profilerStop("CollectionBean");
+
     }
 
     public void refreshCollectionSearch() {
@@ -347,9 +356,13 @@ public class CollectionBean implements Serializable, ACObjectBean {
      * @param evt the LoginEvent scheduled by UserBean
      */
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("CollectionBean.setCurrentAccount");
+
         this.currentAccount = evt.getCurrentAccount();
         this.collectionOrchestrator.startCollectionSearch(this.collectionSearchState, this.currentAccount);
         initCollectionBean();
+        loggingProfiler.profilerStop("CollectionBean.setCurrentAccount");
+
     }
 
     public String getEditMode() {
