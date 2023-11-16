@@ -25,6 +25,32 @@ body{
     margin-bottom: 5rem !important;
 }
 
+body .ui-button.ui-button-icon-only {
+    width: 3.357rem ;
+    height: 22px ;
+    margin-right: 0.15em;
+}
+.ui-button-text ui-c{
+    padding:0;
+}
+
+.ui-button-text-only .ui-button-text {
+    padding:0;
+}
+
+/*Group Management the last column Tools has problems with height*/
+body .ui-datatable thead th{
+    height: 4.3rem !important;
+}
+
+body .ui-datatable .ui-datatable-data > tr > td {
+    padding:0.3em;
+}
+
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td, .ui-datatable tfoot th{
+    padding:0.3em ;
+}
+
 .ui-menubutton .ui-button{
     font-size: 1.5rem ;
 }
@@ -186,7 +212,7 @@ select.selCollection {
     overflow: hidden;
 }
 
-.upload-collection { 
+.upload-collection {
     width: 500px;
     overflow: hidden;
 }
@@ -531,8 +557,8 @@ select.selCollection {
     height:23px;
 }
 
-.advancedSearchButton i{ 
-    margin-left: -6px;   
+.advancedSearchButton i{
+    margin-left: -6px;
 }
 
 .advancedSearchPanel .ui-tabs-top{
@@ -550,15 +576,15 @@ select.selCollection {
 }
 
 .boldSelectBooleanCheckboxCaption > .form-group > .checkbox {
-	margin-top: 0px;
+    margin-top: 0px;
 }
 
 .boldSelectBooleanCheckboxCaption > .form-group > .checkbox > label {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .boldSelectBooleanCheckboxCaption > .form-group > .checkbox > label > input {
-	margin-top: 2px;
+    margin-top: 2px;
 }
 
 .advancedSearchHeader{
@@ -628,10 +654,10 @@ body.waiting * {
 }
 
 .borderlessButtonTable td{
-     border-width: 0px !important;
+    border-width: 0px !important;
 }
 .borderlessButtonTable tr{
-     border-width: 0px !important;
+    border-width: 0px !important;
 }
 
 .topAligned{
@@ -643,35 +669,32 @@ body.waiting * {
 }
 
 .wizardCreateAliquot .ui-wizard-content {
-	margin-top: 10px;
+    margin-top: 10px;
 }
 
 /*
  * linear gradients are from BootsFaces' messages/growl styles
  */
 .report-pending {
-	background-color: white;
+    background-color: white;
 }
 
 .report-busy {
-	background-image: linear-gradient(to bottom, #fcf8e3 0%, #f8efc0 100%);
+    background-image: linear-gradient(to bottom, #fcf8e3 0%, #f8efc0 100%);
 }
 
 .report-failed {
-	background-image: linear-gradient(to bottom, #f2dede 0%, #e7c3c3 100%);
+    background-image: linear-gradient(to bottom, #f2dede 0%, #e7c3c3 100%);
 }
 
 .report-completed {
-	background-image: linear-gradient(to bottom, #d9edf7 0%, #b9def0 100%);
+    background-image: linear-gradient(to bottom, #d9edf7 0%, #b9def0 100%);
 }
 
 .ui-datatable .ui-datatable-data{
     padding: 4px 10px !important;
 }
 h4{
-   text-align: center;
-   color: #2196f3;
-}
-#modalGroupDialog{
-    font-size: 2rem;
+    text-align: center;
+    color: #2196f3;
 }
