@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.entity.Node;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import net.bootsfaces.C;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
