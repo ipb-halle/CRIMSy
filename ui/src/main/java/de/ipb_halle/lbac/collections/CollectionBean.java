@@ -124,9 +124,9 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     @Inject
     protected TermVectorEntityService termVectorEntityService;
-    
+
     @Inject
-    private LoggingProfiler loggingProfiler;
+    protected LoggingProfiler loggingProfiler;
 
     @Override
     public void applyAclChanges() {

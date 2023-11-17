@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
@@ -32,7 +33,9 @@ import de.ipb_halle.lbac.service.FileService;
  */
 public class CollectionBeanMock extends CollectionBean {
 
-    
+    public CollectionBeanMock() {
+        this.loggingProfiler = new LoggingProfiler();
+    }
 
     public CollectionBeanMock setMemberService(MemberService service) {
         this.memberService = service;
