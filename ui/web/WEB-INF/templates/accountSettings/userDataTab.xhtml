@@ -34,8 +34,6 @@
                 <h:form id="accountChange" style="border:1px solid #029ACF;border-radius:3px;">
 
                     <p:panel header="#{msgs.admission_userProfile_editProfile}"
-                             collapsible="false"
-                             look="info"
                              styleClass="panelTitleInfoColor"
                              >
 
@@ -53,7 +51,6 @@
                                 <p:inputText id="ID"
                                              value="#{userBean.currentAccount.id}"
                                              label="ID"
-                                             renderLabel="true"
                                              disabled="true"
                                              placeholder=""
                                              required="false"
@@ -70,7 +67,6 @@
                                 <p:inputText id="name"
                                              value="#{userBean.currentAccount.name}"
                                              label="#{msgs.Name}"
-                                             renderLabel="true"
                                              placeholder="Username"
                                              disabled="true"
                                              style="width:100%;background:#dddddd;">
@@ -88,7 +84,6 @@
                                 <p:inputText id="login"
                                              value="#{userBean.currentAccount.login}"
                                              label="#{msgs.Login}"
-                                             renderLabel="true"
                                              placeholder="login name"
                                              disabled="true"
                                              style="width:100%;background:#dddddd;">
@@ -105,7 +100,6 @@
                                     id="shortcut"
                                     value="#{userBean.currentAccount.shortcut}"
                                     label="#{msgs.userMgr_shortcut}"
-                                    renderLabel="true"
                                     placeholder="#{msgs.userMgr_shortcut_placeholder}"
                                     disabled="true"
                                     style="width:100%;background:#dddddd;">
@@ -123,7 +117,6 @@
                                 <p:inputText id="email"
                                              value="#{userBean.currentAccount.email}"
                                              label="#{msgs.Email}"
-                                             renderLabel="true"
                                              type="email"
                                              required="false"
                                              style="width:100%;background:#dddddd;">
@@ -142,7 +135,6 @@
                                 <p:inputText id="phone"
                                              value="#{userBean.currentAccount.phone}"
                                              label="#{msgs.Phone}"
-                                             renderLabel="true"
                                              type="tel"
                                              required="false"
                                              style="width:100%;background:#dddddd;">

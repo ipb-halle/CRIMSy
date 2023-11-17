@@ -389,36 +389,34 @@
 
                                             <!-- Action-->
                                             <!--*****************************************************************************************-->
-                                            <p:column headerText="#{msgs.materialOverview_tableheader_actions}">
+                                            <p:column headerText="#{msgs.materialOverview_tableheader_actions}" style="">
 
                                                 <!-- ITEM EDITION-->
                                                 <!--*****************************************************************************************-->
-                                                <p:commandButton style="margin: 0.5rem; margin-right: 0;"
-                                                                 id="btnEdit"
-                                                                 icon="pi pi-pencil"
-                                                                 styleClass="ui-button-success"
-                                                                 type="submit"
-                                                                 process="@this"
-                                                                 update="@all"
-                                                                 ajax="true"
-                                                                 action="#{itemOverviewBean.actionStartItemEdit(item)}"
-                                                                 />
+                                                <p:commandButton 
+                                                    id="btnEdit"
+                                                    icon="pi pi-pencil"
+                                                    styleClass="ui-button-success"
+                                                    type="submit"
+                                                    process="@this"
+                                                    update="@all"
+                                                    ajax="true"
+                                                    action="#{itemOverviewBean.actionStartItemEdit(item)}"
+                                                    />
                                                 <p:tooltip for="btnEdit" value="Edit Item Settings" position="top"/>
 
                                                 <!-- GROUP PERMISSIONS-->
                                                 <!--*****************************************************************************************-->
-                                                <p:commandButton style="margin: 0.5rem; margin-right: 0;"
-                                                                 id="btnUser"
-                                                                 icon="pi pi-user"
-                                                                 ajax="true"
-                                                                 process="@this"
-                                                                 update="@(.mainPanel)"
-                                                                 type="submit"
-                                                                 oncomplete="PF('dlgAcl').show();"
-                                                                 disabled="#{itemOverviewBean.isEditDeactivated(item)}"
-                                                                 action="#{itemOverviewBean.actionStartAclChange(item)}"/>
-                                                <!--onclick="ajax:itemOverviewBean.actionStartAclChange(item)"-->
-                                                <!--tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"-->
+                                                <p:commandButton 
+                                                    id="btnUser"
+                                                    icon="pi pi-user"
+                                                    ajax="true"
+                                                    process="@this"
+                                                    update="@(.mainPanel)"
+                                                    type="submit"
+                                                    oncomplete="PF('dlgAcl').show();"
+                                                    disabled="#{itemOverviewBean.isEditDeactivated(item)}"
+                                                    action="#{itemOverviewBean.actionStartAclChange(item)}"/>
 
                                                 <p:tooltip for="btnUser" value="#{msgs.collMgr_tooltip_changeUserPermission}" position="top"/>
 
@@ -426,7 +424,6 @@
                                                 <!--*****************************************************************************************-->
                                                 <p:commandButton
                                                     id="btnFlask"
-                                                    style="margin: 0.5rem; margin-right: 0;"
                                                     icon="fa fa-flask"
                                                     styleClass="ui-button-danger"
                                                     process="@this"
@@ -435,7 +432,6 @@
                                                     disabled="#{createSolutionBean.isItemNotSoluble(item) or itemOverviewBean.isEditDeactivated(item)}"
                                                     action="#{createSolutionBean.actionStartCreateSolution(item)}"
                                                     />
-                                                    <!--tooltip="#{msgs.itemOverview_tooltip_createSolution}"-->
 
                                                 <p:tooltip for="btnFlask" value="#{msgs.itemOverview_tooltip_createSolution}" position="bottom"/>
 
@@ -443,7 +439,6 @@
                                                 <!--*****************************************************************************************-->
                                                 <p:commandButton
                                                     id="btnEyeDropper"
-                                                    style="margin: 0.5rem; margin-right: 0;"
                                                     icon="fa fa-eyedropper"
                                                     styleClass="ui-button-danger"
                                                     ajax="true"
@@ -453,7 +448,6 @@
                                                     disabled="#{itemOverviewBean.isEditDeactivated(item)}"
                                                     action="#{createAliquotBean.actionStartCreateAliquot(item)}"
                                                     />
-                                                    <!--tooltip="#{msgs.itemOverview_tooltip_createAliquot}"-->
 
                                                 <p:tooltip for="btnEyeDropper" value="#{msgs.itemOverview_tooltip_createAliquot}" position="bottom"/>
 
@@ -478,8 +472,6 @@
                                                 update="itemForm"
                                                 action="#{itemOverviewBean.actionFirstItems()}"
                                                 />
-                                            <!--styleClass="itemNavigationButton"-->
-                                            <!--onclick="ajax:itemOverviewBean.actionFirstItems();"-->
                                         </p:outputPanel>
 
                                         <p:outputPanel  styleClass="itemNavigationColumn">

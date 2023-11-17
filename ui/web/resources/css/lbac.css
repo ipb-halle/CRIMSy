@@ -39,9 +39,9 @@ body .ui-button.ui-button-icon-only {
 }
 
 /*Group Management the last column Tools has problems with height*/
-body .ui-datatable thead th{
+/*body .ui-datatable thead th{
     height: 4.3rem !important;
-}
+}*/
 
 body .ui-datatable .ui-datatable-data > tr > td {
     padding:0.3em;
