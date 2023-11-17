@@ -61,16 +61,15 @@ public class UserTimeZoneSettingsBean implements Serializable {
 
     @Inject
     private LoggingProfiler loggingProfiler;
-    
+
     private String pref = null;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    
     /* empty default constructor */
     public UserTimeZoneSettingsBean() {
     }
-    
+
     /**
      * Initializes the state of this bean: does nothing.
      */
@@ -93,6 +92,7 @@ public class UserTimeZoneSettingsBean implements Serializable {
         this.preferenceService = preferenceService;
         this.userBean = userBean;
         this.timeZonesBean = timeZonesBean;
+        this.loggingProfiler = new LoggingProfiler();
     }
 
     /**
