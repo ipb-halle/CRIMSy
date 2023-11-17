@@ -56,6 +56,10 @@ public class MaterialBeanMock extends MaterialBean {
 
     boolean rightToEdit = true;
 
+    public MaterialBeanMock() {
+
+    }
+
     public MaterialBeanMock(LoggingProfiler profiler) {
         this.loggingProfiler = profiler;
     }
