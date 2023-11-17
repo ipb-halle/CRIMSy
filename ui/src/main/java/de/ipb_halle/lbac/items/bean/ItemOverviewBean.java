@@ -95,20 +95,20 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     @Inject
     private transient MessagePresenter messagePresenter;
     @Inject
-    private LoggingProfiler loggingProfiler;
-    
+    protected LoggingProfiler loggingProfiler;
+
     private ACObjectController acObjectController;
     protected User currentUser;
     private int firstResult;
     private int itemAmount;
     private Item itemInFocus;
-    private ItemLocaliser itemLocaliser;
+    protected ItemLocaliser itemLocaliser;
     private SearchResult searchResult;
-    private SearchMaskValues searchMaskValues;
+    protected SearchMaskValues searchMaskValues;
 
     private Report selectedReport;
     private ReportType selectedReportType;
-   
+
     @PostConstruct
     public void init() {
         loggingProfiler.profilerStart("ItemOverviewBean");
