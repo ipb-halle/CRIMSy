@@ -399,6 +399,7 @@ public class TaxonomyTreeController implements Serializable {
     }
 
     public void initSelectionAndExpanseState() {
+        if(selectedTaxonomy==null ) {return;}
         idOfSelectedTaxonomy = ((Taxonomy) selectedTaxonomy.getData()).getId();
         expandedTreeNodes = getAllParents(selectedTaxonomy);
         expandTree();
