@@ -96,7 +96,7 @@ public class SearchBean implements Serializable {
 
     @Inject
     private MessagePresenter messagePresenter;
-    
+
     @Inject
     private LoggingProfiler loggingProfiler;
 
@@ -106,7 +106,7 @@ public class SearchBean implements Serializable {
      */
     public SearchBean() {
     }
-    
+
     /**
      * Constructor for tests
      *
@@ -118,6 +118,7 @@ public class SearchBean implements Serializable {
             SearchService searchService,
             User user,
             NodeService nodeService) {
+        this.loggingProfiler = new LoggingProfiler();
         this.searchService = searchService;
         setCurrentAccount(new LoginEvent(user));
         this.nodeService = nodeService;
