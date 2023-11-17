@@ -56,6 +56,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ReportMgrTest extends TestBase {
+
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -73,7 +74,7 @@ public class ReportMgrTest extends TestBase {
     private ManagedExecutorServiceMock managedExecutorService;
 
     @BeforeEach
-    private void before() {
+    void before() {
         managedExecutorService = new ManagedExecutorServiceMock();
         reportJobService.setManagedExecutorService(managedExecutorService);
     }
@@ -136,8 +137,7 @@ public class ReportMgrTest extends TestBase {
 
     private ReportJobPojo deserializeToReportJobPojo(byte[] bytes) {
         Object o = null;
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-                ObjectInputStream ois = new ObjectInputStream(bais)) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes); ObjectInputStream ois = new ObjectInputStream(bais)) {
             o = ois.readObject();
         } catch (ClassNotFoundException | IOException e) {
             throw new RuntimeException(e);
