@@ -74,14 +74,12 @@ public class ProjectBeanTest extends TestBase {
     private ACList adminOnlyAcl, publicAcl;
     private int project1Id, project2Id, project3Id;
 
-    
     @Test
     public void test001_reloadReadableProjects() {
         instance.reloadReadableProjects();
         Assert.assertEquals(2, instance.getReadableProjects().size());
     }
 
-   
     @Test
     public void test002_getReadableProjectById() {
         Assert.assertNotNull(instance.getReadableProjectById(project1Id));
@@ -117,11 +115,7 @@ public class ProjectBeanTest extends TestBase {
     @BeforeEach
     public void init() {
         this.publicUser = context.getPublicAccount();
-        instance = new ProjectBean();
-        instance.setProjectService(projectService);
-        instance.setMemberService(memberService);
-        instance.setAclistService(aclistService);
-
+      
         adminOnlyAcl = context.getAdminOnlyACL();
         publicAcl = GlobalAdmissionContext.getPublicReadACL();
         adminUser = context.getAdminAccount();
