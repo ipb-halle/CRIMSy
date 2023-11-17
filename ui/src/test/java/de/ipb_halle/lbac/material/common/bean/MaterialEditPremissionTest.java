@@ -76,7 +76,7 @@ public class MaterialEditPremissionTest extends TestBase {
     public void init() {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        materialBean = new MaterialBeanMock();
+        materialBean = new MaterialBeanMock(loggingProfiler);
         materialBean.setAcListService(aclistService);
         materialBean.setHazardService(hazardService);
         materialBean.setMessagePresenter(getMessagePresenterMock());

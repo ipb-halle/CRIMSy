@@ -32,7 +32,6 @@ import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -80,7 +79,7 @@ public class HistoryOperationStructureTest extends TestBase {
         d_20001220 = c.getTime();
         c.set(2000, 10, 20);
         d_20001020 = c.getTime();
-        materialBean = new MaterialBeanMock();
+        materialBean = new MaterialBeanMock(loggingProfiler);
         materialBean.setMessagePresenter(getMessagePresenterMock());
         s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();

@@ -51,6 +51,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
+
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -58,12 +59,6 @@ public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
     @Inject
     private TissueService tissueService;
 
-    /**
-     * Description: The material is created without a Hazard. After that the
-     * Hazard 'corrosive' is added and then at a later time the hazards
-     * 'irritant' and 'unhealthy' are added and 'corrosive' removed, h and
-     * p-statements are added.
-     */
     @Test
     public void test01_BioMaterialDifferenceOperations() {
         createMaterialEditState();

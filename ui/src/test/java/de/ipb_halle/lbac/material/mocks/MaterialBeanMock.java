@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
@@ -55,6 +56,10 @@ public class MaterialBeanMock extends MaterialBean {
 
     boolean rightToEdit = true;
 
+    public MaterialBeanMock(LoggingProfiler profiler) {
+        this.loggingProfiler = profiler;
+    }
+
     @PostConstruct
     private void initMock() {
         this.materialEditState = new MaterialEditState(messagePresenter);
@@ -69,7 +74,6 @@ public class MaterialBeanMock extends MaterialBean {
         this.messagePresenter = p;
         this.materialEditState = new MaterialEditState(messagePresenter);
     }
-
 
     public void setRightToEdit(boolean right) {
         this.rightToEdit = right;

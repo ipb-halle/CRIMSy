@@ -47,7 +47,6 @@ import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
@@ -85,8 +84,6 @@ public abstract class HistoryOperationTest extends TestBase {
     protected TissueService tissueService;
     @Inject
     protected ACListService aclistService;
-    @Inject
-    private LoggingProfiler loggingProfiler;
 
     protected List<IndexEntry> indices;
     protected BioMaterial biomaterial;
@@ -141,7 +138,7 @@ public abstract class HistoryOperationTest extends TestBase {
                 currentDate,
                 composition,
                 composition,
-                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), getMessagePresenterMock()),getMessagePresenterMock());
+                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), getMessagePresenterMock()), getMessagePresenterMock());
         mes.setCurrentVersiondate(d_20001220);
         return mes;
     }
@@ -198,7 +195,7 @@ public abstract class HistoryOperationTest extends TestBase {
     private MaterialBeanMock createMaterialBeanMock() {
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-        materialBeanMock = new MaterialBeanMock();
+        materialBeanMock = new MaterialBeanMock(loggingProfiler);
         materialBeanMock.setMessagePresenter(getMessagePresenterMock());
         materialBeanMock.setMaterialEditState(mes);
         materialBeanMock.setHazardService(hazardService);

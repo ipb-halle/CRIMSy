@@ -117,8 +117,8 @@ public class MaterialBean implements Serializable {
     protected TissueService tissueService;
 
     @Inject
-    private LoggingProfiler loggingProfiler;
-    
+    protected LoggingProfiler loggingProfiler;
+
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     protected MaterialType currentMaterialType = null;

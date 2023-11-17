@@ -40,8 +40,6 @@ import org.primefaces.model.TreeNode;
  */
 public class TaxonomyTreeController implements Serializable {
 
-    
- 
     private static final long serialVersionUID = 1L;
 
     private LoggingProfiler loggingProfiler;
@@ -83,6 +81,7 @@ public class TaxonomyTreeController implements Serializable {
             Taxonomy selectedTaxonomy,
             TaxonomyService taxonomyService,
             TaxonomyLevelController levelController) {
+        this.loggingProfiler = lp;
         this.idOfSelectedTaxonomy = selectedTaxonomy.getId();
         this.taxonomyService = taxonomyService;
         this.levelController = levelController;
@@ -399,7 +398,9 @@ public class TaxonomyTreeController implements Serializable {
     }
 
     public void initSelectionAndExpanseState() {
-        if(selectedTaxonomy==null ) {return;}
+        if (selectedTaxonomy == null) {
+            return;
+        }
         idOfSelectedTaxonomy = ((Taxonomy) selectedTaxonomy.getData()).getId();
         expandedTreeNodes = getAllParents(selectedTaxonomy);
         expandTree();

@@ -111,7 +111,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(10, false, "GHS05", 1));
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
-        MaterialBeanMock mock = new MaterialBeanMock();
+        MaterialBeanMock mock = new MaterialBeanMock(loggingProfiler);
         mock.setMaterialEditState(mes);
         mock.setHazardService(hazardService);
         instance = new HistoryOperation(mock);

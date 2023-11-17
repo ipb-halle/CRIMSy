@@ -31,17 +31,19 @@ import org.junit.jupiter.api.Test;
 
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  * @author fmauz
  */
 public class MaterialNameValidatorTest {
+
     private MaterialBeanMock materialBean;
     private MaterialNameValidator validator;
 
     @BeforeEach
     public void init() {
-        materialBean = new MaterialBeanMock();
+        materialBean = new MaterialBeanMock(new LoggingProfiler());
         materialBean.setMaterialNameBean(new MaterialNameBean());
 
         validator = new MaterialNameValidator();

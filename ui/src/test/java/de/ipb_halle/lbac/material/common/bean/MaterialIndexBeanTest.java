@@ -54,7 +54,7 @@ public class MaterialIndexBeanTest extends TestBase {
     public void init() {
         instance = new MaterialIndexBean();
         instance.setIndexService(indexServiceMock);
-        materialEditBeanMock = new MaterialBeanMock();
+        materialEditBeanMock = new MaterialBeanMock(loggingProfiler);
         materialEditBeanMock.setMode(MaterialBean.Mode.EDIT);
         instance.setMaterialEditBean(materialEditBeanMock);
         instance.init();
@@ -152,8 +152,8 @@ public class MaterialIndexBeanTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialIndexBeanTest.war")
-                  .addClass(IndexServiceMock.class)      ;
-         deployment = ItemDeployment.add(deployment);
+                        .addClass(IndexServiceMock.class);
+        deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
     }
