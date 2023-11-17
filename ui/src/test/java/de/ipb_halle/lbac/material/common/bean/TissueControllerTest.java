@@ -17,19 +17,45 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialBeanDeployment;
+import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import jakarta.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
  * @author fmauz
  */
-public class TissueControllerTest {
+@ExtendWith(PostgresqlContainerExtension.class)
+@ExtendWith(ArquillianExtension.class)
+public class TissueControllerTest extends TestBase {
+
+    @Inject
+    MaterialBean bean;
 
     @Test
     public void test001_visibilityOfTissueSelection() {
-        MaterialBean bean = new MaterialBean();
-        bean.init();
         Assert.assertFalse(bean.isTissueSelectionVisible());
+    }
+
+    @Deployment
+    public static WebArchive createDeployment() {
+        WebArchive deployment = prepareDeployment("MaterialCompositionBeanTest.war");
+        ItemDeployment.add(deployment);
+        UserBeanDeployment.add(deployment);
+        MaterialBeanDeployment.add(deployment);
+        MaterialDeployment.add(deployment);
+        return deployment.addClass(Navigator.class);
     }
 }
