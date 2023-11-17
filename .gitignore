@@ -21,3 +21,5 @@ ui/target
 # IntelliJ
 **/.idea
 /ui/nbproject/
+snowball/nb-configuration.xml
+nb-configuration.xml
