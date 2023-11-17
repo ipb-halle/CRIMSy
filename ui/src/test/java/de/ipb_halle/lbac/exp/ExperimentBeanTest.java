@@ -349,7 +349,14 @@ public class ExperimentBeanTest extends TestBase {
                 return "abc";
             }
         });
-        assertEquals("abc;PrimeFaces.oncomplete=function(xhr, status, args) { experimentBean.actionDoNothing(); return false; };", experimentBean.getSaveButtonOnClick());
+
+        assertEquals(
+                "abc;PrimeFaces.oncomplete=function(xhr, status, args) { experimentBean.actionDoNothing(); return false; };",
+                experimentBean.getSaveButtonOnClick()
+        );
+
+        throw new RuntimeException("We have to check in live mode what happens here");
+
     }
 
     @Test
