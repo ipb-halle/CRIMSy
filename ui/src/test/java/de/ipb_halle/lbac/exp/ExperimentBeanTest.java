@@ -349,20 +349,7 @@ public class ExperimentBeanTest extends TestBase {
                 return "abc";
             }
         });
-        assertEquals("abc;ajax:experimentBean.actionDoNothing();javascript:return false;", experimentBean.getSaveButtonOnClick());
-
-        experimentBean.setExpRecordController(new ExpRecordController(experimentBean) {
-            @Override
-            public ExpRecord getNewRecord() {
-                return null;
-            }
-
-            @Override
-            public String getSaveButtonOnClick() {
-                return "abc;";
-            }
-        });
-        assertEquals("abc;ajax:experimentBean.actionDoNothing();javascript:return false;", experimentBean.getSaveButtonOnClick());
+        assertEquals("abc;PrimeFaces.oncomplete=function(xhr, status, args) { experimentBean.actionDoNothing(); return false; };", experimentBean.getSaveButtonOnClick());
     }
 
     @Test
