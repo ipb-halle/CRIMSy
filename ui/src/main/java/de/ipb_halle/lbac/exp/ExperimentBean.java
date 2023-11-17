@@ -103,7 +103,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     protected ProjectService projectService;
 
     @Inject
-    private LoggingProfiler loggingProfiler;
+    protected LoggingProfiler loggingProfiler;
 
     private Experiment experiment;
 
@@ -956,4 +956,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public void setExperimentCodeSuffix(String suffix) {
         experimentCode.setSuffix(suffix);
     }
+
+    public ExperimentBean setLoggingProfiler(LoggingProfiler loggingProfiler) {
+        this.loggingProfiler = loggingProfiler;
+        return this;
+    }
+
 }
