@@ -43,7 +43,7 @@ public class ZoneIdDisplayWrapperTest {
                 ZoneId.of("UTC"));
         assertEquals("Coordinated Universal Time",
                 wrapper.getDisplayName(Locale.ENGLISH));
-        assertEquals("Koordinierte Universalzeit",
+        assertEquals("Koordinierte Weltzeit",
                 wrapper.getDisplayName(Locale.GERMAN));
 
         wrapper = new ZoneIdDisplayWrapper(ZoneId.of("Europe/Berlin"));

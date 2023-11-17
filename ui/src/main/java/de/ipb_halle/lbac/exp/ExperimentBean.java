@@ -104,7 +104,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     @Inject
     private LoggingProfiler loggingProfiler;
-    
+
     private Experiment experiment;
 
     private List<ExpRecord> expRecords;
@@ -157,6 +157,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             MessagePresenter messagePresenter,
             ExpRecordService expRecordService
     ) {
+        if (loggingProfiler == null) {
+            loggingProfiler = new LoggingProfiler();
+        }
         loggingProfiler.profilerStart("ExperimentBean Contructor");
 
         this.itemAgent = itemAgent;

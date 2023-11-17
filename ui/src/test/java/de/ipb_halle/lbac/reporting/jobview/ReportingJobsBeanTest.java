@@ -78,7 +78,7 @@ public class ReportingJobsBeanTest extends TestBase {
     }
 
     @BeforeEach
-    private void before() {
+    void before() {
         userBeanMock.setCurrentAccount(adminUser);
         sendFileBeanMock.reset();
     }
