@@ -63,8 +63,8 @@ public class UserPluginSettingsBean implements Serializable {
     private PreferenceService preferenceService;
 
     @Inject
-    private LoggingProfiler loggingProfiler;
-    
+    protected LoggingProfiler loggingProfiler;
+
     @Inject
     private UserBean userBean;
 
@@ -96,6 +96,7 @@ public class UserPluginSettingsBean implements Serializable {
         this.webXml = webXml;
         this.preferenceService = preferenceService;
         this.userBean = userBean;
+        this.loggingProfiler = new LoggingProfiler();
     }
 
     /**
