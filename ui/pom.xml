@@ -410,13 +410,6 @@
         <!-- According to https://github.com/TheCoder4eu/BootsFaces-OSP/issues/1189 
         there will be no official JakartaEE support BootsFaces, 
         i.e. we need to get rid of Bootsfaces -->
-        <dependency>
-            <groupId>net.bootsfaces</groupId>
-            <artifactId>bootsfaces</artifactId>
-            <version>1.6.0-JakartaEE</version>
-            <classifier>jakarta</classifier>
-            <scope>compile</scope>
-        </dependency>
 
         <!-- RTF ParserKit -->
         <dependency>
