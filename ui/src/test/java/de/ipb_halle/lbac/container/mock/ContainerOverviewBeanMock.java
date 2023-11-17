@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.container.bean.ContainerOverviewBean;
 import de.ipb_halle.lbac.container.bean.ContainerSearchMaskBean;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
@@ -35,6 +36,7 @@ public class ContainerOverviewBeanMock extends ContainerOverviewBean {
         this.callBackController = new CallBackControllerMock();
         this.validatorFactory = new ValidatorFactoryMock(containerService);
         this.containerService = containerService;
+        this.loggingProfiler = new LoggingProfiler();
     }
 
     public ContainerOverviewBeanMock setContainerService(ContainerService service) {

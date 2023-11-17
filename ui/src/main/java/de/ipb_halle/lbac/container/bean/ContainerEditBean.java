@@ -58,8 +58,8 @@ public class ContainerEditBean implements Serializable {
     protected ProjectService projectService;
 
     @Inject
-    private LoggingProfiler loggingProfiler;
-    
+    protected LoggingProfiler loggingProfiler;
+
     private Integer containerHeight;
     private Container containerLocation;
     private Container containerToCreate = new Container();
@@ -72,7 +72,7 @@ public class ContainerEditBean implements Serializable {
     protected final List<String> gmoSafetyLevels = new ArrayList<>();
     private String preferredProjectName;
     protected ContainerLocalizer localizer;
-    
+
     @PostConstruct
     public void init() {
         loggingProfiler.profilerStart("ContainerEditBean");

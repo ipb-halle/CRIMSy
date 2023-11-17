@@ -46,8 +46,8 @@ import org.primefaces.event.SelectEvent;
 public class ContainerSearchMaskBean implements Serializable {
 
     @Inject
-    private LoggingProfiler loggingProfiler;
-    
+    protected LoggingProfiler loggingProfiler;
+
     private String containerSearchName;
     private String containerSearchId;
     private String searchProject;

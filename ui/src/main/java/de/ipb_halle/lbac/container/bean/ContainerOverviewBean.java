@@ -65,8 +65,8 @@ public class ContainerOverviewBean implements Serializable {
     protected ContainerSearchMaskBean searchMaskBean;
 
     @Inject
-    private LoggingProfiler loggingProfiler;
-    
+    protected LoggingProfiler loggingProfiler;
+
     private User currentUser;
     private Mode mode;
     private List<Container> readableContainer = new ArrayList<>();

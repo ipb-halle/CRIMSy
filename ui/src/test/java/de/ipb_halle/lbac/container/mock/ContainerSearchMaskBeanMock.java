@@ -21,12 +21,17 @@ import de.ipb_halle.lbac.container.bean.ContainerOverviewBean;
 import de.ipb_halle.lbac.container.bean.ContainerSearchMaskBean;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
  * @author fmauz
  */
 public class ContainerSearchMaskBeanMock extends ContainerSearchMaskBean {
+
+    public ContainerSearchMaskBeanMock() {
+        this.loggingProfiler = new LoggingProfiler();
+    }
 
     public ContainerSearchMaskBeanMock setContainerOverviewBean(ContainerOverviewBean bean) {
         this.overviewBean = bean;
