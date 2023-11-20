@@ -22,9 +22,10 @@ package de.ipb_halle.lbac.collections;
  * collection managment
  */
 import de.ipb_halle.lbac.admission.ACObjectEntity;
-import de.ipb_halle.lbac.search.lang.AttributeTag;
-import de.ipb_halle.lbac.search.lang.AttributeType;
+
 import jakarta.validation.constraints.Size;
+import de.ipb_halle.crimsy_api.AttributeTag;
+import de.ipb_halle.crimsy_api.AttributeType;
 import java.io.Serializable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

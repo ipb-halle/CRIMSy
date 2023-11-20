@@ -25,9 +25,7 @@ import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.group.mock.DeactivateGroupWebClientMock;
 import de.ipb_halle.lbac.admission.group.mock.DeactivateGroupWebServiceMock;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -71,9 +69,7 @@ public class DeactivateGroupOrchestratorTest extends TestBase {
                 .addClass(DeactivateGroupWebClientMock.class)
                 .addClass(Updater.class)
                 .addClass(KeyManager.class)
-                .addClass(DeactivateGroupOrchestrator.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class);
+                .addClass(DeactivateGroupOrchestrator.class);
     }
 
     private Group createGroup() {

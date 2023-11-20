@@ -30,10 +30,17 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>agency-api</module>
+        <module>crimsy-test</module>
+        <module>crimsy-api</module>
+        <module>crimsy-job-api</module>
+        <module>crimsy-job-storage</module>
         <module>agency</module>
         <module>snowball</module>
         <module>tx</module>
+        <module>kx-api</module>
+        <module>kx-web</module>
+        <module>reporting-api</module>
+        <module>reporting</module>
         <module>ui</module>
     </modules>
 

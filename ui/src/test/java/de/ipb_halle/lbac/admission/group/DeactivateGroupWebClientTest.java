@@ -24,9 +24,7 @@ import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.group.mock.DeactivateGroupWebServiceMock;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -86,9 +84,7 @@ public class DeactivateGroupWebClientTest extends TestBase {
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(DeactivateGroupWebServiceMock.class)
                 .addClass(Updater.class)
-                .addClass(KeyManager.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class);
+                .addClass(KeyManager.class);
     }
 
     private Group createGroup() {

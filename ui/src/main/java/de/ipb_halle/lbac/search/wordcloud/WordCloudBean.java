@@ -17,17 +17,17 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import de.ipb_halle.kx.termvector.TermFrequency;
+import de.ipb_halle.kx.termvector.TermFrequencyList;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.search.document.Document;
-import de.ipb_halle.lbac.file.TermFrequency;
-import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchState;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import jakarta.annotation.PostConstruct;
@@ -86,7 +86,7 @@ public class WordCloudBean implements Serializable {
     private CollectionBean collectionBean;
 
     @Inject
-    private TermVectorEntityService termVectorService;
+    private TermVectorService termVectorService;
 
     @Inject
     private WordCloudWebClient tempClient;
@@ -437,5 +437,10 @@ public class WordCloudBean implements Serializable {
 
     public List<String> getTagsAsList() {
         return new ArrayList<>(tagList);
+    }  
+
+    // for injecting of mock objects during test 
+    protected DocumentSearchService getDocumentSearchService() {
+        return searchService;
     }
 }

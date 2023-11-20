@@ -17,37 +17,35 @@
  */
 package de.ipb_halle.lbac.device.print;
 
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import static org.junit.Assert.assertEquals;
+
+import de.ipb_halle.job.JobService;
+import de.ipb_halle.job.JobStatus;
+import de.ipb_halle.job.JobType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.device.job.Job;
-import de.ipb_halle.lbac.device.job.JobService;
-import de.ipb_halle.lbac.device.job.JobStatus;
-import de.ipb_halle.lbac.device.job.JobType;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.device.job.PrintJob;
+import de.ipb_halle.lbac.device.job.PrintJobService;
 import de.ipb_halle.lbac.util.pref.Preference;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Inject;
-
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * This test class covers substantial code portions of the job, label and
@@ -64,7 +62,7 @@ public class PrinterTest extends TestBase {
     private PrintBean printBean;
 
     @Inject
-    private JobService jobService;
+    private PrintJobService jobService;
 
     @Inject
     private LabelService labelService;
@@ -173,7 +171,7 @@ public class PrinterTest extends TestBase {
         cmap.put(JobService.CONDITION_QUEUE, queue);
         cmap.put(JobService.CONDITION_STATUS, JobStatus.PENDING);
         cmap.put(JobService.CONDITION_JOBTYPE, JobType.PRINT);
-        List<Job> jobs = this.jobService.loadJobs(cmap);
+        List<PrintJob> jobs = this.jobService.loadJobs(cmap);
 
         assertEquals("testPrinting() active job count", 1, jobs.size());
         assertEquals("testPrinting() job queue", queue, jobs.get(0).getQueue());

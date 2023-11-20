@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.globals.health;
 
+import static de.ipb_halle.job.JobService.SETTING_JOB_SECRET;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.Node;
@@ -82,6 +83,7 @@ public class HealthStateCheck {
     public HealthState checkHealthState() {
         checkDbState();
         checkFileSystemState();
+        checkJobSecret();
         checkPublicCollectionSync();
         checkSyncOfLocalCollections();
         checkRootTaxonomy();
@@ -130,6 +132,16 @@ public class HealthStateCheck {
             healthState.publicCollectionFileState = HealthState.State.OK;
         }
 
+    }
+
+    private void checkJobSecret() {
+        try {
+            if (infoObjectService.loadByKey(SETTING_JOB_SECRET).getValue() != null) {;
+                healthState.jobSecretState = HealthState.State.OK;
+            }
+        } catch (Exception e) {
+            healthState.jobSecretState = HealthState.State.FAILED;
+        }
     }
 
     private void checkRootTaxonomy() {
@@ -204,6 +216,7 @@ public class HealthStateCheck {
 
         logger.info(String.format("* local public collection in db: %s", healthState.publicCollectionDbState));
         logger.info(String.format("* local public collection in sync with file: %s", healthState.publicCollectionFileState));
+        logger.info(String.format("* job secret configured: %s", healthState.jobSecretState));
 
         boolean publicColInSync = healthState.publicCollectionFileSyncState == State.OK;
         logger.info(String.format("* local public collection sync check: %sOK", publicColInSync ? "" : "NOT "));

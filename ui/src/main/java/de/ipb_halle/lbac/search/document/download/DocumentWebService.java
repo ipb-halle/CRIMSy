@@ -17,6 +17,18 @@
  */
 package de.ipb_halle.lbac.search.document.download;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.webservice.service.LbacWebService;
+import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
+
 import java.io.File;
 import java.io.InputStream;
 
@@ -32,17 +44,6 @@ import jakarta.ws.rs.core.Response.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.FileObject;
-import de.ipb_halle.lbac.webservice.service.LbacWebService;
-import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
-
 /**
  * Webservice for download of documents.
  * 
@@ -56,7 +57,10 @@ public class DocumentWebService extends LbacWebService {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Inject
-    private FileEntityService fileEntityService;
+    private FileObjectService fileObjectService;
+    
+    @Inject
+    private CollectionService collectionService;
 
     @Inject
     private ACListService acListService;
@@ -81,12 +85,12 @@ public class DocumentWebService extends LbacWebService {
             return FORBIDDEN;
         }
 
-        FileObject fileObject = fileEntityService.getFileEntity(request.getFileObjectId());
+        FileObject fileObject = fileObjectService.loadFileObjectById(request.getFileObjectId());
         if ((fileObject == null) || (fileObject.getFileLocation() == null)) {
             return FILE_NOT_FOUND;
         }
 
-        Collection collection = (Collection) fileObject.getCollection();
+        Collection collection = collectionService.loadById(fileObject.getCollectionId());
         User localUser = memberService.mapRemoteUserToLocalUser(request.getUser(), node);
         if (!acListService.isPermitted(ACPermission.permREAD, collection, localUser)) {
             return FORBIDDEN;

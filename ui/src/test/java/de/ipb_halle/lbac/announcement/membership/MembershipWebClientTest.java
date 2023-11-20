@@ -26,9 +26,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -62,10 +60,7 @@ public class MembershipWebClientTest extends TestBase {
                 .addClass(WebRequestAuthenticator.class)
                 .addPackage(MembershipWebServiceMock.class.getPackage())
                 .addClass(Updater.class)
-                .addClass(KeyManager.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class);
-        
+                .addClass(KeyManager.class);
     }
     
     @Inject

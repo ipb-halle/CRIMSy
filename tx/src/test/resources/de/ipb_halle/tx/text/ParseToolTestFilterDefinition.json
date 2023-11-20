@@ -1,0 +1,12 @@
+{
+    "comment": "very basic filter chain to count words in a document",
+    "type": "FilterDriver",
+    "chains": [{
+            "comment": "First chain",
+            "chain": [{
+                    "type": "WordDetectorFilter"
+                }]
+        } 
+    ]
+}
+

@@ -17,13 +17,13 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
+import de.ipb_halle.kx.file.AttachmentHolder;
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.UploadToCol;
-import de.ipb_halle.lbac.file.save.AttachmentHolder;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.InputStream;
 import jakarta.servlet.AsyncContext;
 
@@ -36,14 +36,12 @@ public class UploadToColMock extends UploadToCol {
     protected String fileBaseFolder;
 
     public UploadToColMock(
-            InputStream filterDefinition,
-            FileEntityService fileEntityService,
+            FileObjectService fileObjectService,
             User user,
             AsyncContext asyncContext,
             CollectionService collectionService,
-            TermVectorEntityService termVectorService,
             String fileBaseFolder) {
-        super(filterDefinition, fileEntityService, user, asyncContext, collectionService, termVectorService);
+        super(fileObjectService, user, asyncContext, collectionService);
         this.fileBaseFolder = fileBaseFolder;
     }
 

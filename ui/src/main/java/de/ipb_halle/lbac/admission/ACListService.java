@@ -29,7 +29,7 @@ package de.ipb_halle.lbac.admission;
  */
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.search.lang.Attribute;
-import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.crimsy_api.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;

@@ -50,21 +50,21 @@
                 <p:dataTable
                     id="reportingJobsTableId"
                     value="#{reportingJobsBean.reportingJobs}"
-                    var="jobWrapper"
-                    rowStyleClass="#{jobWrapper.rowStyleClass}">
+                    var="job"
+                    rowStyleClass="#{job.rowStyleClass}">
 
                     <!--Submission date-->
                     <!--********************************************************-->
                     <p:column
                         headerText="#{msgs.myReports_tableheader_submissionDate}"
-                        sortBy="#{jobWrapper.job.jobdate}"
+                        sortBy="#{job.jobdate}"
                         sortOrder="descending">
 
                         <h:outputFormat
                             value="{0} ({1})">
                             <f:param value="#{nwc:formatDateWithTimezone(jobWrapper.job.jobdate)}" />
                             <f:param
-                                value="#{jobWrapper.job.jobdate}"
+                                value="#{job.jobdate}"
                                 />
                             <!--converter="org.ocpsoft.PrettyTimeConverter"-->
                         </h:outputFormat>
@@ -74,7 +74,7 @@
                     <!--Status-->
                     <!--********************************************************-->
                     <p:column headerText="#{msgs.myReports_tableheader_status}">
-                        <h:outputText value="#{reportingJobsBean.getJobStatusI18n(jobWrapper)}" />
+                        <h:outputText value="#{reportingJobsBean.getJobStatusI18n(job)}" />
                     </p:column>
 
                     <!--Tools-->
@@ -88,8 +88,8 @@
                         <p:commandButton
                             ajax="false"
                             style="margin: 0 0.5rem;"
-                            action="#{reportingJobsBean.actionDownloadReport(jobWrapper)}"
-                            rendered="#{jobWrapper.downloadable}"
+                            action="#{reportingJobsBean.actionDownloadReport(job)}"
+                            rendered="#{job.downloadable}"
                             icon="pi pi-download"
                             styleClass="ui-button-link" />
 
@@ -100,8 +100,8 @@
                             style="margin: 0 0.5rem;"
                             process="@this"
                             update="reportingJobsTableId"
-                            action="#{reportingJobsBean.actionDeleteReport(jobWrapper)}"
-                            rendered="#{jobWrapper.deleteable}"
+                            action="#{reportingJobsBean.actionDeleteReport(job)}"
+                            rendered="#{job.deleteable}"
                             icon="pi pi-trash"
                             styleClass="ui-button-danger" />
                     </p:column>
@@ -109,5 +109,4 @@
             </h:form>
         </ui:composition>
     </h:body>
-
 </html>

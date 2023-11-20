@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
@@ -24,9 +25,7 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.exp.ExperimentDeployment;
@@ -69,12 +68,11 @@ public class CollectionPermissionAnalyserTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("CollectionPermissionAnalyserTest.war")
                 .addClass(FileService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(Navigator.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(Updater.class)
-                .addClass(TermVectorEntityService.class)
                 .addClass(SearchService.class)
                 .addClass(ProjectService.class)
                 .addClass(ExperimentService.class)

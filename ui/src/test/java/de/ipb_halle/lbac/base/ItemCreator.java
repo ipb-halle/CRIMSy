@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.base;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.test.EntityManagerService;
 import java.util.UUID;
 
 /**

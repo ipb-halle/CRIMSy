@@ -855,7 +855,7 @@ UPDATE=''
 UPDATE_CMD='container'
 WAKE=''
 
-GETOPT=$(getopt -o 'b:H:hj:n:p:R:rS:stu:w:' --longoptions 'branch-file:hostlist:,help,jobs:,node:,pause:,restore:,runTests,snapshot:,setup,teardown,update:wake:' -n 'testSetup.sh' -- "$@")
+GETOPT=$(getopt -o 'b:H:hj:n:p:R:rS:stu:w:' --longoptions 'branch-file:,hostlist:,help,jobs:,node:,pause:,restore:,runTests,snapshot:,setup,teardown,update:wake:' -n 'testSetup.sh' -- "$@")
 
 if [ $? -ne 0 ]; then
         echo 'Error in commandline evaluation. Terminating...' >&2

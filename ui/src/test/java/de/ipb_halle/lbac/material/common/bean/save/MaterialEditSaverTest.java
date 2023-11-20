@@ -17,41 +17,24 @@
  */
 package de.ipb_halle.lbac.material.common.bean.save;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.collections.CollectionOrchestrator;
-import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageCondition;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
-import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
@@ -109,8 +92,8 @@ public class MaterialEditSaverTest extends TestBase {
         projectService.saveProjectToDb(p);
         mOld = creationTools.createEmptyStructure(p.getId());
         mOld.getStorageInformation().setStorageClass(new StorageClass(1, "storageClass-1"));
-      
-      
+
+
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
     }
 
@@ -149,7 +132,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertEquals("Testcase 001 - Second new condition must be acid sensitive", (Integer) StorageCondition.acidSensitive.getId(), newStorageConditions.get(1));
         Assert.assertEquals("Testcase 001 - Third new condition must be keep cool", (Integer) StorageCondition.keepCool.getId(), newStorageConditions.get(2));
 
-        // Check the history of the storage classes 
+        // Check the history of the storage classes
         List<Object[]> storageClassHist = (List) entityManagerService.doSqlQuery("select description_old,description_new,storageclass_old, storageclass_new from storages_hist where id=" + mNew.getId());
         Assert.assertTrue("Testcase 001 - history of storageclass must not be empty", !storageClassHist.isEmpty());
         Assert.assertNull("Testcase 001 - old remarks of storage class must be null", storageClassHist.get(0)[0]);
@@ -188,7 +171,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertEquals("Testcase 002 - First new condition must be light sensitive", (Integer) StorageCondition.lightSensitive.getId(), newStorageConditions.get(0));
         Assert.assertEquals("Testcase 002 - Second new condition must be acid sensitive", (Integer) StorageCondition.acidSensitive.getId(), newStorageConditions.get(1));
 
-        // Check the history of the storage classes 
+        // Check the history of the storage classes
         List<Object[]> storageClassHist = (List) entityManagerService.doSqlQuery("select description_old,description_new,storageclass_old, storageclass_new from storages_hist where id=" + mNew.getId());
         Assert.assertTrue("Testcase 002 - history of storageclass must  be empty", storageClassHist.isEmpty());
 

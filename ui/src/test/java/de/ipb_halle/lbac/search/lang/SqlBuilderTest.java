@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import de.ipb_halle.crimsy_api.AttributeType;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.NodeEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;

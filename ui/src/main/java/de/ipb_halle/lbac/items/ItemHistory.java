@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.items;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.entity.ItemHistoryEntity;
 import de.ipb_halle.lbac.material.common.history.HistoryEntityId;

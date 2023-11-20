@@ -64,9 +64,6 @@ public class Updater {
 
     /**
      * initalize the update timer.
-     * <p>
-     * xxxxx ToDo: Timer configuration possibly should come from a properties
-     * file (or be otherwise configurable).
      */
     @PostConstruct
     public void postConstruct() {

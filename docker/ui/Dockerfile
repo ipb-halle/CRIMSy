@@ -27,6 +27,8 @@ COPY setup.sh /
 #
 COPY extralib /usr/local/tomee/extralib
 COPY ui.war /usr/local/tomee/webapps/
+COPY kx-web.war /usr/local/tomee/webapps/
+COPY reporting.war /usr/local/tomee/webapps/
 COPY logpurge.sh /usr/local/bin/
 COPY tomcat-users.xml /usr/local/tomee/conf/
 COPY tomee.xml /usr/local/tomee/conf/

@@ -17,12 +17,24 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.search.document.StemmedWordGroup;
-import de.ipb_halle.tx.text.ParseTool;
-import de.ipb_halle.tx.text.TextRecord;
-import de.ipb_halle.tx.text.properties.Language;
-import de.ipb_halle.tx.text.properties.TextProperty;
-import de.ipb_halle.tx.text.properties.Word;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 
 /**
  *
@@ -30,27 +42,31 @@ import de.ipb_halle.tx.text.properties.Word;
  */
 public class SearchQueryStemmer {
 
-    protected String filterDefinition = "queryParserFilterDefinition.json";
+    private final String baseURL = "http://localhost:8080/kx-web/";
+    private final Logger logger = LogManager.getLogger(SearchQueryStemmer.class.getName());
 
-    public StemmedWordGroup stemmQuery(String queryString) {
-        StemmedWordGroup back = new StemmedWordGroup();
-        TextRecord tr = new TextRecord(queryString);
-        int rank = 0;
-        for (String lang : new String[]{"en", "de", "fr", "es", "pt"}) {
-            tr.addProperty(new Language(0, queryString.length(), lang, rank));
-            rank++;
-        }
-        ParseTool pt = new ParseTool();
-        pt.setFilterDefinition(getClass().getResourceAsStream(filterDefinition));
-        pt.initFilter();
-        tr = pt.parseSingleTextRecord(tr);
-        for (TextProperty prop : tr.getProperties(Word.TYPE)) {
-            Word w = (Word) prop;
-            String wStr = queryString.substring(w.getStart(), w.getEnd());
-            if (wStr.trim().length() > 0) {
-                back.addStemmedWord(wStr, w.getStemSet());
+    public Set<String> stemmQuery(String queryString) {
+        return new HashSet<> (Arrays.asList(doRequest(queryString).trim().split(" ")));
+    } 
+
+    private String doRequest(String query) {
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {;
+            HttpPost post = new HttpPost(
+                    new URL(new URL(baseURL), "query").toExternalForm());
+
+            HttpEntity entity = new ByteArrayEntity(query.getBytes("UTF-8"));
+            post.setEntity(entity);
+            HttpResponse response = client.execute(post);
+            String result = EntityUtils.toString(response.getEntity());
+
+            int httpStatus = response.getStatusLine().getStatusCode();
+            if (httpStatus != HttpStatus.SC_OK) {
+                throw new Exception(String.format("Unexpected HTTP status: %d", httpStatus));
             }
+            return result;
+        } catch (Exception e) {
+            logger.warn("doRequest caught an exception: ", (Throwable) e);
         }
-        return back;
+        return "";
     }
 }

@@ -23,8 +23,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.device.job.Job;
-import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.lbac.device.job.PrintJob;
+import de.ipb_halle.lbac.device.job.PrintJobService;
 import de.ipb_halle.lbac.util.HexUtil;
 import de.ipb_halle.lbac.util.pref.Preference;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
@@ -131,7 +131,7 @@ public class PrintBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private JobService jobService;
+    private PrintJobService printJobService;
 
     @Inject
     private PrinterService printerService;
@@ -576,8 +576,8 @@ public class PrintBean implements Serializable {
      * submit a job for printing
      */
     private void submitJob(PrintDriver driver) {
-        Job job = driver.createJob();
-        job.setOwner(userBean.getCurrentAccount());
-        this.jobService.saveJob(job);
+        PrintJob printJob = driver.createJob();
+        printJob.setOwner(userBean.getCurrentAccount());
+        this.printJobService.saveJob(printJob);
     }
 }

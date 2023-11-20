@@ -17,12 +17,11 @@
  */
 package de.ipb_halle.lbac.search.relevance;
 
+import de.ipb_halle.kx.termvector.TermFrequency;
+import de.ipb_halle.kx.termvector.TermFrequencyList;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.file.TermFrequency;
-import de.ipb_halle.lbac.file.TermFrequencyList;
-import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -47,10 +46,7 @@ public class RelevanceCalculatorTest {
      */
     @Test
     public void calculateRelevanceFactorsTest() {
-        instance = new RelevanceCalculator(Arrays.asList("java"));
-        StemmedWordGroup normalizedTerms = new StemmedWordGroup();
-        normalizedTerms.addStemmedWord("java", new HashSet<>(Arrays.asList("java","jav")));
-        instance.setSearchTerms(normalizedTerms);
+        instance = new RelevanceCalculator(new HashSet<>(Arrays.asList("java","jav")));
         int totalDocsInFirstIteration = 10;
         double averageWordsInCollection = 55;
 

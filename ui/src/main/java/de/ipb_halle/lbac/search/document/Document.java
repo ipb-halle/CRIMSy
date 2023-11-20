@@ -20,11 +20,10 @@ package de.ipb_halle.lbac.search.document;
 /**
  * This class stores information about a document.
  */
-import de.ipb_halle.lbac.file.TermFrequencyList;
-import de.ipb_halle.lbac.file.TermFrequency;
+import de.ipb_halle.kx.termvector.TermFrequencyList;
+import de.ipb_halle.kx.termvector.TermFrequency;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.bean.Type;

@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.collections.CollectionService;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,7 +42,6 @@ public class FileUploadWebService extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
     private final static long UPLOAD_TIMEOUT = 30L * 60L * 1000L;
-    private final String FILTER_DEFINITION = "fileParserFilterDefinition.json";
 
     private final Logger logger = LogManager.getLogger(FileUploadWebService.class);
 
@@ -50,10 +49,7 @@ public class FileUploadWebService extends HttpServlet {
     private CollectionService collectionService;
 
     @Inject
-    private FileEntityService fileEntityService;
-
-    @Inject
-    private TermVectorEntityService termVectorEntityService;
+    private FileObjectService fileObjectService;
 
     @Inject
     private UserBean userBean;
@@ -68,12 +64,10 @@ public class FileUploadWebService extends HttpServlet {
             asyncContext.setTimeout(UPLOAD_TIMEOUT);
 
             asyncContext.start(new UploadToCol(
-                    this.getClass().getResourceAsStream(FILTER_DEFINITION),
-                    fileEntityService,
+                    fileObjectService,
                     userBean.getCurrentAccount(),
                     asyncContext,
-                    collectionService,
-                    termVectorEntityService));
+                    collectionService));
         } catch (Exception e) {
             logger.error("doPost() caught an exception:", (Throwable) e);
             if (asyncContext != null) {

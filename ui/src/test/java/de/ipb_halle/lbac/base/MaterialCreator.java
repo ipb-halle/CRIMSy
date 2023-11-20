@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.base;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.test.EntityManagerService;
 
 /**
  *

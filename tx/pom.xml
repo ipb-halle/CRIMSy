@@ -17,24 +17,28 @@
  
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
  http://maven.apache.org/xsd/maven-4.0.0.xsd">
- <modelVersion>4.0.0</modelVersion>
- 
- <groupId>de.ipb-halle</groupId>
- <artifactId>tx</artifactId>
- <version>1.1</version>
- <packaging>jar</packaging>
- 
- <name>tx</name>
- <url>http://www.ipb-halle.de</url>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.ipb-halle</groupId>
+    <artifactId>tx</artifactId>
+    <version>1.0.1</version>
+    <name>tx</name>
+    <url>http://www.ipb-halle.de</url>
+
+    <scm>
+        <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
+        <url>https://github.com/ipb-halle/CRIMSy.git</url>
+    </scm>
+    <packaging>jar</packaging>
+
  
  <properties>
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    <!-- check Maven Central for latest versions! -->
    <!-- <tika.version>2.7.0</tika.version> -->
-   <tika.version>1.27</tika.version>
+   <tika.version>1.28.3</tika.version>
  </properties>
 
  <!-- define (additional) repositories -->

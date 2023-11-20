@@ -152,8 +152,7 @@ public class SearchFilter {
     }
 
     private SearchRequest createDocumentRequest() {
-        SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
-        Set<String> normalizedTerms = searchQueryStemmer.stemmQuery(searchTerms.toLowerCase()).getAllStemmedWords();
+        Set<String> normalizedTerms = new SearchQueryStemmer().stemmQuery(searchTerms);
         DocumentSearchRequestBuilder docBuilder = new DocumentSearchRequestBuilder(user, 0, maxresults);
         docBuilder.setWordRoots(normalizedTerms);
         return docBuilder.build();

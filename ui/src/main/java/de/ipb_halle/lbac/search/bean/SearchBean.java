@@ -30,23 +30,24 @@ import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchOrchestrator;
+import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.document.Document;
-import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.performance.LoggingProfiler;
-import jakarta.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.Set;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,9 +70,8 @@ public class SearchBean implements Serializable {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     protected List<NetObject> shownObjects = new ArrayList<>();
     protected SearchFilter searchFilter;
-    protected RelevanceCalculator relevanceCalculator = new RelevanceCalculator(new ArrayList<>());
+    protected RelevanceCalculator relevanceCalculator = new RelevanceCalculator(new HashSet<>());
     protected User currentUser;
-    StemmedWordGroup normalizedTerms;
 
     @Inject
     private MaterialOverviewBean materialBean;
@@ -182,7 +182,8 @@ public class SearchBean implements Serializable {
 
     public void actionTriggerSearch() {
         shownObjects.clear();
-        relevanceCalculator = new RelevanceCalculator(parseSearchTerms());
+        Set<String> terms = new SearchQueryStemmer().stemmQuery(searchFilter.getSearchTerms());
+        relevanceCalculator = new RelevanceCalculator(terms);
         searchState = doSearch();
         actionAddFoundObjectsToShownObjects();
     }
@@ -201,20 +202,6 @@ public class SearchBean implements Serializable {
         orchestrator.startRemoteSearch(searchState, currentUser, searchFilter.createRequests());
 
         return searchState;
-    }
-
-    private List<String> parseSearchTerms() {
-        List<String> back = new ArrayList<>();
-        if (searchFilter.getSearchTerms() != null) {
-            back = Arrays.asList(searchFilter.getSearchTerms()
-                    .toLowerCase()
-                    .replace("(", "")
-                    .replace(")", "")
-                    .replace(" or ", " ")
-                    .trim()
-                    .split(" "));
-        }
-        return back;
     }
 
     public SearchFilter getSearchFilter() {

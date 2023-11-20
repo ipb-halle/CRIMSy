@@ -31,9 +31,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.reporting.report.Report;
-import de.ipb_halle.lbac.reporting.report.ReportMgr;
-import de.ipb_halle.lbac.reporting.report.ReportType;
+import de.ipb_halle.lbac.reporting.ReportMgr;
 import de.ipb_halle.lbac.util.resources.ResourceLocation;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.MessagePresenter;
@@ -42,6 +40,8 @@ import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.util.NonEmpty;
 import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import de.ipb_halle.reporting.Report;
+import de.ipb_halle.reporting.ReportType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,7 +56,6 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

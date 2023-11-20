@@ -18,10 +18,12 @@
 package de.ipb_halle.lbac.globals.health;
 
 import de.ipb_halle.lbac.admission.ACList;
-import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.entity.InfoObject;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.FileService;
+import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
@@ -34,8 +36,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+
+import static de.ipb_halle.job.JobService.SETTING_JOB_SECRET;
 
 /**
  * Tries to repair some discrepancies found by the healtcheck procedere
@@ -50,6 +55,8 @@ public class HealthStateRepair {
     private HealthState healthState;
     private Node localNode;
     private CollectionService collectionService;
+    private InfoObjectService infoObjectService;
+    private ACList adminOnlyAcl;
     private ACList publicReadAcl;
     private User adminAccount;
     private FileService fileService;
@@ -59,6 +66,8 @@ public class HealthStateRepair {
             HealthState healthState,
             Node localNode,
             CollectionService collectionService,
+            InfoObjectService infoObjectService,
+            ACList adminOnlyAcl,
             ACList publicReadAcl,
             User adminAccount,
             FileService fileService,
@@ -68,6 +77,8 @@ public class HealthStateRepair {
         this.healthState = healthState;
         this.localNode = localNode;
         this.collectionService = collectionService;
+        this.infoObjectService = infoObjectService;
+        this.adminOnlyAcl = adminOnlyAcl;
         this.publicReadAcl = publicReadAcl;
         this.adminAccount = adminAccount;
         this.fileService = fileService;
@@ -128,6 +139,10 @@ public class HealthStateRepair {
         return false;
     }
 
+    public boolean isRepairOfJobSecretNeeded() {
+        return healthState.jobSecretState != State.OK;
+    }
+
     public boolean isTaxonomyRepairNeeded() {
         return healthState.rootTaxonomy == State.FAILED;
     }
@@ -169,6 +184,14 @@ public class HealthStateRepair {
             return null;
         }
 
+    }
+
+    public void repairJobSecret() {
+        String secret = UUID.randomUUID().toString();
+        InfoObject secretInfo = new InfoObject(SETTING_JOB_SECRET, secret);
+        secretInfo.setOwner(adminAccount);
+        secretInfo.setACList(adminOnlyAcl);
+        infoObjectService.save(secretInfo);
     }
 
     private boolean updatePublicCollectionInDb() {

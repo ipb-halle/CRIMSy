@@ -118,6 +118,8 @@ public class InitApplication {
                 healthState,
                 nodeService.getLocalNode(),
                 collectionService,
+                infoObjectService,
+                this.globalAdmissionContext.getAdminOnlyACL(),
                 this.globalAdmissionContext.getPublicReadACL(),
                 this.globalAdmissionContext.getAdminAccount(),
                 fs,
@@ -129,6 +131,10 @@ public class InitApplication {
 
         if (healthRepairer.isTaxonomyRepairNeeded()) {
             healthRepairer.repairRootTaxonomy();
+        }
+
+        if (healthRepairer.isRepairOfJobSecretNeeded()) {
+            healthRepairer.repairJobSecret();
         }
     }
 

@@ -29,7 +29,6 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
@@ -72,8 +71,7 @@ public class DeactivateGroupWebServiceTest extends TestBase {
                 .addClass(FileService.class)
                 .addClass(KeyManager.class)
                 .addClass(DeactivateGroupWebService.class)
-                .addClass(KeyManager.class)
-                .addClass(FileEntityService.class);
+                .addClass(KeyManager.class);
     }
 
     @Test

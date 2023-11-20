@@ -32,10 +32,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.timezone.TimeZonesBean;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
+import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 @ExtendWith(PostgresqlContainerExtension.class)

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
@@ -24,7 +25,6 @@ import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
@@ -80,7 +80,7 @@ public class CollectionWebClientTest extends TestBase {
                 .addClass(CollectionWebClient.class)
                 .addClass(CollectionWebServiceMock.class)
                 .addClass(FileService.class)
-                .addClass(FileEntityService.class);
+                .addClass(FileObjectService.class);
         return UserBeanDeployment.add(deployment);
     }
 

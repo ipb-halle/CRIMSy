@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
@@ -31,7 +32,6 @@ import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.RemoteExperiment;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.RemoteItem;
 import de.ipb_halle.lbac.material.MaterialType;
@@ -39,7 +39,6 @@ import de.ipb_halle.lbac.material.RemoteMaterial;
 import de.ipb_halle.lbac.search.bean.SearchFilter;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.mocks.SearchWebServiceMock;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.File;
@@ -147,9 +146,8 @@ public class SearchWebClientTest extends TestBase {
         WebArchive deployment = prepareDeployment("SearchWebClientTest.war")
                 .addClass(SearchService.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(TermVectorEntityService.class)
                 .addClass(CollectionService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(ExperimentService.class)
                 .addClass(SearchWebService.class)
                 .addClass(WebRequestAuthenticator.class)

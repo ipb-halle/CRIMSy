@@ -17,19 +17,19 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.mock.CollectionBeanMock;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -69,10 +69,10 @@ public class CollectionBeanTest extends TestBase {
         bean = new CollectionBeanMock()
                 .setCollectionService(collectionService)
                 .setFileService(fileService)
-                .setFileEntityService(fileEntityService)
+                .setFileObjectService(fileObjectService)
                 .setGlobalAdmissionContext(context)
                 .setACListService(acListService)
-                .setTermVectorEntityService(termVectorEntityService)
+                .setTermVectorService(termVectorService)
                 .setMemberService(memberService);
 
         bean.setCollectionOrchestrator(orchestrator);
@@ -135,11 +135,11 @@ public class CollectionBeanTest extends TestBase {
                 .addClass(Updater.class)
                 .addClass(CollectionSearchState.class)
                 .addClass(ACListService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(FileService.class)
                 .addClass(CollectionBean.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(TermVectorEntityService.class)
+                .addClass(TermVectorService.class)
                 .addClass(MembershipOrchestrator.class);
     }
 

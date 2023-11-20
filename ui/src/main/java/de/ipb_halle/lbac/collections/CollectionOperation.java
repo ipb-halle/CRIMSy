@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
@@ -37,12 +37,12 @@ import org.apache.logging.log4j.LogManager;
 public class CollectionOperation implements Serializable {
 
     private final FileService fileService;
-    private final FileEntityService fileEntityService;
+    private final FileObjectService fileObjectService;
     private final GlobalAdmissionContext globalAdmissionContext;
     private final Logger LOGGER = LogManager.getLogger(CollectionOperation.class);
     private final NodeService nodeService;
     private final CollectionService collectionService;
-    private final TermVectorEntityService termVectorEntityService;
+    private final TermVectorService termVectorService;
     private final String PUBLIC_COLLECTION_NAME;
     private final String COLL_NOT_UNIQUE = "name %s for a new collection  is not unique. (user: %s)";
     private final String COLL_RESERVED = "name %s for a new collection  is a reserved name. (user: %s)";
@@ -53,20 +53,20 @@ public class CollectionOperation implements Serializable {
 
     public CollectionOperation(
             FileService fileService,
-            FileEntityService fileEntityService,
+            FileObjectService fileObjectService,
             GlobalAdmissionContext globalAdmissionContext,
             NodeService nodeService,
             CollectionService collectionService,
             String publicCollectionName,
-            TermVectorEntityService termVectorEntityService) {
+            TermVectorService termVectorService) {
 
         this.fileService = fileService;
-        this.fileEntityService = fileEntityService;
+        this.fileObjectService = fileObjectService;
         this.globalAdmissionContext = globalAdmissionContext;
         this.nodeService = nodeService;
         this.collectionService = collectionService;
         this.PUBLIC_COLLECTION_NAME = publicCollectionName;
-        this.termVectorEntityService = termVectorEntityService;
+        this.termVectorService = termVectorService;
     }
 
     public enum OperationState {
@@ -99,15 +99,16 @@ public class CollectionOperation implements Serializable {
                 fileService.deleteDir(activeCollection.getName());
             }
 
-            termVectorEntityService.deleteTermVectorOfCollection(activeCollection);
-            fileEntityService.delete(activeCollection);
-            LOGGER.info(String.format("collection delete all file entities: %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
+            throw new RuntimeException("xxxxx need to provide TermVector delete for entire collection");
+//            termVectorService.deleteTermVectorOfCollection(activeCollection);
+//            fileEntityService.delete(activeCollection);
+//            LOGGER.info(String.format("collection delete all file entities: %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
 
         } catch (Exception e) {
             LOGGER.error("clearCollection() caught an exception:", (Throwable) e);
             return OperationState.CLEAR_ERROR;
         }
-        return OperationState.OPERATION_SUCCESS;
+//        return OperationState.OPERATION_SUCCESS;
     }
 
     /**

@@ -17,11 +17,11 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.admission.MembershipService;
@@ -70,7 +70,7 @@ public class CollectionOrchestrator implements Serializable {
     private CollectionService collectionService;
 
     @Inject
-    private FileEntityService fileEntityService;
+    private FileObjectService fileObjectService;
 
     @Inject
     private MembershipService membershipService;
@@ -121,7 +121,7 @@ public class CollectionOrchestrator implements Serializable {
                         collectionService.load(new HashMap<>()),
                         user);
         for(Collection col : readableList) {
-            col.setCountDocs(this.fileEntityService.getDocumentCount(col));
+            col.setCountDocs(this.fileObjectService.getDocumentCount(col.getId()));
         }
         colState.getCollections().addAll(readableList);
 

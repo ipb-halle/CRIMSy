@@ -17,11 +17,11 @@
  */
 package de.ipb_halle.lbac.search.wordcloud.mock;
 
+import de.ipb_halle.kx.termvector.TermFrequency;
+import de.ipb_halle.kx.termvector.TermFrequencyList;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.file.TermFrequency;
-import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebRequest;
 import java.util.UUID;

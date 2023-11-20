@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.TESTCLOUD;
@@ -26,8 +27,6 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.collections.mock.CollectionWebClientMock;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -59,10 +58,9 @@ public class CollectionOrchestratorTest extends TestBase {
                 .addClass(Navigator.class)
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(FileService.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
-                .addClass(TermVectorEntityService.class)
                 .addClass(CollectionWebServiceMock.class);
         return UserBeanDeployment.add(deployment);
     }

@@ -20,7 +20,8 @@ java -Djavax.net.ssl.trustStore=./truststore \\
   -jar ../target/crimsy-agency-1.0.jar \\
   -p ./agency_secret.txt \\
   -s ./agent.sh \\
-  -u https://biocloud.somewhere.invalid/ui/rest/jobs
+  -t PRINT \\
+  -u https://biocloud.somewhere.invalid/ui/rest/print
 EOF
 
 cat <<EOF > test/agent.sh
@@ -40,9 +41,10 @@ cat <<EOF
 
 Please note: 
 1. This setup is not for production runs.
-2. You still need to tweak the configuration:
+2. You still need to tweak lots of configuration:
    - copy truststore and truststore password files
    - shared secret of your CRIMSy node
    - URL of your CRIMSY node
+   - meaningful job script (e.g. to submit print jobs), logging, ...
 
 EOF

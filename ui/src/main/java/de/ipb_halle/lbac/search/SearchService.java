@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.lbac.service.NodeService;
 import java.util.Collections;
 import java.util.List;
@@ -134,11 +133,13 @@ public class SearchService {
         if (request.getSearchTarget() == SearchTarget.DOCUMENT) {
             Set<String> materialNames = getNamesOfMaterials(result);
 
+            StringBuilder sb = new StringBuilder();
             for (String name : materialNames) {
-                StemmedWordGroup swg = searchQueryStemmer.stemmQuery(name);
-                for (String stemmedName : swg.getAllStemmedWords()) {
-                    request.addSearchCategory(SearchCategory.WORDROOT, stemmedName);
-                }
+                sb.append(name);
+                sb.append(" ");
+            }
+            for (String stem : searchQueryStemmer.stemmQuery(sb.toString())) {
+                request.addSearchCategory(SearchCategory.WORDROOT, stem);
             }
         }
     }
@@ -174,4 +175,8 @@ public class SearchService {
         }
     }
 
+    // for testing purposes
+    public void setSearchQueryStemmer(SearchQueryStemmer stemmer) {
+        searchQueryStemmer = stemmer;
+    }
 }

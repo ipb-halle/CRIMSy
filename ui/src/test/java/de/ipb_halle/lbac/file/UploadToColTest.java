@@ -17,12 +17,18 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.kx.service.TextWebStatus;
+import de.ipb_halle.kx.termvector.TermFrequency;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.file.mock.AnalyseClientMock;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
 import de.ipb_halle.lbac.file.mock.HttpServletResponseMock.WriterMock;
@@ -32,6 +38,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import jakarta.inject.Inject;
 import org.apache.openejb.loader.Files;
@@ -56,16 +63,23 @@ public class UploadToColTest extends TestBase {
     private CollectionService collectionService;
 
     @Inject
-    private FileEntityService fileEntityService;
+    private FileObjectService fileObjectService;
 
-    protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
+    protected String exampleDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
     protected Collection col;
+
+    private DocumentCreator documentCreator;
 
     @BeforeEach
     public void init() {
         Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        documentCreator = new DocumentCreator(
+                fileObjectService,
+                collectionService,
+                nodeService, // nodeService from TestBase
+                termVectorService);         // termVectorService from TestBase
     }
 
     @AfterEach
@@ -80,52 +94,51 @@ public class UploadToColTest extends TestBase {
 
     @Test
     public void test001_fileUploadTest() throws Exception {
+        String docName = "Document1.pdf";
         createAndSaveNewCol();
         UploadToColMock upload = new UploadToColMock(
-                FilterDefinitionInputStreamFactory.getFilterDefinition(),
-                fileEntityService,
+                fileObjectService,
                 publicUser,
                 new AsyncContextMock(
-                        new File(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
+                        new File(exampleDocsRootFolder + docName),
                         col.getName()),
                 collectionService,
-                termVectorEntityService,
-                FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
+                "target/test-classes/collections");
+        upload.analyseClient = new AnalyseClientMock(
+                Arrays.asList(TextWebStatus.BUSY, TextWebStatus.DONE));
 
         upload.run();
+        // mock termvector and unstemmed words
+        documentCreator.saveTermVectors(docName, upload.fileId);
+
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("id", upload.fileId);
-
-        FileObject file = fileEntityService.load(cmap).get(0);
+        FileObject file = fileObjectService.load(cmap).get(0);
         Assert.assertNotNull(file);
 
-        Assert.assertTrue(!termVectorEntityService.getTermVector(Arrays.asList(upload.fileId), 10).isEmpty());
+        Assert.assertTrue(!termVectorService.getTermVector(Arrays.asList(upload.fileId), 10).isEmpty());
         Assert.assertEquals(
-                "informatik",
-                termVectorEntityService.loadUnstemmedWordsOfDocument(
-                        upload.fileId, "informat").get(0)
-                        .getOriginalWord()
-                        .iterator()
-                        .next());
+                "java",
+                termVectorService.loadUnstemmedWordsOfDocument(
+                        upload.fileId, "java").get(0)
+                        .getOriginalWord());
 
         WriterMock writermock = ((WriterMock) upload.response.getWriter());
         String json = writermock.getJson();
-        Assert.assertEquals(String.format("{\"success\":true,\"newUuid\":\"%s\",\"uploadName\":\"IPB_Jahresbericht_2004.pdf\"}", upload.fileId), json);
+        Assert.assertEquals(String.format("{\"success\":true,\"newUuid\":\"%s\",\"uploadName\":\"Document1.pdf\"}", upload.fileId), json);
 
     }
 
     @Test
     public void test002_fileUploadTestNoCollectionFound() throws Exception {
         UploadToColMock upload = new UploadToColMock(
-                FilterDefinitionInputStreamFactory.getFilterDefinition(),
-                fileEntityService,
+                fileObjectService,
                 publicUser,
                 new AsyncContextMock(
-                        new File(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
+                        new File(exampleDocsRootFolder + "Document1.pdf"),
                         "test-coll-does-not-exist"),
                 collectionService,
-                termVectorEntityService,
-                FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
+                "target/test-classes/collections");
 
         upload.run();
         WriterMock writermock = ((WriterMock) upload.response.getWriter());
@@ -135,27 +148,8 @@ public class UploadToColTest extends TestBase {
     }
 
     @Test
-    public void test003_fileUploadWithSmallNumbers() throws Exception {
-        createAndSaveNewCol();
-        UploadToColMock upload = new UploadToColMock(
-                FilterDefinitionInputStreamFactory.getFilterDefinition(),
-                fileEntityService,
-                publicUser,
-                new AsyncContextMock(
-                        new File(examplaDocsRootFolder + "ShotNumberExample.docx"),
-                        col.getName()),
-                collectionService,
-                termVectorEntityService,
-                FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
 
-        upload.run();
-        Map<String, Integer> terms = termVectorEntityService.getTermVector(Arrays.asList(upload.fileId), 100);
-        Assert.assertEquals(4, terms.size());
-
-    }
-
-    @Test
-    public void test004_regExForNumbers() {
+    public void test003_regExForNumbers() {
         String replacement = " ";
         String regEx = "(\\[|<||-|,| |^|\\(|\\{)\\d+([\\W])*\\d*( |$|\\)|,|\\}|-|\\.|\\%|\\]|>)";
 

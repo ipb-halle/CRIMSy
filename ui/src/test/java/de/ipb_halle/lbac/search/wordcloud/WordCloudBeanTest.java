@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.base.DocumentCreator;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.globals.KeyManager;
@@ -25,8 +26,8 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
+import de.ipb_halle.lbac.search.mocks.SearchQueryStemmerMock;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
@@ -39,7 +40,6 @@ import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.mock.WordCloudWebServiceMock;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -91,10 +91,10 @@ public class WordCloudBeanTest extends TestBase {
         userBean.setCurrentAccount(publicUser);
 
         DocumentCreator documentCreator = new DocumentCreator(
-                fileEntityService,
+                fileObjectService,
                 collectionService,
                 nodeService,
-                termVectorEntityService);
+                termVectorService);
 
         try {
             Collection col = documentCreator.uploadDocuments(
@@ -114,6 +114,7 @@ public class WordCloudBeanTest extends TestBase {
 
     @Test
     public void test001_startSearch() {
+        wordCloudBean.getDocumentSearchService().setSearchQueryStemmer(new SearchQueryStemmerMock("java"));
         wordCloudBean.setSearchTermInput("Java");
         wordCloudBean.startSearch();
 
@@ -125,6 +126,7 @@ public class WordCloudBeanTest extends TestBase {
 
     @Test
     public void test002_clearCloudState() {
+        wordCloudBean.getDocumentSearchService().setSearchQueryStemmer(new SearchQueryStemmerMock("java"));
         wordCloudBean.setSearchTermInput("Java");
         wordCloudBean.startSearch();
 
@@ -145,6 +147,7 @@ public class WordCloudBeanTest extends TestBase {
 
     @Test
     public void test003_selectWordInCloud() {
+        wordCloudBean.getDocumentSearchService().setSearchQueryStemmer(new SearchQueryStemmerMock("java"));
         wordCloudBean.setSearchTermInput("Java");
         wordCloudBean.startSearch();
 
@@ -162,7 +165,7 @@ public class WordCloudBeanTest extends TestBase {
         return UserBeanDeployment.add(prepareDeployment("WordCloudBeanTest.war")
                 .addClass(DocumentSearchService.class)
                 .addClass(WordCloudBean.class)
-                .addClass(FileEntityService.class)
+                .addClass(FileObjectService.class)
                 .addClass(NodeService.class)
                 .addClass(CloudService.class)
                 .addClass(CloudNodeService.class)
@@ -176,12 +179,9 @@ public class WordCloudBeanTest extends TestBase {
                 .addClass(CollectionBean.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(CollectionOrchestrator.class)
-                .addClass(TermVectorEntityService.class)
                 .addClass(KeyManager.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(WordCloudWebService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(FileEntityService.class)
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(WordCloudWebServiceMock.class));
 

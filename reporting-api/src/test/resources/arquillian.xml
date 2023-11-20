@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Leibniz Bioactives Cloud
+  Copyright 2023 Leibniz-Institut f. Pflanzenbiochemie
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<arquillian>
+    <container qualifier="tomee" default="true">
+        <configuration>
+            <property name="httpPort">8800</property> <!-- default 8080 -->
+
+            <!-- http://www.tomitribe.com/blog/2016/01/testing-persistence-with-arquillian-on-tomee/ -->
+
+            <property name="appWorkingDir">target/arquillian</property>
+            <property name="properties">
+                apiDS = new://Resource?type=DataSource
+                apiDS.JdbcDriver = org.postgresql.Driver
+                apiDS.JdbcUrl = jdbc:postgresql://localhost:65432/lbac?charSet=UTF-8
+                apiDS.UserName = lbac
+                apiDS.Password = lbac
+                apiDS.JtaManaged = true
+                apiDS.LogSql = true
+                #
+                #
+                tomcat.util.scan.StandardJarScanFilter.jarsToSkip=*.jar
+                tomcat.util.scan.StandardJarScanFilter.jarsToScan=\
+                    postgresql*.jar,\
+                    log4j*.jar,slf4j*.jar,hibernate*.jar
+            </property>
+            <property name="debug">true</property>
+
+            <!-- some more properties ... -->
+
+        </configuration>
+    </container>
+</arquillian>
+

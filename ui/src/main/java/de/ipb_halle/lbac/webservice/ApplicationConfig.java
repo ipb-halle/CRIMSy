@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.webservice;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
-import de.ipb_halle.lbac.device.job.JobWebService;
+import de.ipb_halle.lbac.device.job.PrintWebService;
 import de.ipb_halle.lbac.forum.postings.PostingWebService;
 import de.ipb_halle.lbac.forum.topics.TopicsWebService;
 import de.ipb_halle.lbac.search.SearchWebService;
@@ -46,7 +46,7 @@ public class ApplicationConfig extends Application {
                 WordCloudWebService.class,
                 TopicsWebService.class,
                 PostingWebService.class,
-                JobWebService.class,
+                PrintWebService.class,
                 SimpleRESTPojoExample.class,
                 DocumentWebService.class));
     }
