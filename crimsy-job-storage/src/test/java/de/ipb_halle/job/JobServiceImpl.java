@@ -18,7 +18,7 @@
 package de.ipb_halle.job;
 
 import java.io.Serializable;
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class JobServiceImpl extends JobService<TestJob> implements Serializable {
