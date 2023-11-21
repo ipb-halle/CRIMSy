@@ -70,6 +70,7 @@ public class JobServiceTest {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "JobServiceTest.war")
                 .addClass(JobServiceImpl.class)
                 .addClass(EntityManagerService.class)
+                .addClass(JobService.class)
                 .addAsResource("PostgresqlContainerSchemaFiles")
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

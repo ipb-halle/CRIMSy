@@ -20,6 +20,8 @@ ui/target
 
 # IntelliJ
 **/.idea
-/ui/nbproject/
-snowball/nb-configuration.xml
-nb-configuration.xml
+
+# Netbeans project files
+**/nbproject/
+**/nb-configuration.xml
+**/nbactions.xml
