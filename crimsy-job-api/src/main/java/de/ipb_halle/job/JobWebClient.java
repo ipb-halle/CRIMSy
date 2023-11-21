@@ -17,20 +17,16 @@
  */
 package de.ipb_halle.job;
 
-
-import javax.ws.rs.core.MediaType;
-
+import jakarta.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.http.HTTPConduit;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class represents the client side of the job processing 
- * machinery.
+ * This class represents the client side of the job processing machinery.
  */
 public class JobWebClient {
 
@@ -49,14 +45,14 @@ public class JobWebClient {
     /**
      * Create a WebClient
      *
-     * @param url url of the job service 
-     * @return a WebClient with timeouts configured. This WebClient does NOT
-     * use certificate based authentication. Instead an access token is sent 
-     * as part of the request.
+     * @param url url of the job service
+     * @return a WebClient with timeouts configured. This WebClient does NOT use
+     * certificate based authentication. Instead an access token is sent as part
+     * of the request.
      */
     public WebClient createWebClient(String url) {
 
-        WebClient wc = WebClient.create(url); 
+        WebClient wc = WebClient.create(url);
 
         ClientConfiguration cc = WebClient.getConfig(wc);
 
@@ -66,7 +62,6 @@ public class JobWebClient {
         return wc;
     }
 
-
     /**
      * send a request to the JobWebService at the given url
      */
@@ -75,10 +70,10 @@ public class JobWebClient {
             WebClient wc = createWebClient(url);
             wc.accept(MediaType.APPLICATION_XML_TYPE);
             wc.type(MediaType.APPLICATION_XML_TYPE);
-            
+
             NetJob response = wc.post(job, NetJob.class);
             return response;
-        } catch(Exception e) {
+        } catch (Exception e) {
             this.logger.warn("processRequest() caught an exception: ", (Throwable) e);
         }
         return null;

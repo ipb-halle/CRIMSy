@@ -33,7 +33,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>      
         <!-- check Maven Central for latest versions! -->
-        <cxf.version>3.5.3</cxf.version>
+        <cxf.version>4.0.0</cxf.version>
     </properties>
 
     <!-- define (additional) repositories -->
