@@ -32,7 +32,7 @@
  
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>5.3.26.Final</hibernate.version>
+        <hibernate.version>6.1.7.Final</hibernate.version>
         <!-- check Maven Central for latest versions! -->
     </properties>
 
@@ -165,7 +165,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>6.1.7.Final</version>
+            <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
         
@@ -173,7 +173,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.1.7.Final</version>
+            <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
 
