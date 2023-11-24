@@ -177,7 +177,6 @@
             <scope>provided</scope>
         </dependency>
 
-        
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
@@ -185,8 +184,6 @@
             <version>8.0.0.Final</version>
             <scope>provided</scope>
         </dependency>
-
-
 
         <!-- jpa3.1 -->
         <dependency>
@@ -231,7 +228,6 @@
             <version>2.19.0</version>
         </dependency>
 
-
         <!-- Dependencies for testing -->
         <!-- unit testing -->
         <dependency>
@@ -240,6 +236,7 @@
             <version>5.9.1</version>
             <scope>test</scope>
         </dependency>
+        
         <!-- keeps old JUnit4 tests functional -->
         <dependency>
             <groupId>org.junit.vintage</groupId>
@@ -292,12 +289,14 @@
             <version>9.0.0</version>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
+        
         <!-- Needed for shrinkwrap -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -319,16 +318,11 @@
             <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
-
        
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8.1</version>
         </dependency>
-
-
-
-       
     </dependencies>
 </project>
