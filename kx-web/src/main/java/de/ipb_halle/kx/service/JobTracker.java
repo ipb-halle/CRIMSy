@@ -17,14 +17,11 @@
  */
 package de.ipb_halle.kx.service;
 
-import de.ipb_halle.kx.service.TextWebStatus;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 
 /**
  * Provisional class for job tracking until Job API gets refactored.
