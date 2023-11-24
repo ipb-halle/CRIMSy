@@ -17,119 +17,102 @@
  
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
  http://maven.apache.org/xsd/maven-4.0.0.xsd">
- <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
  
- <groupId>de.ipb-halle</groupId>
- <artifactId>kx-api</artifactId>
- <version>1.0.0</version>
- <packaging>jar</packaging>
+    <groupId>de.ipb-halle</groupId>
+    <artifactId>kx-api</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
  
- <name>KX-API</name>
- <url>http://github.com/ipb-halle/CRIMSy</url>
+    <name>KX-API</name>
+    <url>http://github.com/ipb-halle/CRIMSy</url>
  
- <properties>
-  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-  <!-- check Maven Central for latest versions! -->
-  <hibernate.version>5.3.26.Final</hibernate.version>
- </properties>
+        <!-- check Maven Central for latest versions! -->
+        <hibernate.version>6.1.7.Final</hibernate.version>
+    </properties>
 
- <!-- define (additional) repositories -->
- <repositories>
-    <repository>
-      <id>central</id>
-      <url>https://repo.maven.apache.org/maven2/</url>
-   </repository>
-   <repository>
-     <id>sonatype public</id>
-     <url>https://oss.sonatype.org/content/groups/public/</url>
-   </repository>
- </repositories>
+    <!-- define (additional) repositories -->
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>sonatype public</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+    </repositories>
 
  
- <build>
-  <plugins>
+    <build>
+        <plugins>
 
-   <!-- compile plugin -->
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.1</version>
-    <configuration>
-     <source>1.8</source>
-     <target>1.8</target>
-     <compilerArgument>-Xlint:all</compilerArgument>
-     <encoding>${project.build.sourceEncoding}</encoding>
-    </configuration>
-   </plugin>
+            <!-- compile plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                    <compilerArgument>-Xlint:all</compilerArgument>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
 
-   <!-- explicit surefire plugin needed -->
-   <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-surefire-plugin</artifactId>
-       <version>2.22.2</version>
-       <configuration>
-           <runOrder>random</runOrder>
-           <forkedProcessExitTimeoutInSeconds>240</forkedProcessExitTimeoutInSeconds>
-       </configuration>
-   </plugin>
+            <!-- explicit surefire plugin needed -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <runOrder>random</runOrder>
+                    <forkedProcessExitTimeoutInSeconds>240</forkedProcessExitTimeoutInSeconds>
+                </configuration>
+            </plugin>
 
-    <!-- assembly plugin -->
-    <plugin>
-      <artifactId>maven-assembly-plugin</artifactId>
-      <version>2.6</version>
-      <configuration>
-        <descriptorRefs>
-          <descriptorRef>jar-with-dependencies</descriptorRef> 
-        </descriptorRefs>
-        <archive>
-          <manifest>
-          </manifest>
-         </archive>
-      </configuration>
+            <!-- assembly plugin -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef> 
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                        </manifest>
+                    </archive>
+                </configuration>
 
-      <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-      </executions>
-    </plugin>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-  </plugins>
- </build>
+        </plugins>
+    </build>
 
-  <dependencies>
-
+    <dependencies>
         <!-- CRIMSy API -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>crimsy-api</artifactId>
             <version>1.0.0</version>
         </dependency>
-
-        <!-- CRIMSy testing -->
-        <dependency>
-            <groupId>de.ipb-halle</groupId>
-            <artifactId>crimsy-test</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- unit testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
-
+        
         <!-- SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -137,34 +120,17 @@
             <version>1.7.30</version>
         </dependency>
 
-        <!-- Logging: log4j2 *** For testing only! *** -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.19.0</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Annotation Processor to generate JPA 2 static metamodel classes -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Integration for using Ehcache 2.x as a 
-        Hibernate second-level-cache provider  -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
+        
         <!-- hibernate stuff -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
             <scope>provided</scope>
@@ -172,17 +138,50 @@
 
         <!-- Hibernate Validator Engine Relocation Artifact -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.3.6.Final</version>
+            <version>8.0.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-60</artifactId>
+            <version>2.21.1</version>
+        </dependency>
+        <!-- Reference implementation of JSON encoders/decoders -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.14.0-rc1</version>
+        </dependency>
+        <!-- Expression Language implementation (required by bean validation) -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>4.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Provided dependencies by the server -->
+        <!-- APIs for CDI (Contexts and Dependency Injection for Java)-->
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- JPA -->
+        <!-- jpa3.1 -->
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -190,7 +189,13 @@
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0-2</version>
+            <version>8.0-6</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tomee</groupId>
+            <artifactId>tomee-jaxrs</artifactId>
+            <version>9.0.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -198,7 +203,8 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.4.3</version>
+            <version>42.6.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Dependencies for testing -->
@@ -206,9 +212,10 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
+            <version>5.9.1</version>
             <scope>test</scope>
         </dependency>
+        
         <!-- keeps old JUnit4 tests functional -->
         <dependency>
             <groupId>org.junit.vintage</groupId>
@@ -224,6 +231,7 @@
             <version>1.16.3</version>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
@@ -248,7 +256,7 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-depchain</artifactId>
-            <version>1.2.6</version>
+            <version>2.0.0-beta-1</version>
             <type>pom</type>
             <scope>test</scope> 
         </dependency>
@@ -256,17 +264,18 @@
         <!-- tomee for arquillian -->
         <dependency>
             <groupId>org.apache.tomee</groupId>
-            <artifactId>arquillian-tomee-embedded</artifactId>
-            <version>7.0.9</version>
+            <artifactId>arquillian-openejb-embedded</artifactId>
+            <version>9.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>4.0.3</version>
+            <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
+        
         <!-- Needed for shrinkwrap -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -280,6 +289,21 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-  </dependencies>
+        
+        <!-- CRIMSy testing -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>crimsy-test</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Logging: log4j2 *** For testing only! *** -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.19.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

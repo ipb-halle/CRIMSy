@@ -21,17 +21,11 @@ import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.file.FileObject;
-import de.ipb_halle.kx.termvector.TermVector;
-import de.ipb_halle.kx.termvector.StemmedWordOrigin;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -62,7 +56,6 @@ public class TermVectorServiceTest {
     @Inject
     private FileObjectService fileObjectService;
 
-
     private Random random = new Random();
 
     @Deployment
@@ -90,7 +83,6 @@ public class TermVectorServiceTest {
 //      entityManagerService.getEntityManager()
 //              .createNativeQuery("DELETE FROM files")
 //              .executeUpdate();
-
     }
 
     @Test
@@ -146,14 +138,14 @@ public class TermVectorServiceTest {
         Assert.assertEquals("Frequency of 2nd most frequent word", 7l, results.get(1).getFrequency().longValue());
         Assert.assertEquals("Term of 2nd most frequent word", "testStemWord3", results.get(1).getTerm());
 
-        int totalSum = termVectorService.getSumOfAllWordsFromAllDocs();
+        long totalSum = termVectorService.getSumOfAllWordsFromAllDocs();
         Assert.assertTrue("Total number of words is >= 30", totalSum >= 30);
 
         termVectorService.deleteTermVector(fE4);
         totalSum = termVectorService.getSumOfAllWordsFromAllDocs();
         Assert.assertEquals("Total number of words after deletion = 19", 19, totalSum);
 
-        List<StemmedWordOrigin> wordOriginList = new ArrayList<> ();
+        List<StemmedWordOrigin> wordOriginList = new ArrayList<>();
         wordOriginList.add(new StemmedWordOrigin("testStemWord", "originalWord1"));
         wordOriginList.add(new StemmedWordOrigin("testStemWord", "originalWord2"));
         wordOriginList.add(new StemmedWordOrigin("testStemWord", "originalWord3"));

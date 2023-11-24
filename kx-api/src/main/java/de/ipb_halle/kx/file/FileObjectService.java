@@ -27,14 +27,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.EntityType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,11 +63,12 @@ public class FileObjectService implements Serializable {
 
     /**
      * delete all files of a collection
-     * @param collectionId  collection Id
+     *
+     * @param collectionId collection Id
      */
     @Deprecated
     public void deleteCollectionFiles(Integer collectionId) {
-        this.em.createNativeQuery(DELETE_COLLECTION_FILES) 
+        this.em.createNativeQuery(DELETE_COLLECTION_FILES)
                 .setParameter("c", collectionId)
                 .executeUpdate();
     }
@@ -115,8 +116,7 @@ public class FileObjectService implements Serializable {
 
     /**
      * Convert String to lower case and add SQL wildcard padding to it. This is
-     * necessary as JPA2 does not provide means to create an ilike
-     * predicate.
+     * necessary as JPA2 does not provide means to create an ilike predicate.
      *
      * @param st input string
      * @return "%" + st.toLowerCase() + "%"
@@ -171,7 +171,6 @@ public class FileObjectService implements Serializable {
         }
         return results;
     }
-
 
     /**
      * get file entity by id
