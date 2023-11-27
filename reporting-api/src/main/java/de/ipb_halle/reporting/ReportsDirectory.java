@@ -18,8 +18,8 @@
 package de.ipb_halle.reporting;
 
 import java.io.Serializable;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 
 
 /**
