@@ -26,8 +26,8 @@ import de.ipb_halle.reporting.ReportType;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
 import org.omnifaces.util.Faces;

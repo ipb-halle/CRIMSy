@@ -29,7 +29,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -45,7 +45,6 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.job.JobStatus;
-import de.ipb_halle.lbac.reporting.ReportJobService;
 import de.ipb_halle.lbac.util.jsf.SendFileBeanMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
@@ -77,7 +76,7 @@ public class ReportingJobsBeanTest extends TestBase {
     }
 
     @BeforeEach
-    private void before() {
+    void before() {
         userBeanMock.setCurrentAccount(adminUser);
         sendFileBeanMock.reset();
     }
