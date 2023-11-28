@@ -17,9 +17,6 @@
  */
 package de.ipb_halle.kx.file;
 
-import de.ipb_halle.kx.file.FileObject;
-import de.ipb_halle.kx.file.FileObjectEntity;
-import java.io.Serializable;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -104,10 +101,10 @@ public class FileObjectService implements Serializable {
      */
     public long getDocumentCount(Integer collectionId) {
         try {
-            BigInteger cnt = (BigInteger) this.em.createNativeQuery(COLLECTION_FILE_COUNT)
+            Long cnt = (Long) this.em.createNativeQuery(COLLECTION_FILE_COUNT)
                     .setParameter("c", collectionId)
                     .getSingleResult();
-            return cnt.longValue();
+            return cnt;
         } catch (Exception e) {
             this.logger.warn("getDocumentCount() caught an exception", e);
         }
