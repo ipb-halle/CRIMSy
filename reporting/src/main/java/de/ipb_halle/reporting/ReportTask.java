@@ -28,10 +28,10 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.Future;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedTask;
-import javax.enterprise.concurrent.ManagedTaskListener;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.ManagedTaskListener;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

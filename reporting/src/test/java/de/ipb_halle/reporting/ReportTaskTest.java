@@ -18,8 +18,7 @@
 package de.ipb_halle.reporting;
 
 import de.ipb_halle.job.JobEntity;
-import de.ipb_halle.reporting.ReportDataPojo;
-import de.ipb_halle.reporting.ReportsDirectory;
+import de.ipb_halle.job.JobService;
 import de.ipb_halle.test.ManagedExecutorServiceMock;
 
 import static de.ipb_halle.job.JobStatus.COMPLETED;
@@ -38,7 +37,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -59,6 +58,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class ReportTaskTest {
+
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -72,6 +72,7 @@ public class ReportTaskTest {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "ReportTaskTest.war")
                 .addClass(JobEntity.class)
                 .addClass(ReportsDirectory.class)
+                .addClass(JobService.class)
                 .addClass(ReportingJobService.class)
                 .addClass(ManagedExecutorServiceMock.class)
                 .addAsResource("PostgresqlContainerSchemaFiles")
