@@ -37,11 +37,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
  
  <groupId>org.tartarus</groupId>
  <artifactId>snowball</artifactId>
- <version>2.0.0</version>
+ <version>2.2.0</version>
  <packaging>jar</packaging>
  
  <name>Snowball stemmer</name>
- <url>http://snowball.tartarus.org</url>
+ <url>http://snowballstem.org</url>
  
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -101,7 +101,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
             <goal>wget</goal>
           </goals>
           <configuration>
-            <url>https://github.com/snowballstem/snowballstem.github.io/blob/master/dist/libstemmer_java.tgz?raw=true</url>
+	    <url>https://snowballstem.org/dist/libstemmer_java-2.2.0.tar.gz</url>
             <outputFileName>libstemmer_java.tar.gz</outputFileName>
             <overwrite>true</overwrite>
             <!-- Github Actions: do not fail on error, use fallback copy instead -->
@@ -124,7 +124,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
                 <copy file="libstemmer_java.tgz" tofile="target/libstemmer_java.tar.gz" force="false" failonerror="false" />
                 <gunzip src="target/libstemmer_java.tar.gz"/>
                 <untar src="target/libstemmer_java.tar" dest="target"/>
-                <move file="target/libstemmer_java/java" todir="target/generated-sources"/>
+		<move file="target/libstemmer_java-2.2.0/java" todir="target/generated-sources"/>
             </target>
           </configuration>
           <goals>
