@@ -30,6 +30,7 @@ import jakarta.persistence.criteria.Root;
  * 
  * @author fbroda
  */
+
 @Stateless
 public class ReportService {
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -54,5 +55,9 @@ public class ReportService {
         }
 
         return results;
+    }
+
+  public Report loadById(Integer id) {
+        return new Report(em.find(ReportEntity.class, id));
     }
 }
