@@ -26,67 +26,68 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:body>
-    <!--<ui:composition>-->
-    <h:form id="labelSettings" horizontal="true" method="post" style="border:1px solid #029ACF;border-radius:3px;">
-        <p:panel header="#{msgs.LabelSettings}" collapsible="false" look="info" styleClass="panelTitleInfoColor" >
-            <p:panelGrid columnClasses="ui-g-12 ui-lg-9 ui-md-9, ui-g-12 ui-lg-3 ui-md-3" size="sm" id="printerDetailsPanelGridId">
-
+    <h:form id="labelSettings" 
+            horizontal="true" 
+            method="post" 
+            style="border:1px solid #029ACF;border-radius:3px;">
+        <p:panel header="#{msgs.LabelSettings}" 
+                 collapsible="false" 
+                 look="info" 
+                 styleClass="panelTitleInfoColor" >
+            <p:panelGrid columnClasses="ui-g-12 ui-lg-9 ui-md-9, ui-g-12 ui-lg-3 ui-md-3" 
+                         size="sm" 
+                         id="printerDetailsPanelGridId">
                 <p:row>
-
 <!--===============================================================================================================-->
-
-                    <p:outputLabel for="labelName" value="#{msgs.LabelName}:" styleClass="ui-outputlabel-right" />
+                    <p:outputLabel for="labelName" 
+                                   value="#{msgs.LabelName}:" 
+                                   styleClass="ui-outputlabel-right" />
                     <div class="col-12 md:col-4">
                     <div class="ui-inputgroup">
                     <p:inputText id="labelName" label="#{msgs.LabelName}:" title="#{msgs.LabelName_detail}" value="#{printAdminBean.getLabel().name}" styleClass="ui-inputfield-large" style="width:100%;"/>
-                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
+                    <div class="ui-inputgroup-addon">
+                        <i class="pi pi-list"></i>
+                    </div>
                     </div>
                     </div>
                     <br/>
 
   <!--===============================================================================================================-->
-
-<!--                    <b:inputText
-                                label="#{msgs.LabelDescription}:"
-                                title="#{msgs.LabelDescription_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().description}" colMd="7">
-
-                    </b:inputText>-->
-
-                    <p:outputLabel for="labelDescription" value="#{msgs.LabelDescription}:" styleClass="ui-outputlabel-right" />
+                    <p:outputLabel for="labelDescription" 
+                                   value="#{msgs.LabelDescription}:" 
+                                   styleClass="ui-outputlabel-right" />
                     <div class="col-12 md:col-4">
                     <div class="ui-inputgroup">
-                    <p:inputText id="labelDescription" label="#{msgs.LabelDescription}:" title="#{msgs.LabelDescription_detail}" value="#{printAdminBean.getLabel().description}" styleClass="ui-inputfield-large" style="width:100%;"/>
-                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
+                    <p:inputText id="labelDescription" 
+                                 label="#{msgs.LabelDescription}:" 
+                                 title="#{msgs.LabelDescription_detail}" 
+                                 value="#{printAdminBean.getLabel().description}" 
+                                 styleClass="ui-inputfield-large" style="width:100%;"/>
+                    <div class="ui-inputgroup-addon">
+                        <i class="pi pi-list"></i>
+                    </div>
                     </div>
                     </div>
                     <br/>
-
 <!--===============================================================================================================-->
-
-<!--                    <b:inputText
-                                label="#{msgs.PrinterModel}:"
-                                title="#{msgs.PrinterModel_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().printerModel}" colMd="7">
-
-                    </b:inputText>-->
-
-                    <p:outputLabel for="printerModel" value="#{msgs.PrinterModel}:" styleClass="ui-outputlabel-right" />
+                    <p:outputLabel for="printerModel" 
+                                   value="#{msgs.PrinterModel}:" 
+                                   styleClass="ui-outputlabel-right" />
                     <div class="col-12 md:col-4">
                     <div class="ui-inputgroup">
-                    <p:inputText id="printerModel" label="#{msgs.PrinterModel}:" title="#{msgs.PrinterModel_detail}" value="#{printAdminBean.getLabel().printerModel}" styleClass="ui-inputfield-large" style="width:100%;"/>
-                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
+                    <p:inputText id="printerModel" 
+                                 label="#{msgs.PrinterModel}:" 
+                                 title="#{msgs.PrinterModel_detail}" 
+                                 value="#{printAdminBean.getLabel().printerModel}" 
+                                 styleClass="ui-inputfield-large" 
+                                 style="width:100%;"/>
+                    <div class="ui-inputgroup-addon">
+                        <i class="pi pi-list"></i>
+                    </div>
                     </div>
                     </div>
                     <br/>
  <!--===============================================================================================================-->
-
-<!--                    <b:inputText
-                                label="#{msgs.LabelType}:"
-                                title="#{msgs.LabelType_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().labelType}" colMd="7">
-
-                    </b:inputText>-->
                     <p:outputLabel for="labelType" value="#{msgs.LabelType}:" styleClass="ui-outputlabel-right" />
                     <div class="col-12 md:col-4">
                     <div class="ui-inputgroup">
@@ -95,26 +96,18 @@
                     </div>
                     </div>
                     <br/>
-
 <!--===============================================================================================================-->
-
-<!--                    <b:inputTextarea
-                                label="#{msgs.LabelConfig}:"
-                                title="#{msgs.LabelConfig_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getLabel().config}" colMd="7">
-                    </b:inputTextarea>-->
-
                     <p:outputLabel for="labelConfig" value="#{msgs.LabelConfig}:" styleClass="ui-outputlabel-right" />
 
                     <p:inputTextarea id="labelConfig"  label="#{msgs.LabelConfig}:" title="#{msgs.LabelConfig_detail}" value="#{printAdminBean.getLabel().config}"  style="width:100%;" styleClass="ui-inputfield-large" />
                      <br/>
 <!--===============================================================================================================-->
-
                     <p:row style="align-items: center;">
                         <br/>
                         <p:commandButton type="submit"
                                          ajax="false"
                                          update="@form growlMsg"
+                                         styleClass="ui-button-secondary"
                                          style="margin-right:3px;"
                                          action="#{printAdminBean.actionClose}"
                                          value="#{msgs.Close}"/>
@@ -123,16 +116,15 @@
                                          ajax="true"
                                          update="@form growlMsg"
                                          icon="pi pi-save"
+                                         styleClass="ui-button-danger"
                                          style="margin-right:3px;"
                                          action="#{printAdminBean.actionSaveLabel}"
                                          value="#{msgs.LabelSettingsSave}"/>
                     </p:row>
 <!--===============================================================================================================-->
-
                 </p:row>
             </p:panelGrid>
         </p:panel>
     </h:form>
-    <!--</ui:composition>-->
 </h:body>
 </html>

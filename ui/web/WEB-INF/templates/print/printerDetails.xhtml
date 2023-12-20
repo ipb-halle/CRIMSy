@@ -24,142 +24,175 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
->
+      >
 
-<h:body>
-    <!--<ui:composition>-->
+    <h:body>
         <h:form id="printerSettings" horizontal="true" method="post" style="border:1px solid #029ACF;border-radius:3px;">
             <p:panel header="#{msgs.PrinterSettings}" collapsible="false" look="info" styleClass="panelTitleInfoColor" >
                 <p:panelGrid columnClasses="ui-g-12 ui-lg-9 ui-md-9, ui-g-12 ui-lg-3 ui-md-3" size="sm" id="printerDetailsPanelGridId">
                     <p:row>
-<!--===============================================================================================================-->
+                        <!--===============================================================================================================-->
 
-                    <p:outputLabel for="labelName" value="#{msgs.PrinterQueue}:" styleClass="ui-outputlabel-right" />
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
+                        <p:outputLabel for="labelName" value="#{msgs.PrinterQueue}:" styleClass="ui-outputlabel-right" />
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
 
-                    <p:inputText id="labelName" label="#{msgs.PrinterQueue}:" title="#{msgs.PrinterQueue_detail}" value="#{printAdminBean.getPrinter().queue}" styleClass="ui-inputfield-large" style="width:100%"/>
+                                <p:inputText id="labelName" 
+                                             label="#{msgs.PrinterQueue}:" 
+                                             title="#{msgs.PrinterQueue_detail}" 
+                                             value="#{printAdminBean.getPrinter().queue}" 
+                                             styleClass="ui-inputfield-large" 
+                                             style="width:100%"/>
 
-                     <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
-                    </div>
-                    </div>
-                    <br/>
-
- <!--===============================================================================================================-->
-
-                    <p:outputLabel for="PrinterName" value="#{msgs.PrinterName}:" styleClass="ui-outputlabel-right" />
-
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-
-                    <p:inputText id="PrinterName" label="#{msgs.PrinterName}:" value="#{printAdminBean.getPrinter().name}" styleClass="ui-inputfield-large" style="width:100%"/>
-
-                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
-                    </div>
-                    </div>
-                    <br/>
-<!--===============================================================================================================-->
-
-                    <p:outputLabel for="PrinterModel" value="#{msgs.PrinterModel}:" styleClass="ui-outputlabel-right" />
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-
-                    <p:inputText id="PrinterModel" label="#{msgs.PrinterModel}:" title="#{msgs.PrinterModel_detail}" value="#{printAdminBean.getPrinter().model}" styleClass="ui-inputfield-large" style="width:100%"/>
-
-                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
-                    </div>
-                    </div>
-                    <br/>
-<!--===============================================================================================================-->
-                    <p:outputLabel for="PrinterContact" value="#{msgs.PrinterContact}:" styleClass="ui-outputlabel-right" />
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-
-                    <p:inputText id="PrinterContact" label="#{msgs.PrinterContact}:" title="#{msgs.PrinterContact_detail}" value="#{printAdminBean.getPrinter().contact}" styleClass="ui-inputfield-large" style="width:100%"/>
-
-                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
-                    </div>
-                    </div>
-                    <br/>
-<!--===============================================================================================================-->
-
-                    <p:outputLabel for="PrinterPlace" value="#{msgs.PrinterPlace}:" styleClass="ui-outputlabel-right" />
-                    <div class="col-12 md:col-4">
-                    <div class="ui-inputgroup">
-
-                    <p:inputText id="PrinterPlace" label="#{msgs.PrinterPlace}:" title="#{msgs.PrinterPlace_detail}" value="#{printAdminBean.getPrinter().place}" styleClass="ui-inputfield-large" style="width:100%"/>
-
-                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
-                    </div>
-                    </div>
-                    <br/>
-<!--===============================================================================================================-->
-                    <p:outputLabel for="PrinterStatus" value="PrinterStatus" />
-
-                    <p:selectOneMenu
-                                id="PrinterStatus"
-                                label="#{msgs.PrinterStatus}:"
-                                labelColMd="4"
-                                labelStyle="text-align:right;"
-                                colMd="7"
-                                title="#{msgs.PrinterStatus_detail}"
-                                value="#{printAdminBean.getPrinter().status}"
-                                style="width:100%;background:#dddddd;">
-                        <f:selectItems
-                            var="status"
-                            value="#{printAdminBean.printerStates}"
-                            itemLabel="#{msgs['PrinterStatus_'.concat(status.toString())]}" />
-                    </p:selectOneMenu>
-                    <br/>
-                    <br/>
-
-<!--===============================================================================================================-->
-                    <p:outputLabel for="PrinterDriver" value="PrinterDriver" />
-
-                    <p:selectOneMenu
-                                id="PrinterDriver"
-                                label="#{msgs.PrinterDriver}:"
-                                labelColMd="4" labelStyle="text-align:right;" colMd="7"
-                                title="#{msgs.PrinterDriver_detail}"
-                                value="#{printAdminBean.getPrinter().driver}"
-                                style="width:100%;background:#dddddd;">
-                        <f:selectItems
-                            var="driver"
-                            value="#{printAdminBean.drivers}"
-                            itemLabel="#{driver}" />
-                    </p:selectOneMenu>
-                    <br/>
-                    <br/>
-
-<!--===============================================================================================================-->
-
-                    <p:outputLabel for="PrinterConfig" value="#{msgs.PrinterConfig}:" styleClass="ui-outputlabel-right" />
-
-                    <p:inputTextarea id="PrinterConfig"  label="#{msgs.PrinterConfig}:" title="#{msgs.PrinterConfig_detail}" value="#{printAdminBean.getPrinter().config}"  style="width:100%;" styleClass="ui-inputfield-large" />
-                     <br/>
-<!--===============================================================================================================-->
-
-                    <p:row>
+                                <div class="ui-inputgroup-addon">
+                                    <i class="pi pi-list"></i>
+                                </div>
+                            </div>
+                        </div>
                         <br/>
-                        <p:commandButton type="submit" style="margin-right:3px;"
-                                ajax="false"
-                                action="#{printAdminBean.actionClose}"  value="#{msgs.Close}"/>
 
-                        <p:commandButton type="submit" icon="pi pi-print" style="margin-right:3px;"
-                                ajax="true"
-                                action="#{printAdminBean.actionPrintTestPage}" value="#{msgs.PrinterSettingsTestPage}"/>
+                        <!--===============================================================================================================-->
 
-                        <p:commandButton type="submit" icon="pi pi-save" style="margin-right:3px;"
-                                ajax="false"
-                                action="#{printAdminBean.actionSavePrinter}" value="#{msgs.PrinterSettingsSave}"/>
-                    </p:row>
-<!--===============================================================================================================-->
+                        <p:outputLabel for="PrinterName" value="#{msgs.PrinterName}:" styleClass="ui-outputlabel-right" />
+
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+
+                                <p:inputText id="PrinterName" 
+                                             label="#{msgs.PrinterName}:" 
+                                             value="#{printAdminBean.getPrinter().name}" 
+                                             styleClass="ui-inputfield-large" 
+                                             style="width:100%"/>
+
+                                <div class="ui-inputgroup-addon">
+                                    <i class="pi pi-list"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <!--===============================================================================================================-->
+
+                        <p:outputLabel for="PrinterModel" value="#{msgs.PrinterModel}:" styleClass="ui-outputlabel-right" />
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+
+                                <p:inputText id="PrinterModel" 
+                                             label="#{msgs.PrinterModel}:" 
+                                             title="#{msgs.PrinterModel_detail}" 
+                                             value="#{printAdminBean.getPrinter().model}" 
+                                             styleClass="ui-inputfield-large" 
+                                             style="width:100%"/>
+
+                                <div class="ui-inputgroup-addon">
+                                    <i class="pi pi-list"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <!--===============================================================================================================-->
+                        <p:outputLabel for="PrinterContact" value="#{msgs.PrinterContact}:" styleClass="ui-outputlabel-right" />
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+
+                                <p:inputText id="PrinterContact" label="#{msgs.PrinterContact}:" title="#{msgs.PrinterContact_detail}" value="#{printAdminBean.getPrinter().contact}" styleClass="ui-inputfield-large" style="width:100%"/>
+
+                                <div class="ui-inputgroup-addon">
+                                    <i class="pi pi-list"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <!--===============================================================================================================-->
+
+                        <p:outputLabel for="PrinterPlace" value="#{msgs.PrinterPlace}:" styleClass="ui-outputlabel-right" />
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+
+                                <p:inputText id="PrinterPlace" label="#{msgs.PrinterPlace}:" title="#{msgs.PrinterPlace_detail}" value="#{printAdminBean.getPrinter().place}" styleClass="ui-inputfield-large" style="width:100%"/>
+
+                                <div class="ui-inputgroup-addon">
+                                    <i class="pi pi-list"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <!--===============================================================================================================-->
+                        <p:outputLabel for="PrinterStatus" value="PrinterStatus" />
+
+                        <p:selectOneMenu
+                            id="PrinterStatus"
+                            label="#{msgs.PrinterStatus}:"
+                            title="#{msgs.PrinterStatus_detail}"
+                            value="#{printAdminBean.getPrinter().status}"
+                            style="width:100%;background:#dddddd;">
+                            <f:selectItems
+                                var="status"
+                                value="#{printAdminBean.printerStates}"
+                                itemLabel="#{msgs['PrinterStatus_'.concat(status.toString())]}" />
+                        </p:selectOneMenu>
+                        <br/>
+                        <br/>
+
+                        <!--===============================================================================================================-->
+                        <p:outputLabel for="PrinterDriver" value="PrinterDriver" />
+
+                        <p:selectOneMenu
+                            id="PrinterDriver"
+                            label="#{msgs.PrinterDriver}:"
+                            title="#{msgs.PrinterDriver_detail}"
+                            value="#{printAdminBean.getPrinter().driver}"
+                            style="width:100%;background:#dddddd;">
+                            <f:selectItems
+                                var="driver"
+                                value="#{printAdminBean.drivers}"
+                                itemLabel="#{driver}" />
+                        </p:selectOneMenu>
+                        <br/>
+                        <br/>
+
+                        <!--===============================================================================================================-->
+
+                        <p:outputLabel for="PrinterConfig" value="#{msgs.PrinterConfig}:" styleClass="ui-outputlabel-right" />
+
+                        <p:inputTextarea id="PrinterConfig"  
+                                         label="#{msgs.PrinterConfig}:" 
+                                         title="#{msgs.PrinterConfig_detail}" 
+                                         value="#{printAdminBean.getPrinter().config}"  
+                                         style="width:100%;" 
+                                         styleClass="ui-inputfield-large" />
+                        <br/>
+                        <!--===============================================================================================================-->
+
+                        <p:row>
+                            <br/>
+                            <p:commandButton type="submit" 
+                                             style="margin-right:3px;"
+                                             styleClass="ui-button-secondary"
+                                             ajax="false"
+                                             action="#{printAdminBean.actionClose}"  
+                                             value="#{msgs.Close}"/>
+
+                            <p:commandButton type="submit" 
+                                             icon="pi pi-print" 
+                                             style="margin-right:3px;"
+                                             ajax="true"
+                                             action="#{printAdminBean.actionPrintTestPage}" 
+                                             value="#{msgs.PrinterSettingsTestPage}"/>
+
+                            <p:commandButton type="submit" 
+                                             icon="pi pi-save" 
+                                             styleClass="ui-button-danger"
+                                             style="margin-right:3px;"
+                                             ajax="false"
+                                             action="#{printAdminBean.actionSavePrinter}" 
+                                             value="#{msgs.PrinterSettingsSave}"/>
+                        </p:row>
+                        <!--===============================================================================================================-->
 
                     </p:row>
 
                 </p:panelGrid>
             </p:panel>
         </h:form>
-    <!--</ui:composition>-->
     </h:body>
 </html>

@@ -39,7 +39,7 @@ body .ui-button.ui-button-icon-only {
 }
 
 
-.headerCollectionInfoFirstColumn, .headerCloudNodeManagementFirstColumn {
+.headerCollectionInfoFirstColumn, .headerCloudNodeManagementFirstColumn, .headerPrinterListFirstColumn,.headerLabelListFirstColumn {
     display: flex;
     flex-direction: row;
     align-items: center;

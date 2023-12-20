@@ -69,7 +69,11 @@
 
 
 
-                        <p:column headerText="#{msgs.PrinterQueue}" sortBy="#{pl.queue}" filterBy="#{pl.queue}" filterMatchMode="contains">
+                        <p:column headerText="#{msgs.PrinterQueue}" 
+                                  sortBy="#{pl.queue}" 
+                                  filterBy="#{pl.queue}"
+                                  class="headerPrinterListFirstColumn"
+                                  filterMatchMode="contains">
                             <h:outputText value="#{pl.queue}" />
                         </p:column>
                         <p:column headerText="#{msgs.PrinterName}">
@@ -108,7 +112,7 @@
                                              action="#{printAdminBean.actionStartAclChange(pl)}"
                                              oncomplete="PF('dlgAcl').show();"
                                              disabled="false" 
-                                             
+
                                              />
                             <p:tooltip for="btnAclPrinter" position="left" value="#{msgs.PrinterPermission_tooltip}"/>
 
@@ -126,10 +130,10 @@
 
                         </p:column>
                     </p:dataTable>
-           
-
                     <p:row>
+                        <br/>
                         <p:commandButton
+                            styleClass="ui-button-danger"
                             id="btnAddPrinter"
                             type="submit"
                             icon="pi pi-plus"
@@ -138,15 +142,10 @@
                             value="#{msgs.PrinterAddPrinter}"/>
                     </p:row>
                 </p:panel>
-  
                 <!--===============================================================================================================-->
-
                 <p:panel id="panelLabelSettings"
                          header="#{msgs.LabelSettings}"
                          styleClass="panelTitleInfoColor">
-                    <!--collapsible="false"-->
-                    <!--look="info"-->
-
                     <p:dataTable id="labelList"
                                  value="#{printAdminBean.labels}"
                                  styleClass="cloudNodeList"
@@ -161,7 +160,11 @@
                         <!--rowClasses="row-striping"-->
 
 
-                        <p:column headerText="#{msgs.LabelName}" sortBy="#{ll.name}" filterBy="#{ll.name}" filterMatchMode="contains">
+                        <p:column headerText="#{msgs.LabelName}" 
+                                  style="headerLabelListFirstColumn"
+                                  sortBy="#{ll.name}" 
+                                  filterBy="#{ll.name}" 
+                                  filterMatchMode="contains">
                             <h:outputText value="#{ll.name}" />
                         </p:column>
                         <p:column headerText="#{msgs.LabelType}">
@@ -171,7 +174,6 @@
                             <h:outputText value="#{ll.printerModel}" />
                         </p:column>
                         <p:column headerText="#{msgs.Tools}">
-
                             <p:commandButton id="btnSelectLabel"
                                              icon="pi pi-pencil"
                                              styleClass="ui-button-success"
@@ -191,9 +193,10 @@
                             </p:commandButton>
                         </p:column>
                     </p:dataTable>
-
                     <p:row>
+                        <br/>
                         <p:commandButton  id="btnAddLabel"
+                                          styleClass="ui-button-danger"
                                           type="submit"
                                           icon="pi pi-plus"
                                           ajax="false"
@@ -201,16 +204,19 @@
                                           value="#{msgs.LabelAddLabel}"/>
                     </p:row>
                 </p:panel>
-
                 <!--===============================================================================================================-->
-
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton id="btnConfirmOk" value="Ok" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
-                    <p:commandButton id="btnConfirmCancel" value="#{msgs.Cancel}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+                    <p:commandButton id="btnConfirmOk" 
+                                     value="Ok" 
+                                     type="button" 
+                                     styleClass="ui-confirmdialog-yes" 
+                                     icon="fa fa-check" />
+                    <p:commandButton id="btnConfirmCancel" 
+                                     value="#{msgs.Cancel}" 
+                                     type="button" 
+                                     styleClass="ui-confirmdialog-no" 
+                                     icon="fa fa-close" />
                 </p:confirmDialog>
-
-                <!--</p:row>-->
-                <!--</p:panelGrid>-->
             </p:panel>
         </h:form>
     </h:body>
