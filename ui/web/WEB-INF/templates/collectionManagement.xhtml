@@ -186,7 +186,7 @@
                                              ajax="true"
                                              style="margin:0 0.5rem;"
                                              action ="#{collectionBean.actionCreate()}"
-                                             oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                                             oncomplete="if(!args.validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
                             <!--onclick="ajax:collectionBean.actionCreate();"-->
 
                             <p:commandButton value="#{msgs.collMgr_modal_button_edit}"
@@ -196,7 +196,7 @@
                                              ajax="true"
                                              style="margin:0 0.5rem;"
                                              action="#{collectionBean.actionUpdate()}"
-                                             oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                                             oncomplete="if(!args.validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
                             <!--onclick="ajax:collectionBean.actionUpdate();"-->
 
                             <p:commandButton value="#{msgs.collMgr_modal_button_deletedocuments}"
@@ -207,7 +207,7 @@
                                              styleClass="ui-button-danger"
                                              style="margin: 0 0.5rem;"
                                              action="#{collectionBean.actionClear()}"
-                                             oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                                             oncomplete="if(!args.validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
                             <!--onclick="ajax:collectionBean.actionClear();"-->
 
                             <p:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
