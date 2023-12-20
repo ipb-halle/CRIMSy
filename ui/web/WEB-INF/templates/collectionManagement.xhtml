@@ -250,8 +250,9 @@
                             <!--===============================================================================================================-->
                             <p:selectBooleanCheckbox
                                 value="#{collectionBean.showLocalCollectionsOnly}"
-                                itemLabel="#{msgs.collMgr_datatable_localCollections}"
-                                />
+                                itemLabel="#{msgs.collMgr_datatable_localCollections}" >
+                                <p:ajax update="@form frmCollectionList:collectionList"/>
+                            </p:selectBooleanCheckbox>
                             <!--update="@form frmCollectionList:collectionList"-->
                             <!--===============================================================================================================-->
                             <p:commandButton
