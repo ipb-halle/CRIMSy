@@ -26,53 +26,52 @@
       xmlns:ui="http://java.sun.com/jsf/facelets">
 
 
-<h:body>
-    <ui:composition>
-        <h2>#{msgs.CloudNodes}</h2>
+    <h:body>
+        <ui:composition>
+            <h2>#{msgs.CloudNodes}</h2>
 
-        <!-- CloudNode list -->
+            <!-- CloudNode list -->
 
-        <h:form id="frmCloudNodeList" style="border:1px solid #029ACF;border-radius:3px;">
-            <p:dataTable id="cloudNodeList"
-                         value="#{cloudNodeBean.cloudNodes}"
-                         styleClass="cloudNodeList"
-                         striped="true"
-                         responsive="false"
-                         customOptions="autoWidth:true"
-                         fixedHeader="true"
-                         var="cn"
-                         saveState="false">
+            <h:form id="frmCloudNodeList" style="border:1px solid #029ACF;border-radius:3px;">
+                <p:dataTable id="cloudNodeList"
+                             value="#{cloudNodeBean.cloudNodes}"
+                             styleClass="cloudNodeList"
+                             var="cn">
 
-                <p:column headerText="#{msgs.Cloud}" sortBy="#{cn.cloud.name}" filterBy="#{cn.cloud.name}" filterMatchMode="contains">
-                <h:outputText value="#{cn.cloud.name}"/>
-                </p:column>
+                    <p:column headerText="#{msgs.Cloud}" 
+                              class="headerCloudNodeManagementFirstColumn"
+                              sortBy="#{cn.cloud.name}" 
+                              filterBy="#{cn.cloud.name}" 
+                              filterMatchMode="contains">
+                        <h:outputText value="#{cn.cloud.name}"/>
+                    </p:column>
 
-                <p:column headerText="#{msgs.Institution}">
-                <h:outputText value="#{cn.node.institution}"/>
-                </p:column>
+                    <p:column headerText="#{msgs.Institution}">
+                        <h:outputText value="#{cn.node.institution}"/>
+                    </p:column>
 
-                <p:column headerText="#{msgs.Rank}">
-                <h:outputText value="#{cn.rank}" />
-                </p:column>
+                    <p:column headerText="#{msgs.Rank}">
+                        <h:outputText value="#{cn.rank}" />
+                    </p:column>
 
-                <p:column headerText="#{msgs.Status}">
-                    <div class="#{cn.status}">#{msgs[cn.status]}</div>
-                </p:column>
+                    <p:column headerText="#{msgs.Status}">
+                        <div class="#{cn.status}">#{msgs[cn.status]}</div>
+                    </p:column>
 
-                <p:column headerText="#{msgs.Tools}" style="min-width:50px">
-                    <p:commandButton style="padding: 0 4px;"
-                                     icon="pi pi-pencil"
-                                     look="link"
-                                     ajax="true"
-                                     type="submit"
-                                     update="@form"
-                                     action="#{cloudNodeBean.actionDoNothing(cn)}"
-                                     />
-                                     <!--onclick="ajax:cloudNodeBean.actionDoNothing(cn);"-->
-                </p:column>
-
-            </p:dataTable>
-        </h:form>
-    </ui:composition>
-</h:body>
+                    <p:column headerText="#{msgs.Tools}" style="min-width:50px">
+                        <p:commandButton style="padding: 0 4px;"
+                                         styleClass="ui-button-success"
+                                         icon="pi pi-pencil"
+                                         ajax="true"
+                                         type="submit"
+                                         update="@form"
+                                         process="@this"
+                                         action="#{cloudNodeBean.actionDoNothing(cn)}"
+                                         />
+                        <!--onclick="ajax:cloudNodeBean.actionDoNothing(cn);"-->
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </ui:composition>
+    </h:body>
 </html>

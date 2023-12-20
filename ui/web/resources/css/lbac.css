@@ -38,7 +38,8 @@ body .ui-button.ui-button-icon-only {
     padding:0;
 }
 
-.headerCollectionInfoFirstColumn{
+
+.headerCollectionInfoFirstColumn, .headerCloudNodeManagementFirstColumn {
     display: flex;
     flex-direction: row;
     align-items: center;
