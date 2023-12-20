@@ -263,9 +263,8 @@
                                 action="#{collectionBean.actionShowNewCollectionDlg()}"
                                 rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}"
                                 oncomplete="PF('collectionDialogWidgetVar').show()">
-                                <!--onclick="ajax:collectionBean.actionShowNewCollectionDlg();"-->
-
-                                <!--<f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />-->
+                                <p:ajax event="click" listener="#{collectionBean.setActiveCollection(collection)}"/>
+                                <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                             </p:commandButton>
 
                             <!--===============================================================================================================-->
@@ -282,8 +281,7 @@
                                     action="#{collectionBean.refreshCollectionSearch()}"
                                     update="growlMsg frmCollectionList:collectionList frmCollectionList:searchPoll"
                                     onclick="javascript:frmCollectionListCollectionListWidget.DataTable().destroy();ajax:collectionBean.refreshCollectionSearch();">
-                                    <!--tooltip="#{collectionBean.getToolTipForRefresh()}"-->
-
+                                    <p:tooltip for="collectionRefreshButton" value="#{collectionBean.getToolTipForRefresh()}" position="right"/>
                                 </p:commandButton>
                             </p:badge>
 
@@ -326,10 +324,10 @@
                     <!--===============================================================================================================-->
                     <p:column headerText="#{msgs.collMgr_datatable_header_numDocs}">
                         <p:badge
-                                 rendered="#{collection.node.local}"
-                                 styleClass="mr-2" size="large" severity="warning"
-                                 value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
-                            <!--tooltip="#{msgs.collMgr_tooltip_numDocs}"-->
+                            rendered="#{collection.node.local}"
+                            styleClass="mr-2" size="large" severity="warning"
+                            value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
+                       <!--tooltip="#{msgs.collMgr_tooltip_numDocs}"-->
 
                         <h:outputText value="#{collection.indexPath}" />
                     </p:column>
@@ -340,6 +338,7 @@
                     <!--===============================================================================================================-->
                     <p:column headerText="#{msgs.collMgr_datatable_header_tools}" >
                         <p:commandButton
+                            id="successButton"
                             style="padding: 0 4px;"
                             styleClass="ui-button-success"
                             disabled="#{!collectionBean.isEditAllowed(collection)}"
@@ -350,12 +349,13 @@
                             update="growlMsg modalCollection frmModalCollection"
                             action="#{collectionBean.setEditMode('UPDATE')}"
                             oncomplete="PF('collectionDialogWidgetVar').show();">
+                            <p:ajax event="click" listener="#{collectionBean.setActiveCollection(collection)}"/>
+                            <p:tooltip for="successButton" value="#{msgs.collMgr_tooltip_editCollection}" position="right"/>
                             <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                            <!--tooltip="#{msgs.collMgr_tooltip_editCollection}"-->
-                            <!--onclick="ajax:collectionBean.setActiveCollection(collection);{collectionBean.setEditMode('UPDATE')}"-->
                         </p:commandButton>
                         <!--===============================================================================================================-->
                         <p:commandButton
+                            id="backwardBtn"
                             style="padding: 0 4px; margin: 0 0.5rem;"
                             icon="pi pi-fast-backward"
                             ajax="true"
@@ -364,11 +364,13 @@
                             disabled="#{!collectionBean.isClearAllowed(collection)}"
                             type="submit"
                             action="#{collectionBean.setEditMode('CLEAR')}"
-                            oncomplete="PF('collectionDialogWidgetVar').show();" />
-                        <!--onclick="ajax:collectionBean.setEditMode('CLEAR');collectionBean.setActiveCollection(collection);"-->
-                            <!--tooltip="#{msgs.collMgr_tooltip_clearCollection}"-->
+                            oncomplete="PF('collectionDialogWidgetVar').show();" >
+                            <p:ajax event="click" listener="#{collectionBean.setActiveCollection(collection)}"/>
+                            <p:tooltip for="backwardBtn" value="#{msgs.collMgr_tooltip_clearCollection}" position="right"/>
+                        </p:commandButton>
                         <!--===============================================================================================================-->
                         <p:commandButton
+                            id="trashBtn"
                             style="padding: 0 4px;margin-right: 0.5rem;"
                             styleClass="ui-button-danger"
                             icon="pi pi-trash"
@@ -377,14 +379,15 @@
                             update="growlMsg modalCollection frmModalCollection"
                             type="submit"
                             disabled="#{!collectionBean.isDeleteAllowed(collection)}"
-                            action="#{collectionBean.setEditMode('DELETE')}"
-                            oncomplete="PF('collectionDialogWidgetVar').show();">
-                            <!--tooltip="#{msgs.collMgr_tooltip_deleteCollection}"-->
-                            <!--onclick="ajax:collectionBean.setEditMode('DELETE');collectionBean.setActiveCollection(collection);"-->
+                            oncomplete="PF('collectionDialogWidgetVar').show();"
+                            action="#{collectionBean.setEditMode('DELETE')}">
+                            <p:ajax event="click" listener="#{collectionBean.setActiveCollection(collection)}"/>
+                            <p:tooltip for="trashBtn" value="#{msgs.collMgr_tooltip_deleteCollection}" position="right"/>
                             <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                         </p:commandButton>
                         <!--===============================================================================================================-->
                         <p:commandButton
+                            id="usrBtn"
                             style="padding: 0 4px;"
                             icon="pi pi-user"
                             ajax="true"
@@ -394,7 +397,9 @@
                             action="#{collectionBean.actionStartAclChange(collection)}"
                             oncomplete="PF('dlgAcl').show();"
                             disabled="#{!collectionBean.isPermissionEditAllowed(collection)}" />
-                            <!--tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"-->
+
+                        <p:tooltip for="usrBtn" value="#{msgs.collMgr_tooltip_changeUserPermission}" position="right"/>
+
                     </p:column>
                     <!--===============================================================================================================-->
                 </p:dataTable>
