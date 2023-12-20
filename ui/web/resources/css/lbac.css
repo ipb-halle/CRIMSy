@@ -38,6 +38,24 @@ body .ui-button.ui-button-icon-only {
     padding:0;
 }
 
+.headerCollectionInfoFirstColumn{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+}
+
+.ui-helper-hidden{
+    display: none;
+}
+
+tbody > tr > td >.ui-overlay-badge > .bdgCollectionInfo.classA.classB{
+    margin:  10px -1rem;
+    min-width: 1rem;
+    height: 1rem;
+    line-height: 1rem;
+}
 /*Group Management the last column Tools has problems with height*/
 /*body .ui-datatable thead th{
     height: 4.3rem !important;

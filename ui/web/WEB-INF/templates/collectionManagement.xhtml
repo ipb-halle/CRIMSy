@@ -301,14 +301,11 @@
                     </f:facet>
                     <!--===============================================================================================================-->
                     <p:column headerText="#{msgs.collMgr_datatable_header_name}"
+                              class="headerCollectionInfoFirstColumn"
                               sortBy="#{collection.name}"
                               filterBy="#{collection.name}"
                               filterMatchMode="contains">
-
-                        <p:badge value="i"
-                                 style="position:absolute;top:-7px; right:38px;background-color: #4e6aca;">
-
-
+                        <p:badge value="i" class="bdgCollectionInfo classA classB">
                             <h:outputText value="#{collection.name}" />
                         </p:badge>
                     </p:column>
