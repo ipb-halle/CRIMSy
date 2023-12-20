@@ -69,6 +69,10 @@ public class TaxonomyLevelController implements Serializable {
         return levels.get(0).getRank();
     }
 
+    public List<TaxonomyLevel> getLevels() {
+        return this.levels;
+    }
+
     public void setLevels(List<TaxonomyLevel> levels) {
         this.levels = levels;
     }
