@@ -23,7 +23,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:o="http://omnifaces.org/ui"
       xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
@@ -32,8 +32,7 @@
                 <h:outputText value="#{msgs.myReports_title}" />
             </h2>
 
-            <h:form style="border:1px solid #029ACF;border-radius:3px;">
-
+            <h:form class="formPanelStyleBlue">
 
                 <!--Refresh Button-->
                 <!--********************************************************-->
@@ -60,8 +59,7 @@
                         headerText="#{msgs.myReports_tableheader_submissionDate}"
                         sortBy="#{job.jobDate}"
                         sortOrder="descending">
-
-                        <h:outputFormat 
+                        <h:outputFormat
                             value="{0} ({1})">
                             <o:param value="#{nwc:formatDateWithTimezone(job.jobDate)}" />
                             <o:param

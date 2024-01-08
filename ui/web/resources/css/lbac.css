@@ -32,7 +32,8 @@ body .ui-button.ui-button-icon-only {
 }
 
 .formPanelStyleBlue{
-    border:1px solid #029ACF;border-radius:3px;
+    border:1px solid #029ACF;
+    border-radius:3px;
 }
 
 .accountSettingsUserDataTabInputField{
