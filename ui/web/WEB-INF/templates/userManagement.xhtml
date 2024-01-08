@@ -509,7 +509,6 @@
                                     rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
                                     update="modalUserDialog frmModalUserDialog frmModalPassword"
                                     action="#{userMgrBean.setModeCreate()}"
-                                    styleClass="ui-button-danger"
                                     oncomplete="PF('userDialogWidgetVar').show();">
 
                                     <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -524,11 +523,8 @@
                                     rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
                                     action="#{userMgrBean.refreshUserList()}"
                                     />
-                                <!--onclick="ajax:userMgrBean.refreshUserList();"-->
-
                             </th>
                         </tr>
-
                         <tr>
                             <th></th>
                             <th></th>

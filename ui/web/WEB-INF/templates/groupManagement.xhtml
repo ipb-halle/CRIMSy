@@ -47,7 +47,7 @@
                  conjunction with p:dialog's modal="true" leads to an
                  unresponsive input field (not clickable, no keyboard inputs). -->
 
-            <h:form id="frmModalGroupDialog" style="border:1px solid #029ACF;border-radius:3px;">
+            <h:form id="frmModalGroupDialog" class="formPanelStyleBlue">
 
                 <p:panel  header="GroupData"
                           styleClass="panelTitleInfoColor">
@@ -171,7 +171,7 @@
             resizable="false"
             positionType="absolute"
             width="900">
-            <h:form id="frmModalMembershipDialog" style="border:1px solid #029ACF;border-radius:">
+            <h:form id="frmModalMembershipDialog" class="formPanelStyleBlue">
 
                 <h:outputText ><strong><h4>#{msgs.groupMgr_Members}</h4></strong></h:outputText>
                 <p:dataTable id="membershipList"
@@ -185,11 +185,11 @@
                         <tr>
                             <th colspan="5">
                                 <p:commandButton
-                                                 value="#{msgs.userMgr_showNested}"
-                                                 icon="pi pi-#{groupMgrBean.nestedFlag ? 'toggle-on' : 'toggle-off'}"
-                                                 ajax="true"
-                                                 update="frmModalMembershipDialog"
-                                                 action="#{groupMgrBean.actionToggleNestedFlag()}"/>
+                                    value="#{msgs.userMgr_showNested}"
+                                    icon="pi pi-#{groupMgrBean.nestedFlag ? 'toggle-on' : 'toggle-off'}"
+                                    ajax="true"
+                                    update="frmModalMembershipDialog"
+                                    action="#{groupMgrBean.actionToggleNestedFlag()}"/>
                             </th>
                         </tr>
                     </f:facet>
@@ -211,7 +211,7 @@
                         <h:outputText  value="#{ms.nested ? msgs.YES : msgs.NO}"/>
                     </p:column>
 
-                    <p:column headerText="#{msgs.Tools}" style="min-width:30px">
+                    <p:column headerText="#{msgs.Tools}">
                         <p:commandButton
                             styleClass="ui-button-danger"
                             icon="pi pi-trash"
@@ -245,9 +245,9 @@
                         <h:outputText  value="#{member.getSubSystemType().toString()}" />
                     </p:column>
 
-                    <p:column headerText="#{msgs.Tools}" style="min-width:30px">
+                    <p:column headerText="#{msgs.Tools}">
                         <p:commandButton
-                            styleClass="tstGrpMgrAddMember"
+                            styleClass="ui-button-danger"
                             icon="pi pi-user-plus"
                             ajax="true"
                             update="frmModalMembershipDialog"
@@ -274,17 +274,17 @@
 
         <!-- group list -->
 
-        <h:form id="frmGroupList" style="border:1px solid #029ACF;border-radius:3px;">
+        <h:form id="frmGroupList" class="formPanelStyleBlue">
             <p:dataTable id="groupList"
                          value="#{groupMgrBean.groupList}"
-                         styleClass="groupList"
+                         class="table"
                          var="group">
 
                 <f:facet name="header">
                     <tr>
                         <th colspan="4">
                             <p:commandButton
-                                styleClass="ui-button-Primary"
+                                styleClass="ui-button-danger"
                                 style="margin:0 2px;"
                                 icon="pi pi-user-plus"
                                 value="#{msgs.groupMgr_newGroup}"
@@ -313,63 +313,65 @@
                     </tr>
 
                 </f:facet>
+                <div>
 
-                <p:column headerText="#{msgs.Name}" filterBy="#{group.name}" filterMatchMode="contains">
-                    <h:outputText value="#{group.name}" />
-                </p:column>
+                    <p:column headerText="#{msgs.Name}" filterBy="#{group.name}" filterMatchMode="contains">
+                        <h:outputText value="#{group.name}" />
+                    </p:column>
 
-                <p:column headerText="#{msgs.Type}" filterBy="#{group.getSubSystemType().toString()}" filterMatchMode="contains">
-                    <h:outputText value="#{group.getSubSystemType().toString()}"/>
-                </p:column>
+                    <p:column headerText="#{msgs.Type}" filterBy="#{group.getSubSystemType().toString()}" filterMatchMode="contains">
+                        <h:outputText value="#{group.getSubSystemType().toString()}"/>
+                    </p:column>
 
-                <p:column headerText="#{msgs.Institution}" filterBy="#{group.node.institution}" filterMatchMode="contains">
-                    <h:outputText value="#{group.node.institution}"/>
-                </p:column>
+                    <p:column headerText="#{msgs.Institution}" filterBy="#{group.node.institution}" filterMatchMode="contains">
+                        <h:outputText value="#{group.node.institution}"/>
+                    </p:column>
 
 
-                <p:column headerText="#{msgs.Tools}"
-                          style="display:flex; flex-direction: row;justify-content: center;align-items: center;">
+                    <p:column headerText="#{msgs.Tools}"
+                              style="display:flex; flex-direction: row;justify-content: center;align-items: center;">
 
-                    <p:commandButton
-                        style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
-                        styleClass="ui-button-success"
-                        icon="pi pi-pencil"
-                        ajax="true"
-                        disabled="#{groupMgrBean.isOperationForbidden(group, 'edit')}"
-                        update="modalGroupDialog frmModalGroupDialog"
-                        action="#{groupMgrBean.setModeUpdate(group)}"
-                        oncomplete="PF('groupEditDialogWidgetVar').show();">
+                        <p:commandButton
+                            style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
+                            styleClass="ui-button-success"
+                            icon="pi pi-pencil"
+                            ajax="true"
+                            disabled="#{groupMgrBean.isOperationForbidden(group, 'edit')}"
+                            update="modalGroupDialog frmModalGroupDialog"
+                            action="#{groupMgrBean.setModeUpdate(group)}"
+                            oncomplete="PF('groupEditDialogWidgetVar').show();">
 
-                        <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                    </p:commandButton>
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                        </p:commandButton>
 
-                    <!-- possibly 'modalMembershipDialog.DataTable().responsive.recalc();' could be
-                         necessary for responsive tables within a modal form -->
+                        <!-- possibly 'modalMembershipDialog.DataTable().responsive.recalc();' could be
+                             necessary for responsive tables within a modal form -->
 
-                    <p:commandButton
-                        style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
-                        styleClass="ui-button-info"
-                        icon="pi pi-users"
-                        ajax="true"
-                        disabled="#{groupMgrBean.isOperationForbidden(group, groupMgrBean.getOPERATIONNAME_MANAGE_MEMBERS())}"
-                        update="modalMembershipDialog frmModalMembershipDialog"
-                        action="#{groupMgrBean.setModeUpdate(group)}"
-                        oncomplete="PF('groupGroupMembershipsDialogWidgetVar').show();" />
+                        <p:commandButton
+                            style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
+                            styleClass="ui-button-info"
+                            icon="pi pi-users"
+                            ajax="true"
+                            disabled="#{groupMgrBean.isOperationForbidden(group, groupMgrBean.getOPERATIONNAME_MANAGE_MEMBERS())}"
+                            update="modalMembershipDialog frmModalMembershipDialog"
+                            action="#{groupMgrBean.setModeUpdate(group)}"
+                            oncomplete="PF('groupGroupMembershipsDialogWidgetVar').show();" />
 
-                    <p:commandButton
-                        style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
-                        styleClass="ui-button-danger"
-                        icon="pi pi-trash"
-                        ajax="true"
-                        disabled="#{groupMgrBean.isDeactivationForbidden(group)}"
-                        update="modalGroupDialog frmModalGroupDialog"
-                        action="#{groupMgrBean.setModeDelete(group)}"
-                        oncomplete="PF('groupEditDialogWidgetVar').show();">
+                        <p:commandButton
+                            style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
+                            styleClass="ui-button-danger"
+                            icon="pi pi-trash"
+                            ajax="true"
+                            disabled="#{groupMgrBean.isDeactivationForbidden(group)}"
+                            update="modalGroupDialog frmModalGroupDialog"
+                            action="#{groupMgrBean.setModeDelete(group)}"
+                            oncomplete="PF('groupEditDialogWidgetVar').show();">
 
-                        <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 
-                    </p:commandButton>
-                </p:column>
+                        </p:commandButton>
+                    </p:column>
+                </div>
             </p:dataTable>
         </h:form>
     </h:body>
