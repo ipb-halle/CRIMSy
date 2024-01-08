@@ -29,22 +29,17 @@
     <h:body>
         <ui:composition>
             <p:tab title="#{msgs.admission_plugins_title}">
-                <h:form style="border:1px solid #029ACF;border-radius:3px;">
+                <h:form class="formPanelStyleBlue">
                     <p:panel header="#{msgs.admission_plugins_molPlugin_title}"
-                             styleClass="panelTitleInfoColor ui-g-12"
-                             >
-                        <!--collapsible="false"-->
-                        <!--look="info"-->
+                             styleClass="panelTitleInfoColor ui-g-12">
                         <p:panelGrid columns="3" layout="flex" columnClasses="ui-g-12 ui-md-2, ui-g-12 ui-md-5, ui-g-12 ui-md-5">
                             <h:panelGroup>
-
                                 <p:selectOneRadio id="molPluginSelection"
                                                   layout="grid" columns="1"
                                                   value="#{pluginSettingsDialogControllerBean.molPluginType}">
                                     <f:selectItems value="#{pluginSettingsDialogControllerBean.availableMolPluginTypes}" />
                                     <p:ajax update="editorMolPluginPreview viewerMolPluginPreview"/>
                                 </p:selectOneRadio>
-
                                 <br />
                                 <h:outputText value="#{msgs.admission_plugins_molPlugin_loadExamples}" />
                                 <br />
@@ -72,7 +67,6 @@
                                                  action="#{pluginSettingsDialogControllerBean.actionLoadGramicidinS()}"
                                                  update="editorMolPluginPreview viewerMolPluginPreview" />
                             </h:panelGroup>
-
                             <h:panelGroup>
                                 <h:outputText value="#{msgs.admission_plugins_molPlugin_editorPreview}" />
                                 <br />
@@ -84,7 +78,6 @@
                                               format="MDLV2000"
                                               border="true" />
                             </h:panelGroup>
-
                             <h:panelGroup>
                                 <h:outputText value="#{msgs.admission_plugins_molPlugin_viewerPreview}" />
                                 <br />
@@ -102,6 +95,7 @@
                     <p:panel styleClass="text-center">
                         <p:commandButton ajax="true" process="molPluginSelection" update="growlMsg"
                                          action="#{pluginSettingsDialogControllerBean.actionSave}"
+                                         styleClass="ui-button-danger"
                                          value="#{msgs.Save}"/>
                     </p:panel>
                 </h:form>
