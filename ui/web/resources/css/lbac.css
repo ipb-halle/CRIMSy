@@ -30,6 +30,19 @@ body .ui-button.ui-button-icon-only {
     height: 22px ;
     margin-right: 0.15em;
 }
+
+.accountSettingsUserDataTabInputField{
+    width:100%;
+}
+
+body .ui-panel-content .ui-widget-content{
+    padding:5px ;
+}
+body .ui-message{
+    display: inline-block;
+    padding: 0;
+}
+
 .ui-button-text ui-c{
     padding:0;
 }
@@ -37,7 +50,6 @@ body .ui-button.ui-button-icon-only {
 .ui-button-text-only .ui-button-text {
     padding:0;
 }
-
 
 .headerCollectionInfoFirstColumn, .headerCloudNodeManagementFirstColumn, .headerPrinterListFirstColumn,.headerLabelListFirstColumn {
     display: flex;

@@ -28,24 +28,18 @@
     <h:body>
         <ui:composition>
             <p:tab title="#{msgs.admission_userProfile_tabTitle}"
-                   disabled="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}"
-                   >
-
+                   disabled="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}">
                 <h:form id="accountChange" style="border:1px solid #029ACF;border-radius:3px;">
-
                     <p:panel header="#{msgs.admission_userProfile_editProfile}"
-                             styleClass="panelTitleInfoColor"
-                             >
-
+                             styleClass="panelTitleInfoColor">
                         <f:facet name="heading" >
                             <h:outputText value="#{msgs.admission_userProfile_editProfile}"
                                           rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"/>
                             <h:outputText value="#{msgs.admission_userProfile_viewProfile}"
                                           rendered="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}"/>
                         </f:facet>
-
                         <p:outputLabel for="@next" value="ID" />
-                        <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="col-12 md:col-4">
                             <div class="ui-inputgroup">
                                 <div class="ui-inputgroup-addon"><i class="pi pi-cloud"></i></div>
                                 <p:inputText id="ID"
@@ -54,13 +48,13 @@
                                              disabled="true"
                                              placeholder=""
                                              required="false"
-                                             style="width:100%;background:#dddddd;">
+                                             class="accountSettingsUserDataTabInputField"
+                                             >
                                 </p:inputText>
                             </div>
                         </div>
-
                         <p:outputLabel for="@next" value="Name" />
-                        <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="col-12 md:col-4">
                             <div class="ui-inputgroup">
                                 <div class="ui-inputgroup-addon"><i class="pi pi-user"></i></div>
                                 <!-- name and login changes must be arranged by administrator -->
@@ -69,16 +63,14 @@
                                              label="#{msgs.Name}"
                                              placeholder="Username"
                                              disabled="true"
-                                             style="width:100%;background:#dddddd;">
-
+                                             class="accountSettingsUserDataTabInputField"
+                                             >
                                 </p:inputText>
-
                             </div>
                         </div>
                         <p:message for="@previous"/>
-
                         <p:outputLabel for="@next" value="Login" />
-                        <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="col-12 md:col-4" >
                             <div class="ui-inputgroup">
                                 <div class="ui-inputgroup-addon"><i class="pi pi-star"></i></div>
                                 <p:inputText id="login"
@@ -86,14 +78,15 @@
                                              label="#{msgs.Login}"
                                              placeholder="login name"
                                              disabled="true"
-                                             style="width:100%;background:#dddddd;">
+                                             class="accountSettingsUserDataTabInputField"
+                                             >
 
                                 </p:inputText>
                             </div>
                         </div>
 
                         <p:outputLabel for="@next" value="Shortcut" />
-                        <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="col-12 md:col-4" >
                             <div class="ui-inputgroup">
                                 <div class="ui-inputgroup-addon"><i class="pi pi-star"></i></div>
                                 <p:inputText
@@ -102,7 +95,8 @@
                                     label="#{msgs.userMgr_shortcut}"
                                     placeholder="#{msgs.userMgr_shortcut_placeholder}"
                                     disabled="true"
-                                    style="width:100%;background:#dddddd;">
+                                    class="accountSettingsUserDataTabInputField"
+                                    >
 
                                 </p:inputText>
 
@@ -111,7 +105,7 @@
                         <p:message for="@previous"/>
 
                         <p:outputLabel for="@next" value="Email" />
-                        <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="col-12 md:col-4">
                             <div class="ui-inputgroup">
                                 <div class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></div>
                                 <p:inputText id="email"
@@ -119,7 +113,8 @@
                                              label="#{msgs.Email}"
                                              type="email"
                                              required="false"
-                                             style="width:100%;background:#dddddd;">
+                                             class="accountSettingsUserDataTabInputField"
+                                             >
                                     <f:validator validatorId="EmailAddressValidator"/>
 
                                 </p:inputText>
@@ -129,7 +124,7 @@
                         <p:message for="@previous"/>
 
                         <p:outputLabel for="@next" value="Phone" />
-                        <div class="col-12 md:col-4" style="margin-bottom:1rem;">
+                        <div class="col-12 md:col-4">
                             <div class="ui-inputgroup">
                                 <div class="ui-inputgroup-addon"><i class="pi pi-mobile"></i></div>
                                 <p:inputText id="phone"
@@ -137,7 +132,8 @@
                                              label="#{msgs.Phone}"
                                              type="tel"
                                              required="false"
-                                             style="width:100%;background:#dddddd;">
+                                             class="accountSettingsUserDataTabInputField"
+                                             >
 
                                 </p:inputText>
 
@@ -149,6 +145,7 @@
                             <p:commandButton type="submit"
                                              ajax="true"
                                              update="@form growlMsg"
+                                             styleClass="ui-button-danger"
                                              rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"
                                              action="#{userBean.actionModify}"
                                              value="#{msgs.Save}"/>
