@@ -31,6 +31,14 @@ body .ui-button.ui-button-icon-only {
     margin-right: 0.15em;
 }
 
+body .newUserBtnUserMangnt{
+    margin-right:  5px;
+    background: #d32f2f;
+    border: #d32f2f;
+    box-shadow: 10px 5px 3px 0px rgba(0, 0, 0, 0.50);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.50), 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
 .formPanelStyleBlue{
     border:1px solid #029ACF;
     border-radius:3px;

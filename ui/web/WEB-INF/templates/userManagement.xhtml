@@ -502,13 +502,14 @@
                         <tr>
                             <th colspan="9">
                                 <p:commandButton
-                                    styleClass="ui-button-Primary"
                                     icon="pi pi-user-plus"
                                     value="#{msgs.userMgr_newUser}"
+                                    class="newUserBtnUserMangnt"
                                     ajax="true"
                                     rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
                                     update="modalUserDialog frmModalUserDialog frmModalPassword"
                                     action="#{userMgrBean.setModeCreate()}"
+                                    styleClass="ui-button-danger"
                                     oncomplete="PF('userDialogWidgetVar').show();">
 
                                     <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
