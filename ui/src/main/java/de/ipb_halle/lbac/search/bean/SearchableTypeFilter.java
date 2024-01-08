@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author fmauz
@@ -28,45 +31,30 @@ public class SearchableTypeFilter {
     private boolean experiments;
     private boolean projects;
     private boolean documents;
-
-    public boolean isMaterials() {
-        return materials;
+    
+    List<String> types=new ArrayList<>();
+    List<String> selectedTypes=new ArrayList<>();
+    
+    public SearchableTypeFilter(){
+        types.add("materials");
+        types.add("items");
+        types.add("experiments");
+        types.add("documents");
+        types.add("projects");
+    }
+    
+    public List<String> getTypes(){
+        return types;
+    }
+    public void setTypes(List<String> types){
+        this.types=types;
     }
 
-    public void setMaterials(boolean materials) {
-        this.materials = materials;
+    public List<String> getSelectedTypes() {
+        return selectedTypes;
     }
 
-    public boolean isItems() {
-        return items;
+    public void setSelectedTypes(List<String> selectedTypes) {
+        this.selectedTypes = selectedTypes;
     }
-
-    public void setItems(boolean items) {
-        this.items = items;
-    }
-
-    public boolean isExperiments() {
-        return experiments;
-    }
-
-    public void setExperiments(boolean experiments) {
-        this.experiments = experiments;
-    }
-
-    public boolean isProjects() {
-        return projects;
-    }
-
-    public void setProjects(boolean projects) {
-        this.projects = projects;
-    }
-
-    public boolean isDocuments() {
-        return documents;
-    }
-
-    public void setDocuments(boolean documents) {
-        this.documents = documents;
-    }
-
 }

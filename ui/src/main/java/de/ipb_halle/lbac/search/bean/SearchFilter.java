@@ -87,24 +87,22 @@ public class SearchFilter {
         if (shouldMaterialsBeSearched()) {
             requests.add(createMaterialSearchRequest());
         }
-        if (typeFilter.isDocuments()) {
+        if (typeFilter.getSelectedTypes().contains(("document"))) {
             requests.add(createDocumentRequest());
         }
-        if (typeFilter.isItems() && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {
+        if (typeFilter.getSelectedTypes().contains("items") && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {
             requests.add(createItemRequest());
         }
         if (shouldExpBeSearched()) {
             requests.addAll(createExperimentRequests());
         }
-        if (typeFilter.isProjects()) {
-
-        }
+       
         return requests;
     }
 
     private boolean shouldExpBeSearched() {
         Molecule m = new Molecule(structureString, 0);
-        return typeFilter.isExperiments()
+        return typeFilter.getSelectedTypes().contains("experiments")
                 && (!searchTerms.trim().isEmpty()
                 || !m.isEmptyMolecule());
     }
@@ -112,7 +110,7 @@ public class SearchFilter {
     private boolean shouldMaterialsBeSearched() {
         Molecule m = new Molecule(structureString, 0);
 
-        return typeFilter.isMaterials()
+        return typeFilter.getSelectedTypes().contains("materials")
                 && (!searchTerms.trim().isEmpty()
                 || !m.isEmptyMolecule());
     }
@@ -144,11 +142,6 @@ public class SearchFilter {
         materialTypeFilter.setBiomaterial(true);
         materialTypeFilter.setSequences(true);
         materialTypeFilter.setStructures(true);
-        typeFilter.setDocuments(true);
-        typeFilter.setExperiments(true);
-        typeFilter.setMaterials(true);
-        typeFilter.setItems(true);
-
     }
 
     private SearchRequest createDocumentRequest() {

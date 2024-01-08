@@ -197,74 +197,65 @@
                                 </div>
 
 
-                                <p:tabView
-                                    rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
-                                    <p:tab title="#{msgs.searchMgr_advancedSearch_types}">
 
-                                        <div style="display: flex;flex-direction: row;justify-content: space-between;">
-                                            <div>
-                                                <h:outputText
-                                                    value="#{msgs.searchMgr_advancedSearch_types}" style="margin-bottom:0.5rem;"/>
+                                <p:panel style="display: flex;flex-direction: column;justify-content: space-between;" 
+                                         rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
+                                    <div style="display:flex; justify-content: space-around">
+                                        <p:panel>
 
-                                                #{msgs.searchMgr_advancedSearch_material_types}
+                                            <h:outputText value="#{msgs.searchMgr_advancedSearch_types}" />
 
-                                                <h5 style="margin:5px 0;">#{msgs.search_category_DOCUMENT}</h5>
-                                                <p:selectBooleanCheckbox
-                                                    label="#{msgs.search_category_DOCUMENT}"
-                                                    value="#{searchBean.getSearchFilter().typeFilter.documents}"/>
-                                                <!--ajax="true"-->
-                                                <br/>
-                                                <h5 style="margin:5px 0;">#{msgs.search_category_STRUCTURE}"</h5>
-                                                <p:selectBooleanCheckbox
-                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
-                                                    label="#{msgs.search_category_STRUCTURE}"/>
-                                                <!--ajax="true"-->
-                                                <h5 style="margin:5px 0;">#{msgs.search_category_MATERIAL}</h5>
-                                                <p:selectBooleanCheckbox
-                                                    label="#{msgs.search_category_MATERIAL}"
-                                                    value="#{searchBean.getSearchFilter().typeFilter.materials}"/>
-                                                <!--ajax="true"-->
-                                                <!--update="@(.materialTypeFilter)"-->
-                                                <h5 style="margin:5px 0;">#{msgs.search_category_BIOMATERIAL}</h5>
-                                                <p:selectBooleanCheckbox
-                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
-                                                    label="#{msgs.search_category_BIOMATERIAL}"/>
-                                                <!--ajax="true"-->
-                                                <h5 style="margin:5px 0;">#{msgs.search_category_ITEM}</h5>
-                                                <p:selectBooleanCheckbox
-                                                    label="#{msgs.search_category_ITEM}"
-                                                    value="#{searchBean.getSearchFilter().typeFilter.items}"/>
-                                                <!--ajax="true"-->
-                                                <h5 style="margin:5px 0;">#{msgs.search_category_SEQUENCE}</h5>
-                                                <p:selectBooleanCheckbox
-                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
-                                                    label="#{msgs.search_category_SEQUENCE}"/>
-                                                <!--ajax="true"-->
-                                                <h5 style="margin:5px 0;">#{msgs.search_category_EXPERIMENT}</h5>
-                                                <p:selectBooleanCheckbox
-                                                    label="#{msgs.search_category_EXPERIMENT}"
-                                                    value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
-                                                <!--ajax="true"-->
-                                                <h5 style="margin:5px 0;">#{msgs.search_category_COMPOSITION}</h5>
-                                                <p:selectBooleanCheckbox
-                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.compositions}"
-                                                    label="#{msgs.search_category_COMPOSITION}"/>
-                                                <!--ajax="true"-->
+                                            <!--#{msgs.searchMgr_advancedSearch_material_types}-->
+                                            <p:selectCheckboxMenu id="typesMenu"
+                                                                  dynamic="true"
+                                                                  filter="false"
+                                                                  label="Types"
+                                                                  style="width: 15rem" panelStyle="width: 15rem" scrollHeight="250"
+                                                                  value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}">
+                                                <f:selectItems value="#{searchBean.getSearchFilter().typeFilter.types}"/>
+                                            </p:selectCheckboxMenu>
+                                        </p:panel>
+                                        <p:panel>
+                                            <h5 style="margin:5px 0;">#{msgs.search_category_STRUCTURE}"</h5>
+                                            <p:selectBooleanCheckbox
+                                                value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
+                                                label="#{msgs.search_category_STRUCTURE}"/>
+                                            <!--ajax="true"-->
 
-                                            </div>
+                                            <h5 style="margin:5px 0;">#{msgs.search_category_BIOMATERIAL}</h5>
+                                            <p:selectBooleanCheckbox
+                                                value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
+                                                label="#{msgs.search_category_BIOMATERIAL}"/>
+                                            <!--ajax="true"-->
 
-                                            <mol:molecule
-                                                id="molEditorSearchPage"
-                                                value="#{searchBean.getSearchFilter().structureString}"
-                                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                                format="MDLV2000"
-                                                border="true"
-                                                readonly="false">
-                                            </mol:molecule>
 
-                                        </div>
-                                    </p:tab>
-                                </p:tabView>
+                                            <h5 style="margin:5px 0;">#{msgs.search_category_SEQUENCE}</h5>
+                                            <p:selectBooleanCheckbox
+                                                value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
+                                                label="#{msgs.search_category_SEQUENCE}"/>
+
+                                            <!--ajax="true"-->
+
+                                            <h5 style="margin:5px 0;">#{msgs.search_category_COMPOSITION}</h5>
+                                            <p:selectBooleanCheckbox
+                                                value="#{searchBean.getSearchFilter().materialTypeFilter.compositions}"
+                                                label="#{msgs.search_category_COMPOSITION}"/>
+                                            <!--ajax="true"-->
+                                        </p:panel>
+
+                                    </div>
+
+                                    <mol:molecule
+                                        id="molEditorSearchPage"
+                                        value="#{searchBean.getSearchFilter().structureString}"
+                                        pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                        format="MDLV2000"
+                                        border="true"
+                                        readonly="false">
+                                    </mol:molecule>
+
+                                </p:panel>
+
                             </p:panel>
 
 
