@@ -23,7 +23,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:o="http://omnifaces.org/ui"
       xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
         <ui:composition>
@@ -57,16 +58,15 @@
                     <!--********************************************************-->
                     <p:column
                         headerText="#{msgs.myReports_tableheader_submissionDate}"
-                        sortBy="#{job.jobdate}"
+                        sortBy="#{job.jobDate}"
                         sortOrder="descending">
 
-                        <h:outputFormat
+                        <h:outputFormat 
                             value="{0} ({1})">
-                            <f:param value="#{nwc:formatDateWithTimezone(jobWrapper.job.jobdate)}" />
-                            <f:param
-                                value="#{job.jobdate}"
-                                />
-                            <!--converter="org.ocpsoft.PrettyTimeConverter"-->
+                            <o:param value="#{nwc:formatDateWithTimezone(job.jobDate)}" />
+                            <o:param
+                                value="#{job.jobDate}"
+                                converter="org.ocpsoft.PrettyTimeConverter" />
                         </h:outputFormat>
 
                     </p:column>
