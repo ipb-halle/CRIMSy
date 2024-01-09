@@ -219,11 +219,11 @@
                                             </p:selectCheckboxMenu>
                                         </p:outputPanel>
                                         <p:outputPanel styleClass="fff">
-                                             <p:selectCheckboxMenu id="r"
+                                            <p:selectCheckboxMenu id="r"
                                                                   dynamic="true"
                                                                   filter="false"
                                                                   rendered="#{searchBean.isMaterialTypeVisible()}"
-                                                                  label="#{msgs.searchMgr_advancedSearch_types}"
+                                                                  label="#{msgs.searchMgr_advancedSearch_material_types}"
                                                                   style="width: 15rem" panelStyle="width: 15rem" scrollHeight="250"
                                                                   value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}">
                                                 <f:selectItems 
@@ -231,7 +231,8 @@
                                                     value="#{searchBean.getSearchFilter().getMaterialTypeFilter().getTypes()}"
                                                     itemLabel="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(item)}"
                                                     />
-                                            
+                                                <p:ajax process="@this"
+                                                        />
                                             </p:selectCheckboxMenu>
                                         </p:outputPanel>
 

@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -120,7 +121,8 @@ public class SearchFilter {
         MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
         searchValue.materialName = searchTerms;
         if (advancedSearchActive) {
-            searchValue.type.addAll(materialTypeFilter.getTypes());
+            searchValue.type = new HashSet<>(materialTypeFilter.getSelectedMaterialTypes());
+
             if (searchTerms.trim().isEmpty()) {
                 searchValue.type.remove(MaterialType.BIOMATERIAL);
                 searchValue.type.remove(MaterialType.SEQUENCE);
@@ -136,12 +138,6 @@ public class SearchFilter {
         }
         materialRequestBuilder.setSearchValues(searchValue);
         return materialRequestBuilder.build();
-    }
-
-    public void init() {
-        materialTypeFilter.setBiomaterial(true);
-        materialTypeFilter.setSequences(true);
-        materialTypeFilter.setStructures(true);
     }
 
     private SearchRequest createDocumentRequest() {

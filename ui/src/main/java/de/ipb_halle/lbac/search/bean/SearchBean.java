@@ -250,10 +250,6 @@ public class SearchBean implements Serializable {
 
     public void toogleAdvancedSearch() {
         searchFilter.toogleAdvancedSearch();
-        if (searchFilter.isAdvancedSearch()) {
-            searchFilter.init();
-        }
-
     }
 
     public int getTextFieldLength() {
@@ -267,7 +263,7 @@ public class SearchBean implements Serializable {
     public boolean isMolEditorVisible() {
         return isMaterialTypeVisible()
                 && searchFilter.isAdvancedSearch()
-                && searchFilter.getMaterialTypeFilter().isStructures();
+                && searchFilter.getMaterialTypeFilter().shouldSearchForStructure();
     }
 
     public String getAdvancedSearchIcon() {

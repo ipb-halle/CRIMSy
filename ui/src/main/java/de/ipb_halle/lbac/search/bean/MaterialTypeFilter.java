@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.search.bean;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.search.SearchTarget;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,12 +30,15 @@ import java.util.Set;
  */
 public class MaterialTypeFilter {
 
-    private boolean structures;
-    private boolean biomaterial;
-    private boolean sequences;
-    private boolean compositions;
-    private List<MaterialType> selectedMaterialTypes = new ArrayList();
+    private List<MaterialType> selectedMaterialTypes = new ArrayList<>();
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+
+    public MaterialTypeFilter() {
+        selectedMaterialTypes.add(MaterialType.BIOMATERIAL);
+        selectedMaterialTypes.add(MaterialType.STRUCTURE);
+        selectedMaterialTypes.add(MaterialType.SEQUENCE);
+        selectedMaterialTypes.add(MaterialType.COMPOSITION);
+    }
 
     public List<MaterialType> getSelectedMaterialTypes() {
         return selectedMaterialTypes;
@@ -53,53 +55,26 @@ public class MaterialTypeFilter {
                 null);
     }
 
-    public boolean isStructures() {
-        return structures;
-    }
+    public List<MaterialType> getTypes() {
+        List<MaterialType> types = new ArrayList<>();
+        types.add(MaterialType.STRUCTURE);
+        types.add(MaterialType.SEQUENCE);
+        types.add(MaterialType.BIOMATERIAL);
+        types.add(MaterialType.COMPOSITION);
 
-    public void setStructures(boolean structures) {
-        this.structures = structures;
-    }
-
-    public boolean isBiomaterial() {
-        return biomaterial;
-    }
-
-    public void setBiomaterial(boolean biomaterial) {
-        this.biomaterial = biomaterial;
-    }
-
-    public boolean isSequences() {
-        return sequences;
-    }
-
-    public void setSequences(boolean sequences) {
-        this.sequences = sequences;
-    }
-
-    public boolean isCompositions() {
-        return compositions;
-    }
-
-    public void setCompositions(boolean compositions) {
-        this.compositions = compositions;
-    }
-
-    public Set<MaterialType> getTypes() {
-        Set<MaterialType> types = new HashSet<>();
-        if (structures) {
-            types.add(MaterialType.STRUCTURE);
-        }
-        if (sequences) {
-            types.add(MaterialType.SEQUENCE);
-        }
-        if (biomaterial) {
-            types.add(MaterialType.BIOMATERIAL);
-        }
-        if (compositions) {
-            types.add(MaterialType.COMPOSITION);
-        }
         return types;
+    }
+
+    public boolean shouldSearchForSequence() {
+        return selectedMaterialTypes.contains(MaterialType.SEQUENCE);
+    }
+
+    public boolean shouldSearchForBiomaterial() {
+        return selectedMaterialTypes.contains(MaterialType.BIOMATERIAL);
+    }
+
+    public boolean shouldSearchForStructure() {
+        return selectedMaterialTypes.contains(MaterialType.STRUCTURE);
     }
 
 }
