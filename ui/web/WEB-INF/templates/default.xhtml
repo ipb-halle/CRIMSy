@@ -232,11 +232,37 @@
                                                     itemLabel="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(item)}"
                                                     />
                                                 <p:ajax process="@this"
+                                                        update="@(.fff)"
                                                         />
                                             </p:selectCheckboxMenu>
                                         </p:outputPanel>
 
                                     </div>
+                                    <div>
+                                        <p:outputPanel styleClass="fff">
+                                            <ui:repeat value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}" var="var">                                 
+                                                <p:commandButton
+                                                    value="#{var}"
+                                                    styleClass="rounded-button ui-button-danger"
+                                                    icon="pi pi-times-circle" iconPos="right"
+                                                    style="margin:0.6rem 0.8rem;margin-bottom:1rem;"
+                                                    ajax="true">
+                                                </p:commandButton>
+                                            </ui:repeat>
+                                            
+                                            <ui:repeat value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}" var="var">                                 
+                                                <p:commandButton
+                                                    rendered="#{searchBean.isMaterialTypeVisible()}"
+                                                    value="#{var}"
+                                                    styleClass="rounded-button ui-button-danger"
+                                                    icon="pi pi-times-circle" iconPos="right"
+                                                    style="margin:0.6rem 0.8rem;margin-bottom:1rem;"
+                                                    ajax="true">
+                                                </p:commandButton>
+                                            </ui:repeat>
+                                        </p:outputPanel>
+                                    </div>
+
 
                                     <mol:molecule
                                         id="molEditorSearchPage"
