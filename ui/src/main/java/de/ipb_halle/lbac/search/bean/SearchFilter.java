@@ -87,22 +87,22 @@ public class SearchFilter {
         if (shouldMaterialsBeSearched()) {
             requests.add(createMaterialSearchRequest());
         }
-        if (typeFilter.getSelectedTypes().contains(("document"))) {
+        if (typeFilter.shouldSearchForDocument()) {
             requests.add(createDocumentRequest());
         }
-        if (typeFilter.getSelectedTypes().contains("items") && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {
+        if (typeFilter.shouldSearchForItem() && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {
             requests.add(createItemRequest());
         }
         if (shouldExpBeSearched()) {
             requests.addAll(createExperimentRequests());
         }
-       
+
         return requests;
     }
 
     private boolean shouldExpBeSearched() {
         Molecule m = new Molecule(structureString, 0);
-        return typeFilter.getSelectedTypes().contains("experiments")
+        return typeFilter.shouldSearchForExperiment()
                 && (!searchTerms.trim().isEmpty()
                 || !m.isEmptyMolecule());
     }
@@ -110,7 +110,7 @@ public class SearchFilter {
     private boolean shouldMaterialsBeSearched() {
         Molecule m = new Molecule(structureString, 0);
 
-        return typeFilter.getSelectedTypes().contains("materials")
+        return typeFilter.shouldSearchForMaterial()
                 && (!searchTerms.trim().isEmpty()
                 || !m.isEmptyMolecule());
     }
@@ -170,7 +170,7 @@ public class SearchFilter {
      * Due to the fact that the search criteria for textRecord contents and
      * material names are AND combined in the SQL Builder, 2 separate requests
      * are sent which contain the text query and the search for the material
-     * names in seperate requests.
+     * names in separate requests.
      *
      * @return
      */

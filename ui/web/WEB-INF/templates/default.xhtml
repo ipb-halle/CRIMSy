@@ -202,21 +202,18 @@
                                          rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
                                     <div style="display:flex; justify-content: space-around">
                                         <p:panel>
-
-                                            <!--<h:outputText value="#{msgs.searchMgr_advancedSearch_types}" />-->
-
-                                            <!--#{msgs.searchMgr_advancedSearch_material_types}-->
                                             <p:selectCheckboxMenu id="typesMenu"
                                                                   dynamic="true"
                                                                   filter="false"
-                                                                  label="Types"
+                                                                  label="#{msgs.searchMgr_advancedSearch_types}"
                                                                   style="width: 15rem" panelStyle="width: 15rem" scrollHeight="250"
                                                                   value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}">
                                                 <f:selectItems 
                                                     var="item"
                                                     value="#{searchBean.getSearchFilter().typeFilter.types}"
-                                                    itemLabel="#{item}"
+                                                    itemLabel="#{searchBean.getSearchFilter().typeFilter.getLocalizedType(item)}"
                                                     />
+
                                             </p:selectCheckboxMenu>
                                         </p:panel>
                                         <p:panel>

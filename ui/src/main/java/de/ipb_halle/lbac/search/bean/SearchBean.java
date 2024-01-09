@@ -209,7 +209,7 @@ public class SearchBean implements Serializable {
     }
 
     public boolean isMaterialTypeVisible() {
-        return searchFilter.getTypeFilter().selectedTypes.contains("materials");
+        return searchFilter.getTypeFilter().shouldSearchForMaterial();
     }
 
     public List<NetObject> getShownObjects() {
