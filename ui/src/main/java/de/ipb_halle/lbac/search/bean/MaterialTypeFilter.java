@@ -17,8 +17,12 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.search.SearchTarget;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,6 +35,23 @@ public class MaterialTypeFilter {
     private boolean biomaterial;
     private boolean sequences;
     private boolean compositions;
+    private List<MaterialType> selectedMaterialTypes = new ArrayList();
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+
+    public List<MaterialType> getSelectedMaterialTypes() {
+        return selectedMaterialTypes;
+    }
+
+    public void setSelectedMaterialTypes(List<MaterialType> selectedMaterialTypes) {
+        this.selectedMaterialTypes = selectedMaterialTypes;
+    }
+
+    public String getLocalizedType(MaterialType unlocalizedType) {
+        return Messages.getString(
+                MESSAGE_BUNDLE,
+                "advanced_search_type_" + unlocalizedType.toString(),
+                null);
+    }
 
     public boolean isStructures() {
         return structures;

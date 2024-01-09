@@ -201,7 +201,7 @@
                                 <p:panel style="display: flex;flex-direction: column;justify-content: space-between;" 
                                          rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
                                     <div style="display:flex; justify-content: space-around">
-                                        <p:panel>
+                                        <p:outputPanel>
                                             <p:selectCheckboxMenu id="typesMenu"
                                                                   dynamic="true"
                                                                   filter="false"
@@ -213,36 +213,27 @@
                                                     value="#{searchBean.getSearchFilter().typeFilter.types}"
                                                     itemLabel="#{searchBean.getSearchFilter().typeFilter.getLocalizedType(item)}"
                                                     />
-
+                                                <p:ajax process="@this"
+                                                        update="@(.fff)"
+                                                        />
                                             </p:selectCheckboxMenu>
-                                        </p:panel>
-                                        <p:panel>
-                                            <h5 style="margin:5px 0;">#{msgs.search_category_STRUCTURE}"</h5>
-                                            <p:selectBooleanCheckbox
-                                                value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
-                                                label="#{msgs.search_category_STRUCTURE}"/>
-                                            <!--ajax="true"-->
-
-                                            <h5 style="margin:5px 0;">#{msgs.search_category_BIOMATERIAL}</h5>
-                                            <p:selectBooleanCheckbox
-                                                value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
-                                                label="#{msgs.search_category_BIOMATERIAL}"/>
-                                            <!--ajax="true"-->
-
-
-                                            <h5 style="margin:5px 0;">#{msgs.search_category_SEQUENCE}</h5>
-                                            <p:selectBooleanCheckbox
-                                                value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
-                                                label="#{msgs.search_category_SEQUENCE}"/>
-
-                                            <!--ajax="true"-->
-
-                                            <h5 style="margin:5px 0;">#{msgs.search_category_COMPOSITION}</h5>
-                                            <p:selectBooleanCheckbox
-                                                value="#{searchBean.getSearchFilter().materialTypeFilter.compositions}"
-                                                label="#{msgs.search_category_COMPOSITION}"/>
-                                            <!--ajax="true"-->
-                                        </p:panel>
+                                        </p:outputPanel>
+                                        <p:outputPanel styleClass="fff">
+                                             <p:selectCheckboxMenu id="r"
+                                                                  dynamic="true"
+                                                                  filter="false"
+                                                                  rendered="#{searchBean.isMaterialTypeVisible()}"
+                                                                  label="#{msgs.searchMgr_advancedSearch_types}"
+                                                                  style="width: 15rem" panelStyle="width: 15rem" scrollHeight="250"
+                                                                  value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}">
+                                                <f:selectItems 
+                                                    var="item"
+                                                    value="#{searchBean.getSearchFilter().getMaterialTypeFilter().getTypes()}"
+                                                    itemLabel="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(item)}"
+                                                    />
+                                            
+                                            </p:selectCheckboxMenu>
+                                        </p:outputPanel>
 
                                     </div>
 
