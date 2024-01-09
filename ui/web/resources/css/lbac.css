@@ -35,16 +35,17 @@ body .ui-button.ui-button-icon-only {
     display: flex;
     flex-direction: column;
 }
+.ui-column-title{
+    margin:5px;
+}
 .ui-datatable .ui-column-filter{
-    max-width: 100%;
-    margin: 0;
+    max-width: 90%;
     padding:0;
 }
 
-/*body .ui-datatable thead th{
-    padding:0 5px;
-    min-height: 63px;*/
-
+body .ui-datatable thead th{
+    padding: 0;
+}
 body .newUserBtnUserMangnt{
     margin-right:  5px;
     background: #d32f2f;
@@ -79,13 +80,13 @@ body .ui-message{
     padding:0;
 }
 
-.headerCollectionInfoFirstColumn, .headerCloudNodeManagementFirstColumn, .headerPrinterListFirstColumn,.headerLabelListFirstColumn {
+/*.headerCollectionInfoFirstColumn, .headerCloudNodeManagementFirstColumn, .headerPrinterListFirstColumn,.headerLabelListFirstColumn {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     min-height: 3rem;
-}
+}*/
 
 .ui-helper-hidden{
     display: none;

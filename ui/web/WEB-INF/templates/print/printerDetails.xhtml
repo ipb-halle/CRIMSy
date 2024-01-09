@@ -27,9 +27,14 @@
       >
 
     <h:body>
-        <h:form id="printerSettings" horizontal="true" method="post" style="border:1px solid #029ACF;border-radius:3px;">
-            <p:panel header="#{msgs.PrinterSettings}" collapsible="false" look="info" styleClass="panelTitleInfoColor" >
-                <p:panelGrid columnClasses="ui-g-12 ui-lg-9 ui-md-9, ui-g-12 ui-lg-3 ui-md-3" size="sm" id="printerDetailsPanelGridId">
+        <h:form id="printerSettings" 
+                horizontal="true" 
+                method="post" 
+                class="formPanelStyleBlue">
+            <p:panel header="#{msgs.PrinterSettings}" 
+                     styleClass="panelTitleInfoColor" >
+                <p:panelGrid columnClasses="ui-g-12 ui-lg-9 ui-md-9, ui-g-12 ui-lg-3 ui-md-3" 
+                             id="printerDetailsPanelGridId">
                     <p:row>
                         <!--===============================================================================================================-->
 

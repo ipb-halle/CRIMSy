@@ -203,7 +203,7 @@
                                     <div style="display:flex; justify-content: space-around">
                                         <p:panel>
 
-                                            <h:outputText value="#{msgs.searchMgr_advancedSearch_types}" />
+                                            <!--<h:outputText value="#{msgs.searchMgr_advancedSearch_types}" />-->
 
                                             <!--#{msgs.searchMgr_advancedSearch_material_types}-->
                                             <p:selectCheckboxMenu id="typesMenu"
@@ -212,7 +212,11 @@
                                                                   label="Types"
                                                                   style="width: 15rem" panelStyle="width: 15rem" scrollHeight="250"
                                                                   value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}">
-                                                <f:selectItems value="#{searchBean.getSearchFilter().typeFilter.types}"/>
+                                                <f:selectItems 
+                                                    var="item"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.types}"
+                                                    itemLabel="#{item}"
+                                                    />
                                             </p:selectCheckboxMenu>
                                         </p:panel>
                                         <p:panel>

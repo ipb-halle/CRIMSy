@@ -39,27 +39,17 @@
                 resizable="false"
                 positionType="absolute"
                 width='#{((userMgrBean.mode == "UPDATE") and (userMgrBean.user.getSubSystemType().toString() == "LOCAL")) ? "900" : "600" }'>
-
-
-        <!--<b:panelGrid colSpans='#{((userMgrBean.mode == "UPDATE") and (userMgrBean.user.getSubSystemType().toString() == "LOCAL")) ? "6,6" : "12" }'>-->
-        <!--<p:panelGrid columns="#{((userMgrBean.mode == 'UPDATE') and (userMgrBean.user.subSystemType.toString() == 'LOCAL')) ? '6,6' : '12'}">-->
-
-
-
-
+                
                 <!-- user details -->
-                <h:form id="frmModalUserDialog" style="border:1px solid #029ACF;border-radius:3px;">
-
+                <h:form id="frmModalUserDialog" class="formPanelStyleBlue">
                     <p:panel  header="#{msgs.userMgr_UserData}"
                               styleClass="panelTitleInfoColor">
-
                         <h:outputText
                             value="#{msgs.userMgr_viewOnly}"
                             rendered="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}"/>
 
                         <!--===============================================================================================================-->
-
-                        <p:outputLabel for="id" value="  ID" />
+                        <p:outputLabel for="id" value="ID" />
 
                         <div class="col-12 md:col-4">
                             <div class="ui-inputgroup">
@@ -515,7 +505,6 @@
                                 </p:commandButton>
 
                                 <p:commandButton
-                                    styleClass="ui-button-warning"
                                     icon="pi pi-refresh"
                                     value="#{msgs.Refresh}"
                                     ajax="true"

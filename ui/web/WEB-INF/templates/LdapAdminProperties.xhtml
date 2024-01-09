@@ -39,10 +39,9 @@
                      Putting an icon via the facet "prepend" or "append" in
                      conjunction with p:dialog's modal="true" leads to an
                      unresponsive input field (not clickable, no keyboard inputs). -->
-                <h:form id="checkLdapForm" method="post" style="border:1px solid #029ACF;border-radius:3px;">
+                <h:form id="checkLdapForm" method="post" class="formPanelStyleBlue">
                     <p:panel header="#{msgs.admission_ldap_test}"
-
-                             style="min-width: 600px;"
+                             style="min-width: 100%;"
                              styleClass="panelTitleInfoColor"
                              >
                         <!--===============================================================================================================-->
@@ -127,10 +126,7 @@
                                         header="#{msgs[p.key.concat('_detail')]}"
                                         disabled="#{!ldapProps.ldapEnabled}"
                                         style="width:100%;"
-                                        value="#{p.value}"
-                                        icon="pi pi-list">
-
-
+                                        value="#{p.value}">
                                     </p:inputText>
                                 </div>
                             </div>
@@ -146,13 +142,9 @@
                                         disabled="#{!ldapProps.ldapEnabled}"
                                         label="#{msgs[p.key]}:"
                                         header="#{msgs[p.key.concat('_detail')]}"
-                                        labelColMd="4"
-                                        labelStyle="text-align:right;"
                                         style="width:100%;"
                                         value="#{p.value}"
-                                        colMd="7"
                                         converter="DummyConverter">
-
                                     </p:password>
                                 </div>
                             </div>
@@ -161,14 +153,20 @@
 
                     <!--===============================================================================================================-->
 
-                    <p:column styleClass="text-center">
-                        <p:commandButton type="button" iconAwesome="cogs" ajax="true"
+                    <p:column styleClass="text-center" >
+                        <p:commandButton type="button" 
+                                         icon="fa fa-cogs" 
+                                         ajax="true"
                                          onclick="PF('checkLDAPDialogWidgetVar').show();"
                                          disabled="#{!ldapProps.ldapEnabled}"
-                                         style="margin-right:3px;"
+                                         style="margin:5px;"
                                          value="#{msgs.admission_ldap_test}"/>
-                        <p:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
-                                         action="#{ldapProps.save}" value="#{msgs.Save}"/>
+                        <p:commandButton type="submit" 
+                                         icon="fa fa-save" 
+                                         styleClass="ui-button-danger"
+                                         style="margin:5px;"
+                                         action="#{ldapProps.save}" 
+                                         value="#{msgs.Save}"/>
                     </p:column>
                     <!--===============================================================================================================-->
 
