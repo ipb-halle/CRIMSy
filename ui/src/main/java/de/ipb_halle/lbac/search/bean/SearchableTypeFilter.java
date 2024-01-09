@@ -57,10 +57,10 @@ public class SearchableTypeFilter {
         this.selectedTypes = selectedTypes;
     }
 
-    public String getLocalizedType(String unlocalizedType) {
+    public String getLocalizedType(SearchTarget unlocalizedType) {
         return Messages.getString(
                 MESSAGE_BUNDLE,
-                "advanced_search_type_" + unlocalizedType,
+                "advanced_search_type_" + unlocalizedType.toString(),
                 null);
     }
 
