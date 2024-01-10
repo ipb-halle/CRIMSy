@@ -80,9 +80,7 @@
                                                  ajax="true"
                                                  update="@all"
                                                  process="@form"
-                                                 action="#{materialBean.materialIndexBean.addNewIndex()}"
-
-                                                 />
+                                                 action="#{materialBean.materialIndexBean.addNewIndex()}"/>
                                 <p:messages for="inTxt" showDetail="true" closable="true"/>
                             </p:column>
                             <!--=================================================================================-->
@@ -116,7 +114,6 @@
                                             disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
                                             value="#{index.value}">
                                             <p:ajax process="@this" update="@all" />
-
                                             <f:converter converterId="InputConverter" />
                                         </p:inputText>
                                     </p:column>

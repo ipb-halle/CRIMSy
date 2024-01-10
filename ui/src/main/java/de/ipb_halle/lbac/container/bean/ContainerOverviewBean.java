@@ -220,6 +220,7 @@ public class ContainerOverviewBean implements Serializable {
 
     public boolean saveNewContainer() {
         validator = new InputValidator(containerService);
+        validator.setErrorMessagePresenter(messagePresenter);
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()

@@ -34,6 +34,7 @@ public class InputValidator implements Serializable {
 
     @Inject
     protected MessagePresenter errorMessagePresenter;
+    
     protected Integer height;
     protected final int MAX_WIDTH = 1000;
     protected final int MAX_HEIGHT = 1000;
