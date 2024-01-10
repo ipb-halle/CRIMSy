@@ -31,10 +31,40 @@ body .ui-button.ui-button-icon-only {
     margin-right: 0.15em;
 }
 
+.fff.eee{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: left;
+    margin:20px 0;
+    padding:0;
+}
+.selectOneMenus{
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+.molEditor{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+
+body .ui-button.rounded-button{
+    display: flex;
+    align-items: center;
+    height: 20px;
+    font-size: 10px;
+}
+
 .table{
     display: flex;
     flex-direction: column;
 }
+
 .ui-column-title{
     margin:5px;
 }
