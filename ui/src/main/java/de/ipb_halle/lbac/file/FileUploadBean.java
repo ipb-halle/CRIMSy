@@ -40,19 +40,17 @@ public class FileUploadBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final int UPLOAD_TIMEOUT = 60;
+    private final Logger logger = LogManager.getLogger(FileUploadBean.class);
 
-    private Integer fileId;
+    private AnalyseClient analyseClient;
+    private AttachmentHolder holder;
+    private Collection selectedCollection;
     private FileSaver fileSaver;
+    private InputStream inputStream;
+    private Integer fileId;
+    private List<Collection> values;
     private String fileName;
     private UploadedFile uploadedFile;
-    private InputStream inputStream;
-    private AttachmentHolder holder;
-    private AnalyseClient analyseClient;
-
-    private UploadedFile file;
-    private UploadedFiles files;
-    private String dropZoneText = "Drop zone p:inputTextarea demo.";
-    private final Logger logger = LogManager.getLogger(FileUploadBean.class);
 
     @Inject
     private CollectionBean collectionBean;
@@ -63,15 +61,8 @@ public class FileUploadBean implements Serializable {
     @Inject
     private FileObjectService fileObjectService;
 
-    private Collection selectedCollection;
     @Inject
     private UserBean userBean;
-
-    List<Collection> values;
-
-    public List<Collection> getPossibleValues() {
-        return values;
-    }
 
     @PostConstruct
     public void initCollection() {
@@ -92,46 +83,10 @@ public class FileUploadBean implements Serializable {
         this.selectedCollection = selectedCollection;
     }
 
-    public void upload() {
-        if (file != null) {
-            FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-        }
+    public List<Collection> getPossibleValues() {
+        return values;
     }
-
-    public void uploadMultiple() {
-        if (files != null) {
-            for (UploadedFile f : files.getFiles()) {
-                FacesMessage message = new FacesMessage("Successful", f.getFileName() + " is uploaded.");
-                FacesContext.getCurrentInstance().addMessage(null, message);
-            }
-        }
-    }
-
-    public UploadedFile getFile() {
-        return file;
-    }
-
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-
-    public UploadedFiles getFiles() {
-        return files;
-    }
-
-    public void setFiles(UploadedFiles files) {
-        this.files = files;
-    }
-
-    public String getDropZoneText() {
-        return dropZoneText;
-    }
-
-    public void setDropZoneText(String dropZoneText) {
-        this.dropZoneText = dropZoneText;
-    }
-
+    
     public void handleFileUpload(FileUploadEvent event) throws Exception {
         try {
             uploadedFile = event.getFile();
@@ -153,7 +108,7 @@ public class FileUploadBean implements Serializable {
             if (status != TextWebStatus.DONE) {
                 throw new Exception("Analysis returned an unexpected status code: " + status.toString());
             }
-            FacesMessage message = new FacesMessage("File " + fileName + " was successfully uploaded.");
+            FacesMessage message = new FacesMessage("File ", fileName + " was successfully uploaded.");
             FacesContext.getCurrentInstance().addMessage(null, message);
 
         } catch (IOException e) {
