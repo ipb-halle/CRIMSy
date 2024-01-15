@@ -168,25 +168,7 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         this.countDocs = countDocs;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("COLLECTION DUMP");
-        sb.append("\n  id=");
-        sb.append(this.id);
-        sb.append("\n  name=");
-        sb.append(this.name);
-        sb.append("\n  indexPath=");
-        sb.append(this.indexPath);
-        sb.append("\n  storagePath=");
-        sb.append(this.storagePath);
-        sb.append("\n  nodeId=");
-        sb.append(this.node.getId());
-        sb.append("\n  countDocs=");
-        sb.append(this.countDocs);
-        sb.append("\n");
-        return sb.toString();
-    }
+   
 
     @Override
     public String getBaseFolder() {
