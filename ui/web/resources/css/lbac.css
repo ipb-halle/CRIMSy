@@ -36,6 +36,14 @@ body .ui-button.ui-button-icon-only {
     justify-content: space-around;
     align-items: center;
 }
+
+.experimentListBtnGroup{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    background: white;
+    color: black;
+}
 h3,
 .outputlabelWarning{
     margin: 0;
@@ -43,11 +51,9 @@ h3,
     background-color:  #ffecb3;
     color:#7f6003;
 }
-
 h3{
     padding: 0;
 }
-
 .fff.eee{
     display: flex;
     flex-direction: row;
