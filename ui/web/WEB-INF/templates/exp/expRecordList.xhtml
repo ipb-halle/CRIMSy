@@ -41,20 +41,17 @@
                         <!-- Not rendered if this is the last record (= NullRecord) or this is a new record. -->
                         <h:panelGroup rendered="#{!recStatus.last and !rec.newRecord}">
 
-                            <h:outputText value="#{msgs.expRecord_name} " />
-                            <h:outputFormat value="#{msgs.expRecord_lastChanged}"
+                            <p:outputLabel value="#{msgs.expRecord_name}:" />
+                            <h:outputFormat value="#{msgs.expRecord_lastChanged},"
                                             title="#{nwc:formatDateWithTimezone(rec.changeTime)}">
                                 <o:param value="#{rec.changeTime}"
                                          converter="org.ocpsoft.PrettyTimeConverter" />
                             </h:outputFormat>
-
-                            <h:outputText value=", " />
-                            <h:outputFormat value="#{msgs.expRecord_created}"
+                            <h:outputFormat value="#{msgs.expRecord_created}."
                                             title="#{nwc:formatDateWithTimezone(rec.creationTime)}">
                                 <o:param value="#{rec.creationTime}"
                                          converter="org.ocpsoft.PrettyTimeConverter" />
                             </h:outputFormat>
-
                         </h:panelGroup>
                         <!--
             <div class="#{experimentBean.getExpRecordStyle(rec, recStatus.even)}"
@@ -64,7 +61,7 @@
                     <!--==========================================================================================-->
 
                     <!--==========================================================================================-->
-                    <p:outputPanel  style="text-align: right;">
+                    <p:outputPanel  style="text-align: right; display:flex; flex-direction: row; justify-content: right;">
                         <!-- Move-up button is disabled in the first or last (= NullRecord) list entry or when
                              any record is edited. -->
 
@@ -136,44 +133,38 @@
                         </p:commandLink>
                         <!--==========================================================================================-->
 
-                        <!--Experiment Records and button New-->
-                        <!--==========================================================================================-->
-                        <p:menuButton value="#{msgs.expRecord_newRecord_button}"
-                                      styleClass="experimentRecordButton experimentRecordButtonAdd ui-button-danger"
-                                      icon="fa fa-plus"
-                                      iconPos="left">
-                            <p:submenu label="#{msgs.expRecord_newRecord_selectType}">
-
-                                <p:menuitem
-                                    ajax="true"
-                                    update="@form growlMsg @(.assayTargetRow)"
-                                    value="#{msgs.expText}"
-                                    disabled="#{experimentBean.expRecordButtonsDisabled}"
-                                    actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"
-                                    oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
-
-                                <p:menuitem
-                                    ajax="true"
-                                    update="@form growlMsg @(.assayTargetRow)"
-                                    value="#{msgs.expAssay}"
-                                    disabled="#{experimentBean.expRecordButtonsDisabled}"
-                                    actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"
-                                    oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
-
-                                <p:menuitem
-                                    ajax="true"
-                                    update="@form growlMsg @(.assayTargetRow)"
-                                    value="#{msgs.expImage}"
-                                    disabled="#{experimentBean.expRecordButtonsDisabled}"
-                                    actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"
-                                    oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
-                            </p:submenu>
-                        </p:menuButton>
-
-
                     </p:outputPanel>
+                    <!--Experiment Records and button New-->
                     <!--==========================================================================================-->
+                    <p:menuButton value="#{msgs.expRecord_newRecord_button}"
+                                  styleClass="experimentRecordButton experimentRecordButtonAdd ui-button-danger"
+                                  icon="fa fa-plus"
+                                  iconPos="left">
+                        <p:menuitem
+                            ajax="true"
+                            update="@form growlMsg @(.assayTargetRow)"
+                            value="#{msgs.expText}"
+                            disabled="#{experimentBean.expRecordButtonsDisabled}"
+                            actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"
+                            oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
 
+                        <p:menuitem
+                            ajax="true"
+                            update="@form growlMsg @(.assayTargetRow)"
+                            value="#{msgs.expAssay}"
+                            disabled="#{experimentBean.expRecordButtonsDisabled}"
+                            actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"
+                            oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
+
+                        <p:menuitem
+                            ajax="true"
+                            update="@form growlMsg @(.assayTargetRow)"
+                            value="#{msgs.expImage}"
+                            disabled="#{experimentBean.expRecordButtonsDisabled}"
+                            actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"
+                            oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
+                    </p:menuButton>
+                    <br/>                    
                     <br/>
                 </p:outputPanel>
 
@@ -227,6 +218,7 @@
 
                                         <p:commandButton
                                             value="#{msgs.Save}"
+                                            styleClass="ui-button-danger"
                                             actionListener="#{experimentBean.actionDoNothing}"
                                             action="#{experimentBean.expRecordController.actionSaveRecord}"
                                             onclick="#{experimentBean.saveButtonOnClick}"

@@ -82,6 +82,7 @@
                         <p:commandButton value="#{msgs.expAddNew_dialog_save}"
                                          action="#{experimentBean.actionSaveExperiment}"
                                          rendered="#{!experimentBean.copyEnabled}"
+                                         styleClass="ui-button-danger"
                                          update="expRecordsForm
                                          @(.experimentsDataTable)
                                          @(.ExpTabMenu)
