@@ -187,6 +187,7 @@
                                              type="submit"
                                              ajax="true"
                                              style="margin:0 0.5rem;"
+                                             styleClass="ui-button-danger"
                                              action ="#{collectionBean.actionCreate()}"
                                              oncomplete="if(!args.validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
                             <!--onclick="ajax:collectionBean.actionCreate();"-->
@@ -197,6 +198,7 @@
                                              type="submit"
                                              ajax="true"
                                              style="margin:0 0.5rem;"
+                                             styleClass="ui-button-success"
                                              action="#{collectionBean.actionUpdate()}"
                                              oncomplete="if(!args.validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
                             <!--onclick="ajax:collectionBean.actionUpdate();"-->
