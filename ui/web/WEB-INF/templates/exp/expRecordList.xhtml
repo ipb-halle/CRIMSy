@@ -41,8 +41,8 @@
                         <!-- Not rendered if this is the last record (= NullRecord) or this is a new record. -->
                         <h:panelGroup rendered="#{!recStatus.last and !rec.newRecord}">
 
-                            <p:outputLabel value="#{msgs.expRecord_name}:" />
-                            <h:outputFormat value="#{msgs.expRecord_lastChanged},"
+                            <p:outputLabel value="#{msgs.expRecord_name}: " />
+                            <h:outputFormat value="#{msgs.expRecord_lastChanged}, "
                                             title="#{nwc:formatDateWithTimezone(rec.changeTime)}">
                                 <o:param value="#{rec.changeTime}"
                                          converter="org.ocpsoft.PrettyTimeConverter" />
@@ -170,7 +170,6 @@
 
                 <p:outputPanel>
                     <p:outputPanel>
-
                         <!--==========================================================================================-->
                         <h:panelGroup id="recordDetails"
                                       layout="block"
@@ -184,6 +183,7 @@
                                              rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
                             <crimsy:textEdit text="#{rec.text}"
                                              rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+                            <br/>
                             <crimsy:image image="#{rec}"
                                           controller="#{experimentBean.expRecordController}"
                                           rendered="#{rec.facelet eq 'IMAGE'}" />

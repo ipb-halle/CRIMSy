@@ -36,10 +36,9 @@ body .ui-button.ui-button-icon-only {
     justify-content: space-around;
     align-items: center;
 }
-
 /*Experiments->experimnetRecords->Image->Represantation of Title and picture*/
 .ui-outputpanel.ui-widget{
-    display: flex;
+    display: block;
     flex-direction: column;
 }
 .experimentListBtnGroup{
