@@ -73,83 +73,90 @@
                         <p:column
                             styleClass="materialNameAction"
                             headerText="#{msgs.materialCreation_panelNames_tableHeader_action}">
-                            <!--orderable="false"-->
-                            <p:commandButton style="padding: 0 4px;margin:0.5rem 0;"
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
                                              icon="pi pi-angle-double-up"
                                              ajax="true"
+                                             id="btnUpUp"
                                              process="@(.materialNameTableClass)"
                                              update="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
                                                          mName,
                                                          'HIGHEST')}"
                                              type="submit"
-                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'HIGHEST')}"/>
-                            <!--onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHEST');"-->
-                            <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_highestRank}"-->
-                            <p:commandButton style="padding: 0 4px;margin:0.5rem;"
-                                             icon="pi pi-angle-up"
-                                             ajax="true"
-                                             process="@(.materialNameTableClass)"
-                                             update="@(.materialNameTableClass)"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName,
-                                                         'HIGHER')}"
-                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'HIGHER')}"
-                                             type="submit"/>
-                            <!--onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHER');"-->
-                            <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_higher}"-->
-                            <p:commandButton style="padding: 0 4px;margin:0.5rem 0;"
-                                             icon="pi pi-angle-down "
-                                             ajax="true"
-                                             type="submit"
-                                             process="@(.materialNameTableClass)"
-                                             update="@(.materialNameTableClass)"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName,
-                                                         'LOWER')}"
-                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'LOWER')}"/>
-                                             <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_lower}"-->
-                            <!--onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWER');"-->
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'HIGHEST')}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_highestRank}" for="btnUpUp" position="right"/>
+                            </p:commandButton>
 
-                            <p:commandButton style="padding: 0 4px;margin:0.5rem 0;"
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
                                              icon="pi pi-angle-double-down"
                                              ajax="true"
+                                             id="btnDD"
                                              update="@(.materialNameTableClass)"
                                              process="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
                                                          mName,
                                                          'LOWEST')}"
                                              type="submit"
-                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'LOWEST')}"/>
-                            <!--onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWEST');"-->
-                            <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_lowestRank}"-->
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'LOWEST')}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_lowestRank}" for="btnDD" position="left"/>
+                            </p:commandButton>
 
-                            <p:commandButton style="padding: 0 4px;margin:0.5rem ;"
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             icon="pi pi-angle-up"
+                                             ajax="true"
+                                             id="btnUp"
+                                             process="@(.materialNameTableClass)"
+                                             update="@(.materialNameTableClass)"
+                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
+                                                         mName,
+                                                         'HIGHER')}"
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'HIGHER')}"
+                                             type="submit">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_higher}" for="btnUp" position="left"/>
+                            </p:commandButton>
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             icon="pi pi-angle-down "
+                                             ajax="true"
+                                             id="btnD"
+                                             type="submit"
+                                             process="@(.materialNameTableClass)"
+                                             update="@(.materialNameTableClass)"
+                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
+                                                         mName,
+                                                         'LOWER')}"
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'LOWER')}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_lower}" for="btnD" position="left"/>
+                            </p:commandButton>
+
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             styleClass="ui-button-danger"
                                              icon="pi pi-trash"
                                              ajax="true"
+                                             id="btnDel"
                                              process="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
                                                          mName,
                                                          'DELETE')}"
                                              update="@(.materialNameTableClass)"
                                              type="submit"
-                                             action="#{materialBean.materialNameBean.removeName(mName)}"/>
-                            <!--onclick="ajax:materialBean.materialNameBean.removeName(mName);"-->
-                            <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"-->
-
-                            <p:commandButton style="padding: 0 4px;margin:0.5rem 0;"
+                                             action="#{materialBean.materialNameBean.removeName(mName)}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_delete}" for="btnDel" position="left"/>
+                            </p:commandButton>
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             styleClass="ui-button-danger"
                                              icon="pi pi-plus "
                                              ajax="true"
+                                             id="btnPl"
                                              process="@form"
                                              type="submit"
                                              update="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
                                                          mName,
                                                          'NEW')}"
-                                             action="#{materialBean.materialNameBean.addNewName()}"
-                                             />
-                            <!--onclick="ajax:materialBean.materialNameBean.addNewName();"-->
-                            <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_add}"-->
+                                             action="#{materialBean.materialNameBean.addNewName()}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_add}" for="btnPl" position="left"/>
+
+                            </p:commandButton>
                         </p:column>
                     </p:dataTable>
                 </p:outputPanel>

@@ -74,6 +74,7 @@
                             <p:column  colspan="1">
 
                                 <p:commandButton style="margin: 0.5rem;"
+                                                 styleClass="ui-button-danger"
                                                  icon="pi pi-plus"
                                                  rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
                                                  value="#{msgs.materialCreation_panelIndices_add}"
@@ -125,6 +126,7 @@
                                               headerText="#{msgs.materialCreation_panelIndices_tableHeader_action}">
 
                                         <p:commandButton style="padding: 0 4px;margin-left:1rem;"
+                                                         styleClass="ui-button-danger"
                                                          icon="pi pi-trash"
                                                          ajax="true"
                                                          disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"

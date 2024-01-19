@@ -114,7 +114,7 @@
                 <p:panel styleClass="text-center">
                     <p:commandButton value="#{msgs.Save}"
                                      icon="pi pi-save"
-                                     styleClass="tstGrpMgrCreate"
+                                     styleClass="ui-button-danger"
                                      rendered="#{groupMgrBean.mode == 'CREATE'}"
                                      type="submit"
                                      ajax="true"
@@ -125,7 +125,7 @@
 
                     <p:commandButton value="#{msgs.Edit}"
                                      icon="pi pi-pencil"
-                                     styleClass="tstGrpMgrUpdate"
+                                     styleClass="ui-button-success"
                                      rendered="#{groupMgrBean.mode == 'UPDATE'}"
                                      type="submit"
                                      ajax="true"
@@ -136,7 +136,7 @@
 
                     <p:commandButton value="#{msgs.Delete}"
                                      icon="pi pi-trash"
-                                     styleClass="tstGrpMgrDelete"
+                                     styleClass="ui-button-danger"
                                      rendered="#{groupMgrBean.mode == 'DELETE'}"
                                      update="frmGroupList:groupList growlMsg"
                                      type="submit"
@@ -153,6 +153,7 @@
             <center>
                 <p:commandButton value="#{msgs.Close}"
                                  icon="pi pi-times"
+                                 style="margin: 10px;"
                                  styleClass="ui-button-secondary"
                                  onclick="PF('groupEditDialogWidgetVar').hide()"/>
 
@@ -263,6 +264,7 @@
             <center>
                 <p:commandButton value="#{msgs.Close}"
                                  icon="pi pi-times"
+                                 style="margin:10px;"
                                  styleClass="ui-button-secondary"
                                  onclick="PF('groupGroupMembershipsDialogWidgetVar').hide()" />
             </center>

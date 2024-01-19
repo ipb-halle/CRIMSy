@@ -246,7 +246,7 @@
 
                         <p:panel styleClass="text-center">
                             <p:commandButton value="#{msgs.Save}"
-                                             styleClass="tstUserMgrCreate"
+                                             styleClass="ui-button-danger"
                                              rendered="#{userMgrBean.mode == 'CREATE'}"
                                              ajax="true"
                                              update="@form frmUserList:userList growlMsg"
@@ -254,7 +254,7 @@
                                              oncomplete="javascript:if(!validationFailed&amp;&amp;args.success){PF('userDialogWidgetVar').hide()};return false;"
                                              />
                             <p:commandButton value="#{msgs.Edit}"
-                                             styleClass="tstUserMgrEdit"
+                                             styleClass="ui-button-success"
                                              rendered="#{userMgrBean.mode == 'UPDATE'}"
                                              ajax="true"
                                              update="@form frmUserList:userList growlMsg"
@@ -262,7 +262,7 @@
                                              oncomplete="if(!validationFailed&amp;&amp;args.success){PF('userDialogWidgetVar').hide()};return false;"
                                              />
                             <p:commandButton value="#{msgs.Delete}"
-                                             styleClass="tstUserMgrDelete"
+                                             styleClass="ui-button-danger"
                                              rendered="#{userMgrBean.mode == 'DELETE'}"
                                              update="frmUserList:userList"
                                              ajax="true"
@@ -349,6 +349,7 @@
 
                 <center>
                     <br/><p:commandButton value="#{msgs.Close}"
+                                          style="margin: 10px;"
                                           styleClass="ui-button-secondary"
                                           onclick="PF('userDialogWidgetVar').hide()"/>
                 </center>
