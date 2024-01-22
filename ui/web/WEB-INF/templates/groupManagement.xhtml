@@ -120,8 +120,9 @@
                                      ajax="true"
                                      update="@form frmGroupList:groupList growlMsg"
                                      action="#{groupMgrBean.actionCreate()}"
-                                     oncomplete="javascript:if(!validationFailed){PF('groupEditDialogWidgetVar').hide()};return false;"
+                                     oncomplete="PF('groupEditDialogWidgetVar').hide();"
                                      />
+                    <!--oncomplete="javascript:if(!validationFailed){PF('groupEditDialogWidgetVar').hide()};return false;"-->
 
                     <p:commandButton value="#{msgs.Edit}"
                                      icon="pi pi-pencil"
@@ -131,8 +132,9 @@
                                      ajax="true"
                                      update="@form frmGroupList:groupList growlMsg"
                                      action="#{groupMgrBean.actionUpdate()}"
-                                     oncomplete="if(!validationFailed){PF('groupEditDialogWidgetVar').hide()};return false;"
+                                     oncomplete="PF('groupEditDialogWidgetVar').hide();"
                                      />
+                    <!--oncomplete="if(!validationFailed){PF('groupEditDialogWidgetVar').hide()};return false;"-->
 
                     <p:commandButton value="#{msgs.Delete}"
                                      icon="pi pi-trash"
@@ -330,7 +332,7 @@
 
                     <p:column headerText="#{msgs.Tools}"
                               >
-<!--                              style="display:flex; flex-direction: row;justify-content: center;align-items: center;"-->
+                        <!--                              style="display:flex; flex-direction: row;justify-content: center;align-items: center;"-->
 
                         <p:commandButton
                             style="padding: 0 4px; margin:0 0.5rem 0 0.5rem;"
