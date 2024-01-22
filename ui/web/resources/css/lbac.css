@@ -41,7 +41,9 @@ body .ui-button.ui-button-icon-only {
     flex-direction: row;
     justify-content: space-evenly;
 }
-
+body .ui-inputtextarea{
+    display: block;
+}
 .experimentListBtnGroup{
     display: flex;
     flex-direction: row;
