@@ -91,7 +91,7 @@
                                              disabled="#{collectionBean.editMode != 'CREATE'}"
                                              placeholder="#{msgs.collMgr_modal_name_placeholder}"
                                              required="#{collectionBean.editMode == 'CREATE'}">
-                                    <!--<f:validator validatorId="CollectionInputValidator"/>-->
+                                    <f:validator validatorId="CollectionInputValidator"/>
                                 </p:inputText>
                                 <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
                             </div>
@@ -359,7 +359,7 @@
                         <p:commandButton
                             id="backwardBtn"
                             style="padding: 0 4px; margin: 0 0.5rem;"
-                            icon="pi pi-fast-backward"
+                            icon="pi pi-eraser"
                             ajax="true"
                             process="@this"
                             update="growlMsg modalCollection frmModalCollection"

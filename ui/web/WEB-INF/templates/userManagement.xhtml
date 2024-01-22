@@ -39,7 +39,7 @@
                 resizable="false"
                 positionType="absolute"
                 width='#{((userMgrBean.mode == "UPDATE") and (userMgrBean.user.getSubSystemType().toString() == "LOCAL")) ? "900" : "600" }'>
-                
+
                 <!-- user details -->
                 <h:form id="frmModalUserDialog" class="formPanelStyleBlue">
                     <p:panel  header="#{msgs.userMgr_UserData}"
@@ -190,7 +190,7 @@
                             </div>
 
                             <p:message for="@previous"/>
-                         
+
 
                             <!--===============================================================================================================-->
 
@@ -219,7 +219,7 @@
                         </h:panelGroup>
                         <!--===============================================================================================================-->
 
-                  
+
                         <p:outputLabel for="phone" value="#{msgs.Phone}" />
 
                         <div class="col-12 md:col-4">
@@ -249,9 +249,10 @@
                                              styleClass="ui-button-danger"
                                              rendered="#{userMgrBean.mode == 'CREATE'}"
                                              ajax="true"
+                                             process="@form"
                                              update="@form frmUserList:userList growlMsg"
                                              action="#{userMgrBean.actionCreate()}"
-                                             oncomplete="javascript:if(!validationFailed&amp;&amp;args.success){PF('userDialogWidgetVar').hide()};return false;"
+                                             oncomplete="javascript:if(!args.validationFailed){PF('userDialogWidgetVar').hide()};return false;"
                                              />
                             <p:commandButton value="#{msgs.Edit}"
                                              styleClass="ui-button-success"
@@ -259,7 +260,7 @@
                                              ajax="true"
                                              update="@form frmUserList:userList growlMsg"
                                              action="#{userMgrBean.actionUpdate()}"
-                                             oncomplete="if(!validationFailed&amp;&amp;args.success){PF('userDialogWidgetVar').hide()};return false;"
+                                             oncomplete="javascript:if(!args.validationFailed){PF('userDialogWidgetVar').hide()};return false;"
                                              />
                             <p:commandButton value="#{msgs.Delete}"
                                              styleClass="ui-button-danger"
@@ -301,7 +302,7 @@
                                     match="newRepeat">
 
                                     <f:validateLength minimum="8" />
-                                    <!--<f:validator validatorId="PasswordValidator" />-->
+                                    <f:validator validatorId="PasswordValidator" />
                                 </p:password>
                             </div>
                         </div>
