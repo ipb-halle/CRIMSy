@@ -50,208 +50,204 @@
             header="#{cc.attrs.acobjectController.getTitleOfModal()}"
             widgetVar="dlgAcl"
             modal="true"
-            width="100%"
+            width="auto"
+            styleClass="panelTitleInfoColor"
             >
-            <!--styleClass="panelTitleInfoColor"-->
 
             <p:ajax event="close"  listener="#{cc.attrs.acobjectController.handleClose}" />
+            <center>
 
-            <!--
-            <center>-->
+                <p:panel  header="Acces control list of:#{cc.attrs.acobjectController.getTitleOfModal()}">
+                    <p:panelGrid  styleClass="mainPanel">
+                        <p:row styleClass="mainPanelEntry">
+                            <!--===============================================================================================================-->
 
-            <p:panel  header="Acces control list of:Test Printer">
-                <p:panelGrid  styleClass="mainPanel">
-                    <p:row styleClass="mainPanelEntry">
-                        <!--===============================================================================================================-->
+                            <p:column styleClass="mainPanelEntry">
+                                <h:form styleClass="acoEditModalForm">
+                                    <p:dataTable
+                                        var="ace"
+                                        value="#{cc.attrs.acobjectController.getAcEntries()}">
 
-                        <p:column styleClass="mainPanelEntry">
-                            <h:form styleClass="acoEditModalForm">
+                                        <p:column
+                                            styleClass="textTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_groupname}"
+                                            >
+                                            <h:outputText value="#{ace.getMember().getName()}"/>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="textTableColumn"
+                                            headerText="#{aclEdit_modal_table_institution}">
+                                            <h:outputText value="#{ace.getMember().getNode().institution}"/>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="checkBoxTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_read}">
+                                            <p:selectBooleanCheckbox
+                                                value="#{ace.permRead}" >
+                                                <p:ajax />
+                                            </p:selectBooleanCheckbox>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="checkBoxTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_edit}">
+                                            <p:selectBooleanCheckbox
+                                                value="#{ace.permEdit}">
+                                                <p:ajax />
+                                            </p:selectBooleanCheckbox>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="checkBoxTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_create}">
+                                            <p:selectBooleanCheckbox
+                                                value="#{ace.permCreate}">
+                                                <p:ajax />
+                                            </p:selectBooleanCheckbox>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="checkBoxTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_delete}">
+                                            <p:selectBooleanCheckbox
+                                                value="#{ace.permDelete}">
+                                                <p:ajax />
+                                            </p:selectBooleanCheckbox>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="checkBoxTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_chown}">
+                                            <p:selectBooleanCheckbox
+                                                value="#{ace.permChown}">
+                                                <p:ajax />
+                                            </p:selectBooleanCheckbox>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="checkBoxTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_grant}">
+                                            <p:selectBooleanCheckbox
+                                                value="#{ace.permGrant}">
+                                                <p:ajax />
+                                            </p:selectBooleanCheckbox>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="checkBoxTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_super}">
+                                            <p:selectBooleanCheckbox
+                                                value="#{ace.permSuper}">
+                                                <p:ajax />
+                                            </p:selectBooleanCheckbox>
+                                        </p:column>
+                                        <p:column
+                                            styleClass="toolsTableColumn"
+                                            headerText="#{msgs.aclEdit_modal_table_tools}">
+                                            <p:commandButton
+                                                styleClass="ui-button-danger"
+                                                icon="pi pi-user-minus"
+                                                ajax="true"
+                                                style="padding: 0 4px;"
+                                                update="@(.mainPanel)"
+                                                action="#{cc.attrs.acobjectController.removeGroupFromAcList(ace)}"/>
+                                            <!--onclick="ajax:cc.attrs.acobjectController.removeGroupFromAcList(ace)"-->
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+                            </p:column>
+                            <!--===============================================================================================================-->
+                            <p:column styleClass="mainPanelEntry" style="display: flex;align-items: center;">
+                                <h:form
+                                    id="searchMask"
+                                    styleClass="searchMaskClass">
+                                    <h:outputText
+                                        style="margin-top:30px;"
+                                        styleClass="groupSearchFilterHeader groupFilterRow groupFilterInputfield"
+                                        value="#{msgs.aclEdit_modal_search_title}"/><br/>
+
+                                    <h:outputText
+                                        styleClass="groupFilterRow"
+                                        value="#{msgs.aclEdit_modal_table_institution}"/>
+                                    <h:inputText
+                                        styleClass="groupFilterInputfield groupFilterRow"
+                                        value="#{cc.attrs.groupsAgent.institute}"/>
+                                    <h:outputText
+                                        styleClass="groupFilterRow"
+                                        value="#{msgs.aclEdit_modal_table_groupname}"/>
+                                    <h:inputText
+                                        styleClass="groupFilterInputfield groupFilterRow"
+                                        value="#{cc.attrs.groupsAgent.name}"/>
+                                    <p:commandButton value="#{msgs.aclEdit_modal_search_clear}"
+                                                     ajax="true"
+                                                     update="@(.mainPanel)"
+                                                     style="margin:5px;"
+                                                     action="#{cc.attrs.groupsAgent.clear()}"
+                                                     styleClass= "ui-button-secondary"
+                                                     />
+
+                                    <p:commandButton
+                                        styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn"
+                                        value="#{msgs.aclEdit_modal_search_apply}"
+                                        ajax="true"
+                                        style="margin:5px;"
+                                        update="@(.mainPanel)">
+
+                                        <f:setPropertyActionListener
+                                            value="#{cc.attrs.groupsAgent.loadGroups()}"
+                                            target="#{cc.attrs.acobjectController.possibleGroupsToAdd}"/>
+
+                                    </p:commandButton>
+                                </h:form>
+                            </p:column>
+                        </p:row>
+                        <p:row styleClass="mainPanelEntry">
+                            <p:column styleClass="mainPanelEntry">
                                 <p:dataTable
-                                    var="ace"
-                                    value="#{cc.attrs.acobjectController.getAcEntries()}">
-
+                                    styleClass="groupsToAddTable"
+                                    var="group"
+                                    value="#{cc.attrs.acobjectController.getGroupsNotInAcList()}">
+                                    <!--                                    scrollable="true"
+                                                                        scrollHeight="200"-->
                                     <p:column
                                         styleClass="textTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_groupname}"
-                                        >
-                                        <h:outputText value="#{ace.getMember().getName()}"/>
+                                        headerText="#{msgs.aclEdit_modal_table_groupname}">
+                                        <h:outputText value="#{group.name}" />
                                     </p:column>
                                     <p:column
                                         styleClass="textTableColumn"
-                                        headerText="#{aclEdit_modal_table_institution}">
-                                        <h:outputText value="#{ace.getMember().getNode().institution}"/>
+                                        headerText="#{msgs.aclEdit_modal_table_institution}">
+                                        <h:outputText value="#{group.getNode().institution}" />
                                     </p:column>
-                                    <p:column
-                                        styleClass="checkBoxTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_read}">
-                                        <p:selectBooleanCheckbox
-                                            value="#{ace.permRead}" >
-                                            <p:ajax />
-                                        </p:selectBooleanCheckbox>
-                                    </p:column>
-                                    <p:column
-                                        styleClass="checkBoxTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_edit}">
-                                        <p:selectBooleanCheckbox
-                                            value="#{ace.permEdit}">
-                                            <p:ajax />
-                                        </p:selectBooleanCheckbox>
-                                    </p:column>
-                                    <p:column
-                                        styleClass="checkBoxTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_create}">
-                                        <p:selectBooleanCheckbox
-                                            value="#{ace.permCreate}">
-                                            <p:ajax />
-                                        </p:selectBooleanCheckbox>
-                                    </p:column>
-                                    <p:column
-                                        styleClass="checkBoxTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_delete}">
-                                        <p:selectBooleanCheckbox
-                                            value="#{ace.permDelete}">
-                                            <p:ajax />
-                                        </p:selectBooleanCheckbox>
-                                    </p:column>
-                                    <p:column
-                                        styleClass="checkBoxTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_chown}">
-                                        <p:selectBooleanCheckbox
-                                            value="#{ace.permChown}">
-                                            <p:ajax />
-                                        </p:selectBooleanCheckbox>
-                                    </p:column>
-                                    <p:column
-                                        styleClass="checkBoxTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_grant}">
-                                        <p:selectBooleanCheckbox
-                                            value="#{ace.permGrant}">
-                                            <p:ajax />
-                                        </p:selectBooleanCheckbox>
-                                    </p:column>
-                                    <p:column
-                                        styleClass="checkBoxTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_super}">
-                                        <p:selectBooleanCheckbox
-                                            value="#{ace.permSuper}">
-                                            <p:ajax />
-                                        </p:selectBooleanCheckbox>
-                                    </p:column>
-                                    <p:column
-                                        styleClass="toolsTableColumn"
-                                        headerText="#{msgs.aclEdit_modal_table_tools}">
-                                        <p:commandButton
-                                            styleClass="ui-button-danger"
-                                            icon="pi pi-user-minus"
-                                            ajax="true"
-                                            style="padding: 0 4px;"
-                                            update="@(.mainPanel)"
-                                            action="#{cc.attrs.acobjectController.removeGroupFromAcList(ace)}"/>
-                                        <!--onclick="ajax:cc.attrs.acobjectController.removeGroupFromAcList(ace)"-->
+                                    <p:column headerText="Tools">
+                                        <h:form>
+                                            <p:commandButton
+                                                icon="pi pi-user-plus "
+                                                ajax="true"
+                                                style="padding: 0 4px; float:right; margin-right: 3px"
+                                                styleClass="ui-button-danger"
+                                                action="#{cc.attrs.acobjectController.addGroupToAcList(group)}"
+                                                update="@(.mainPanel)"/>
+                                            <!--onclick="ajax:cc.attrs.acobjectController.addGroupToAcList(group)"-->
+                                        </h:form>
                                     </p:column>
                                 </p:dataTable>
-                            </h:form>
-                        </p:column>
-                        <!--===============================================================================================================-->
-
-                        <p:column styleClass="mainPanelEntry">
-                            <h:form
-                                id="searchMask"
-                                styleClass="searchMaskClass">
-                                <h:outputText
-                                    styleClass="groupSearchFilterHeader groupFilterRow groupFilterInputfield"
-                                    value="#{msgs.aclEdit_modal_search_title}"/>
-                                <br/>
-                                <h:outputText
-                                    styleClass="groupFilterRow"
-                                    value="#{msgs.aclEdit_modal_table_institution}"/>
-                                <h:inputText
-                                    styleClass="groupFilterInputfield groupFilterRow"
-                                    value="#{cc.attrs.groupsAgent.institute}"/>
-                                <h:outputText
-                                    styleClass="groupFilterRow"
-                                    value="#{msgs.aclEdit_modal_table_groupname}"/>
-                                <h:inputText
-                                    styleClass="groupFilterInputfield groupFilterRow"
-                                    value="#{cc.attrs.groupsAgent.name}"/>
-
-                                <p:commandButton value="#{msgs.aclEdit_modal_search_clear}"
-                                                 ajax="true"
-                                                 update="@(.mainPanel)"
-                                                 style="margin:5px;"
-                                                 action="#{cc.attrs.groupsAgent.clear()}"
-                                                 styleClass= "ui-button-secondary"
-                                                 />
-
-                                <p:commandButton
-                                    styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn"
-                                    value="#{msgs.aclEdit_modal_search_apply}"
-                                    ajax="true"
-                                    style="margin:5px;"
-                                    update="@(.mainPanel)">
-
-                                    <f:setPropertyActionListener
-                                        value="#{cc.attrs.groupsAgent.loadGroups()}"
-                                        target="#{cc.attrs.acobjectController.possibleGroupsToAdd}"/>
-
-                                </p:commandButton>
-                            </h:form>
-
-                        </p:column>
-                    </p:row>
-                    <p:row styleClass="mainPanelEntry">
-                        <p:column styleClass="mainPanelEntry">
-                            <p:dataTable
-                                styleClass="groupsToAddTable"
-                                var="group"
-                                scrollable="true"
-                                scrollHeight="200"
-                                value="#{cc.attrs.acobjectController.getGroupsNotInAcList()}">
-                                <p:column
-                                    styleClass="textTableColumn"
-                                    headerText="#{msgs.aclEdit_modal_table_groupname}">
-                                    <h:outputText value="#{group.name}" />
-                                </p:column>
-                                <p:column
-                                    styleClass="textTableColumn"
-                                    headerText="#{msgs.aclEdit_modal_table_institution}">
-                                    <h:outputText value="#{group.getNode().institution}" />
-                                </p:column>
-                                <p:column headerText="Tools">
-                                    <h:form>
-                                        <p:commandButton
-                                            icon="pi pi-user-plus "
-                                            ajax="true"
-                                            style="padding: 0 4px; float:right; margin-right: 3px"
-                                            styleClass="ui-button-danger"
-                                            action="#{cc.attrs.acobjectController.addGroupToAcList(group)}"
-                                            update="@(.mainPanel)"/>
-                                        <!--onclick="ajax:cc.attrs.acobjectController.addGroupToAcList(group)"-->
-                                    </h:form>
-                                </p:column>
-                            </p:dataTable>
-                        </p:column>
-                        <p:column styleClass="mainPanelEntry">
-                            <h:form id ="acoInnerFormId" styleClass="acoInnerFormClass">
-                                <p:commandButton
-                                    styleClass="groupFilterButton groupFilterButtonColumn ui-button-secondary"
-                                    style="margin: 5px;"
-                                    value="#{msgs.aclEdit_modal_cancel}"
-                                    oncomplete="PF('dlgAcl').hide();"
-                                    />
-                                <p:commandButton
-                                    value="#{msgs.aclEdit_modal_save}"
-                                    update="@(.#{cc.attrs.updateTargetClass})"
-                                    styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn ui-button-danger"
-                                    style="margin: 5px;"
-                                    action="#{cc.attrs.acobjectController.saveNewAcList}"
-                                    oncomplete="PF('dlgAcl').hide();"/>
-                            </h:form>
-                        </p:column>
-                    </p:row>
-                </p:panelGrid>
-            </p:panel>
-            <!--</center>-->
+                            </p:column>
+                            <p:column styleClass="mainPanelEntry">
+                                <h:form id ="acoInnerFormId" styleClass="acoInnerFormClass">
+                                    <p:commandButton
+                                        styleClass="groupFilterButton groupFilterButtonColumn ui-button-secondary"
+                                        style="margin: 5px;"
+                                        value="#{msgs.aclEdit_modal_cancel}"
+                                        oncomplete="PF('dlgAcl').hide();"
+                                        />
+                                    <p:commandButton
+                                        value="#{msgs.aclEdit_modal_save}"
+                                        update="@(.#{cc.attrs.updateTargetClass})"
+                                        styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn ui-button-danger"
+                                        style="margin: 5px;"
+                                        action="#{cc.attrs.acobjectController.saveNewAcList}"
+                                        oncomplete="PF('dlgAcl').hide();"/>
+                                </h:form>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:panel>
+            </center>
         </p:dialog>
     </composite:implementation >
 </html>

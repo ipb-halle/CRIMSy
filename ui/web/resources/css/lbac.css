@@ -41,6 +41,9 @@ body .ui-button.ui-button-icon-only {
     flex-direction: row;
     justify-content: space-evenly;
 }
+.searchMaskClass{
+    margin-top: 5px;
+}
 body .ui-inputtextarea{
     display: block;
 }
