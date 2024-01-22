@@ -90,7 +90,7 @@ public class FileSaverTest extends TestBase {
         col.setOwner(publicUser);
         col.setStoragePath("/");
         col = collectionService.save(col);
-        col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
+        col.setBaseDirectory("target/test-classes/collections");
         
         File f = new File(exampleDocsRootFolder + "Document1.pdf");
         FileInputStream stream = new FileInputStream(f);

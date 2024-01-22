@@ -25,4 +25,5 @@ public interface AttachmentHolder {
 
     public String getBaseFolder();
     public Integer getId();
+    public String getName();
 }

@@ -123,11 +123,12 @@ public class HealthStateCheck {
      * Checks if there is a local directory for the public collection
      */
     private void checkFileSystemState() {
-
-        boolean localFileSystemCollectionCheck = fileService.storagePathExists(PUBLIC_COLLECTION);
+        Collection c = new Collection();
+        c.setName("public");
+        boolean localFileSystemCollectionCheck = fileService.storagePathExists(c);
         if (!localFileSystemCollectionCheck) {
             healthState.publicCollectionFileState = HealthState.State.FAILED;
-            logger.error(String.format("local file repository '%s' not found.", fileService.getStoragePath(PUBLIC_COLLECTION)));
+            logger.error(String.format("local file repository '%s' not found.", fileService.getStoragePath(c)));
         } else {
             healthState.publicCollectionFileState = HealthState.State.OK;
         }
@@ -164,7 +165,7 @@ public class HealthStateCheck {
                 //Check if the name of the public collection in db is in sync with the
                 //name in the local file system
                 if (healthState.publicCollectionFileState == HealthState.State.OK
-                        && collNameInDb.equals(fileService.getStoragePath(PUBLIC_COLLECTION))) {
+                        && collNameInDb.equals(fileService.getStoragePath(publicCollection))) {
                     healthState.publicCollectionFileSyncState = HealthState.State.OK;
                 } else {
                     healthState.publicCollectionFileSyncState = HealthState.State.FAILED;
@@ -245,7 +246,7 @@ public class HealthStateCheck {
             for (Iterator<Collection> collectionIterator = collectionList.iterator(); collectionIterator.hasNext();) {
 
                 Collection collection = collectionIterator.next();
-                if (fileService.storagePathExists(collection.getName())) {
+                if (fileService.storagePathExists(collection)) {
                     healthState.collectionFileSyncList.put(collection.getName(), State.OK);
                 } else {
                     healthState.collectionFileSyncList.put(collection.getName(), State.FAILED);

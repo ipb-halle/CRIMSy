@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.service;
 
+import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.lbac.collections.Collection;
 
 import java.io.File;
@@ -40,29 +41,21 @@ import org.apache.logging.log4j.LogManager;
 public class FileService implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final static String defaultPath = "/data/ui";
-    private final static String pathPropName = "de.ipb_halle.lbac.cloud.servlet.FileUploadExec.Path";
 
     private Logger logger;
-    private String uploadRootPath;
 
     public FileService() {
         logger = LogManager.getLogger(FileService.class);
-        this.uploadRootPath = System.getProperty(pathPropName, defaultPath);
+
     }
 
-    //*** getter and setter
-    public static String getDefaultPath() {
-        return defaultPath;
+    public Path getUploadPath(AttachmentHolder attachmentHolder) {
+        return Paths.get(attachmentHolder.getBaseFolder());
     }
 
-    public Path getUploadPath(String path) {
-        return Paths.get(this.uploadRootPath, path);
-    }
-
-    public String getStoragePath(String dirPath) {
-        if (storagePathExists(dirPath)) {
-            return getUploadPath(dirPath).toString();
+    public String getStoragePath(AttachmentHolder attachmentHolder) {
+        if (storagePathExists(attachmentHolder)) {
+            return getUploadPath(attachmentHolder).toString();
         }
         return "";
     }
@@ -72,37 +65,29 @@ public class FileService implements Serializable {
      * https://docs.oracle.com/javase/tutorial/essential/io/check.html
      * attention: java nio: (!Files.exists) is NOT EQUAL to (Files.notExists)
      *
-     * @param dirPath
+     * @param attachmentHolder
      * @return
      */
-    public boolean storagePathExists(String dirPath) {
-        if (Files.exists(getUploadPath(dirPath))) {
+    public boolean storagePathExists(AttachmentHolder attachmentHolder) {
+        if (Files.exists(getUploadPath(attachmentHolder))) {
             return true;
-        } else if (Files.notExists(getUploadPath(dirPath))) {
+        } else if (Files.notExists(getUploadPath(attachmentHolder))) {
             return false;
         } else {
-            logger.error(String.format("status of filesystem %s is unknown.", getUploadPath(dirPath)));
+            logger.error(String.format("status of filesystem %s is unknown.", getUploadPath(attachmentHolder)));
             return false;
         }
     }
 
     /**
-     * @param dirPath
-     * @return boolean of (exists & read & write permission)
-     */
-    public boolean storagePathIsAccessible(String dirPath) {
-        return Files.isDirectory(getUploadPath(dirPath)) & Files.isReadable(getUploadPath(dirPath)) & Files.isWritable(getUploadPath(dirPath));
-    }
-
-    /**
      * create new sub directory in root path
      *
-     * @param dirPath - name of directory
+     * @param collection - collection to create directory for
      * @return
      */
-    public boolean createDir(String dirPath) {
-        if (dirPath != null && dirPath.length() > 0) {
-            Path rootPath = Paths.get(this.uploadRootPath, dirPath);
+    public boolean createDir(AttachmentHolder collection) {
+        if (collection != null) {
+            Path rootPath = Paths.get(collection.getBaseFolder());
             try {
 
                 Files.createDirectories(rootPath);
@@ -118,13 +103,16 @@ public class FileService implements Serializable {
     /**
      * delete all files recursively in a sub dir
      *
-     * @param dirPath input Path
+     * @param dirName input Path
      * @return boolean
      */
-    public boolean deleteDir(String dirPath) {
-        if (dirPath != null && dirPath.length() > 0) {
+    public boolean deleteDir(AttachmentHolder holder) {
+        Path rootPath = null;
+
+        if (holder != null) {
+            logger.error("Upload path now " + holder.getBaseFolder());
             try {
-                Path rootPath = Paths.get(this.uploadRootPath, dirPath);
+                rootPath = Paths.get(holder.getBaseFolder());
                 try (Stream<Path> walk = Files.walk(rootPath)) {
                     walk
                             .sorted(Comparator.reverseOrder())
@@ -133,7 +121,7 @@ public class FileService implements Serializable {
                 }
                 return true;
             } catch (IOException e) {
-                logger.error("deleting dir " + dirPath + " failed.");
+                logger.error("deleting dir " + holder.getBaseFolder() + " |  failed.");
                 return false;
             }
         }
@@ -162,13 +150,17 @@ public class FileService implements Serializable {
     /**
      * delete file from repository
      *
-     * @param collection
+     * @param attachmentHolder
      * @param filename
      * @return
      */
-    public boolean deleteFile(String collection, String filename) {
-        if (filename != null && filename.length() > 4) {
-            Path filePath = Paths.get(this.getUploadPath(collection).toString(), filename.substring(1, 2), filename.substring(3, 4), filename);
+    public boolean deleteFile(AttachmentHolder attachmentHolder, String filename) {
+        if (attachmentHolder != null && filename != null && filename.length() > 4) {
+            Path filePath = Paths.get(
+                    this.getUploadPath(attachmentHolder).toString(),
+                    filename.substring(1, 2),
+                    filename.substring(3, 4),
+                    filename);
             try {
                 Files.delete(filePath);
                 return true;
@@ -187,7 +179,7 @@ public class FileService implements Serializable {
      * @return
      */
     public boolean deleteFile(Collection collection, String filename) {
-        return deleteFile(collection.getName(), filename);
+        return deleteFile(collection, filename);
     }
 
     /**

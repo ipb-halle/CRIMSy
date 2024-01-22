@@ -211,7 +211,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
         boolean isOwner = currentAccount.equals(activeCollection.getOwner());
         if (isOwner || acListService.isPermitted(ACPermission.permDELETE, activeCollection, currentAccount)) {
             collectionOperation.clearCollection(activeCollection, currentAccount);
-            fileService.createDir(activeCollection.getName());
+            fileService.createDir(activeCollection);
             refreshCollectionList();
         } else {
             UIMessage.info(MESSAGE_BUNDLE, "collMgr_clear_no_permission");

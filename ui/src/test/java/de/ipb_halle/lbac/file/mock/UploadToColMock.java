@@ -19,12 +19,10 @@ package de.ipb_halle.lbac.file.mock;
 
 import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.kx.file.FileObjectService;
-import de.ipb_halle.kx.termvector.TermVectorService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.UploadToCol;
-import java.io.InputStream;
 import jakarta.servlet.AsyncContext;
 
 /**
@@ -48,7 +46,7 @@ public class UploadToColMock extends UploadToCol {
     @Override
     protected AttachmentHolder getAttachmentTarget() throws Exception {
         Collection holder = (Collection) super.getAttachmentTarget();
-        holder.COLLECTIONS_BASE_FOLDER = fileBaseFolder;
+        holder.setBaseDirectory(fileBaseFolder);
         return holder;
     }
 

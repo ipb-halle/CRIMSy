@@ -185,7 +185,7 @@ public class UploadToColTest extends TestBase {
         col.setOwner(publicUser);
         col.setStoragePath("/");
         col = collectionService.save(col);
-        col.COLLECTIONS_BASE_FOLDER = FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER;
+        col.setBaseDirectory(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
     }
 
 }

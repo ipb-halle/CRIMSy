@@ -37,8 +37,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
 
     protected Integer id;
 
-    public String COLLECTIONS_BASE_FOLDER = "/data/ui/collections";
-
     protected String description;
 
     protected String name;
@@ -50,6 +48,10 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
     protected String storagePath;
 
     protected Long countDocs = -1L;
+    
+    protected String baseDirectory=System.getProperty(
+            "de.ipb_halle.lbac.cloud.servlet.FileUploadExec.Path", 
+            "/data/ui/") + "/collections/";
 
     /**
      * default constructor
@@ -168,11 +170,12 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         this.countDocs = countDocs;
     }
 
-   
-
     @Override
     public String getBaseFolder() {
-        return Paths.get(COLLECTIONS_BASE_FOLDER, getName()).toString();
+        return Paths.get(baseDirectory, getName()).toString();
     }
-
+    
+    public void setBaseDirectory(String directory){
+        this.baseDirectory=directory;
+    }
 }

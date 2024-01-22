@@ -156,12 +156,13 @@ public class HealthStateRepair {
     }
 
     private void repairPublicCollectionInFileSystem() {
-
-        if (fileService.createDir(publicCollectionName)) {
+        Collection c = new Collection();
+        c.setName(publicCollectionName);
+        if (fileService.createDir(c)) {
             logger.info(String.format(
                     "repository for standard collection  %s under %s created.",
                     publicCollectionName,
-                    fileService.getStoragePath(publicCollectionName)));
+                    c.getBaseFolder()));
         } else {
             logger.error(
                     String.format("repository for for standard collection  %s could not created.",
@@ -173,7 +174,7 @@ public class HealthStateRepair {
         try {
             publicCollection = new Collection();
             publicCollection.setName(publicCollectionName);
-            publicCollection.setStoragePath(String.format("%s/%s", FileService.getDefaultPath(), publicCollectionName));
+            publicCollection.setStoragePath(publicCollection.getBaseFolder());
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);
@@ -197,7 +198,7 @@ public class HealthStateRepair {
     private boolean updatePublicCollectionInDb() {
         try {
             publicCollection.setName(publicCollectionName);
-            publicCollection.setStoragePath(String.format("%s/%s", FileService.getDefaultPath(), publicCollectionName));
+            publicCollection.setStoragePath(publicCollection.getBaseFolder());
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);

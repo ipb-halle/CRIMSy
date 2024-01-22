@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
+import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.lbac.service.FileService;
 
 /**
@@ -32,7 +33,7 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public String getStoragePath(String dirPath) {
-        return root;
+    public String getStoragePath(AttachmentHolder holder) {
+        return holder.getBaseFolder();
     }
 }

@@ -28,9 +28,7 @@ import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
-import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import de.ipb_halle.lbac.service.NodeService;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -91,8 +89,8 @@ public class DocumentCreator {
         collection.setNode(nodeService.getLocalNode());
         collection.setOwner(user);
         collection.setStoragePath("/");
+        collection.setBaseDirectory("target/test-classes/collections");
         collection = collectionService.save(collection);
-        collection.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
     }
 
     private void setupDocument(String name) {

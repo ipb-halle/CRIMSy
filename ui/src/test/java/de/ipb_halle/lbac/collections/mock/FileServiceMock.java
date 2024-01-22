@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.collections.mock;
 
+import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.service.FileService;
 import java.nio.file.Path;
@@ -30,7 +31,6 @@ public class FileServiceMock extends FileService {
 
     private boolean createSuccess = true;
     private boolean deleteSuccess = true;
-    private String DATA_ROOT = "/data/ui/";
 
     @Override
     public long countFilesInDir(String dirPath) {
@@ -38,12 +38,12 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public boolean createDir(String dirPath) {
+    public boolean createDir(AttachmentHolder holder) {
         return createSuccess;
     }
 
     @Override
-    public boolean deleteDir(String dirPath) {
+    public boolean deleteDir(AttachmentHolder holder) {
         return deleteSuccess;
     }
 
@@ -53,7 +53,7 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public boolean deleteFile(String collection, String filename) {
+    public boolean deleteFile(AttachmentHolder collection, String filename) {
         return deleteSuccess;
     }
 
@@ -63,22 +63,17 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public String getStoragePath(String dirPath) {
-        return DATA_ROOT + dirPath;
+    public String getStoragePath(AttachmentHolder holder) {
+        return holder.getBaseFolder();
     }
 
     @Override
-    public Path getUploadPath(String path) {
-        return Paths.get(DATA_ROOT + path);
+    public Path getUploadPath(AttachmentHolder holder) {
+        return Paths.get(holder.getBaseFolder());
     }
 
     @Override
-    public boolean storagePathExists(String dirPath) {
-        return true;
-    }
-
-    @Override
-    public boolean storagePathIsAccessible(String dirPath) {
+    public boolean storagePathExists(AttachmentHolder attachment) {
         return true;
     }
 
