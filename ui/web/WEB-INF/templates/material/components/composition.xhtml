@@ -31,11 +31,11 @@
         <ui:composition>
             <p:tab
                 title="#{msgs.materialCreation_panelNames_composition}"
+                disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}"
                 >
-                <!--disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}"-->
                 <p:outputPanel
+                    rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}"
                     >
-                    <!--rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}"-->
                     <p:panelGrid>
                         <p:row>
                             <p:column styleClass="borderless">

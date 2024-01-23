@@ -89,9 +89,6 @@
                                          type="submit"
                                          action="#{taxonomyBean.nameController.swapPosition(mName, 'HIGHEST')}"/>
 
-                        <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'HIGHEST')"-->
-
-
                         <p:commandButton style="margin: 0.5rem;"
                                          icon="fa fa-angle-up"
                                          id="btn12"
@@ -101,10 +98,6 @@
                                          update="@(.taxonomyInfos)"
                                          type="submit"
                                          action="#{taxonomyBean.nameController.swapPosition(mName, 'HIGHER')}">
-
-             <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_higher}"-->
-                            <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'HIGHER')"-->
-
                             <p:tooltip for="btn12" value="#{msgs.materialCreation_panelNames_tooltip_higher}" position="top"/>
                         </p:commandButton>
 
@@ -117,10 +110,6 @@
                                          update="@(.taxonomyInfos)"
                                          type="submit"
                                          action="#{taxonomyBean.nameController.swapPosition(mName, 'LOWER')}">
-
-             <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_lower}"-->
-                            <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'LOWER')"-->
-
                             <p:tooltip for="btn13" value="#{msgs.materialCreation_panelNames_tooltip_lower}" position="top"/>
                         </p:commandButton>
 
@@ -135,10 +124,6 @@
                                          process="@(.taxonomyInfos)"
                                          type="submit"
                                          action="#{taxonomyBean.nameController.swapPosition(mName, 'LOWEST')}">
-
-                            <!--onclick="ajax:taxonomyBean.nameController.swapPosition(mName, 'LOWEST')"-->
-                            <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_lowestRank}"-->
-
                             <p:tooltip for="btn14" value="#{msgs.materialCreation_panelNames_tooltip_lowestRank}" position="bottom"/>
                         </p:commandButton>
 
@@ -152,9 +137,6 @@
                                          update="@(.taxonomyInfos)"
                                          type="submit"
                                          action="#{taxonomyBean.nameController.removeName(mName)}">
-                            <!--onclick="ajax:taxonomyBean.nameController.removeName(mName)"-->
-           <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"-->
-
                             <p:tooltip for="btn15" value="#{msgs.materialCreation_panelNames_tooltip_delete}" position="bottom"/>
                         </p:commandButton>
 
@@ -168,10 +150,6 @@
                                          update="@(.taxonomyInfos)"
                                          type="submit"
                                          action="#{taxonomyBean.nameController.addNewName()}">
-                            <!--onclick="ajax:taxonomyBean.nameController.addNewName();"-->
-
-                        <!--tooltip="#{msgs.materialCreation_panelNames_tooltip_add}"-->
-
                             <p:tooltip for="btn16" value="#{msgs.materialCreation_panelNames_tooltip_add}" position="bottom"/>
                         </p:commandButton>
 

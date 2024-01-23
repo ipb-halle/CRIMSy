@@ -29,7 +29,7 @@
       xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
         <h:form id="materialEditForm">
-            <p:panel>
+            <p:panel >
                 <p:panelGrid>
                     <p:row>
                         <p:column >
@@ -47,7 +47,9 @@
                                     itemValue="#{p.id}"
                                     itemLabel="#{p.toString()}"
                                     itemDisabled="false" />
-                                <p:ajax update="materialEditForm" />
+                                <p:ajax
+                                    process="@this"
+                                    update="@form" />
                             </p:selectOneMenu>
                         </p:column>
                         <p:column colspan="1"
@@ -56,8 +58,8 @@
                                   >
                             <p:commandButton
                                 disabled="#{!materialBean.permission.isBackwardButtonEnabled()}"
-                                process="@this"
-                                update="@all"
+                                process="@form"
+                                update="@form"
                                 ajax="true"
                                 icon="pi pi-backward"
                                 action="#{materialBean.switchOneVersionBack()}"
@@ -87,13 +89,12 @@
                                   rendered="#{materialBean.areRevisionElementsVisible()}">
                             <p:commandButton
                                 disabled="#{!materialBean.permission.isForwardButtonEnabled()}"
-                                process="@this"
-                                update="@all"
+                                process="@form"
+                                update="@form"
                                 ajax="true"
                                 action="#{materialBean.switchOneVersionForward()}"
                                 icon="pi pi-forward"
                                 />
-                            <!--onclick="ajax:materialBean.switchOneVersionForward();"-->
                         </p:column>
 
                         <!--Cancel Button-->
@@ -103,8 +104,9 @@
                                 value="#{msgs.materialCreation_cancel}"
                                 styleClass="ui-button-secondary"
                                 action="#{navigator.navigate('material/materials')}"
-                                update="@all"
-                                process="@this"
+                                update="@form"
+                                process="@form"
+                                ajax="true"
                                 />
                         </p:column>
 
@@ -118,8 +120,8 @@
                                 value="#{materialBean.getCreateButtonText()}"
                                 disabled="#{!materialBean.isCreationAllowed()}"
                                 action="#{materialBean.actionSaveMaterial()}"
-                                process="@this"
-                                update="@all"
+                                process="@form"
+                                update="@form"
                                 ajax="false"/>
                         </p:column>
                     </p:row>
@@ -145,7 +147,9 @@
                                 <f:selectItems
                                     value="#{materialBean.getMaterialTypes()}"/>
 
-                                <p:ajax update="materialEditForm" />
+                                <p:ajax
+                                    process="@this"
+                                    update="@form" />
 
                             </p:selectOneMenu>
 
@@ -173,8 +177,7 @@
 
                 </p:panelGrid>
             </p:panel>
-
-            <p:outputPanel rendered="#{materialBean.isValideProjectChoosen()}" style="width: 100%">
+            <p:panel rendered="#{materialBean.isValideProjectChoosen()}" style="width: 100%">
                 <!-- Note: This tabView needs to be dynamic (= lazy loading via AJAX) because some molecular structure plugins do not load properly when they are in hidden tabs. -->
                 <p:tabView styleClass="itemEditTabView" dynamic="true" style="width: 100%">
                     <ui:insert>
@@ -202,10 +205,7 @@
                         <ui:include src="/WEB-INF/templates/material/components/composition.xhtml"/>
                     </ui:insert>
                 </p:tabView>
-            </p:outputPanel>
-
-
+            </p:panel>
         </h:form>
     </h:body>
-
 </html>
