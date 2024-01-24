@@ -285,21 +285,13 @@
                                     id="collectionRefreshButton"
                                     action="#{collectionBean.refreshCollectionSearch()}"
                                     update="growlMsg frmCollectionList:collectionList frmCollectionList:searchPoll"
-                                    onclick="javascript:frmCollectionListCollectionListWidget.DataTable().destroy();ajax:collectionBean.refreshCollectionSearch();">
+                                    >
+
                                     <p:tooltip for="collectionRefreshButton" value="#{collectionBean.getToolTipForRefresh()}" position="right"/>
                                 </p:commandButton>
                             </p:badge>
 
                         </p:panel>
-                        <!--===============================================================================================================-->
-                        <!--                        <tr>
-                                                    <th>#{msgs.collMgr_datatable_header_name}</th>
-                                                    <th>#{msgs.collMgr_datatable_header_descr}</th>
-                                                    <th>#{msgs.collMgr_datatable_header_owner}</th>
-                                                    <th>#{msgs.collMgr_datatable_header_numDocs}</th>
-                                                    <th>#{msgs.collMgr_datatable_header_location}</th>
-                                                    <th style="min-width:68px">#{msgs.collMgr_datatable_header_tools}</th>
-                                                </tr>-->
                     </f:facet>
                     <!--===============================================================================================================-->
                     <p:column headerText="#{msgs.collMgr_datatable_header_name}"
