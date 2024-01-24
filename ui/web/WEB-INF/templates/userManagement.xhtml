@@ -461,7 +461,7 @@
                         </p:column>
 
                         <p:column headerText="#{msgs.Tools}">
-                            <p:commandButton styleClass="tstUserMgrMembershipAdd"
+                            <p:commandButton styleClass="ui-button-danger"
                                              icon="pi pi-user-plus"
                                              ajax="true"
                                              action="#{userMgrBean.actionAddMembership(group)}"
@@ -475,6 +475,7 @@
                 </h:form>
                 <center>
                     <p:commandButton value="#{msgs.Close}"
+                                     style="margin:10px;"
                                      styleClass="ui-button-secondary"
                                      onclick="PF('groupMembershipsDialogWidgetVar').hide()"/>
                 </center>

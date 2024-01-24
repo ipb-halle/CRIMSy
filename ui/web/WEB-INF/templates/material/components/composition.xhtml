@@ -157,58 +157,58 @@
                         <div >
                             <!--Search Results-->
                             <!--****************************************************************************************************-->
-
                             <p:panelGrid columns="4" layout="flex"
                                          columnClasses="col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4, col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4"
                                          styleClass="customPanelGrid" contentStyleClass="ui-fluid">
+                                <p:row>
+                                    <h:outputText
+                                        value="#{msgs.materialCreation_composition_searchResultTitle}"
+                                        style="font-weight: bold;font-size: 115%"/>
 
-                                <h:outputText
-                                    value="#{msgs.materialCreation_composition_searchResultTitle}"
-                                    style="font-weight: bold;font-size: 115%"/>
+                                    <p:dataTable
+                                        styleClass="resultTable"
+                                        value="#{materialCompositionBean.materialsThatCanBeAdded}"
+                                        scrollable="true"
+                                        scrollHeight="280"
+                                        scrollRows="10"
+                                        var="material">
 
-                                <p:dataTable
-                                    styleClass="resultTable"
-                                    value="#{materialCompositionBean.materialsThatCanBeAdded}"
-                                    var="material">
+                                        <!--ID-->
+                                        <!--****************************************************************************-->
+                                        <p:column headerText="#{msgs.materialCreation_composition_concentrationsID}">
+                                            <h:outputText value="#{material.getId()}" />
+                                        </p:column>
 
-                                    <!--ID-->
-                                    <!--****************************************************************************-->
-                                    <p:column headerText="#{msgs.materialCreation_composition_concentrationsID}">
-                                        <h:outputText value="#{material.getId()}" />
-                                    </p:column>
+                                        <!--Name-->
+                                        <!--**********************************************************************************-->
+                                        <p:column headerText="Name">
+                                            <h:outputText value="#{material.getFirstName()}" />
+                                        </p:column>
 
-                                    <!--Name-->
-                                    <!--**********************************************************************************-->
-                                    <p:column headerText="Name">
-                                        <h:outputText value="#{material.getFirstName()}" />
-                                    </p:column>
+                                        <!--Actions-->
+                                        <!--**************************************************************************************-->
+                                        <p:column headerText="#{msgs.materialCreation_composition_searchResultTable_Action}">
 
-                                    <!--Actions-->
-                                    <!--**************************************************************************************-->
-                                    <p:column headerText="#{msgs.materialCreation_composition_searchResultTable_Action}">
+                                            <!--Plus button-->
+                                            <!--*******************-->
+                                            <p:commandButton
+                                                id="btn11"
+                                                ajax="true"
+                                                styleClass="ui-button-danger"
+                                                type="submit"
+                                                action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
+                                                update="@(.resultTable)"
+                                                process="@this"
+                                                icon="pi pi-plus" />
+                                                <!--disabled="#{!materialBean.permission.isEditAllowed()}"-->
 
-                                        <!--Plus button-->
-                                        <!--*******************-->
-                                        <p:commandButton
-                                            id="btn11"
-                                            ajax="true"
-                                            styleClass="ui-button-danger"
-                                            type="submit"
-                                            action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
-                                            update="@(.resultTable)"
-                                            process="@this"
-                                            icon="pi pi-plus" />
-                                            <!--disabled="#{!materialBean.permission.isEditAllowed()}"-->
-
-                                        <p:tooltip id="uploaderCancelButtonToolTip"
-                                                   position="bottom"
-                                                   for="btn11"
-                                                   value="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"/>
-
-                                    </p:column>
-
-                                </p:dataTable>
-
+                                            <p:tooltip id="uploaderCancelButtonToolTip"
+                                                       position="bottom"
+                                                       for="btn11"
+                                                       value="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:row>
                             </p:panelGrid>
 
                             <!--Materials in composition-->
@@ -223,6 +223,9 @@
 
                                     <p:dataTable styleClass="resultTable"
                                                  value="#{materialCompositionBean.concentrationsInComposition}"
+                                                 scrollable="true"
+                                                 scrollHeight="200"
+                                                 scrollRows="10"
                                                  var="concentration">
 
                                         <!--ID-->
@@ -279,7 +282,7 @@
                                                        position="bottom"
                                                        for="btn22"
                                                        value="#{msgs.materialCreation_composition_concentrationsRemoveMaterial}"/>
-                                        </p:column>s
+                                        </p:column>
                                     </p:dataTable>
                                 </p:row>
                             </p:panelGrid>
