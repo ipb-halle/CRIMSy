@@ -112,30 +112,38 @@
                                     <h:outputText value="#{materialOverviewBean.getLocalizedMaterialType(material)}"/>
                                 </p:column>
 
-                                <p:column
-                                    headerText="#{msgs.materialOverview_tableheader_detailInfos}">
-                                    <!--styleClass="div-container-hazard"-->
+                                <p:column headerText="#{msgs.materialOverview_tableheader_detailInfos}"
+                                          styleClass="div-container-hazard">
                                     <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('BIOMATERIAL', material)}">
                                         <ui:insert name="biomaterialPanel">
                                             <ui:include src="/WEB-INF/templates/material/components/detail/biodata.xhtml">
                                                 <ui:param name="material" value="#{material}" />
+                                                <br/>
                                             </ui:include>
                                         </ui:insert>
                                     </ui:fragment>
+                                    <br/>
+
                                     <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('STRUCTURE', material)}">
                                         <ui:insert name="structurePanel">
                                             <ui:include src="/WEB-INF/templates/material/components/detail/structure.xhtml">
-                                                <ui:param name="material" value="#{material}" />
+                                                <ui:param name="material" value="#{material}" />                                   
+                                                <br/>
                                             </ui:include>
                                         </ui:insert>
                                     </ui:fragment>
+                                    <br/>
+
                                     <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('COMPOSITION', material)}">
-                                        <ui:insert name="structurePanel">
+                                        <ui:insert name="compositionPanel">
                                             <ui:include src="/WEB-INF/templates/material/components/detail/composition.xhtml">
                                                 <ui:param name="material" value="#{material}" />
+                                                <br/>
                                             </ui:include>
                                         </ui:insert>
                                     </ui:fragment>
+                                    <br/>
+
                                 </p:column>
                                 <p:column headerText="#{msgs.materialOverview_tableheader_actions}">
                                     <div style="display:flex; flex-direction: row; justify-content: center;width:100%;">
@@ -150,7 +158,6 @@
                                                          action="#{materialOverviewBean.actionEditMaterial(material)}"
                                                          />
                                         <p:tooltip for="btn1" value="#{msgs.materialOverview_actions_edit}" position="top"/>
-                                                         <!--tooltip="#{msgs.materialOverview_actions_edit}"-->
 
                                         <p:commandButton id="btn2"
                                                          style="padding: 0 4px;margin:0 1rem; margin-bottom: 4px;"
@@ -162,9 +169,6 @@
                                                          action="#{materialOverviewBean.actionCreateNewItem(material)}"
                                                          />
                                         <p:tooltip for="btn2" value="#{msgs.materialOverview_actions_createItem}" position="top"/>
-
-                                                             <!--tooltip="#{msgs.materialOverview_actions_createItem}"-->
-
 
                                         <p:commandButton id="user"
                                                          style="padding: 0 4px;margin:0;margin-bottom: 4px;"
@@ -193,10 +197,6 @@
                                                          action="#{materialOverviewBean.actionDeactivateMaterial(material)}"
                                                          />
                                         <p:tooltip for="trash" value="#{msgs.materialOverview_actions_deactivate}" position="top"/>
-
-                                                            <!--tooltip="#{msgs.materialOverview_actions_deactivate}"-->
-                                        <!--onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"-->
-
                                     </div>
                                 </p:column>
                             </p:dataTable>

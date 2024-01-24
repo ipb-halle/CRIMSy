@@ -31,121 +31,133 @@
         <ui:composition>
             <p:tab
                 title="#{msgs.materialCreation_panelNames_composition}"
-                disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}"
-                >
+                disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
+
+
+
                 <p:outputPanel
-                    rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}"
-                    >
-                    <p:panelGrid>
-                        <p:row>
-                            <p:column styleClass="borderless">
-                                <p:outputLabel
-                                    style="border-width: 0px"
-                                    value="#{msgs.materialCreation_composition_chooseTypeLabel}">
-                                </p:outputLabel>
-                            </p:column>
-                            <p:column
-                                styleClass="borderless"
-                                >
-                                <!--styleClass="borderless compositionTypeSelectBox"-->
-                                <!--style="width:60%"-->
-
-                                <p:selectOneMenu
-                                    disabled="#{!materialCompositionBean.isCompositionTypeEditable()}"
-                                    value="#{materialCompositionBean.choosenType}"
-                                    >
-
-                                    <f:selectItems
-                                        value="#{materialCompositionBean.getCompositionTypes()}"
-                                        itemLabel="#{materialCompositionBean.getLocalizedCompositionType(type)}"
-                                        var="type"/>
-
-                                    <p:ajax update="@(.resultTable) @(.searchTabView)"/>
-
-                                </p:selectOneMenu>
-                            </p:column>
-                        </p:row>
-                    </p:panelGrid>
-
-                    <p:panelGrid
-                        class="wideBody"
-                        id="searchPanelId">
-                        <p:row styleClass="borderless">
-                            <!--<p:column style="vertical-align: top;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;border-left-right: 2px;">-->
+                    rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}" >
+                    <!--select one menu and input text with button-->
+                    <!--******************************************************************************-->
+                    <div style="display:flex; flex-direction: row;">
+                        <div style="display: flex; flex-direction: column;">
                             <p:panelGrid>
-                                <p:row styleClass="borderless">
+                                <p:row>
                                     <p:column styleClass="borderless">
-                                        <p:inputText
-                                            style="width: -moz-available;"
-                                            styleClass="inputText"
-                                            value="#{materialCompositionBean.materialName}"
-                                            placeholder="#{msgs.materialCreation_composition_nameSearchPlaceholder}">
-                                        </p:inputText>
+                                        <p:outputLabel
+                                            style="border-width: 0px"
+                                            value="#{msgs.materialCreation_composition_chooseTypeLabel}">
+                                        </p:outputLabel>
                                     </p:column>
+                                    <p:column
+                                        styleClass="borderless"
+                                        >
+                                        <!--styleClass="borderless compositionTypeSelectBox"-->
+                                        <!--style="width:60%"-->
 
-                                    <!--Search Button-->
-                                    <!--Doesnt Work-->
-                                    <!--*****************************************************************-->
-                                    <p:column styleClass="borderless">
-                                        <p:commandButton
-                                            ajax="true"
-                                            process="@all"
-                                            action="#{materialCompositionBean.actionStartSearch()}"
-                                            update="@(.resultTable) growlMsg"
-                                            value="#{msgs.materialCreation_composition_searchButton}">
-                                        </p:commandButton>
+                                        <p:selectOneMenu
+                                            disabled="#{!materialCompositionBean.isCompositionTypeEditable()}"
+                                            value="#{materialCompositionBean.choosenType}"
+                                            >
+
+                                            <f:selectItems
+                                                value="#{materialCompositionBean.getCompositionTypes()}"
+                                                itemLabel="#{materialCompositionBean.getLocalizedCompositionType(type)}"
+                                                var="type"/>
+
+                                            <p:ajax update="@(.resultTable) @(.searchTabView)"/>
+
+                                        </p:selectOneMenu>
                                     </p:column>
                                 </p:row>
                             </p:panelGrid>
 
-                            <p:row styleClass="borderless">
-                                <p:column styleClass="borderless">
+                            <p:panelGrid
+                                class="wideBody"
+                                id="searchPanelId">
+                                <p:row styleClass="borderless">
+                                    <!--<p:column style="vertical-align: top;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;border-left-right: 2px;">-->
+                                    <p:panelGrid>
+                                        <p:row styleClass="borderless">
+                                            <p:column styleClass="borderless">
+                                                <p:inputText
+                                                    style="width: -moz-available;"
+                                                    styleClass="inputText"
+                                                    value="#{materialCompositionBean.materialName}"
+                                                    placeholder="#{msgs.materialCreation_composition_nameSearchPlaceholder}">
+                                                </p:inputText>
+                                            </p:column>
 
-                                    <p:tabView
-                                        styleClass="searchTabView"
-                                        activeIndex="#{materialCompositionBean.activeIndex}"
-                                        id="searchTabViewId"
-                                        dynamic="true">
-                                        <p:ajax
-                                            event="tabChange"
-                                            listener="#{materialCompositionBean.onTabChange}"/>
+                                            <!--Search Button-->
+                                            <!--Doesnt Work-->
+                                            <!--*****************************************************************-->
+                                            <p:column styleClass="borderless">
+                                                <p:commandButton
+                                                    ajax="true"
+                                                    process="@all"
+                                                    action="#{materialCompositionBean.actionStartSearch()}"
+                                                    update="@(.resultTable) growlMsg"
+                                                    value="#{msgs.materialCreation_composition_searchButton}">
+                                                </p:commandButton>
+                                            </p:column>
+                                        </p:row>
+                                    </p:panelGrid>
+                                </p:row>
+                            </p:panelGrid>
+                            <!--TabView (compound, sequence, orgnaism)-->
+                            <!--******************************************************************************-->
 
-                                        <p:tab
-                                            disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
-                                            title="#{materialCompositionBean.getLocalizedTabTitle('STRUCTURE')}">
-                                            <mol:molecule
-                                                value="#{materialCompositionBean.searchMolecule}"
-                                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                                format="MDLV2000"
-                                                border="true"
-                                                readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                                widgetVar="compositionStructurePlugin">
-                                            </mol:molecule>
-                                            <!-- This JS snippet guarantees proper plugin initialization after
-                                                 this p:tab is rendered by AJAX and the tab comes into focus. -->
-                                            <script>compositionStructurePlugin.then(plugin => plugin.init());</script>
-                                        </p:tab>
 
-                                        <p:tab
-                                            title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
-                                            disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
+                            <!--<p:row styleClass="borderless">-->
+                            <p:column styleClass="borderless">
 
-                                            <crimsy:sequenceSearchMask
-                                                valuesHolder="#{materialCompositionBean.sequenceSearchMaskValuesHolder}"
-                                                maxResultsFieldRendered="false" />
-                                        </p:tab>
+                                <p:tabView
+                                    styleClass="searchTabView"
+                                    activeIndex="#{materialCompositionBean.activeIndex}"
+                                    id="searchTabViewId"
+                                    dynamic="true">
+                                    <p:ajax
+                                        event="tabChange"
+                                        listener="#{materialCompositionBean.onTabChange}"/>
 
-                                        <p:tab
-                                            title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
-                                            disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
-                                        </p:tab>
+                                    <p:tab
+                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
+                                        title="#{materialCompositionBean.getLocalizedTabTitle('STRUCTURE')}">
+                                        <mol:molecule
+                                            value="#{materialCompositionBean.searchMolecule}"
+                                            pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                            format="MDLV2000"
+                                            border="true"
+                                            readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                            widgetVar="compositionStructurePlugin">
+                                        </mol:molecule>
+                                        <!-- This JS snippet guarantees proper plugin initialization after
+                                             this p:tab is rendered by AJAX and the tab comes into focus. -->
+                                        <script>compositionStructurePlugin.then(plugin => plugin.init());</script>
+                                    </p:tab>
 
-                                    </p:tabView>
-                                </p:column>
-                            </p:row>
+                                    <p:tab
+                                        title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
+                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
 
+                                        <crimsy:sequenceSearchMask
+                                            valuesHolder="#{materialCompositionBean.sequenceSearchMaskValuesHolder}"
+                                            maxResultsFieldRendered="false" />
+                                    </p:tab>
+
+                                    <p:tab
+                                        title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
+                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
+                                    </p:tab>
+
+                                </p:tabView>
+                            </p:column>
+
+                        </div>
+                        <div >
                             <!--Search Results-->
                             <!--****************************************************************************************************-->
+
                             <p:panelGrid columns="4" layout="flex"
                                          columnClasses="col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4, col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4"
                                          styleClass="customPanelGrid" contentStyleClass="ui-fluid">
@@ -180,6 +192,7 @@
                                         <p:commandButton
                                             id="btn11"
                                             ajax="true"
+                                            styleClass="ui-button-danger"
                                             type="submit"
                                             action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
                                             update="@(.resultTable)"
@@ -256,29 +269,26 @@
                                                 id="btn22"
                                                 type="submit"
                                                 icon="pi pi-minus"
+                                                styleClass="ui-button-danger"
                                                 disabled="#{!materialBean.permission.isEditAllowed()}"
                                                 action="#{materialCompositionBean.actionRemoveConcentrationFromComposition(concentration)}"
                                                 update="@(.resultTable)"
                                                 process="@this"
                                                 ajax="true" />
-
-                                            <!--look="link"-->
                                             <p:tooltip id="uploaderCancelButtonToolTip"
                                                        position="bottom"
                                                        for="btn22"
                                                        value="#{msgs.materialCreation_composition_concentrationsRemoveMaterial}"/>
-                                                             <!--tooltip="#{msgs.materialCreation_composition_concentrationsRemoveMaterial}"-->
-                                        </p:column>
-
+                                        </p:column>s
                                     </p:dataTable>
-
                                 </p:row>
                             </p:panelGrid>
-
-                            <!--========================================================================================================================================-->
-
-                        </p:row>
-                    </p:panelGrid>
+                        </div>
+                        <!--</p:row>-->
+                        <!--========================================================================================================================================-->
+                        <!--</p:row>-->
+                        <!--</p:panelGrid>-->
+                    </div>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>
