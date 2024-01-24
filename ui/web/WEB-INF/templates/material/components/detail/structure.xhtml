@@ -43,18 +43,20 @@
                     rendered="#{materialOverviewBean.isRadioactive(material)}"
                     name="#{materialOverviewBean.radioactiveImageLocation}"
                     />  
-
+                <br/>
                 <h:outputText
                     value="#{materialOverviewBean.getHazardRemark(material, 10)}"/>
                 <br/>
                 <h:outputText
                     value="#{materialOverviewBean.getHazardRemark(material, 11)}"/>
-
+                <br/>
                 <h:outputText
+                    class="H_P_Sets"
                     rendered="#{materialOverviewBean.hasHazard(material, 18)}"
                     value="#{msgs.materialOverview_hazard_warning}"/>
 
                 <h:outputText
+                    style="font-weight: 700;margin:  10px"
                     rendered="#{materialOverviewBean.hasHazard(material, 19)}"
                     value="#{msgs.materialOverview_hazard_danger}"/>
 

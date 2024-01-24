@@ -59,7 +59,7 @@ textarea.materialFilterInputfield {
 }
 .materialFilterButtonColumn {
     margin-top: 15px;
-    padding-left: 5px !important;   
+    padding-left: 5px !important;
 }
 
 .materialFilterButtonRight{
@@ -77,7 +77,7 @@ textarea.materialFilterInputfield {
     left: 22px;
 }
 .materialNameText div {
-    width: 100% !important;  
+    width: 100% !important;
 }
 
 .materialNameLanguage{
@@ -86,7 +86,7 @@ textarea.materialFilterInputfield {
 
 
 .materialNameText div input{
-    width: 100% !important;  
+    width: 100% !important;
 }
 
 .materialNameLanguage *{
@@ -96,14 +96,18 @@ textarea.materialFilterInputfield {
     width:150px !important;
 }
 .hazardImage{
-    width: 10%;
-    height: 10%;
+    width: 8%;
+}
+.H_P_Sets{
+    font-weight: 700;
+    margin:  5px;
+    margin-left: 0;
 }
 @media only screen and (max-width: 1020px) {
- .hazardImage{
-    width: 20%;
-    height: 20%;
-}
+    .hazardImage{
+        width: 20%;
+        height: 20%;
+    }
 }
 
 .borderlessGridPanel tbody tr{
@@ -115,7 +119,7 @@ textarea.materialFilterInputfield {
 
 .statementHeader{
     font-size: 115%;
-    font-weight: bold; 
+    font-weight: bold;
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 5px;
@@ -155,7 +159,8 @@ textarea.materialFilterInputfield {
 }
 
 .invisibleText{
-    color: rgba(0,0,0,0.0);;
+    color: rgba(0,0,0,0.0);
+    ;
 }
 
 .storagePanelClass > .ui-selectmanycheckbox .ui-state-disabled{
