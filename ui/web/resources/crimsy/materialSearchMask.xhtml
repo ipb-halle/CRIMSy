@@ -95,8 +95,10 @@ limitations under the License.
                     <h:outputText value="ID"/>
                     <br/>
 
-                    <p:inputText
+                    <p:inputNumber
                         value="#{cc.attrs.searchController.id}"
+                        decimalPlaces="0"
+                        thousandSeparator=""
                         styleClass="materialFilterInputfield" />
                     <br/>
                 </ui:fragment>

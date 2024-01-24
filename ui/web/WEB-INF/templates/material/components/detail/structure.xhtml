@@ -29,35 +29,35 @@
         <ui:composition>
             <div
                 styleClass="div-container-hazard">
-                    <ui:repeat
-                        var ="hazardLocation"
-                        value="#{materialOverviewBean.getImageLocationOfHazards(material)}">
+                <ui:repeat
+                    var ="hazardLocation"
+                    value="#{materialOverviewBean.getImageLocationOfHazards(material)}">
 
                     <p:graphicImage
                         styleClass="hazardImage"
                         name="#{hazardLocation}"
                         />  
-                    </ui:repeat>
-                    <p:graphicImage 
-                        styleClass="hazardImage"
-                        rendered="#{materialOverviewBean.isRadioactive(material)}"
-                        name="#{materialOverviewBean.radioactiveImageLocation}"
-                        />  
- 
-                    <h:outputText
-                        value="#{materialOverviewBean.getHazardRemark(material, 10)}"/>
-   
-                    <h:outputText
-                        value="#{materialOverviewBean.getHazardRemark(material, 11)}"/>
-      
-                    <h:outputText
-                        rendered="#{materialOverviewBean.hasHazard(material, 18)}"
-                        value="#{msgs.materialOverview_hazard_warning}"/>
-      
-                    <h:outputText
-                        rendered="#{materialOverviewBean.hasHazard(material, 19)}"
-                        value="#{msgs.materialOverview_hazard_danger}"/>
-          
+                </ui:repeat>
+                <p:graphicImage 
+                    styleClass="hazardImage"
+                    rendered="#{materialOverviewBean.isRadioactive(material)}"
+                    name="#{materialOverviewBean.radioactiveImageLocation}"
+                    />  
+
+                <h:outputText
+                    value="#{materialOverviewBean.getHazardRemark(material, 10)}"/>
+                <br/>
+                <h:outputText
+                    value="#{materialOverviewBean.getHazardRemark(material, 11)}"/>
+
+                <h:outputText
+                    rendered="#{materialOverviewBean.hasHazard(material, 18)}"
+                    value="#{msgs.materialOverview_hazard_warning}"/>
+
+                <h:outputText
+                    rendered="#{materialOverviewBean.hasHazard(material, 19)}"
+                    value="#{msgs.materialOverview_hazard_danger}"/>
+
             </div>
         </ui:composition>
     </h:body>
