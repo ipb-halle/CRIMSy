@@ -136,7 +136,6 @@
 
                         <p:column
                             styleClass="materialTypeMenuClass">
-
                             <!--Material Types SelectOneMenu-->
                             <!--****************************************************-->
                             <p:selectOneMenu
@@ -146,13 +145,10 @@
                                 >
                                 <f:selectItems
                                     value="#{materialBean.getMaterialTypes()}"/>
-
                                 <p:ajax
                                     process="@this"
                                     update="@form" />
-
                             </p:selectOneMenu>
-
                         </p:column>
 
                         <p:column colspan="1">

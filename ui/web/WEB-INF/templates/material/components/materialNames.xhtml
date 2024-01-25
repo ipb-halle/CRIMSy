@@ -88,20 +88,6 @@
                             </p:commandButton>
 
                             <p:commandButton style="padding: 0 4px;margin:5px;"
-                                             icon="pi pi-angle-double-down"
-                                             ajax="true"
-                                             id="btnDD"
-                                             update="@(.materialNameTableClass)"
-                                             process="@(.materialNameTableClass)"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName,
-                                                         'LOWEST')}"
-                                             type="submit"
-                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'LOWEST')}">
-                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_lowestRank}" for="btnDD" position="left"/>
-                            </p:commandButton>
-
-                            <p:commandButton style="padding: 0 4px;margin:5px;"
                                              icon="pi pi-angle-up"
                                              ajax="true"
                                              id="btnUp"
@@ -114,6 +100,8 @@
                                              type="submit">
                                 <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_higher}" for="btnUp" position="left"/>
                             </p:commandButton>
+                            
+
                             <p:commandButton style="padding: 0 4px;margin:5px;"
                                              icon="pi pi-angle-down "
                                              ajax="true"
@@ -128,6 +116,20 @@
                                 <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_lower}" for="btnD" position="left"/>
                             </p:commandButton>
 
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             icon="pi pi-angle-double-down"
+                                             ajax="true"
+                                             id="btnDD"
+                                             update="@(.materialNameTableClass)"
+                                             process="@(.materialNameTableClass)"
+                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
+                                                         mName,
+                                                         'LOWEST')}"
+                                             type="submit"
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'LOWEST')}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_lowestRank}" for="btnDD" position="left"/>
+                            </p:commandButton>
+                            
                             <p:commandButton style="padding: 0 4px;margin:5px;"
                                              styleClass="ui-button-danger"
                                              icon="pi pi-trash"
@@ -147,7 +149,7 @@
                                              icon="pi pi-plus "
                                              ajax="true"
                                              id="btnPl"
-                                             process="@form"
+                                             process="@this"
                                              type="submit"
                                              update="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
