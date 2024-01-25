@@ -136,7 +136,7 @@
                     </p:outputPanel>
                     <!--Experiment Records and button New-->
                     <!--==========================================================================================-->
-                    <p:menuButton value="#{msgs.expRecord_newRecord_button}"
+                    <p:splitButton value="#{msgs.expRecord_newRecord_button}"
                                   styleClass="experimentRecordButton experimentRecordButtonAdd ui-button-danger"
                                   icon="fa fa-plus"
                                   iconPos="left">
@@ -163,7 +163,7 @@
                             disabled="#{experimentBean.expRecordButtonsDisabled}"
                             actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"
                             oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
-                    </p:menuButton>
+                    </p:splitButton>
                     <br/>                    
                     <br/>
                 </p:outputPanel>
