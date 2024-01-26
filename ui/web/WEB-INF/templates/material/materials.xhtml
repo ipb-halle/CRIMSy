@@ -175,13 +175,14 @@
                                                          icon="pi pi-user"
                                                          ajax="true"
                                                          process="@this"
-                                                         update="@(.mainPanel)"
+                                                         update="@all"                 
                                                          type="submit"
                                                          action="#{materialOverviewBean.actionStartAclChange(material)}"
                                                          oncomplete="PF('dlgAcl').show();"
                                                          disabled="#{!materialOverviewBean.hasAccessRight(material,'permGRANT')}"/>
                                         <p:tooltip for="user" value="#{msgs.materialOverview_actions_changeRights}" position="top"/>
 
+                                                         <!--update="@(.mainPanel)"-->
                                                              <!--tooltip="#{msgs.materialOverview_actions_changeRights}"-->
 
 
