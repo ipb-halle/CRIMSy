@@ -106,11 +106,11 @@
                                     icon="pi pi-user"
                                     ajax="true"
                                     type="submit"
-                                    oncomplete="PF('dlgAcl').show();"
                                     process="@this"
-                                    update="@(.mainPanel)"
+                                    update="@all"
                                     disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
                                     action="#{projectBean.actionStartAclChange(project)}"
+                                    oncomplete="PF('dlgAcl').show();"
                                     >
                                     <!--onclick="ajax:projectBean.actionStartAclChange(project)"-->
 
@@ -127,14 +127,12 @@
                                     styleClass="ui-button-danger"
                                     process="@this"
                                     type="submit"
-                                    update="@all"
+                                    update="@(.readableProjectTable)"
                                     action="#{projectBean.actionDeleteProject(project)}"
                                     disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
                                     >
-                                    <!--update="@(.readableProjectTable)"-->
-
                                     <p:tooltip value="#{msgs.project_overview_deactivate}" for="btn4" position="top"/>
-
+                                    <!--update="@all"-->
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>
