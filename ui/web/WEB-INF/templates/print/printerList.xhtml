@@ -106,14 +106,15 @@
                                              styleClass="ui-button-info"
                                              ajax="true"
                                              type="submit"
+                                             update="@all"    
                                              process="@this"
-                                             update="@(.mainPanel)"
                                              title="#{msgs.PrinterPermission_tooltip}"
                                              action="#{printAdminBean.actionStartAclChange(pl)}"
                                              oncomplete="PF('dlgAcl').show();"
                                              disabled="false" 
 
                                              />
+                            <!--update="@(.mainPanel)"-->
                             <p:tooltip for="btnAclPrinter" position="left" value="#{msgs.PrinterPermission_tooltip}"/>
 
                             <p:commandButton id="btnDeletePrinter"
