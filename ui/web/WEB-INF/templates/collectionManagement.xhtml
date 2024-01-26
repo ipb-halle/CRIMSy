@@ -386,11 +386,12 @@
                             icon="pi pi-user"
                             ajax="true"
                             process="@this"
-                            update="@(.mainPanel)"
+                            update="@all"    
                             type="submit"
                             action="#{collectionBean.actionStartAclChange(collection)}"
                             oncomplete="PF('dlgAcl').show();"
                             disabled="#{!collectionBean.isPermissionEditAllowed(collection)}" />
+                        <!--update="@(.mainPanel)"-->
 
                         <p:tooltip for="usrBtn" value="#{msgs.collMgr_tooltip_changeUserPermission}" position="right"/>
 
