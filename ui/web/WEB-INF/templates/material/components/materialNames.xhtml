@@ -51,7 +51,7 @@
                                 style="width: 100%;"
                                 disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
                                 placeholder="#{msgs.materialCreation_panelNames_placeHolder}">
-                                <p:ajax process="@this" update="@all" />
+                                <p:ajax process="@this" update="@form" />
                                 <f:converter converterId="InputConverter" />
                             </p:inputText>
 
