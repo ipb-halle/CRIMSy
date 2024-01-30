@@ -45,7 +45,9 @@ import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.Invalidity;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialValidator;
+
 import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
+
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
@@ -54,11 +56,10 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
@@ -154,7 +155,9 @@ public class MaterialBean implements Serializable {
 
     public enum Mode {
         CREATE, EDIT, HISTORY
-    };
+    }
+
+    ;
 
     @PostConstruct
     public void init() {
@@ -201,6 +204,7 @@ public class MaterialBean implements Serializable {
             }
             hazards = new HazardInformation(m);
             Project p = projectService.loadProjectById(m.getProjectId());
+
             hazardController = new MaterialHazardBuilder(
                     hazardService,
                     m.getType(),
@@ -208,6 +212,7 @@ public class MaterialBean implements Serializable {
                     m.getHazards().getHazards(),
                     messagePresenter);
             materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m.copyMaterial(), hazardController, messagePresenter);
+            loadReadableProjects(p);
             materialEditState.addPossibleProjects(projectBean.getReadableProjects());
             currentMaterialType = m.getType();
             materialNameBean.getNames().addAll(m.getCopiedNames());
@@ -245,6 +250,20 @@ public class MaterialBean implements Serializable {
             historyOperation = new HistoryOperation(this);
         } catch (Exception e) {
             logger.error("startMaterialEdit() caught an exception:", (Throwable) e);
+        }
+    }
+
+    private void loadReadableProjects(final Project p) {
+        List<Project> readableProjects = projectBean.getReadableProjects();
+        
+        boolean isIn = false;
+        for (Project project : readableProjects) {
+            if (p.getId() == project.getId()) {
+                isIn = true;
+            }
+        }
+        if (!isIn) {
+            readableProjects.add(p);
         }
     }
 
