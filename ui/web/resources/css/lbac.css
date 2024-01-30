@@ -30,6 +30,9 @@ body .ui-button.ui-button-icon-only {
     height: 22px ;
     margin-right: 0.15em;
 }
+.ui-fluid .ui-inputtext{
+    width:auto;
+}
 .outputPanelContainerEditView{
     display: flex;
     flex-direction: row;

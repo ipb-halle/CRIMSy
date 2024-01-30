@@ -255,7 +255,7 @@ public class MaterialBean implements Serializable {
 
     private void loadReadableProjects(final Project p) {
         List<Project> readableProjects = projectBean.getReadableProjects();
-        
+
         boolean isIn = false;
         for (Project project : readableProjects) {
             if (p.getId() == project.getId()) {

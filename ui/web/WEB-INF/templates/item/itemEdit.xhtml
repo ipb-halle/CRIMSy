@@ -51,7 +51,6 @@
                     <div class="col-12 md:col-3">
 
                         <p:commandButton icon="fa fa-backward"
-                                         style="margin:0.5rem;"
                                          disabled="#{itemBean.state.startingHistoryItem}"
                                          action="#{itemBean.actionApplyNextNegativeDifference()}">
                             <o:skipValidators />
@@ -145,7 +144,7 @@
 
                                 <p:outputLabel value="#{msgs.itemEdit_itemPanel_amount}" style="min-width: 15%;"/>
                                 <p:inputText
-                                    style="margin: 0 10px; max-width: 18.5%;"
+                                    style="margin: 0 8px 0 10px; max-width: 17.8%;"
                                     id="itemAmountId"
                                     value="#{itemBean.state.editedItem.amount}"
                                     disabled="#{itemBean.inDeactivatedMode}"
