@@ -70,7 +70,7 @@
                             <!--Project type-->
                             <!--*****************************************************-->
                             <p:column headerText="#{msgs.project_overview_header_type}">
-                                <h:outputText value="#{project.projectType}"/>
+                                <h:outputText value="#{projectBean.getI18nOfProjectType(project.projectType)}"/>
                             </p:column>
 
                             <!--Project owner-->

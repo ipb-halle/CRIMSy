@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.project;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
@@ -66,7 +67,7 @@ public class ProjectBean implements Serializable, ACObjectBean {
     private Logger logger = LogManager.getLogger(ProjectBean.class);
     private ACObjectController acObjectController;
     private User user;
-
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     @Inject
     private ProjectEditBean projectEditBean;
 
@@ -91,6 +92,10 @@ public class ProjectBean implements Serializable, ACObjectBean {
         Collections.sort(readableProjects, (p1, p2) -> {
             return p1.getName().compareTo(p2.getName());
         });
+    }
+
+    public String getI18nOfProjectType(ProjectType type){
+        return Messages.getString(MESSAGE_BUNDLE, "project_type_" + type.toString(), null);
     }
 
     public void actionStartNewProjectCreation() {
