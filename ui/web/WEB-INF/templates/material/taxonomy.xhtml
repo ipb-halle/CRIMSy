@@ -25,111 +25,111 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
-    <h:body>
-        <h:form id="taxonomyForm">
-            <p:outputPanel>
-                <p:row styleClass="taxonomy-top-row">
+<h:body>
+    <h:form id="taxonomyForm">
+        <p:outputPanel>
+            <p:row styleClass="taxonomy-top-row">
 
-                    <div style="display: flex;flex-direction: row">
+                <div style="display: flex;flex-direction: row">
 
-                        <p:outputPanel styleClass="taxonomyInfos" style="width:30%;">
+                    <p:outputPanel styleClass="taxonomyInfos" style="width:30%;">
 
-                            <p:outputPanel>
-                                <div style="display: flex; flex-direction: column;">
+                        <p:outputPanel>
+                            <div style="display: flex; flex-direction: column;">
 
 
-                                    <!--Detailed information for-->
-                                    <!--********************************************************************************-->
-                                    <p:row styleClass="taxonomy-header-panel-row">
-                                        <p:outputPanel>
+                                <!--Detailed information for-->
+                                <!--********************************************************************************-->
+                                <p:row styleClass="taxonomy-header-panel-row">
+                                    <p:outputPanel>
 
-                                            <h:outputText
+                                        <h:outputText
                                                 value="#{taxonomyBean.renderController.getInfoHeader()}"
                                                 styleClass="taxonomyInfos taxonomy-action-panel taxonomy-header-panel"/>
-                                        </p:outputPanel>
-                                    </p:row>
+                                    </p:outputPanel>
+                                </p:row>
 
-                                    <!--Life(ID:1)-->
-                                    <!--********************************************************************************-->
-                                    <p:row>
-                                        <p:outputPanel >
-                                            <h:outputText
+                                <!--Life(ID:1)-->
+                                <!--********************************************************************************-->
+                                <p:row>
+                                    <p:outputPanel>
+                                        <h:outputText
                                                 value="#{taxonomyBean.renderController.getInfoForSelectedTaxonomy()}"
                                                 styleClass="taxonomyInfos taxonomy-action-panel"/>
-                                        </p:outputPanel>
-                                    </p:row>
+                                    </p:outputPanel>
+                                </p:row>
 
-                                    <!--Created at 2023-06-08 09:06-->
-                                    <!--********************************************************************************-->
-                                    <p:row>
-                                        <p:outputPanel >
-                                            <h:outputText
+                                <!--Created at 2023-06-08 09:06-->
+                                <!--********************************************************************************-->
+                                <p:row>
+                                    <p:outputPanel>
+                                        <h:outputText
                                                 value="#{taxonomyBean.renderController.getOwnerInfoForSelectedTaxonomy()}"
                                                 styleClass="taxonomyInfos taxonomy-action-panel"/>
-                                        </p:outputPanel>
-                                    </p:row>
+                                    </p:outputPanel>
+                                </p:row>
 
-                                    <!--Empty row (usually)-->
-                                    <!--********************************************************************************-->
-                                    <p:row>
-                                        <p:outputPanel >
-                                            <h:outputText
+                                <!--Empty row (usually)-->
+                                <!--********************************************************************************-->
+                                <p:row>
+                                    <p:outputPanel>
+                                        <h:outputText
                                                 value="#{taxonomyBean.renderController.getEditInfoForSelectedTaxonomy()}"
                                                 styleClass="taxonomyInfos taxonomy-action-panel"/>
-                                        </p:outputPanel>
-                                    </p:row>
+                                    </p:outputPanel>
+                                </p:row>
 
-                                </div>
-                            </p:outputPanel>
-
+                            </div>
                         </p:outputPanel>
 
-                        <div style="display: flex; flex-direction: row; width:69%; justify-content: space-between;">
-                            <!--Button backward-->
-                            <!--********************************************************************************-->
-                            <p:outputPanel styleClass="taxonomyInfos">
-                                <p:commandButton
+                    </p:outputPanel>
+
+                    <div style="display: flex; flex-direction: row; width:69%; justify-content: space-between;">
+                        <!--Button backward-->
+                        <!--********************************************************************************-->
+                        <p:outputPanel styleClass="taxonomyInfos">
+                            <p:commandButton
                                     icon="fa fa-backward"
                                     ajax="true"
                                     update="growlMsg @(.taxonomyInfos)"
                                     rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
                                     disabled="#{taxonomyBean.renderController.historyBackButtonDisabled}"
                                     action="#{taxonomyBean.historyController.actionSwitchToEarlierVersion()}"/>
-                                <!--onclick="ajax:taxonomyBean.historyController.actionSwitchToEarlierVersion();"-->
+                            <!--onclick="ajax:taxonomyBean.historyController.actionSwitchToEarlierVersion();"-->
 
-                            </p:outputPanel>
+                        </p:outputPanel>
 
-                            <!--Original entry-->
-                            <!--********************************************************************************-->
-                            <p:outputPanel styleClass="taxonomyInfos historyInfoPanel">
-                                <h:outputText
+                        <!--Original entry-->
+                        <!--********************************************************************************-->
+                        <p:outputPanel styleClass="taxonomyInfos historyInfoPanel">
+                            <h:outputText
                                     escape="false"
                                     value="#{taxonomyBean.historyController.getHistoryText()}"
                                     rendered="#{taxonomyBean.renderController.isHistoryVisible()}">
-                                    <f:converter converterId="RichTextConverter" />
-                                </h:outputText>
+                                <f:converter converterId="RichTextConverter"/>
+                            </h:outputText>
 
-                            </p:outputPanel>
+                        </p:outputPanel>
 
-                            <!--Button forward-->
-                            <!--********************************************************************************-->
-                            <p:outputPanel styleClass="taxonomyInfos">
-                                <p:commandButton
+                        <!--Button forward-->
+                        <!--********************************************************************************-->
+                        <p:outputPanel styleClass="taxonomyInfos">
+                            <p:commandButton
                                     icon="fa fa-forward"
                                     ajax="true"
                                     update="@(.taxonomyInfos)"
                                     rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
                                     disabled="#{taxonomyBean.renderController.historyForwardButtonDisabled}"
                                     action="#{taxonomyBean.historyController.actionSwitchToLaterVersion()}"
-                                    />
-                                <!--onclick="ajax:taxonomyBean.historyController.actionSwitchToLaterVersion();"-->
+                            />
+                            <!--onclick="ajax:taxonomyBean.historyController.actionSwitchToLaterVersion();"-->
 
-                            </p:outputPanel>
+                        </p:outputPanel>
 
-                            <!--Button edit-->
-                            <!--********************************************************************************-->
-                            <p:outputPanel   styleClass="taxonomyInfos">
-                                <p:commandButton
+                        <!--Button edit-->
+                        <!--********************************************************************************-->
+                        <p:outputPanel styleClass="taxonomyInfos">
+                            <p:commandButton
                                     id="editButton"
                                     type="submit"
                                     value="#{taxonomyBean.renderController.getEditButtonLabel()}"
@@ -139,15 +139,15 @@
                                     update="growlMsg @(.taxonomyInfos) @(.taxonomyTree)"
                                     disabled="#{taxonomyBean.renderController.isFirstButtonDisabled()}"
                                     action="#{taxonomyBean.actionClickFirstButton()}"/>
-                                <!--onclick="ajax:taxonomyBean.actionClickFirstButton();"-->
-                                <!--styleClass="taxonomy-edit-button"-->
+                            <!--onclick="ajax:taxonomyBean.actionClickFirstButton();"-->
+                            <!--styleClass="taxonomy-edit-button"-->
 
-                            </p:outputPanel>
+                        </p:outputPanel>
 
-                            <!--Button add new taxonomy entry-->
-                            <!--********************************************************************************-->
-                            <p:outputPanel   styleClass="taxonomyInfos">
-                                <p:commandButton
+                        <!--Button add new taxonomy entry-->
+                        <!--********************************************************************************-->
+                        <p:outputPanel styleClass="taxonomyInfos">
+                            <p:commandButton
                                     value="#{taxonomyBean.renderController.getSecondButtonLabel()}"
                                     type="submit"
                                     ajax="true"
@@ -156,144 +156,130 @@
                                     update="growlMsg @(.taxonomyInfos) @(.taxonomyTree)"
                                     disabled="#{taxonomyBean.renderController.isSecondButtonDisabled()}"
                                     action="#{taxonomyBean.actionClickSecondButton()}">
-                                    <!--onclick="ajax:taxonomyBean.actionClickSecondButton();"-->
-                                    <!--styleClass="taxonomy-save-button"-->
+                                <!--onclick="ajax:taxonomyBean.actionClickSecondButton();"-->
+                                <!--styleClass="taxonomy-save-button"-->
 
-                                </p:commandButton>
-                            </p:outputPanel>
+                            </p:commandButton>
+                        </p:outputPanel>
 
-                        </div>
                     </div>
-                </p:row>
+                </div>
+            </p:row>
 
-                <p:outputPanel styleClass="taxonomyInfos"
-                               style="display:flex; flex-direction: column;align-items: end;">
+            <p:outputPanel styleClass="taxonomyInfos"
+                           style="display:flex; flex-direction: column;align-items: end;">
 
 
-                    <!--Parent ot he new taxonomy-->
-                    <!--********************************************************************************-->
-                    <p:outputPanel
+                <!--Parent of the new taxonomy-->
+                <!--********************************************************************************-->
+                <p:outputPanel
                         style="margin:0.5rem;"
                         styleClass="taxonomyInfos"
-                        rendered="#{taxonomyBean.renderController.isParentVisible()}"
-                        >
+                        rendered="#{taxonomyBean.renderController.isParentVisible()}">
+                    <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                    <br/>
 
-                        <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
-                        <br/>
-
-                        <!--Life (Inputfield)-->
-                        <!--********************************************************************************-->
-                        <p:inputText
+                    <!--Life (Inputfield)-->
+                    <!--********************************************************************************-->
+                    <p:inputText
                             style="margin:0.5rem 0;"
                             label="#{msgs.taxonomy_label_new_parent}"
                             value="#{taxonomyBean.renderController.getParentFirstName()}"
-                            disabled="true"
-                            >
-                            <f:converter converterId="InputConverter" />
-                        </p:inputText>
+                            disabled="true">
+                        <f:converter converterId="InputConverter"/>
+                    </p:inputText>
 
-                    </p:outputPanel>
+                </p:outputPanel>
 
-                    <!--Please enter the new level-->
+                <!--Please enter the new level-->
+                <!--********************************************************************************-->
+                <p:outputPanel rendered="#{taxonomyBean.renderController.isNewParentRendered()}"
+                               styleClass="taxonomyInfos"
+                               style="margin:0.5rem;">
+                    <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                    <br/>
+
+                    <!--Taxonomy choosen-->
                     <!--********************************************************************************-->
-                    <p:outputPanel rendered="#{taxonomyBean.renderController.isNewParentRendered()}"
-                                   styleClass="taxonomyInfos"
-                                   style="margin:0.5rem;"
-                                   >
-
-                        <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
-                        <br/>
-
-
-                        <!--Taxonomy choosen-->
-                        <!--********************************************************************************-->
-                        <p:inputText
+                    <p:inputText
                             style="margin:0.5rem 0;"
                             disabled="true"
                             label="#{msgs.taxonomy_label_new_parent}"
                             value="#{taxonomyBean.renderController.getParentFirstName()}">
-                            <f:converter converterId="InputConverter" />
-                        </p:inputText>
+                        <f:converter converterId="InputConverter"/>
+                    </p:inputText>
 
-                    </p:outputPanel>
+                </p:outputPanel>
 
-                    <!--???????????????-->
-                    <!--********************************************************************************-->
-                    <p:outputPanel rendered="#{taxonomyBean.renderController.isCategoryVisible()}"
-                                   styleClass="taxonomyInfos">
-
-                        <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
-                        <br/>
-
-                        <p:inputText
+                <!--???????????????-->
+                <!--********************************************************************************-->
+                <p:outputPanel rendered="#{taxonomyBean.renderController.isCategoryVisible()}"
+                               styleClass="taxonomyInfos">
+                    <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                    <br/>
+                    <p:inputText
                             style="margin:0.5rem 0;"
                             disabled="true"
                             label="#{msgs.taxonomy_label_level}"
                             value="#{taxonomyBean.renderController.getCategoryOfChoosenTaxo()}">
-                            <f:converter converterId="InputConverter" />
-                        </p:inputText>
-                    </p:outputPanel>
+                        <f:converter converterId="InputConverter"/>
+                    </p:inputText>
+                </p:outputPanel>
 
-                    <!--Select menu by Edit-->
-                    <!--********************************************************************************-->
-                    <p:outputPanel rendered="#{taxonomyBean.renderController.isCategorySelectionVisible()}"
-                                   styleClass="taxonomyInfos"
-                                   >
-                        <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
-                        <br/>
+                <!--Select menu by Edit-->
+                <!--********************************************************************************-->
+                <p:outputPanel rendered="#{taxonomyBean.renderController.isCategorySelectionVisible()}"
+                               styleClass="taxonomyInfos">
+                    <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                    <br/>
 
-                        <p:selectOneMenu
+                    <p:selectOneMenu
                             style="margin: 0 0.5rem 0.5rem 0; "
                             label="#{msgs.taxonomy_label_new_level}"
                             value="#{taxonomyBean.levelController.selectedLevel}"
                             converter="taxonomyLevelConverter">
-                            <f:selectItems
+                        <f:selectItems
                                 var="level"
                                 value="#{taxonomyBean.levelController.levels}"
-                                itemLabel="#{level.getName()}" />
-                        </p:selectOneMenu>
-                    </p:outputPanel>
-
-
+                                itemLabel="#{level.getName()}"/>
+                    </p:selectOneMenu>
                 </p:outputPanel>
-
-                <p:row>
-                    <div style="display: flex; flex-direction: row; justify-content: center;">
-
-                        <!--Life Tree-->
-                        <!--********************************************************************************-->
-                        <p:outputPanel styleClass="taxonomyTreeColumn">
-                            <p:tree
+            </p:outputPanel>
+            <p:row>
+                <div style="display: flex; flex-direction: row; justify-content: center;">
+                    <!--Life Tree-->
+                    <!--********************************************************************************-->
+                    <p:outputPanel styleClass="taxonomyTreeColumn">
+                        <p:tree
                                 value="#{taxonomyBean.treeController.taxonomyTree}"
-                                var ="node"
+                                var="node"
                                 selectionMode="single"
                                 styleClass="taxonomyTree"
                                 dynamic="true"
                                 selection="#{taxonomyBean.selectedTaxonomy}">
 
-                                <p:ajax event="select" update="taxonomyForm:editButton, @(.taxonomyInfos) " listener="#{taxonomyBean.onTaxonomySelect}" />
-                                <p:ajax event="expand"  listener="#{taxonomyBean.onTaxonomyExpand}" />
-                                <p:ajax event="collapse" listener="#{taxonomyBean.onTaxonomyCollapse}" />
-                                <p:treeNode >
-                                    <h:outputText value="#{node.getFirstName()}"/>
-                                </p:treeNode>
-                            </p:tree>
-                        </p:outputPanel>
-                        <!--update="taxonomyForm:editButton "-->
+                            <p:ajax event="select" update="taxonomyForm:editButton, @(.taxonomyInfos) "
+                                    listener="#{taxonomyBean.onTaxonomySelect}"/>
+                            <p:ajax event="expand" listener="#{taxonomyBean.onTaxonomyExpand}"/>
+                            <p:ajax event="collapse" listener="#{taxonomyBean.onTaxonomyCollapse}"/>
+                            <p:treeNode>
+                                <h:outputText value="#{node.getFirstName()}"/>
+                            </p:treeNode>
+                        </p:tree>
+                    </p:outputPanel>
+                    <!--update="taxonomyForm:editButton "-->
 
-                        <!--style="width: 100%;height: 300px;overflow: auto"-->
-                        <!--Table Names-->
-                        <!--********************************************************************************-->
-                        <p:outputPanel  styleClass="taxonomyInfos" style="width:200%;">
-                            <ui:insert>
-                                <ui:include src="/WEB-INF/templates/material/components/taxonomyNames.xhtml"/>
-                            </ui:insert>
-                        </p:outputPanel>
-
-                    </div>
-                </p:row>
-            </p:outputPanel>
-        </h:form>
-    </h:body>
-
+                    <!--style="width: 100%;height: 300px;overflow: auto"-->
+                    <!--Table Names-->
+                    <!--********************************************************************************-->
+                    <p:outputPanel styleClass="taxonomyInfos" style="width:200%;">
+                        <ui:insert>
+                            <ui:include src="/WEB-INF/templates/material/components/taxonomyNames.xhtml"/>
+                        </ui:insert>
+                    </p:outputPanel>
+                </div>
+            </p:row>
+        </p:outputPanel>
+    </h:form>
+</h:body>
 </html>

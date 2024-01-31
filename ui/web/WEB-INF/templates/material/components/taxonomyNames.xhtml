@@ -131,6 +131,7 @@
                         <p:commandButton style="margin: 0 0.5rem;"
                                          disabled="#{!taxonomyBean.renderController.isNameEditable()}"
                                          icon="pi pi-trash"
+                                         styleClass="ui-button-danger"
                                          id="btn15"
                                          ajax="true"
                                          process="@(.taxonomyInfos)"
@@ -142,10 +143,11 @@
 
 
                         <p:commandButton style="padding: 0 4px;"
-                                         icon="fa fa-plus "
+                                         icon="fa fa-plus"
                                          id="btn16"
                                          disabled="#{!taxonomyBean.renderController.isNameEditable()}"
                                          ajax="true"
+                                         styleClass="ui-button-danger"
                                          process="@form"
                                          update="@(.taxonomyInfos)"
                                          type="submit"
