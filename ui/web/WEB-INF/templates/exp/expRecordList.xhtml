@@ -134,6 +134,7 @@
                         <!--==========================================================================================-->
 
                     </p:outputPanel>
+
                     <!--Experiment Records and button New-->
                     <!--==========================================================================================-->
                     <p:splitButton value="#{msgs.expRecord_newRecord_button}"
@@ -192,30 +193,24 @@
 
                         <!--==========================================================================================-->
                         <ui:fragment rendered="#{rec.edit}">
-
                             <p:panelGrid styleClass="recordButtonGroup">
-
                                 <p:row>
-
                                     <p:column style="width:80%"/>
 
                                     <!--Cancel Button-->
                                     <!--==========================================================================================-->
                                     <p:column style="width:10%">
-
                                         <p:commandButton
                                             styleClass="rightAligned ui-button-secondary"
                                             value="#{msgs.Cancel}"
                                             action="#{experimentBean.expRecordController.actionCancel}"
                                             update="@form"
                                             process="@this" />
-
                                     </p:column>
 
                                     <!--Save Button-->
                                     <!--==========================================================================================-->
                                     <p:column style="width:10%">
-
                                         <p:commandButton
                                             value="#{msgs.Save}"
                                             styleClass="ui-button-danger"
@@ -225,37 +220,28 @@
                                             oncomplete="return false;"
                                             process="@form"
                                             update="@form growlMsg @(.assayTargetRow)" />
-
                                     </p:column>
                                     <!--==========================================================================================-->
                                 </p:row>
-
                             </p:panelGrid>
                         </ui:fragment>
-
-
-
                     </p:outputPanel>
                 </p:outputPanel>
 
                 <p:panelGrid
                     styleClass="expLinks #{experimentBean.getRowStyle(recStatus.last)}"
                     columns="10">
-
                     <ui:repeat
                         value="#{rec.getLinkNames()}"
                         var="linkName">
-
                         <ui:fragment rendered="#{(rec.facelet eq 'TEXT') and rec.edit}">
                             <p:badge
                                 value="#{linkName}"
                                 pt:onclick="insertLinkTagIntoQuillEditor('#{linkName}', 'textEditorWidgetVar');" />
                         </ui:fragment>
-
                         <ui:fragment rendered="#{not ((rec.facelet eq 'TEXT') and rec.edit)}">
                             <p:badge value="#{linkName}" />
                         </ui:fragment>
-
                     </ui:repeat>
                 </p:panelGrid>
 
