@@ -19,6 +19,13 @@
 # 
 #==========================================================
 #
+# temporarily enforce compatibility mode of docker-compose
+# as long as we are in transition from docker-compose v1 
+# (Python) to v2 (Go)
+#
+export COMPOSE_COMPATIBILITY=true
+
+#
 LBAC_ADMIN_PWFILE=admin.passwd
 BACKUP_AGE=4
 # 
