@@ -5,9 +5,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ LBAC-60-CloudLIMS,master ]
+    branches: [ master ]
   pull_request:
-    branches: [ LBAC-60-CloudLIMS,master ]
+    branches: [ master ]
 
 jobs:
   build:
