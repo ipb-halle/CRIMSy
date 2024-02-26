@@ -215,12 +215,11 @@
                 <!--********************************************************************************-->
                 <p:outputPanel rendered="#{taxonomyBean.renderController.isCategoryVisible()}"
                                styleClass="taxonomyInfos">
-                    <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                    <p:outputLabel value="#{msgs.taxonomy_label_level}"/>
                     <br/>
                     <p:inputText
                             style="margin:0.5rem 0;"
                             disabled="true"
-                            label="#{msgs.taxonomy_label_level}"
                             value="#{taxonomyBean.renderController.getCategoryOfChoosenTaxo()}">
                         <f:converter converterId="InputConverter"/>
                     </p:inputText>
@@ -230,12 +229,11 @@
                 <!--********************************************************************************-->
                 <p:outputPanel rendered="#{taxonomyBean.renderController.isCategorySelectionVisible()}"
                                styleClass="taxonomyInfos">
-                    <p:outputLabel value="#{msgs.taxonomy_label_new_parent}"/>
+                    <p:outputLabel value="#{msgs.taxonomy_label_new_level}"/>
                     <br/>
 
                     <p:selectOneMenu
                             style="margin: 0 0.5rem 0.5rem 0; "
-                            label="#{msgs.taxonomy_label_new_level}"
                             value="#{taxonomyBean.levelController.selectedLevel}"
                             converter="taxonomyLevelConverter">
                         <f:selectItems
