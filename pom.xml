@@ -42,6 +42,7 @@
         <module>reporting-api</module>
         <module>reporting</module>
         <module>ui</module>
+        <module>crimsy-harvester-api</module>
     </modules>
 
     <properties>
