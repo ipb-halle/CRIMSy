@@ -2,7 +2,7 @@
 <!--
   
   Leibniz Bioactives Cloud
-  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  Copyright 2024 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -50,34 +50,9 @@
         <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
     </listener>
 
-    <!--
-        Tells Bootsfaces to download the components (Datatable, JQuery, 
-        CSS, ...) from CDN (true), leave this task to local html document 
-        (false) or something else (custom)
-    -->
-    <context-param>
-        <param-name>net.bootsfaces.get_datatable_from_cdn</param-name>
-        <param-value>custom</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.get_jquery_from_cdn</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.get_jqueryui_from_cdn</param-name>
-        <param-value>false</param-value>
-    </context-param>
     <context-param>
         <param-name>jakarta.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/nwc.taglib.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.get_bootstrap_from_cdn</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.get_fontawesome_from_cdn</param-name>
-        <param-value>false</param-value>
     </context-param>
 
     <!-- debugging mode for jsf: set param to Development -->
@@ -185,20 +160,6 @@
         <extension>json</extension>
         <mime-type>application/json</mime-type>
     </mime-mapping>
-    <!-- Activates the waitcursor and the double-click protection -->
-    <context-param>
-        <param-name>net.bootsfaces.blockUI</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <!-- html5 friendly markup -->
-    <context-param>
-        <param-name>jakarta.faces.FACELETS_DECORATORS</param-name>
-        <param-value>net.bootsfaces.decorator.BootsFacesTagDecorator</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.defaults.decorator</param-name>
-        <param-value>false</param-value>
-    </context-param>
     <!-- Remove unused cookie of MyFaces -->
     <context-param>
         <param-name>org.apache.myfaces.FLASH_SCOPE_DISABLED</param-name>
