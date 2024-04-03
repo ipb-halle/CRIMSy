@@ -64,15 +64,15 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-@SessionScoped
 @Named
+@SessionScoped
 public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     private static final long serialVersionUID = 1L;
 
     private ACObjectController acObjectController;
     private User currentUser;
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private Logger logger;
     private List<Material> materials = new ArrayList<>();
     private Material materialInFocus;
     private NamePresenter namePresenter;
@@ -81,7 +81,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     @Inject
     private MessagePresenter messagePresenter;
-
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
     private final int HAZARD_RADIACTIVE_ID = 16;
@@ -89,6 +88,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private final int HAZARD_DANGER_ID = 19;
 
     private Report selectedReport;
+    private List<Report> availableReports;
 
     @Inject
     private ItemBean itemBean;
@@ -117,6 +117,10 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     @Inject
     protected LoggingProfiler loggingProfiler;
 
+    public MaterialOverviewBean() {
+        logger = LogManager.getLogger(this.getClass().getName());
+    }
+
     /**
      * Creates the tablecontroller and the controller for managing the search
      * values
@@ -139,6 +143,8 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.SEQUENCE,
                         MaterialType.STRUCTURE));
         namePresenter = new NamePresenter();
+        availableReports = reportMgr.getAvailableReports(this.getClass().getName());
+        selectedReport = availableReports.get(0);
 
         loggingProfiler.profilerStop("MaterialOverviewBean");
 
@@ -187,7 +193,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateNewMaterial() {
         materialEditBean.startMaterialCreation();
-
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
 
@@ -198,6 +203,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
             materialEditBean.startMaterialEdit(m);
         } catch (Exception e) {
             logger.error("actionEditMaterial() caught an exception:", (Throwable) e);
+
         }
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
@@ -215,7 +221,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     }
 
     public List<Report> getAvailableReports() {
-        return reportMgr.getAvailableReports(this.getClass().getName());
+        return this.availableReports;
     }
 
     public Report getSelectedReport() {
@@ -228,7 +234,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateReport() {
         reportMgr.submitReport(selectedReport, collectReportParameters(), ReportType.PDF, currentUser);
-        messagePresenter.info("reporting_reportSumbittedGrowlMsg");
+        messagePresenter.info("reporting_reportSubmittedGrowlMsg");
     }
 
     private Map<String, Object> collectReportParameters() {

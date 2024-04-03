@@ -104,6 +104,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected ItemLocaliser itemLocaliser;
     private SearchResult searchResult;
     protected SearchMaskValues searchMaskValues;
+    private List<Report> availableReports;
 
     private Report selectedReport;
     private ReportType selectedReportType;
@@ -115,6 +116,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         itemLocaliser = new ItemLocaliser();
         searchMaskValues = new SearchMaskValues();
         loggingProfiler.profilerStop("ItemOverviewBean");
+        availableReports = reportMgr.getAvailableReports(this.getClass().getName());
+        selectedReport = availableReports.get(0);
     }
 
     public void actionApplySearchFilter() {
@@ -149,7 +152,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public List<Report> getAvailableReports() {
-        return reportMgr.getAvailableReports(this.getClass().getName());
+        return availableReports;
     }
 
     public Report getSelectedReport() {
@@ -174,7 +177,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateReport() {
         reportMgr.submitReport(selectedReport, collectReportParameters(), selectedReportType, currentUser);
-        messagePresenter.info("reporting_reportSumbittedGrowlMsg");
+        messagePresenter.info("reporting_reportSubmittedGrowlMsg");
     }
 
     private Map<String, Object> collectReportParameters() {

@@ -25,6 +25,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:o="http://omnifaces.org/ui"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <crimsy:acobjectModal
@@ -59,11 +60,9 @@
                             </p:toolbarGroup>
 
                             <p:toolbarGroup align="right">
-                                <div class="field col-12 md:col-4">
-
                                     <p:selectOneMenu
                                         id="reportSelectionId"
-                                        converter="reportConverter"
+                                        converter="omnifaces.SelectItemsConverter"
                                         value="#{materialOverviewBean.selectedReport}">
                                         <f:selectItems
                                             value="#{materialOverviewBean.availableReports}"
@@ -72,16 +71,15 @@
                                             itemLabel="#{report.name}" />
                                     </p:selectOneMenu>
 
-                                </div>
+                                    <p:commandButton
+                                            style="margin:0.5rem;"
+                                            ajax="true"
+                                            process="reportSelectionId"
+                                            type="submit"
+                                            update="growlMsg"
+                                    	    action="#{materialOverviewBean.actionCreateReport()}"
+                                            value="#{msgs.reporting_report}" />
 
-                                <p:commandButton
-                                    style="margin:0.5rem;"
-                                    process="reportSelectionId materialSearchMaskId"
-                                    action="#{materialOverviewBean.actionCreateReport()}"
-                                    value="#{msgs.reporting_createReport}"
-                                    update="@all"
-                                    />
-                                <!--</div>-->
                             </p:toolbarGroup>
                         </p:toolbar>
                         <!--===============================================================================================================-->

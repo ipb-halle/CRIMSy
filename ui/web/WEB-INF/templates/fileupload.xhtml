@@ -25,18 +25,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:tmpl="http://java.sun.com/jsf/composite/tmpl">
     <h:body>
-        <!--<ui:composition>-->
-        <!--            <h:outputStylesheet
-                        name="fine-uploader/fine-uploader-new.css"/>
-                    position="last"
-                    <h:outputScript
-                        pt:type="text/template"
-                        pt:id="qq-template-manual-trigger"
-                        target="body">
-                        <tmpl:fineUploaderMultiTemplate />
-                    </h:outputScript>-->
         <h:form >
-
             <p:dialog
                 id="fileUpload"
                 widgetVar="fileUploadModal"
@@ -47,15 +36,14 @@
                     <p:selectOneMenu
                         value="#{fileUploadBean.selectedCollection}"
                         label="#{msgs.fileupload_modal_uploadToCollectionText}"
-                         converter="collectionConverter">
+                        converter="collectionConverter">
                         <f:selectItems
                             value="#{fileUploadBean.getPossibleValues()}"
                             var="collection"
                             itemLabel="#{collection.name}"                           
                             itemValue="#{collection}"
-                             />
+                            />
                         <p:ajax process="@this" update="@(.uploadContainer)"/>
-                   
                     </p:selectOneMenu>
 
                     <p:fileUpload listener="#{fileUploadBean.handleFileUpload}" 
@@ -66,25 +54,9 @@
                                   update="messages" 
                                   sizeLimit="5000000" 
                                   allowTypes="/(\.|\/)(pdf|doc|docx)$/"/>
-
                     <p:messages id="messages"/>
-
                 </p:outputPanel>
-                <!--                <h:panelGroup
-                                    id="fine-uploader-manual-trigger"
-                                    layout="block" />-->
-<!--              <f:facet name="footer">
-                    <p:button
-                        value="#{msgs.fileupload_modal_button_clear}"
-                        style="margin-bottom: 10px;"
-                        onclick="$('#fine-uploader-manual-trigger').fineUploader('clearStoredFiles');" />
-                    <p:button
-                        value="#{msgs.fileupload_modal_button_close}"
-                        style="margin-bottom: 10px;"
-                        onclick="PF('fileUploadModal').hide()" />
-                </f:facet>-->
             </p:dialog>
         </h:form>
-        <!--</ui:composition>-->
     </h:body>
 </html>
