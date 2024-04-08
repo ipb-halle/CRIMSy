@@ -354,15 +354,17 @@
                                     >
 
                                     <p:selectOneMenu
-                                        converter="solventConverter"
+                                        id="itemSolvent"
+                                        converter="omnifaces.SelectItemsConverter"
                                         rendered="#{itemBean.isSolventRowVisisble()}"
                                         label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
                                         value="#{itemBean.state.editedItem.solvent}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
-
+                                        <f:selectItem itemLabel="select the solvent" itemValue=""/>
                                         <f:selectItems
                                             value="#{itemBean.availableSolvents}"
                                             var="s"
+                                            itemValue="#{s}"
                                             itemLabel="#{s.getLocalizedName()}"/>
                                     </p:selectOneMenu>
 

@@ -83,4 +83,8 @@ public class Solvent {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s[id=%d]", getClass().getSimpleName(), getId());
+    }
 }

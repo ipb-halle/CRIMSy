@@ -228,9 +228,9 @@
                             style="margin: 0.5rem;"
                             value="#{controller.step3Controller.solvent}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_solvent}"
-                            converter="solventConverter"
+                            converter="omnifaces.SelectItemsConverter"
                             required="true">
-
+                            <f:selectItem itemLabel="select the solvent" itemValue=""/>
                             <f:selectItems
                                 value="#{controller.solvents}"
                                 var="solvent"
