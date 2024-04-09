@@ -185,18 +185,6 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
         }
     }
 
-    /**
-     * Returns JavaScript code to be executed in the onclick event of the "save"
-     * commandButton for this experiment record before executing its AJAX call.
-     * <p>
-     * Clients of this class can overwrite this method to execute their own
-     * JavaScript code. This code may not use the <a href=
-     * "https://showcase.bootsfaces.net/forms/ajax.jsf#basic_usage">BootsFaces-specific
-     * prefixes</a> {@code javascript:} and {@code ajax:}.
-     * 
-     * @return JavaScript code to be executed; the default implementation
-     *         returns an empty string
-     */
     public String getSaveButtonOnClick() {
         return "";
     }

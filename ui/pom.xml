@@ -432,12 +432,7 @@
             <artifactId>jakarta.mail</artifactId>
             <version>2.0.1</version>
         </dependency>
-        
-        <!-- Ui Library for jsf-->
-        <!-- According to https://github.com/TheCoder4eu/BootsFaces-OSP/issues/1189 
-        there will be no official JakartaEE support BootsFaces, 
-        i.e. we need to get rid of Bootsfaces -->
-
+     
         <!-- RTF ParserKit -->
         <dependency>
             <groupId>com.github.joniles</groupId>
