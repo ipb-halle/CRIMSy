@@ -25,38 +25,44 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:tmpl="http://java.sun.com/jsf/composite/tmpl">
     <h:body>
-        <h:form >
-            <p:dialog
-                id="fileUpload"
-                widgetVar="fileUploadModal"
-                header="#{msgs.fileupload_modal_title}"
-                modal="true"
-                resizable="false">
-                <p:outputPanel class="uploadContainer">
-                    <p:selectOneMenu
-                        value="#{fileUploadBean.selectedCollection}"
-                        label="#{msgs.fileupload_modal_uploadToCollectionText}"
-                        converter="collectionConverter">
-                        <f:selectItems
-                            value="#{fileUploadBean.getPossibleValues()}"
-                            var="collection"
-                            itemLabel="#{collection.name}"                           
-                            itemValue="#{collection}"
-                            />
-                        <p:ajax process="@this" update="@(.uploadContainer)"/>
-                    </p:selectOneMenu>
+        <h:form 
+            class="uploadModal" prependId="false">
+            <p:outputPanel class="uploadContainer">
+                <p:dialog
+                    id="fileUpload"
+                    widgetVar="fileUploadModal"
+                    header="#{msgs.fileupload_modal_title}"
+                    modal="true">
 
-                    <p:fileUpload listener="#{fileUploadBean.handleFileUpload}" 
-                                  mode="advanced" 
-                                  dragDropSupport="true" 
-                                  multiple="true" 
-                                  process="@form"
-                                  update="messages" 
-                                  sizeLimit="5000000" 
-                                  allowTypes="/(\.|\/)(pdf|doc|docx)$/"/>
-                    <p:messages id="messages"/>
-                </p:outputPanel>
-            </p:dialog>
+                    <p:outputLabel><strong>#{msgs.select_collection}</strong></p:outputLabel>
+                    <div class="cnt1">
+                        <p:selectOneMenu
+                            value="#{fileUploadBean.selectedCollection}"
+                            label="#{msgs.fileupload_modal_uploadToCollectionText}"
+                            converter="collectionConverter">
+                            <f:selectItems
+                                value="#{fileUploadBean.getPossibleValues()}"
+                                var="collection"
+                                itemLabel="#{collection.name}"                           
+                                itemValue="#{collection}"
+                                />
+                            <p:ajax process="@this" update="@(.uploadContainer)"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel><strong>#{msgs.select_file}</strong></p:outputLabel>
+                        <p:fileUpload listener="#{fileUploadBean.handleFileUpload}" 
+                                      mode="advanced" 
+                                      dragDropSupport="true" 
+                                      multiple="true" 
+                                      process="@form"
+                                      skinSimple="true"
+                                      update="messages" 
+                                      sizeLimit="5000000" 
+                                      allowTypes="/(\.|\/)(pdf|doc|docx)$/">   
+                        </p:fileUpload>
+                        <p:messages id="messages"/>
+                    </div>
+                </p:dialog>
+            </p:outputPanel>
         </h:form>
     </h:body>
 </html>
