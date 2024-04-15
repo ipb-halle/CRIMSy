@@ -143,8 +143,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.SEQUENCE,
                         MaterialType.STRUCTURE));
         namePresenter = new NamePresenter();
-        availableReports = reportMgr.getAvailableReports(this.getClass().getName());
-        selectedReport = availableReports.get(0);
 
         loggingProfiler.profilerStop("MaterialOverviewBean");
 
@@ -218,10 +216,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     public void actionCreateNewItem(Material m) {
         itemBean.actionStartItemCreation(m);
         navigator.navigate(NAVIGATION_ITEM_EDIT);
-    }
-
-    public List<Report> getAvailableReports() {
-        return this.availableReports;
     }
 
     public Report getSelectedReport() {
