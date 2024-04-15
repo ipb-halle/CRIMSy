@@ -26,7 +26,6 @@ import de.ipb_halle.reporting.ReportType;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
@@ -35,6 +34,9 @@ import org.omnifaces.util.Faces;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -42,11 +44,13 @@ import org.apache.logging.log4j.LogManager;
  *
  * @author fbroda
  */
-@RequestScoped
-public class ReportMgr {
+@Named
+@SessionScoped
+public class ReportMgr implements Serializable{
 
     private static final String DEFAULT_LANGUAGE = "en";
     static final String DEFAULT_NAME = "Report with no name";
+    private static final long serialVersionUID = 1L;
 
     private Logger logger = LogManager.getLogger(getClass().getName());
 
@@ -55,15 +59,23 @@ public class ReportMgr {
 
     @Inject
     private ReportJobService reportJobService;
-
+   
+    public int getDummy(){
+        return 1;
+    }
+    
     public List<Report> getAvailableReports(String context) {
+        logger.info("Start von METHOD getAvaRep!!! " + context);
         List<Report> reports = reportService.loadByContext(context);
 
         for (Report report : reports) {
+
             localizeReportName(report);
+            logger.info("xxx->: " + report);
+
         }
         reports.sort(Comparator.comparing(Report::getName));
-
+        logger.info("ReportManager SIZE OF REPORTS ARRAYs: " + reports.size() + " CONTEXT: " + context);
         return reports;
     }
 

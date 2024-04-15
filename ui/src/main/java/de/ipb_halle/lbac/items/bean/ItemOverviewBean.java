@@ -116,8 +116,6 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         itemLocaliser = new ItemLocaliser();
         searchMaskValues = new SearchMaskValues();
         loggingProfiler.profilerStop("ItemOverviewBean");
-        availableReports = reportMgr.getAvailableReports(this.getClass().getName());
-        selectedReport = availableReports.get(0);
     }
 
     public void actionApplySearchFilter() {

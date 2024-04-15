@@ -145,7 +145,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         namePresenter = new NamePresenter();
 
         loggingProfiler.profilerStop("MaterialOverviewBean");
-
     }
 
     /**
