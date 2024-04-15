@@ -149,10 +149,6 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reloadItems();
     }
 
-    public List<Report> getAvailableReports() {
-        return availableReports;
-    }
-
     public Report getSelectedReport() {
         return selectedReport;
     }

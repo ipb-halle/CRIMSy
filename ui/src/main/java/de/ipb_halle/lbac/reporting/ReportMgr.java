@@ -46,7 +46,7 @@ import org.apache.logging.log4j.LogManager;
  */
 @Named
 @SessionScoped
-public class ReportMgr implements Serializable{
+public class ReportMgr implements Serializable {
 
     private static final String DEFAULT_LANGUAGE = "en";
     static final String DEFAULT_NAME = "Report with no name";
@@ -59,23 +59,14 @@ public class ReportMgr implements Serializable{
 
     @Inject
     private ReportJobService reportJobService;
-   
-    public int getDummy(){
-        return 1;
-    }
-    
+
     public List<Report> getAvailableReports(String context) {
-        logger.info("Start von METHOD getAvaRep!!! " + context);
         List<Report> reports = reportService.loadByContext(context);
 
         for (Report report : reports) {
-
             localizeReportName(report);
-            logger.info("xxx->: " + report);
-
         }
         reports.sort(Comparator.comparing(Report::getName));
-        logger.info("ReportManager SIZE OF REPORTS ARRAYs: " + reports.size() + " CONTEXT: " + context);
         return reports;
     }
 

@@ -235,7 +235,7 @@
                                             styleClass="itemFilterInputfield"
                                             value="#{itemOverviewBean.selectedReport}">
                                             <f:selectItems
-                                                value="#{itemOverviewBean.availableReports}"
+                                                value="#{reportMgr.getAvailableReports('de.ipb_halle.lbac.items.bean.ItemOverviewBean')}"
                                                 var="report"
                                                 itemValue="#{report}"
                                                 itemLabel="#{report.name}" />
