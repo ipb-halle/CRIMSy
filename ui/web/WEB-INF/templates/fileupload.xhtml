@@ -28,6 +28,7 @@
         <h:form 
             class="uploadModal" prependId="false">
             <p:outputPanel class="uploadContainer">
+
                 <p:dialog
                     id="fileUpload"
                     widgetVar="fileUploadModal"
@@ -53,19 +54,24 @@
                                       mode="advanced" 
                                       dragDropSupport="true" 
                                       multiple="true" 
+                                      id="surek"
                                       process="@form"
+                                      update="messages"
                                       cancelButtonStyleClass="ui-button-secondary"
                                       chooseButtonStyleClass="ui-button-primary"
                                       uploadButtonStyleClass="ui-button-danger"
                                       skinSimple="true"
-                                      update="messages" 
                                       sizeLimit="5000000" 
                                       allowTypes="/(\.|\/)(pdf|doc|docx)$/">   
                         </p:fileUpload>
-                        <p:messages id="messages"/>
+
+                        <p:growl id="messages" showDetail="true"/>
                     </div>
+
                 </p:dialog>
+
             </p:outputPanel>
+
         </h:form>
     </h:body>
 </html>
