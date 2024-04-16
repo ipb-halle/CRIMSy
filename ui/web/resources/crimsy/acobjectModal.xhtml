@@ -69,13 +69,11 @@
                                         value="#{cc.attrs.acobjectController.getAcEntries()}">
 
                                         <p:column
-                                            styleClass="textTableColumn"
                                             headerText="#{msgs.aclEdit_modal_table_groupname}"
                                             >
                                             <h:outputText value="#{ace.getMember().getName()}"/>
                                         </p:column>
                                         <p:column
-                                            styleClass="textTableColumn"
                                             headerText="#{aclEdit_modal_table_institution}">
                                             <h:outputText value="#{ace.getMember().getNode().institution}"/>
                                         </p:column>
@@ -230,7 +228,7 @@
                             <p:column styleClass="mainPanelEntry">
                                 <h:form id ="acoInnerFormId" styleClass="acoInnerFormClass">
                                     <p:commandButton
-                                        styleClass="groupFilterButton groupFilterButtonColumn ui-button-secondary"
+                                        styleClass="ui-button-secondary"
                                         style="margin: 5px;"
                                         value="#{msgs.aclEdit_modal_cancel}"
                                         oncomplete="PF('dlgAcl').hide();"
@@ -238,7 +236,7 @@
                                     <p:commandButton
                                         value="#{msgs.aclEdit_modal_save}"
                                         update="@(.#{cc.attrs.updateTargetClass})"
-                                        styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn ui-button-danger"
+                                        styleClass="ui-button-danger"
                                         style="margin: 5px;"
                                         action="#{cc.attrs.acobjectController.saveNewAcList}"
                                         oncomplete="PF('dlgAcl').hide();"/>
