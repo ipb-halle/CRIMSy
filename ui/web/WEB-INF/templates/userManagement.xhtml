@@ -265,7 +265,7 @@
                             <p:commandButton value="#{msgs.Delete}"
                                              styleClass="ui-button-danger"
                                              rendered="#{userMgrBean.mode == 'DELETE'}"
-                                             update="frmUserList:userList"
+                                             update="frmUserList:userList growlMsg"
                                              ajax="true"
                                              action="#{userMgrBean.actionDeactivateUser()}"
                                              oncomplete="PF('userDialogWidgetVar').hide();"
