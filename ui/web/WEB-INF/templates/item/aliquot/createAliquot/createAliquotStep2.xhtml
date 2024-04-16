@@ -104,6 +104,8 @@
                                 update="@none"
                                 action="#{controller.step2Controller.actionOnChangeDirectContainerSize()}" />
 
+                            <p:outputLabel for="@next" value="#{msgs.itemEdit_itemPanel_container_size}: " style="margin-left: 10px;"/>
+                            <br/>
                             <p:inputText
                                 id="directContainerSizeInputId"
                                 style="margin: 0 10px; max-width: 90%;"
@@ -133,6 +135,8 @@
 
                         <ui:fragment rendered="#{controller.step2Controller.directContainer}">
 
+                            <p:outputLabel for="@next" value="#{msgs.itemEdit_itemPanel_container_type}: " style="margin-left: 10px;"/>
+                            <br/>
                             <p:selectOneMenu
                                 value="#{controller.step2Controller.directContainerType}"
                                 label="#{msgs.itemEdit_itemPanel_container_type}"
@@ -177,6 +181,8 @@
 
                         <ui:fragment rendered="#{controller.step2Controller.customLabel}">
 
+                            <p:outputLabel for="@next" value="#{msgs.itemEdit_itemPanel_label}: " style="margin-left: 10px;"/>
+                            <br/>
                             <p:inputText
                                 style="margin: 0 10px; max-width: 90%;"
                                 value="#{controller.step2Controller.customLabelValue}"
