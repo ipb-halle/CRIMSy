@@ -61,7 +61,8 @@
                     <!-- Available amount from parent item -->
                     <!--**********************************************************************************-->
                     <p:outputPanel>
-
+                        <p:outputLabel for="@next" value="#{msgs.available_amount}: " style="margin-left: 10px;"/>
+                        <br/>
                         <p:inputText
                             style="margin: 0.5rem;"
                             value="#{controller.step1Controller.availableAmountFromItem}"
@@ -80,6 +81,8 @@
                     <!-- Unit of available amount -->
                     <!--*******************************************************************************-->
                     <p:outputPanel >
+                        <p:outputLabel for="@next" value="#{msgs.itemCreateSolution_consumePartOfItem_unit}: " style="margin-left: 10px;"/>
+                        <br/>
                         <p:inputText
                             style="margin: 0.5rem; "
                             value="#{controller.step1Controller.availableAmountFromItemUnit}"
@@ -94,7 +97,8 @@
                     <!-- Amount -->
                     <!--*******************************************************************************-->
                     <p:outputPanel >
-
+                        <p:outputLabel for="@next" value="#{msgs.dlgItemView_itemAmount}: " style="margin-left: 10px;"/>
+                        <br/>
                         <p:inputText
                             style="margin: 0.5rem; margin-top: 0;"
                             value="#{controller.step1Controller.amount}"
@@ -116,7 +120,8 @@
                     <!-- Unit -->
                     <!--*******************************************************************************-->
                     <p:outputPanel >
-
+                        <p:outputLabel for="@next" value="#{msgs.itemCreateSolution_consumePartOfItem_unit}: " style="margin-left: 10px;"/>
+                        <br/>
                         <p:selectOneMenu
                             style="margin: 0.5rem; margin-top: 0;"
                             value="#{controller.step1Controller.amountUnit}"
