@@ -144,7 +144,9 @@
                                 disabled="#{materialBean.isTypeChoiseDisabled()}"
                                 >
                                 <f:selectItems
-                                    value="#{materialBean.getMaterialTypes()}"/>
+                                    value="#{materialBean.getMaterialTypes()}"
+                                    var="types"
+                                    itemLabel="#{msgs['advanced_search_type_'.concat(types)]}"/>
                                 <p:ajax
                                     process="@this"
                                     update="@form" />

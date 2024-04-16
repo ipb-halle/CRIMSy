@@ -55,6 +55,7 @@
                             <p:outputPanel >
 
                                 <p:inputText
+                                    style="width:16.1rem;"
                                     value="#{projectEditBean.projectName}"
                                     placeholder="#{msgs.projectEdit_projectName_placeHolder}">
 
@@ -79,14 +80,15 @@
                             <!--***********************************************************************-->
                             <p:outputPanel >
 
-                                <p:selectOneMenu value="#{projectEditBean.currentProjectType}"
-                                                 style="width:113%;">
-
-                                    <f:selectItems value="#{projectEditBean.getProjectTypes()}"/>
-
-                                    <p:ajax
-                                        process="@this"
-                                        update="@(.roleMainPanelClass)"/>
+                                <p:selectOneMenu value="#{projectEditBean.currentProjectType}" 
+                                                 style="width:16.1rem;">
+                                    
+                                    <f:selectItems value="#{projectEditBean.getProjectTypes()}" 
+                                                   var="type"
+                                                   itemLabel="#{msgs['project_type_'.concat(type)]}" />
+                                   <p:ajax
+                                    process="@this"
+                                    update="@(.roleMainPanelClass)"/>
 
                                 </p:selectOneMenu>
 
@@ -109,6 +111,7 @@
                             <p:outputPanel styleClass="projectOwnerClass">
 
                                 <p:inputText
+                                    style="width:16.1rem;"
                                     disabled="true"
                                     value="#{projectEditBean.getProjectOwner().getName()}">
 
