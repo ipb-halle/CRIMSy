@@ -34,66 +34,91 @@
                 <p:outputPanel
                     styleClass="structurePanelClass"
                     rendered="#{materialBean.permission.isDetailPanelVisible('STRUCTURE_INFORMATION')}">
-                    <div>
-                        <h:outputText
-                            style="margin:0.5rem;"
-                            value="#{msgs.materialCreation_panelStrucInfos_formula}"/>
+                    
+                    <!--container nr1 row-->
 
-                        <h:outputText
-                            style="margin:0.5rem;"
-                            value="#{msgs.materialCreation_panelStrucInfos_mass}"/>
 
-                        <mol:molecule
-                            value="#{materialBean.structureInfos.structureModel}"
-                            pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                            format="MDLV2000"
-                            border="true"
-                            readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                            widgetVar="structurePlugin">
-                        </mol:molecule>
-                        <!-- This JS snippet guarantees proper plugin initialization after
-                             this p:tab is rendered by AJAX and the tab comes into focus. -->
-                        <script>structurePlugin.then(plugin => plugin.init());</script>
+                    <div style="display: flex; flex-direction: row; align-items:flex-start; ">
 
-                        <div>
-                            <p:selectBooleanCheckbox
+                        <!--container nr2 column-->
+
+                        <div style="display:flex; flex-direction: column;">
+                            <h:outputText
                                 style="margin:0.5rem;"
-                                disabled="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                value="#{materialBean.autoCalcFormularAndMasses}"
-                                />
-                            <!--caption="Formel und Masse automatisch berechnen"-->
+                                value="#{msgs.materialCreation_panelStrucInfos_formula}"/>
+                            <mol:molecule
+                                value="#{materialBean.structureInfos.structureModel}"
+                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                format="MDLV2000"
+                                border="true"
+                                readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                widgetVar="structurePlugin">
+                            </mol:molecule>
+                            <!-- This JS snippet guarantees proper plugin initialization after
+                                 this p:tab is rendered by AJAX and the tab comes into focus. -->
+                            <script>structurePlugin.then(plugin => plugin.init());</script>
+                        </div>
+
+                        <!--container nr3 column-->
+
+                        <div style="display:flex; flex-direction: column;margin-left: 7rem;">
 
                             <h:outputText
                                 style="margin:0.5rem;"
-                                value="#{msgs.materialCreation_panelStrucInfos_sumformula}"/>
+                                value="#{msgs.materialCreation_panelStrucInfos_mass}"/>
 
-                            <p:inputText
-                                style="margin:0.5rem;"
-                                disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
-                                value="#{materialBean.structureInfos.sumFormula}">
-                                <f:converter converterId="InputConverter" />
-                            </p:inputText>
+                            <!--container nr4 column-->
+                            <div style="display:flex; flex-direction: column; margin-left: 4rem;">
 
-                            <h:outputText
-                                style="margin:0.5rem;"
-                                value="#{msgs.materialCreation_panelStrucInfos_molarMass}"/>
+                                <!--container nr5 row-->
+                                <div style="display: flex; flex-direction: row; align-items:flex-start; ">
 
-                            <p:inputText
-                                style="margin:0.5rem;"
-                                disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
-                                value="#{materialBean.structureInfos.averageMolarMass}">
-                                <f:converter converterId="InputConverter" />
-                            </p:inputText>
+                                    <h:outputText
+                                        style="margin:0.5rem;"
+                                        value="#{msgs.molarMassCalculation}"/>
 
-                            <h:outputText
-                                style="margin:0.5rem;"
-                                value="#{msgs.materialCreation_panelStrucInfos_exactMolarMass}"/>
-                            <p:inputText
-                                style="margin:0.5rem;"
-                                disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
-                                value="#{materialBean.structureInfos.exactMolarMass}">
-                                <f:converter converterId="InputConverter" />
-                            </p:inputText>
+                                    <p:selectBooleanCheckbox
+                                        style="margin:0.5rem;"
+                                        disabled="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                        value="#{materialBean.autoCalcFormularAndMasses}">
+                                        <p:ajax 
+                                            process="@this"
+                                            update="@form"/>
+                                    </p:selectBooleanCheckbox>
+                                </div>
+
+                                <h:outputText
+                                    style="margin:0.5rem;"
+                                    value="#{msgs.materialCreation_panelStrucInfos_sumformula}"/>
+
+                                <p:inputText
+                                    style="margin:0.5rem;"
+                                    disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
+                                    value="#{materialBean.structureInfos.sumFormula}">
+                                    <f:converter converterId="InputConverter" />
+                                </p:inputText>
+
+                                <h:outputText
+                                    style="margin:0.5rem;"
+                                    value="#{msgs.materialCreation_panelStrucInfos_molarMass}"/>
+
+                                <p:inputText
+                                    style="margin:0.5rem;"
+                                    disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
+                                    value="#{materialBean.structureInfos.averageMolarMass}">
+                                    <f:converter converterId="InputConverter" />
+                                </p:inputText>
+
+                                <h:outputText
+                                    style="margin:0.5rem;"
+                                    value="#{msgs.materialCreation_panelStrucInfos_exactMolarMass}"/>
+                                <p:inputText
+                                    style="margin:0.5rem;"
+                                    disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
+                                    value="#{materialBean.structureInfos.exactMolarMass}">
+                                    <f:converter converterId="InputConverter" />
+                                </p:inputText>
+                            </div>
                         </div>
                     </div>
                 </p:outputPanel>
