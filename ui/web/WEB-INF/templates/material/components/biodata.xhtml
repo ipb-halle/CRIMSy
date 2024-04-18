@@ -28,13 +28,10 @@
         <ui:composition>
             <p:tab
                 title="#{msgs.materialCreation_panelBiodata_name}"
-                disabled="#{!materialBean.permission.isDetailPanelVisible('TAXONOMY')}"
-                >
+                disabled="#{!materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
                 <p:outputPanel
                     styleClass="storagePanelClass"
-                    rendered="#{materialBean.permission.isDetailPanelVisible('TAXONOMY')}"
-                    >
-
+                    rendered="#{materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
                     <p:outputPanel>
                         <p:row>
                             <p:outputPanel>
@@ -46,11 +43,9 @@
                                     selectionMode="single"
                                     styleClass="taxonomyTree"
                                     selection="#{materialBean.taxonomyController.selectedTaxonomy}">
-
                                     <p:ajax event="select" update="@(.taxonomyInfos)" listener="#{materialBean.taxonomyController.onTaxonomySelect}" />
                                     <p:ajax event="expand"  listener="#{materialBean.taxonomyController.onTaxonomyExpand}" />
                                     <p:ajax event="collapse" listener="#{materialBean.taxonomyController.onTaxonomyCollapse}" />
-
                                     <p:treeNode >
                                         <h:outputText value="#{node.getFirstName()}"/>
                                     </p:treeNode>
@@ -74,16 +69,12 @@
                                     <p:outputPanel
                                         rendered="#{materialBean.isTissueSelectionVisible()}"
                                         >
-
                                         <p:selectOneMenu
                                             label="#{msgs.materialCreation_panelBiodata_selectTissue}">
                                         </p:selectOneMenu>
-
                                     </p:outputPanel>
                                 </p:row>
-
                             </p:outputPanel>
-
                         </p:row>
                     </p:outputPanel>
                 </p:outputPanel>

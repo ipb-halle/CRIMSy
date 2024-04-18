@@ -110,37 +110,30 @@
                                     <h:outputText value="#{materialOverviewBean.getLocalizedMaterialType(material)}"/>
                                 </p:column>
 
-                                <p:column headerText="#{msgs.materialOverview_tableheader_detailInfos}"
-                                          styleClass="div-container-hazard">
+                                <p:column headerText="#{msgs.materialOverview_tableheader_detailInfos} ">
                                     <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('BIOMATERIAL', material)}">
                                         <ui:insert name="biomaterialPanel">
                                             <ui:include src="/WEB-INF/templates/material/components/detail/biodata.xhtml">
                                                 <ui:param name="material" value="#{material}" />
-                                                <br/>
                                             </ui:include>
                                         </ui:insert>
                                     </ui:fragment>
-                                    <br/>
 
                                     <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('STRUCTURE', material)}">
                                         <ui:insert name="structurePanel">
                                             <ui:include src="/WEB-INF/templates/material/components/detail/structure.xhtml">
-                                                <ui:param name="material" value="#{material}" />                                   
-                                                <br/>
+                                                <ui:param name="material" value="#{material}" />                  
                                             </ui:include>
                                         </ui:insert>
                                     </ui:fragment>
-                                    <br/>
 
                                     <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('COMPOSITION', material)}">
                                         <ui:insert name="compositionPanel">
                                             <ui:include src="/WEB-INF/templates/material/components/detail/composition.xhtml">
                                                 <ui:param name="material" value="#{material}" />
-                                                <br/>
                                             </ui:include>
                                         </ui:insert>
                                     </ui:fragment>
-                                    <br/>
 
                                 </p:column>
                                 <p:column headerText="#{msgs.materialOverview_tableheader_actions}">
