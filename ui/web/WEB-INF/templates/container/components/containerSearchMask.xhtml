@@ -137,10 +137,9 @@ limitations under the License.
 
                         <!-- Button Clear -->
                         <!--****************************************************************************************-->
-                        <p:outputPanel styleClass="containerFilterButtonColumn">
+                        <p:outputPanel styleClass="containerFilterButtonColumn" style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
 
                             <p:commandButton
-                                style=""
                                 styleClass="containerFilterButton ui-button-secondary"
                                 value="#{msgs.container_search_button_clear}"
                                 ajax="true"
@@ -148,13 +147,9 @@ limitations under the License.
                                 action="#{containerSearchMaskBean.actionClearSearchFilter()}"
                                 />
                             <!--onclick="ajax:containerSearchMaskBean.actionClearSearchFilter();"-->
-
-                        </p:outputPanel>
-
+                            
                         <!-- Button Search -->
                         <!--****************************************************************************************-->
-                        <p:outputPanel styleClass="containerFilterButtonColumn containerFilterButtonRight">
-
                             <p:commandButton
                                 styleClass="containerFilterButton"
                                 value="#{msgs.container_search_button_search}"
