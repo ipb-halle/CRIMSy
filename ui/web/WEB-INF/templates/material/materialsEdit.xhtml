@@ -72,16 +72,14 @@
                                 value="#{msgs.materialCreation_changed}"
                                 styleClass="revisionChangeClass"
                                 rendered="#{!materialBean.historyOperation.originalMaterial}">
-                                <o:param value="#{materialBean.materialEditState.currentVersiondate}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <o:param value="#{materialBean.materialEditState.currentVersiondate}"/>
                                 <o:param value="#{nwc:formatDateWithTimezone(materialBean.materialEditState.currentVersiondate)}" />
                             </h:outputFormat>
                             <h:outputFormat
                                 value="#{msgs.materialCreation_created}"
                                 styleClass="revisionChangeClass"
                                 rendered="#{materialBean.historyOperation.originalMaterial}">
-                                <o:param value="#{materialBean.materialEditState.materialBeforeEdit.creationTime}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <o:param value="#{materialBean.materialEditState.materialBeforeEdit.creationTime}" />
                                 <o:param value="#{nwc:formatDateWithTimezone(materialBean.materialEditState.materialBeforeEdit.creationTime)}" />
                             </h:outputFormat>
                         </p:column>

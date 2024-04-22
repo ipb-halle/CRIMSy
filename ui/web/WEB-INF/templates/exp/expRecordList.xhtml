@@ -44,13 +44,11 @@
                             <p:outputLabel value="#{msgs.expRecord_name}: " />
                             <h:outputFormat value="#{msgs.expRecord_lastChanged}, "
                                             title="#{nwc:formatDateWithTimezone(rec.changeTime)}">
-                                <o:param value="#{rec.changeTime}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <o:param value="#{rec.changeTime}" />
                             </h:outputFormat>
                             <h:outputFormat value="#{msgs.expRecord_created}."
                                             title="#{nwc:formatDateWithTimezone(rec.creationTime)}">
-                                <o:param value="#{rec.creationTime}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <o:param value="#{rec.creationTime}" />
                             </h:outputFormat>
                         </h:panelGroup>
                         <!--

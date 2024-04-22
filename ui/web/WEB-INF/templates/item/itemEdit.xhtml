@@ -64,15 +64,13 @@
                         <ui:fragment rendered="#{!itemBean.createMode}">
                             <h:outputFormat value="#{msgs.itemEdit_itemEditPanel_changed}"
                                             rendered="#{!itemBean.state.startingHistoryItem}">
-                                <f:param value="#{itemBean.state.changeDate}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <f:param value="#{itemBean.state.changeDate}" />
                                 <f:param value="#{nwc:formatDateWithTimezone(itemBean.state.changeDate)}" />
                             </h:outputFormat>
 
                             <h:outputFormat value="#{msgs.itemEdit_itemEditPanel_created}"
                                             rendered="#{itemBean.state.startingHistoryItem}">
-                                <f:param value="#{itemBean.state.originalItem.cTime}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <f:param value="#{itemBean.state.originalItem.cTime}" />
                                 <f:param value="#{nwc:formatDateWithTimezone(itemBean.state.originalItem.cTime)}" />
                             </h:outputFormat>
                         </ui:fragment>

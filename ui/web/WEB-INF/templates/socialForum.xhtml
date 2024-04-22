@@ -141,8 +141,7 @@
                                             <p:column >
                                                 <h:outputFormat value="{0} ({1})">
                                                     <o:param
-                                                        value="#{posting.created}"
-                                                        converter="org.ocpsoft.PrettyTimeConverter" />
+                                                        value="#{posting.created}" />
                                                     <o:param value="#{nwc:formatDateWithTimezone(posting.created)}" />
                                                 </h:outputFormat>
                                             </p:column>
