@@ -372,6 +372,7 @@
 
         <!-- commons-io -->
         <dependency>
+            <!-- see seleniumhq -->
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
@@ -718,23 +719,6 @@
             <artifactId>cxf-rt-transports-http</artifactId>
             <version>${cxf.version}</version>
         </dependency>
-        
-
-        <!-- tika dependencies -->
-        <!--
-                <dependency>
-                    <groupId>org.xerial</groupId>
-                    <artifactId>sqlite-jdbc</artifactId>
-                    <version>3.41.2.2</version>
-                </dependency>
-        -->
-        <dependency>
-            <!-- see seleniumhq -->
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
-        </dependency>
-
 
         <!-- kx & reporting -->
         <dependency>
