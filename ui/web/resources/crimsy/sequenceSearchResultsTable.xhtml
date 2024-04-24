@@ -61,7 +61,7 @@ limitations under the License.
                                 style="margin:0 0.5rem;"
                                 value="#{msgs.sequenceSearch_results_collapseAllResults}"
                                 onclick="hideFastaResultPanel()"
-                             
+
                                 />
                             <p:commandButton
                                 style="margin-right:0.5rem;"
@@ -77,19 +77,22 @@ limitations under the License.
                         </p:row>
                     </p:panelGrid>
 
-                    <h:panelGroup
-                        id="fastaResultPanelGroupId"
-                        styleClass="fastaResultPanelGroup">
 
-                        <ui:repeat
-                            value="#{cc.attrs.resultsTableController.results}"
-                            var="result"
-                            varStatus="status">
 
-                            <p:outputPanel styleClass="fastaResultPanel">
+                    <ui:repeat
+                        value="#{cc.attrs.resultsTableController.results}"
+                        var="result"
+                        varStatus="status">
 
-                                <f:facet name="heading">
+                        <p:outputPanel styleClass="fastaResultPanel">
 
+                            <h:panelGroup
+                                id="fastaResultPanelGroupId"
+                                styleClass="fastaResultPanelGroup">
+                                
+                                <hr/>
+
+                                <div style="margin: 10px 5px; background: #e3f2fd; border-radius: 5px;">
                                     <h:outputFormat
                                         value="#{msgs.sequenceSearch_results_resultNumberFormat}"
                                         style="padding-right:20px;">
@@ -97,63 +100,66 @@ limitations under the License.
                                         <f:param value="#{status.end}" />
                                     </h:outputFormat>
 
+
                                     <h:outputText
                                         value="#{result.sequence.firstName}"
                                         style="font-size:large;" />
+                                </div>
+                                
+                                <hr/>
+                                
+                                <div style="display: grid;
+                                     grid-template-columns: 190px 85px 85px 85px 170px 60px 155px 60px 20px;
+                                     grid-gap:10px;
+                                     padding: 10px;"
+                                     >
+                                    <p:commandButton
+                                        ajax="false"
+                                        value="#{msgs.sequenceSearch_results_downloadResultAsFasta}"
+                                        action="#{cc.attrs.resultsTableController.actionDownloadResultAsFasta(result, status.index + 1)}"
+                                        icon="fa fa-download"
+                                        />
+                                    <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_eValue}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_identity}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_similarity}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_overlap}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_frame}" style="margin: 0 10px;"/>
+                                </div>
 
-                                </f:facet>
+                                <div style="display: grid;
+                                     grid-template-columns: 190px 85px 85px 85px 170px 60px 155px 60px 20px;
+                                     grid-gap:10px;
+                                     padding: 10px;"
+                                     >
+                                    <p:commandButton
+                                        value="#{msgs.materialOverview_actions_edit}"
+                                        action="#{materialOverviewBean.actionEditMaterial(result.sequence)}"
+                                        icon="pi pi-pencil"
+                                        styleClass="ui-button-success"
+                                        ajax="false" />
 
-                                <!--<p:row>-->
-                                <p:commandButton
-                                    ajax="false"
-                                    style="margin:0.5rem 0.5rem 0.5rem 0;"
-                                    value="#{msgs.sequenceSearch_results_downloadResultAsFasta}"
-                                    action="#{cc.attrs.resultsTableController.actionDownloadResultAsFasta(result, status.index + 1)}"
-                                    icon="fa fa-download"
-                                    />
-                                <br/>
-
-                                <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" />
-                                <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" />
-                                <h:outputText value="#{msgs.sequenceSearch_results_eValue}" />
-                                <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" />
-                                <h:outputText value="#{msgs.sequenceSearch_results_identity}" />
-                                <h:outputText value="#{msgs.sequenceSearch_results_similarity}" />
-                                <h:outputText value="#{msgs.sequenceSearch_results_overlap}" />
-                                <h:outputText value="#{msgs.sequenceSearch_results_frame}" />
-                                <br/>
-
-                                <p:commandButton
-                                    value="#{msgs.materialOverview_actions_edit}"
-                                    action="#{materialOverviewBean.actionEditMaterial(result.sequence)}"
-                                    style="margin:0.5rem 0.5rem 0.5rem 0;"
-                                    icon="pi pi-pencil"
-                                    styleClass="ui-button-success"
-                                    ajax="false" />
-                                <br/>
-
-                                <h:outputText value="#{result.fastaResult.subjectSequenceLength}" />
-                                <h:outputText value="#{result.fastaResult.bitScore}" />
-                                <h:outputText value="#{result.fastaResult.expectationValue}" />
-                                <h:outputText value="#{result.fastaResult.smithWatermanScore}" />
-                                <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" />
-                                <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" />
-                                <h:outputText value="#{result.fastaResult.overlap}" />
-                                <h:outputText value="#{result.fastaResult.frame}" />
-                                <!--</p:row>-->
+                                    <h:outputText value="#{result.fastaResult.subjectSequenceLength}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.bitScore}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.expectationValue}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.smithWatermanScore}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.overlap}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.frame}" style="margin: 0 10px;"/>
+                                </div>
                                 <hr />
 
-                                <!--<p:row>-->
                                 <p:column>
                                     <h:outputText
                                         value="#{result.alignments}"
                                         style="white-space:pre; font-family:monospace;" />
                                 </p:column>
-                                <!--</p:row>-->
-
-                            </p:outputPanel>
-                        </ui:repeat>
-                    </h:panelGroup>
+                            </h:panelGroup>
+                        </p:outputPanel>
+                    </ui:repeat>
                 </h:form>
             </p:outputPanel>
         </div>
