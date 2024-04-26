@@ -33,7 +33,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>      
         <!-- check Maven Central for latest versions! -->
-        <cxf.version>4.0.0</cxf.version>
     </properties>
 
     <!-- define (additional) repositories -->
@@ -117,24 +116,13 @@
             <version>1.7.30</version>
         </dependency>
         
-        <!-- Apache CXF (jaxrs) -->
+        <!-- https://mvnrepository.com/artifact/org.apache.tomee/tomee-jaxrs -->
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-core</artifactId>
-            <version>${cxf.version}</version>
+            <groupId>org.apache.tomee</groupId>
+            <artifactId>tomee-jaxrs</artifactId>
+            <version>9.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-client</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
         
         <!-- Jakarta XML bind -->
         <dependency>
