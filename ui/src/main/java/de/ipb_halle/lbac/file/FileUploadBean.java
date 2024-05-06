@@ -5,6 +5,7 @@ import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.service.TextWebRequestType;
 import de.ipb_halle.kx.service.TextWebStatus;
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.service.FileService;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -66,6 +67,9 @@ public class FileUploadBean implements Serializable {
     @Inject
     private UserBean userBean;
 
+    @Inject
+    private FileService fileService;
+
     @PostConstruct
     public void initCollection() {
         selectedCollection = new Collection();
@@ -113,6 +117,7 @@ public class FileUploadBean implements Serializable {
                 FacesMessage message = new FacesMessage("File ", fileName + " upload of file " + fileName + " was not successfull");
                 //Vernüftige Fehlermessage zum UI hin
                 //Aufräumen des "leeren" File aus Zeile 99
+                fileService.deleteFile(selectedCollection, fileName);
             }
             FacesMessage message = new FacesMessage("File ", fileName + " was successfully uploaded.");
             FacesContext.getCurrentInstance().addMessage(null, message);
