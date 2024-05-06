@@ -24,54 +24,54 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:tmpl="http://java.sun.com/jsf/composite/tmpl">
-    <h:body>
-        <h:form 
+<h:body>
+    <h:form
+            enctype="multipart/form-data"
             class="uploadModal" prependId="false">
-            <p:outputPanel class="uploadContainer">
+        <p:outputPanel class="uploadContainer">
 
-                <p:dialog
+            <p:dialog
                     id="fileUpload"
                     widgetVar="fileUploadModal"
                     header="#{msgs.fileupload_modal_title}"
                     modal="true">
 
-                    <p:outputLabel><strong>#{msgs.select_collection}</strong></p:outputLabel>
-                    <div class="cnt1">
-                        <p:selectOneMenu
+                <p:outputLabel><strong>#{msgs.select_collection}</strong></p:outputLabel>
+                <div class="cnt1">
+                    <p:selectOneMenu
                             value="#{fileUploadBean.selectedCollection}"
                             label="#{msgs.fileupload_modal_uploadToCollectionText}"
                             converter="collectionConverter">
-                            <f:selectItems
+                        <f:selectItems
                                 value="#{fileUploadBean.getPossibleValues()}"
                                 var="collection"
-                                itemLabel="#{collection.name}"                           
+                                itemLabel="#{collection.name}"
                                 itemValue="#{collection}"
-                                />
-                            <p:ajax process="@this" update="@(.uploadContainer)"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel><strong>#{msgs.select_file}</strong></p:outputLabel>
-                        <p:fileUpload listener="#{fileUploadBean.handleFileUpload}" 
-                                      mode="advanced" 
-                                      dragDropSupport="true" 
-                                      multiple="true" 
-                                      id="surek"
-                                      process="@form"
-                                      update="messages"
-                                      cancelButtonStyleClass="ui-button-secondary"
-                                      chooseButtonStyleClass="ui-button-primary"
-                                      uploadButtonStyleClass="ui-button-danger"
-                                      skinSimple="true"
-                                      sizeLimit="5000000" 
-                                      allowTypes="/(\.|\/)(pdf|doc|docx|txt)$/">   
-                        </p:fileUpload>
+                        />
+                        <p:ajax process="@this"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel><strong>#{msgs.select_file}</strong></p:outputLabel>
+                    <p:fileUpload listener="#{fileUploadBean.handleFileUpload}"
+                                  mode="advanced"
+                                  dragDropSupport="true"
+                                  multiple="true"
+                                  process="@form"
+                                  update="messages"
+                                  cancelButtonStyleClass="ui-button-secondary"
+                                  chooseButtonStyleClass="ui-button-primary"
+                                  uploadButtonStyleClass="ui-button-danger"
+                                  skinSimple="true"
+                                  sizeLimit="5000000"
+                                  allowTypes="/(\.|\/)(pdf|doc|docx|txt)$/">
+                    </p:fileUpload>
 
-                        <p:growl id="messages" showDetail="true"/>
-                    </div>
+                    <p:growl id="messages" showDetail="true"/>
+                </div>
 
-                </p:dialog>
+            </p:dialog>
 
-            </p:outputPanel>
+        </p:outputPanel>
 
-        </h:form>
-    </h:body>
+    </h:form>
+</h:body>
 </html>

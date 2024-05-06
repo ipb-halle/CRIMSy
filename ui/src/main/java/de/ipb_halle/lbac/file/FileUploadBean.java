@@ -5,9 +5,12 @@ import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.service.TextWebRequestType;
 import de.ipb_halle.kx.service.TextWebStatus;
 import de.ipb_halle.lbac.admission.UserBean;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+
 import java.io.Serializable;
+
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 import de.ipb_halle.lbac.collections.Collection;
@@ -15,15 +18,16 @@ import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.save.FileSaver;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author swittche
  */
-@SessionScoped
+@RequestScoped
 @Named
 public class FileUploadBean implements Serializable {
 
@@ -84,13 +88,13 @@ public class FileUploadBean implements Serializable {
     public List<Collection> getPossibleValues() {
         return values;
     }
-    
+
     public void handleFileUpload(FileUploadEvent event) throws Exception {
         try {
+
             uploadedFile = event.getFile();
 
             fileName = uploadedFile.getFileName();
-
             inputStream = uploadedFile.getInputStream();
 
             holder = getAttachmentTarget();
@@ -102,9 +106,13 @@ public class FileUploadBean implements Serializable {
             TextWebStatus status = analyseClient.analyseFile(fileId, TextWebRequestType.SUBMIT);
             while (status == TextWebStatus.BUSY) {
                 status = analyseClient.analyseFile(fileId, TextWebRequestType.QUERY);
+                Thread.sleep(1000);
             }
             if (status != TextWebStatus.DONE) {
-                throw new Exception("Analysis returned an unexpected status code: " + status.toString());
+                //throw new Exception("Analysis returned an unexpected status code: " + status.toString());
+                FacesMessage message = new FacesMessage("File ", fileName + " upload of file " + fileName + " was not successfull");
+                //Vernüftige Fehlermessage zum UI hin
+                //Aufräumen des "leeren" File aus Zeile 99
             }
             FacesMessage message = new FacesMessage("File ", fileName + " was successfully uploaded.");
             FacesContext.getCurrentInstance().addMessage(null, message);
