@@ -79,7 +79,8 @@ public class FileSaverTest extends TestBase {
     
     @Test
     public void test001_saveDocumentToCollection() throws FileNotFoundException, NoSuchAlgorithmException, IOException {
-        FileSaver fileSaver = new FileSaver(fileObjectService, publicUser);
+        FileSaver fileSaver = new FileSaver(fileObjectService);
+        fileSaver.setUser(publicUser);
         
         col = new Collection();
         col.setACList(GlobalAdmissionContext.getPublicReadACL());

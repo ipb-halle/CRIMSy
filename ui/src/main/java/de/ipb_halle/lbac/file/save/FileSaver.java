@@ -49,9 +49,8 @@ public class FileSaver {
     protected Integer MAX_FILES_IN_FOLDER = 100;
     protected FileObject fileObject;
 
-    public FileSaver(FileObjectService fileObjectService, User user) {
+    public FileSaver(FileObjectService fileObjectService) {
         this.fileObjectService = fileObjectService;
-        this.user = user;
     }
 
     public Integer saveFile(
@@ -107,6 +106,10 @@ public class FileSaver {
     public void updateLanguageOfFile(String language) {
         fileObject.setDocumentLanguage(language);
         fileObjectService.save(fileObject);
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
     }
 
     public Path getFileLocation() {

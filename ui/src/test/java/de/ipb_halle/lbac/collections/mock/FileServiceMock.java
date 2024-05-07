@@ -58,11 +58,6 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public boolean deleteFile(Collection collection, String filename) {
-        return deleteSuccess;
-    }
-
-    @Override
     public String getStoragePath(AttachmentHolder holder) {
         return holder.getBaseFolder();
     }

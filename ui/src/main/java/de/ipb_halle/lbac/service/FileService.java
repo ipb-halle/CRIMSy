@@ -172,15 +172,13 @@ public class FileService implements Serializable {
     }
 
     /**
-     * wrapper for delete file
+     * delete file from repository
      *
      * @param collection
      * @param filename
      * @return
      */
-    public boolean deleteFile(Collection collection, String filename) {
-        return deleteFile(collection, filename);
-    }
+
 
     /**
      * count physical files recursively in a sub directory

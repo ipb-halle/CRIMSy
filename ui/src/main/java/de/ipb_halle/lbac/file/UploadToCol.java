@@ -64,7 +64,8 @@ public class UploadToCol implements Runnable {
             User user,
             AsyncContext asyncContext,
             CollectionService collectionService) {
-        this.fileSaver = new FileSaver(fileObjectService, user);
+        this.fileSaver = new FileSaver(fileObjectService);
+        fileSaver.setUser(user);
         this.asyncContext = asyncContext;
         this.collectionService = collectionService;
         this.request = (HttpServletRequest) asyncContext.getRequest();

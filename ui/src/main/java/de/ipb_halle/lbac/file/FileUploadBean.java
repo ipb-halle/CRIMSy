@@ -5,10 +5,10 @@ import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.service.TextWebRequestType;
 import de.ipb_halle.kx.service.TextWebStatus;
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.service.FileService;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
 
 import java.io.Serializable;
 
@@ -45,7 +45,7 @@ public class FileUploadBean implements Serializable {
     private static final int UPLOAD_TIMEOUT = 60;
     private final Logger logger = LogManager.getLogger(FileUploadBean.class);
 
-    private AnalyseClient analyseClient;
+    private AnalyseClient analyseClient = new AnalyseClient();
     private AttachmentHolder holder;
     private Collection selectedCollection;
     private FileSaver fileSaver;
@@ -70,6 +70,9 @@ public class FileUploadBean implements Serializable {
     @Inject
     private FileService fileService;
 
+    @Inject
+    private MessagePresenter messagePresenter;
+
     @PostConstruct
     public void initCollection() {
         selectedCollection = new Collection();
@@ -77,6 +80,7 @@ public class FileUploadBean implements Serializable {
         for (Collection c : collectionBean.getCreatableLocalCollections()) {
             values.add(c);
         }
+        fileSaver = new FileSaver(fileObjectService);
     }
 
     //GETTER
@@ -103,28 +107,26 @@ public class FileUploadBean implements Serializable {
 
             holder = getAttachmentTarget();
 
-            fileSaver = new FileSaver(fileObjectService, userBean.getCurrentAccount());
+            fileSaver.setUser(userBean.getCurrentAccount());
+
+
             fileId = fileSaver.saveFile(holder, fileName, inputStream);
 
-            analyseClient = new AnalyseClient();
+
             TextWebStatus status = analyseClient.analyseFile(fileId, TextWebRequestType.SUBMIT);
             while (status == TextWebStatus.BUSY) {
                 status = analyseClient.analyseFile(fileId, TextWebRequestType.QUERY);
                 Thread.sleep(1000);
             }
+            FacesMessage message=null;
             if (status != TextWebStatus.DONE) {
-                //throw new Exception("Analysis returned an unexpected status code: " + status.toString());
-                FacesMessage message = new FacesMessage("File ", fileName + " upload of file " + fileName + " was not successfull");
-                //Vernüftige Fehlermessage zum UI hin
-                //Aufräumen des "leeren" File aus Zeile 99
                 fileService.deleteFile(selectedCollection, fileName);
+                messagePresenter.error("Upload of file " + fileName + " was not successfull");
+            }else {
+                messagePresenter.info("Upload of file " + fileName + " was successfull");
             }
-            FacesMessage message = new FacesMessage("File ", fileName + " was successfully uploaded.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-
         } catch (IOException e) {
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fehler!", "Beim Hochladen von " + fileName + " ist ein Fehler aufgetreten.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
+            messagePresenter.error("Upload of file " + fileName + " was not successfull");
         } finally {
             if (inputStream != null) {
                 try {
@@ -146,5 +148,13 @@ public class FileUploadBean implements Serializable {
             throw new Exception("Could not find collection with name " + collectionName);
         }
         return collection.get(0);
+    }
+
+    public void setAnalyseClient(final AnalyseClient analyseClient) {
+        this.analyseClient = analyseClient;
+    }
+
+    public void setFileSaver(final FileSaver fileSaver) {
+        this.fileSaver = fileSaver;
     }
 }
