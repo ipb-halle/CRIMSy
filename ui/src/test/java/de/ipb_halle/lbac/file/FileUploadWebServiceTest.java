@@ -20,9 +20,8 @@ package de.ipb_halle.lbac.file;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
+import de.ipb_halle.lbac.file.mock.FileServiceMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.nio.file.Paths;
 import org.apache.openejb.loader.Files;
@@ -47,14 +46,14 @@ public class FileUploadWebServiceTest extends TestBase {
 
     @BeforeEach
     public void init() {
-        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
+        Files.delete(Paths.get(FileServiceMock.COLLECTIONS_MOCK_FOLDER).toFile());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
     }
 
     @AfterEach
     public void cleanUp() {
-        Files.delete(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
+        Files.delete(Paths.get(FileServiceMock.COLLECTIONS_MOCK_FOLDER).toFile());
 
     }
 
@@ -72,13 +71,11 @@ public class FileUploadWebServiceTest extends TestBase {
         col = new Collection();
         col.setACList(GlobalAdmissionContext.getPublicReadACL());
         col.setDescription("test001_saveDocumentToCollection()");
-        col.setIndexPath("/");
         col.setName("test-coll");
         col.setNode(nodeService.getLocalNode());
         col.setOwner(publicUser);
-        col.setStoragePath("/");
+        col.setStoragePath(FileServiceMock.COLLECTIONS_MOCK_FOLDER + col.getName());
         col = collectionService.save(col);
-        col.setBaseDirectory(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER);
     }
 
 }

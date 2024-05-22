@@ -103,7 +103,7 @@ public class CollectionOperation implements Serializable {
             
             fileObjectService.deleteCollectionFiles(activeCollection.getId());
 
-            LOGGER.info(String.format("collection delete all file entities: %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
+            LOGGER.info(String.format("collection delete all file entities: %s:%s by %s", activeCollection.getName(), activeCollection.getStoragePath(), currentAccount.getLogin()));
             return OperationState.OPERATION_SUCCESS;
 
         } catch (Exception e) {
@@ -168,7 +168,7 @@ public class CollectionOperation implements Serializable {
         if (!fileService.storagePathExists(activeCollection)) {
             fileService.createDir(activeCollection);
         }
-        activeCollection.setStoragePath(fileService.getStoragePath(activeCollection));
+        activeCollection.setStoragePath(fileService.getUploadPath(activeCollection).toString());
 
         collectionService.save(activeCollection);
         return OperationState.OPERATION_SUCCESS;

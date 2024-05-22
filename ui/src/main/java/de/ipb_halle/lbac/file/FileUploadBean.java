@@ -1,6 +1,7 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.kx.file.AttachmentHolder;
+import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.service.TextWebRequestType;
 import de.ipb_halle.kx.service.TextWebStatus;
@@ -17,7 +18,6 @@ import org.primefaces.model.file.UploadedFile;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.save.FileSaver;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -48,11 +48,11 @@ public class FileUploadBean implements Serializable {
     private AnalyseClient analyseClient = new AnalyseClient();
     private AttachmentHolder holder;
     private Collection selectedCollection;
-    private FileSaver fileSaver;
     private InputStream inputStream;
-    private Integer fileId;
     private List<Collection> values;
     private String fileName;
+
+    private FileObject fileObject;
     private UploadedFile uploadedFile;
 
     @Inject
@@ -80,7 +80,6 @@ public class FileUploadBean implements Serializable {
         for (Collection c : collectionBean.getCreatableLocalCollections()) {
             values.add(c);
         }
-        fileSaver = new FileSaver(fileObjectService);
     }
 
     //GETTER
@@ -99,34 +98,34 @@ public class FileUploadBean implements Serializable {
 
     public void handleFileUpload(FileUploadEvent event) throws Exception {
         try {
-
             uploadedFile = event.getFile();
 
             fileName = uploadedFile.getFileName();
             inputStream = uploadedFile.getInputStream();
-
             holder = getAttachmentTarget();
 
-            fileSaver.setUser(userBean.getCurrentAccount());
+            fileObject = fileService.saveFile(holder, fileName, inputStream, userBean.getCurrentAccount());
+            logger.info("handleFileUpload() got fileId=" + fileObject.getId());
 
-
-            fileId = fileSaver.saveFile(holder, fileName, inputStream);
-
-
-            TextWebStatus status = analyseClient.analyseFile(fileId, TextWebRequestType.SUBMIT);
+            TextWebStatus status = analyseClient.analyseFile(fileObject.getId(), TextWebRequestType.SUBMIT);
             while (status == TextWebStatus.BUSY) {
-                status = analyseClient.analyseFile(fileId, TextWebRequestType.QUERY);
+                status = analyseClient.analyseFile(fileObject.getId(), TextWebRequestType.QUERY);
                 Thread.sleep(1000);
             }
             FacesMessage message=null;
             if (status != TextWebStatus.DONE) {
-                fileService.deleteFile(selectedCollection, fileName);
+                fileService.deleteFile(fileObject.getFileLocation());
+                fileObjectService.delete(fileObject);
+
+                // xxxxx I18N for messagePresenter
                 messagePresenter.error("Upload of file " + fileName + " was not successfull");
-            }else {
+            } else {
                 messagePresenter.info("Upload of file " + fileName + " was successfull");
             }
         } catch (IOException e) {
             messagePresenter.error("Upload of file " + fileName + " was not successfull");
+            // logger.warn("handleFileUpload() caught IOException", (Throwable) e);
+            e.printStackTrace();
         } finally {
             if (inputStream != null) {
                 try {
@@ -154,7 +153,10 @@ public class FileUploadBean implements Serializable {
         this.analyseClient = analyseClient;
     }
 
-    public void setFileSaver(final FileSaver fileSaver) {
-        this.fileSaver = fileSaver;
+    /**
+     * Make fileObject accessible for test purposes
+     */
+    protected FileObject getFileObject() {
+        return fileObject;
     }
 }

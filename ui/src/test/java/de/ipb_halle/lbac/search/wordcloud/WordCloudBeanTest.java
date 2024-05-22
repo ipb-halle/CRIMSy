@@ -20,13 +20,14 @@ package de.ipb_halle.lbac.search.wordcloud;
 import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+
+
+import de.ipb_halle.lbac.file.mock.FileServiceMock;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.mock.FileUploadCollectionMock;
 import de.ipb_halle.lbac.search.mocks.SearchQueryStemmerMock;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
@@ -82,7 +83,7 @@ public class WordCloudBeanTest extends TestBase {
     public void before() throws IOException {
         initializeBaseUrl();
         initializeKeyStoreFactory();
-        FileUtils.deleteDirectory(Paths.get(FileUploadCollectionMock.COLLECTIONS_MOCK_FOLDER).toFile());
+        FileUtils.deleteDirectory(Paths.get(FileServiceMock.COLLECTIONS_MOCK_FOLDER).toFile());
         entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE from termvectors");
@@ -104,7 +105,7 @@ public class WordCloudBeanTest extends TestBase {
                     "Document2.pdf",
                     "Document18.pdf");
             collectionBean.getCollectionSearchState().addCollections(Arrays.asList(col));
-        } catch (FileNotFoundException | InterruptedException ex) {
+        } catch (Exception ex) {
             logger.error("File Upload Error", (Throwable) ex);
             throw new RuntimeException("Could not upload file");
         }

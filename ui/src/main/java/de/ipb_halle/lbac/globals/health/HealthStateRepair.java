@@ -32,6 +32,8 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.collections.CollectionService;
+
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -162,7 +164,7 @@ public class HealthStateRepair {
             logger.info(String.format(
                     "repository for standard collection  %s under %s created.",
                     publicCollectionName,
-                    c.getBaseFolder()));
+                    c.getStoragePath()));
         } else {
             logger.error(
                     String.format("repository for for standard collection  %s could not created.",
@@ -174,7 +176,7 @@ public class HealthStateRepair {
         try {
             publicCollection = new Collection();
             publicCollection.setName(publicCollectionName);
-            publicCollection.setStoragePath(publicCollection.getBaseFolder());
+            publicCollection.setStoragePath(publicCollection.getStoragePath());
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);
@@ -198,7 +200,9 @@ public class HealthStateRepair {
     private boolean updatePublicCollectionInDb() {
         try {
             publicCollection.setName(publicCollectionName);
-            publicCollection.setStoragePath(publicCollection.getBaseFolder());
+//            publicCollection.setStoragePath(publicCollection.getBaseFolder());
+            publicCollection.setStoragePath(
+                    fileService.getUploadPath(publicCollection).toString());
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);

@@ -27,6 +27,9 @@ import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.collections.CollectionService;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -125,10 +128,10 @@ public class HealthStateCheck {
     private void checkFileSystemState() {
         Collection c = new Collection();
         c.setName("public");
-        boolean localFileSystemCollectionCheck = fileService.storagePathExists(c);
+        boolean localFileSystemCollectionCheck = Files.exists(Paths.get(c.getStoragePath()));
         if (!localFileSystemCollectionCheck) {
             healthState.publicCollectionFileState = HealthState.State.FAILED;
-            logger.error(String.format("local file repository '%s' not found.", fileService.getStoragePath(c)));
+            logger.error(String.format("local file repository '%s' not found.", c.getStoragePath()));
         } else {
             healthState.publicCollectionFileState = HealthState.State.OK;
         }
@@ -165,7 +168,7 @@ public class HealthStateCheck {
                 //Check if the name of the public collection in db is in sync with the
                 //name in the local file system
                 if (healthState.publicCollectionFileState == HealthState.State.OK
-                        && collNameInDb.equals(fileService.getStoragePath(publicCollection))) {
+                        && collNameInDb.equals(fileService.getUploadPath(publicCollection).toString())) {
                     healthState.publicCollectionFileSyncState = HealthState.State.OK;
                 } else {
                     healthState.publicCollectionFileSyncState = HealthState.State.FAILED;

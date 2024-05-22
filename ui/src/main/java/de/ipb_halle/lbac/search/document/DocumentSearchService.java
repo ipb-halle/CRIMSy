@@ -82,7 +82,6 @@ public class DocumentSearchService {
 
     private boolean development = false;
 
-    private String uriOfPublicColl;
     private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
     private DocumentEntityGraphBuilder graphBuilder;
 
@@ -122,10 +121,8 @@ public class DocumentSearchService {
             List<Collection> collsToSearchIn,
             String searchText,
             int limit,
-            int offSet,
-            String uriOfPublicColl) throws Exception {
+            int offSet) throws Exception {
 
-        this.uriOfPublicColl = uriOfPublicColl;
         searchState.clearState();
         // fetches all documents of the collection and adds the total 
         // number of documents in the collection to the search state
@@ -298,18 +295,6 @@ public class DocumentSearchService {
 
         back = back.substring(4, back.length());
         return back.trim();
-    }
-
-    public String getUriOfPublicCollection() {
-        Map<String, Object> cmap = new HashMap<>();
-        cmap.put("name", "public");
-        List<Collection> colls = collectionService.load(cmap);
-
-        String restUri = null;
-        if (colls != null && colls.size() > 0) {
-            restUri = colls.get(0).getIndexPath();
-        }
-        return restUri;
     }
 
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {

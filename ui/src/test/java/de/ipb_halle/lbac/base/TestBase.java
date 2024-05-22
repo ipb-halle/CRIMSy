@@ -52,8 +52,12 @@ import de.ipb_halle.scope.SessionScopeContext;
 import de.ipb_halle.scope.SessionScopeResetEvent;
 import de.ipb_halle.test.EntityManagerService;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,12 +69,15 @@ import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -316,10 +323,10 @@ public class TestBase implements Serializable {
         Collection col = new Collection();
         col.setACList(acList);
         col.setDescription(description);
-        col.setIndexPath("/");
         col.setName(name);
         col.setNode(node);
         col.setOwner(owner);
+        col.setStoragePath("target/test-classes/collections/" + name);
         col = collectionService.save(col);
         collections.add(col);
         return collections;

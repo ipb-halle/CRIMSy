@@ -23,7 +23,7 @@ package de.ipb_halle.kx.file;
  */
 public interface AttachmentHolder {
 
-    public String getBaseFolder();
+    public String getStoragePath();
     public Integer getId();
     public String getName();
 }

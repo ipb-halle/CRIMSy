@@ -96,7 +96,6 @@ public class CollectionBeanTest extends TestBase {
         LoginEvent logInEvent = new LoginEvent(publicUser);
         bean.setCurrentAccount(logInEvent);
         bean.getActiveCollection().setDescription("Test");
-        bean.getActiveCollection().setIndexPath("");
         bean.getActiveCollection().setName("Test-Collection");
 
         bean.actionCreate();

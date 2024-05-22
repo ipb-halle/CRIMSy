@@ -80,7 +80,6 @@ public class CollectionWebClientMock extends CollectionWebClient {
                     )
             );
             readable.setId(random.nextInt(1000000));
-            readable.setIndexPath("/");
             readable.setName(String.format("READ-COL%d", i));
             readable.setNode(cn.getNode());
             readable.setOwner(u);

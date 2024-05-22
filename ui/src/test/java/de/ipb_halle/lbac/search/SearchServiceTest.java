@@ -562,7 +562,7 @@ public class SearchServiceTest extends TestBase {
                     "DocumentSearchServiceTest",
                     "Wasserstoff.docx"
             );
-        } catch (FileNotFoundException | InterruptedException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Could not upload file");
         }
         DocumentSearchRequestBuilder requestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);

@@ -284,8 +284,7 @@ public class WordCloudBean implements Serializable {
                 docSeachState,
                 collectionBean.getCollectionSearchState().getCollections(),
                 searchService.getTagStringForSeachRequest(tagList),
-                Integer.MAX_VALUE, 0,
-                searchService.getUriOfPublicCollection());
+                Integer.MAX_VALUE, 0);
 
         for (Document d : docSeachState.getFoundDocuments()) {
             d.setTermFreqList(

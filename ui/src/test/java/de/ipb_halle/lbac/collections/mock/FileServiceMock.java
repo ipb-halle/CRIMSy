@@ -18,13 +18,9 @@
 package de.ipb_halle.lbac.collections.mock;
 
 import de.ipb_halle.kx.file.AttachmentHolder;
-import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.service.FileService;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
- *
  * @author fmauz
  */
 public class FileServiceMock extends FileService {
@@ -53,31 +49,7 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public boolean deleteFile(AttachmentHolder collection, String filename) {
-        return deleteSuccess;
-    }
-
-    @Override
-    public String getStoragePath(AttachmentHolder holder) {
-        return holder.getBaseFolder();
-    }
-
-    @Override
-    public Path getUploadPath(AttachmentHolder holder) {
-        return Paths.get(holder.getBaseFolder());
-    }
-
-    @Override
     public boolean storagePathExists(AttachmentHolder attachment) {
         return true;
     }
-
-    public void setCreateSuccess(boolean createSuccess) {
-        this.createSuccess = createSuccess;
-    }
-
-    public void setDeleteSuccess(boolean deleteSuccess) {
-        this.deleteSuccess = deleteSuccess;
-    }
-
 }

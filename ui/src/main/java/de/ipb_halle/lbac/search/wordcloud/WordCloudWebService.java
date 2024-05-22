@@ -97,7 +97,7 @@ public class WordCloudWebService extends LbacWebService {
                     docSeachState,
                     collections,
                     searchService.getTagStringForSeachRequest(request.getTerms()),
-                    Integer.MAX_VALUE, 0, searchService.getUriOfPublicCollection());
+                    Integer.MAX_VALUE, 0);
             
             for (Document d : docSeachState.getFoundDocuments()) {
                 d.setTermFreqList(

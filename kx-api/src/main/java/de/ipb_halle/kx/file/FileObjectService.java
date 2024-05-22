@@ -55,7 +55,10 @@ public class FileObjectService implements Serializable {
      * @param fileObject - entity to delete
      */
     public void delete(FileObject fileObject) {
-        this.em.remove(fileObject.createEntity());
+        FileObjectEntity foe = this.em.find(FileObjectEntity.class, fileObject.getId());
+        if (foe != null) {
+            this.em.remove(foe);
+        }
     }
 
     /**

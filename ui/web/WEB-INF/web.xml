@@ -81,27 +81,6 @@
     </context-param>
 -->
 
-    <!-- file upload servlet incl. filter -->
-    <servlet>
-        <display-name>FileUpload Service</display-name>
-        <servlet-name>FileUploadWebService</servlet-name>
-        <servlet-class>de.ipb_halle.lbac.file.FileUploadWebService</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>FileUploadWebService</servlet-name>
-        <url-pattern>/uploaddocs/*</url-pattern>
-    </servlet-mapping>
-    <filter>
-        <filter-name>FileUploadSecurityFilter</filter-name>
-        <filter-class>de.ipb_halle.lbac.cloud.servlet.FileUploadSecurityFilter</filter-class>
-        <async-supported>true</async-supported>
-    </filter>
-    <filter-mapping>
-        <filter-name>FileUploadSecurityFilter</filter-name>
-        <servlet-name>FileUploadWebService</servlet-name>
-        <url-pattern>/uploaddocs/*</url-pattern>
-    </filter-mapping>
     <!-- Faces Servlet -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>

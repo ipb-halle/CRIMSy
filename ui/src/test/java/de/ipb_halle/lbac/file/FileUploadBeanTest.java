@@ -1,6 +1,7 @@
 package de.ipb_halle.lbac.file;
 
 
+import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.service.TextWebStatus;
 import de.ipb_halle.kx.termvector.TermVectorService;
@@ -11,7 +12,6 @@ import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.*;
 import de.ipb_halle.lbac.file.mock.AnalyseClientMock;
-import de.ipb_halle.lbac.file.mock.FileSaverMock;
 import de.ipb_halle.lbac.file.mock.UploadedFileMock;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
@@ -19,17 +19,17 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.primefaces.event.FileUploadEvent;
 import org.testng.Assert;
 
+import java.nio.file.Files;
 import java.util.Arrays;
 
 @ExtendWith(PostgresqlContainerExtension.class)
@@ -46,29 +46,64 @@ public class FileUploadBeanTest extends TestBase {
     @Inject
     private MessagePresenterMock messagePresenter;
 
+    private Collection collection;
 
-    @Test
-    public void handleFileUpload_whenAnalysingFails_emptyFileWasDeleted() throws Exception {
-        AnalyseClient analyseClient = new AnalyseClientMock(Arrays.asList(TextWebStatus.PROCESSING_ERROR));
-        fileUploadBean.setAnalyseClient(analyseClient);
+    @BeforeEach
+    public void setup() {
         userBean.setCurrentAccount(publicUser);
-        Collection collection = createLocalCollections(
+        collection = createLocalCollections(
                 createAcList(publicUser, true),
                 nodeService.getLocalNode(),
                 publicUser,
                 "collection1",
-                "collection1",
+                "description",
                 collectionService
         ).get(0);
 
+    }
+
+    @AfterEach
+    public void tearDown() {
+        resetCollectionsInDb(collectionService);
+    }
+
+
+    @Test
+    public void testHandleFileUpload_whenAnalysingFails_emptyFileWasDeleted() throws Exception {
+        System.out.printf("##\n##\n##%s\n##\n##\n", fileUploadBean.getClass().getName());
+
+        AnalyseClient analyseClient = new AnalyseClientMock(Arrays.asList(TextWebStatus.PROCESSING_ERROR));
+        fileUploadBean.setAnalyseClient(analyseClient);
         fileUploadBean.setSelectedCollection(collection);
-        fileUploadBean.setFileSaver(new FileSaverMock(fileObjectService));
 
         FileUploadEvent uploadedFile = new FileUploadEvent(new UIViewRoot(), new UploadedFileMock());
         fileUploadBean.handleFileUpload(uploadedFile);
+        Integer fileId = fileUploadBean.getFileObject().getId();
+        FileObject fileObject = fileObjectService.loadFileObjectById(fileId);
+        Assert.assertNull(fileObject, "FileObject must not exist in DB after analysis failure.");
 
-        Assert.assertEquals("Upload of file DummyFile was not successfull",messagePresenter.getLastErrorMessage());
+
+        Assert.assertFalse(Files.exists(FileService.calculateFileLocation(collection, fileId)), "File must not exist on disk.");
+        // I18N!
+        Assert.assertEquals("Upload of file DummyFile was not successfull", messagePresenter.getLastErrorMessage());
     }
+
+    @Test
+    public void testHandleFileUpload_Succeeds() throws Exception {
+        AnalyseClient analyseClient = new AnalyseClientMock(Arrays.asList(TextWebStatus.DONE));
+        fileUploadBean.setAnalyseClient(analyseClient);
+        fileUploadBean.setSelectedCollection(collection);
+
+        FileUploadEvent uploadedFile = new FileUploadEvent(new UIViewRoot(), new UploadedFileMock());
+        fileUploadBean.handleFileUpload(uploadedFile);
+        Integer fileId = fileUploadBean.getFileObject().getId();
+        FileObject fileObject = fileObjectService.loadFileObjectById(fileId);
+        Assert.assertEquals(fileObject.getId(), fileId, "Upon success, FileObject exists in DB.");
+        Assert.assertTrue(Files.exists(FileService.calculateFileLocation(collection, fileId)), "File exists on disk.");
+        // I18N!
+        Assert.assertEquals("Upload of file DummyFile was successfull", messagePresenter.getLastErrorMessage());
+    }
+
 
     @Deployment
     public static WebArchive createDeployment() {

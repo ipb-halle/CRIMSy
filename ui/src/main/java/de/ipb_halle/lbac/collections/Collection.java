@@ -43,16 +43,10 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
 
     protected Node node;
 
-    protected String indexPath;
-
     protected String storagePath;
 
     protected Long countDocs = -1L;
     
-    protected String baseDirectory=System.getProperty(
-            "de.ipb_halle.lbac.cloud.servlet.FileUploadExec.Path", 
-            "/data/ui/") + "/collections/";
-
     /**
      * default constructor
      */
@@ -77,7 +71,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
             Long countDocs) {
         this.id = entity.getId();
         this.description = entity.getDescription();
-        this.indexPath = entity.getIndexPath();
         this.name = entity.getName();
         this.storagePath = entity.getStoragePath();
         this.node = n;
@@ -92,12 +85,14 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         CollectionEntity entity = new CollectionEntity();
         entity.setACList(getACList().getId());
         entity.setOwner(getOwner().getId());
+        System.out.printf("##\n##\n##%s\n##\n##\n" +"STORAGE PATH IN CREATE ENTITY", storagePath);
         return entity
                 .setId(id)
                 .setDescription(description)
-                .setIndexPath(indexPath)
                 .setName(name)
                 .setStoragePath(storagePath);
+
+
     }
 
     //*** getter and setter ***
@@ -112,10 +107,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
 
     public String getName() {
         return this.name;
-    }
-
-    public String getIndexPath() {
-        return this.indexPath;
     }
 
     public String getStoragePath() {
@@ -137,7 +128,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
     @Override
     public void obfuscate() {
         super.obfuscate();
-        this.indexPath = null;
         this.storagePath = null;
 
     }
@@ -154,10 +144,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         this.name = n;
     }
 
-    public void setIndexPath(String n) {
-        this.indexPath = n;
-    }
-
     public void setStoragePath(String n) {
         this.storagePath = n;
     }
@@ -170,12 +156,5 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         this.countDocs = countDocs;
     }
 
-    @Override
-    public String getBaseFolder() {
-        return Paths.get(baseDirectory, getName()).toString();
-    }
-    
-    public void setBaseDirectory(String directory){
-        this.baseDirectory=directory;
-    }
+
 }

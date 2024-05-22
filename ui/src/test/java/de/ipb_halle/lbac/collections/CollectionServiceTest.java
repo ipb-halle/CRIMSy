@@ -112,7 +112,6 @@ public class CollectionServiceTest extends TestBase {
         col.setNode(this.nodeService.getLocalNode());
         col.setName("Test_Collection1");
         col.setDescription("Test_Collection1_Description");
-        col.setIndexPath("/doc/testPath");
         col.setACList(acl);
         col.setOwner(u);
 

@@ -35,7 +35,6 @@ public class CollectionSearchStateTest {
         coll1.setId(-1000);
         coll1.setCountDocs(0L);
         coll1.setDescription("Test Collection");
-        coll1.setIndexPath("none");
         coll1.setName("Test Collection");
         coll1.setNode(null);
         coll1.setOwner(null);
@@ -45,7 +44,6 @@ public class CollectionSearchStateTest {
         coll2.setId(-1000);
         coll2.setCountDocs(0L);
         coll2.setDescription("Test Collection");
-        coll2.setIndexPath("none");
         coll2.setName("Test Collection");
         coll2.setNode(null);
         coll2.setOwner(null);

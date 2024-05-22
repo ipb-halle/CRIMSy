@@ -20,11 +20,16 @@ package de.ipb_halle.lbac.file.mock;
 import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.lbac.service.FileService;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  *
  * @author fmauz
  */
 public class FileServiceMock extends FileService {
+
+    public static String COLLECTIONS_MOCK_FOLDER = "target/test-classes/collections";
 
     private String root;
 
@@ -33,7 +38,7 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public String getStoragePath(AttachmentHolder holder) {
-        return holder.getBaseFolder();
+    public String getCollectionBaseDirectory() {
+        return Paths.get(root).toString();
     }
 }

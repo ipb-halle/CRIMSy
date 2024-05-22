@@ -107,7 +107,7 @@ public class SearchBeanTest extends TestBase {
                     "Document1.pdf",
                     "Document2.pdf",
                     "Document3.pdf");
-        } catch (FileNotFoundException | InterruptedException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Could not upload file");
         }
         materialCreator = new MaterialCreator(entityManagerService);

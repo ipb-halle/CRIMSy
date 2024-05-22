@@ -333,7 +333,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
         this.activeCollection = new Collection();
         activeCollection.setStoragePath("");
         activeCollection.setName("");
-        activeCollection.setIndexPath("");
         activeCollection.setDescription("");
         activeCollection.setNode(nodeService.getLocalNode());
         activeCollection.setCountDocs(0L);

@@ -66,7 +66,6 @@ public class WordCloudWebServiceMock {
         c.setCountDocs(1L);
         c.setDescription("Collection from MockServer - Description");
         c.setId(100000);
-        c.setIndexPath("/");
         c.setName("Mock-Collection");
         c.setNode(n);
         c.setOwner(u);
