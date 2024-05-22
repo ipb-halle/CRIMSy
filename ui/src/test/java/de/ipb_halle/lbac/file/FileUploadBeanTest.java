@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.inject.Inject;
+import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,6 +31,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.testng.Assert;
 
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 @ExtendWith(PostgresqlContainerExtension.class)
@@ -64,14 +66,17 @@ public class FileUploadBeanTest extends TestBase {
 
     @AfterEach
     public void tearDown() {
+        try {
+            FileUtils.deleteDirectory(Paths.get(collection.getStoragePath()).toFile());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         resetCollectionsInDb(collectionService);
     }
 
 
     @Test
     public void testHandleFileUpload_whenAnalysingFails_emptyFileWasDeleted() throws Exception {
-        System.out.printf("##\n##\n##%s\n##\n##\n", fileUploadBean.getClass().getName());
-
         AnalyseClient analyseClient = new AnalyseClientMock(Arrays.asList(TextWebStatus.PROCESSING_ERROR));
         fileUploadBean.setAnalyseClient(analyseClient);
         fileUploadBean.setSelectedCollection(collection);
@@ -85,7 +90,7 @@ public class FileUploadBeanTest extends TestBase {
 
         Assert.assertFalse(Files.exists(FileService.calculateFileLocation(collection, fileId)), "File must not exist on disk.");
         // I18N!
-        Assert.assertEquals("Upload of file DummyFile was not successfull", messagePresenter.getLastErrorMessage());
+        Assert.assertEquals(messagePresenter.getLastErrorMessage(), "Upload of file DummyFile was not successfull");
     }
 
     @Test
@@ -101,7 +106,7 @@ public class FileUploadBeanTest extends TestBase {
         Assert.assertEquals(fileObject.getId(), fileId, "Upon success, FileObject exists in DB.");
         Assert.assertTrue(Files.exists(FileService.calculateFileLocation(collection, fileId)), "File exists on disk.");
         // I18N!
-        Assert.assertEquals("Upload of file DummyFile was successfull", messagePresenter.getLastErrorMessage());
+        Assert.assertEquals(messagePresenter.getLastInfoMessage(), "Upload of file DummyFile was successfull");
     }
 
 

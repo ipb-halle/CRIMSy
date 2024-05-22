@@ -76,7 +76,7 @@ public class FileObjectService implements Serializable {
     /**
      * get all file entities in collection
      *
-     * @param collection - collection
+     * @param collectionId - collection identifier
      * @return - list of file entities
      */
     @Deprecated

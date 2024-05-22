@@ -57,26 +57,27 @@ public class FileService implements Serializable {
     @Inject
     private FileObjectService fileObjectService;
 
-    private Path collectionBaseDirectory;
     private Logger logger;
 
     public FileService() {
-        collectionBaseDirectory = Paths.get(System.getProperty(
-                "de.ipb_halle.lbac.cloud.servlet.FileUploadExec.Path",
-                "/data/ui/"), "collections");
+        logger = LogManager.getLogger(FileService.class);
+    }
+
+    /**
+     * for testing purposes
+     *
+     * @param fo
+     */
+    public FileService(FileObjectService fo) {
+        fileObjectService = fo;
         logger = LogManager.getLogger(FileService.class);
     }
 
     public String getCollectionBaseDirectory() {
-        return collectionBaseDirectory.toString();
-    }
-
-    /**
-     * set the base directory for test purposes
-     * @param dir
-     */
-    public void setCollectionBaseDirectory(Path dir) {
-        collectionBaseDirectory = dir;
+        return Paths.get(System.getProperty(
+                "de.ipb_halle.lbac.cloud.servlet.FileUploadExec.Path",
+                "/data/ui/"), "collections")
+                .toString();
     }
 
     public Path getUploadPath(AttachmentHolder attachmentHolder) {
@@ -209,7 +210,6 @@ public class FileService implements Serializable {
 
         FileObject fileObject = saveFileInDB(objectOfAttachedFile, fileName, user);
         Path fileLocation = calculateFileLocation(objectOfAttachedFile, fileObject.getId());
-        System.out.printf("##\n##\n##Location %s\n##\n##\n", fileLocation.toString());
         updateFileInDB(fileObject,
                 fileLocation,
                 saveFileToFileSystem(fileStream, fileLocation));

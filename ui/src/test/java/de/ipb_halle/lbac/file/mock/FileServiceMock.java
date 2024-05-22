@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.file.mock;
 
 import de.ipb_halle.kx.file.AttachmentHolder;
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.service.FileService;
 
 import java.nio.file.Path;
@@ -33,7 +34,8 @@ public class FileServiceMock extends FileService {
 
     private String root;
 
-    public FileServiceMock(String root) {
+    public FileServiceMock(FileObjectService fo, String root) {
+        super(fo);
         this.root = root;
     }
 

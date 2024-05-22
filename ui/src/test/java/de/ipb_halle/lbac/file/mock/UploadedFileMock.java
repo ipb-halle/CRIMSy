@@ -2,6 +2,7 @@ package de.ipb_halle.lbac.file.mock;
 
 import org.primefaces.model.file.UploadedFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -13,7 +14,7 @@ public class UploadedFileMock implements UploadedFile {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return null;
+        return new ByteArrayInputStream("DummyContent".getBytes());
     }
 
     @Override

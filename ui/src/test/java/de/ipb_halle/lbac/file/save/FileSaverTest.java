@@ -25,9 +25,9 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.file.mock.FileServiceMock;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +42,7 @@ import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,8 +61,7 @@ public class FileSaverTest extends TestBase {
     @Inject
     private FileObjectService fileObjectService;
 
-    @Inject
-    private FileService fileService;
+    private FileServiceMock fileService;
 
     private String exampleDocsRootFolder = "target/test-classes/exampledocs/";
 
@@ -70,6 +70,7 @@ public class FileSaverTest extends TestBase {
 
     @BeforeEach
     public void init() {
+        fileService = new FileServiceMock(fileObjectService, FileServiceMock.COLLECTIONS_MOCK_FOLDER);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
@@ -80,8 +81,7 @@ public class FileSaverTest extends TestBase {
     }
 
     @Test
-    public void test001_saveDocumentToCollection() throws FileNotFoundException, NoSuchAlgorithmException, IOException {
-//        FileSaver fileSaver = new FileSaver(fileObjectService);
+    public void test001_saveDocumentToCollection() throws NoSuchAlgorithmException, IOException {
 
         col = new Collection();
         col.setACList(GlobalAdmissionContext.getPublicReadACL());
@@ -96,38 +96,36 @@ public class FileSaverTest extends TestBase {
         FileInputStream stream = new FileInputStream(f);
         FileObject fo  = fileService.saveFile(col, "Document1.pdf", stream, publicUser);
 
-        Assert.assertEquals(1, fileObjectService.getDocumentCount(col.getId()));
-        Assert.assertEquals(col.getId(), fo.getCollectionId());
-        Assert.assertEquals("en", fo.getDocumentLanguage());
-        Assert.assertEquals("Document1.pdf", fo.getName());
-        Assert.assertEquals(publicUser.getId(), fo.getUserId());
+        Assertions.assertEquals(1, fileObjectService.getDocumentCount(col.getId()));
+        Assertions.assertEquals(col.getId(), fo.getCollectionId());
+        Assertions.assertEquals("en", fo.getDocumentLanguage());
+        Assertions.assertEquals("Document1.pdf", fo.getName());
+        Assertions.assertEquals(publicUser.getId(), fo.getUserId());
 
         f = new File(exampleDocsRootFolder + "DocumentX.docx");
         stream = new FileInputStream(f);
         fo = fileService.saveFile(col, "DocumentX.docx", stream, publicUser);
-        Assert.assertEquals(2, fileObjectService.getDocumentCount(col.getId()));
-        Assert.assertEquals(col.getId(), fo.getCollectionId());
-        Assert.assertEquals("DocumentX.docx", fo.getName());
-        Assert.assertEquals(publicUser.getId(), fo.getUserId());
+        Assertions.assertEquals(2, fileObjectService.getDocumentCount(col.getId()));
+        Assertions.assertEquals(col.getId(), fo.getCollectionId());
+        Assertions.assertEquals("DocumentX.docx", fo.getName());
+        Assertions.assertEquals(publicUser.getId(), fo.getUserId());
 
         f = new File(exampleDocsRootFolder + "TestTabelle.xlsx");
         stream = new FileInputStream(f);
         fo = fileService.saveFile(col, "TestTabelle.xlsx", stream, publicUser);
-        Assert.assertEquals(3, fileObjectService.getDocumentCount(col.getId()));
-        Assert.assertEquals(col.getId(), fo.getCollectionId());
-        Assert.assertEquals("TestTabelle.xlsx", fo.getName());
-        Assert.assertEquals(publicUser.getId(), fo.getUserId());
+        Assertions.assertEquals(3, fileObjectService.getDocumentCount(col.getId()));
+        Assertions.assertEquals(col.getId(), fo.getCollectionId());
+        Assertions.assertEquals("TestTabelle.xlsx", fo.getName());
+        Assertions.assertEquals(publicUser.getId(), fo.getUserId());
 
         f = new File(exampleDocsRootFolder + "TestTabelle.xlsx");
         stream = new FileInputStream(f);
         fo = fileService.saveFile(col, "TestTabelle.xlsx", stream, publicUser);
-        Assert.assertEquals(4, fileObjectService.getDocumentCount(col.getId()));
-        Assert.assertEquals(col.getId(), fo.getCollectionId());
-        Assert.assertEquals("a9eed28584c7e6df1d061c77884820524a7d2b4c6644ef5d13b0c2daedaf4d10d040b7c7380df448f91a28eb7fba94cf0b4a964ae141032c63a0b571aeaa5ccf", fo.getHash());
-        Assert.assertEquals("TestTabelle.xlsx", fo.getName());
-        Assert.assertEquals(publicUser.getId(), fo.getUserId());
-        // Assert.assertEquals(fileSaver.getFileLocation(), Paths.get(col.getBaseFolder(), "0", "0", fo.getFilename()).toString());
-
+        Assertions.assertEquals(4, fileObjectService.getDocumentCount(col.getId()));
+        Assertions.assertEquals(col.getId(), fo.getCollectionId());
+        Assertions.assertEquals("a9eed28584c7e6df1d061c77884820524a7d2b4c6644ef5d13b0c2daedaf4d10d040b7c7380df448f91a28eb7fba94cf0b4a964ae141032c63a0b571aeaa5ccf", fo.getHash());
+        Assertions.assertEquals("TestTabelle.xlsx", fo.getName());
+        Assertions.assertEquals(publicUser.getId(), fo.getUserId());
     }
 
     @Deployment

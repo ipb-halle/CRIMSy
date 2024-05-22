@@ -32,6 +32,7 @@ public class CollectionTest {
         c.setDescription(COLLECTION_DESCRIPTION);
         c.setStoragePath(COLLECTION_PATH);
         c.setOwner(owner);
+        c.setACList(acList);
 
         CollectionEntity ce = c.createEntity();
         Assert.assertEquals((long) COLLECTION_ID, (long) ce.getId());
