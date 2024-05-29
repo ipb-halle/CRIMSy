@@ -122,14 +122,14 @@
 
                         <!--===============================================================================================================-->
                         <h:panelGroup rendered="#{collectionBean.editMode != 'CREATE'}">
-                            <p:outputLabel for="indexpath" value="#{msgs.collMgr_modal_indexpath_label}"
+                            <p:outputLabel for="storagepath" value="#{msgs.collMgr_modal_storagepath_label}"
                                            styleClass="ui-outputlabel-right"
                                            rendered="#{collectionBean.editMode != 'CREATE'}"/>
                             <div class="col-12 md:col-4">
                                 <div class="ui-inputgroup">
-                                    <p:inputText id="indexpath"
-                                                 value="#{collectionBean.activeCollection.indexPath}"
-                                                 label="#{msgs.collMgr_modal_indexpath_label}"
+                                    <p:inputText id="storagepath"
+                                                 value="#{collectionBean.activeCollection.storagePath}"
+                                                 label="#{msgs.collMgr_modal_storagepath_label}"
                                                  style="z-index: auto;width:100%"
                                                  rendered="#{collectionBean.editMode != 'CREATE'}"
                                                  disabled="true"/>
@@ -323,7 +323,7 @@
                             value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
                        <!--tooltip="#{msgs.collMgr_tooltip_numDocs}"-->
 
-                        <h:outputText value="#{collection.indexPath}" />
+                        <h:outputText value="#{collection.storagePath}" />
                     </p:column>
                     <!--===============================================================================================================-->
                     <p:column headerText="#{msgs.collMgr_datatable_header_location}">
