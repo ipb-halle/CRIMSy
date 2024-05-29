@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.service.FileService;
 public class FileServiceMock extends FileService {
 
     private boolean createSuccess = true;
-    private boolean deleteSuccess = true;
 
     @Override
     public long countFilesInDir(String dirPath) {
@@ -39,13 +38,11 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public boolean deleteDir(AttachmentHolder holder) {
-        return deleteSuccess;
+    public void deleteDir(AttachmentHolder holder) {
     }
 
     @Override
-    public boolean deleteFile(String path) {
-        return deleteSuccess;
+    public void deleteFile(String path) {
     }
 
     @Override

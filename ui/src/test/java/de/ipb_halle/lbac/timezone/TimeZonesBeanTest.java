@@ -29,7 +29,7 @@ public class TimeZonesBeanTest {
         bean.init();
         assertFalse(bean.getAvailableTimeZones().isEmpty());
 
-        // TODO: Could also test the list sorting???
+        // ToDo: Could also test the list sorting???
     }
 
     @Test

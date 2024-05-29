@@ -2,7 +2,7 @@ package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -35,11 +35,11 @@ public class CollectionTest {
         c.setACList(acList);
 
         CollectionEntity ce = c.createEntity();
-        Assert.assertEquals((long) COLLECTION_ID, (long) ce.getId());
-        Assert.assertEquals((long) USER_ID, (long) ce.getOwner());
-        Assert.assertEquals((long) ACLIST_ID, (long) ce.getACList());
-        Assert.assertEquals(COLLECTION_DESCRIPTION, ce.getDescription());
-        Assert.assertEquals(COLLECTION_NAME, ce.getName());
-        Assert.assertEquals(COLLECTION_PATH, ce.getStoragePath());
+        Assertions.assertEquals(COLLECTION_ID, ce.getId());
+        Assertions.assertEquals(USER_ID, ce.getOwner());
+        Assertions.assertEquals(ACLIST_ID, ce.getACList());
+        Assertions.assertEquals(COLLECTION_DESCRIPTION, ce.getDescription());
+        Assertions.assertEquals(COLLECTION_NAME, ce.getName());
+        Assertions.assertEquals(COLLECTION_PATH, ce.getStoragePath());
     }
 }

@@ -155,7 +155,7 @@ public class ExpRecordServiceTest extends TestBase {
         assertEquals("ghi", loadedImage2.getImage());
     }
     
-    // TODO: Test for saving/loading of Assay and Text records
+    // ToDo: Test for saving/loading of Assay and Text records
 
     @Deployment
     public static WebArchive createDeployment() {

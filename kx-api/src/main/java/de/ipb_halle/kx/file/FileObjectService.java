@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.kx.file;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class FileObjectService implements Serializable {
 
+    @Serial
     private final static long serialVersionUID = 1L;
 
     private final String DELETE_COLLECTION_FILES = "DELETE FROM files WHERE collection_id = :c";

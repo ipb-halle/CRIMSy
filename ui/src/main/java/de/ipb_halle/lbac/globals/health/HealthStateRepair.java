@@ -33,12 +33,12 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.collections.CollectionService;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -65,15 +65,15 @@ public class HealthStateRepair {
     private MaterialService materialService;
 
     public HealthStateRepair(String publicCollectionName,
-            HealthState healthState,
-            Node localNode,
-            CollectionService collectionService,
-            InfoObjectService infoObjectService,
-            ACList adminOnlyAcl,
-            ACList publicReadAcl,
-            User adminAccount,
-            FileService fileService,
-            MaterialService materialService) {
+                             HealthState healthState,
+                             Node localNode,
+                             CollectionService collectionService,
+                             InfoObjectService infoObjectService,
+                             ACList adminOnlyAcl,
+                             ACList publicReadAcl,
+                             User adminAccount,
+                             FileService fileService,
+                             MaterialService materialService) {
 
         this.publicCollectionName = publicCollectionName;
         this.healthState = healthState;
@@ -202,7 +202,7 @@ public class HealthStateRepair {
             publicCollection.setName(publicCollectionName);
 //            publicCollection.setStoragePath(publicCollection.getBaseFolder());
             publicCollection.setStoragePath(
-                    fileService.getUploadPath(publicCollection).toString());
+                    fileService.getCollectionPath(publicCollection).toString());
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);

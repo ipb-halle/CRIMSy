@@ -21,6 +21,7 @@ package de.ipb_halle.lbac.collections;
  * Collection class represents a collection in the Bioactives Cloud. Model for
  * collection managment
  */
+
 import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
@@ -28,10 +29,10 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
-import java.io.Serializable;
-import java.nio.file.Paths;
 
-public class Collection extends ACObject implements Serializable, Obfuscatable, DTO, AttachmentHolder {
+import java.io.Serializable;
+
+public class Collection extends ACObject implements Serializable, Obfuscatable, DTO<CollectionEntity>, AttachmentHolder {
 
     protected final static long serialVersionUID = 1L;
 
@@ -42,16 +43,13 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
     protected String name;
 
     protected Node node;
-
     protected String storagePath;
-
     protected Long countDocs = -1L;
-    
+
     /**
      * default constructor
      */
     public Collection() {
-
     }
 
     /**
@@ -85,7 +83,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         CollectionEntity entity = new CollectionEntity();
         entity.setACList(getACList().getId());
         entity.setOwner(getOwner().getId());
-        System.out.printf("##\n##\n##%s\n##\n##\n" +"STORAGE PATH IN CREATE ENTITY", storagePath);
         return entity
                 .setId(id)
                 .setDescription(description)

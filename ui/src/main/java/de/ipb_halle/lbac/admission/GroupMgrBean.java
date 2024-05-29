@@ -121,7 +121,7 @@ public class GroupMgrBean implements Serializable {
     }
 
     /**
-     * delete a group TODO: check for several preconditions: - permission -
+     * delete a group ToDo: check for several preconditions: - permission -
      * subSystemType - node - no delete for adminGroup or publicGroup - ...
      */
     public void actionDelete() {

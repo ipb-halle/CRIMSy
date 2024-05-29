@@ -77,7 +77,7 @@ public class CloudNodeWebService {
      * save a remote node in the database and return a list of all nodes known
      * locally.
      *
-     * TODO: CAVEAT / xxxxx / authorization: There is no means of checking 
+     * ToDo: CAVEAT / xxxxx / authorization: There is no means of checking
      * the authenticity (and authorization) of the request but the mutual 
      * certificate based authentication by the proxy node. Malicious nodes 
      * could attempt to overwrite elements (e.g. the public key) in the list 

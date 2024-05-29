@@ -126,9 +126,13 @@ public class HealthStateCheck {
      * Checks if there is a local directory for the public collection
      */
     private void checkFileSystemState() {
+        //create new collection
         Collection c = new Collection();
         c.setName("public");
+        c.setStoragePath(fileService.getCollectionPath(c).toString());
+
         boolean localFileSystemCollectionCheck = Files.exists(Paths.get(c.getStoragePath()));
+
         if (!localFileSystemCollectionCheck) {
             healthState.publicCollectionFileState = HealthState.State.FAILED;
             logger.error(String.format("local file repository '%s' not found.", c.getStoragePath()));
@@ -140,7 +144,7 @@ public class HealthStateCheck {
 
     private void checkJobSecret() {
         try {
-            if (infoObjectService.loadByKey(SETTING_JOB_SECRET).getValue() != null) {;
+            if (infoObjectService.loadByKey(SETTING_JOB_SECRET).getValue() != null) {
                 healthState.jobSecretState = HealthState.State.OK;
             }
         } catch (Exception e) {
@@ -168,7 +172,7 @@ public class HealthStateCheck {
                 //Check if the name of the public collection in db is in sync with the
                 //name in the local file system
                 if (healthState.publicCollectionFileState == HealthState.State.OK
-                        && collNameInDb.equals(fileService.getUploadPath(publicCollection).toString())) {
+                        && collNameInDb.equals(fileService.getCollectionPath(publicCollection).toString())) {
                     healthState.publicCollectionFileSyncState = HealthState.State.OK;
                 } else {
                     healthState.publicCollectionFileSyncState = HealthState.State.FAILED;
@@ -238,7 +242,6 @@ public class HealthStateCheck {
     /**
      * Checks if information of the local collections are in sync with the
      * information in the filesystem.
-     *
      */
     private void checkSyncOfLocalCollections() {
         try {
@@ -246,7 +249,7 @@ public class HealthStateCheck {
             cmap.put("local", true);
             List<Collection> collectionList = collectionService.load(cmap);
 
-            for (Iterator<Collection> collectionIterator = collectionList.iterator(); collectionIterator.hasNext();) {
+            for (Iterator<Collection> collectionIterator = collectionList.iterator(); collectionIterator.hasNext(); ) {
 
                 Collection collection = collectionIterator.next();
                 if (fileService.storagePathExists(collection)) {

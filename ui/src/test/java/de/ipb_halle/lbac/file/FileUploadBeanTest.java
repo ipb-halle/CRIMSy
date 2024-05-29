@@ -30,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.primefaces.event.FileUploadEvent;
 import org.testng.Assert;
 
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class FileUploadBeanTest extends TestBase {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Inject

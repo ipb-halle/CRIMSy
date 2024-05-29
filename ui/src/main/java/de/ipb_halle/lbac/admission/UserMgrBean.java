@@ -45,7 +45,7 @@ public class UserMgrBean implements Serializable {
      * This bean manages users. This includes creating, updating and deleting of
      * local users and managing memberships for all type of users.
      *
-     * TODO: more restrictive permission and plausibility checks for (all?)
+     * ToDo: more restrictive permission and plausibility checks for (all?)
      * action* methods.
      */
     private enum MODE {
@@ -274,7 +274,7 @@ public class UserMgrBean implements Serializable {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(MemberService.PARAM_NODE_ID, this.nodeService.getLocalNode().getId());
         cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LOCAL);
-        // TODO: filter out groups, the current user is already a member of
+        // ToDo: filter out groups, the current user is already a member of
         return this.memberService.loadGroups(cmap);
     }
 

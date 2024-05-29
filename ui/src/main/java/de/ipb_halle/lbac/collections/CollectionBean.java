@@ -96,6 +96,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
     private int shownCollections = -1;
     private ACObjectController acObjectController;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private CollectionSearchState collectionSearchState = new CollectionSearchState();
 
     @Inject
     protected MemberService memberService;
@@ -128,15 +129,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
     protected LoggingProfiler loggingProfiler;
 
     @Override
-    public void applyAclChanges() {
-        activeCollection = collectionService.save(activeCollection);
-    }
-
-    @Override
-    public void cancelAclChanges() {
-    }
-
-    @Override
     public void actionStartAclChange(ACObject aco) {
         activeCollection = (Collection) aco;
         acObjectController = new ACObjectController(
@@ -145,16 +137,22 @@ public class CollectionBean implements Serializable, ACObjectBean {
                 this,
                 activeCollection.getName() + " (" + activeCollection.getNode().getInstitution() + ")");
     }
+    @Override
+    public void applyAclChanges() {
+        activeCollection = collectionService.save(activeCollection);
+    }
+
+    @Override
+    public void cancelAclChanges() {
+    }
 
     private enum MODE {
         CREATE, //Creates a new collection
-        READ, // Default mode 
+        READ, // Default mode
         UPDATE, // Changes the description of a collection
         DELETE, // Deletes the complete collection
         CLEAR // removes all documents from collection
     };
-
-    private CollectionSearchState collectionSearchState = new CollectionSearchState();
 
     @PostConstruct
     public void initCollectionBean() {
@@ -296,7 +294,11 @@ public class CollectionBean implements Serializable, ACObjectBean {
     }
 
     public List<Collection> getOnlyLocalCollections() {
+
+        //create an empty list of collections
         List<Collection> collsToShow = new ArrayList<>();
+
+        //put inside the list only collections form this node
         for (Collection c : collectionSearchState.getCollections()) {
             if (c.getNode().getId().equals(nodeService.getLocalNodeId())) {
                 collsToShow.add(c);
@@ -313,7 +315,10 @@ public class CollectionBean implements Serializable, ACObjectBean {
      * privilege
      */
     public List<Collection> getCreatableLocalCollections() {
+        //generate empty list of collections
         List<Collection> writableCollections = new ArrayList<>();
+
+        //put inside it only permitted collections for current user
         for (Collection c : getOnlyLocalCollections()) {
             if (acListService.isPermitted(ACPermission.permCREATE, c, currentAccount)) {
                 writableCollections.add(c);

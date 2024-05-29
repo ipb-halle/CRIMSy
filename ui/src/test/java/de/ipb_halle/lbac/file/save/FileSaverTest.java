@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
@@ -41,7 +40,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,7 +87,7 @@ public class FileSaverTest extends TestBase {
         col.setName("test-coll");
         col.setNode(nodeService.getLocalNode());
         col.setOwner(publicUser);
-        col.setStoragePath(fileService.getUploadPath(col).toString());
+        col.setStoragePath(fileService.getCollectionPath(col).toString());
         col = collectionService.save(col);
 
         File f = new File(exampleDocsRootFolder + "Document1.pdf");

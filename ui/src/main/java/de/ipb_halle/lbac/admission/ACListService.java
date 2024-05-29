@@ -164,7 +164,7 @@ public class ACListService implements Serializable {
     /**
      * load the list of ACEntryEntries from the database for a given ACList.
      *
-     * @param ae the id of the ACList
+     * @param acl the ACL for which to load entries
      */
     public List<ACEntry> loadACEntries(ACList acl) {
         CriteriaBuilder builder = this.em.getCriteriaBuilder();

@@ -35,9 +35,8 @@ import org.apache.logging.log4j.LogManager;
 @Stateless
 public class KeyStoreFactory {
 
-    // xxxxx LBAC_PROPERTIES_PATH
-    // xxxxx this definition should move to some global location
-    // xxxxx or should be replaced by a more general approach.
+    // ToDo: xxxxx definition of LBAC_PROPERTIES_PATH should move to other location
+    // e.g. some global location or should be replaced by a more general approach.
     protected static String LBAC_PROPERTIES_PATH = "/data/conf/lbac_properties.xml";
 
     private Map<String, KeyStore> keyStore;

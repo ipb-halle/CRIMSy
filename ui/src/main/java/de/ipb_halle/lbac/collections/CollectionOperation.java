@@ -168,7 +168,7 @@ public class CollectionOperation implements Serializable {
         if (!fileService.storagePathExists(activeCollection)) {
             fileService.createDir(activeCollection);
         }
-        activeCollection.setStoragePath(fileService.getUploadPath(activeCollection).toString());
+        activeCollection.setStoragePath(fileService.getCollectionPath(activeCollection).toString());
 
         collectionService.save(activeCollection);
         return OperationState.OPERATION_SUCCESS;

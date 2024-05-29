@@ -98,15 +98,22 @@ public class FileUploadBean implements Serializable {
 
     public void handleFileUpload(FileUploadEvent event) throws Exception {
         try {
+            //get file from event
             uploadedFile = event.getFile();
 
+            //extract file name and input stream from file
             fileName = uploadedFile.getFileName();
             inputStream = uploadedFile.getInputStream();
+
+            //target object is initiated e.g. the place (save folder), where file will be saved and gives back AttachmentHolder
             holder = getAttachmentTarget();
 
-            fileObject = fileService.saveFile(holder, fileName, inputStream, userBean.getCurrentAccount());
+            //file is saved and new dataObject will be created and in service like fileService saved. Returns DataObject contains information about saved data
+            /*Type(FileObject) */ fileObject = fileService.saveFile(holder, fileName, inputStream, userBean.getCurrentAccount());
+
             logger.info("handleFileUpload() got fileId=" + fileObject.getId());
 
+            //connection to knowledge extraction service will be tested if it is not ok
             TextWebStatus status = analyseClient.analyseFile(fileObject.getId(), TextWebRequestType.SUBMIT);
             while (status == TextWebStatus.BUSY) {
                 status = analyseClient.analyseFile(fileObject.getId(), TextWebRequestType.QUERY);
@@ -117,15 +124,14 @@ public class FileUploadBean implements Serializable {
                 fileService.deleteFile(fileObject.getFileLocation());
                 fileObjectService.delete(fileObject);
 
-                // xxxxx I18N for messagePresenter
+                // ToDo: xxxxx I18N for messagePresenter
                 messagePresenter.error("Upload of file " + fileName + " was not successfull");
             } else {
                 messagePresenter.info("Upload of file " + fileName + " was successfull");
             }
         } catch (IOException e) {
             messagePresenter.error("Upload of file " + fileName + " was not successfull");
-            // logger.warn("handleFileUpload() caught IOException", (Throwable) e);
-            e.printStackTrace();
+            logger.warn("handleFileUpload() caught IOException", (Throwable) e);
         } finally {
             if (inputStream != null) {
                 try {
@@ -138,15 +144,23 @@ public class FileUploadBean implements Serializable {
     }
 
     private AttachmentHolder getAttachmentTarget() throws Exception {
+        //the name of selected collection
         final String collectionName = selectedCollection.getName();
+
+        //creation of map with searching criteria of selected collection
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("name", collectionName);
         cmap.put("local", true);
-        List<Collection> collection = collectionService.load(cmap);
-        if (collection.isEmpty()) {
+
+        //the list of collections corresponding the search criteria will be loaded
+        List<Collection> collections = collectionService.load(cmap);
+
+        //here will be proved if some collections were found
+        if (collections.isEmpty()) {
             throw new Exception("Could not find collection with name " + collectionName);
         }
-        return collection.get(0);
+
+        return collections.get(0);
     }
 
     public void setAnalyseClient(final AnalyseClient analyseClient) {
