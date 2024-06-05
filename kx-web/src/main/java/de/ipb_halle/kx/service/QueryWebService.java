@@ -22,6 +22,12 @@ import de.ipb_halle.tx.text.TextRecord;
 import de.ipb_halle.tx.text.properties.Language;
 import de.ipb_halle.tx.text.properties.TextProperty;
 import de.ipb_halle.tx.text.properties.Word;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,14 +35,6 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import jakarta.annotation.Resource;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 @WebServlet(urlPatterns = {"/query"})
 public class QueryWebService extends HttpServlet {
@@ -54,12 +52,12 @@ public class QueryWebService extends HttpServlet {
             final PrintWriter out = resp.getWriter();
             out.write(processRequest(req));
         } catch (IOException e) {
-            logger.error((Throwable) e);
+            logger.error(e);
         }
     }
 
     private String processRequest(HttpServletRequest req) {
-        StringBuilder query = new StringBuilder(); 
+        StringBuilder query = new StringBuilder();
         try (BufferedReader reader = req.getReader()) {
             String line = "";
             while ((line = reader.readLine()) != null) {
@@ -68,7 +66,7 @@ public class QueryWebService extends HttpServlet {
             }
             return stemmQuery(query.toString());
         } catch (Exception e) {
-            logger.warn((Throwable) e);
+            logger.warn(e);
         }
         return "Error";
     }
@@ -81,7 +79,7 @@ public class QueryWebService extends HttpServlet {
 
     private String getStemmedString(Set<String> words) {
         StringBuilder sb = new StringBuilder();
-        AtomicReference<String> sep = new AtomicReference<> ("");
+        AtomicReference<String> sep = new AtomicReference<>("");
         for (String word : words) {
             sb.append(sep.getAndSet(" "));
             sb.append(word);
@@ -90,7 +88,7 @@ public class QueryWebService extends HttpServlet {
     }
 
     private Set<String> getSetOfWords(TextRecord textRecord, String queryString) {
-        Set<String> words = new HashSet<> ();
+        Set<String> words = new HashSet<>();
         for (TextProperty prop : textRecord.getProperties(Word.TYPE)) {
             Word w = (Word) prop;
             String wStr = queryString.substring(w.getStart(), w.getEnd());

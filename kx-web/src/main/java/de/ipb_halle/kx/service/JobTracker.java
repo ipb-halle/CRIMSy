@@ -17,11 +17,12 @@
  */
 package de.ipb_halle.kx.service;
 
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
 
 /**
  * Provisional class for job tracking until Job API gets refactored.
@@ -32,7 +33,7 @@ public class JobTracker implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
-    private Map<Integer, IFileAnalyser> jobMap = new HashMap<> ();
+    private final Map<Integer, IFileAnalyser> jobMap = new HashMap<>();
 
     public IFileAnalyser getJob(Integer id) {
         return jobMap.get(id);

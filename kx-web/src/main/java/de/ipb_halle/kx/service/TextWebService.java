@@ -20,46 +20,33 @@ package de.ipb_halle.kx.service;
 import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.kx.termvector.TermVectorService;
-import java.io.IOException;
-import java.io.PrintWriter;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.inject.Inject;
-import jakarta.servlet.AsyncContext;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = {"/process"}, asyncSupported = true)
 public class TextWebService extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
-
-    @Resource(name = "kxExecutorService")
-    private ManagedExecutorService executorService;
-
-    @Inject
-    private JobTracker jobTracker;
-
-    @Inject
-    private FileObjectService fileObjectService;
-
-    @Inject
-    private TermVectorService termVectorService;
-
-
-    static class FileAnalyserFactory implements IFileAnalyserFactory {
-        public IFileAnalyser buildFileAnalyser() {
-            return new FileAnalyser();
-        }
-    }
-
     private static IFileAnalyserFactory fileAnalyserFactory = new FileAnalyserFactory();
     private final Logger logger = LogManager.getLogger(TextWebService.class);
+    @Resource(name = "kxExecutorService")
+    private ManagedExecutorService executorService;
+    @Inject
+    private JobTracker jobTracker;
+    @Inject
+    private FileObjectService fileObjectService;
+    @Inject
+    private TermVectorService termVectorService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
@@ -67,10 +54,10 @@ public class TextWebService extends HttpServlet {
         try {
             final PrintWriter out = resp.getWriter();
             out.write(
-                processRequest(req)
-                .toString());
+                    processRequest(req)
+                            .toString());
         } catch (IOException e) {
-            logger.error((Throwable) e);
+            logger.error(e);
         }
     }
 
@@ -84,7 +71,7 @@ public class TextWebService extends HttpServlet {
                 return processQueryRequest(fileId);
             }
         } catch (Exception e) {
-            logger.warn((Throwable) e);
+            logger.warn(e);
         }
         return TextWebStatus.PARAMETER_ERROR;
     }
@@ -93,7 +80,7 @@ public class TextWebService extends HttpServlet {
         FileObject fileObj = fileObjectService.loadFileObjectById(fileId);
         if (fileObj != null) {
             IFileAnalyser analyser = fileAnalyserFactory.buildFileAnalyser()
-                .setFileObject(fileObj);
+                    .setFileObject(fileObj);
             jobTracker.putJob(fileId, analyser);
             executorService.submit(analyser);
             return analyser.getStatus();
@@ -127,15 +114,15 @@ public class TextWebService extends HttpServlet {
         saveLanguage(analyser);
         termVectorService.saveTermVectors(analyser.getTermVector());
         termVectorService.saveUnstemmedWordsOfDocument(
-            analyser.getWordOrigins(), 
-            analyser.getFileObject().getId());
+                analyser.getWordOrigins(),
+                analyser.getFileObject().getId());
     }
 
     private void saveLanguage(IFileAnalyser analyser) {
         FileObject fileObj = fileObjectService.loadFileObjectById(
-            analyser.getFileObject().getId());
+                analyser.getFileObject().getId());
         fileObj.setDocumentLanguage(
-            analyser.getLanguage());
+                analyser.getLanguage());
         fileObjectService.save(fileObj);
     }
 
@@ -146,5 +133,11 @@ public class TextWebService extends HttpServlet {
 
     protected void setFileAnalyserFactory(IFileAnalyserFactory factory) {
         fileAnalyserFactory = factory;
+    }
+
+    static class FileAnalyserFactory implements IFileAnalyserFactory {
+        public IFileAnalyser buildFileAnalyser() {
+            return new FileAnalyser();
+        }
     }
 }
