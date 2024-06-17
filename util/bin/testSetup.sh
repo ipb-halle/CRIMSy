@@ -324,7 +324,7 @@ function runJobs {
                 ;;
             update)
                 NODE=`echo "$job" | cut -d';' -f2`
-                CMD=`echo "$job" | cut -d';' -f2`
+                UPDATE_CMD=`echo "$job" | cut -d';' -f3-`
                 runUpdate
                 echo "sleep 15 seconds to settle everything ..."
                 sleep 15
@@ -420,6 +420,7 @@ function runSetup {
         while read record ; do
             echo "compiling for stage $record"
             compile $record
+	    UPDATE_CMD=container
             runUpdate 
             echo "sleep 15 seconds to settle everything ..."
             sleep 15
@@ -440,8 +441,10 @@ function runUpdate {
         remote=`echo $record | cut -d';' -f2`
         login=`echo $record | cut -d';' -f3`
 
-        echo "updating node $node with $UPDATE_CMD"
-        echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh $UPDATE_CMD
+	for cmd in `echo "$UPDATE_CMD" | tr ';' ' '` ; do
+	        echo "updating node $node with $cmd"
+	        echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh $cmd
+	done
     done
 }
 
@@ -816,6 +819,7 @@ function mainFunc {
             error "Cannot combine setup and update in a single run"
         fi
         echo "Run update ..."
+	UPDATE_CMD=container
         runUpdate 
         infoLog UPDATE
     fi
@@ -852,7 +856,6 @@ SNAPSHOT=''
 SETUP=''
 TEARDOWN=''
 UPDATE=''
-UPDATE_CMD='container'
 WAKE=''
 
 GETOPT=$(getopt -o 'b:H:hj:n:p:R:rS:stu:w:' --longoptions 'branch-file:,hostlist:,help,jobs:,node:,pause:,restore:,runTests,snapshot:,setup,teardown,update:wake:' -n 'testSetup.sh' -- "$@")

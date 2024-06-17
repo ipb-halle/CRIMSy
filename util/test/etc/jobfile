@@ -10,3 +10,5 @@ test;checkNodeCount.sh;node1;3
 join;node2;cloudTWO
 sleep;300
 test;checkNodeCount.sh;node2;4
+compile;stage2
+update;node1;container;superDb

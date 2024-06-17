@@ -1,9 +1,9 @@
 #
 # example branch file for testSetup.sh and buildDocker.sh
 #
-# Format: EXECUTION STAGE;BRANCH;DOCKER TAGS
+# Format: EXECUTION STAGE;JDK;BRANCH;DOCKER TAGS
 # 
 # Execution stages are executed in alphabetical order
 #
-stage1;auto_update;MINOR,MAJOR,STABLE
-stage2;LBAC-60-CloudLIMS;MINOR,MAJOR,STABLE
+stage1;jdk8;auto_update;MINOR,MAJOR,STABLE
+stage2;jdk8;LBAC-60-CloudLIMS;MINOR,MAJOR,STABLE
