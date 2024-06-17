@@ -35,7 +35,7 @@
 
   <!-- check Maven Central for latest versions! -->
   <hibernate.version>5.3.26.Final</hibernate.version>
-  <pentaho.version>9.2.0.4-591</pentaho.version>
+  <pentaho.version>9.4.0.0-343</pentaho.version>
  </properties>
 
  <!-- define (additional) repositories -->
