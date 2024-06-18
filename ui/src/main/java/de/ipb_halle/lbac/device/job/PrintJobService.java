@@ -24,7 +24,6 @@ import de.ipb_halle.lbac.admission.MemberService;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
-
 /**
  * PrintJobService loads, stores and deletes print jobs.
  */

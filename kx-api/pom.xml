@@ -112,7 +112,7 @@
             <artifactId>crimsy-api</artifactId>
             <version>1.0.0</version>
         </dependency>
-        
+
         <!-- SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -129,6 +129,7 @@
         </dependency>
         
         <!-- hibernate stuff -->
+	<!-- hibernate ehcache removed -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -203,7 +204,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+            <version>42.7.2</version>
             <scope>provided</scope>
         </dependency>
 

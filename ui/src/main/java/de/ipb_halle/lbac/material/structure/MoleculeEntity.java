@@ -25,7 +25,6 @@ import jakarta.persistence.Table;
 import de.ipb_halle.crimsy_api.AttributeTag;
 import de.ipb_halle.crimsy_api.AttributeType;
 
-
 /**
  *
  * @author fmauz

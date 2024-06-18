@@ -23,11 +23,11 @@
  <modelVersion>4.0.0</modelVersion>
  
  <groupId>de.ipb-halle</groupId>
- <artifactId>crimsy-api</artifactId>
- <version>1.0.0</version>
+ <artifactId>crimsy-job-api</artifactId>
+ <version>1.0</version>
  <packaging>jar</packaging>
  
- <name>CRIMSy-API</name>
+ <name>CRIMSy Job API</name>
  <url>http://github.com/ipb-halle/CRIMSy</url>
  
  <properties>
@@ -94,6 +94,21 @@
  </build>
 
   <dependencies>
+
+        <!-- CRIMSy API -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>crimsy-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- tomee JAX-RS -->
+        <dependency>
+            <groupId>org.apache.tomee</groupId>
+            <artifactId>tomee-jaxrs</artifactId>
+            <version>7.0.5</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- unit testing -->
         <dependency>

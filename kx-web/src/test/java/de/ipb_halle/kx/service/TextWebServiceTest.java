@@ -59,6 +59,7 @@ public class TextWebServiceTest {
 
     // @Resource(name = "DefaultManagedExecutorService")
     // private ManagedExecutorService executor;
+
     @ArquillianResource
     URL baseURL;
 

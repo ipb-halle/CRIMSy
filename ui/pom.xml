@@ -25,7 +25,7 @@
 
     <groupId>de.ipb-halle</groupId>
     <artifactId>ui</artifactId>
-    <version>2.2.1-JDK17</version>
+    <version>2.2.2-beta</version>
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
@@ -45,7 +45,6 @@
         <tomee.classifier>plus</tomee.classifier>
         <tomee.servlet-engine>8.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
-	<!-- cxf 3.1.18 works -->
         <cxf.version>3.6.3</cxf.version>
         
         <!-- Flag allowing one or more executions of the assembly plugin to be configured as skipped for a particular build.
@@ -333,7 +332,6 @@
             <version>1.0</version>
         </dependency>
 
-
         <!-- crimsy-job-api -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
@@ -563,7 +561,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+            <version>42.7.2</version>
             <scope>provided</scope>
         </dependency>
         
@@ -703,7 +701,6 @@
         
         <!-- Apache CXF (jaxrs) -->
 
-
         <!-- kx & reporting -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -733,5 +730,6 @@
             <artifactId>fasta-search-service-models</artifactId>
             <version>2.0.0</version>
         </dependency>
+
     </dependencies>
 </project> 

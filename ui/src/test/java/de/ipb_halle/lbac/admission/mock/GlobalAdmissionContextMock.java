@@ -21,8 +21,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 
-
-
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 
 /**

@@ -23,7 +23,6 @@ import de.ipb_halle.job.JobType;
 import de.ipb_halle.job.NetJob;
 import de.ipb_halle.lbac.admission.User;
 
-
 /**
  * PrintJob 
  *

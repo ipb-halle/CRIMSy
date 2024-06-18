@@ -21,6 +21,13 @@
 # 
 #==========================================================
 #
+# temporarily enforce compatibility mode of docker-compose
+# as long as we are in transition from docker-compose v1 
+# (Python) to v2 (Go)
+#
+export COMPOSE_COMPATIBILITY=true
+
+#
 LBAC_EXPECTED_CONFIG_VERSION=8
 LBAC_CONFIG=etc/config.sh
 

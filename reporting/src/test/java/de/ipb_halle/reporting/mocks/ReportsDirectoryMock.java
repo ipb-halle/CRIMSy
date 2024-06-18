@@ -21,7 +21,6 @@ import de.ipb_halle.reporting.ReportsDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-
 import jakarta.annotation.PreDestroy;
 import jakarta.ejb.Lock;
 import jakarta.ejb.LockType;

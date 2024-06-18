@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.search.document.download;
 
 import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.kx.file.FileObjectService;
-
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
@@ -33,7 +32,6 @@ import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
-
 
 import java.io.File;
 import java.io.FileInputStream;

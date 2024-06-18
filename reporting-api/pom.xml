@@ -180,7 +180,9 @@
             <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
+	<!-- hibernat ehcache removed -->
+
         <!-- hibernate stuff -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -225,7 +227,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+            <version>42.7.2</version>
         </dependency>
 
 

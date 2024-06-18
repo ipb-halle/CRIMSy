@@ -37,14 +37,20 @@ import java.io.PrintWriter;
 public class TextWebService extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
+
     private static IFileAnalyserFactory fileAnalyserFactory = new FileAnalyserFactory();
+
     private final Logger logger = LogManager.getLogger(TextWebService.class);
+
     @Resource(name = "kxExecutorService")
     private ManagedExecutorService executorService;
+
     @Inject
     private JobTracker jobTracker;
+
     @Inject
     private FileObjectService fileObjectService;
+
     @Inject
     private TermVectorService termVectorService;
 
@@ -71,7 +77,7 @@ public class TextWebService extends HttpServlet {
                 return processQueryRequest(fileId);
             }
         } catch (Exception e) {
-            logger.warn(e);
+            logger.warn("processRequest() caught an exception:", (Throwable) e);
         }
         return TextWebStatus.PARAMETER_ERROR;
     }

@@ -80,7 +80,6 @@ public class FileSaverTest extends TestBase {
 
     @Test
     public void test001_saveDocumentToCollection() throws NoSuchAlgorithmException, IOException {
-
         col = new Collection();
         col.setACList(GlobalAdmissionContext.getPublicReadACL());
         col.setDescription("test001_saveDocumentToCollection()");

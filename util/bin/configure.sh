@@ -20,6 +20,13 @@
 #
 #==========================================================
 #
+#
+# temporarily enforce compatibility mode of docker-compose
+# as long as we are in transition from docker-compose v1 
+# (Python) to v2 (Go)
+#
+export COMPOSE_COMPATIBILITY=true
+
 # The variables LBAC_DISTRIBUTION_POINT and CLOUD_NAME are
 # adjusted by the upload.sh script, which takes the actual 
 # values from the CA configuration. 

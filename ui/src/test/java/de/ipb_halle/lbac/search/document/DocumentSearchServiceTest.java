@@ -127,7 +127,7 @@ public class DocumentSearchServiceTest extends TestBase {
     @Test
     public void test002_loadDocuments_withOneWordRoot() throws FileNotFoundException, InterruptedException {
 
-        RelevanceCalculator calculator = new RelevanceCalculator(new HashSet<String>(Arrays.asList("java", "jav")));
+        RelevanceCalculator calculator = new RelevanceCalculator(new HashSet<String> (Arrays.asList("java", "jav")));
 
         DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
         builder.setCollectionId(col.getId());

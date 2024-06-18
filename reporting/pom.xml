@@ -257,7 +257,8 @@
             <scope>provided</scope>
         </dependency>
 
-       
+        <!-- hibernate ehcache removed -->
+
         <!-- hibernate stuff -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -286,7 +287,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.4.3</version>
+            <version>42.7.2</version>
         </dependency>
         
         <dependency>

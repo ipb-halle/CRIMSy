@@ -52,7 +52,7 @@ public class QueryWebService extends HttpServlet {
             final PrintWriter out = resp.getWriter();
             out.write(processRequest(req));
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("doPost() caught an exception:", (Throwable) e);
         }
     }
 
@@ -66,7 +66,7 @@ public class QueryWebService extends HttpServlet {
             }
             return stemmQuery(query.toString());
         } catch (Exception e) {
-            logger.warn(e);
+            logger.warn("processRequest() caught an exception:", (Throwable) e);
         }
         return "Error";
     }
