@@ -43,9 +43,6 @@ public abstract class JobService<T extends Job> {
     public final static String SETTING_JOB_SECRET = "SETTING_JOB_SECRET";
     public final static String JOB_SECRET_QUERY = "SELECT value FROM info WHERE key='SETTING_JOB_SECRET'";
 
-    public final static String SETTING_JOB_SECRET = "SETTING_JOB_SECRET";
-    public final static String JOB_SECRET_QUERY = "SELECT value FROM info WHERE key='SETTING_JOB_SECRET'";
-
     public final static String CONDITION_JOBTYPE = "JOBTYPE";
     public final static String CONDITION_QUEUE = "QUEUE";
     public final static String CONDITION_STATUS = "STATUS";
