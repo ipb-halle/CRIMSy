@@ -20,8 +20,8 @@ package de.ipb_halle.lbac.webservice;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.Path;
 
 /**
  * some rest api helper functions

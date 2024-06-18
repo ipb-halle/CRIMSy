@@ -32,11 +32,10 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -213,8 +212,7 @@ public class GlobalAdmissionContext implements Serializable {
             this.membershipService.addMembership(this.publicGroup, u);
             this.adminAccount = u;
         } catch (Exception e) {
-            logger.error("Unable to restore admin account");
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("Unable to restore admin account", (Throwable) e);
         }
     }
 

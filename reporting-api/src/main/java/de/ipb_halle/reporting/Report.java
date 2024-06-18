@@ -18,6 +18,7 @@
 package de.ipb_halle.reporting;
 
 import de.ipb_halle.crimsy_api.DTO;
+import java.util.Objects;
 
 /**
  * Report DTO
@@ -46,6 +47,23 @@ public class Report implements DTO {
                 .setSource(source);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof Report) {
+                Report report = (Report) obj;
+                return Objects.equals(id, report.getId());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 213 + Objects.hashCode(this.id);
+    }
+
     public Integer getId() {
         return id;
     }
@@ -60,5 +78,10 @@ public class Report implements DTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Report_" + id.toString();
     }
 }

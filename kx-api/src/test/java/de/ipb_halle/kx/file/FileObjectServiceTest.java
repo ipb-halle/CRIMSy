@@ -5,11 +5,9 @@
  */
 package de.ipb_halle.kx.file;
 
-import de.ipb_halle.kx.file.FileObject;
 import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
@@ -17,7 +15,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import static org.junit.Assert.assertEquals;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

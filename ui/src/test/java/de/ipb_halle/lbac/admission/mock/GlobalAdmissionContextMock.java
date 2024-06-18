@@ -17,14 +17,9 @@
  */
 package de.ipb_halle.lbac.admission.mock;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 

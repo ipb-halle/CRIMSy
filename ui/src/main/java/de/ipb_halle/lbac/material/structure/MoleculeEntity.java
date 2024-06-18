@@ -17,13 +17,13 @@
  */
 package de.ipb_halle.lbac.material.structure;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import de.ipb_halle.crimsy_api.AttributeTag;
 import de.ipb_halle.crimsy_api.AttributeType;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  *

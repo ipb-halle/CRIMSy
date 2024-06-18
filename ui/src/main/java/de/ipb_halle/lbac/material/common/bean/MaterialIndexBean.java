@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,6 +67,18 @@ public class MaterialIndexBean implements Serializable {
 
         indexCatergory = indexCategoriesReversed.keySet().iterator().next();
         indexValue = "";
+    }
+
+    public String createPattern() {
+        String indexType = getIndexCatergory();
+        return switch (indexType) {
+            case "CAS/RN" ->
+                "0000000-00-0";
+            case "GESTIS/ZVG" ->
+                "GESTIS/ZVG number";
+            default ->
+                indexType;
+        };
     }
 
     public List<String> getIndexCategories() {
@@ -121,7 +133,7 @@ public class MaterialIndexBean implements Serializable {
             }
         }
         if (!alreadyIn) {
-            if(!indexCategoriesReversed.containsKey(indexCatergory)){
+            if (!indexCategoriesReversed.containsKey(indexCatergory)) {
                 return;
             }
             IndexEntry ie = new IndexEntry(indexCategoriesReversed.get(indexCatergory), indexValue, null);

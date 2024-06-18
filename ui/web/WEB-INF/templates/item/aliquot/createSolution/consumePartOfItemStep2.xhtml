@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2022 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -28,43 +27,71 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <ui:composition>
-            <b:container>
+            <p:outputPanel>
+
                 <!-- Wizard navigation -->
-                <b:row>
-                    <b:column span="1">
-                        <b:button
+                <p:outputPanel style="display: flex; flex-direction: row;">
+
+                    <p:outputPanel >
+
+                        <!-- Back button-->
+                        <!--*******************************************************************************-->
+                        <p:commandButton
+                            style="margin: 0.5rem;"
                             value="#{msgs.wizard_back}"
+                            styleClass="ui-button-secondary"
                             onclick="PF('consumePartOfItemWizard').back();" />
-                    </b:column>
-                    <b:column
-                        span="1"
-                        offset="10">
-                        <b:button
+
+                    </p:outputPanel>
+
+                    <p:outputPanel >
+
+                        <!-- Next button-->
+                        <!--*******************************************************************************-->
+                        <p:commandButton
+                            style="margin: 0.5rem;"
                             value="#{msgs.wizard_next}"
                             onclick="PF('consumePartOfItemWizard').next();" />
-                    </b:column>
-                </b:row>
-                <b:row>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+                <p:outputPanel style="display: flex; flex-direction: row;">
+
                     <!-- Target mass -->
-                    <b:column
-                        span="2"
-                        offset="1">
-                        <b:inputText
+                    <p:outputPanel >
+                        <p:outputLabel value="#{msgs.itemCreateSolution_consumePartOfItem_targetMass}"/>
+                        <br/>
+
+                        <p:inputText
+                            style="margin: 0.5rem;"
                             value="#{controller.step1Controller.targetMass}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_targetMass}"
                             readonly="true">
+
                             <f:facet name="append">
+
                                 <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
+
                             </f:facet>
+
                             <f:convertNumber
                                 type="number"
                                 groupingUsed="false"
                                 locale="#{globalLocaleBean.numberConverterLocale}" />
-                        </b:inputText>
-                    </b:column>
+
+                        </p:inputText>
+
+                    </p:outputPanel>
+
                     <!-- Error margin -->
-                    <b:column span="2">
-                        <b:inputText
+                    <p:outputPanel >
+                        <p:outputLabel value="#{msgs.itemCreateSolution_consumePartOfItem_errorMargin}"/>
+                        <br/>
+
+                        <p:inputText
+                            style="margin: 0.5rem;"
                             id="errorMarginInputId"
                             value="#{controller.step2Controller.errorMargin}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_errorMargin}"
@@ -72,93 +99,142 @@
                             pt:min="0"
                             pt:max="100"
                             onchange="createSolution_step2_errorMarginChange();">
+
                             <f:facet name="append">
+
                                 <h:outputText value="%" />
+
                             </f:facet>
+
                             <f:validateLongRange
                                 minimum="0"
                                 maximum="100" />
-                        </b:inputText>
+
+                        </p:inputText>
+
                         <p:remoteCommand
                             name="createSolution_step2_errorMarginChange"
                             process="errorMarginInputId"
                             update="targetMassWithMarginsId" />
-                    </b:column>
-                </b:row>
-                <b:row id="targetMassWithMarginsId">
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+                <p:outputPanel id="targetMassWithMarginsId" style="display: flex; flex-direction: row;">
+
                     <!-- Target mass +margin -->
-                    <b:column
-                        span="2"
-                        offset="1">
-                        <b:inputText
+                    <p:outputPanel >
+                        <p:outputLabel value="#{msgs.itemCreateSolution_consumePartOfItem_targetMass} +#{controller.step2Controller.errorMargin}%"/>
+                        <br/>
+
+                        <p:inputText
+                            style="margin: 0.5rem;"
                             value="#{controller.step2Controller.targetMassPlusMargin}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_targetMass} +#{controller.step2Controller.errorMargin}%"
                             readonly="true">
+
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
                             </f:facet>
+
                             <f:convertNumber
                                 type="number"
                                 groupingUsed="false"
                                 locale="#{globalLocaleBean.numberConverterLocale}" />
-                        </b:inputText>
-                    </b:column>
+
+                        </p:inputText>
+
+                    </p:outputPanel>
+
                     <!-- Target mass -margin -->
-                    <b:column span="2">
-                        <b:inputText
+                    <p:outputPanel >
+                        <p:outputLabel value="#{msgs.itemCreateSolution_consumePartOfItem_targetMass} -#{controller.step2Controller.errorMargin}%"/>
+                        <br/>
+
+                        <p:inputText
+                            style="margin: 0.5rem;"
                             value="#{controller.step2Controller.targetMassMinusMargin}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_targetMass} -#{controller.step2Controller.errorMargin}%"
                             readonly="true">
+
                             <f:facet name="append">
                                 <h:outputText value="#{controller.step1Controller.targetMassUnit}" />
                             </f:facet>
+
                             <f:convertNumber
                                 type="number"
                                 groupingUsed="false"
                                 locale="#{globalLocaleBean.numberConverterLocale}" />
-                        </b:inputText>
-                    </b:column>
-                </b:row>
+
+                        </p:inputText>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
                 <!-- Weight -->
-                <b:row>
+                <p:outputPanel style="display: flex; flex-direction: row;">
+
                     <p:remoteCommand
                         name="createSolution_step2_weightChange"
                         process="weightInputId weightUnitSelectionId"
                         update="@none"
                         action="#{controller.step2Controller.actionWeightChange()}" />
-                    <b:column
-                        span="2"
-                        offset="1">
-                        <b:inputText
+
+                    <p:outputPanel>
+                        <p:outputLabel value="#{msgs.itemCreateSolution_consumePartOfItem_weight}"/>
+                        <br/>
+
+                        <p:inputText
+                            style="margin: 0.5rem;"
                             id="weightInputId"
                             value="#{controller.step2Controller.weight}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_weight}"
                             required="true"
                             onchange="createSolution_step2_weightChange();">
-                            <b:focus />
+
+                            <p:focus />
+
                             <f:convertNumber
                                 type="number"
                                 groupingUsed="false"
                                 locale="#{globalLocaleBean.numberConverterLocale}" />
+
                             <f:validateDoubleRange minimum="0" />
-                        </b:inputText>
-                    </b:column>
-                    <b:column span="2">
-                        <b:selectOneMenu
+
+                        </p:inputText>
+
+                    </p:outputPanel>
+
+                    <p:outputPanel >
+                        <p:outputLabel value="#{msgs.itemCreateSolution_consumePartOfItem_unit}"/>
+                        <br/>
+
+                        <p:selectOneMenu
+                            style="margin: 0.5rem;"
                             id="weightUnitSelectionId"
                             value="#{controller.step2Controller.weightUnit}"
                             label="#{msgs.itemCreateSolution_consumePartOfItem_unit}"
                             required="true"
+                            converter="unitConverter"
                             onchange="createSolution_step2_weightChange();">
+
                             <f:selectItems
                                 value="#{controller.step1Controller.availableMassUnits}"
                                 var="unit"
                                 itemLabel="#{unit.unit}" />
-                        </b:selectOneMenu>
-                    </b:column>
-                </b:row>
-                <b:messages auto-update="true" />
-            </b:container>
+
+                        </p:selectOneMenu>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+                <p:messages/>
+
+            </p:outputPanel>
+
         </ui:composition>
     </h:body>
 </html>

@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,13 +41,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.faces.event.ActionEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.faces.event.ActionEvent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -95,6 +96,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
     private int shownCollections = -1;
     private ACObjectController acObjectController;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private CollectionSearchState collectionSearchState = new CollectionSearchState();
 
     @Inject
     protected MemberService memberService;
@@ -123,14 +125,8 @@ public class CollectionBean implements Serializable, ACObjectBean {
     @Inject
     protected TermVectorService termVectorService;
 
-    @Override
-    public void applyAclChanges() {
-        activeCollection = collectionService.save(activeCollection);
-    }
-
-    @Override
-    public void cancelAclChanges() {
-    }
+    @Inject
+    protected LoggingProfiler loggingProfiler;
 
     @Override
     public void actionStartAclChange(ACObject aco) {
@@ -141,19 +137,27 @@ public class CollectionBean implements Serializable, ACObjectBean {
                 this,
                 activeCollection.getName() + " (" + activeCollection.getNode().getInstitution() + ")");
     }
+    @Override
+    public void applyAclChanges() {
+        activeCollection = collectionService.save(activeCollection);
+    }
+
+    @Override
+    public void cancelAclChanges() {
+    }
 
     private enum MODE {
         CREATE, //Creates a new collection
-        READ, // Default mode 
+        READ, // Default mode
         UPDATE, // Changes the description of a collection
         DELETE, // Deletes the complete collection
         CLEAR // removes all documents from collection
     };
 
-    private CollectionSearchState collectionSearchState = new CollectionSearchState();
-
     @PostConstruct
     public void initCollectionBean() {
+        loggingProfiler.profilerStart("CollectionBean");
+
         this.mode = MODE.READ;
 
         collectionOperation = new CollectionOperation(
@@ -172,6 +176,9 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
         shownCollections = -1;
         initCollection();
+
+        loggingProfiler.profilerStop("CollectionBean");
+
     }
 
     public void refreshCollectionSearch() {
@@ -202,7 +209,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
         boolean isOwner = currentAccount.equals(activeCollection.getOwner());
         if (isOwner || acListService.isPermitted(ACPermission.permDELETE, activeCollection, currentAccount)) {
             collectionOperation.clearCollection(activeCollection, currentAccount);
-            fileService.createDir(activeCollection.getName());
+            fileService.createDir(activeCollection);
             refreshCollectionList();
         } else {
             UIMessage.info(MESSAGE_BUNDLE, "collMgr_clear_no_permission");
@@ -287,7 +294,11 @@ public class CollectionBean implements Serializable, ACObjectBean {
     }
 
     public List<Collection> getOnlyLocalCollections() {
+
+        //create an empty list of collections
         List<Collection> collsToShow = new ArrayList<>();
+
+        //put inside the list only collections form this node
         for (Collection c : collectionSearchState.getCollections()) {
             if (c.getNode().getId().equals(nodeService.getLocalNodeId())) {
                 collsToShow.add(c);
@@ -304,7 +315,10 @@ public class CollectionBean implements Serializable, ACObjectBean {
      * privilege
      */
     public List<Collection> getCreatableLocalCollections() {
+        //generate empty list of collections
         List<Collection> writableCollections = new ArrayList<>();
+
+        //put inside it only permitted collections for current user
         for (Collection c : getOnlyLocalCollections()) {
             if (acListService.isPermitted(ACPermission.permCREATE, c, currentAccount)) {
                 writableCollections.add(c);
@@ -324,7 +338,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
         this.activeCollection = new Collection();
         activeCollection.setStoragePath("");
         activeCollection.setName("");
-        activeCollection.setIndexPath("");
         activeCollection.setDescription("");
         activeCollection.setNode(nodeService.getLocalNode());
         activeCollection.setCountDocs(0L);
@@ -346,9 +359,13 @@ public class CollectionBean implements Serializable, ACObjectBean {
      * @param evt the LoginEvent scheduled by UserBean
      */
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("CollectionBean.setCurrentAccount");
+
         this.currentAccount = evt.getCurrentAccount();
         this.collectionOrchestrator.startCollectionSearch(this.collectionSearchState, this.currentAccount);
         initCollectionBean();
+        loggingProfiler.profilerStop("CollectionBean.setCurrentAccount");
+
     }
 
     public String getEditMode() {

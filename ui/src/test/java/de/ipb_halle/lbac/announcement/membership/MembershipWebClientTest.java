@@ -32,7 +32,7 @@ import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashSet;
 import java.util.Set;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.impl.ResponseImpl;
 

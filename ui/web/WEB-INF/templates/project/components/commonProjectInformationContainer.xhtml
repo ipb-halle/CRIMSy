@@ -21,7 +21,6 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -34,92 +33,164 @@
                 acobject="#{projectEditBean.getProjectOwner()}"
                 bean="#{projectEditBean}"
                 updateTargetClass="projectOwnerClass"/>
-            <b:container>
-                <b:row>
-                    <b:column span="2">
-                        <h:outputText
-                            styleClass="projectTitleText"
-                            value="#{msgs.projectEdit_projectName}"/>
-                    </b:column>
-                    <b:column span="3">
-                        <b:inputText
-                            value="#{projectEditBean.projectName}"
-                            placeholder="#{msgs.projectEdit_projectName_placeHolder}">
-                            <f:converter converterId="InputConverter" />
-                        </b:inputText>
-                    </b:column>
-                    <b:column span="4">
-                        <h:outputText
-                            styleClass="projectDescriptionTitle"
-                            value="#{msgs.projectEdit_projectDescription}">
-                        </h:outputText>
-                    </b:column>
-                    <b:column 
-                        span="1">
-                        <b:commandButton
-                            value="#{msgs.Cancel}"
-                            action="#{navigator.navigate('project/projectOverview')}"/>
-                    </b:column>
-                    <b:column span="1">
-                        <b:commandButton
-                            value="#{msgs.Save}"
-                            action="#{projectEditBean.saveProject()}"/>
-                    </b:column>
-                </b:row> 
-                <b:row>
-                    <b:column span="2">
-                        <h:outputText
-                            styleClass="projectTitleText"
-                            value="#{msgs.projectEdit_type}"/>
-                    </b:column>
-                    <b:column span="3">
-                        <b:selectOneMenu
-                            value="#{projectEditBean.currentProjectType}"
-                            ajax="true"
-                            process="@this"
-                            update="@(.roleMainPanelClass)">
-                            <f:selectItems 
-                                value="#{projectEditBean.getProjectTypes()}"/>
-                        </b:selectOneMenu>
-                    </b:column> 
-                    <b:row>
-                        <b:column span="6" >
-                            <h:inputTextarea
-                                styleClass="projectDescriptionInputArea"
-                                value="#{projectEditBean.projectDescription}">
-                                <f:converter converterId="InputConverter" />
-                            </h:inputTextarea>
-                        </b:column>
-                    </b:row>
-                </b:row>
-                <b:row>
 
-                    <b:column span="2">
+            <p:outputPanel>
+                <div style="display: flex; flex-direction: row; justify-content: space-around;">
 
-                        <b:commandButton
-                            ajax="true"
-                            update="@(.acoEditModal)"
-                            look="link"
-                            styleClass="projectOwnerButton projectTitleText"
-                            process="@this"
-                            type="button"
-                            oncomplete="PF('dlgChangeOwner').show();"
-                            icon-awesome="fa-pencil">
-                            <h:outputText
-                                value="#{msgs.projectEdit_projectOwner}"/>
-                        </b:commandButton>
+                    <div style="display: flex; flex-direction: column; width:49%;">
 
-                    </b:column>
-                    <b:column span="3"
-                              styleClass="projectOwnerClass">
-                        <b:inputText
-                            disabled="true"
-                            value="#{projectEditBean.getProjectOwner().getName()}">
-                            <f:converter converterId="InputConverter" />
-                        </b:inputText>
-                    </b:column>
-                </b:row>
-            </b:container>
+                        <div style="display: flex; flex-direction: row; justify-content: start; margin-bottom: 0.5rem;">
+
+                            <!--Project Name-->
+                            <!--***********************************************************************-->
+                            <p:outputPanel >
+                                <h:outputText
+                                    style="margin-right: 2rem; "
+                                    styleClass="projectTitleText"
+                                    value="#{msgs.projectEdit_projectName}:"/>
+                            </p:outputPanel>
+
+                            <!--Project Name InputText-->
+                            <!--***********************************************************************-->
+                            <p:outputPanel >
+
+                                <p:inputText
+                                    style="width:16.1rem;"
+                                    value="#{projectEditBean.projectName}"
+                                    placeholder="#{msgs.projectEdit_projectName_placeHolder}">
+
+                                    <f:converter converterId="InputConverter" />
+                                </p:inputText>
+
+                            </p:outputPanel>
+                        </div>
+
+                        <div style="display: flex; flex-direction: row; justify-content: start; margin-bottom: 0.5rem;">
+
+                            <!--Project Type-->
+                            <!--***********************************************************************-->
+                            <p:outputPanel >
+                                <h:outputText
+                                    style="margin-right: 2.7rem; "
+                                    styleClass="projectTitleText"
+                                    value="#{msgs.projectEdit_type}:"/>
+                            </p:outputPanel>
+
+                            <!--Project Type selectOneMenu-->
+                            <!--***********************************************************************-->
+                            <p:outputPanel >
+
+                                <p:selectOneMenu value="#{projectEditBean.currentProjectType}" 
+                                                 style="width:16.1rem;">
+                                    
+                                    <f:selectItems value="#{projectEditBean.getProjectTypes()}" 
+                                                   var="type"
+                                                   itemLabel="#{msgs['project_type_'.concat(type)]}" />
+                                   <p:ajax
+                                    process="@this"
+                                    update="@(.roleMainPanelClass)"/>
+
+                                </p:selectOneMenu>
+
+                            </p:outputPanel>
+                        </div>
+
+                        <div style="display: flex; flex-direction: row; justify-content: start;">
+
+                            <!--Project Owner + CommandButton-->
+                            <!--***********************************************************************-->
+                            <p:outputPanel >
+                                <h:outputText
+                                    style="margin-right: 1.7rem;"
+                                    styleClass="projectTitleText"
+                                    value="#{msgs.projectEdit_projectOwner}:"/>
+                            </p:outputPanel>
+
+                            <!--Project Owner InputField-->
+                            <!--***********************************************************************-->
+                            <p:outputPanel styleClass="projectOwnerClass">
+
+                                <p:inputText
+                                    style="width:16.1rem;"
+                                    disabled="true"
+                                    value="#{projectEditBean.getProjectOwner().getName()}">
+
+                                    <f:converter converterId="InputConverter" />
+                                </p:inputText>
+
+                                <p:commandButton
+                                    style="margin-left: 0.5rem;"
+                                    ajax="true"
+                                    update="@(.acoEditModal)"
+                                    styleClass="projectOwnerButton projectTitleText ui-button-success"
+                                    process="@this"
+                                    type="submit"
+                                    oncomplete="PF('dlgChangeOwner').show();"
+                                    icon="pi pi-pencil"/>
+                            </p:outputPanel>
+                            <!--***********************************************************************-->
+                        </div>
+                    </div>
+
+
+
+                    <div style="display: flex; flex-direction: column; width:49%;">
+
+
+                        <div style="display: flex; flex-direction: row; margin:1rem 0;">
+
+                            <!--Project DESCRIPTION -->
+                            <!--***********************************************************************-->
+                            <p:outputPanel >
+
+                                <h:outputText
+
+                                    styleClass="projectDescriptionTitle"
+                                    value="#{msgs.projectEdit_projectDescription}">
+                                </h:outputText>
+                            </p:outputPanel>
+
+                            <!--Cancel Button-->
+                            <!--***********************************************************************-->
+                            <p:outputPanel>
+
+                                <p:commandButton
+                                    style="margin: 0 0.5rem;"
+                                    type="submit"
+                                    ajax="false"
+                                    styleClass="ui-button-secondary"
+                                    value="#{msgs.Cancel}"
+                                    action="#{navigator.navigate('project/projectOverview')}"/>
+                            </p:outputPanel>
+
+                            <!--Save Button-->
+                            <!--***********************************************************************-->
+                            <p:outputPanel >
+                                <p:commandButton
+                                    styleClass="ui-button-danger"
+                                    type="submit"
+                                    ajax="false"
+                                    value="#{msgs.Save}"
+                                    action="#{projectEditBean.saveProject()}"/>
+                            </p:outputPanel>
+                        </div>
+
+                        <!--Project DESCRIPTION InputTextArea-->
+                        <!--***********************************************************************-->
+                        <p:row>
+                            <p:outputPanel >
+                                <h:inputTextarea
+                                    styleClass="projectDescriptionInputArea"
+                                    value="#{projectEditBean.projectDescription}">
+                                    <f:converter converterId="InputConverter" />
+                                </h:inputTextarea>
+                            </p:outputPanel>
+                        </p:row>
+                    </div>
+
+                </div>
+            </p:outputPanel>
+
         </ui:composition>
     </h:body>
 

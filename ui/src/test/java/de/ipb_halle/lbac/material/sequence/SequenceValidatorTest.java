@@ -19,10 +19,11 @@ package de.ipb_halle.lbac.material.sequence;
 
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 
 import static de.ipb_halle.lbac.material.common.Invalidity.NO_MATERIAL_NAME;
 import static de.ipb_halle.lbac.material.common.Invalidity.NO_SEQUENCETYPE_CHOSEN;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
@@ -37,12 +38,13 @@ import org.junit.jupiter.api.Test;
  * @author fmauz
  */
 public class SequenceValidatorTest {
-    private MateriaBeanMock materialBean;
+
+    private MaterialBeanMock materialBean;
     private SequenceValidator validator;
 
     @BeforeEach
     public void init() {
-        materialBean = new MateriaBeanMock();
+        materialBean = new MaterialBeanMock(new LoggingProfiler());
         materialBean.setMaterialNameBean(new MaterialNameBean());
         materialBean.setSequenceInfos(new SequenceInformation());
 

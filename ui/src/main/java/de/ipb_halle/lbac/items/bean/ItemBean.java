@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.service.ItemLabelService;
 import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.navigation.Navigator;
@@ -48,15 +47,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.event.ValueChangeEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.cxf.jaxrs.utils.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -124,7 +122,8 @@ public class ItemBean implements Serializable {
     private String customLabelValue;
     private boolean userHasEditRight = false;
 
-    protected transient MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+    @Inject
+    protected transient MessagePresenter messagePresenter;
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -255,7 +254,7 @@ public class ItemBean implements Serializable {
             }
         } catch (Exception e) {
             messagePresenter.error("itemEdit_save_failed");
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("actionSave() caught an exception:", (Throwable) e);
         }
     }
 
@@ -287,7 +286,7 @@ public class ItemBean implements Serializable {
     }
 
     public boolean isInDeactivatedMode() {
-        return mode == Mode.HISTORY||!userHasEditRight;
+        return mode == Mode.HISTORY || !userHasEditRight;
     }
 
     public boolean isCustomLabelDisabled() {

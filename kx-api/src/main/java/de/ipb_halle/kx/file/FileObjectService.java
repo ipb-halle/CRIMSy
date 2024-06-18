@@ -17,24 +17,21 @@
  */
 package de.ipb_halle.kx.file;
 
-import de.ipb_halle.kx.file.FileObject;
-import de.ipb_halle.kx.file.FileObjectEntity;
+import java.io.Serial;
 import java.io.Serializable;
-import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.EntityType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +39,7 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class FileObjectService implements Serializable {
 
+    @Serial
     private final static long serialVersionUID = 1L;
 
     private final String DELETE_COLLECTION_FILES = "DELETE FROM files WHERE collection_id = :c";
@@ -58,16 +56,20 @@ public class FileObjectService implements Serializable {
      * @param fileObject - entity to delete
      */
     public void delete(FileObject fileObject) {
-        this.em.remove(fileObject.createEntity());
+        FileObjectEntity foe = this.em.find(FileObjectEntity.class, fileObject.getId());
+        if (foe != null) {
+            this.em.remove(foe);
+        }
     }
 
     /**
      * delete all files of a collection
-     * @param collectionId  collection Id
+     *
+     * @param collectionId collection Id
      */
     @Deprecated
     public void deleteCollectionFiles(Integer collectionId) {
-        this.em.createNativeQuery(DELETE_COLLECTION_FILES) 
+        this.em.createNativeQuery(DELETE_COLLECTION_FILES)
                 .setParameter("c", collectionId)
                 .executeUpdate();
     }
@@ -75,7 +77,7 @@ public class FileObjectService implements Serializable {
     /**
      * get all file entities in collection
      *
-     * @param collection - collection
+     * @param collectionId - collection identifier
      * @return - list of file entities
      */
     @Deprecated
@@ -103,10 +105,10 @@ public class FileObjectService implements Serializable {
      */
     public long getDocumentCount(Integer collectionId) {
         try {
-            BigInteger cnt = (BigInteger) this.em.createNativeQuery(COLLECTION_FILE_COUNT)
+            Long cnt = (Long) this.em.createNativeQuery(COLLECTION_FILE_COUNT)
                     .setParameter("c", collectionId)
                     .getSingleResult();
-            return cnt.longValue();
+            return cnt;
         } catch (Exception e) {
             this.logger.warn("getDocumentCount() caught an exception", e);
         }
@@ -115,8 +117,7 @@ public class FileObjectService implements Serializable {
 
     /**
      * Convert String to lower case and add SQL wildcard padding to it. This is
-     * necessary as JPA2 does not provide means to create an ilike
-     * predicate.
+     * necessary as JPA2 does not provide means to create an ilike predicate.
      *
      * @param st input string
      * @return "%" + st.toLowerCase() + "%"
@@ -171,7 +172,6 @@ public class FileObjectService implements Serializable {
         }
         return results;
     }
-
 
     /**
      * get file entity by id

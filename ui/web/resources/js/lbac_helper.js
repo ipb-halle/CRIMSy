@@ -16,6 +16,28 @@
  *
  */
 
+
+//Hide the outputPanel in sequenceSearchResultTable.xhtml
+//*************************************************************
+function hideFastaResultPanel() {
+    var elements = document.querySelectorAll('.fastaResultPanel');
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
+    }
+}
+
+//Show the outputPanel in sequenceSearchResultTable.xhtml
+//*************************************************************
+function showFastaResultPanel() {
+    var elements = document.querySelectorAll('.fastaResultPanel');
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.display = "block";
+    }
+}
+
+
+
+
 /*
  * used by UIAugmentedText
  * determine the styleclass ('.dlgXxxx') and 
@@ -23,9 +45,11 @@
  * for a given link type.
  */
 function getLinkDialog(linkType) {
-    switch(linkType) {
-        case "LINK_MATERIAL" : return "MaterialView";
-        case "LINK_ITEM" : return "ItemView";
+    switch (linkType) {
+        case "LINK_MATERIAL" :
+            return "MaterialView";
+        case "LINK_ITEM" :
+            return "ItemView";
     }
     alert("Invalid link type");
     return null;
@@ -40,10 +64,12 @@ function openLinkDialog(linkType, clientId, index) {
 
     PrimeFaces.ab({
         source: clientId,
-        params: [ {name: "linkedDataIndex", value: index}, ],
-        process : clientId,
+        params: [{name: "linkedDataIndex", value: index}, ],
+        process: clientId,
         update: "@(.dlg" + linkType + ")",
-        oncomplete: function(xhr, status, args) {PF("dlg_" + linkType).show(); }
+        oncomplete: function (xhr, status, args) {
+            PF("dlg_" + linkType).show();
+        }
     });
     return false;
 }
@@ -156,6 +182,13 @@ function onChangeSelectedUnit(selectElement) {
     let boundContainerSizeInput = document.getElementById("input_itemEditForm:itemTabViewId:boundContainerSizeId");
     _transformUnit(amountInput, oldSelectedOption, newSelectedOption);
     _transformUnit(boundContainerSizeInput, oldSelectedOption, newSelectedOption);
+}
+
+function escapeHtmlCode() {
+
+    let x = document.querySelector(".bug>:nth-child(3)").innerHTML;
+    x = x.replace("&amp;gt;", ">");
+    document.querySelector(".bug>:nth-child(3)").innerHTML = x;
 }
 
 /**

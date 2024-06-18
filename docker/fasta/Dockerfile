@@ -17,6 +17,6 @@
 #
 #==========================================================
 #
-FROM ipbhalle/fasta-search-service:latest
+FROM ipbhalle/fasta-search-service:2
 
 COPY fasta-search-service.xml /usr/local/tomee/conf/Catalina/localhost/

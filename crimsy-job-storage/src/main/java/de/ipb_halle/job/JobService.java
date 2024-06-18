@@ -18,32 +18,27 @@
 package de.ipb_halle.job;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * JobService loads, stores and deletes job entities.
  */
-public abstract class JobService<T extends Job> implements Serializable {
-    private static final long serialVersionUID = 1L;
+public abstract class JobService<T extends Job> {
 
     public final static String SETTING_JOB_SECRET = "SETTING_JOB_SECRET";
     public final static String JOB_SECRET_QUERY = "SELECT value FROM info WHERE key='SETTING_JOB_SECRET'";

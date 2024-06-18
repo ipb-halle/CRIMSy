@@ -19,18 +19,19 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.HashMap;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import java.util.Date;
 import org.primefaces.model.TreeNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,11 +58,15 @@ public class TaxonomyBean implements Serializable {
     protected MemberService memberService;
     @Inject
     protected TaxonomyService taxonomyService;
+    @Inject
+    protected MessagePresenter messagePresenter;
+    @Inject
+    private LoggingProfiler loggingProfiler;
 
     protected User currentUser;
     protected TaxonomyHistoryController historyController;
     protected TaxonomyLevelController levelController;
-    protected final Logger logger = LogManager.getLogger(this.getClass().getName());
+    protected transient Logger logger = LogManager.getLogger(this.getClass().getName());
     protected final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     protected TaxonomyNameController nameController;
     protected Mode mode;
@@ -74,15 +79,40 @@ public class TaxonomyBean implements Serializable {
     protected TaxonomyTreeController treeController;
     protected TaxonomyValidityController validityController;
 
+    public TaxonomyBean() {
+
+    }
+
+    public TaxonomyBean(LoggingProfiler profiler) {
+        this.loggingProfiler = profiler;
+    }
+
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("TaxonomyBean.nameController");
         nameController = new TaxonomyNameController(this);
+        loggingProfiler.profilerStop("TaxonomyBean.nameController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.levelController");
         levelController = new TaxonomyLevelController(this);
         levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
-        validityController = new TaxonomyValidityController(this, JsfMessagePresenter.getInstance());
+        loggingProfiler.profilerStop("TaxonomyBean.levelController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.validityController");
+        validityController = new TaxonomyValidityController(this, messagePresenter);
+        loggingProfiler.profilerStop("TaxonomyBean.validityController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.historyController");
         historyController = new TaxonomyHistoryController(this, nameController, taxonomyService, memberService);
-        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, JsfMessagePresenter.getInstance());
-        treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
+        loggingProfiler.profilerStop("TaxonomyBean.historyController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.renderController");
+        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, messagePresenter);
+        loggingProfiler.profilerStop("TaxonomyBean.renderController");
+
+        loggingProfiler.profilerStart("TaxonomyBean.treeController");
+        treeController = new TaxonomyTreeController(loggingProfiler, selectedTaxonomy, taxonomyService, levelController);
+        loggingProfiler.profilerStop("TaxonomyBean.treeController");
     }
 
     /**
@@ -91,14 +121,24 @@ public class TaxonomyBean implements Serializable {
      * @param evt
      */
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("TaxonomyBean.setCurrentAccount");
+
         mode = Mode.SHOW;
+
         currentUser = evt.getCurrentAccount();
+
         levelController.setLevels(taxonomyService.loadTaxonomyLevel());
+
         levelController.setSelectedLevel(levelController.getRootLevel());
 
         treeController.initialise();
-        selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
+
+        selectedTaxonomy = (TreeNode) treeController.getTaxonomyTree().getChildren().get(0);
+
         initHistoryDate();
+
+        loggingProfiler.profilerStop("TaxonomyBean.setCurrentAccount");
+
     }
 
     /**
@@ -117,7 +157,7 @@ public class TaxonomyBean implements Serializable {
                 treeController.disableTreeNodeEntries(taxonomyBeforeEdit);
                 levelController.setSelectedLevel(taxonomyToEdit.getLevel());
             } catch (Exception e) {
-                logger.error(ExceptionUtils.getStackTrace(e));
+                logger.error("actionClickFirstButton() caught an exception:", (Throwable) e);
             }
         }
     }
@@ -153,7 +193,7 @@ public class TaxonomyBean implements Serializable {
                 mode = Mode.SHOW;
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("actionClickSecondButton() caught an exception:", (Throwable) e);
             taxonomyBeforeEdit = null;
             taxonomyToEdit = null;
             mode = Mode.SHOW;
@@ -254,9 +294,9 @@ public class TaxonomyBean implements Serializable {
     public void onTaxonomySelect(NodeSelectEvent event) {
         if (mode == Mode.EDIT) {
             Taxonomy t = (Taxonomy) event.getTreeNode().getData();
-            taxonomyToEdit.getTaxHierachy().clear();
-            taxonomyToEdit.getTaxHierachy().add(t);
-            taxonomyToEdit.getTaxHierachy().addAll(t.getTaxHierachy());
+            taxonomyToEdit.getTaxHierarchy().clear();
+            taxonomyToEdit.getTaxHierarchy().add(t);
+            taxonomyToEdit.getTaxHierarchy().addAll(t.getTaxHierarchy());
         } else {
             selectedTaxonomy = event.getTreeNode();
             parentOfNewTaxo = (Taxonomy) selectedTaxonomy.getData();
@@ -271,8 +311,8 @@ public class TaxonomyBean implements Serializable {
         taxonomyToCreate.setLevel(levelController.getSelectedLevel());
         if (selectedTaxonomy != null) {
             Taxonomy parent = (Taxonomy) selectedTaxonomy.getData();
-            taxonomyToCreate.getTaxHierachy().add(parent);
-            taxonomyToCreate.getTaxHierachy().addAll(parent.getTaxHierachy());
+            taxonomyToCreate.getTaxHierarchy().add(parent);
+            taxonomyToCreate.getTaxHierarchy().addAll(parent.getTaxHierarchy());
         }
         materialService.saveMaterialToDB(
                 taxonomyToCreate,

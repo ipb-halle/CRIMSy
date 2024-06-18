@@ -17,29 +17,18 @@
  */
 package de.ipb_halle.lbac.device.job;
 
-import de.ipb_halle.job.Job;
 import de.ipb_halle.job.JobEntity;
 import de.ipb_halle.job.JobService;
 import de.ipb_halle.lbac.admission.MemberService;
 
-import java.io.Serializable;
-import java.util.ArrayList; 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.apache.logging.log4j.Logger;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 /**
  * PrintJobService loads, stores and deletes print jobs.
  */
 @Stateless
-public class PrintJobService extends JobService<PrintJob> implements Serializable {
+public class PrintJobService extends JobService<PrintJob> {
 
     @Inject
     private MemberService memberService;
@@ -52,6 +41,7 @@ public class PrintJobService extends JobService<PrintJob> implements Serializabl
         return null;
     }
 
+    @Override
     public PrintJob saveJob(PrintJob job) {
         return new PrintJob(super.saveEntity(job), job.getOwner());
     }

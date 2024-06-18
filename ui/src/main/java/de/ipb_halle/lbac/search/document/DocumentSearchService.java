@@ -37,21 +37,20 @@ import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.XmlSetWrapper;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -83,7 +82,6 @@ public class DocumentSearchService {
 
     private boolean development = false;
 
-    private String uriOfPublicColl;
     private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
     private DocumentEntityGraphBuilder graphBuilder;
 
@@ -123,10 +121,8 @@ public class DocumentSearchService {
             List<Collection> collsToSearchIn,
             String searchText,
             int limit,
-            int offSet,
-            String uriOfPublicColl) throws Exception {
+            int offSet) throws Exception {
 
-        this.uriOfPublicColl = uriOfPublicColl;
         searchState.clearState();
         // fetches all documents of the collection and adds the total 
         // number of documents in the collection to the search state
@@ -188,7 +184,7 @@ public class DocumentSearchService {
     private int loadTotalCountOfFiles() {
         Query q = em.createNativeQuery(SQL_LOAD_DOCUMENT_COUNT);
         @SuppressWarnings("unchecked")
-        List<BigInteger> result = q.getResultList();
+        List<Long> result = q.getResultList();
         return result.get(0).intValue();
     }
 
@@ -273,7 +269,7 @@ public class DocumentSearchService {
     }
 
     private int getLengthOfDocument(int documentId) {
-        return ((BigInteger) em.createNativeQuery(SQL_LOAD_DOCUMENT_LENGTH)
+        return ((Long) em.createNativeQuery(SQL_LOAD_DOCUMENT_LENGTH)
                 .setParameter("file_id", documentId).getResultList()
                 .get(0)).intValue();
     }
@@ -299,18 +295,6 @@ public class DocumentSearchService {
 
         back = back.substring(4, back.length());
         return back.trim();
-    }
-
-    public String getUriOfPublicCollection() {
-        Map<String, Object> cmap = new HashMap<>();
-        cmap.put("name", "public");
-        List<Collection> colls = collectionService.load(cmap);
-
-        String restUri = null;
-        if (colls != null && colls.size() > 0) {
-            restUri = colls.get(0).getIndexPath();
-        }
-        return restUri;
     }
 
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {

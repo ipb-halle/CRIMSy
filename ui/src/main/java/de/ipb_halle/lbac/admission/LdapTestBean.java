@@ -22,10 +22,10 @@ import de.ipb_halle.lbac.i18n.UIMessage;
 
 
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.Serializable;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;

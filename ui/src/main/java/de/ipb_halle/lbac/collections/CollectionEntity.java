@@ -22,16 +22,17 @@ package de.ipb_halle.lbac.collections;
  * collection managment
  */
 import de.ipb_halle.lbac.admission.ACObjectEntity;
+
+import jakarta.validation.constraints.Size;
 import de.ipb_halle.crimsy_api.AttributeTag;
 import de.ipb_halle.crimsy_api.AttributeType;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "collections")

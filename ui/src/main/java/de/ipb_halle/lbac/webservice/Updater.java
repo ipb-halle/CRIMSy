@@ -22,12 +22,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
-import javax.ejb.*;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Resource;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.ejb.Timer;
+import jakarta.ejb.Timeout;
+import jakarta.ejb.TimerService;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Updater schedules queries to the master node for an updated list of nodes and

@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.admission.mock.GlobalAdmissionContextMock;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -46,29 +47,37 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import de.ipb_halle.scope.SessionScopeContext;
 import de.ipb_halle.scope.SessionScopeResetEvent;
 import de.ipb_halle.test.EntityManagerService;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -77,7 +86,7 @@ import org.junit.jupiter.api.BeforeEach;
  * @author fmauz
  */
 public class TestBase implements Serializable {
-    
+
     protected Logger logger;
     protected String TEST_ROOT = "target/test-classes/";
     protected CreationTools creationTools;
@@ -87,7 +96,7 @@ public class TestBase implements Serializable {
     // per convention (defined in init.sql) test node == local node
     public final static UUID TEST_NODE_ID = UUID.fromString("986ad1be-9a3b-4a70-8600-c489c2a00da4");
     public final static String TESTCLOUD = "TESTCLOUD";
-    
+
     protected String INSERT_TAXONOMY_MATERIAL_SQL = "INSERT INTO MATERIALS VALUES("
             + "%d,"
             + "7,"
@@ -95,56 +104,62 @@ public class TestBase implements Serializable {
             + "%d, "
             + "%d, "
             + "false,%d)";
-    
+
     @ArquillianResource
     protected URL baseUrl;
-    
+
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
-    
+
     @Resource(name = "DefaultManagedExecutorService")
     protected ManagedExecutorService executor;
-    
+
     @Inject
     protected CloudService cloudService;
-    
+
     @Inject
     protected CloudNodeService cloudNodeService;
-    
+
     @Inject
     protected EntityManagerService entityManagerService;
-    
+
     @Inject
     protected NodeService nodeService;
-    
+
     @Inject
     protected TermVectorService termVectorService;
     
     @Inject
     protected FileObjectService fileObjectService;
-    
+
     @Inject
     protected CollectionService collectionService;
-    
+
     @Inject
     protected MemberService memberService;
-    
+
     @Inject
     protected MembershipService membershipService;
-    
+
     @Inject
     protected GlobalAdmissionContext context;
-    
+
     @Inject
     protected ProjectService projectService;
-    
+
     @Inject
     private Event<SessionScopeResetEvent> event;
-    
+
+    @Inject
+    private MessagePresenter messagePresenter;
+
+    @Inject
+    protected LoggingProfiler loggingProfiler;
+
     protected ACList acListReadable, acListNonReadable;
     protected User publicUser;
     protected User adminUser;
-    
+
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
                 .addClass(GlobalAdmissionContextMock.class)
@@ -155,6 +170,7 @@ public class TestBase implements Serializable {
                 .addClass(EntityManager.class)
                 .addClass(EntityManagerService.class)
                 .addClass(InfoObjectService.class)
+                .addClass(LoggingProfiler.class)
                 .addClass(MemberService.class)
                 .addClass(MembershipService.class)
                 .addClass(NodeService.class)
@@ -168,18 +184,18 @@ public class TestBase implements Serializable {
                 .addClass(SessionScopeContext.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsResource("javax.enterprise.inject.spi.Extension",
-                        "META-INF/services/javax.enterprise.inject.spi.Extension");
+                .addAsResource("jakarta.enterprise.inject.spi.Extension",
+                        "META-INF/services/jakarta.enterprise.inject.spi.Extension");
         return archive;
     }
-    
+
     @BeforeEach
     public final void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
-        
+
         resetSessionScope();
         resetMessagePresenterMock();
-        
+
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
         cleanItemsFromDb();
         cleanSolventsFromDb();
@@ -189,14 +205,14 @@ public class TestBase implements Serializable {
         itemCreator = new ItemCreator(entityManagerService);
         acListReadable = GlobalAdmissionContext.getPublicReadACL();
         this.logger = LogManager.getLogger(this.getClass().getName());
-        
+
         entityManagerService.doSqlUpdate("DELETE FROM PROJECTTEMPLATES");
         entityManagerService.doSqlUpdate("DELETE FROM projects");
-        
+
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE FROM termvectors");
         entityManagerService.doSqlUpdate("DELETE FROM files");
-        
+
         entityManagerService.doSqlUpdate("DELETE FROM temp_search_parameter");
         entityManagerService.doSqlUpdate("DELETE FROM jobs");
         entityManagerService.doSqlUpdate("DELETE FROM reports");
@@ -206,7 +222,7 @@ public class TestBase implements Serializable {
         adminUser = memberService.loadLocalAdminUser();
         creationTools = new CreationTools("", "", "", memberService, projectService);
     }
-    
+
     protected void createTaxanomy(int id, String name, int level, Integer userGroups, Integer ownerId, Integer... parents) {
         entityManagerService.doSqlUpdate(String.format(INSERT_TAXONOMY_MATERIAL_SQL, id, userGroups, ownerId, null));
         entityManagerService.doSqlUpdate(String.format("INSERT INTO taxonomy  VALUES(%d ,%d)", id, level));
@@ -233,17 +249,17 @@ public class TestBase implements Serializable {
         u.setNode(nodeService.getLocalNode());
         u.setSubSystemType(AdmissionSubSystemType.LOCAL);
         u = memberService.save(u);
-        
+
         Group g = new Group();
         g.setName("Group of user " + u.getLogin());
         g.setNode(nodeService.getLocalNode());
         g.setSubSystemData("L");
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
         g = memberService.save(g);
-        
+
         membershipService.addMembership(u, u);
         membershipService.addMembership(g, u);
-        
+
         return u;
     }
 
@@ -302,15 +318,15 @@ public class TestBase implements Serializable {
             String name,
             String description,
             CollectionService collectionService) {
-        
+
         List<Collection> collections = new ArrayList<>();
         Collection col = new Collection();
         col.setACList(acList);
         col.setDescription(description);
-        col.setIndexPath("/");
         col.setName(name);
         col.setNode(node);
         col.setOwner(owner);
+        col.setStoragePath("target/test-classes/collections/" + name);
         col = collectionService.save(col);
         collections.add(col);
         return collections;
@@ -362,7 +378,7 @@ public class TestBase implements Serializable {
         acList.addACE(u, permissions);
         return acList;
     }
-    
+
     protected void createTaxonomyTreeInDB(Integer userGroups, Integer ownerId) {
         createTaxanomy(1, "Leben", 1, userGroups, ownerId);
         createTaxanomy(2, "Pilze", 2, userGroups, ownerId, 1);
@@ -393,7 +409,11 @@ public class TestBase implements Serializable {
             entityManagerService.doSqlUpdate(String.format("INSERT INTO solvents (name) VALUES('%s')", solvent));
         }
     }
-    
+
+    protected MessagePresenterMock getMessagePresenterMock() {
+        return (MessagePresenterMock) messagePresenter;
+    }
+
     public void resetDB(MemberService memberService) {
         List<Collection> colls = collectionService.load(new HashMap<>());
         termVectorService.deleteTermVectors();
@@ -401,7 +421,7 @@ public class TestBase implements Serializable {
             fileObjectService.deleteCollectionFiles(c.getId());
         }
     }
-    
+
     public void resetCollectionsInDb(CollectionService collectionService) {
         List<Collection> colls = collectionService.load(null);
         for (Collection c : colls) {
@@ -412,25 +432,25 @@ public class TestBase implements Serializable {
             }
         }
     }
-    
+
     protected Map<String, Object> nameCmap(String name) {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("name", name);
         return cmap;
     }
-    
+
     protected Node createNode(
             NodeService nodeService,
             String publicKey
     ) {
         Node newNode = new Node();
         newNode.setBaseUrl(this.baseUrl.toString());
-        
+
         newNode.setInstitution("Fake Institution");
         newNode.setLocal(false);
         return nodeService.save(newNode);
     }
-    
+
     protected CloudNode createCloudNode(Node node, Cloud cloud) {
         return cloudNodeService.save(new CloudNode(cloud, node));
     }
@@ -440,7 +460,7 @@ public class TestBase implements Serializable {
         n.setBaseUrl(this.baseUrl.toString());
         this.nodeService.save(n);
     }
-    
+
     protected void initializeKeyStoreFactory() {
         KeyStoreFactory.setLBAC_PROPERTIES_PATH(context.getLbacPropertiesPath());
         KeyStoreFactory ksf = KeyStoreFactory
@@ -448,17 +468,17 @@ public class TestBase implements Serializable {
                 .setLOCAL_KEY_ALIAS("test")
                 .init();
     }
-    
+
     protected void cleanAllProjectsFromDb() {
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
         entityManagerService.doSqlUpdate("delete from projects");
     }
-    
+
     protected void cleanProjectFromDB(Project p, boolean deleteAcl) {
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
-        
+
         if (p != null) {
             entityManagerService.doSqlUpdate("delete from projects where id=" + p.getId());
             if (deleteAcl) {
@@ -467,7 +487,7 @@ public class TestBase implements Serializable {
             }
         }
     }
-    
+
     public void cleanItemsFromDb() {
         entityManagerService.doSqlUpdate("delete from item_positions_history");
         entityManagerService.doSqlUpdate("delete from item_positions");
@@ -478,7 +498,7 @@ public class TestBase implements Serializable {
     private void cleanSolventsFromDb() {
         entityManagerService.doSqlUpdate("DELETE FROM solvents");
     }
-    
+
     protected void cleanMaterialsFromDB() {
         entityManagerService.doSqlUpdate("DELETE FROM material_compositions");
         entityManagerService.doSqlUpdate("DELETE from biomaterial_history");
@@ -489,9 +509,9 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
         entityManagerService.doSqlUpdate("DELETE FROM sequences_history");
         entityManagerService.doSqlUpdate("DELETE FROM sequences");
-        
+
         entityManagerService.doSqlUpdate("DELETE FROM compositions");
-        
+
         entityManagerService.doSqlUpdate("delete from storagesconditions_storages_hist");
         entityManagerService.doSqlUpdate("delete from material_hazards_hist");
         entityManagerService.doSqlUpdate("delete from storages_hist");
@@ -509,21 +529,21 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("delete from material_hazards");
         entityManagerService.doSqlUpdate("delete from materials");
     }
-    
+
     protected void cleanAcListFromDB(ACList acl) {
         entityManagerService.removeEntity(ACListEntity.class, acl.getId());
     }
-    
+
     protected void cleanExperimentsFromDB() {
         entityManagerService.doSqlUpdate("delete from experiments");
     }
-    
+
     protected void resetSessionScope() {
         event.fire(new SessionScopeResetEvent());
     }
-    
-    private void resetMessagePresenterMock() {
-        MessagePresenterMock.getInstance().resetMessages();
+
+    protected void resetMessagePresenterMock() {
+        ((MessagePresenterMock) messagePresenter).resetMessages();
     }
 
     private static final String INSERT_REPORT_FORMAT = "INSERT INTO reports (context, name, source) VALUES ('%s','%s','%s')";

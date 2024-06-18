@@ -70,11 +70,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.ejb.EJBException;
-import javax.inject.Inject;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.ResponseProcessingException;
-import javax.ws.rs.core.Response;
+import jakarta.ejb.EJBException;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.client.ResponseProcessingException;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -105,10 +105,11 @@ public class SequenceSearchIntegrationTest extends TestBase {
     private SequenceSearchMaskController searchMaskController;
     private SequenceSearchMaskValuesHolder valuesHolder;
     private SequenceSearchResultsTableController tableController;
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter;
 
     @BeforeEach
     public void init() throws FastaResultParserException {
+        messagePresenter = getMessagePresenterMock();
         messagePresenter.resetMessages();
 
         Reader reader = ResourceUtils.readerForResourceFile("fastaresults/results7.txt");
@@ -181,7 +182,7 @@ public class SequenceSearchIntegrationTest extends TestBase {
          */
         FastaSearchRequest request = requestRef.get();
         assertNull(request.getDatabaseConnectionString());
-        // TODO: asserts for request.getDatabaseQueries()
+        // ToDo: asserts for request.getDatabaseQueries()
 
         FastaSearchQuery query = request.getSearchQuery();
         assertEquals("AAA", query.getQuerySequence());
@@ -209,7 +210,7 @@ public class SequenceSearchIntegrationTest extends TestBase {
         valuesHolder.setSearchMode(SearchMode.PROTEIN_DNA);
         valuesHolder.setTranslationTable(TranslationTable.STANDARD);
         valuesHolder.setMaxResults(10000);
-        // TODO: add filters for projects/material names/etc.
+        // ToDo: add filters for projects/material names/etc.
         searchMaskController.actionStartMaterialSearch();
 
         assertNull(messagePresenter.getLastInfoMessage());
@@ -220,7 +221,7 @@ public class SequenceSearchIntegrationTest extends TestBase {
          */
         FastaSearchRequest request = requestRef.get();
         assertNull(request.getDatabaseConnectionString());
-        // TODO: asserts for request.getDatabaseQueries()
+        // ToDo: asserts for request.getDatabaseQueries()
 
         FastaSearchQuery query = request.getSearchQuery();
         assertEquals("GCC", query.getQuerySequence());
@@ -351,6 +352,6 @@ public class SequenceSearchIntegrationTest extends TestBase {
         valuesHolder.setSearchMode(SearchMode.DNA_PROTEIN);
         valuesHolder.setTranslationTable(TranslationTable.EUPLOTID_NUCLEAR);
         valuesHolder.setMaxResults(42);
-        // TODO: add filters for projects/material names/etc.
+        // ToDo: add filters for projects/material names/etc.
     }
 }

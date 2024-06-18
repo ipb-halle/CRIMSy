@@ -42,15 +42,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -164,7 +164,7 @@ public class ACListService implements Serializable {
     /**
      * load the list of ACEntryEntries from the database for a given ACList.
      *
-     * @param ae the id of the ACList
+     * @param acl the ACL for which to load entries
      */
     public List<ACEntry> loadACEntries(ACList acl) {
         CriteriaBuilder builder = this.em.getCriteriaBuilder();

@@ -27,16 +27,18 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,6 +51,7 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class ContainerOverviewBean implements Serializable {
+
     @Inject
     private transient MessagePresenter messagePresenter;
 
@@ -61,6 +64,9 @@ public class ContainerOverviewBean implements Serializable {
     @Inject
     protected ContainerSearchMaskBean searchMaskBean;
 
+    @Inject
+    protected LoggingProfiler loggingProfiler;
+
     private User currentUser;
     private Mode mode;
     private List<Container> readableContainer = new ArrayList<>();
@@ -70,20 +76,30 @@ public class ContainerOverviewBean implements Serializable {
     protected CallBackController callBackController = new CallBackController();
     protected ValidatorFactory validatorFactory;
 
+    private transient Logger logger = LogManager.getLogger(this.getClass().getName());
+
     public enum Mode {
         SHOW, EDIT, CREATE
     }
 
     @PostConstruct
     private void init() {
+        loggingProfiler.profilerStart("ContainerOverviewBean");
+
         localizer = new ContainerLocalizer(messagePresenter);
         validatorFactory = new ValidatorFactory(containerService);
+
+        loggingProfiler.profilerStop("ContainerOverviewBean");
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ContainerOverviewBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         setReadableContainer(containerService.loadContainersWithoutItems(currentUser));
         mode = Mode.SHOW;
+        loggingProfiler.profilerStop("ContainerOverviewBean.setCurrentAccount");
+
     }
 
     public void actionCancel() {
@@ -204,6 +220,7 @@ public class ContainerOverviewBean implements Serializable {
 
     public boolean saveNewContainer() {
         validator = new InputValidator(containerService);
+        validator.setErrorMessagePresenter(messagePresenter);
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()
@@ -245,7 +262,7 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     private Project loadProjectByName() {
-        ProjectSearchRequestBuilder builder=new ProjectSearchRequestBuilder(currentUser, 0, 1);
+        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(currentUser, 0, 1);
         builder.setProjectName(editBean.getPreferredProjectName().trim());
         SearchResult result = projectService.loadProjects(builder.build());
         Node n = result.getNode();

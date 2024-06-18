@@ -19,7 +19,6 @@
   
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:composite="http://java.sun.com/jsf/composite"
@@ -40,98 +39,147 @@
     <!-- Note: p:remoteCommand is invoked by all non-PrimeFaces components that have AJAX-activity.
                This is due a bug in p:wizard (see comment in consumePartOfItem.xhtml). -->
     <composite:implementation>
+        
         <crimsy:containerModal
             controller="#{cc.attrs.containerController.containerSelectionDialogController}"
             widgetVar="dlgcontainerSearch"
             updateTargetClass="containerPseudoClass"
             rendered="#{not cc.attrs.historyMode}" />
-        <b:container>
-            <b:row>
-                <b:column
-                    span="4"
-                    styleClass="containerPseudoClass">
-                    <b:container>
-                        <b:row>
-                            <b:column
-                                span="2"
-                                styleClass="itemEditLocationHeader">
+        
+        
+        <p:outputPanel>
+
+            <p:row>
+
+                <p:outputPanel styleClass="containerPseudoClass">
+
+                    <p:outputPanel>
+
+                        <p:row>
+                            
+                            <!--Current location-->
+                            <!--=========================================================================================-->
+                            <p:outputPanel styleClass="itemEditLocationHeader" style="margin:0;">
                                 <h:outputText value="#{msgs.itemEdit_containerPanel_current_location}" />
-                            </b:column>
-                            <b:column span="1">
+                                <hr/>
+                            </p:outputPanel>
+
+                            
+                            <!--Remove Button-->
+                            <!--=========================================================================================-->
+                            <p:outputPanel >
+
                                 <p:remoteCommand
                                     name="containerSelectionAndInfos_actionRemoveContainer"
                                     process="@this"
                                     update="@(.containerPseudoClass)"
                                     action="#{cc.attrs.containerController.actionRemoveContainer()}"
                                     rendered="#{not cc.attrs.historyMode}" />
-                                <b:button
+
+                                <p:commandButton
+                                    style="margin-bottom: 0.5rem;"
                                     styleClass="itemEditContainerRemoveButton"
+                                    ajax="true"
                                     onclick="containerSelectionAndInfos_actionRemoveContainer();"
                                     value="remove"
                                     disabled="#{cc.attrs.historyMode}" />
-                            </b:column>
-                        </b:row>
+
+                            </p:outputPanel>
+                            <!--=========================================================================================-->
+
+                        </p:row>
+                        
+                        
+                        <!--Autofill content-->
+                        <!--=========================================================================================-->
                         <crimsy:containerInfos containerInfoPresenter="#{cc.attrs.containerController.containerInfoPresenter}" />
-                        <b:row>
-                            <b:column
-                                span="3"
-                                styleClass="itemEditLocationHeader">
+
+                        <!--????????-->
+                        <!--=========================================================================================-->
+                        <p:row>
+                            <p:outputPanel styleClass="itemEditLocationHeader">
                                 <h:outputText value="" />
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column
-                                span="3"
-                                styleClass="itemEditLocationHeader">
+                            </p:outputPanel>
+                        </p:row>                    
+                        <!--=========================================================================================-->
+
+                        <!--Location search -->
+                        <!--=========================================================================================-->
+                        <p:row>
+                            <p:outputPanel styleClass="itemEditLocationHeader" style="margin:0;">
                                 <h:outputText value="#{msgs.itemEdit_containerPanel_locationSearch}" />
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="1">
+                                <hr/>
+                            </p:outputPanel>
+                        </p:row>
+
+                        <!--Quick Search lable-->
+                        <!--=========================================================================================-->
+                        <p:row>
+                            <p:outputPanel >
                                 <h:outputText value="#{msgs.itemEdit_containerPanel_quickSearch}" />
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column
-                                span="2"
-                                styleClass="containerPseudoClass">
-                                <p:autoComplete
-                                    value="#{cc.attrs.containerController.containerInfoPresenter.containerName}"
-                                    maxResults="15"
-                                    forceSelection="true"
-                                    completeMethod="#{cc.attrs.containerController.nameSuggestions}"
-                                    disabled="#{cc.attrs.historyMode}">
-                                    <p:ajax
-                                        event="itemSelect" 
-                                        listener="#{cc.attrs.containerController.actionOnItemSelect}"
-                                        update="@(.containerPseudoClass)" />
-                                </p:autoComplete>
-                            </b:column>
-                            <b:column span="1">
-                                <p:remoteCommand
-                                    name="containerSelectionAndInfos_actionOpenContainerSearchDialog"
-                                    process="@this"
-                                    update="@(.containerModal)"
-                                    oncomplete="PF('dlgcontainerSearch').show();"
-                                    rendered="#{not cc.attrs.historyMode}" />
-                                <b:button
-                                    styleClass="itemEditcontainerAdvancedSearch"
-                                    onclick="containerSelectionAndInfos_actionOpenContainerSearchDialog();"
-                                    value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}"
-                                    disabled="#{cc.attrs.historyMode}" />
-                            </b:column>
-                        </b:row>
-                    </b:container>
-                </b:column>
-                <b:column
-                    span="4"
+                            </p:outputPanel>
+                        </p:row>
+
+                        <!--Suchfeld-->
+                        <!--=========================================================================================-->
+                        <p:row>
+                            <div style="display: flex; flex-direction: row; ">
+                                <p:outputPanel styleClass="containerPseudoClass">
+
+                                    <p:autoComplete
+                                        value="#{cc.attrs.containerController.containerInfoPresenter.containerName}"
+                                        maxResults="15"
+                                        forceSelection="true"
+                                        completeMethod="#{cc.attrs.containerController.nameSuggestions}"
+                                        disabled="#{cc.attrs.historyMode}">
+                                        <p:ajax
+                                            event="itemSelect" 
+                                            listener="#{cc.attrs.containerController.actionOnItemSelect}"
+                                            update="@(.containerPseudoClass)" />
+                                    </p:autoComplete>
+
+                                </p:outputPanel>
+
+                                <!--Button Create new container-->
+                                <!--=========================================================================================-->
+                                <p:outputPanel >
+
+                                    <p:remoteCommand
+                                        name="containerSelectionAndInfos_actionOpenContainerSearchDialog"
+                                        process="@form"
+                                        oncomplete="PF('dlgcontainerSearch').show();"
+                                        update="@(.containerModal)"
+                                        rendered="#{not cc.attrs.historyMode}" />
+
+                                    <p:commandButton
+                                        style="padding:0; margin-left: 0.5rem;"
+                                        ajax="true"
+                                        styleClass="itemEditcontainerAdvancedSearch"
+                                        value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}"
+                                        onclick="containerSelectionAndInfos_actionOpenContainerSearchDialog();"
+                                        disabled="#{cc.attrs.historyMode}" />
+
+                                </p:outputPanel>
+
+                            </div>
+                        </p:row>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+                <!--POP-UP Window-->
+                <!--=========================================================================================-->
+                <p:outputPanel
+
                     styleClass="containerPseudoClass">
                     <crimsy:container2d
                         controller="#{cc.attrs.containerController.container2dController}"
                         rendered="#{cc.attrs.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"
                         disabled="#{cc.attrs.historyMode}" />
-                </b:column>
-            </b:row>
-        </b:container>
+                </p:outputPanel>
+
+            </p:row>
+        </p:outputPanel>
     </composite:implementation>
 </html>

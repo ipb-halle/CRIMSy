@@ -29,7 +29,7 @@ public class EditInputValidatorMock extends EditInputValidator {
 
     public EditInputValidatorMock(ContainerService containerService, String originalLabel) {
         super(containerService, originalLabel);
-        this.errorMessagePresenter = MessagePresenterMock.getInstance();
+        this.errorMessagePresenter = new MessagePresenterMock();
     }
 
 }

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.project;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
@@ -28,15 +29,17 @@ import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import jakarta.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,7 +67,7 @@ public class ProjectBean implements Serializable, ACObjectBean {
     private Logger logger = LogManager.getLogger(ProjectBean.class);
     private ACObjectController acObjectController;
     private User user;
-
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     @Inject
     private ProjectEditBean projectEditBean;
 
@@ -74,6 +77,10 @@ public class ProjectBean implements Serializable, ACObjectBean {
     @Inject
     private Navigator navigator;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
+    
     public void reloadReadableProjects() {
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
         builder.setDeactivated(false);
@@ -85,6 +92,10 @@ public class ProjectBean implements Serializable, ACObjectBean {
         Collections.sort(readableProjects, (p1, p2) -> {
             return p1.getName().compareTo(p2.getName());
         });
+    }
+
+    public String getI18nOfProjectType(ProjectType type){
+        return Messages.getString(MESSAGE_BUNDLE, "project_type_" + type.toString(), null);
     }
 
     public void actionStartNewProjectCreation() {
@@ -117,8 +128,11 @@ public class ProjectBean implements Serializable, ACObjectBean {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ProjectBean.setCurrentAccount");
         this.user = evt.getCurrentAccount();
         reloadReadableProjects();
+        loggingProfiler.profilerStop("ProjectBean.setCurrentAccount");
+        
     }
 
     @Override

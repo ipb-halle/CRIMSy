@@ -20,7 +20,10 @@ package de.ipb_halle.lbac.entity;
 import de.ipb_halle.crimsy_api.DTO;
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 
 /**
  * Represents a Cloud (i.e. a group of nodes)

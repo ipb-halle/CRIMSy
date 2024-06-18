@@ -25,13 +25,14 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.sequence.search.service.SequenceSearchService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.util.jsf.SendFileBean;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  *
@@ -40,6 +41,7 @@ import javax.inject.Named;
 @Named
 @SessionScoped
 public class SequenceSearchBean implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -60,6 +62,9 @@ public class SequenceSearchBean implements Serializable {
     private MaterialOverviewBean overviewBean;
 
     @Inject
+    private LoggingProfiler loggingProfiler;
+    
+    @Inject
     private transient MessagePresenter messagePresenter;
 
     private SequenceSearchMaskController searchMaskController;
@@ -67,6 +72,7 @@ public class SequenceSearchBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("SequenceSearchBean");
         resultsTableController = new SequenceSearchResultsTableController(
                 materialService,
                 sequenceSearchService,
@@ -80,10 +86,15 @@ public class SequenceSearchBean implements Serializable {
                 memberService,
                 messagePresenter);
         resultsTableController.setSearchMaskController(searchMaskController);
+        loggingProfiler.profilerStop("SequenceSearchBean");
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("SequenceSearchBean.setCurrentAccount");
+
         resultsTableController.setLastUser(evt.getCurrentAccount());
+        loggingProfiler.profilerStop("SequenceSearchBean.setCurrentAccount");
+
     }
 
     /*

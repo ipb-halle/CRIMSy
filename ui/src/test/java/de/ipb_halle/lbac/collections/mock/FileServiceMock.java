@@ -17,20 +17,15 @@
  */
 package de.ipb_halle.lbac.collections.mock;
 
-import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.lbac.service.FileService;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
- *
  * @author fmauz
  */
 public class FileServiceMock extends FileService {
 
     private boolean createSuccess = true;
-    private boolean deleteSuccess = true;
-    private String DATA_ROOT = "/data/ui/";
 
     @Override
     public long countFilesInDir(String dirPath) {
@@ -38,56 +33,20 @@ public class FileServiceMock extends FileService {
     }
 
     @Override
-    public boolean createDir(String dirPath) {
+    public boolean createDir(AttachmentHolder holder) {
         return createSuccess;
     }
 
     @Override
-    public boolean deleteDir(String dirPath) {
-        return deleteSuccess;
+    public void deleteDir(AttachmentHolder holder) {
     }
 
     @Override
-    public boolean deleteFile(String path) {
-        return deleteSuccess;
+    public void deleteFile(String path) {
     }
 
     @Override
-    public boolean deleteFile(String collection, String filename) {
-        return deleteSuccess;
-    }
-
-    @Override
-    public boolean deleteFile(Collection collection, String filename) {
-        return deleteSuccess;
-    }
-
-    @Override
-    public String getStoragePath(String dirPath) {
-        return DATA_ROOT + dirPath;
-    }
-
-    @Override
-    public Path getUploadPath(String path) {
-        return Paths.get(DATA_ROOT + path);
-    }
-
-    @Override
-    public boolean storagePathExists(String dirPath) {
+    public boolean storagePathExists(AttachmentHolder attachment) {
         return true;
     }
-
-    @Override
-    public boolean storagePathIsAccessible(String dirPath) {
-        return true;
-    }
-
-    public void setCreateSuccess(boolean createSuccess) {
-        this.createSuccess = createSuccess;
-    }
-
-    public void setDeleteSuccess(boolean deleteSuccess) {
-        this.deleteSuccess = deleteSuccess;
-    }
-
 }

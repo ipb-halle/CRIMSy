@@ -35,8 +35,8 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
-import javax.faces.component.UIComponentBase;
-import javax.inject.Inject;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -87,7 +87,7 @@ public class LinkCreationProcessTest extends TestBase {
                 .setProjectName("LinkCreationProcessTest_Project")
                 .setType(ProjectType.BIOCHEMICAL_PROJECT)
                 .createAndSaveProject(publicUser);
-        experimentBean = new ExperimentBean(itemAgent, materialAgent, context, projectService, expService, MessagePresenterMock.getInstance(), expRecService);
+        experimentBean = new ExperimentBean(itemAgent, materialAgent, context, projectService, expService, getMessagePresenterMock(), expRecService);
         LoginEvent event = new LoginEvent(publicUser);
         experimentBean.setCurrentAccount(event);
         linkCreationProcess = new LinkCreationProcess(materialAgent, itemAgent, experimentBean);

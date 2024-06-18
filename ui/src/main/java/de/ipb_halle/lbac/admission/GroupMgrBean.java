@@ -19,21 +19,21 @@ package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupOrchestrator;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +41,7 @@ import org.apache.logging.log4j.LogManager;
 @Named("groupMgrBean")
 @SessionScoped
 public class GroupMgrBean implements Serializable {
+
     private String oldGroupName;
 
     private enum MODE {
@@ -48,6 +49,10 @@ public class GroupMgrBean implements Serializable {
     };
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    public final static String GROUP_ADDED = "groupMgr_group_added";
+    public final static String GROUP_DEACTIVATED = "groupMgr_group_deactivated";
+    public final static String GROUP_EDITED = "groupMgr_group_edited";
+    public final static String GROUP_INVALID_NAME = "groupMgr_no_valide_name";
 
     private final static Long serialVersionUID = 1L;
 
@@ -66,6 +71,9 @@ public class GroupMgrBean implements Serializable {
     @Inject
     private DeactivateGroupOrchestrator deactivateOrchestrator;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private Group group;
     private transient Logger logger;
     private boolean nestedFlag;
@@ -90,8 +98,10 @@ public class GroupMgrBean implements Serializable {
      */
     @PostConstruct
     private void InitGroupMgrBean() {
+        loggingProfiler.profilerStart("GroupMgrBean Postcontructor");
         this.groupNameValidator = new GroupNameValidator(memberService);
         initGroup();
+        loggingProfiler.profilerStop("GroupMgrBean Postcontructor");
     }
 
     public void actionAddMembership(Member m) {
@@ -102,16 +112,16 @@ public class GroupMgrBean implements Serializable {
         if (groupNameValidator.isGroupNameValide(this.group.getName())) {
             this.memberService.save(this.group);
             initGroup();
-            messagePresenter.info("groupMgr_group_added");
+            messagePresenter.info(GROUP_ADDED);
         } else {
-            messagePresenter.error("groupMgr_no_valide_name");
+            messagePresenter.error(GROUP_INVALID_NAME);
         }
         this.mode = MODE.READ;
 
     }
 
     /**
-     * delete a group TODO: check for several preconditions: - permission -
+     * delete a group ToDo: check for several preconditions: - permission -
      * subSystemType - node - no delete for adminGroup or publicGroup - ...
      */
     public void actionDelete() {
@@ -120,7 +130,7 @@ public class GroupMgrBean implements Serializable {
 
         initGroup();
         this.mode = MODE.READ;
-        messagePresenter.info("groupMgr_group_deactivated");
+        messagePresenter.info(GROUP_DEACTIVATED);
     }
 
     public void actionDeleteMembership(Membership ms) {
@@ -142,9 +152,9 @@ public class GroupMgrBean implements Serializable {
         }
         if (groupNameValidator.isGroupNameValide(this.group.getName())) {
             this.memberService.save(this.group);
-            messagePresenter.info("groupMgr_group_edited");
+            messagePresenter.info(GROUP_EDITED);
         } else {
-            messagePresenter.error("groupMgr_no_valide_name");
+            messagePresenter.error(GROUP_INVALID_NAME);
         }
         initGroup();
         this.mode = MODE.READ;
@@ -282,16 +292,18 @@ public class GroupMgrBean implements Serializable {
         this.group.setSubSystemType(AdmissionSubSystemType.LOCAL);
     }
 
-    public void setModeCreate() {
+    public void setModeCreate(Group g) {
         initGroup();
         this.mode = MODE.CREATE;
     }
 
-    public void setModeDelete() {
+    public void setModeDelete(Group g) {
+        setGroup(g);
         this.mode = MODE.DELETE;
     }
 
-    public void setModeUpdate() {
+    public void setModeUpdate(Group g) {
+        setGroup(g);
         this.mode = MODE.UPDATE;
     }
 

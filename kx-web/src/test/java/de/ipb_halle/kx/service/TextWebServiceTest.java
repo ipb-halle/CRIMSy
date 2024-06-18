@@ -27,10 +27,10 @@ import de.ipb_halle.kx.termvector.TermVectorService;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.Arrays;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -49,18 +49,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-
 /**
  *
  * @author fblocal
  */
-
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class TextWebServiceTest {
 
-//  @Resource(name = "DefaultManagedExecutorService")
-//  private ManagedExecutorService executor;
+    // @Resource(name = "DefaultManagedExecutorService")
+    // private ManagedExecutorService executor;
 
     @ArquillianResource
     URL baseURL;
@@ -98,7 +96,7 @@ public class TextWebServiceTest {
     private String streamToString(InputStream inputStream) {
         try (ByteArrayOutputStream result = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[1024];
-            for (int length; (length = inputStream.read(buffer)) != -1; ) {
+            for (int length; (length = inputStream.read(buffer)) != -1;) {
                 result.write(buffer, 0, length);
             }
             // StandardCharsets.UTF_8.name() > JDK 7
@@ -120,8 +118,8 @@ public class TextWebServiceTest {
         // port number must match the arquillian setting
         HttpUriRequest request = new HttpGet(
                 new URL(
-                    baseURL, 
-                    String.format("process?fileId=%d&type=%s", fileId, type.toString())
+                        baseURL,
+                        String.format("process?fileId=%d&type=%s", fileId, type.toString())
                 ).toExternalForm());
         HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
@@ -148,13 +146,13 @@ public class TextWebServiceTest {
         mock.setStatus(TextWebStatus.DONE);
         mock.setLanguage("de");
         mock.setTermVectors(Arrays.asList(
-                    // root, file, freq
-                    new TermVector ("kapsel", fo.getId(), 1), 
-                    new TermVector ("gefund", fo.getId(), 2)));
+                // root, file, freq
+                new TermVector("kapsel", fo.getId(), 1),
+                new TermVector("gefund", fo.getId(), 2)));
         mock.setWordOrigins(Arrays.asList(
-                    // stem, origin
-                    new StemmedWordOrigin ("kapsel", "kapselung"),
-                    new StemmedWordOrigin ("gefund", "gefunden")));
+                // stem, origin
+                new StemmedWordOrigin("kapsel", "kapselung"),
+                new StemmedWordOrigin("gefund", "gefunden")));
         result = doRequest(fo.getId(), TextWebRequestType.QUERY);
         assertEquals(TextWebStatus.DONE.toString(), result, "successful job completion");
 

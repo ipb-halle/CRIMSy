@@ -21,76 +21,78 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <p:tab 
+            <p:tab
                 title="#{msgs.materialCreation_panelStorage_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
                 <p:outputPanel
                     styleClass="storagePanelClass"
                     rendered="#{materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
-                    <b:container>
-                        <b:row>
-                            <b:column span="2"
-                                      styleClass="storageClassHeader">
-                                <h:outputText
+                    <div style="display:flex; flex-direction: row; justify-content: left; align-items: center; margin: 10px;">
+                        <h:outputText
+                            style="margin:0.5rem;"
+                            value="#{msgs.materialCreation_panelStorage_storageClass}"/>
 
-                                    value="#{msgs.materialCreation_panelStorage_storageClass}"/>
-                            </b:column>
-                            <b:column span="2"
-                                      styleClass="storageClassHeader">
-                                <p:selectBooleanCheckbox
-                                    disabled="#{!materialBean.getStorageInformationBuilder().isConditionEditable()}"
-                                    value="#{materialBean.getStorageInformationBuilder().storageClassActivated}">
-                                    <p:ajax  update="@(.storageClassChoosable)"/> 
-                                </p:selectBooleanCheckbox>
-                            </b:column>
+                        <p:selectBooleanCheckbox
+                            style="margin:0.5rem;"
+                            disabled="#{!materialBean.getStorageInformationBuilder().isConditionEditable()}"
+                            value="#{materialBean.getStorageInformationBuilder().storageClassActivated}">
+                            <p:ajax  
+                                process="@this"
+                                update="@(.storageClassChoosable)"/>
+                        </p:selectBooleanCheckbox>
+                        <p:outputPanel
+                            styleClass="storageClassChoosable">
+                            <p:selectOneMenu
+                                id="ads"
+                                styleClass="storageClassChoosable"
+                                converter="StorageClassConverter"                            
+                                rendered="#{materialBean.getStorageInformationBuilder().isStorageClassRendered()}"
+                                disabled="#{!materialBean.getStorageInformationBuilder().isConditionEditable()}"
+                                value="#{materialBean.getStorageInformationBuilder().choosenStorageClass}">
+                                <p:ajax  
+                                    process="@this"
+                                    update="@form"/>
+                                <f:selectItems
+                                    var="item"
+                                    itemValue="#{item}"
+                                    value="#{materialBean.getStorageInformationBuilder().possibleStorageClasses}"
+                                    itemLabel="#{item.name}" />
+                            </p:selectOneMenu>
+                        </p:outputPanel>
 
-                            <b:column span="5"
-                                      styleClass="storageClassChoosable">
-                                <b:selectOneMenu
-                                    id="ads"
-                                    ajax="true"
-                                    styleClass="storageClassChoosable"
-                                    converter="StorageClassConverter"
-                                    disabled="#{!materialBean.getStorageInformationBuilder().isConditionEditable()}"
-                                    rendered="#{materialBean.getStorageInformationBuilder().isStorageClassRendered()}"
-                                    value="#{materialBean.getStorageInformationBuilder().choosenStorageClass}">
-                                    <f:selectItems 
-                                        var="item"
-                                        itemValue="#{item}"
-                                        value="#{materialBean.getStorageInformationBuilder().possibleStorageClasses}"
-                                        itemLabel="#{item.name}" />
-                                </b:selectOneMenu>
-                            </b:column>                            
-                        </b:row>
-                    </b:container>
+                    </div>
 
-                    <h:panelGroup
+                    <p:outputPanel
                         id="storageRemarkId"
                         styleClass="storageClassChoosable">
-                        <b:inputText
+                        <p:outputLabel 
+                            value="#{msgs.materialCreation_panelStorage_remarks}"
+                            style="margin-left: 10px;font-weight: 700"/>
+                        <p:inputText
+                            style="width:100%; margin:10px;"
                             readonly="#{materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
                             label="#{msgs.materialCreation_panelStorage_remarks}"
                             value="#{materialBean.getStorageInformationBuilder().remarks}">
                             <f:converter converterId="InputConverter" />
-                        </b:inputText>
-                    </h:panelGroup>
+                        </p:inputText>
+                    </p:outputPanel>
 
                     <p:selectManyCheckbox
                         disabled="#{!materialBean.getStorageInformationBuilder().isConditionEditable()}"
-                        layout="responsive" columns="2"
+                        layout="responsive" 
+                        columns="2"
                         value="#{materialBean.getStorageInformationBuilder().selectedConditions}">
                         <p:ajax/>
-                        <f:selectItems 
-                            value="#{materialBean.getStorageInformationBuilder().possibleConditions}" 
-                            itemLabel="#{materialBean.getStorageInformationBuilder().getLocalizedConditionName(condition)}" 
-                            var="condition"> 
+                        <f:selectItems
+                            value="#{materialBean.getStorageInformationBuilder().possibleConditions}"
+                            itemLabel="#{materialBean.getStorageInformationBuilder().getLocalizedConditionName(condition)}"
+                            var="condition">
                         </f:selectItems>
                     </p:selectManyCheckbox>
 

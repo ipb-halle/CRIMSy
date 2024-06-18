@@ -36,12 +36,13 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.reporting.ReportMgr;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
-import de.ipb_halle.lbac.items.bean.aliquot.createsolution.CreateSolutionBean;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.NonEmpty;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import jakarta.annotation.PostConstruct;
 import de.ipb_halle.reporting.Report;
 import de.ipb_halle.reporting.ReportType;
 
@@ -52,10 +53,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,7 +68,7 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ItemOverviewBean implements Serializable, ACObjectBean {
 
-    private final Logger logger = LogManager.getLogger(this.getClass().getName());
+    private transient Logger logger;
     private final int PAGE_SIZE = 10;
 
     @Inject
@@ -92,18 +93,30 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected ReportMgr reportMgr;
     @Inject
     private transient MessagePresenter messagePresenter;
+    @Inject
+    protected LoggingProfiler loggingProfiler;
 
     private ACObjectController acObjectController;
     protected User currentUser;
     private int firstResult;
     private int itemAmount;
     private Item itemInFocus;
-    private ItemLocaliser itemLocaliser = new ItemLocaliser();
+    protected ItemLocaliser itemLocaliser;
     private SearchResult searchResult;
-    private SearchMaskValues searchMaskValues = new SearchMaskValues();
+    protected SearchMaskValues searchMaskValues;
+    private List<Report> availableReports;
 
     private Report selectedReport;
     private ReportType selectedReportType;
+
+    @PostConstruct
+    public void init() {
+        loggingProfiler.profilerStart("ItemOverviewBean");
+        logger = LogManager.getLogger(this.getClass().getName());
+        itemLocaliser = new ItemLocaliser();
+        searchMaskValues = new SearchMaskValues();
+        loggingProfiler.profilerStop("ItemOverviewBean");
+    }
 
     public void actionApplySearchFilter() {
         actionFirstItems();
@@ -136,10 +149,6 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reloadItems();
     }
 
-    public List<Report> getAvailableReports() {
-        return reportMgr.getAvailableReports(this.getClass().getName());
-    }
-
     public Report getSelectedReport() {
         return selectedReport;
     }
@@ -162,7 +171,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateReport() {
         reportMgr.submitReport(selectedReport, collectReportParameters(), selectedReportType, currentUser);
-        messagePresenter.info("reporting_reportSumbittedGrowlMsg");
+        messagePresenter.info("reporting_reportSubmittedGrowlMsg");
     }
 
     private Map<String, Object> collectReportParameters() {
@@ -203,10 +212,14 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ItemOverviewBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         firstResult = 0;
         searchMaskValues = new SearchMaskValues();
         reloadItems();
+        loggingProfiler.profilerStop("ItemOverviewBean.setCurrentAccount");
+
     }
 
     public int getItemAmount() {

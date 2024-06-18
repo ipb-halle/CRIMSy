@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -55,7 +55,7 @@ public class InputValidatorTest extends TestBase {
     public void init() {
         validator = new InputValidator(containerService);
         validator.setContainerService(containerService);
-        messagePresenter = MessagePresenterMock.getInstance();
+        messagePresenter = getMessagePresenterMock();
         messagePresenter.resetMessages();
         validator.setErrorMessagePresenter(messagePresenter);
         c = new Container();

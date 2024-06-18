@@ -36,8 +36,8 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
+import jakarta.inject.Inject;
 import java.util.Map;
-import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -216,7 +216,7 @@ public class ProjectServiceTest extends TestBase {
     }
 
     private void cleanUp(User user2, ACList projectAcList, Project p) {
-        Map<String, Object> params = new HashMap<> ();
+        Map<String, Object> params = new HashMap<>();
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
         params.put("aclist", projectAcList.getId());

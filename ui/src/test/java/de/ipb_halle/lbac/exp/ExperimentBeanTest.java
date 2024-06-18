@@ -53,7 +53,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -119,7 +119,7 @@ public class ExperimentBeanTest extends TestBase {
                 .setMaterialAgent(materialAgentMock)
                 .setMemberService(memberService)
                 .setProjectService(projectService)
-                .setMessagePresenter(MessagePresenterMock.getInstance())
+                .setMessagePresenter(getMessagePresenterMock())
                 .setItemAgent(itemAgentMock);
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
 
@@ -349,20 +349,11 @@ public class ExperimentBeanTest extends TestBase {
                 return "abc";
             }
         });
-        assertEquals("abc;ajax:experimentBean.actionDoNothing();javascript:return false;", experimentBean.getSaveButtonOnClick());
 
-        experimentBean.setExpRecordController(new ExpRecordController(experimentBean) {
-            @Override
-            public ExpRecord getNewRecord() {
-                return null;
-            }
-
-            @Override
-            public String getSaveButtonOnClick() {
-                return "abc;";
-            }
-        });
-        assertEquals("abc;ajax:experimentBean.actionDoNothing();javascript:return false;", experimentBean.getSaveButtonOnClick());
+        assertEquals(
+                "abc;PrimeFaces.oncomplete=function(xhr, status, args) { experimentBean.actionDoNothing(); return false; };",
+                experimentBean.getSaveButtonOnClick()
+        );
     }
 
     @Test

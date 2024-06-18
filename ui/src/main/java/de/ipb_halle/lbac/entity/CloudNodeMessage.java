@@ -23,9 +23,16 @@ package de.ipb_halle.lbac.entity;
  * of the cloud and the local node when sent as a request and a list of nodes 
  * when received as a reply.
  */
-import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.List;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

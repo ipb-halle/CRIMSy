@@ -28,26 +28,24 @@ import de.ipb_halle.lbac.webclient.LbacWebClient;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.DependsOn;
-import javax.ejb.Startup;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.DependsOn;
+import jakarta.ejb.Startup;
+import jakarta.inject.Inject;
 
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.core.MediaType;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * CollectionWebClient
  *
  *
  */
-//@Singleton
 @ApplicationScoped
 @Startup
 @DependsOn({"NodeService", "CollectionService"})
@@ -124,7 +122,7 @@ public class CollectionWebClient
         } catch (Exception e) {
             cn.fail();
             cloudNodeService.save(cn);
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("getCollectionsFromRemoteNode() caught an exception:", (Throwable) e);
             return new ArrayList<>();
         }
         return new ArrayList<>();

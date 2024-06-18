@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.util;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * This interface offers methods to obtain information from web.xml.

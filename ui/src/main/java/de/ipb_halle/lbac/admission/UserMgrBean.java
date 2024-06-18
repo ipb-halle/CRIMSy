@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.container.bean.CallBackController;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 import de.ipb_halle.lbac.service.NodeService;
@@ -30,10 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +45,7 @@ public class UserMgrBean implements Serializable {
      * This bean manages users. This includes creating, updating and deleting of
      * local users and managing memberships for all type of users.
      *
-     * TODO: more restrictive permission and plausibility checks for (all?)
+     * ToDo: more restrictive permission and plausibility checks for (all?)
      * action* methods.
      */
     private enum MODE {
@@ -85,6 +84,8 @@ public class UserMgrBean implements Serializable {
     private MODE mode;
 
     private String tempPassword;
+
+    @Inject
     private MessagePresenter messagePresenter;
     protected CallBackController callBackController = new CallBackController();
 
@@ -129,7 +130,6 @@ public class UserMgrBean implements Serializable {
     @PostConstruct
     private void initUserMgrBean() {
         // uses nodeService, which is not available in constructor!
-        messagePresenter = JsfMessagePresenter.getInstance();
         initUser();
     }
 
@@ -274,7 +274,7 @@ public class UserMgrBean implements Serializable {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(MemberService.PARAM_NODE_ID, this.nodeService.getLocalNode().getId());
         cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LOCAL);
-        // TODO: filter out groups, the current user is already a member of
+        // ToDo: filter out groups, the current user is already a member of
         return this.memberService.loadGroups(cmap);
     }
 
@@ -360,11 +360,13 @@ public class UserMgrBean implements Serializable {
         this.mode = MODE.CREATE;
     }
 
-    public void setModeDelete() {
+    public void setModeDelete(User u) {
+        setUser(u);
         this.mode = MODE.DELETE;
     }
 
-    public void setModeUpdate() {
+    public void setModeUpdate(User u) {
+        setUser(u);
         this.mode = MODE.UPDATE;
     }
 

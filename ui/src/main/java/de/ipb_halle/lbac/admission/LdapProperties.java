@@ -29,18 +29,15 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-//import javax.faces.bean.ApplicationScoped;
-//import javax.faces.bean.ManagedBean;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import javax.naming.Context;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-//@ManagedBean(name = "ldapProps")
 @Named("ldapProps")
 @ApplicationScoped
 public class LdapProperties implements Serializable {

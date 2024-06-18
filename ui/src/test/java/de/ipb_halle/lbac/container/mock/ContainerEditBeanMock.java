@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.container.mock;
 import de.ipb_halle.lbac.container.bean.ContainerEditBean;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
@@ -29,6 +30,7 @@ public class ContainerEditBeanMock extends ContainerEditBean {
 
     public ContainerEditBeanMock() {
         this.localizer = new ContainerLocalizerMock();
+        this.loggingProfiler = new LoggingProfiler();
     }
 
     public ContainerEditBeanMock setContainerService(ContainerService service) {

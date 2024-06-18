@@ -25,14 +25,15 @@ import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
-
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import java.util.Set;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.ws.rs.core.MediaType;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 
 @Stateless
 public class WordCloudWebClient extends LbacWebClient {

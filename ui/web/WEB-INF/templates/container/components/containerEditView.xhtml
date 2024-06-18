@@ -18,106 +18,111 @@ limitations under the License.
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
-        <p:dialog 
+        <p:dialog
             id="dlgcontainerEditId"
             closable="false"
             widgetVar="dlgcontainerEdit"
-            modal="true" 
+            modal="true"
             styleClass="containerEditModal"
             header="#{containerEditBean.getDialogTitle()}"
             width="600px">
             <center>
-                <b:form 
+                <h:form
                     id="editForm"
+                    style="border:1px solid #029ACF;border-radius:3px;"
                     styleClass="containerEditFormStyle">
-                    <b:container
-                        id="containerEditId"
-                        styleClass="containerEdit">
+                    <div id="containerEditId"
+                         styleClass="containerEdit">
 
                         <!-- Container type: room, freezer, etc. -->
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column span="4" styleClass="containerEditLabel">
+                        <!--****************************************************************************************-->
+                        <p:row styleClass="containerFilterRow">
+                            <p:outputPanel
+                                style="margin-top: 0.5rem;"
+                                styleClass="containerEditLabel">
                                 <h:outputText value="#{msgs.container_edit_label_type}"/>
-                            </b:column>
-                        </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column span="4">
-                                <b:selectOneMenu 
-                                    value="#{containerEditBean.containerType}" 
-                                    ajax="true"
+                            </p:outputPanel>
+                        </p:row>
+
+                        <p:row styleClass="containerFilterRow">
+                            <p:outputPanel >
+                                <p:selectOneMenu
+                                    value="#{containerEditBean.containerType}"
                                     disabled="#{!containerEditBean.isEditable()}"
-                                    update="@(.containerFilterRow)"
-                                    styleClass="containerEditInputfield">
+                                    styleClass="containerEditInputfield"
+                                    converter="containerTypeConverter">
                                     <f:selectItems
                                         var="type"
-                                        value="#{containerEditBean.getContainerTypesWithRankGreaterZero()}" 
+                                        value="#{containerEditBean.getContainerTypesWithRankGreaterZero()}"
                                         noSelectionValue="true"
                                         itemLabel="#{type.getLocalizedName()}"/>
-                                </b:selectOneMenu>
-                            </b:column>
-                        </b:row>
+                                    <p:ajax process="@this"
+                                            update="@(.containerFilterRow)"/>
+                                    <!--ajax="true"-->
+                                    <!--update="@(.containerFilterRow)"-->
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                        </p:row>
 
-                        <!-- Container name (aka "label") -->
-                        <b:row>
-                            <b:column
-                                span="4"
+                        <!-- Label Container name (aka "label") -->
+                        <!--****************************************************************************************-->
+                        <p:row>
+                            <p:outputPanel
+                                style="margin-top: 0.5rem;"
                                 styleClass="containerEditLabel">
                                 <h:outputText
                                     value="#{msgs.container_edit_label_label}"/>
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="4">
-                                <b:inputText
+                            </p:outputPanel>
+                        </p:row>
+                        <p:row>
+                            <p:outputPanel >
+                                <p:inputText
                                     id="editNameInputField"
                                     value="#{containerEditBean.containerName}"
                                     styleClass="containerEditInputfield nameInputFieldClass">
                                     <f:converter converterId="InputConverter" />
-                                </b:inputText>
-                            </b:column>
-                        </b:row>
+                                </p:inputText>
+                            </p:outputPanel>
+                        </p:row>
 
-                        <!-- Project name (autocomplete) -->
-                        <b:row>
-                            <b:column
-                                span="4"
+                        <!-- Project (autocomplete) -->
+                        <!--****************************************************************************************-->
+                        <p:row>
+                            <p:outputPanel
+                                style="margin-top: 0.5rem;"
                                 styleClass="containerEditLabel">
                                 <h:outputText
                                     value="#{msgs.container_edit_label_project}"/>
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="4">
+                            </p:outputPanel>
+                        </p:row>
+                        <p:row>
+                            <p:outputPanel >
                                 <p:autoComplete
                                     value="#{containerEditBean.preferredProjectName}"
                                     maxResults="10"
                                     completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
                                     forceSelection="true"
                                     styleClass="containerEditInputfield" />
-                            </b:column>
-                        </b:row>
+                            </p:outputPanel>
+                        </p:row>
 
                         <!-- Location (autocomplete) -->
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column
-                                span="4"
+                        <!--****************************************************************************************-->
+                        <p:row styleClass="containerFilterRow">
+                            <p:outputPanel
+                                style="margin-top: 0.5rem;"
                                 styleClass="containerEditLabel">
-                                <h:outputText 
-                                    value="#{msgs.container_edit_label_location}"
-                                    />
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="4">
+                                <h:outputText
+                                    value="#{msgs.container_edit_label_location}"  />
+                            </p:outputPanel>
+                        </p:row>
+                        <p:row>
+                            <p:outputPanel >
                                 <p:autoComplete value="#{containerEditBean.containerLocation}"
                                                 maxResults="10"
                                                 converter="containerConverter"
@@ -128,157 +133,160 @@ limitations under the License.
                                                 itemValue="#{c}"
                                                 styleClass="containerEditInputfield">
                                 </p:autoComplete>
-                            </b:column>
-                        </b:row>
+                            </p:outputPanel>
+                        </p:row>
 
                         <!-- Dimension settings for containers (not rendered for rooms) -->
+                        <!--****************************************************************************************-->
                         <h:panelGroup id="containerDimensionsId" styleClass="containerFilterRow">
                             <ui:fragment rendered="#{containerEditBean.isDimensionVisible()}">
-                                <b:row>
-                                    <b:column
-                                        span="4"
-                                        styleClass="containerEditLabel">
-                                        <h:outputText
-                                            value="#{msgs.container_edit_label_size}"/>
-                                    </b:column>
-                                </b:row>
-                                <b:row
-                                    id="sizeRowId">
-                                    <b:column 
-                                        span="1"
-                                        id="widthcolId">
-                                        <b:inputText
+                                <p:outputPanel>
+                                    <p:outputPanel  styleClass="containerEditLabel">
+                                        <h:outputText value="#{msgs.container_edit_label_size}"/>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+                                <p:outputPanel  id="sizeRowId" class="outputPanelContainerEditView">
+                                    <p:outputLabel id="widthcolId" >
+                                        <strong><h:outputText value="#{msgs.container_edit_label_size_width}"/></strong><br/>
+                                        <p:inputText
                                             disabled="#{!containerEditBean.isEditable()}"
                                             id="width"
                                             value="#{containerEditBean.containerWidth}"
-                                            styleClass="containerEditDimesionField"
-                                            label="#{msgs.container_edit_label_size_width}">
+                                            styleClass="containerEditDimesionField">
                                             <f:converter converterId="InputConverter" />
-                                        </b:inputText>
-                                    </b:column>
-                                    <b:column
-                                        id="heightcolId"
-                                        offset="1"
-                                        span="1">
-                                        <b:inputText
+                                        </p:inputText>
+                                    </p:outputLabel>
+                                    <br/>
+                                    <p:outputLabel id="heightcolId">
+                                        <!--offset="1"-->
+                                        <strong><h:outputText value="#{msgs.container_edit_label_size_height}"/></strong><br/>
+                                        <p:inputText
                                             disabled="#{!containerEditBean.isEditable()}"
                                             id="height"
                                             value="#{containerEditBean.containerHeight}"
-                                            styleClass="containerEditDimesionField"
-                                            label="#{msgs.container_edit_label_size_height}">
+                                            styleClass="containerEditDimesionField">
                                             <f:converter converterId="InputConverter" />
-                                        </b:inputText>
-                                    </b:column>
-                                    <b:column
-                                        id="zerocolId"
-                                        offset="2"
-                                        span="1">
-                                        <b:switch
-                                            disabled="#{!containerEditBean.isEditable()}"
+                                        </p:inputText>
+                                    </p:outputLabel>
+                                    <br/>
+                                    <p:outputLabel id="zerocolId">
+                                        <!--offset="2"-->
+                                        <strong><h:outputText value="#{msgs.container_edit_label_zero}"/></strong><br/>
+                                        <p:selectBooleanButton
+                                            disabled="#{not containerEditBean.editable}"
                                             id="zero"
                                             value="#{containerEditBean.containerZeroBased}"
-                                            onText="0"
-                                            offText="1"
-                                            tooltip="#{msgs.container_edit_zero_tooltip}"
-                                            styleClass="containerEditDimesionField"
-                                            label="#{msgs.container_edit_label_zero}">
-                                        </b:switch>
-                                    </b:column>
-                                    <b:column
-                                        id="swapcolId"
-                                        offset="3"
-                                        span="1">
-                                        <b:switch 
+                                            onLabel="0"
+                                            offLabel="1"
+                                            title="#{msgs.container_edit_zero_tooltip}"
+                                            styleClass="containerEditDimesionField"/>
+                                    </p:outputLabel>
+                                    <br/>
+                                    <p:outputLabel id="swapcolId">
+                                        <strong><h:outputText value="#{msgs.container_edit_label_swap}"/></strong><br/>
+                                        <p:selectBooleanButton
                                             disabled="#{!containerEditBean.isEditable()}"
                                             id="swap"
                                             value="#{containerEditBean.containerSwapDimensions}"
-                                            onText="#{msgs.container_edit_swap_cols}"
-                                            offText="#{msgs.container_edit_swap_rows}"
-                                            tooltip="#{msgs.container_edit_swap_tooltip}"
-                                            styleClass="containerEditDimesionField"
-                                            label="#{msgs.container_edit_label_swap}">
-                                        </b:switch>
-                                    </b:column>
-                                </b:row>
-                                <b:row>
-                                    <b:alert
-                                        severity="warning"
-                                        title="#{msgs.container_dimensions_warning_title}"
-                                        value="#{msgs.container_dimensions_warning_text}" />
-                                </b:row>
+                                            onLabel="#{msgs.container_edit_swap_cols}"
+                                            offLabel="#{msgs.container_edit_swap_rows}"
+                                            title="#{msgs.container_edit_swap_tooltip}"
+                                            styleClass="containerEditDimesionField">
+                                        </p:selectBooleanButton>
+                                    </p:outputLabel>
+                                    <br/>
+                                </p:outputPanel>
+
+                                <p:outputPanel class="outputlabelWarning">
+                                    <h3>#{msgs.container_dimensions_warning_title}</h3>
+                                    <p:outputLabel value="#{msgs.container_dimensions_warning_text}" />
+                                </p:outputPanel>
                             </ui:fragment>
                         </h:panelGroup>
 
                         <!-- Only for rooms: GMO safety level and fire area -->
                         <h:panelGroup id="containerGmoSafetyLevelId" styleClass="containerFilterRow">
                             <ui:fragment rendered="#{containerEditBean.isGmoSafetyLevelVisible()}">
+
+
                                 <!-- GMO safety level -->
-                                <b:row
+                                <!--****************************************************************************************-->
+                                <p:row
+
                                     styleClass="containerFilterRow">
-                                    <b:column span="4"
-                                              styleClass="containerEditLabel">
-                                        <h:outputText 
+                                    <p:outputPanel
+                                        style="margin-top: 0.5rem;"
+                                        styleClass="containerEditLabel">
+                                        <h:outputText
                                             value="#{msgs.container_edit_label_gmosafetylevel}"/>
-                                    </b:column>
-                                </b:row>
-                                <b:row
+                                    </p:outputPanel>
+                                </p:row>
+
+                                <p:row
                                     styleClass="containerFilterRow">
-                                    <b:column span="4">
-                                        <b:selectOneMenu 
-                                            value="#{containerEditBean.gmoSafetyLevel}" 
+                                    <p:outputPanel >
+                                        <p:selectOneMenu
+                                            value="#{containerEditBean.gmoSafetyLevel}"
                                             styleClass="containerEditInputfield">
                                             <f:selectItems
                                                 value="#{containerEditBean.getGmoSafetyLevels()}"/>
-                                        </b:selectOneMenu>
-                                    </b:column>
-                                </b:row>
+                                        </p:selectOneMenu>
+                                    </p:outputPanel>
+                                </p:row>
 
                                 <!-- Fire area -->
-                                <b:row
+                                <!--****************************************************************************************-->
+                                <p:row
                                     styleClass="containerFilterRow">
-                                    <b:column
-                                        span="4"
-                                        styleClass="containerEditLabel">
-                                        <h:outputText 
-                                            value="#{msgs.container_edit_label_firearea}"/>
-                                    </b:column>
-                                </b:row>
+                                    <p:outputPanel
 
-                                <b:row
+                                        styleClass="containerEditLabel">
+                                        <h:outputText
+                                            value="#{msgs.container_edit_label_firearea}"/>
+                                    </p:outputPanel>
+                                </p:row>
+
+                                <p:row
                                     styleClass="containerFilterRow">
-                                    <b:column span="4">
-                                        <b:inputText
+                                    <p:outputPanel >
+                                        <p:inputText
                                             value="#{containerEditBean.fireArea}"
                                             styleClass="containerEditInputfield">
                                             <f:converter converterId="InputConverter" />
-                                        </b:inputText>
-                                    </b:column>
-                                </b:row>
+                                        </p:inputText>
+                                    </p:outputPanel>
+                                </p:row>
+
                             </ui:fragment>
                         </h:panelGroup>
 
-                        <b:row styleClass="containerEditButtonRowClass">
+                        <p:row styleClass="containerEditButtonRowClass">
                             <p:commandButton
                                 id="CancelButtonId"
-                                styleClass="containerEditButtonLeft containerEditButton"
+                                style="margin:0.5rem;"
+                                styleClass="containerEditButtonLeft containerEditButton ui-button-secondary"
                                 action="#{containerOverviewBean.actionCancel()}"
                                 value="#{msgs.container_button_cancel}"
                                 ajax="true"
                                 process="@this"
                                 update="@(.topLevelRowForm)"
                                 oncomplete="PF('dlgcontainerEdit').hide();"/>
+
+
+
                             <p:commandButton
-                                styleClass="containerEditButton"
                                 id="SaveButtonId"
-                                action="#{containerOverviewBean.actionTriggerContainerSave()}"
+                                styleClass="containerEditButton ui-button-danger"
                                 process="@form"
                                 value="#{msgs.container_button_save}"
+                                icon="fa fa-save"
                                 ajax="true"
                                 update="growlMsg @(.containerOverviewContainer) @(.topLevelRowForm) editForm"
+                                action="#{containerOverviewBean.actionTriggerContainerSave()}"
                                 oncomplete="if (args.success) PF('dlgcontainerEdit').hide();"/>
-                        </b:row>
-                    </b:container>
-                </b:form>
+                        </p:row>
+                    </div>
+                </h:form>
             </center>
         </p:dialog>
     </h:body>

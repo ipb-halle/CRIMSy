@@ -17,39 +17,38 @@
  */
 package de.ipb_halle.lbac.material.mocks;
 
+import de.ipb_halle.lbac.material.MessagePresenter;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Produces;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Singleton;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 
-import de.ipb_halle.lbac.material.MessagePresenter;
 
 /**
  *
  * @author fmauz
  */
+@ApplicationScoped
 @Any
-public class MessagePresenterMock implements MessagePresenter {
+public class MessagePresenterMock implements MessagePresenter, Serializable {
+
+    private final static long serialVersionUID = 1L;
+
     private List<String> errorMessages = new ArrayList<>();
     private List<String> infoMessages = new ArrayList<>();
 
-    private static MessagePresenterMock instance;
-
-    private MessagePresenterMock() {
-    }
-
-    public static synchronized MessagePresenterMock getInstance() {
-        if (instance == null) {
-            instance = new MessagePresenterMock();
-        }
-        return instance;
-    }
-
-    @Produces
-    public MessagePresenter produce() {
-        return getInstance();
-    }
+    private int instanceNumber = 0;
+    private static int instanceCounter = 0;
 
     @Override
     public String presentMessage(String messageKey, Object... args) {

@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.container.bean;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import jakarta.inject.Inject;
 import java.io.Serializable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +32,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class InputValidator implements Serializable {
 
-    protected MessagePresenter errorMessagePresenter = JsfMessagePresenter.getInstance();
+    @Inject
+    protected MessagePresenter errorMessagePresenter;
+    
     protected Integer height;
     protected final int MAX_WIDTH = 1000;
     protected final int MAX_HEIGHT = 1000;

@@ -21,6 +21,7 @@ package de.ipb_halle.lbac.collections;
  * Collection class represents a collection in the Bioactives Cloud. Model for
  * collection managment
  */
+
 import de.ipb_halle.kx.file.AttachmentHolder;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
@@ -28,34 +29,27 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
-import java.io.Serializable;
-import java.nio.file.Paths;
 
-public class Collection extends ACObject implements Serializable, Obfuscatable, DTO, AttachmentHolder {
+import java.io.Serializable;
+
+public class Collection extends ACObject implements Serializable, Obfuscatable, DTO<CollectionEntity>, AttachmentHolder {
 
     protected final static long serialVersionUID = 1L;
 
     protected Integer id;
-
-    public String COLLECTIONS_BASE_FOLDER = "/data/ui/collections";
 
     protected String description;
 
     protected String name;
 
     protected Node node;
-
-    protected String indexPath;
-
     protected String storagePath;
-
     protected Long countDocs = -1L;
 
     /**
      * default constructor
      */
     public Collection() {
-
     }
 
     /**
@@ -75,7 +69,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
             Long countDocs) {
         this.id = entity.getId();
         this.description = entity.getDescription();
-        this.indexPath = entity.getIndexPath();
         this.name = entity.getName();
         this.storagePath = entity.getStoragePath();
         this.node = n;
@@ -93,9 +86,10 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         return entity
                 .setId(id)
                 .setDescription(description)
-                .setIndexPath(indexPath)
                 .setName(name)
                 .setStoragePath(storagePath);
+
+
     }
 
     //*** getter and setter ***
@@ -110,10 +104,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
 
     public String getName() {
         return this.name;
-    }
-
-    public String getIndexPath() {
-        return this.indexPath;
     }
 
     public String getStoragePath() {
@@ -135,7 +125,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
     @Override
     public void obfuscate() {
         super.obfuscate();
-        this.indexPath = null;
         this.storagePath = null;
 
     }
@@ -152,10 +141,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         this.name = n;
     }
 
-    public void setIndexPath(String n) {
-        this.indexPath = n;
-    }
-
     public void setStoragePath(String n) {
         this.storagePath = n;
     }
@@ -168,29 +153,5 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         this.countDocs = countDocs;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("COLLECTION DUMP");
-        sb.append("\n  id=");
-        sb.append(this.id);
-        sb.append("\n  name=");
-        sb.append(this.name);
-        sb.append("\n  indexPath=");
-        sb.append(this.indexPath);
-        sb.append("\n  storagePath=");
-        sb.append(this.storagePath);
-        sb.append("\n  nodeId=");
-        sb.append(this.node.getId());
-        sb.append("\n  countDocs=");
-        sb.append(this.countDocs);
-        sb.append("\n");
-        return sb.toString();
-    }
-
-    @Override
-    public String getBaseFolder() {
-        return Paths.get(COLLECTIONS_BASE_FOLDER, getName()).toString();
-    }
 
 }

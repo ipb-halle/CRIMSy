@@ -69,7 +69,7 @@ public class Taxonomy extends Material {
         Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierachy, getOwner(), creationTime);
         copiedTaxonomy.setTaxHierachy(new ArrayList<>());
         for (Taxonomy t : taxHierachy) {
-            copiedTaxonomy.getTaxHierachy().add(t);
+            copiedTaxonomy.getTaxHierarchy().add(t);
         }
 
         copiedTaxonomy.setLevel(new TaxonomyLevel(level.getId(), level.getName(), level.getRank()));
@@ -89,7 +89,7 @@ public class Taxonomy extends Material {
         return level;
     }
 
-    public List<Taxonomy> getTaxHierachy() {
+    public List<Taxonomy> getTaxHierarchy() {
         return taxHierachy;
     }
 

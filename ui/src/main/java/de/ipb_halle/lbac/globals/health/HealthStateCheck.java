@@ -27,6 +27,9 @@ import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.collections.CollectionService;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -123,11 +126,16 @@ public class HealthStateCheck {
      * Checks if there is a local directory for the public collection
      */
     private void checkFileSystemState() {
+        //create new collection
+        Collection c = new Collection();
+        c.setName("public");
+        c.setStoragePath(fileService.getCollectionPath(c).toString());
 
-        boolean localFileSystemCollectionCheck = fileService.storagePathExists(PUBLIC_COLLECTION);
+        boolean localFileSystemCollectionCheck = Files.exists(Paths.get(c.getStoragePath()));
+
         if (!localFileSystemCollectionCheck) {
             healthState.publicCollectionFileState = HealthState.State.FAILED;
-            logger.error(String.format("local file repository '%s' not found.", fileService.getStoragePath(PUBLIC_COLLECTION)));
+            logger.error(String.format("local file repository '%s' not found.", c.getStoragePath()));
         } else {
             healthState.publicCollectionFileState = HealthState.State.OK;
         }
@@ -136,7 +144,7 @@ public class HealthStateCheck {
 
     private void checkJobSecret() {
         try {
-            if (infoObjectService.loadByKey(SETTING_JOB_SECRET).getValue() != null) {;
+            if (infoObjectService.loadByKey(SETTING_JOB_SECRET).getValue() != null) {
                 healthState.jobSecretState = HealthState.State.OK;
             }
         } catch (Exception e) {
@@ -164,7 +172,7 @@ public class HealthStateCheck {
                 //Check if the name of the public collection in db is in sync with the
                 //name in the local file system
                 if (healthState.publicCollectionFileState == HealthState.State.OK
-                        && collNameInDb.equals(fileService.getStoragePath(PUBLIC_COLLECTION))) {
+                        && collNameInDb.equals(fileService.getCollectionPath(publicCollection).toString())) {
                     healthState.publicCollectionFileSyncState = HealthState.State.OK;
                 } else {
                     healthState.publicCollectionFileSyncState = HealthState.State.FAILED;
@@ -234,7 +242,6 @@ public class HealthStateCheck {
     /**
      * Checks if information of the local collections are in sync with the
      * information in the filesystem.
-     *
      */
     private void checkSyncOfLocalCollections() {
         try {
@@ -242,10 +249,10 @@ public class HealthStateCheck {
             cmap.put("local", true);
             List<Collection> collectionList = collectionService.load(cmap);
 
-            for (Iterator<Collection> collectionIterator = collectionList.iterator(); collectionIterator.hasNext();) {
+            for (Iterator<Collection> collectionIterator = collectionList.iterator(); collectionIterator.hasNext(); ) {
 
                 Collection collection = collectionIterator.next();
-                if (fileService.storagePathExists(collection.getName())) {
+                if (fileService.storagePathExists(collection)) {
                     healthState.collectionFileSyncList.put(collection.getName(), State.OK);
                 } else {
                     healthState.collectionFileSyncList.put(collection.getName(), State.FAILED);

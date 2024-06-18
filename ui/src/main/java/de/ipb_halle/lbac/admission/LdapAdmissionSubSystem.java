@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -109,7 +108,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
                 return true;
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("authenticate() caught an exception:", (Throwable) e);
         }
         return false;
     }

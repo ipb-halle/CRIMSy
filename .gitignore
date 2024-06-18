@@ -17,3 +17,11 @@ ui/target
 */.project
 */.settings/
 */.metadata/
+
+# IntelliJ
+**/.idea
+
+# Netbeans project files
+**/nbproject/
+**/nb-configuration.xml
+**/nbactions.xml

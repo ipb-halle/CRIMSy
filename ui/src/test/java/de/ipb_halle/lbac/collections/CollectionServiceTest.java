@@ -39,13 +39,16 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.transaction.UserTransaction;
+import jakarta.annotation.Resource;
+import jakarta.inject.Inject;
+import jakarta.persistence.NoResultException;
+import jakarta.transaction.UserTransaction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertTrue;
 
@@ -109,17 +112,25 @@ public class CollectionServiceTest extends TestBase {
         col.setNode(this.nodeService.getLocalNode());
         col.setName("Test_Collection1");
         col.setDescription("Test_Collection1_Description");
-        col.setIndexPath("/doc/test.pdf");
         col.setACList(acl);
         col.setOwner(u);
 
         col=collectionService.save(col);
+        long fileCount = collectionService.getFileCount(col.getId());
+        Assert.assertEquals("fileCount=0 in new collection", 0, fileCount);
+
         HashMap<String, Object> crits = new HashMap<>();
         crits.put("name", "Test_Collection1");
         List<Collection> loadedCols = collectionService.load(crits);
         Assert.assertTrue("Size of loaded collections must greater than one", loadedCols.size() >= 1);
 
         assertTrue(col.getACList().getPerm(ACPermission.permREAD, u));
+    }
+
+    @Test
+    public void testFileCountNonExistentCollection() {
+        Assert.assertEquals("fileCount for non-existent collection should be 0", 
+                0, (int) collectionService.getFileCount(-1));
     }
 
 }

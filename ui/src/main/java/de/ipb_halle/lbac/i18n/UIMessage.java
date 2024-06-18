@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.i18n;
 
 import com.corejsf.util.Messages;
 import java.io.Serializable;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 
 /**
  * This class provides global a message notification. Messages will be published

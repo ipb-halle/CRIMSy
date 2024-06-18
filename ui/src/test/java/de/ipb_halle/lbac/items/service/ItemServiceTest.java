@@ -50,6 +50,8 @@ import de.ipb_halle.lbac.util.units.Quantity;
 import de.ipb_halle.lbac.util.units.Unit;
 import de.ipb_halle.test.EntityManagerService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -60,14 +62,15 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.UUID;
 
-import javax.ejb.EJBException;
-import javax.inject.Inject;
+import jakarta.ejb.EJBException;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -80,6 +83,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(ArquillianExtension.class)
 public class ItemServiceTest extends TestBase {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Container c0, c1, c2;
@@ -170,23 +174,23 @@ public class ItemServiceTest extends TestBase {
         //Create and save one item
         Item item = createItem();
         instance.saveItem(item);
-        Assert.assertEquals("Testcase 001: One Item must be found after save (native Query)", 1, emService.doSqlQuery("select * from items").size());
+        Assertions.assertEquals(1, emService.doSqlQuery("select * from items").size(), "Testcase 001: One Item must be found after save (native Query)");
 
         //Load item by description
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(owner, 0, 25);
         builder.setDescription("description");
         SearchResult result = instance.loadItems(builder.build());
         List<Item> items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
-        Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
+        Assertions.assertEquals(1, instance.loadItemAmount(builder.build()));
+        Assertions.assertEquals(1, items.size(), "Testcase 001: One Item must be found after load");
         checkItem(items.get(0));
         //Load item by label
         builder = new ItemSearchRequestBuilder(owner, 0, 25);
         builder.setLabel(item.getLabel());
         result = instance.loadItems(builder.build());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
-        Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
+        Assertions.assertEquals(1, instance.loadItemAmount(builder.build()));
+        Assertions.assertEquals(1, items.size(), "Testcase 001: One Item must be found after load");
         checkItem(items.get(0));
 
         //Load item by project
@@ -194,8 +198,8 @@ public class ItemServiceTest extends TestBase {
         builder.setProjectName("%biochemi%");
         result = instance.loadItems(builder.build());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
-        Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
+        Assertions.assertEquals(1, instance.loadItemAmount(builder.build()));
+        Assertions.assertEquals(1, items.size(), "Testcase 001: One Item must be found after load");
         checkItem(items.get(0));
 
         //Load item by location
@@ -203,8 +207,8 @@ public class ItemServiceTest extends TestBase {
         builder.setLocation("Schrank1");
         result = instance.loadItems(builder.build());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
-        Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
+        Assertions.assertEquals(1, instance.loadItemAmount(builder.build()));
+        Assertions.assertEquals(1, items.size(), "Testcase 001: One Item must be found after load");
         checkItem(items.get(0));
 
     }
@@ -293,8 +297,10 @@ public class ItemServiceTest extends TestBase {
         Item item = createItem();
         instance.saveItem(item);
         ACList acl = new ACList();
+        // ToDo: why does this test fail if a NEW "public_user:READ" ACL is used?
+        User user = createUser("itemServiceTest003", "itemServiceTest003_owner");
         acl.setName("test003_editUserRights - test-acl");
-        acl.addACE(owner, new ACPermission[]{ACPermission.permREAD});
+        acl.addACE(user, new ACPermission[]{ACPermission.permREAD});
         item.setACList(acl);
         instance.saveItem(item);
         Item i = instance.loadItemById(item.getId());
@@ -490,15 +496,15 @@ public class ItemServiceTest extends TestBase {
         for (ItemDifference d : diffs) {
             if (d instanceof ItemHistory) {
                 history = (ItemHistory) d;
-                Assert.assertEquals(c0.getId(), history.getParentContainerNew().getId());
-                Assert.assertEquals(c1.getId(), history.getParentContainerOld().getId());
+                Assertions.assertEquals(c0.getId(), history.getParentContainerNew().getId());
+                Assertions.assertEquals(c1.getId(), history.getParentContainerOld().getId());
             } else {
                 ItemPositionHistoryList l = (ItemPositionHistoryList) d;
-                Assert.assertEquals(1, l.getPositionAdds().size());
+                Assertions.assertEquals(1, l.getPositionAdds().size());
                 for (ItemPositionsHistory h : l.getPositionAdds()) {
                     boolean x = Objects.equals(h.getColNew(), 0) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
                     boolean y = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
-                    Assert.assertTrue(x || y);
+                    Assertions.assertTrue(x || y);
                 }
             }
         }

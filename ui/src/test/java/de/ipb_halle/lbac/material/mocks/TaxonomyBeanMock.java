@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.mocks;
 
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistoryController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelController;
@@ -26,6 +27,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyRenderController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyTreeController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyValidityController;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
@@ -33,7 +35,13 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyValidityController;
  */
 public class TaxonomyBeanMock extends TaxonomyBean {
 
-    
+    private MessagePresenter messagePresenter;
+
+    public TaxonomyBeanMock(MessagePresenter presenter, LoggingProfiler profiler) {
+        super(profiler);
+        messagePresenter = presenter;
+
+    }
 
     public void init(
             MemberService memberService,
@@ -41,10 +49,10 @@ public class TaxonomyBeanMock extends TaxonomyBean {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
         levelController.setLevels(taxonomieService.loadTaxonomyLevel());
-        validityController = new TaxonomyValidityController(this, MessagePresenterMock.getInstance());
+        validityController = new TaxonomyValidityController(this, messagePresenter);
         historyController = new TaxonomyHistoryController(this, nameController, taxonomieService, memberService);
-        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, MessagePresenterMock.getInstance());
-        treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomieService, levelController);
+        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, messagePresenter);
+        treeController = new TaxonomyTreeController(new LoggingProfiler(), selectedTaxonomy, taxonomieService, levelController);
     }
 
 }

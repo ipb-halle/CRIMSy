@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.util;
 
 import static org.junit.Assert.*;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 import org.junit.jupiter.api.Test;
 

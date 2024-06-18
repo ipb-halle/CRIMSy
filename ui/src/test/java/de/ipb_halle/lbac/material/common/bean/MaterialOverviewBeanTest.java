@@ -43,7 +43,7 @@ import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -105,7 +105,7 @@ public class MaterialOverviewBeanTest extends TestBase {
         material.setOwner(publicUser);
         materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
 
-        instance = new MaterialOverviewBeanMock();
+        instance = new MaterialOverviewBeanMock(loggingProfiler);
         instance.hazardService = hazardService;
         instance.materialService = materialService;
         instance.init();
@@ -120,7 +120,7 @@ public class MaterialOverviewBeanTest extends TestBase {
 
     @Test
     public void test001_getNamesforUiAndToolTip() {
-        instance = new MaterialOverviewBeanMock();
+        instance = new MaterialOverviewBeanMock(loggingProfiler);
         Material m = materialService.loadMaterialById(material.getId());
         instance.init();
         Assert.assertEquals("Test-Struktur<br>...", instance.getWrappedNames(m, 1));
@@ -208,7 +208,7 @@ public class MaterialOverviewBeanTest extends TestBase {
 
         c.setConcentration(20d);
         material.getNames().clear();
-        Assert.assertEquals("- 20.0000% Materialid: "+material.getId(), instance.getComponentOfComposition(c));
+        Assert.assertEquals("- 20.0000% Materialid: " + material.getId(), instance.getComponentOfComposition(c));
     }
 
     @Deployment

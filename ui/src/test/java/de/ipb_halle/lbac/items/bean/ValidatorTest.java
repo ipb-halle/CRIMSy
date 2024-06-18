@@ -31,7 +31,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -66,7 +66,7 @@ public class ValidatorTest extends TestBase {
     public void init() {
         userBean.setCurrentAccount(publicUser);
         validator = new Validator(containerServiceMock, labelServiceMock);
-        validator.setMessagePresenter(MessagePresenterMock.getInstance());
+        validator.setMessagePresenter(getMessagePresenterMock());
         containerServiceMock.arePositionsFree = true;
         labelServiceMock.isLabelAvailable = true;
         isCustomLabel = false;
@@ -74,7 +74,7 @@ public class ValidatorTest extends TestBase {
                 item,
                 containerService,
                 userBean,
-                MessagePresenterMock.getInstance());
+                getMessagePresenterMock());
     }
 
     @Test

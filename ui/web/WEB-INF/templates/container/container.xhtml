@@ -18,31 +18,38 @@ limitations under the License.
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <ui:composition>
-            <ui:insert> 
+            <ui:insert>
                 <ui:include src="/WEB-INF/templates/container/components/containerEditView.xhtml"/>
             </ui:insert>
-            <b:container 
+            <p:outputPanel
                 styleClass="containerOverviewContainer"
                 id="containerOverviewId">
-                <b:row
+
+                <!--Button Create new container-->
+                <!--=========================================================================================-->
+                <p:row
                     id="topLevelRowId"
                     styleClass="containerTopRow">
-                    <b:column span="1" offset="11"
-                              >
-                        <b:form 
+
+                    <p:outputPanel style="  display: flex;  flex-direction: row-reverse;">
+
+                        <h:form
                             id="topLevelRowFormId"
                             styleClass="topLevelRowForm">
-                            <b:commandButton
+
+                            <p:commandButton
+                                styleClass="ui-button-danger"
+                                style="width:auto; min-width: 1.5rem;margin-bottom: 1rem;"
                                 rendered="#{containerOverviewBean.isTopLevelButtonVisible()}"
                                 disabled ="#{!containerOverviewBean.isSecondButtonVisible()}"
-                                onclick="ajax:containerOverviewBean.actionSecondButtonClick();"
                                 value="#{msgs.container_overview_create}"
+                                process="@this"
                                 ajax="true"
                                 update="
                                 @(.containerEdit)
@@ -50,25 +57,44 @@ limitations under the License.
                                 @(.topLevelRowForm)
                                 @(.containerEditFormStyle)
                                 @(.containerEditModal)"
-                                oncomplete="PF('dlgcontainerEdit').show();">
+                                oncomplete="PF('dlgcontainerEdit').show();"
+                                action="#{containerOverviewBean.actionSecondButtonClick()}"
+                                >
+                                <!--onclick="ajax:containerOverviewBean.actionSecondButtonClick();"-->
+
                                 <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                            </b:commandButton>
-                        </b:form>
-                    </b:column>
-                </b:row>
-                <b:row>
-                    <b:column span="2"> 
-                        <ui:insert> 
-                            <ui:include src="/WEB-INF/templates/container/components/containerSearchMask.xhtml"/>
-                        </ui:insert>
-                    </b:column>
-                    <b:column span="10">  
-                        <ui:insert> 
-                            <ui:include src="/WEB-INF/templates/container/components/containerOverviewTable.xhtml"/>
-                        </ui:insert>
-                    </b:column> 
-                </b:row>
-            </b:container>
+                            </p:commandButton>
+
+                        </h:form>
+
+                    </p:outputPanel>
+
+                </p:row>
+
+                <!--Search Filter and table-->
+                <!--=========================================================================================-->
+                <p:row>
+                    <div style="display: flex; flex-direction:  row;">
+
+                        <!--Search Mask-->
+                        <!--=========================================================================================-->
+                        <p:outputPanel style="margin-right: 1rem;">
+                            <ui:insert>
+                                <ui:include src="/WEB-INF/templates/container/components/containerSearchMask.xhtml"/>
+                            </ui:insert>
+                        </p:outputPanel>
+
+                        <!--Overview Table-->
+                        <!--=========================================================================================-->
+                        <p:outputPanel >
+                            <ui:insert>
+                                <ui:include src="/WEB-INF/templates/container/components/containerOverviewTable.xhtml"/>
+                            </ui:insert>
+                        </p:outputPanel>
+
+                    </div>
+                </p:row>
+            </p:outputPanel>
         </ui:composition>
     </h:body>
 </html>

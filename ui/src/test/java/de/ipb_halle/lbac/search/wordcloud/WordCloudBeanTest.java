@@ -17,9 +17,12 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+
+
+import de.ipb_halle.lbac.file.mock.FileServiceMock;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -33,7 +36,6 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
-import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
@@ -46,9 +48,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.BehaviorBase;
-import javax.inject.Inject;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.BehaviorBase;
+import jakarta.inject.Inject;
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -81,7 +83,7 @@ public class WordCloudBeanTest extends TestBase {
     public void before() throws IOException {
         initializeBaseUrl();
         initializeKeyStoreFactory();
-        FileUtils.deleteDirectory(Paths.get("target/test-classes/collections").toFile());
+        FileUtils.deleteDirectory(Paths.get(FileServiceMock.COLLECTIONS_MOCK_FOLDER).toFile());
         entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE from termvectors");
@@ -103,7 +105,8 @@ public class WordCloudBeanTest extends TestBase {
                     "Document2.pdf",
                     "Document18.pdf");
             collectionBean.getCollectionSearchState().addCollections(Arrays.asList(col));
-        } catch (FileNotFoundException | InterruptedException ex) {
+        } catch (Exception ex) {
+            logger.error("File Upload Error", (Throwable) ex);
             throw new RuntimeException("Could not upload file");
         }
         Assert.assertNotNull(wordCloudBean);

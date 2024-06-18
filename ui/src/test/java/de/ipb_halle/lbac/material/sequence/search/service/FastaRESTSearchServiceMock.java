@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.material.sequence.search.service;
 
-import javax.ejb.Singleton;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.ResponseProcessingException;
-import javax.ws.rs.core.Response;
+import jakarta.ejb.Singleton;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.client.ResponseProcessingException;
+import jakarta.ws.rs.core.Response;
 
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
 import java.util.function.Function;

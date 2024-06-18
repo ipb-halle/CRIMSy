@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import static de.ipb_halle.lbac.admission.ACPermission.permEDIT;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.io.Serializable;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -113,9 +112,9 @@ public class MaterialEditPermission implements Serializable {
                     || userHasAccessRight());
 
         } catch (Exception e) {
-            logger.error("Error in isVisible(): " + typeName);
-            logger.error("Current MaterialType: " + bean.getCurrentMaterialType());
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("Error in isVisible(): {}", typeName);
+            logger.error("Current MaterialType: {}", bean.getCurrentMaterialType());
+            logger.error("stack trace:", (Throwable) e);
         }
         return false;
     }
@@ -146,7 +145,7 @@ public class MaterialEditPermission implements Serializable {
                                     .getCurrentAccount()
                                     .getId());
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("isOwner() caught an exception:", (Throwable) e);
             return false;
         }
     }

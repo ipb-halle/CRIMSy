@@ -21,15 +21,16 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.ZoneId;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.ipb_halle.lbac.timezone.TimeZonesBean;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.lbac.util.pref.PreferenceType;
 
@@ -40,6 +41,7 @@ import de.ipb_halle.lbac.util.pref.PreferenceType;
  */
 @SessionScoped
 public class UserTimeZoneSettingsBean implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -57,13 +59,14 @@ public class UserTimeZoneSettingsBean implements Serializable {
     @Inject
     private UserBean userBean;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+
     private String pref = null;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    /**
-     * default constructor
-     */
+    /* empty default constructor */
     public UserTimeZoneSettingsBean() {
     }
 
@@ -72,37 +75,43 @@ public class UserTimeZoneSettingsBean implements Serializable {
      */
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("UserTimeZoneSettingsBean");
+
+        loggingProfiler.profilerStop("UserTimeZoneSettingsBean");
     }
 
     /**
      * Test constructor with dependency injection.
-     * 
+     *
      * @param preferenceService mock of {@link PreferenceService}
-     * @param userBean          mock of {@link UserBean}
-     * @param timeZonesBean     mock of {@link TimeZonesBean}
+     * @param userBean mock of {@link UserBean}
+     * @param timeZonesBean mock of {@link TimeZonesBean}
      */
     protected UserTimeZoneSettingsBean(PreferenceService preferenceService,
             UserBean userBean, TimeZonesBean timeZonesBean) {
         this.preferenceService = preferenceService;
         this.userBean = userBean;
         this.timeZonesBean = timeZonesBean;
+        this.loggingProfiler = new LoggingProfiler();
     }
 
     /**
      * Resets the preference upon login of a user. The next call to
      * {@link #getPreferredTimeZone()} will reload the preference from the
      * database.
-     * 
+     *
      * @param evt
      */
     public void onLogin(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("UserTimeZoneSettingsBean.onLogin");
         pref = null;
+        loggingProfiler.profilerStop("UserTimeZoneSettingsBean.onLogin");
     }
 
     /**
      * Returns the preferred time zone or the default time zone if a preference
      * does not exist.
-     * 
+     *
      * @return valid time zone id according to {@link ZoneId#getId()}
      */
     public String getPreferredTimeZone() {
@@ -128,7 +137,7 @@ public class UserTimeZoneSettingsBean implements Serializable {
 
     /**
      * Sets the preferred time zone.
-     * 
+     *
      * @param timeZone time zone
      * @return flag indicating that the time zone was set as preference
      */

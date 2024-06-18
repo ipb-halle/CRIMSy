@@ -28,11 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.inject.Inject;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -133,7 +132,7 @@ public class MembershipOrchestrator implements Serializable {
                     }
                 }
             } catch (Exception e) {
-                LOGGER.error(ExceptionUtils.getStackTrace(e));
+                LOGGER.error("getGroupsOfUser() caught an exception:", (Throwable) e);
             }
         }
         return groups;

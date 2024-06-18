@@ -19,7 +19,7 @@ package de.ipb_halle.kx.file;
 
 import de.ipb_halle.crimsy_api.AttributeTag;
 import de.ipb_halle.crimsy_api.AttributeType;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;

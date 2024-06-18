@@ -40,7 +40,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- check Maven Central for latest versions! -->
-        <hibernate.version>5.3.26.Final</hibernate.version>
+        <hibernate.version>6.1.7.Final</hibernate.version>
         <pentaho.version>9.4.0.0-343</pentaho.version>
     </properties>
 
@@ -60,8 +60,12 @@
             <!-- address no longer valid <url>https://nexus.pentaho.org/content/groups/omni</url> -->
             <url>https://repo.orl.eng.hitachivantara.com/artifactory/pnt-mvn</url>
 
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -75,8 +79,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>17</source>
+                    <target>17</target>
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
@@ -90,6 +94,18 @@
                     <runOrder>random</runOrder>
                     <forkedProcessExitTimeoutInSeconds>240</forkedProcessExitTimeoutInSeconds>
                 </configuration>
+                 <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>1.2.0-M1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>5.2.0-M1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <!-- automatic build number -->
@@ -150,13 +166,13 @@
             <groupId>de.ipb-halle</groupId>
             <artifactId>crimsy-job-api</artifactId>
             <version>1.0</version>
-       </dependency>
+        </dependency>
 
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>crimsy-job-storage</artifactId>
             <version>1.0</version>
-       </dependency>
+        </dependency>
 
         <!-- commons-cli -->
         <dependency>
@@ -169,7 +185,7 @@
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0-2</version>
+            <version>8.0-6</version>
         </dependency>
 
         <!-- Logging: log4j 2 -->
@@ -213,10 +229,10 @@
         </dependency>
 
         <dependency>
-          <groupId>org.pentaho.reporting.library</groupId>
-          <artifactId>libfonts</artifactId>
-          <version>${pentaho.version}</version>
-          <type>pom</type>
+            <groupId>org.pentaho.reporting.library</groupId>
+            <artifactId>libfonts</artifactId>
+            <version>${pentaho.version}</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>
@@ -241,14 +257,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Integration for using Ehcache 2.x as a 
-        Hibernate second-level-cache provider  -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        <!-- hibernate ehcache removed -->
 
         <!-- hibernate stuff -->
         <dependency>
@@ -262,15 +271,15 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.3.6.Final</version>
+            <version>8.0.0.Final</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- jpa2.2 - replacement for jpa2.1 -->
+        <!-- jpa3.1 -->
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -280,12 +289,19 @@
             <artifactId>postgresql</artifactId>
             <version>42.7.2</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tomee</groupId>
+            <artifactId>tomee-jaxrs</artifactId>
+            <version>9.0.0</version>
+            <scope>provided</scope>
+        </dependency>
 
-        <!-- Expression Language implementation (required by bean validation / hibernate validation) -->
+        <!-- Expression Language implementation (required by bean validation) -->
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>3.0.1-b12</version>
+            <artifactId>jakarta.el</artifactId>
+            <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -296,13 +312,13 @@
             <artifactId>crimsy-test</artifactId>
             <version>1.0.0</version>
             <scope>test</scope>
-       </dependency>
+        </dependency>
 
         <!-- unit testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
+            <version>5.9.1</version>
             <scope>test</scope>
         </dependency>
         <!-- keeps old JUnit4 tests functional -->
@@ -352,8 +368,8 @@
         <!-- tomee for arquillian -->
         <dependency>
             <groupId>org.apache.tomee</groupId>
-            <artifactId>arquillian-tomee-embedded</artifactId>
-            <version>7.0.9</version>
+            <artifactId>arquillian-openejb-embedded</artifactId>
+            <version>9.0.0</version>
             <scope>test</scope>
         </dependency>
 

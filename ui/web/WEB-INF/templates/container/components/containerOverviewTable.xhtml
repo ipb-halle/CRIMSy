@@ -18,76 +18,76 @@ limitations under the License.
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
-        <b:form id="containerTableId">
-            <b:dataTable
+        <h:form id="containerTableId">
+            <p:dataTable
                 styleClass="containerDataTable"
-                paginated="true"
                 value="#{containerOverviewBean.readableContainer}"
-                searching="false"
                 var="container"
-                saveState="false">
+                >
 
-                <b:dataTableColumn
-                    label="#{msgs.container_table_title_id}">
+                <p:column headerText="#{msgs.container_table_title_id}">
+
                     <h:outputText
                         value="#{container.id}"/>
-                </b:dataTableColumn>
-                <b:dataTableColumn 
-                    label="#{msgs.container_table_title_label}">
+
+                </p:column>
+
+                <p:column headerText="#{msgs.container_table_title_label}">
                     <h:outputText
                         value="#{container.label}"/>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.container_table_title_type}">
+                </p:column>
+
+                <p:column headerText="#{msgs.container_table_title_type}">
                     <h:outputText
                         value="#{container.type.getLocalizedName()}"/>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.container_table_title_location}">
+                </p:column>
+
+                <p:column headerText="#{msgs.container_table_title_location}">
                     <h:outputText
                         escape="false"
                         value="#{container.getLocation(true,true)}">
-                        <f:converter converterId="RichTextConverter" />
+                        <f:converter converterId="RichTextConverter"/>
                     </h:outputText>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.container_table_title_project}">
+                </p:column>
+
+                <p:column headerText="#{msgs.container_table_title_project}">
                     <h:outputText
                         value="#{containerOverviewBean.getProjectName(container)}"/>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.container_table_title_gmosafetylevel}">
+                </p:column>
+
+                <p:column headerText="#{msgs.container_table_title_gmosafetylevel}">
                     <h:outputText
                         value="#{container.getGmoSafetyLevel()}"/>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.container_table_title_firearea}">
+                </p:column>
+
+                <p:column headerText="#{msgs.container_table_title_firearea}">
                     <h:outputText
                         value="#{container.getFireArea()}"/>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.container_table_title_tools}">
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon="pencil"
-                                     look="link"
-                                     type="submit"
-                                     title="#{msgs.container_table_tooltip_edit}"
-                                     update="
-                                     editForm:editNameInputField
-                                     @(.nameInputFieldClass)
-                                     @(.containerTopRow)
-                                     @(.containerEdit)
-                                     @(.containerEditModal)"
-                                     action="#{containerOverviewBean.actionContainerEdit(container)}"
-                                     oncomplete="PF('dlgcontainerEdit').show();"
-                                     />
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon="ban-circle"
-                                     look="link"
+                </p:column>
+
+                <p:column headerText="#{msgs.container_table_title_tools}">
+
+                    <p:commandButton
+                        icon="pi pi-pencil"
+                        type="submit"
+                        styleClass="ui-button-success"
+                        title="#{msgs.container_table_tooltip_edit}"
+                        update="
+                        editForm:editNameInputField
+                        @(.nameInputFieldClass)
+                        @(.containerTopRow)
+                        @(.containerEdit)
+                        @(.containerEditModal)"
+                        action="#{containerOverviewBean.actionContainerEdit(container)}"
+                        oncomplete="PF('dlgcontainerEdit').show();"/>
+
+                    <p:commandButton 
+                                     styleClass="ui-button-danger"
+                                     icon="pi pi-ban"
                                      type="submit"
                                      ajax="true"
                                      title="#{msgs.container_table_tooltip_deactivate}"
@@ -98,10 +98,9 @@ limitations under the License.
                                      containerTableId
                                      @(.containerDataTable)
                                      @(.containerEditModal)"
-                                     action="#{containerOverviewBean.actionContainerDeactivate(container)}"
-                                     />
-                </b:dataTableColumn>
-            </b:dataTable>
-        </b:form>
+                                     action="#{containerOverviewBean.actionContainerDeactivate(container)}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
     </h:body>
 </html>

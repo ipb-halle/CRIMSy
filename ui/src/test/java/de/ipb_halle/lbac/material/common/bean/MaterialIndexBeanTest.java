@@ -24,10 +24,10 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.mocks.IndexServiceMock;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.Arrays;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -48,13 +48,13 @@ public class MaterialIndexBeanTest extends TestBase {
     @Inject
     private IndexServiceMock indexServiceMock;
     private MaterialIndexBean instance;
-    private MateriaBeanMock materialEditBeanMock;
+    private MaterialBeanMock materialEditBeanMock;
 
     @BeforeEach
     public void init() {
         instance = new MaterialIndexBean();
         instance.setIndexService(indexServiceMock);
-        materialEditBeanMock = new MateriaBeanMock();
+        materialEditBeanMock = new MaterialBeanMock(loggingProfiler);
         materialEditBeanMock.setMode(MaterialBean.Mode.EDIT);
         instance.setMaterialEditBean(materialEditBeanMock);
         instance.init();
@@ -152,8 +152,8 @@ public class MaterialIndexBeanTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialIndexBeanTest.war")
-                  .addClass(IndexServiceMock.class)      ;
-         deployment = ItemDeployment.add(deployment);
+                        .addClass(IndexServiceMock.class);
+        deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
     }

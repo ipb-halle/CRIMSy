@@ -1,78 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:tmpl="http://java.sun.com/jsf/composite/tmpl">
-    <h:body>
-        <ui:composition>
-            <h:outputStylesheet
-                name="fine-uploader/fine-uploader-new.css"
-                position="last" />
-            <h:outputScript
-                pt:type="text/template"
-                pt:id="qq-template-manual-trigger" 
-                target="body">
-                <tmpl:fineUploaderMultiTemplate />
-            </h:outputScript>
- 
-            <p:dialog
-                id="fileUpload"
-                widgetVar="fileUploadModal"
-                header="#{msgs.fileupload_modal_title}"
-                modal="true"
-                resizable="false">
-                <div class="upload-collection-settings">
-                    <b:selectOneMenu
-                        label="#{msgs.fileupload_modal_uploadToCollectionText}"
-                        styleClass="upload-collection">
-                        <f:selectItems
-                            value="#{collectionBean.getCreatableLocalCollections()}"
-                            var="c"
-                            itemLabel="#{c.name}"
-                            itemValue="#{c.name}" />
-                    </b:selectOneMenu>
-                </div>
-                <h:panelGroup
-                    id="fine-uploader-manual-trigger"
-                    layout="block" />
+<h:body>
+    <h:form
+            enctype="multipart/form-data"
+            class="uploadModal" prependId="false">
+        <p:outputPanel class="uploadContainer">
 
-                <f:facet name="footer">
-                    <b:button
-                        value="#{msgs.fileupload_modal_button_clear}"
-                        style="margin-bottom: 10px;"
-                        look="primary"
-                        onclick="$('#fine-uploader-manual-trigger').fineUploader('clearStoredFiles');" />
-                    <b:button
-                        value="#{msgs.fileupload_modal_button_close}"
-                        style="margin-bottom: 10px;"
-                        look="primary"
-                        onclick="PF('fileUploadModal').hide()" />
-                </f:facet>
+            <p:dialog
+                    id="fileUpload"
+                    widgetVar="fileUploadModal"
+                    header="#{msgs.fileupload_modal_title}"
+                    modal="true">
+
+                <p:outputLabel><strong>#{msgs.select_collection}</strong></p:outputLabel>
+                <div class="cnt1">
+                    <p:selectOneMenu
+                            value="#{fileUploadBean.selectedCollection}"
+                            label="#{msgs.fileupload_modal_uploadToCollectionText}"
+                            converter="collectionConverter">
+                        <f:selectItems
+                                value="#{fileUploadBean.getPossibleValues()}"
+                                var="collection"
+                                itemLabel="#{collection.name}"
+                                itemValue="#{collection}"
+                        />
+                        <p:ajax process="@this"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel><strong>#{msgs.select_file}</strong></p:outputLabel>
+                    <p:fileUpload listener="#{fileUploadBean.handleFileUpload}"
+                                  mode="advanced"
+                                  dragDropSupport="true"
+                                  multiple="true"
+                                  process="@form"
+                                  update="messages"
+                                  cancelButtonStyleClass="ui-button-secondary"
+                                  chooseButtonStyleClass="ui-button-primary"
+                                  uploadButtonStyleClass="ui-button-danger"
+                                  skinSimple="true"
+                                  sizeLimit="5000000"
+                                  allowTypes="/(\.|\/)(pdf|doc|docx|txt)$/">
+                    </p:fileUpload>
+
+                    <p:growl id="messages" showDetail="true"/>
+                </div>
+
             </p:dialog>
-        </ui:composition>
-    </h:body>
+
+        </p:outputPanel>
+
+    </h:form>
+</h:body>
 </html>

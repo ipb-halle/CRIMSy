@@ -17,14 +17,12 @@
  */
 package de.ipb_halle.kx.service;
 
-import de.ipb_halle.kx.service.TextWebStatus;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Provisional class for job tracking until Job API gets refactored.
@@ -35,7 +33,7 @@ public class JobTracker implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
-    private Map<Integer, IFileAnalyser> jobMap = new HashMap<> ();
+    private final Map<Integer, IFileAnalyser> jobMap = new HashMap<>();
 
     public IFileAnalyser getJob(Integer id) {
         return jobMap.get(id);

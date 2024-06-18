@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -25,7 +26,6 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 public class MaterialSearchMaskController implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private String id;
     private String indexTypeName;
     private boolean isIndexActive;
@@ -90,9 +90,9 @@ public class MaterialSearchMaskController implements Serializable {
      */
     public String getLocalizedMaterialTypeName(MaterialType mt) {
         if (mt == null) {
-            return "Alle";
+        return Messages.getString(MESSAGE_BUNDLE, "search_category_ALL", null);
         }
-        return mt.toString();
+        return Messages.getString(MESSAGE_BUNDLE, "search_category_" + mt.toString(), null);
     }
 
     public String getIndex() {
@@ -161,7 +161,7 @@ public class MaterialSearchMaskController implements Serializable {
                 values.molecule = molecule;
             }
         } catch (Exception e) {
-            logger.error("Could not parse molecule"+ ExceptionUtils.getStackTrace(e));
+            logger.error("getValues() caught an exception:", (Throwable) e);
         }
 
         return values;

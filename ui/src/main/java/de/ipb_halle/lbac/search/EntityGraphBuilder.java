@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.admission.ACEntryEntity;
 import de.ipb_halle.lbac.admission.MembershipEntity;
 import de.ipb_halle.crimsy_api.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
-import javax.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.JoinType;
 
 /**
  *

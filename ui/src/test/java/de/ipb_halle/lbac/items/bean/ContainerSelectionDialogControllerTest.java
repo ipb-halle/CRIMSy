@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  * @author fmauz
  */
 public class ContainerSelectionDialogControllerTest {
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = new MessagePresenterMock();
 
     @Test
     public void test_getDimensionString() {

@@ -35,7 +35,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.HashMap;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -51,6 +51,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
 public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
+
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -58,12 +59,6 @@ public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
     @Inject
     private TissueService tissueService;
 
-    /**
-     * Description: The material is created without a Hazard. After that the
-     * Hazard 'corrosive' is added and then at a later time the hazards
-     * 'irritant' and 'unhealthy' are added and 'corrosive' removed, h and
-     * p-statements are added.
-     */
     @Test
     public void test01_BioMaterialDifferenceOperations() {
         createMaterialEditState();
@@ -90,7 +85,7 @@ public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
                 currentDate,
                 biomaterial,
                 biomaterial,
-                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), MessagePresenterMock.getInstance()), MessagePresenterMock.getInstance());
+                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), new MessagePresenterMock()), new MessagePresenterMock());
         mes.setCurrentVersiondate(d_20001220);
         return mes;
     }

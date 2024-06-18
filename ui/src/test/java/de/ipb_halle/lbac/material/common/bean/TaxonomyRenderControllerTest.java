@@ -38,7 +38,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -87,7 +87,7 @@ public class TaxonomyRenderControllerTest extends TestBase {
         diff.initialise(1, user_1.getId(), creationDate1);
         taxonomy_2.getHistory().addDifference(diff);
 
-        taxonomyBean = new TaxonomyBeanMock();
+        taxonomyBean = new TaxonomyBeanMock(getMessagePresenterMock(), loggingProfiler);
         TreeNode treeNode = new DefaultTreeNode(taxonomy_1, null);
         taxonomyBean.setSelectedTaxonomy(treeNode);
         taxonomyBean.init(memberService, taxonomyService);

@@ -25,12 +25,13 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebRequest;
 import java.util.UUID;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -65,7 +66,6 @@ public class WordCloudWebServiceMock {
         c.setCountDocs(1L);
         c.setDescription("Collection from MockServer - Description");
         c.setId(100000);
-        c.setIndexPath("/");
         c.setName("Mock-Collection");
         c.setNode(n);
         c.setOwner(u);

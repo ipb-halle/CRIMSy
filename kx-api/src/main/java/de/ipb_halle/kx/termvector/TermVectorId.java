@@ -20,7 +20,7 @@ package de.ipb_halle.kx.termvector;
 import de.ipb_halle.crimsy_api.AttributeTag;
 import de.ipb_halle.crimsy_api.AttributeType;
 import java.io.Serializable;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  *

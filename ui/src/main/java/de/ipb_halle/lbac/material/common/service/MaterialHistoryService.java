@@ -46,8 +46,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.Query;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -222,7 +221,7 @@ public class MaterialHistoryService implements Serializable {
             loadComponents(materialId, history);
             loadSequenceHistory(materialId, history);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("loadHistoryOfMaterial() caught an exception:", (Throwable) e);
         }
         return history;
     }

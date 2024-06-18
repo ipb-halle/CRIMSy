@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.timezone;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertThrows;
 
 import java.time.ZoneId;
@@ -43,9 +44,11 @@ public class ZoneIdDisplayWrapperTest {
                 ZoneId.of("UTC"));
         assertEquals("Coordinated Universal Time",
                 wrapper.getDisplayName(Locale.ENGLISH));
-        assertEquals("Koordinierte Universalzeit",
-                wrapper.getDisplayName(Locale.GERMAN));
+        assertTrue("I18N time zone name matches (GERMAN locale)",
+                   wrapper.getDisplayName(Locale.GERMAN).equals("Koordinierte Weltzeit")
+                           || wrapper.getDisplayName(Locale.GERMAN).equals("Koordinierte Universalzeit"));
 
+        //Test for Europe/Berlin
         wrapper = new ZoneIdDisplayWrapper(ZoneId.of("Europe/Berlin"));
         assertEquals("Central European Time",
                 wrapper.getDisplayName(Locale.ENGLISH));

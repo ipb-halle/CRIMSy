@@ -37,7 +37,7 @@ import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
@@ -61,7 +61,6 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.testcontainers.shaded.org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  *
@@ -230,8 +229,7 @@ public class ProjectEditBeanTest extends TestBase {
             memberService.save(u);
             Assert.assertEquals(currentLocalUsers - 1, projectEditBean.getLocalUsers().size());
         } catch (Exception e) {
-            logger.error("Achtung!");
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("test006_testLocalUsers() caught an exception:", (Throwable) e);
         }
 
     }

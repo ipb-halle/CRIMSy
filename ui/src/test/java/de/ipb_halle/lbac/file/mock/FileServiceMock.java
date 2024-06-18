@@ -17,7 +17,10 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
+import de.ipb_halle.kx.file.FileObjectService;
 import de.ipb_halle.lbac.service.FileService;
+
+import java.nio.file.Paths;
 
 /**
  *
@@ -25,14 +28,17 @@ import de.ipb_halle.lbac.service.FileService;
  */
 public class FileServiceMock extends FileService {
 
+    public static String COLLECTIONS_MOCK_FOLDER = "target/test-classes/collections";
+
     private String root;
 
-    public FileServiceMock(String root) {
+    public FileServiceMock(FileObjectService fo, String root) {
+        super(fo);
         this.root = root;
     }
 
     @Override
-    public String getStoragePath(String dirPath) {
-        return root;
+    public String getCollectionBasePath() {
+        return Paths.get(root).toString();
     }
 }

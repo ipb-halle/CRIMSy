@@ -64,10 +64,11 @@ public class SequenceSearchResultsTableControllerTest {
     private SequenceAlignment alignment1, alignment2, alignment3a, alignment3b;
     private List<SequenceAlignment> alignments;
     private List<FastaResult> fastaResults;
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter;
 
     @BeforeEach
     public void init() throws FastaResultParserException {
+        messagePresenter = new MessagePresenterMock();
         messagePresenter.resetMessages();
 
         SequenceData data1 = SequenceData.builder().sequenceString("sequence1").build();

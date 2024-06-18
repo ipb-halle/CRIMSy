@@ -19,9 +19,9 @@ package de.ipb_halle.lbac.admission;
 
 import static org.junit.Assert.assertThrows;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.ValidatorException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,7 +30,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.container.mock.CallBackControllerMock;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 /**
@@ -42,7 +41,6 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 public class ShortcutValidatorTest extends TestBase {
     private FacesContext fc = null;
     private UIComponent comp = null;
-    private MessagePresenterMock presenterMock = MessagePresenterMock.getInstance();
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -52,9 +50,9 @@ public class ShortcutValidatorTest extends TestBase {
     @Test
     public void test001_validate() {
         UserMgrBean userMgrBean = new UserMgrBean(nodeService, memberService,
-                membershipService, presenterMock, new CallBackControllerMock());
+                membershipService, getMessagePresenterMock(), new CallBackControllerMock());
         ShortcutValidator validator = new ShortcutValidator(memberService,
-                userMgrBean, presenterMock);
+                userMgrBean, getMessagePresenterMock());
 
         validator.validate(fc, comp, null);
         validator.validate(fc, comp, "");

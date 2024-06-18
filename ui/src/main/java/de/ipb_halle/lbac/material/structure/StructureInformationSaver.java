@@ -20,8 +20,8 @@ package de.ipb_halle.lbac.material.structure;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialIndexSaver;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  *

@@ -22,10 +22,10 @@ import de.ipb_halle.lbac.globals.KeyStoreFactory;
 
 import java.util.Date;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
 /**
  * This is a test class for the REST api. It provides a

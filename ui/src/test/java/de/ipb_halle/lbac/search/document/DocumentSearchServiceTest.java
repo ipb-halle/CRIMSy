@@ -22,8 +22,8 @@ package de.ipb_halle.lbac.search.document;
  * @author fmauz
  */
 import de.ipb_halle.kx.file.FileObjectService;
-import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.base.DocumentCreator;
+import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -98,7 +98,7 @@ public class DocumentSearchServiceTest extends TestBase {
                     "Document1.pdf",
                     "Document2.pdf",
                     "Document3.pdf");
-        } catch (FileNotFoundException | InterruptedException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Could not upload file");
         }
 
@@ -157,7 +157,7 @@ public class DocumentSearchServiceTest extends TestBase {
         builder.setCollectionId(col.getId());
         builder.setWordRoots(new HashSet<>(Arrays.asList("java", "failure")));
         SearchRequest request = builder.build();
-        Object o=entityManagerService.doSqlQuery("SELECT id,name,collection_id from files");
+        Object o = entityManagerService.doSqlQuery("SELECT id,name,collection_id from files");
         documentSearchService.setSearchQueryStemmer(
                 new SearchQueryStemmerMock("java failure"));
         SearchResult result = documentSearchService.loadDocuments(request);

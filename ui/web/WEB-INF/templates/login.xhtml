@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -28,61 +27,73 @@
 
     <h:body>
         <ui:composition>
-            <b:form method="post" id="logInFormId">
-                <h:panelGrid id="loginPanelGrid" 
-                             colSpans="6,6" 
-                             size="sm" 
-                             rendered="#{userBean.currentAccount.isPublicAccount()}" 
-                             styleClass="centerPanel">
+            <h:form id="logInFormId" >
+                <h:panelGrid id="loginPanelGrid"
+                             columns="1"
+                             rendered="#{userBean.currentAccount.isPublicAccount()}"
+                             styleClass="centerPanel"
+                             style="border:1px solid #029ACF;border-radius:3px;">
+                    <p:panel id="loginPanel"
+                             header="#{msgs.admission_loginForm_title}"
+                             toggleable="false"
+                             styleClass="panelTitleInfoColor"
+                             >
+                        <p:outputLabel value="#{userBean.getCustomLogInInfo()}"
+                                       styleClass="margin: 5px;width: 100%;text-align: center;font-weight:bold;" />
 
-                    <b:panel id="loginPanel"
-                             title="#{msgs.admission_loginForm_title}" 
-                             collapsible="false" 
-                             look="info">
-                        <b:column 
-                            styleClass="text-center">
-                            <p:outputLabel 
-                                value="#{userBean.getCustomLogInInfo()}"
-                                styleClass="margin: 5px;width: 100%;text-align: center;font-weight:bold;"/>
-                        </b:column>
-                        <b:inputText id="loginLogin"
-                                     styleClass="tstLoginLogin" 
-                                     value="#{userBean.login}" 
-                                     label="#{msgs.admission_loginForm_login}" 
-                                     required="true">
-                            <f:facet name="prepend">
-                                <b:icon name="envelope"/>
-                            </f:facet>
-                            <b:focus rendered="true"/>
-                        </b:inputText>
-                        <b:message for="@previous"/>
-                        <b:inputSecret 
-                            id="loginPasswd"
-                            styleClass="tstLoginPassword"
-                            value="#{userBean.oldPassword}" 
-                            label="#{msgs.admission_loginForm_password}" 
-                            required="true"
-                            converter="DummyConverter">
-                            <f:facet name="prepend">
-                                <b:icon name="ok"/>
-                            </f:facet>
-                        </b:inputSecret>
-                        <b:message for="@previous"/>
-                        <b:column id="loginCmdBtnCol"
-                                  styleClass="text-center">
-                            <b:commandButton id="loginCmdBtn"
+                        <p:outputLabel for="loginLogin" value="Login name or email address" />
+
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></div>
+                                <p:inputText id="loginLogin"
+                                             styleClass="tstLoginLogin"
+                                             value="#{userBean.login}"
+                                             label="#{msgs.admission_loginForm_login}"
+                                             required="true"
+                                             style="width:100%;" />
+                            </div>
+                        </div>
+
+                        <p:message for="loginLogin" /><br/>
+
+                        <p:outputLabel for="loginPasswd" value="Password" />
+
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-key"></i></div>
+                                    <p:password id="loginPasswd"
+                                                styleClass="tstLoginPassword"
+                                                value="#{userBean.oldPassword}"
+                                                label="#{msgs.admission_loginForm_password}"
+                                                required="true"
+                                                converter="DummyConverter"
+                                                style="width:100%;" />
+                            </div>
+                        </div>
+
+                        <p:message for="loginPasswd" />
+
+                        <p:panel id="loginCmdBtnCol"
+                                 styleClass="text-center">
+                            <p:commandButton id="loginCmdBtn"
                                              styleClass="tstLoginCmdBtn"
-                                             action="#{userBean.actionLogin}" 
-                                             value="#{msgs.admission_loginForm_button}"/>
-                        </b:column>
+                                             action="#{userBean.actionLogin}"
+                                             value="#{msgs.admission_loginForm_button}"
+                                             update=":logInFormId"
+                                             process="@form"
+                                             ajax="false" />
+                        </p:panel>
+
                         <h:outputText styleClass="tinyGrayText" value="#{msgs.admission_loginForm_DSGVO_1}" />
                         <h:outputLink value="dsgvo.xhtml" target="_blank">
                             <h:outputText styleClass="tinyGrayText" style="text-decoration: underline;" value="#{msgs.admission_loginForm_DSGVO_2}" />
                         </h:outputLink>
                         <h:outputText styleClass="tinyGrayText" value="#{msgs.admission_loginForm_DSGVO_3}" />
-                    </b:panel>
+                    </p:panel>
                 </h:panelGrid>
-            </b:form>
+            </h:form>
+
         </ui:composition>
     </h:body>
 </html>

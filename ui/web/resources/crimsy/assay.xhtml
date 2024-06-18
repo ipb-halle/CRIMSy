@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
@@ -28,195 +27,244 @@
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <composite:interface name="assay"
-                         displayName="Assay"
-                         preferred="true"
-                         expert="false"
-                         shortDescription="view and edit assays">
-        <composite:attribute name="assay" required="true" >
-            <composite:editableValueHolder name="remarks" />
-            <composite:editableValueHolder name="unit" />
-            <composite:editableValueHolder name="value" />
-            <composite:editableValueHolder name="units" />
-        </composite:attribute>
-        <composite:attribute name="bean" required="true" />
-    </composite:interface>
+<composite:interface name="assay"
+                     displayName="Assay"
+                     preferred="true"
+                     expert="false"
+                     shortDescription="view and edit assays">
+    <composite:attribute name="assay" required="true">
+        <composite:editableValueHolder name="remarks"/>
+        <composite:editableValueHolder name="unit"/>
+        <composite:editableValueHolder name="value"/>
+        <composite:editableValueHolder name="units"/>
+    </composite:attribute>
+    <composite:attribute name="bean" required="true"/>
+</composite:interface>
 
-    <composite:implementation >
-        <b:container
-            styleClass="assayContainer">
-            <b:row>
-                <b:column span="7">
-                    <b:column>
-                        <b:row>
-                            <b:column span="7"
-                                      styleClass="assayRemarkLabel">
-                                <h:outputText value="#{msgs.expAssay_remarks}:" />
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="7">
-                                <p:inputTextarea
-                                    styleClass="assayRemarkTextarea"
-                                    value="#{cc.attrs.assay.remarks}"
-                                    disabled="#{! cc.attrs.assay.edit}"/>
-                            </b:column>
-                        </b:row>
+<composite:implementation>
+    <p:outputPanel styleClass="assayContainer">
 
-                    </b:column>
+        <p:outputPanel>
 
-                </b:column>
-                <b:column 
-                    span="4"
-                    styleClass="assayTargetRow">
-                    <b:container>
-                        <b:row>
-                            <b:column span="2">
-                                <h:outputText value="#{msgs.expAssay_target}:" />
-                            </b:column>
-                            <b:column span="2">
-                                <h:panelGroup>
-                                    <crimsy:materialView material="#{cc.attrs.assay.target}" />
-                                    <p:commandLink title="#{msgs.expAssay_chooseTarget_tooltip}"
-                                                   rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getAssayRecords().size() == 0)}"
-                                                   update="@(.dlgMaterialEdit)"
-                                                   action="#{cc.attrs.bean.expRecordController.clearDataFromAgents()}"
-                                                   oncomplete="PF('dlg_materialEdit').show();"> 
-                                        <span class="fa fa-cog"> </span>
-                                    </p:commandLink>
-                                </h:panelGroup>
-                            </b:column>
-                        </b:row>
-                        <b:row
-                            styleClass="assayUnitRow">
-                            <b:column span="2">
-                                <h:outputText value="#{msgs.expAssay_standardUnits}:" />
-                            </b:column>
-                            <b:column span="2">
-                                <h:panelGroup>
-                                    <p:inputText
+            <!--==================================================================-->
+            <p:outputPanel>
+                <h:outputText value="#{msgs.expAssay_remarks}:"/>
+
+                <!--Remarks-->
+                <!--*********************************************************-->
+                <p:inputTextarea
+                        styleClass="assayRemarkTextarea"
+                        value="#{cc.attrs.assay.remarks}"
+                        disabled="#{! cc.attrs.assay.edit}"/>
+            </p:outputPanel>
+            <!--==================================================================-->
+
+            <!--==================================================================-->
+            <p:outputPanel styleClass="assayTargetRow">
+
+                <p:outputPanel>
+
+                    <!--==================================================================-->
+                    <p:outputPanel>
+                        <p:outputPanel>
+
+                            <!--Target title-->
+                            <h:outputText value="#{msgs.expAssay_target}:"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <h:panelGroup>
+                                <crimsy:materialView material="#{cc.attrs.assay.target}"/>
+
+                                <!--Configuration button-->
+                                <p:commandLink title="#{msgs.expAssay_chooseTarget_tooltip}"
+                                               rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getAssayRecords().size() == 0)}"
+                                               update="@(.dlgMaterialEdit)"
+                                               action="#{cc.attrs.bean.expRecordController.clearDataFromAgents()}"
+                                               oncomplete="PF('dlg_materialEdit').show();">
+                                    <span class="fa fa-cog"> </span>
+
+                                </p:commandLink>
+                            </h:panelGroup>
+                        </p:outputPanel>
+
+                    </p:outputPanel>
+                    <!--==================================================================-->
+
+                    <!--==================================================================-->
+                    <p:outputPanel styleClass="assayUnitRow">
+                        <p:outputPanel>
+                            <!--Standard units title-->
+                            <h:outputText value="#{msgs.expAssay_standardUnits}:"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <h:panelGroup>
+                                <!--IntpuText-->
+                                <p:inputText
                                         id="assayUnitsList"
-                                        value="#{cc.attrs.assay.units}" 
+                                        value="#{cc.attrs.assay.units}"
                                         disabled="#{(! cc.attrs.assay.edit) or (cc.attrs.assay.getAssayRecords().size() gt 0)}">
-                                        <f:validator validatorId="UnitsValidator" />
-                                    </p:inputText>
-                                    <p:message for="assayUnitsList" />
-                                </h:panelGroup>
-                            </b:column>
-                        </b:row>
-                        <b:row
-                            styleClass="assayOutcomeRow">
-                            <b:column span="2">
-                                <h:outputText value="#{msgs.expAssay_outcomeType}:" />
-                            </b:column>
-                            <b:column span="2">
-                                <p:selectOneMenu 
+                                    <f:validator validatorId="UnitsValidator"/>
+                                </p:inputText>
+
+                                <p:message for="assayUnitsList"/>
+                            </h:panelGroup>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <!--==================================================================-->
+
+                    <!--==================================================================-->
+                    <p:outputPanel styleClass="assayOutcomeRow">
+                        <p:outputPanel>
+                            <!--Outcome Type title-->
+                            <h:outputText value="#{msgs.expAssay_outcomeType}:"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <p:selectOneMenu
                                     styleClass="assayUnitsSelectBox"
                                     disabled="#{! cc.attrs.assay.editTemplate}"
-                                    value="#{cc.attrs.assay.outcomeType}" >
-                                    <f:selectItems value="#{cc.attrs.assay.outcomeTypes}" />
-                                </p:selectOneMenu>
-                            </b:column>
-                        </b:row>
-                    </b:container>
-                </b:column>
-            </b:row>
-        </b:container>
-        <b:dataTable
-            var ="assayRecord"
+                                    value="#{cc.attrs.assay.outcomeType}">
+                                <f:selectItems value="#{cc.attrs.assay.outcomeTypes}"/>
+                            </p:selectOneMenu>
+                        </p:outputPanel>
+
+                    </p:outputPanel>
+                    <!--==================================================================-->
+
+
+                </p:outputPanel>
+            </p:outputPanel>
+
+        </p:outputPanel>
+
+    </p:outputPanel>
+
+    <!--==================================================================-->
+    <p:dataTable
+            var="assayRecord"
             value="#{cc.attrs.assay.getAssayRecords()}"
             styleClass="assayRecordTable"
-            paginated="false"
-            saveState="false">
-            <b:dataTableColumn
-                label="#{msgs.expAssay_column_material_label}"
-                orderable="false">
-                <h:outputText
-                    value="#{assayRecord.getMaterialName()}"/>
-                <p:commandLink title="#{msgs.expAssay_assignMaterial_tooltip}"
-                               ajax="true"
-                               rendered="#{cc.attrs.assay.edit}"
-                               action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
-                               update="@(.dlgMaterialEdit)"
-                               oncomplete="PF('dlg_materialEdit').show(); dlg_materialEdit_molEditor.then(e => e.init());"
-                               disabled="#{!assayRecord.isMaterialEditable()}">
-                    <span class="fa fa-pencil"/>
-                </p:commandLink>
-            </b:dataTableColumn>
-            <b:dataTableColumn
-                orderable="false"
-                label="#{msgs.expAssay_column_item_label}">
-                <h:outputText
-                    value="#{assayRecord.getItemLabel()}"/>
-                <p:commandLink title="#{msgs.expAssay_assignItem_tooltip}"
-                               rendered="#{cc.attrs.assay.edit}"
-                               ajax="true"
-                               action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
-                               oncomplete="PF('dlg_itemEdit').show();"
-                               update="@(.itemEdit)"
-                               disabled="#{!assayRecord.isItemEditable()}">
-                    <span class="fa fa-pencil"/>
-                </p:commandLink>  
-            </b:dataTableColumn>
-            <b:dataTableColumn
-                orderable="false"
-                label="#{msgs.expAssay_column_value_label}">
-                <h:inputText 
+    >
+
+        <!--Material-->
+        <!--==================================================================-->
+        <p:column headerText="#{msgs.expAssay_column_material_label}">
+            <h:outputText value="#{assayRecord.getMaterialName()}"/>
+            <br/>
+
+            <p:commandButton title="#{msgs.expAssay_assignMaterial_tooltip}"
+                             ajax="true"
+                             style="margin-top:10px;"
+                             icon="pi pi-pencil"
+                             styleClass="ui-button-success"
+                             rendered="#{cc.attrs.assay.edit}"
+                             action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
+                             update="@(.dlgMaterialEdit)"
+                             oncomplete="PF('dlg_materialEdit').show(); dlg_materialEdit_molEditor.then(e => e.init());"
+                             disabled="#{!assayRecord.isMaterialEditable()}">
+                <!--<span class="fa fa-pencil"/>-->
+            </p:commandButton>
+
+        </p:column>
+
+        <!--Item-->
+        <!--==================================================================-->
+        <p:column headerText="#{msgs.expAssay_column_item_label}">
+            <h:outputText value="#{assayRecord.getItemLabel()}"/>
+            <br/>
+            <p:commandButton title="#{msgs.expAssay_assignItem_tooltip}"
+                             rendered="#{cc.attrs.assay.edit}"
+                             icon="pi pi-pencil"
+                             styleClass="ui-button-success"
+                             style="margin-top:10px;"
+                             ajax="true"
+                             action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
+                             oncomplete="PF('dlg_itemEdit').show();"
+                             update="@(.itemEdit)"
+                             disabled="#{!assayRecord.isItemEditable()}">
+                <!--<span class="fa fa-pencil"/>-->
+            </p:commandButton>
+        </p:column>
+
+        <!--Measured value-->
+        <!--==================================================================-->
+        <p:column headerText="#{msgs.expAssay_column_value_label}">
+            <h:inputText
+                    style="width:100%;"
                     disabled="#{!assayRecord.edit}"
                     value="#{assayRecord.payload.value}"/>
-            </b:dataTableColumn>
-            <b:dataTableColumn
-                orderable="false"
-                label="#{msgs.expAssay_column_unit_label}">
-                <p:selectOneMenu 
+        </p:column>
+
+        <!--Unit-->
+        <!--==================================================================-->
+        <p:column headerText="#{msgs.expAssay_column_unit_label}">
+            <p:selectOneMenu
                     disabled="#{!assayRecord.edit}"
-                    value="#{assayRecord.payload.unit}" >
-                    <f:selectItems value="#{cc.attrs.assay.getPossibleUnits()}" />
-                </p:selectOneMenu>
-            </b:dataTableColumn>
-            <b:dataTableColumn
-                orderable="false"
-                label="#{msgs.expAssay_column_actions_label}">
-                <p:commandLink title="#{msgs.expAssay_edit_tooltip}"
-                               rendered ="#{cc.attrs.assay.edit}"
-                               ajax="true"
-                               action="#{cc.attrs.bean.expRecordController.triggerAssayRecordEdit(assayRecord)}"
-                               update="@form"
-                               disabled="#{assayRecord.edit}">
-                    <span class="fa fa-pencil"/>
-                </p:commandLink>
-                <p:commandLink title="#{msgs.expAssay_delete_tooltip}"
-                               rendered ="#{cc.attrs.assay.edit}"
-                               ajax="true"
-                               action="#{cc.attrs.bean.expRecordController.actionDeleteRecord(assayRecord)}"
-                               update="@form"
-                               disabled="#{assayRecord.edit}">
-                    <span class="fa fa-trash"/>
-                </p:commandLink>
-            </b:dataTableColumn>
-        </b:dataTable>
-        <b:container>
-            <b:row styleClass="assayButtonRow">
-                <b:column span="1" offset="8">
-                    <b:commandButton
+                    value="#{assayRecord.payload.unit}"
+                    converter="unitConverter"
+            >
+                <f:selectItems value="#{cc.attrs.assay.getPossibleUnits()}"/>
+            </p:selectOneMenu>
+        </p:column>
+
+        <!--Actions-->
+        <!--==================================================================-->
+        <p:column headerText="#{msgs.expAssay_column_actions_label}">
+
+            <p:commandButton title="#{msgs.expAssay_edit_tooltip}"
+                             rendered="#{cc.attrs.assay.edit}"
+                             styleClass="ui-button-success"
+                             ajax="true"
+                             action="#{cc.attrs.bean.expRecordController.triggerAssayRecordEdit(assayRecord)}"
+                             update="@form"
+                             disabled="#{assayRecord.edit}">
+                <!--<span class="fa fa-pencil"/>-->
+            </p:commandButton>
+
+            <p:commandButton title="#{msgs.expAssay_delete_tooltip}"
+                             rendered="#{cc.attrs.assay.edit}"
+                             ajax="true"
+                             style="margin:0 0.5rem;"
+                             styleClass="ui-button-danger"
+                             action="#{cc.attrs.bean.expRecordController.actionDeleteRecord(assayRecord)}"
+                             update="@form"
+                             disabled="#{assayRecord.edit}">
+                <!--<span class="fa fa-trash"/>-->
+            </p:commandButton>
+
+        </p:column>
+        <!--==================================================================-->
+    </p:dataTable>
+
+    <p:outputPanel>
+        <p:outputPanel styleClass="assayButtonRow">
+            <p:outputPanel>
+                <p:commandButton
                         ajax="true"
+                        style="margin-top: 1rem; margin-left: 1rem;"
                         update="dlgBarChartForm"
+                        styleClass="ui-button-danger"
+                        process="@form"
                         rendered="#{cc.attrs.bean.expRecordController.isDiagrammButtonVisible(cc.attrs.assay)}"
                         oncomplete="PF('dlg_barChart').show();"
                         action="#{cc.attrs.bean.setBarChartModel(cc.attrs.assay.index)}"
-                        process="@form"
                         value="#{msgs.expAssay_plot}"/>
-                </b:column>
-                <b:column span="1" offset="1">
-                    <b:commandButton
+            </p:outputPanel>
+
+            <p:outputPanel>
+                <p:commandButton
                         rendered="#{cc.attrs.assay.edit}"
+                        style="margin: 0.5rem 0;"
                         update="@form"
                         ajax="true"
                         process="@form"
                         action="#{cc.attrs.bean.expRecordController.actionAppendAssayRecord()}"
                         value="#{msgs.expAssay_appendNewRecord}"/>
-                </b:column>
-            </b:row>
-        </b:container>
-    </composite:implementation >
+
+            </p:outputPanel>
+        </p:outputPanel>
+    </p:outputPanel>
+</composite:implementation>
 </html>

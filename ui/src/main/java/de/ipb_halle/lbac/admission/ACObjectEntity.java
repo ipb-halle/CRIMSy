@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.crimsy_api.AttributeTag;
 import de.ipb_halle.crimsy_api.AttributeType;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 
 /**
  * Abstract base class for an access controlled objects.

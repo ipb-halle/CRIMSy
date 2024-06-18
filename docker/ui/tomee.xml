@@ -50,19 +50,19 @@
         userName = lbac
         validationQuery = SELECT 1 AS Validation;
     </Resource>
-    <Resource id="lbacManagedExecutorService" type="javax.enterprise.concurrent.ManagedExecutorService">
+    <Resource id="lbacManagedExecutorService" type="jakarta.enterprise.concurrent.ManagedExecutorService">
         Core = 50
         Max = 100
         KeepAlive = 5 s
         Queue = 50
     </Resource>
-    <Resource id="reportExecutorService" type="javax.enterprise.concurrent.ManagedExecutorService">
-        Core = 2
+    <Resource id="reportExecutorService" type="jakarta.enterprise.concurrent.ManagedExecutorService">
+        Core = 4
         Max = 4
         KeepAlive = 5 s
         Queue = 10
     </Resource>
-    <Resource id="kxExecutorService" type="javax.enterprise.concurrent.ManagedExecutorService">
+    <Resource id="kxExecutorService" type="jakarta.enterprise.concurrent.ManagedExecutorService">
         Core = 2
         Max = 4
         KeepAlive = 5 s

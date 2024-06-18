@@ -20,7 +20,7 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets">
 
@@ -31,9 +31,9 @@
         <h:outputStylesheet name="css/datatables/datatables.min.css" target="body" position="first"/>
         <h:outputScript name="js/datatables/datatables.min.js" target="body" position="first"/>
         <h:outputStylesheet name="css/fontawsome/font-awesome.min.css" target="head"/>
-        <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        <h:outputScript name="faces.js" library="jakarta.faces" target="head"/>
         <h:outputStylesheet name="css/bootstrap-select.css" position="last"/>
-        <h:outputStylesheet name="css/lbac.css" position="first"/>
+        <h:outputStylesheet name="css/lbac.css" position="last"/>
         <h:outputStylesheet name="css/experiment.css"/>
         <h:outputStylesheet name="css/taxonomy.css"/>
         <h:outputStylesheet name="css/container.css"/>
@@ -44,17 +44,16 @@
         <h:outputStylesheet name="css/collections.css"/>
         <h:outputStylesheet name="css/materialEdit.css"/>
         <h:outputStylesheet name="css/sequenceSearch.css"/>
-        <h:outputScript name="fine-uploader/jquery.fine-uploader.js" target="body" position="last"/>
-        <h:outputScript name="js/lbac_fineUploaderMulti.js" target="body" position="last"/>
         <h:outputScript name="js/lbac_helper.js"/>
         <h:outputScript name="js/colorCloudTerms.js"/>      
+        <h:outputStylesheet name="css/modal/fileUploadModal.css"/>
 
     </h:head>
     <h:body>
 
 
 
-        <b:growl
+        <p:growl
             styleClass="growlMessages"
             id="growlMsg"
             globalOnly="true"
@@ -69,12 +68,12 @@
             <ui:include src="/WEB-INF/templates/navigation.xhtml"/>
         </ui:insert>
 
-        <b:container class="simplesearch">
+        <p:panel class="simplesearch" style="margin: 0  auto;">
             <ui:insert name="content">
                 <ui:include src="#{navigator.nextPage}"/>
             </ui:insert>
 
-        </b:container>
+        </p:panel>
         <ui:insert name="footer">
             <ui:include src="/WEB-INF/templates/footer.xhtml"/>
         </ui:insert>

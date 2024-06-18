@@ -22,7 +22,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;

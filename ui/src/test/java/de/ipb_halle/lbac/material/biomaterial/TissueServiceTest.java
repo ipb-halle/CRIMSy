@@ -33,7 +33,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -102,7 +102,7 @@ public class TissueServiceTest extends TestBase {
         names = new ArrayList<>();
         names.add(new MaterialName("Blüte", "de", 1));
 
-        Taxonomy seerose = taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(11);
+        Taxonomy seerose = taxoService.loadTaxonomy(new HashMap<>(), true).get(11);
         tissue = new Tissue(100, names, seerose);
         materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
 

@@ -29,6 +29,8 @@ import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchState;
 import de.ipb_halle.lbac.service.CloudNodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
+import jakarta.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,11 +40,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -93,6 +94,9 @@ public class WordCloudBean implements Serializable {
     @Inject
     private UserBean userBean;
 
+    @Inject
+    private LoggingProfiler loggingProfiler; 
+    
     /**
      * Starts the word cloud functionality
      * <ul>
@@ -135,7 +139,7 @@ public class WordCloudBean implements Serializable {
             createWordCloud(wordTerms);
 
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("startSearch() caught an exception:", (Throwable) e);
         }
     }
 
@@ -169,7 +173,7 @@ public class WordCloudBean implements Serializable {
 
             createWordCloud(remainingTerms);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("updateExistingCloud() caught an exception:", (Throwable) e);
         }
     }
 
@@ -209,7 +213,11 @@ public class WordCloudBean implements Serializable {
      * previous searching
      */
     public void clearCloudState(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("WordCloudBean.clearCloudState");
+
         clearCloudState();
+        loggingProfiler.profilerStop("WordCloudBean.clearCloudState");
+
     }
 
     /**
@@ -276,8 +284,7 @@ public class WordCloudBean implements Serializable {
                 docSeachState,
                 collectionBean.getCollectionSearchState().getCollections(),
                 searchService.getTagStringForSeachRequest(tagList),
-                Integer.MAX_VALUE, 0,
-                searchService.getUriOfPublicCollection());
+                Integer.MAX_VALUE, 0);
 
         for (Document d : docSeachState.getFoundDocuments()) {
             d.setTermFreqList(

@@ -20,7 +20,6 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
 >
@@ -30,7 +29,7 @@
     <meta http-equiv="refresh" content="3;url=#{request.contextPath}/index.xhtml"/>
 </h:head>
 <h:body>
-    <b:container>
+    <div>
 
         <p/>
         <p/>
@@ -38,8 +37,8 @@
 
         <h2>#{msgs.errorPage_sessionExpired_message}</h2>
         <p>
-            <b:navLink href="/ui/index.xhtml" value="#{msgs.errorPage_backToIndex}"/>
+            <h:commandLink style="color:red;" href="/ui/index.xhtml" value="#{msgs.errorPage_backToIndex}"/>
         </p>
-    </b:container>
+    </div>
 </h:body>
 </html>

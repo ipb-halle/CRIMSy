@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -83,7 +82,7 @@ public class NameListOperation implements Serializable {
             }
 
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("isEnabled() caught an exception:", (Throwable) e);
             return false;
         }
         return true;

@@ -33,7 +33,7 @@ public class SimpleTaxonomyLevelController extends TaxonomyLevelController {
     }
 
     @Override
-    public List<TaxonomyLevel> getLevels() {
+    public List<TaxonomyLevel> getPossibleLevels() {
         return levels;
     }     
 }

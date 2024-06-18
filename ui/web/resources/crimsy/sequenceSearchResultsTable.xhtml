@@ -19,8 +19,8 @@ limitations under the License.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:composite="http://java.sun.com/jsf/composite"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
       xmlns:of="http://omnifaces.org/functions"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -34,103 +34,134 @@ limitations under the License.
 
     <composite:implementation>
         <div id="#{cc.clientId}">
-            <b:container>
-                <b:form>
-                    <b:panelGrid
-                        col-spans="3,2,2,5"
-                        rendered="#{fn:length(cc.attrs.resultsTableController.results) gt 0}">
-                        <b:selectOneMenu
-                            value="#{cc.attrs.resultsTableController.sortBy}"
-                            label="#{msgs.sequenceSearch_results_sortBy}">
-                            <f:selectItems
-                                value="#{cc.attrs.resultsTableController.sortByItems}"
-                                var="item"
-                                itemValue="#{item}"
-                                itemLabel="#{cc.attrs.resultsTableController.getLocalizedSortByLabel(item)}" />
-                            <f:ajax
-                                event="change"
-                                execute="@this"
-                                render="fastaResultPanelGroupId"
-                                listener="#{cc.attrs.resultsTableController.actionOnChangeSortBy()}" />
-                        </b:selectOneMenu>
-                        <b:button
-                            value="#{msgs.sequenceSearch_results_collapseAllResults}"
-                            onclick="$('.fastaResultPanel > .panel-heading > .panel-title-link:not(.collapsed)').click();" />
-                        <b:button
-                            value="#{msgs.sequenceSearch_results_expandAllResults}"
-                            onclick="$('.fastaResultPanel > .panel-heading > .panel-title-link.collapsed').click();" />
-                        <b:commandLink
-                            value="#{msgs.sequenceSearch_results_downloadAllAsFasta}"
-                            action="#{cc.attrs.resultsTableController.actionDownloadAllResultsAsFasta()}"
-                            iconAwesome="download"
-                            iconAlign="left" />
-                    </b:panelGrid>
+            <p:outputPanel>
+                <h:form>
+                    <p:panelGrid rendered="#{fn:length(cc.attrs.resultsTableController.results) gt 0}">
+                        <p:row>
+                            <p:selectOneMenu
+                                value="#{cc.attrs.resultsTableController.sortBy}"
+                                label="#{msgs.sequenceSearch_results_sortBy}"
+                                >
 
-                    <br />
-                    <h:panelGroup
-                        id="fastaResultPanelGroupId"
-                        styleClass="fastaResultPanelGroup">
-                        <ui:repeat
-                            value="#{cc.attrs.resultsTableController.results}"
-                            var="result"
-                            varStatus="status">
-                            <b:panel styleClass="fastaResultPanel">
-                                <f:facet name="heading">
+                                <f:selectItems
+                                    value="#{cc.attrs.resultsTableController.sortByItems}"
+                                    var="item"
+                                    itemValue="#{item}"
+                                    itemLabel="#{cc.attrs.resultsTableController.getLocalizedSortByLabel(item)}" />
+
+                                <f:ajax
+                                    event="change"
+                                    execute="@this"
+                                    render="fastaResultPanelGroupId"
+                                    listener="#{cc.attrs.resultsTableController.actionOnChangeSortBy()}" />
+
+                            </p:selectOneMenu>
+
+                            <p:commandButton
+                                style="margin:0 0.5rem;"
+                                value="#{msgs.sequenceSearch_results_collapseAllResults}"
+                                onclick="hideFastaResultPanel()"
+
+                                />
+                            <p:commandButton
+                                style="margin-right:0.5rem;"
+                                value="#{msgs.sequenceSearch_results_expandAllResults}"
+                                onclick="showFastaResultPanel()"
+                                />
+
+                            <p:commandButton
+                                value="#{msgs.sequenceSearch_results_downloadAllAsFasta}"
+                                ajax="false"
+                                action="#{cc.attrs.resultsTableController.actionDownloadAllResultsAsFasta()}"
+                                icon="fa fa-download"/>
+                        </p:row>
+                    </p:panelGrid>
+
+
+
+                    <ui:repeat
+                        value="#{cc.attrs.resultsTableController.results}"
+                        var="result"
+                        varStatus="status">
+
+                        <p:outputPanel styleClass="fastaResultPanel">
+
+                            <h:panelGroup
+                                id="fastaResultPanelGroupId"
+                                styleClass="fastaResultPanelGroup">
+                                
+                                <hr/>
+
+                                <div style="margin: 10px 5px; background: #e3f2fd; border-radius: 5px;">
                                     <h:outputFormat
                                         value="#{msgs.sequenceSearch_results_resultNumberFormat}"
                                         style="padding-right:20px;">
                                         <f:param value="#{status.index + 1}" />
                                         <f:param value="#{status.end}" />
                                     </h:outputFormat>
+
+
                                     <h:outputText
                                         value="#{result.sequence.firstName}"
                                         style="font-size:large;" />
-                                </f:facet>
-                                <b:panelGrid col-spans="2,1,1,1,2,1,2,1,1">
-                                    <b:commandLink
+                                </div>
+                                
+                                <hr/>
+                                
+                                <div style="display: grid;
+                                     grid-template-columns: 190px 85px 85px 85px 170px 60px 155px 60px 20px;
+                                     grid-gap:10px;
+                                     padding: 10px;"
+                                     >
+                                    <p:commandButton
+                                        ajax="false"
                                         value="#{msgs.sequenceSearch_results_downloadResultAsFasta}"
                                         action="#{cc.attrs.resultsTableController.actionDownloadResultAsFasta(result, status.index + 1)}"
-                                        iconAwesome="download"
-                                        iconAlign="left" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_eValue}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_identity}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_similarity}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_overlap}" />
-                                    <h:outputText value="#{msgs.sequenceSearch_results_frame}" />
+                                        icon="fa fa-download"
+                                        />
+                                    <h:outputText value="#{msgs.sequenceSearch_results_hitLength}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_bitScore}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_eValue}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_smithWatermanScore}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_identity}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_similarity}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_overlap}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{msgs.sequenceSearch_results_frame}" style="margin: 0 10px;"/>
+                                </div>
 
-                                    <b:commandLink
+                                <div style="display: grid;
+                                     grid-template-columns: 190px 85px 85px 85px 170px 60px 155px 60px 20px;
+                                     grid-gap:10px;
+                                     padding: 10px;"
+                                     >
+                                    <p:commandButton
                                         value="#{msgs.materialOverview_actions_edit}"
                                         action="#{materialOverviewBean.actionEditMaterial(result.sequence)}"
-                                        style="padding: 0 4px;"
-                                        icon="pencil"
+                                        icon="pi pi-pencil"
+                                        styleClass="ui-button-success"
                                         ajax="false" />
-                                    <h:outputText value="#{result.fastaResult.subjectSequenceLength}" />
-                                    <h:outputText value="#{result.fastaResult.bitScore}" />
-                                    <h:outputText value="#{result.fastaResult.expectationValue}" />
-                                    <h:outputText value="#{result.fastaResult.smithWatermanScore}" />
-                                    <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" />
-                                    <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" />
-                                    <h:outputText value="#{result.fastaResult.overlap}" />
-                                    <h:outputText value="#{result.fastaResult.frame}" />
-                                </b:panelGrid>
+
+                                    <h:outputText value="#{result.fastaResult.subjectSequenceLength}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.bitScore}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.expectationValue}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.smithWatermanScore}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{of:formatPercent(result.fastaResult.identity)}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{of:formatPercent(result.fastaResult.similarity)}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.overlap}" style="margin: 0 10px;"/>
+                                    <h:outputText value="#{result.fastaResult.frame}" style="margin: 0 10px;"/>
+                                </div>
                                 <hr />
-                                <b:row>
-                                    <b:column
-                                        span="10"
-                                        offset="2">
-                                        <h:outputText
-                                            value="#{result.alignments}"
-                                            style="white-space:pre; font-family:monospace;" />
-                                    </b:column>
-                                </b:row>
-                            </b:panel>
-                        </ui:repeat>
-                    </h:panelGroup>
-                </b:form>
-            </b:container>
+
+                                <p:column>
+                                    <h:outputText
+                                        value="#{result.alignments}"
+                                        style="white-space:pre; font-family:monospace;" />
+                                </p:column>
+                            </h:panelGroup>
+                        </p:outputPanel>
+                    </ui:repeat>
+                </h:form>
+            </p:outputPanel>
         </div>
     </composite:implementation>
 </html>

@@ -38,9 +38,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.event.Event;
-import javax.faces.component.UIInput;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Event;
+import jakarta.faces.component.UIInput;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -97,13 +97,14 @@ class ConsumePartOfItemStrategyControllerTest extends TestBase {
     @Inject
     private Event<LoginEvent> loginEvent;
 
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter; 
 
     private Structure material;
     private Item parentItem;
 
     @BeforeEach
     public void before() {
+        messagePresenter = getMessagePresenterMock();
         userBeanMock.setCurrentAccount(publicUser);
 
         // initializes the user in ItemOverviewBean

@@ -27,13 +27,14 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -60,6 +61,8 @@ public class TaxonomyHistoryControllerTest extends TestBase {
     private TaxonomyService taxonomyService;
     @Inject
     private MaterialService materialService;
+    @Inject
+    private LoggingProfiler loggingProfiler;
 
     @BeforeEach
     public void init() {
@@ -103,8 +106,8 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         TaxonomyNameController nameController = new TaxonomyNameController(bean);
         historyController = new TaxonomyHistoryController(bean, nameController, taxonomyService, memberService);
         levelController = new TaxonomyLevelController(bean);
-        renderController = new TaxonomyRenderController(bean, nameController, levelController, memberService, MessagePresenterMock.getInstance());
-        TaxonomyTreeController tc = new TaxonomyTreeController(node, taxonomyService, levelController);
+        renderController = new TaxonomyRenderController(bean, nameController, levelController, memberService, getMessagePresenterMock());
+        TaxonomyTreeController tc = new TaxonomyTreeController(loggingProfiler, node, taxonomyService, levelController);
 
         bean.setHistoryController(historyController);
         bean.setLevelController(levelController);
@@ -114,7 +117,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         bean.setRenderController(renderController);
         bean.setTaxonomyService(taxonomyService);
         bean.setTreeController(tc);
-        bean.setValidityController(new TaxonomyValidityController(bean, MessagePresenterMock.getInstance()));
+        bean.setValidityController(new TaxonomyValidityController(bean, getMessagePresenterMock()));
         bean.initHistoryDate();
 
         Assert.assertEquals(d2, historyController.getDateOfShownHistory());

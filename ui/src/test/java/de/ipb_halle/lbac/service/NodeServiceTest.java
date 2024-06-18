@@ -25,7 +25,7 @@ import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.UUID;
 
 import org.jboss.arquillian.container.test.api.Deployment;

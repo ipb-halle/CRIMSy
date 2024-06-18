@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;

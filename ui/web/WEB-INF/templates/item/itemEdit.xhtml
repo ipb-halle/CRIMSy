@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -31,319 +30,460 @@
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
         <ui:composition>
-            <b:form id="itemEditForm">
-                <b:panel>
-                    <b:container>
-                        <b:row>
-                            <b:column span="5"
-                                      styleClass="itemEditMaterialName">
-                                <h:outputFormat
-                                    value="#{msgs.itemEdit_itemEditPanel_materialName}">
-                                    <f:param value="#{itemBean.materialName}" />
-                                </h:outputFormat>
-                            </b:column>
-                            <b:column span="1">
-                                <b:commandButton
-                                    icon-awesome="fa-backward"
-                                    disabled="#{itemBean.state.startingHistoryItem}"
-                                    action="#{itemBean.actionApplyNextNegativeDifference()}">
-                                    <o:skipValidators />
-                                </b:commandButton>
-                            </b:column>
-                            <b:column span="3">
-                                <ui:fragment rendered="#{!itemBean.createMode}">
-                                    <h:outputFormat
-                                        value="#{msgs.itemEdit_itemEditPanel_changed}"
-                                        rendered="#{!itemBean.state.startingHistoryItem}">
-                                        <o:param value="#{itemBean.state.changeDate}"
-                                                 converter="org.ocpsoft.PrettyTimeConverter" />
-                                        <o:param value="#{nwc:formatDateWithTimezone(itemBean.state.changeDate)}" />
-                                    </h:outputFormat>
-                                    <h:outputFormat
-                                        value="#{msgs.itemEdit_itemEditPanel_created}"
-                                        rendered="#{itemBean.state.startingHistoryItem}">
-                                        <o:param value="#{itemBean.state.originalItem.cTime}"
-                                                 converter="org.ocpsoft.PrettyTimeConverter" />
-                                        <o:param value="#{nwc:formatDateWithTimezone(itemBean.state.originalItem.cTime)}" />
-                                    </h:outputFormat>
-                                </ui:fragment>
-                            </b:column>
-                            <b:column span="1">
-                                <b:commandButton
-                                    icon-awesome="fa-forward"
-                                    disabled="#{itemBean.state.lastHistoryItem}"
-                                    action="#{itemBean.actionApplyNextPositiveDifference()}">
-                                    <o:skipValidators />
-                                </b:commandButton>
-                            </b:column>
-                            <b:column  span="1">
-                                <b:commandButton
-                                    immediate="true"
-                                    action="#{itemBean.actionCancel()}"
-                                    value="#{msgs.Cancel}"/>
-                            </b:column>
-                            <b:column span="1">
-                                <b:commandButton
-                                    value="#{msgs.itemEdit_itemEditPanel_save}"
-                                    disabled="#{itemBean.inDeactivatedMode}"
-                                    action="#{itemBean.actionSave()}" />
-                            </b:column>
-                        </b:row>
-                    </b:container>
-                </b:panel>
-                <b:messages />
+            <h:form id="itemEditForm" style="border:1px solid #029ACF;border-radius:3px;">
+                <!--=========================================================================================-->
+                <div class="col-12 md:col-3" styleClass="itemEditMaterialName">
+                    <h3>
+                        <strong>
+                            <h:outputFormat value="#{msgs.itemEdit_itemEditPanel_materialName}">
+                                <f:param value="#{itemBean.materialName}" />
+                            </h:outputFormat>
+                        </strong>
+                    </h3>
+                </div>
+                <!--=========================================================================================-->
+
+
+                <div class="ui-fluid" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end;margin: 0.5rem 0;">
+
+                    <!--Button Backward-->
+                    <!--=========================================================================================-->
+                    <div class="col-12 md:col-3">
+
+                        <p:commandButton icon="fa fa-backward"
+                                         disabled="#{itemBean.state.startingHistoryItem}"
+                                         action="#{itemBean.actionApplyNextNegativeDifference()}">
+                            <o:skipValidators />
+                        </p:commandButton>
+                    </div>
+                    <!--=========================================================================================-->
+
+                    <!-- ???????-->
+                    <!--=========================================================================================-->
+                    <div class="col-12 md:col-3">
+                        <ui:fragment rendered="#{!itemBean.createMode}">
+                            <h:outputFormat value="#{msgs.itemEdit_itemEditPanel_changed}"
+                                            rendered="#{!itemBean.state.startingHistoryItem}">
+                                <f:param value="#{itemBean.state.changeDate}" />
+                                <f:param value="#{nwc:formatDateWithTimezone(itemBean.state.changeDate)}" />
+                            </h:outputFormat>
+
+                            <h:outputFormat value="#{msgs.itemEdit_itemEditPanel_created}"
+                                            rendered="#{itemBean.state.startingHistoryItem}">
+                                <f:param value="#{itemBean.state.originalItem.cTime}" />
+                                <f:param value="#{nwc:formatDateWithTimezone(itemBean.state.originalItem.cTime)}" />
+                            </h:outputFormat>
+                        </ui:fragment>
+                    </div>
+                    <!--=========================================================================================-->
+
+
+                    <!--Button Forward-->
+                    <!--=========================================================================================-->
+                    <div class="col-12 md:col-3">
+
+                        <p:commandButton icon="fa fa-forward"
+                                         disabled="#{itemBean.state.lastHistoryItem}"
+                                         action="#{itemBean.actionApplyNextPositiveDifference()}">
+                            <o:skipValidators />
+                        </p:commandButton>
+                    </div>
+                    <!--=========================================================================================-->
+
+
+                    <!--Button Cancel-->
+                    <!--=========================================================================================-->
+                    <div class="col-12 md:col-3" style="margin:0.5rem;">
+
+                        <p:commandButton immediate="true"
+                                         styleClass="ui-button-secondary"
+                                         update="@all"
+                                         process="@this"
+                                         value="#{msgs.Cancel}"
+                                         action="#{itemBean.actionCancel()}"
+                                         />
+                    </div>
+                    <!--=========================================================================================-->
+
+
+                    <!--Button Save-->
+                    <!--=========================================================================================-->
+                    <div class="col-12 md:col-3" style="margin-right: 0.5rem;">
+
+                        <p:commandButton
+                            styleClass="ui-button-danger"
+                            value="#{msgs.itemEdit_itemEditPanel_save}"
+                            disabled="#{itemBean.inDeactivatedMode}"
+                            process="@form"
+                            ajax="false"
+                            action="#{itemBean.actionSave()}"
+                            />
+                    </div>
+                    <!--=========================================================================================-->
+
+                </div>
+
+                <p:messages />
+
+                <!--=========================================================================================-->
                 <p:tabView
                     id="itemTabViewId"
-                    styleClass="itemEditTabView">
+                    styleClass="itemEditTabView"
+                    style="max-width:100%; margin:0;">
+
+                    <!--Basic Information-->
+                    <!--=========================================================================================-->
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_basicInformation}">
-                        <b:container>
+                        <div class="col-12 md:col-3">
 
                             <!-- Amount and purity -->
-                            <b:row>
-                                <b:column span="2" offset="2">
-                                    <b:inputText
-                                        id="itemAmountId"
-                                        value="#{itemBean.state.editedItem.amount}"
-                                        disabled="#{itemBean.inDeactivatedMode}"
-                                        label="#{msgs.itemEdit_itemPanel_amount}"
-                                        required="true"
-                                        required-message="#{msgs.itemEdit_itemPanel_amount_requiredtext}">
-                                        <f:convertNumber
-                                            type="number"
-                                            groupingUsed="false"
-                                            locale="#{globalLocaleBean.numberConverterLocale}" />
-                                        <f:validateDoubleRange minimum="0" />
-                                    </b:inputText>
-                                </b:column>
-                                <b:column span="2">
-                                    <!-- See https://github.com/ipb-halle/CRIMSy/issues/184 for implementation notes. -->
-                                    <b:selectOneMenu
-                                        id="amountUnitId"
-                                        label="#{msgs.itemEdit_itemPanel_amount_unit}"
-                                        value="#{itemBean.state.editedItem.unit}"
-                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
-                                        onfocus="rememberPreviouslySelectedUnit(this);"
-                                        onchange="onChangeSelectedUnit(this);">
-                                        <c:forEach
-                                            items="#{itemBean.availableAmountUnits}"
-                                            var="unit">
-                                            <f:selectItem
-                                                itemValue="#{unit}"
-                                                itemLabel="#{unit.unit}"
-                                                pt:factor="#{unit.factor}"
-                                                pt:quality="#{unit.quality}" />
-                                        </c:forEach>
-                                    </b:selectOneMenu>
-                                </b:column> 
-                                <b:column span="3">
-                                    <b:selectOneMenu
-                                        label="#{msgs.itemEdit_itemPanel_amount_purity}"
-                                        value="#{itemBean.state.editedItem.purity}"
-                                        disabled="#{itemBean.inDeactivatedMode}">
-                                        <f:selectItems value="#{itemBean.availablePurities}" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </b:row>
+                            <!--****************************************************************************************-->
+                            <div class="ui-fluid" style="display: flex; flex-wrap:  wrap; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
+
+                                <p:outputLabel value="#{msgs.itemEdit_itemPanel_amount}" style="min-width: 15%;"/>
+                                <p:inputText
+                                    style="margin: 0 8px 0 10px; max-width: 17.8%;"
+                                    id="itemAmountId"
+                                    value="#{itemBean.state.editedItem.amount}"
+                                    disabled="#{itemBean.inDeactivatedMode}"
+                                    requiredMessage="#{msgs.itemEdit_itemPanel_amount_requiredtext}"
+                                    required="true"
+                                    >
+
+                                    <f:convertNumber
+                                        type="number"
+                                        groupingUsed="false"
+                                        locale="#{globalLocaleBean.numberConverterLocale}" />
+
+                                    <!--<f:validateDoubleRange minimum="0" />-->
+                                </p:inputText>
+
+                                <!-- See https://github.com/ipb-halle/CRIMSy/issues/184 for implementation notes. -->
+                                <p:selectOneMenu
+                                    style="margin:0 3px; max-width: 7%;"
+                                    converter="unitConverter"
+                                    id="amountUnitId"
+                                    label="#{msgs.itemEdit_itemPanel_amount_unit}"
+                                    value="#{itemBean.state.editedItem.unit}"
+                                    disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
+                                    <!-- onchange="onChangeSelectedUnit(this);" -->
+
+                                    <f:selectItems
+                                        value="#{itemBean.availableAmountUnits}"
+                                        var="unit"
+                                        itemValue="#{unit}"
+                                        itemLabel="#{unit.unit}"
+                                        />
+
+                                    <p:ajax
+                                        update="boundContainerUnitId"
+                                        process="@this"
+                                        />
+
+                                </p:selectOneMenu>
+
+                                <p:selectOneMenu
+                                    class="bug"
+                                    converter="purityConverter"
+                                    style="margin: 0 10px;max-width: 20%;"
+                                    label="#{msgs.itemEdit_itemPanel_amount_purity}"
+                                    value="#{itemBean.state.editedItem.purity}"
+                                    onblur="escapeHtmlCode()"
+                                    onchange="escapeHtmlCode()"
+                                    disabled="#{itemBean.inDeactivatedMode}">
+                                    <f:selectItems value="#{itemBean.availablePurities}" />
+                                </p:selectOneMenu>
+                            </div>
 
                             <!-- Bound (optional) -->
-                            <b:row>
-                                <b:column span="2" styleClass="boldSelectBooleanCheckboxCaption">
-                                    <b:selectBooleanCheckbox
-                                        value="#{itemBean.directContainer}"
-                                        caption="#{msgs.itemEdit_itemPanel_directContainer}"
-                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
-                                        ajax="true"
-                                        process="@this"
-                                        update="@(.directContainerClass)"
-                                        oncomplete="updateBoundContainerUnit();" />
-                                </b:column>
-                                <b:column span="2" styleClass="directContainerClass">
-                                    <b:inputText
+                            <!--****************************************************************************************-->
+                            <div class="ui-fluid" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
+
+
+                                <p:outputPanel styleClass="boldSelectBooleanCheckboxCaption" style="min-width: 15%;">
+                                    <p:selectBooleanCheckbox value="#{itemBean.directContainer}"
+                                                             itemLabel="#{msgs.itemEdit_itemPanel_directContainer}"
+                                                             disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
+
+                                                             >
+                                        <p:ajax process="@this"
+                                                update="@(.directContainerClass)"
+                                                />
+                                        <!--update="@all"-->
+                                    </p:selectBooleanCheckbox>
+
+                                </p:outputPanel>
+
+                                <p:outputPanel styleClass="directContainerClass">
+                                    <p:inputText
                                         id="boundContainerSizeId"
+                                        style="margin: 0 10px; max-width: 90%;"
                                         rendered="#{itemBean.directContainer}"
                                         value="#{itemBean.state.editedItem.containerSize}"
                                         required="true"
-                                        required-message="#{msgs.itemEdit_itemPanel_container_size_requiredtext}"
+                                        requiredMessage="#{msgs.itemEdit_itemPanel_container_size_requiredtext}"
                                         label="#{msgs.itemEdit_itemPanel_container_size}"
                                         disabled="#{(itemBean.inDeactivatedMode or itemBean.editMode) and faces.renderResponse}">
+
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
                                             locale="#{globalLocaleBean.numberConverterLocale}" />
+
                                         <f:validateDoubleRange minimum="0" />
-                                    </b:inputText>
+
+                                    </p:inputText>
+
 
                                     <!-- Cross-field validation amount <= container size. -->
                                     <!-- Note the 'faces.renderResponse' in the boundContainerSizeId input component
                                          due to https://github.com/omnifaces/omnifaces/issues/411 -->
+
+
                                     <o:validateMultiple
                                         components="itemAmountId boundContainerSizeId"
                                         validator="#{itemBean.validateAmountVsContainerSize}"
                                         message="#{msgs.itemEdit_itemPanel_validationError_amount_greaterThan_containerSize}" />
-                                </b:column>
-                                <script>$(document).ready(function() { updateBoundContainerUnit(); });</script>
-                                <b:column span="2" styleClass="directContainerClass">
-                                    <b:inputText
+                                </p:outputPanel>
+
+                                <p:outputPanel  styleClass="directContainerClass"
+                                                style="width:8.1%;">
+                                    <p:inputText
+                                        style="width:86%; margin-right: 10px;"
                                         id="boundContainerUnitId"
                                         rendered="#{itemBean.directContainer}"
                                         disabled="true"
                                         label="#{msgs.itemEdit_itemPanel_container_unit}"
                                         value="#{itemBean.state.editedItem.unit.unit}" />
-                                </b:column>
-                                <b:column span="3" styleClass="directContainerClass">
-                                    <b:selectOneMenu
+                                </p:outputPanel>
+
+                                <p:outputPanel  styleClass="directContainerClass"
+                                                style="width: 20.2%;"
+
+                                                >
+                                    <p:selectOneMenu
                                         rendered="#{itemBean.directContainer}"
                                         label="#{msgs.itemEdit_itemPanel_container_type}"
                                         value="#{itemBean.state.editedItem.containerType}"
-                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
-                                        <f:selectItems 
+                                        disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
+                                        converter="containerTypeConverter">
+
+                                        <f:selectItems
                                             value="#{itemBean.availableContainerTypes}"
                                             var ="ct"
                                             itemLabel="#{ct.getLocalizedName()}"/>
-                                    </b:selectOneMenu>
-                                </b:column> 
-                            </b:row>
 
-                            <!-- Solvent (optional) -->
-                            <b:row styleClass="solventClass">
-                                <b:column 
-                                    span="2"
-                                    styleClass="boldSelectBooleanCheckboxCaption">
-                                    <b:selectBooleanCheckbox
-                                        caption="#{msgs.itemEdit_itemPanel_solvent}"
-                                        ajax="true"
-                                        process="@this"
-                                        update="@(.solventClass)"
+                                    </p:selectOneMenu>
+                                </p:outputPanel>
+
+                            </div>
+
+                            <!-- Substance solved (optional) -->
+                            <!--****************************************************************************************-->
+                            <div class="ui-fluid" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
+
+
+                                <p:outputPanel
+                                    styleClass="boldSelectBooleanCheckboxCaption" style="min-width: 15%;">
+                                    <p:selectBooleanCheckbox
+                                        itemLabel="#{msgs.itemEdit_itemPanel_solvent}"
                                         value="#{itemBean.solved}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}"
-                                        onchange="ajax:itemBean.onChangeSolved()" />
-                                </b:column>
-                                <b:column
-                                    span="2"
-                                    rendered="#{itemBean.isSolventRowVisisble()}">
-                                    <b:inputText
+                                        >
+                                        <p:ajax process="@this"
+                                                update="@(.solventClass)"
+                                                />
+                                        <!--                                            ajax="true"
+                                                update="@all"
+                                                                                    process="@this"
+                                                                                    onchange="ajax:itemBean.onChangeSolved()" -->
+
+                                    </p:selectBooleanCheckbox>
+                                </p:outputPanel>
+
+                                <p:outputPanel
+                                    styleClass="solventClass">
+
+                                    <p:inputText
+                                        rendered="#{itemBean.isSolventRowVisisble()}"
                                         id="concentrationId"
+                                        style="margin: 0 10px;max-width: 90%;"
                                         label="#{msgs.itemEdit_itemPanel_concentration}"
                                         value="#{itemBean.state.editedItem.concentration}"
                                         disabled="#{itemBean.inDeactivatedMode}"
                                         required="true"
-                                        required-message="#{msgs.itemEdit_itemPanel_concentration_requiredtext}">
+                                        requiredMessage="#{msgs.itemEdit_itemPanel_concentration_requiredtext}">
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
                                             locale="#{globalLocaleBean.numberConverterLocale}" />
                                         <f:validateDoubleRange minimum="0" />
-                                    </b:inputText>
-                                </b:column>
-                                <b:column
-                                    span="2"
-                                    rendered="#{itemBean.isSolventRowVisisble()}">
-                                    <b:selectOneMenu
+                                    </p:inputText>
+                                </p:outputPanel>
+
+                                <p:outputPanel
+                                    styleClass="solventClass"
+                                    style="margin-right: 11px;width:7%;"
+                                    >
+
+                                    <p:selectOneMenu
+                                        converter="unitConverter"
+                                        rendered="#{itemBean.isSolventRowVisisble()}"
                                         label="#{msgs.itemEdit_itemPanel_concentration_unit}"
                                         value="#{itemBean.state.editedItem.concentrationUnit}"
-                                        ajax="true"
                                         valueChangeListener="#{itemBean.concentrationUnitChanged}"
-                                        process="@this concentrationId"
-                                        update="concentrationId"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
                                         <f:selectItems
                                             value="#{itemBean.availableConcentrationUnits}"
                                             var="unit"
                                             itemLabel="#{unit.unit}" />
-                                    </b:selectOneMenu>
-                                </b:column> 
-                                <b:column
-                                    span="3"
-                                    rendered="#{itemBean.isSolventRowVisisble()}">
-                                    <b:selectOneMenu
+                                    </p:selectOneMenu>
+
+                                    <!--                                            ajax="true"
+                                                                                process="@this concentrationId"
+                                                                                update="concentrationId"-->
+
+
+                                </p:outputPanel>
+
+                                <p:outputPanel
+                                    styleClass="solventClass"
+                                    style="width: 20.2%;"
+                                    >
+
+                                    <p:selectOneMenu
+                                        id="itemSolvent"
+                                        converter="omnifaces.SelectItemsConverter"
+                                        rendered="#{itemBean.isSolventRowVisisble()}"
                                         label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
                                         value="#{itemBean.state.editedItem.solvent}"
                                         disabled="#{itemBean.inDeactivatedMode or itemBean.editMode}">
-                                        <f:selectItems 
+                                        <f:selectItem itemLabel="select the solvent" itemValue=""/>
+                                        <f:selectItems
                                             value="#{itemBean.availableSolvents}"
                                             var="s"
+                                            itemValue="#{s}"
                                             itemLabel="#{s.getLocalizedName()}"/>
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </b:row>
+                                    </p:selectOneMenu>
+
+                                </p:outputPanel>
+
+                            </div>
 
                             <!-- Custom Label (optional) -->
-                            <b:row>
-                                <b:column
-                                    span="2"
-                                    styleClass="boldSelectBooleanCheckboxCaption">
-                                    <b:selectBooleanCheckbox
-                                        ajax="true"
-                                        caption="#{msgs.itemEdit_itemPanel_label_customLabel}"
+                            <!--****************************************************************************************-->
+                            <div class="ui-fluid" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
+
+                                <p:outputPanel styleClass="boldSelectBooleanCheckboxCaption" style="min-width: 15%;">
+
+                                    <p:selectBooleanCheckbox
+                                        itemLabel="#{msgs.itemEdit_itemPanel_label_customLabel}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
-                                        value="#{itemBean.customLabel}"
-                                        update="@(.customLabelText)" />
-                                </b:column>
-                                <b:column
-                                    span="2" 
-                                    styleClass="customLabelText">
-                                    <b:inputText
+                                        value="#{itemBean.customLabel}">
+
+                                        <p:ajax process="@this"
+                                                update="@(.customLabelText)"
+                                                />
+                                        <!--update="@all"-->
+                                        <!--ajax="true"-->
+
+                                    </p:selectBooleanCheckbox>
+                                </p:outputPanel>
+
+                                <p:outputPanel styleClass="customLabelText">
+
+                                    <p:inputText
+                                        style="margin: 0 10px; max-width: 90%;"
                                         label="#{msgs.itemEdit_itemPanel_label}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
                                         rendered="#{itemBean.isLabelVisible()}"
                                         value="#{itemBean.customLabelValue}">
+
                                         <f:converter converterId="InputConverter" />
-                                    </b:inputText>
-                                </b:column>
-                            </b:row>
+
+                                    </p:inputText>
+
+                                </p:outputPanel>
+
+                            </div>
 
                             <!-- Description -->
-                            <b:row>
-                                <b:column span="9">
-                                    <b:inputTextarea
-                                        label="#{msgs.itemEdit_itemPanel_description}"
-                                        value="#{itemBean.state.editedItem.description}"
-                                        placeholder="#{msgs.itemEdit_itemPanel_description_placeholder}"
-                                        disabled="#{itemBean.inDeactivatedMode}">
-                                        <f:converter converterId="InputConverter" />
-                                    </b:inputTextarea>
-                                </b:column>
-                            </b:row>
-                        </b:container>
+                            <!--****************************************************************************************-->
+                            <div class="ui-fluid" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin: 0.5rem 0;">
+
+                                <p:row>
+                                    <p:outputPanel >
+                                        <p:outputLabel value="#{msgs.itemEdit_itemPanel_description}" />
+                                        <p:inputTextarea
+                                            label="#{msgs.itemEdit_itemPanel_description}"
+                                            value="#{itemBean.state.editedItem.description}"
+                                            placeholder="#{msgs.itemEdit_itemPanel_description_placeholder}"
+                                            disabled="#{itemBean.inDeactivatedMode}"
+                                            rows="10" cols="50">
+                                            <f:converter converterId="InputConverter" />
+                                        </p:inputTextarea>
+                                    </p:outputPanel>
+                                </p:row>
+                            </div>
+                        </div>
                     </p:tab>
+                    <!--=========================================================================================-->
+
                     <!-- Project -->
+                    <!--=========================================================================================-->
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_project}">
                         <o:massAttribute name="disabled" value="#{itemBean.inDeactivatedMode}">
-                            <b:container>
-                                <b:row>
-                                    <b:column
-                                        span="4"
-                                        styleClass="rightLabeledCbxVendor">
-                                        <b:selectOneMenu
-                                            label="#{msgs.itemEdit_projectPanel_name}"
-                                            value="#{itemBean.state.editedItem.project}">
-                                            <f:selectItems 
-                                                value="#{itemBean.getProjects()}"
-                                                var="p"
-                                                itemLabel="#{p.toString()}"/>
-                                        </b:selectOneMenu>
-                                    </b:column>
-                                </b:row>
-                            </b:container>
+                            <div>
+
+                                <p:outputPanel styleClass="rightLabeledCbxVendor">
+
+                                    <p:selectOneMenu
+                                        converter="ProjectConverter"
+                                        label="#{msgs.itemEdit_projectPanel_name}"
+                                        value="#{itemBean.state.editedItem.project}"
+                                        >
+
+                                        <f:selectItems
+                                            value="#{itemBean.getProjects()}"
+                                            var="p"
+                                            itemLabel="#{p.toString()}"/>
+                                        <p:ajax/>
+
+                                    </p:selectOneMenu>
+
+                                </p:outputPanel>
+
+                            </div>
                         </o:massAttribute>
                     </p:tab>
-                    <!-- Container location -->
+                    <!--=========================================================================================-->
+
+
+                    <!-- Location -->
+                    <!--=========================================================================================-->
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_location}">
                         <crimsy:containerSelectionAndInfos
                             containerController="#{itemBean.containerController}"
                             historyMode="#{itemBean.inDeactivatedMode}" />
                     </p:tab>
+                    <!--=========================================================================================-->
+
+
+                    <!-- Print -->
+                    <!--=========================================================================================-->
                     <p:tab title="Print">
-                        <b:container>
-                            <b:row>
-                                <crimsy:labelPrinting id="labelPrintUI" 
-                                                      rendered="#{itemBean.labelPrintingEnabled}" 
-                                                      printbean="#{itemBean.printBean}" />
-                            </b:row>
-                        </b:container>
+                        <div>
+
+                            <crimsy:labelPrinting id="labelPrintUI"
+                                                  rendered="#{itemBean.labelPrintingEnabled}"
+                                                  printbean="#{itemBean.printBean}" />
+
+                        </div>
                     </p:tab>
+                    <!--=========================================================================================-->
+
                 </p:tabView>
-            </b:form>
+            </h:form>
         </ui:composition>
     </h:body>
 </html>

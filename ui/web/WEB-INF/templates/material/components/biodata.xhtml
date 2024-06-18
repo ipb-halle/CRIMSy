@@ -21,7 +21,6 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
@@ -33,11 +32,10 @@
                 <p:outputPanel
                     styleClass="storagePanelClass"
                     rendered="#{materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
-
-                    <b:container>
-                        <b:row>
-                            <b:column span="4">
-                                <p:tree   
+                    <p:outputPanel>
+                        <p:row>
+                            <p:outputPanel>
+                                <p:tree
                                     style="width: 100%;height: 300px;overflow: auto"
                                     value="#{materialBean.taxonomyController.treeController.taxonomyTree}"
                                     var ="node"
@@ -46,34 +44,39 @@
                                     styleClass="taxonomyTree"
                                     selection="#{materialBean.taxonomyController.selectedTaxonomy}">
                                     <p:ajax event="select" update="@(.taxonomyInfos)" listener="#{materialBean.taxonomyController.onTaxonomySelect}" />
-                                     <p:ajax event="expand"  listener="#{materialBean.taxonomyController.onTaxonomyExpand}" />
+                                    <p:ajax event="expand"  listener="#{materialBean.taxonomyController.onTaxonomyExpand}" />
                                     <p:ajax event="collapse" listener="#{materialBean.taxonomyController.onTaxonomyCollapse}" />
                                     <p:treeNode >
                                         <h:outputText value="#{node.getFirstName()}"/>
                                     </p:treeNode>
                                 </p:tree>
-                            </b:column>
-                            <b:column offset="1" span="4"  styleClass="taxonomyInfos">
-                                <b:row>
-                                    <b:column span="10">
-                                        <b:inputText
+                            </p:outputPanel>
+
+                            <p:outputPanel  styleClass="taxonomyInfos">
+
+                                <p:row>
+                                    <p:outputPanel >
+                                        <p:inputText
                                             label="#{msgs.materialCreation_panelBiodata_chosenTaxonomyEntry}"
                                             disabled="true"
                                             value="#{materialBean.taxonomyController.getSelectedTaxonomyName()}"/>
-                                    </b:column>
-                                </b:row>
-                                <b:row>
-                                    <b:column 
-                                        span="10"
-                                        rendered="#{materialBean.isTissueSelectionVisible()}">
-                                        <b:selectOneMenu
+                                    </p:outputPanel>
+                                </p:row>
+
+                                <p:row>
+                                    <!--Language-->
+                                    <!--********************************************************************************-->
+                                    <p:outputPanel
+                                        rendered="#{materialBean.isTissueSelectionVisible()}"
+                                        >
+                                        <p:selectOneMenu
                                             label="#{msgs.materialCreation_panelBiodata_selectTissue}">
-                                        </b:selectOneMenu>
-                                    </b:column>
-                                </b:row>
-                            </b:column>
-                        </b:row>
-                    </b:container>
+                                        </p:selectOneMenu>
+                                    </p:outputPanel>
+                                </p:row>
+                            </p:outputPanel>
+                        </p:row>
+                    </p:outputPanel>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>

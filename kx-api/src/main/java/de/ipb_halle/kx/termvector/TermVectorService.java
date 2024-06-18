@@ -18,21 +18,17 @@
 package de.ipb_halle.kx.termvector;
 
 import de.ipb_halle.kx.file.FileObject;
-import de.ipb_halle.kx.file.FileObjectService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +55,6 @@ public class TermVectorService implements Serializable {
     protected final String SQL_DELETE_ALL_TERMVECTORS
             = "DELETE from termvectors";
 
-
     private final String SQL_DELETE_UNSTEMMED_WORDS_OF_COLLECTION
             = "DELETE FROM unstemmed_words AS us USING files AS f"
             + " WHERE us.file_id=f.id AND f.collection_id=:collectionId";
@@ -67,8 +62,6 @@ public class TermVectorService implements Serializable {
     private final String SQL_DELETE_TERMVECTORS_OF_COLLECTION
             = "DELETE FROM termvectors AS tv USING files AS f"
             + " WHERE tv.file_id=f.id AND f.collection_id=:collectionId";
-
-
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     public EntityManager em;
@@ -80,19 +73,19 @@ public class TermVectorService implements Serializable {
      */
     @PostConstruct
     private void init() {
-        logger =  LoggerFactory.getLogger(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
         if (em == null) {
             logger.error("Injection Entitymanager failed.");
         }
     }
 
     /**
-     * getTermvector with aggregation, grouping and order result. Uses the 
+     * getTermvector with aggregation, grouping and order result. Uses the
      * TermVectorEntity.SQL_LOAD_TERMFREQUENCIES native query.
      *
-     * @param fileId - document ids
+     * @param fileIds
      * @param maxResult - return top max. rows for result set
-     * @return list of TermFrequency objects, ordered by descending frequency 
+     * @return list of TermFrequency objects, ordered by descending frequency
      */
     @SuppressWarnings("unchecked")
     public List<TermFrequency> getTermVector(List<Integer> fileIds, Integer maxResult) {
@@ -113,13 +106,14 @@ public class TermVectorService implements Serializable {
         }
     }
 
-   /**
-     * Get term frequencies with result ordering for a specific file and 
-     * a set of words. Uses the TermVectorEntity.SQL_LOAD_TERMFREQUENCY_BY_WORD native query.
+    /**
+     * Get term frequencies with result ordering for a specific file and a set
+     * of words. Uses the TermVectorEntity.SQL_LOAD_TERMFREQUENCY_BY_WORD native
+     * query.
      *
      * @param fileId document ids
      * @param words set of words, the document should match
-     * @return list of TermFrequency objects, ordered by descending frequency 
+     * @return list of TermFrequency objects, ordered by descending frequency
      */
     @SuppressWarnings("unchecked")
     public List<TermFrequency> getTermFrequencies(Integer fileId, Set<String> words) {
@@ -136,46 +130,44 @@ public class TermVectorService implements Serializable {
         }
     }
 
-
     /**
      * Sums all words from all documents of the local node
      *
      * @return
      */
-    public int getSumOfAllWordsFromAllDocs() {
-        java.math.BigInteger sum = (java.math.BigInteger) this.em.createNativeQuery(SQL_TOTAL_WORD_COUNT).getSingleResult();
+    public long getSumOfAllWordsFromAllDocs() {
+        Long sum = (Long) this.em.createNativeQuery(SQL_TOTAL_WORD_COUNT).getSingleResult();
         if (sum == null) {
             return 0;
         } else {
-            return sum.intValue();
+            return sum;
         }
     }
 
     /**
-     * Delete all TermVectors for a given collectionId
-     * NOTE: Future implementations should not have references to
-     * Collections
+     * Delete all TermVectors for a given collectionId NOTE: Future
+     * implementations should not have references to Collections
      */
     @Deprecated
     public void deleteTermVectorsOfCollection(Integer collectionId) {
         this.em.createNativeQuery(SQL_DELETE_TERMVECTORS_OF_COLLECTION)
-            .setParameter("collectionId", collectionId)
-            .executeUpdate();
+                .setParameter("collectionId", collectionId)
+                .executeUpdate();
         this.em.createNativeQuery(SQL_DELETE_UNSTEMMED_WORDS_OF_COLLECTION)
-            .setParameter("collectionId", collectionId)
-            .executeUpdate();
+                .setParameter("collectionId", collectionId)
+                .executeUpdate();
         this.em.flush();
     }
 
     public void deleteTermVector(FileObject fileObject) {
 
         this.em.createNativeQuery(SQL_DELETE_UNSTEMMED_WORDS_BY_ID)
-            .setParameter("fileId", fileObject.getId())
-            .executeUpdate();
+                .setParameter("fileId", fileObject.getId())
+                .executeUpdate();
 
         this.em.createNativeQuery(SQL_DELETE_TERMVECTOR_BY_ID)
-            .setParameter("fileId", fileObject.getId())
-            .executeUpdate();
+                .setParameter("fileId", fileObject.getId())
+                .executeUpdate();
 
         this.em.flush();
     }
@@ -184,7 +176,7 @@ public class TermVectorService implements Serializable {
      * Saves the list of unstemmed words for a stemmed word of a file
      *
      * @param wordOrigins
-     * @param fileId 
+     * @param fileId
      */
     public void saveUnstemmedWordsOfDocument(
             List<StemmedWordOrigin> wordOrigins,
@@ -201,7 +193,7 @@ public class TermVectorService implements Serializable {
 
     public void saveTermVectors(List<TermVector> vectors) {
         try {
-            for(TermVector tv : vectors) {
+            for (TermVector tv : vectors) {
                 this.em.merge(tv.createEntity());
             }
         } catch (Exception e) {

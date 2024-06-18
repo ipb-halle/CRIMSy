@@ -1,64 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
-<h:body>
-    <ui:composition>
-        <p:tab title="#{msgs.admission_timeZone_tabTitle}">
-            <b:form>
-                <b:panel title="#{msgs.admission_timeZone_panelTitle}" collapsible="false"
-                         look="info">
-                    <b:panelGrid col-spans="5,5,2">
-                        <b:inputText id="servertime"
+    <h:body>
+        <ui:composition>
+            <p:tab title="#{msgs.admission_timeZone_tabTitle}">
+                <h:form  class="formPanelStyleBlue">
+                    <p:panel header="#{msgs.admission_timeZone_panelTitle}"
+                             styleClass="panelTitleInfoColor" >
+                        <p:outputLabel for="serverTime" value="Current time on server" />
+                        <p:inputText id="serverTime"
                                      value="#{timeZoneSettingsDialogControllerBean.serverTime}"
                                      label="#{msgs.admission_timeZone_serverTime}"
-                                     readonly="true" />
-                        <b:selectOneMenu value="#{timeZoneSettingsDialogControllerBean.timeZone}"
+                                     readonly="true"
+                                     class="accountSettingsUserDataTabInputField"/>
+                        <p:outputLabel for="menu" value="Time zone" />
+                        <p:selectOneMenu id="menu"
+                                         value="#{timeZoneSettingsDialogControllerBean.timeZone}"
                                          label="#{msgs.admission_timeZone_menuLabel}"
-                                         select2="true"
-                                         ajax="true"
-                                         process="@this"
-                                         update="@after servertime">
-                            <f:selectItem itemLabel="(#{msgs.admission_timeZone_pleaseSelect})" itemValue="" />
+                                         class="accountSettingsUserDataTabInputField">
+                            <f:selectItem itemLabel="(#{msgs.admission_timeZone_pleaseSelect})"
+                                          itemValue="" />
+                            <p:ajax event="change" update="serverTime" />
                             <f:selectItems value="#{timeZoneSettingsDialogControllerBean.availableTimeZones}"
                                            var="zone"
                                            itemValue="#{zone.id}"
                                            itemLabel="#{timeZoneSettingsDialogControllerBean.getDisplayForZone(zone)}" />
-                        </b:selectOneMenu>
-                        <b:message for="@previous"/>
-                    </b:panelGrid>
-                    <b:column styleClass="text-center">
-                        <b:commandButton type="submit" ajax="true" update="@form growlMsg"
-                                         action="#{timeZoneSettingsDialogControllerBean.actionSave()}"
-                                         value="#{msgs.Save}" />
-                    </b:column>
-                </b:panel>
-            </b:form>
-        </p:tab>
-    </ui:composition>
-</h:body>
+                        </p:selectOneMenu>
+                        <p:message for="@previous"/>
+                        <p:panel styleClass="text-center">
+                            <p:commandButton type="submit"
+                                             ajax="true"
+                                             update="@form growlMsg"
+                                             action="#{timeZoneSettingsDialogControllerBean.actionSave()}"
+                                             styleClass="ui-button-danger"
+                                             value="#{msgs.Save}" />
+                        </p:panel>
+                    </p:panel>
+                </h:form>
+            </p:tab>
+        </ui:composition>
+    </h:body>
 </html>

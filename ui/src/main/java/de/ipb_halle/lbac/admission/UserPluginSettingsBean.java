@@ -21,16 +21,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.WebXmlImpl;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.lbac.util.pref.PreferenceType;
 import de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType;
@@ -43,6 +44,7 @@ import de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType;
  */
 @SessionScoped
 public class UserPluginSettingsBean implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -59,6 +61,9 @@ public class UserPluginSettingsBean implements Serializable {
 
     @Inject
     private PreferenceService preferenceService;
+
+    @Inject
+    protected LoggingProfiler loggingProfiler;
 
     @Inject
     private UserBean userBean;
@@ -81,17 +86,17 @@ public class UserPluginSettingsBean implements Serializable {
 
     /**
      * Test constructor with dependency injection.
-     * 
-     * @param webXml            mock implementation of the {@link WebXml}
-     *                          interface
+     *
+     * @param webXml mock implementation of the {@link WebXml} interface
      * @param preferenceService mock of {@link PreferenceService}
-     * @param userBean          mock of {@link UserBean}
+     * @param userBean mock of {@link UserBean}
      */
     protected UserPluginSettingsBean(WebXml webXml,
             PreferenceService preferenceService, UserBean userBean) {
         this.webXml = webXml;
         this.preferenceService = preferenceService;
         this.userBean = userBean;
+        this.loggingProfiler = new LoggingProfiler();
     }
 
     /**
@@ -105,6 +110,8 @@ public class UserPluginSettingsBean implements Serializable {
      */
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("UserPluginSettingsBean");
+
         List<String> supported = getSupportedMolPluginTypes();
         List<String> available = getAvailableMolPluginTypesFromWebXml();
 
@@ -116,17 +123,22 @@ public class UserPluginSettingsBean implements Serializable {
         if (availableMolPluginTypes.size() > 0) {
             defaultMolPluginType = availableMolPluginTypes.get(0);
         }
+        loggingProfiler.profilerStop("UserPluginSettingsBean");
+
     }
 
     /**
      * Resets the preference upon login of a user. The next call to
      * {@link #getPreferredMolPluginType()} will reload the preference from the
      * database.
-     * 
+     *
      * @param evt
      */
     public void onLogin(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("UserPluginSettingsBean.onLogin");
         pref = null;
+        loggingProfiler.profilerStop("UserPluginSettingsBean.onLogin");
+
     }
 
     /**
@@ -161,7 +173,7 @@ public class UserPluginSettingsBean implements Serializable {
     /**
      * Returns the preferred chemical structure plugin type or the default type
      * if a preference does not exist.
-     * 
+     *
      * @return chemical structure plugin type
      */
     public String getPreferredMolPluginType() {
@@ -186,7 +198,7 @@ public class UserPluginSettingsBean implements Serializable {
 
     /**
      * Sets the preferred chemical structure plugin type.
-     * 
+     *
      * @param pluginType chemical structure plugin type
      * @return flag indicating that the plugin type was set as preference
      */
@@ -206,7 +218,7 @@ public class UserPluginSettingsBean implements Serializable {
 
     /**
      * Returns the list of available chemical structure plugin types.
-     * 
+     *
      * @return an unmodifiable list of chemical structure plugin types.
      */
     public List<String> getAllMolPluginTypes() {
@@ -215,9 +227,9 @@ public class UserPluginSettingsBean implements Serializable {
 
     /**
      * Returns the default chemical structure plugin type.
-     * 
+     *
      * @return default chemical structure plugin type or empty string if no
-     *         plugin types are available.
+     * plugin types are available.
      */
     protected String getDefaultMolPluginType() {
         return defaultMolPluginType;

@@ -81,7 +81,7 @@ public class HyphenationFilter extends AbstractFilter {
      * fix the hyphenation
      */
     private void fixHyphenation() {
-        // TODO xxxxx does nothing!
+    // ToDo xxxxx does nothing!
     }
 
     /**

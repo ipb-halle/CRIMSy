@@ -27,13 +27,22 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.items.bean.ItemLocaliser;
+import de.ipb_halle.lbac.items.bean.SearchMaskValues;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
  * @author fmauz
  */
 public class ItemOverviewBeanMock extends ItemOverviewBean {
+
+    public ItemOverviewBeanMock() {
+        this.loggingProfiler = new LoggingProfiler();
+        this.itemLocaliser = new ItemLocaliser();
+         searchMaskValues = new SearchMaskValues();
+    }
 
     public ItemOverviewBeanMock setContainerService(ContainerService containerService) {
         this.containerService = containerService;
@@ -84,6 +93,5 @@ public class ItemOverviewBeanMock extends ItemOverviewBean {
         this.nodeService = nodeService;
         return this;
     }
-    
-   
+
 }

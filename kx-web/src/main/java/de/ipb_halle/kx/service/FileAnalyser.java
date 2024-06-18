@@ -15,6 +15,7 @@
  * limitations under the License.
  *
  */
+
 package de.ipb_halle.kx.service;
 
 import de.ipb_halle.kx.file.FileObject;
@@ -24,22 +25,15 @@ import de.ipb_halle.tx.text.LanguageDetectorFilter;
 import de.ipb_halle.tx.text.ParseTool;
 import de.ipb_halle.tx.text.TermVectorFilter;
 import de.ipb_halle.tx.text.properties.Language;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.*;
+
 
 /**
- *
  * @author fmauz
  */
 public class FileAnalyser implements IFileAnalyser, Runnable {
@@ -48,10 +42,10 @@ public class FileAnalyser implements IFileAnalyser, Runnable {
 
     protected ParseTool parseTool;
     protected InputStream filterDefinition;
-    private FileObject  fileObject;
+    private FileObject fileObject;
     private TextWebStatus status;
 
-    private Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     public FileAnalyser() {
         this.parseTool = new ParseTool();
@@ -86,7 +80,7 @@ public class FileAnalyser implements IFileAnalyser, Runnable {
         return (maxLang != null) ? maxLang : "undefined";
     }
 
-    protected void analyseFile(InputStream file){
+    protected void analyseFile(InputStream file) {
         parseTool.setFilterDefinition(filterDefinition);
         parseTool.setInputStream(file);
         parseTool.initFilter();
@@ -129,7 +123,7 @@ public class FileAnalyser implements IFileAnalyser, Runnable {
             analyseFile(is);
             status = TextWebStatus.DONE;
         } catch (Exception e) {
-            logger.warn((Throwable) e);
+            logger.warn(e);
             status = TextWebStatus.PROCESSING_ERROR;
         }
     }

@@ -93,9 +93,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.BehaviorBase;
-import javax.inject.Inject;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.BehaviorBase;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -144,10 +144,11 @@ public class MaterialCompositionBeanTest extends TestBase {
     private Project project, project1;
     private int publicAclId;
     private int structureId1, structureId2, biomaterialId;
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter;
 
     @BeforeEach
     public void init() throws IOException {
+        messagePresenter = getMessagePresenterMock();
         bean.clearBean();
 
         benzene = ResourceUtils.readResourceFile("molfiles/Benzene.mol");

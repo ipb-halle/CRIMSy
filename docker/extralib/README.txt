@@ -13,7 +13,7 @@ hibernate-core-5.3.26.Final.jar
 hibernate-ehcache-5.3.26.Final.jar
 hibernate-validator-5.3.6.Final.jar
 javassist-3.27.0-GA.jar
-javax.persistence-api-2.2.jar
+jakarta.persistence-api-2.2.jar
 jboss-logging-3.4.2.Final.jar
 myfaces-bundle-2.2.14.jar
 postgresql-42.4.3.jar

@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.search.mocks.MaterialServiceMock;
 import de.ipb_halle.lbac.search.mocks.ProjectServiceMock;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;

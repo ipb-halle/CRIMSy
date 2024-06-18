@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
-import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
@@ -40,8 +39,7 @@ import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
@@ -51,7 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -91,14 +89,14 @@ public class HistoryOperationHazardsTest extends TestBase {
         indices = new ArrayList<>();
         s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
-        mes = new MaterialEditState(MessagePresenterMock.getInstance());
+        mes = new MaterialEditState(getMessagePresenterMock());
         mes.setMaterialBeforeEdit(s);
         mes = new MaterialEditState(
                 new Project(),
                 currentDate,
                 s,
                 s,
-                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), MessagePresenterMock.getInstance()), MessagePresenterMock.getInstance());
+                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), getMessagePresenterMock()), getMessagePresenterMock());
 
         mes.setCurrentVersiondate(currentDate);
         mib = new MaterialIndexBean();
@@ -111,7 +109,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(10, false, "GHS05", 1));
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
-        MateriaBeanMock mock = new MateriaBeanMock();
+        MaterialBeanMock mock = new MaterialBeanMock(loggingProfiler);
         mock.setMaterialEditState(mes);
         mock.setHazardService(hazardService);
         instance = new HistoryOperation(mock);

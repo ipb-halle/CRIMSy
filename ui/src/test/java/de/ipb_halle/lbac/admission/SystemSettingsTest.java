@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -100,7 +100,7 @@ public class SystemSettingsTest extends TestBase {
     public void test005_save() {
         List<InfoObject> booleanInfoObjects = settings.getBoolSettings();
         booleanInfoObjects.get(0).setValue("False");
-        settings.messagePresenter = MessagePresenterMock.getInstance();
+//      settings.messagePresenter = getMessagePresenterMock();
         settings.save();
         Assert.assertFalse(settings.getBoolean("SETTING_FORCE_LOGIN"));
         booleanInfoObjects.get(0).setValue("True");

@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.image;
 
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -72,7 +72,7 @@ public class ImageControllerTest extends TestBase {
     public void init() {
         experimentBean = new ExperimentBean(new ItemAgent(),
                 new MaterialAgent(), context, null, experimentService,
-                MessagePresenterMock.getInstance(), null);
+                getMessagePresenterMock(), null);
         experimentBean.init();
 
         publicUser = context.getPublicAccount();

@@ -27,14 +27,13 @@ import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -103,6 +102,6 @@ public class PostingWebService extends LbacWebService {
             logger.error("  Topic: " + p.getTopic());
             logger.error("  TopicDate: " + p.getCreated());
         }
-        logger.error(ExceptionUtils.getStackTrace(e));
+        logger.error("stack trace:", (Throwable) e); 
     }
 }

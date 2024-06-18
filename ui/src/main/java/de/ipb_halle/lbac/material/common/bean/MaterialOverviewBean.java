@@ -34,12 +34,12 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.reporting.ReportMgr;
 import de.ipb_halle.lbac.util.resources.ResourceLocation;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.util.NonEmpty;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import de.ipb_halle.reporting.Report;
 import de.ipb_halle.reporting.ReportType;
 
@@ -51,12 +51,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,22 +64,23 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-@SessionScoped
 @Named
+@SessionScoped
 public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     private static final long serialVersionUID = 1L;
 
     private ACObjectController acObjectController;
     private User currentUser;
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private Logger logger;
     private List<Material> materials = new ArrayList<>();
     private Material materialInFocus;
     private NamePresenter namePresenter;
     private MaterialSearchMaskController searchController;
     private MaterialTableController tableController;
-    private MessagePresenter messagePresenter;
 
+    @Inject
+    private MessagePresenter messagePresenter;
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
     private final int HAZARD_RADIACTIVE_ID = 16;
@@ -88,6 +88,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private final int HAZARD_DANGER_ID = 19;
 
     private Report selectedReport;
+    private List<Report> availableReports;
 
     @Inject
     private ItemBean itemBean;
@@ -113,12 +114,21 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     @Inject
     private ReportMgr reportMgr;
 
+    @Inject
+    protected LoggingProfiler loggingProfiler;
+
+    public MaterialOverviewBean() {
+        logger = LogManager.getLogger(this.getClass().getName());
+    }
+
     /**
      * Creates the tablecontroller and the controller for managing the search
      * values
      */
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("MaterialOverviewBean");
+
         tableController = new MaterialTableController(materialService);
         this.searchController = new MaterialSearchMaskController(
                 this,
@@ -133,7 +143,8 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.SEQUENCE,
                         MaterialType.STRUCTURE));
         namePresenter = new NamePresenter();
-        messagePresenter = JsfMessagePresenter.getInstance();
+
+        loggingProfiler.profilerStop("MaterialOverviewBean");
     }
 
     /**
@@ -141,11 +152,12 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
      * @param evt
      */
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("MaterialOverviewBean.setCurrentAccount");
         currentUser = evt.getCurrentAccount();
         tableController.setLastUser(currentUser);
         searchController.clearInputFields();
         searchController.actionStartMaterialSearch();
-
+        loggingProfiler.profilerStop("MaterialOverviewBean.setCurrentAccount");
     }
 
     public MaterialTableController getTableController() {
@@ -178,7 +190,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateNewMaterial() {
         materialEditBean.startMaterialCreation();
-
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
 
@@ -188,7 +199,8 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
             materialEditBean.startMaterialEdit(m);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("actionEditMaterial() caught an exception:", (Throwable) e);
+
         }
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
@@ -205,10 +217,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         navigator.navigate(NAVIGATION_ITEM_EDIT);
     }
 
-    public List<Report> getAvailableReports() {
-        return reportMgr.getAvailableReports(this.getClass().getName());
-    }
-
     public Report getSelectedReport() {
         return selectedReport;
     }
@@ -219,7 +227,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateReport() {
         reportMgr.submitReport(selectedReport, collectReportParameters(), ReportType.PDF, currentUser);
-        messagePresenter.info("reporting_reportSumbittedGrowlMsg");
+        messagePresenter.info("reporting_reportSubmittedGrowlMsg");
     }
 
     private Map<String, Object> collectReportParameters() {
@@ -332,7 +340,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
             ACPermission permission = ACPermission.valueOf(accessRight);
             return materialService.getAcListService().isPermitted(permission, m, currentUser);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("hasAccessRight() caught an exception:", (Throwable) e);
             return false;
         }
     }

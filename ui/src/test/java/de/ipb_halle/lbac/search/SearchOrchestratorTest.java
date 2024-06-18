@@ -45,7 +45,7 @@ import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import static org.awaitility.Awaitility.await;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -111,7 +111,7 @@ public class SearchOrchestratorTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("SearchService.war")
+        WebArchive deployment = prepareDeployment("SearchOrchestratorTest.war")
                 .addClass(SearchService.class)
                 .addClass(ProjectService.class)
                 .addClass(ArticleService.class)

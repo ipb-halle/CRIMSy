@@ -21,14 +21,10 @@ import de.ipb_halle.reporting.ReportsDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import javax.annotation.PreDestroy;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import jakarta.annotation.PreDestroy;
+import jakarta.ejb.Lock;
+import jakarta.ejb.LockType;
+import jakarta.ejb.Singleton;
 
 import org.apache.commons.io.FileUtils;
 

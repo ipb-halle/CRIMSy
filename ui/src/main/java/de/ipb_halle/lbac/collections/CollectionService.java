@@ -26,26 +26,23 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.NodeService;
-import java.math.BigInteger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.EntityType;
 
-//import javax.naming.Context;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -112,10 +109,9 @@ public class CollectionService {
      * @return
      */
     public long getFileCount(Integer collectionId) {
-        BigInteger cnt = (BigInteger) this.em.createNativeQuery(SQL_FILE_COUNT)
+        return (long) this.em.createNativeQuery(SQL_FILE_COUNT)
                 .setParameter("collectionId", collectionId)
                 .getSingleResult();
-        return cnt.longValue();
     }
 
     /**
@@ -135,7 +131,7 @@ public class CollectionService {
             }
 
         } catch (Exception e) {
-            logger.error(String.format("Exception in checkPublicCollectionInDb: %s", ExceptionUtils.getStackTrace(e)));
+            logger.error("getPublicCollectionFromDb() caught an exception:", (Throwable) e);
             return null;
         }
     }

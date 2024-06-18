@@ -18,10 +18,8 @@
   ~
   ~
 -->
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -34,81 +32,116 @@
                 <p:outputPanel
                     styleClass="indicesPanelClass"
                     rendered="#{materialBean.permission.isDetailPanelVisible('INDEX')}">
-                    <b:container>
-                        <b:row>
-                            <b:column span="4"
-                                      styleClass="selectOneMenuIndexCategoriesClass">
-                                <b:selectOneMenu
+                    <div>
+                        <p:row>
+                            <!--=================================================================================-->
+                            <p:column
+                                colspan="4"
+                                styleClass="selectOneMenuIndexCategoriesClass">
+
+
+                                <p:selectOneMenu
                                     value="#{materialBean.materialIndexBean.indexCatergory}"
                                     rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
                                     >
-
-                                    <f:selectItems 
+                                    <f:selectItem itemLabel="Select an option" itemValue="" />
+                                    <f:selectItems
                                         value="#{materialBean.materialIndexBean.indexCategories}"/>
-                                </b:selectOneMenu>
-                            </b:column>
-                            <b:column span="4"
-                                      styleClass="selectOneMenuIndexCategoriesClass">
-                                <b:inputText 
-                                    rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                    value="#{materialBean.materialIndexBean.indexValue}"/>
-                            </b:column>
+                                    <p:ajax process="@form" update="inTxt"/>
+                                </p:selectOneMenu>
 
-                            <b:column offset="2" span="1">
-                                <b:commandButton style="padding: 0 4px;"
-                                                 icon-awesome="fa-plus "
-                                                 look="link"
-                                                 rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                                 ajax="true"
-                                                 value="#{msgs.materialCreation_panelIndices_add}"
-                                                 update="@(.selectOneMenuIndexCategoriesClass)"
-                                                 process="@form"
-                                                 onclick="ajax:materialBean.materialIndexBean.addNewIndex();"
-                                                 type="button"/>
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="11"
+                            </p:column>
+                            <!--=================================================================================-->
+
+                            <!--=================================================================================-->
+                            <p:column colspan="4"
                                       styleClass="selectOneMenuIndexCategoriesClass">
-                                <b:dataTable
+
+
+                                <p:inputText
+                                    id="inTxt"
+                                    style="margin:0 1rem;"
+                                    rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
+                                    value="#{materialBean.materialIndexBean.indexValue}"
+                                    validator="IndexValidator"
+                                    placeholder="#{materialBean.materialIndexBean.createPattern()}"
+                                    />
+
+                            </p:column>
+                            <!--=================================================================================-->
+
+                            <!--=================================================================================-->
+                            <p:column  colspan="1">
+
+                                <p:commandButton style="margin: 0.5rem;"
+                                                 styleClass="ui-button-danger"
+                                                 icon="pi pi-plus"
+                                                 rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
+                                                 value="#{msgs.materialCreation_panelIndices_add}"
+                                                 ajax="true"
+                                                 update="@all"
+                                                 process="@form"
+                                                 action="#{materialBean.materialIndexBean.addNewIndex()}"/>
+                                <p:messages for="inTxt" showDetail="true" closable="true"/>
+                            </p:column>
+                            <!--=================================================================================-->
+
+                        </p:row>
+
+                        <p:row>
+
+                            <!--=================================================================================-->
+                            <p:column colspan="11"
+                                      styleClass="selectOneMenuIndexCategoriesClass">
+                                <p:dataTable
                                     styleClass="materialNameTableClass"
-                                    paginated="false"
+                                    paginator="false"
                                     value="#{materialBean.materialIndexBean.indices}"
-                                    searching="false"
                                     var="index"
-                                    saveState="false">
-                                    <b:dataTableColumn
-                                        orderable="false"
-                                        label="#{msgs.materialCreation_panelIndices_tableHeader_name}"
-                                        value="#{materialBean.materialIndexBean.getIndexName(index)}">
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        orderable="false"
-                                        label="#{msgs.materialCreation_panelIndices_tableHeader_value}">
-                                        <b:inputText 
+                                    >
+
+                                    <!--=================================================================================-->
+                                    <p:column
+                                        sortable="false"
+                                        headerText="#{msgs.materialCreation_panelIndices_tableHeader_name}">
+                                        <h:outputText value="#{materialBean.materialIndexBean.getIndexName(index)}" />
+                                    </p:column>
+                                    <!--=================================================================================-->
+
+                                    <!--=================================================================================-->
+                                    <p:column sortable="false"
+                                              headerText="#{msgs.materialCreation_panelIndices_tableHeader_value}">
+                                        <p:inputText
                                             disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
                                             value="#{index.value}">
+                                            <p:ajax process="@this" update="@all" />
                                             <f:converter converterId="InputConverter" />
-                                        </b:inputText>
-                                    </b:dataTableColumn>
-                                    <b:dataTableColumn
-                                        orderable="false"
-                                        label="#{msgs.materialCreation_panelIndices_tableHeader_action}">
-                                        <b:commandButton style="padding: 0 4px;"
-                                                         icon="trash"
-                                                         look="link"
+                                        </p:inputText>
+                                    </p:column>
+                                    <!--=================================================================================-->
+
+
+                                    <!--=================================================================================-->
+                                    <p:column sortable="false"
+                                              headerText="#{msgs.materialCreation_panelIndices_tableHeader_action}">
+
+                                        <p:commandButton style="padding: 0 4px;margin-left:1rem;"
+                                                         styleClass="ui-button-danger"
+                                                         icon="pi pi-trash"
                                                          ajax="true"
                                                          disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                                         process="@(.selectOneMenuIndexCategoriesClass)"
-                                                         update="@(.selectOneMenuIndexCategoriesClass)"
-                                                         onclick="ajax:materialBean.materialIndexBean.removeIndex(index);"
-                                                         tooltip="#{msgs.materialCreation_panelIndices_tooltip_delete}"
-                                                         type="button"/>
-                                    </b:dataTableColumn>
-                                </b:dataTable>
-                            </b:column>
-                        </b:row>
-                    </b:container>
+                                                         process="@this"
+                                                         update="@all"
+                                                         action="#{materialBean.materialIndexBean.removeIndex(index)}"
+                                                         title="#{msgs.materialCreation_panelIndices_tooltip_delete}"
+                                                         type="submit"/>
+                                    </p:column>
+                                    <!--=================================================================================-->
+
+                                </p:dataTable>
+                            </p:column>
+                        </p:row>
+                    </div>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>

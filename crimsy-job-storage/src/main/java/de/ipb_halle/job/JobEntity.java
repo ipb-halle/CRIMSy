@@ -20,21 +20,22 @@ package de.ipb_halle.job;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcType;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
 
 /**
- * Job entity
- * A job entity object collects information necessary 
- * to execute a job outside the DMZ.
+ * Job entity A job entity object collects information necessary to execute a
+ * job outside the DMZ.
  * <ul>
  * <li>input data to the job</li>
  * <li>output data of the job (not relevant for all types of jobs)</li>
@@ -57,15 +58,14 @@ public class JobEntity implements Serializable {
     private Integer jobid;
 
     /**
-     * input data 
+     * input data
      */
     @Column
-    @Type(type = "org.hibernate.type.BinaryType")
+    @JdbcType(VarbinaryJdbcType.class)
     private byte[] input;
 
     @Column
     private Date jobdate;
-
 
     @Column
     @Enumerated(EnumType.ORDINAL)
@@ -75,14 +75,14 @@ public class JobEntity implements Serializable {
      * output data (some jobs do not produce output data)
      */
     @Column
-    @Type(type = "org.hibernate.type.BinaryType")
+    @JdbcType(VarbinaryJdbcType.class)
     private byte[] output;
 
     @Column
     private Integer ownerid;
 
     /**
-     * destination queue name 
+     * destination queue name
      */
     @Column
     private String queue;
@@ -93,13 +93,13 @@ public class JobEntity implements Serializable {
 
     public NetJob createNetJob() {
         NetJob j = new NetJob()
-            .setInput(this.input)
-            .setJobDate(this.jobdate)
-            .setJobId(this.jobid)
-            .setJobType(this.jobtype)
-            .setOutput(this.output)
-            .setQueue(this.queue)
-            .setStatus(this.status);
+                .setInput(this.input)
+                .setJobDate(this.jobdate)
+                .setJobId(this.jobid)
+                .setJobType(this.jobtype)
+                .setOutput(this.output)
+                .setQueue(this.queue)
+                .setStatus(this.status);
         return j;
     }
 
@@ -135,7 +135,7 @@ public class JobEntity implements Serializable {
         return this.status;
     }
 
-    public JobEntity setInput(byte[] input) { 
+    public JobEntity setInput(byte[] input) {
         this.input = input;
         return this;
     }
@@ -170,7 +170,7 @@ public class JobEntity implements Serializable {
         return this;
     }
 
-    public  JobEntity setStatus(JobStatus status) {
+    public JobEntity setStatus(JobStatus status) {
         this.status = status;
         return this;
     }

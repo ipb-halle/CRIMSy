@@ -41,7 +41,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
  * @author flange
  */
 public class Container2dControllerTest {
-    private MessagePresenterMock messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenterMock messagePresenter = new MessagePresenterMock();
 
     private Item item;
     private Item anotherItem;

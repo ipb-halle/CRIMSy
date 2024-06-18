@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
@@ -40,7 +39,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialHazardBuilder {
 
-    private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+    private MessagePresenter messagePresenter;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     private HazardService hazardService;
     private MaterialType materialType;

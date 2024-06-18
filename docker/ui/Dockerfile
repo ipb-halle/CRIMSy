@@ -17,7 +17,7 @@
 #
 #==========================================================
 #
-FROM tomee:8-jre-7.1.4-plume
+FROM tomee:9-jre17-plume
 
 #
 WORKDIR /data

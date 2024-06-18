@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -87,24 +88,22 @@ public class SearchFilter {
         if (shouldMaterialsBeSearched()) {
             requests.add(createMaterialSearchRequest());
         }
-        if (typeFilter.isDocuments()) {
+        if (typeFilter.shouldSearchForDocument()) {
             requests.add(createDocumentRequest());
         }
-        if (typeFilter.isItems() && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {
+        if (typeFilter.shouldSearchForItem() && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {
             requests.add(createItemRequest());
         }
         if (shouldExpBeSearched()) {
             requests.addAll(createExperimentRequests());
         }
-        if (typeFilter.isProjects()) {
 
-        }
         return requests;
     }
 
     private boolean shouldExpBeSearched() {
         Molecule m = new Molecule(structureString, 0);
-        return typeFilter.isExperiments()
+        return typeFilter.shouldSearchForExperiment()
                 && (!searchTerms.trim().isEmpty()
                 || !m.isEmptyMolecule());
     }
@@ -112,7 +111,7 @@ public class SearchFilter {
     private boolean shouldMaterialsBeSearched() {
         Molecule m = new Molecule(structureString, 0);
 
-        return typeFilter.isMaterials()
+        return typeFilter.shouldSearchForMaterial()
                 && (!searchTerms.trim().isEmpty()
                 || !m.isEmptyMolecule());
     }
@@ -122,7 +121,8 @@ public class SearchFilter {
         MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
         searchValue.materialName = searchTerms;
         if (advancedSearchActive) {
-            searchValue.type.addAll(materialTypeFilter.getTypes());
+            searchValue.type = new HashSet<>(materialTypeFilter.getSelectedMaterialTypes());
+
             if (searchTerms.trim().isEmpty()) {
                 searchValue.type.remove(MaterialType.BIOMATERIAL);
                 searchValue.type.remove(MaterialType.SEQUENCE);
@@ -138,17 +138,6 @@ public class SearchFilter {
         }
         materialRequestBuilder.setSearchValues(searchValue);
         return materialRequestBuilder.build();
-    }
-
-    public void init() {
-        materialTypeFilter.setBiomaterial(true);
-        materialTypeFilter.setSequences(true);
-        materialTypeFilter.setStructures(true);
-        typeFilter.setDocuments(true);
-        typeFilter.setExperiments(true);
-        typeFilter.setMaterials(true);
-        typeFilter.setItems(true);
-
     }
 
     private SearchRequest createDocumentRequest() {
@@ -177,7 +166,7 @@ public class SearchFilter {
      * Due to the fact that the search criteria for textRecord contents and
      * material names are AND combined in the SQL Builder, 2 separate requests
      * are sent which contain the text query and the search for the material
-     * names in seperate requests.
+     * names in separate requests.
      *
      * @return
      */

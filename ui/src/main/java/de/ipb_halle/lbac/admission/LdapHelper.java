@@ -26,9 +26,14 @@ import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.*;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
-import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -150,8 +155,7 @@ public class LdapHelper implements Serializable {
             }
 
         } catch (Exception e) {
-            this.logger.error("queryLdapGroups() caught exception: ");
-            this.logger.error(ExceptionUtils.getStackTrace((e)));
+            this.logger.error("queryLdapGroups() caught exception:", (Throwable) e);
         }
     }
 
@@ -179,8 +183,7 @@ public class LdapHelper implements Serializable {
             }
             return null;
         } catch (Exception e) {
-            logger.error("Could not fetch 'LDAP_ATTR_MEMBER_OF' from LDAP");
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("Could not fetch 'LDAP_ATTR_MEMBER_OF' from LDAP", (Throwable) e);
             return null;
         }
     }
@@ -265,7 +268,6 @@ public class LdapHelper implements Serializable {
             }
         } catch (Exception e) {
             this.logger.error("queryLdapUser() caught exception: ", (Throwable) e);
-            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
     }

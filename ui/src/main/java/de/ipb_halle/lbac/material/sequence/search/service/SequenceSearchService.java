@@ -23,8 +23,8 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.service.NodeService;
 import java.util.UUID;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.ipb_halle.fasta_search_service.models.endpoint.FastaSearchRequest;
@@ -42,10 +42,9 @@ import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlParamTableBuilder;
 import java.util.List;
-import javax.persistence.criteria.JoinType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 /**
  *
@@ -86,7 +85,7 @@ public class SequenceSearchService {
             sql = sqlAndProcessId[0];
             processID = sqlAndProcessId[1];
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("searchSequences() caught an exception:", (Throwable) e);
             result.addErrorMessage(ERROR_SAVE_PARAMETER);
             return result;
         }
@@ -116,7 +115,7 @@ public class SequenceSearchService {
                 result.addErrorMessage(errorMessage);
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("searchSequences() caught an exception:", (Throwable) e);
             result.addErrorMessage(String.format(ERROR_REST_CALL_EXEPTION, e.getMessage()));
         }
 

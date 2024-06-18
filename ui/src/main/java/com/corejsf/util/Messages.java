@@ -4,11 +4,10 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,7 +55,7 @@ public abstract class Messages {
                 try {
                     resource = bundle.getString(resourceId);
                 } catch (MissingResourceException ex) {
-                    logger.error(ExceptionUtils.getStackTrace(ex));                   
+                    logger.error("getString() caught an exception:", (Throwable) ex);
                 }
             }
         }
@@ -67,7 +66,7 @@ public abstract class Messages {
                 try {
                     resource = bundle.getString(resourceId);
                 } catch (MissingResourceException ex) {
-                    logger.error(ExceptionUtils.getStackTrace(ex));
+                    logger.error("getString() caught a exception:", (Throwable) ex);
                 }
             }
         }

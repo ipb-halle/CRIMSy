@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -67,14 +67,14 @@ public class HazardConverterTest extends TestBase {
         HazardType hazard = hazardService.getHazardById(3);
         HazardConverter conv = new HazardConverter();
         Assert.assertEquals("", conv.getAsString(null, null, null));
-        Assert.assertEquals("", conv.getAsString(null, null, new Integer(2)));
+        Assert.assertEquals("", conv.getAsString(null, null, Integer.valueOf(2)));
         Assert.assertEquals(hazard.getName(), conv.getAsString(null, null, hazard));
     }
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
-                = prepareDeployment("MaterialBeanTest.war")
+                = prepareDeployment("HazardConverterTest.war")
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);

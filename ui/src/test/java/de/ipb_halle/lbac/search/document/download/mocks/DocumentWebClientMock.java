@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.search.document.download.mocks;
 import java.io.InputStream;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.search.document.Document;

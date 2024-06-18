@@ -2,12 +2,11 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import javax.faces.convert.FacesConverter;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
+import jakarta.faces.convert.FacesConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.omnifaces.util.Beans;
@@ -33,7 +32,7 @@ public class HazardConverter implements Converter {
         try {
             return Beans.getReference(HazardService.class).getHazardByName(string);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("getAsObject() caught an exception:", (Throwable) e);
             return null;
         }
     }

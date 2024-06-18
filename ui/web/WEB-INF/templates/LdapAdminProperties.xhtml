@@ -1,126 +1,177 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
->
+      >
 
-<h:body>
-    <ui:composition>
-        <p:dialog
-            id="modalcheckLDAP"
-            widgetVar="checkLDAPDialogWidgetVar"
-            modal="true"
-            resizable="false"
-            positionType="absolute"
-            closeOnEscape="true">
-            <!-- Note on style="z-index: auto;" for the b:inputTexts:
-                 Putting an icon via the facet "prepend" or "append" in
-                 conjunction with p:dialog's modal="true" leads to an 
-                 unresponsive input field (not clickable, no keyboard inputs). -->
-            <b:form id="checkLdapForm" method="post">
-                <b:panel title="#{msgs.admission_ldap_test}" collapsible="false" look="info">
-                    <b:inputText
-                        value="#{ldapTestBean.ldapLogin}"
-                        label="#{msgs.admission_loginForm_login}"
-                        style="z-index: auto;"
-                        required="true">
-                        <f:facet name="prepend">
-                            <b:icon name="envelope"/>
-                        </f:facet>
-                        <b:focus rendered="true"/>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputSecret
-                        value="#{ldapTestBean.ldapPassword}"
-                        label="#{msgs.admission_loginForm_password}"
-                        style="z-index: auto;"
-                        required="true"
-                        converter="DummyConverter">
-                        <f:facet name="prepend">
-                            <b:icon name="ok"/>
-                        </f:facet>
-                    </b:inputSecret>
-                    <b:message for="@previous"/>
-                    <b:column styleClass="text-center">
-                        <b:commandButton id="bttn_checkldap"
-                                         ajax="true"
-                                         type="button"
-                                         update="@form"
-                                         onclick="ajax:ldapTestBean.checkLdapConnect();"
-                                         value="#{msgs.admission_ldap_check}"/>
-                    </b:column>
-                    <h:outputText id="testresult" value="#{msgs.test_result}:"/>
-                    <b:message showSummary="true" showDetail="true" for="testresult"/>
-                </b:panel>
-            </b:form>
-        </p:dialog>
-        <b:panelGrid colSpans="9,3" size="sm">
-            <b:form id="ldapProperties" horizontal="true" method="post">
-                <b:panel title="#{msgs.admission_ldap_panelTitle}" collapsible="false" look="info">
+    <h:body>
+        <ui:composition>
+            <p:dialog
+                id="modalcheckLDAP"
+                widgetVar="checkLDAPDialogWidgetVar"
+                modal="true"
+                resizable="false"
+                positionType="absolute"
+                closeOnEscape="true">
+                <!-- Note on style="z-index: auto;" for the b:inputTexts:
+                     Putting an icon via the facet "prepend" or "append" in
+                     conjunction with p:dialog's modal="true" leads to an
+                     unresponsive input field (not clickable, no keyboard inputs). -->
+                <h:form id="checkLdapForm" method="post" class="formPanelStyleBlue">
+                    <p:panel header="#{msgs.admission_ldap_test}"
+                             style="min-width: 100%;"
+                             styleClass="panelTitleInfoColor"
+                             >
+                        <!--===============================================================================================================-->
+                        <h4 style="text-align: left; color: black;"><strong>#{msgs.admission_loginForm_login}</strong></h4>
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></div>
+                                <p:inputText
+                                    value="#{ldapTestBean.ldapLogin}"
+                                    label="#{msgs.admission_loginForm_login}"
+                                    style="z-index: auto;width: 100%"
+                                    required="true">
+                                    <p:focus rendered="true"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <p:message for="@previous"/>
+                        <!--===============================================================================================================-->
 
-                    <b:selectBooleanCheckbox offsetMd="4" value="#{ldapProps.ldapEnabled}"
-                          caption="#{msgs.admission_ldap_activate}" ajax="true" update="@form"/>
+                        <h4 style="text-align: left; color: black;"><strong>#{msgs.admission_loginForm_password}</strong></h4>
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-check"></i></div>
+                                <p:password
+                                    value="#{ldapTestBean.ldapPassword}"
+                                    label="#{msgs.admission_loginForm_password}"
+                                    style="z-index: auto; width:100%;"
+                                    required="true"
+                                    converter="DummyConverter">
+                                </p:password>
+                            </div>
+                        </div>
+                        <p:message for="@previous"/>
 
+                        <!--===============================================================================================================-->
+
+                        <p:column styleClass="text-center">
+                            <p:commandButton id="bttn_checkldap"
+                                             ajax="true"
+                                             type="submit"
+                                             update="@form"
+                                             action="#{ldapTestBean.checkLdapConnect()}"
+                                             value="#{msgs.admission_ldap_check}"/>
+                            <!--onclick="ajax:ldapTestBean.checkLdapConnect();"-->
+
+
+                        </p:column>
+                        <h:outputText id="testresult" value="#{msgs.test_result}:"/>
+
+                        <p:message showSummary="true" showDetail="true" for="testresult"/>
+                        <!--===============================================================================================================-->
+
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            <!--===============================================================================================================-->
+
+            <h:form id="ldapProperties" 
+                    style="border:1px solid #029ACF;border-radius:3px;">
+
+                <p:panel header="#{msgs.admission_ldap_panelTitle}"                     
+                         styleClass="panelTitleInfoColor" 
+                         >
+                    <h:outputText style="text-align: left; color: black;" ><strong>#{msgs.admission_ldap_activate}</strong></h:outputText>
+                    <p:selectBooleanCheckbox label ="#{msgs.admission_ldap_activate}"
+                                             value="#{ldapProps.ldapEnabled}"
+                                             >
+                        <p:ajax update="@form"  />
+                    </p:selectBooleanCheckbox>
+                    <br/>        
+                    <br/>
+
+                    <!--===============================================================================================================-->
                     <ui:repeat id="ldapPropList" value="#{ldapProps.ldapProperties}" var="p" varStatus="status">
-                        <b:inputText
-                                rendered="#{p.key != 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}"
-                                label="#{msgs[p.key]}:"
-                                title="#{msgs[p.key.concat('_detail')]}"
-                                disabled="#{!ldapProps.ldapEnabled}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{p.value}" colMd="7">
-                            <f:facet name="append">
-                                <b:iconAwesome name="th-list"/>
-                            </f:facet>
-                        </b:inputText>
-                        <b:inputSecret
-                            rendered="#{p.key == 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}"
-                            disabled="#{!ldapProps.ldapEnabled}"
-                            label="#{msgs[p.key]}:"
-                            title="#{msgs[p.key.concat('_detail')]}"
-                            labelColMd="4" labelStyle="text-align:right;"
-                            value="#{p.value}"
-                            colMd="7"
-                            converter="DummyConverter">
-                            <f:facet name="append">
-                                <b:iconAwesome name="key"/>
-                            </f:facet>
-                        </b:inputSecret>
+                        <h:panelGroup rendered="#{p.key != 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}" >
+                            <h:outputText style="text-align: left; color: black;" ><strong>#{msgs[p.key]}:</strong></h:outputText>
+                            <div class="col-12 md:col-4">
+                                <div class="ui-inputgroup">
+                                    <div class="ui-inputgroup-addon"><i class="pi pi-list"></i></div>
+                                    <p:inputText
+                                        label="#{msgs[p.key]}:"
+                                        header="#{msgs[p.key.concat('_detail')]}"
+                                        disabled="#{!ldapProps.ldapEnabled}"
+                                        style="width:100%;"
+                                        value="#{p.value}">
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                        </h:panelGroup>
+                        <!--===============================================================================================================-->
+                        <h:panelGroup rendered="#{p.key == 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}" >
+                            <h:outputText style="text-align: left; color: black;"><strong>#{msgs[p.key]}:</strong></h:outputText>
+                            <div class="col-12 md:col-4">
+                                <div class="ui-inputgroup">
+                                    <div class="ui-inputgroup-addon"><i class="pi pi-key"></i></div>
+                                    <p:password
+                                        disabled="#{!ldapProps.ldapEnabled}"
+                                        label="#{msgs[p.key]}:"
+                                        header="#{msgs[p.key.concat('_detail')]}"
+                                        style="width:100%;"
+                                        value="#{p.value}"
+                                        converter="DummyConverter">
+                                    </p:password>
+                                </div>
+                            </div>
+                        </h:panelGroup>
                     </ui:repeat>
-                    <b:column styleClass="text-center">
-                        <b:commandButton type="button" iconAwesome="cogs" ajax="true"
+
+                    <!--===============================================================================================================-->
+
+                    <p:column styleClass="text-center" >
+                        <p:commandButton type="button" 
+                                         icon="fa fa-cogs" 
+                                         ajax="true"
                                          onclick="PF('checkLDAPDialogWidgetVar').show();"
                                          disabled="#{!ldapProps.ldapEnabled}"
-                                         style="margin-right:3px;"
+                                         style="margin:5px;"
                                          value="#{msgs.admission_ldap_test}"/>
-                        <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
-                                         action="#{ldapProps.save}" value="#{msgs.Save}"/>
-                    </b:column>
-                </b:panel>
-            </b:form>
-        </b:panelGrid>
-    </ui:composition>
-</h:body>
+                        <p:commandButton type="submit" 
+                                         icon="fa fa-save" 
+                                         styleClass="ui-button-danger"
+                                         style="margin:5px;"
+                                         action="#{ldapProps.save}" 
+                                         value="#{msgs.Save}"/>
+                    </p:column>
+                    <!--===============================================================================================================-->
+
+                </p:panel>
+            </h:form>
+        </ui:composition>
+    </h:body>
 </html>

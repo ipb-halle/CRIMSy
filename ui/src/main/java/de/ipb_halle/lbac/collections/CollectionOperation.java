@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -80,8 +79,8 @@ public class CollectionOperation implements Serializable {
     }
 
     /**
-     * Removes all documents from the solr instance and deletes all files from
-     * the local filesystem. Removes all file entries from database.
+     * Removes all documents from the instance and deletes all files from the
+     * local filesystem. Removes all file entries from database.
      *
      * @param activeCollection
      * @param currentAccount
@@ -96,17 +95,19 @@ public class CollectionOperation implements Serializable {
         }
         try {
 
-            if (fileService.storagePathExists(activeCollection.getName())) {
-                fileService.deleteDir(activeCollection.getName());
+            if (fileService.storagePathExists(activeCollection)) {
+                fileService.deleteDir(activeCollection);
             }
 
-            throw new RuntimeException("xxxxx need to provide TermVector delete for entire collection");
-//            termVectorService.deleteTermVectorOfCollection(activeCollection);
-//            fileEntityService.delete(activeCollection);
-//            LOGGER.info(String.format("collection delete all file entities: %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
+            termVectorService.deleteTermVectorsOfCollection(activeCollection.getId());
+            
+            fileObjectService.deleteCollectionFiles(activeCollection.getId());
+
+            LOGGER.info(String.format("collection delete all file entities: %s:%s by %s", activeCollection.getName(), activeCollection.getStoragePath(), currentAccount.getLogin()));
+            return OperationState.OPERATION_SUCCESS;
 
         } catch (Exception e) {
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            LOGGER.error("clearCollection() caught an exception:", (Throwable) e);
             return OperationState.CLEAR_ERROR;
         }
 //        return OperationState.OPERATION_SUCCESS;
@@ -164,10 +165,10 @@ public class CollectionOperation implements Serializable {
         activeCollection.setACList(this.globalAdmissionContext.getOwnerAllPermACL());
 
         //*** create storagePath and check path ***
-        if (!fileService.storagePathExists(activeCollection.getName())) {
-            fileService.createDir(activeCollection.getName());
+        if (!fileService.storagePathExists(activeCollection)) {
+            fileService.createDir(activeCollection);
         }
-        activeCollection.setStoragePath(fileService.getStoragePath(activeCollection.getName()));
+        activeCollection.setStoragePath(fileService.getCollectionPath(activeCollection).toString());
 
         collectionService.save(activeCollection);
         return OperationState.OPERATION_SUCCESS;

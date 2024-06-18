@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 import java.io.Serializable;
 
@@ -32,16 +33,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Any;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Size;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Any;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Size;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -78,6 +78,9 @@ public class UserBean implements Serializable {
     @Inject
     protected MembershipService membershipService;
 
+    @Inject
+    private transient LoggingProfiler loggingProfiler;
+    
     @Inject
     protected NodeService nodeService;
 
@@ -241,7 +244,7 @@ public class UserBean implements Serializable {
                     this.currentAccount = this.memberService.save(this.currentAccount);
                     UIMessage.info(MESSAGE_BUNDLE, "admission_account_updated");
                 } catch (Exception e) {
-                    logger.error(ExceptionUtils.getStackTrace(e));
+                    logger.error("actionModify() caught an exception:", (Throwable) e);
                     UIMessage.error(MESSAGE_BUNDLE, "admission_account_updated_failed");
                 }
             }
@@ -334,7 +337,7 @@ public class UserBean implements Serializable {
     public Group getPublicGroup() {
         return this.globalAdmissionContext.getPublicGroup();
     }
-
+    
     /**
      * Check if current user is permitted to access requested resource
      *
@@ -389,10 +392,13 @@ public class UserBean implements Serializable {
 
         this.currentAccount = u;
         this.permissionCache.clear();
+        loggingProfiler.profilerStart("UserBean");
         this.loginEvent.fire(new LoginEvent(u));
         if (!u.equals(this.globalAdmissionContext.getPublicAccount())) {
             announceUser(u);
         }
+        loggingProfiler.profilerStop("UserBean");
+        loggingProfiler.showMap();
     }
 
     public void setLogin(String l) {

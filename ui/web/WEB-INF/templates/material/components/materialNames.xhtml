@@ -21,130 +21,146 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <p:tab 
+            <p:tab
                 title="#{msgs.materialCreation_panelNames_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
                 <p:outputPanel
                     rendered="#{materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
-                    <b:dataTable
+                    <p:dataTable
                         id="materialNameTable"
                         styleClass="materialNameTableClass materialNamesPanelClass"
-                        paginated="false"
                         value="#{materialBean.materialNameBean.names}"
-                        searching="false"
                         var="mName"
-                        saveState="false">
-                        <b:dataTableColumn
-                            orderable="false"
-                            label="#{msgs.materialCreation_panelNames_tableHeader_name}"
+                        >
+                        <!--searching="false"-->
+                        <!--saveState="false"-->
+                        <!--paginated="false"-->
+                        <p:column
+                            headerText="#{msgs.materialCreation_panelNames_tableHeader_name}"
                             styleClass="materialNameText">
+                            <!--orderable="false"-->
                             <p:inputText
                                 value="#{mName.value}"
                                 styleClass="tstMaterialNameInput"
                                 style="width: 100%;"
                                 disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
                                 placeholder="#{msgs.materialCreation_panelNames_placeHolder}">
-                                <p:ajax process="@this" update="@none" />
+                                <p:ajax process="@this" update="@form" />
                                 <f:converter converterId="InputConverter" />
                             </p:inputText>
 
-                        </b:dataTableColumn>
-                        <b:dataTableColumn
+                        </p:column>
+                        <p:column
                             styleClass="materialNameLanguage"
-                            orderable="false"
-                            label="#{msgs.materialCreation_panelNames_tableHeader_language}">
-                            <b:selectOneMenu
+                            headerText="#{msgs.materialCreation_panelNames_tableHeader_language}"
+                            >
+                            <!--orderable="false"-->
+                            <p:selectOneMenu
+                                style="padding-left: 8%;"
                                 disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
                                 value="#{mName.language}">
-                                <f:selectItems 
-                                    value="#{materialBean.materialNameBean.getPossibleLanguages()}"/>
-                            </b:selectOneMenu>
-                        </b:dataTableColumn>
-                        <b:dataTableColumn
+                                <f:selectItems
+                                    value="#{materialBean.materialNameBean.getPossibleLanguages()}"
+                                    />
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column
                             styleClass="materialNameAction"
-                            orderable="false"
-                            label="#{msgs.materialCreation_panelNames_tableHeader_action}">
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-double-up "
-                                             look="link"
+                            headerText="#{msgs.materialCreation_panelNames_tableHeader_action}">
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             icon="pi pi-angle-double-up"
                                              ajax="true"
+                                             id="btnUpUp"
                                              process="@(.materialNameTableClass)"
                                              update="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
+                                                         mName,
                                                          'HIGHEST')}"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_highestRank}"
-                                             onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHEST');"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-up"
-                                             look="link"
+                                             type="submit"
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'HIGHEST')}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_highestRank}" for="btnUpUp" position="right"/>
+                            </p:commandButton>
+
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             icon="pi pi-angle-up"
                                              ajax="true"
+                                             id="btnUp"
                                              process="@(.materialNameTableClass)"
                                              update="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
+                                                         mName,
                                                          'HIGHER')}"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_higher}"
-                                             onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'HIGHER');"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-down "
-                                             look="link"
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'HIGHER')}"
+                                             type="submit">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_higher}" for="btnUp" position="left"/>
+                            </p:commandButton>
+                            
+
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             icon="pi pi-angle-down "
                                              ajax="true"
+                                             id="btnD"
+                                             type="submit"
                                              process="@(.materialNameTableClass)"
                                              update="@(.materialNameTableClass)"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_lower}"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
+                                                         mName,
                                                          'LOWER')}"
-                                             onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWER');"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-angle-double-down"
-                                             look="link"
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'LOWER')}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_lower}" for="btnD" position="left"/>
+                            </p:commandButton>
+
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             icon="pi pi-angle-double-down"
                                              ajax="true"
+                                             id="btnDD"
                                              update="@(.materialNameTableClass)"
                                              process="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
+                                                         mName,
                                                          'LOWEST')}"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_lowestRank}"
-                                             onclick="ajax:materialBean.materialNameBean.swapPosition(mName, 'LOWEST');"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon="trash"
-                                             look="link"
+                                             type="submit"
+                                             action="#{materialBean.materialNameBean.swapPosition(mName, 'LOWEST')}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_lowestRank}" for="btnDD" position="left"/>
+                            </p:commandButton>
+                            
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             styleClass="ui-button-danger"
+                                             icon="pi pi-trash"
                                              ajax="true"
+                                             id="btnDel"
                                              process="@(.materialNameTableClass)"
                                              disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
+                                                         mName,
                                                          'DELETE')}"
                                              update="@(.materialNameTableClass)"
-                                             onclick="ajax:materialBean.materialNameBean.removeName(mName);"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_delete}"
-                                             type="button"/>
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-plus "
-                                             look="link"
-                                             onclick="ajax:materialBean.materialNameBean.addNewName();"
+                                             type="submit"
+                                             action="#{materialBean.materialNameBean.removeName(mName)}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_delete}" for="btnDel" position="left"/>
+                            </p:commandButton>
+                            <p:commandButton style="padding: 0 4px;margin:5px;"
+                                             styleClass="ui-button-danger"
+                                             icon="pi pi-plus "
                                              ajax="true"
-                                             process="@form"
-                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
-                                                         mName, 
-                                                         'NEW')}"
+                                             id="btnPl"
+                                             process="@this"
+                                             type="submit"
                                              update="@(.materialNameTableClass)"
-                                             tooltip="#{msgs.materialCreation_panelNames_tooltip_add}"
-                                             type="button"/>
-                        </b:dataTableColumn>
-                    </b:dataTable>
+                                             disabled="#{!materialBean.materialNameBean.isMaterialNameOperationEnabled(
+                                                         mName,
+                                                         'NEW')}"
+                                             action="#{materialBean.materialNameBean.addNewName()}">
+                                <p:tooltip value="#{msgs.materialCreation_panelNames_tooltip_add}" for="btnPl" position="left"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>

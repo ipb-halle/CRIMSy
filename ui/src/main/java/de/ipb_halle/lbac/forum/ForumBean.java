@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.CloudService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,12 +32,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Observes;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -66,6 +66,9 @@ public class ForumBean implements Serializable {
     @Inject
     private ForumService forumService;
 
+    @Inject
+    private LoggingProfiler loggingProfiler;
+    
     private String cloudOfTopic;
     private User currentUser;
     private Set<String> availableClouds;
@@ -74,7 +77,9 @@ public class ForumBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("ForumBean");
         vFilter = new RichTextConverter();
+        loggingProfiler.profilerStop("ForumBean");
     }
 
     /**
@@ -84,6 +89,8 @@ public class ForumBean implements Serializable {
      * @param evt the LoginEvent scheduled by UserBean
      */
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ForumBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         availableClouds = new HashSet<>();
         for (Cloud c : cloudService.load()) {
@@ -92,6 +99,8 @@ public class ForumBean implements Serializable {
 
         cloudOfTopic = availableClouds.iterator().next();
         refreshForumState();
+        loggingProfiler.profilerStop("ForumBean.setCurrentAccount");
+
     }
 
     /**
@@ -128,7 +137,7 @@ public class ForumBean implements Serializable {
                     vFilter.filter(postingText),
                     currentUser, creationDate);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("addPostingToActiveTopic() caught an exception:", (Throwable) e);
         }
         postingText = "";
     }
@@ -144,7 +153,7 @@ public class ForumBean implements Serializable {
                     currentUser,
                     cloudOfTopic);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("createNewTopic() caught an exception:", (Throwable) e);
         }
         newTopicName = "";
         refreshForumState();

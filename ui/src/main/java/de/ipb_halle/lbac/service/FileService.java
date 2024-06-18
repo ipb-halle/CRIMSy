@@ -17,19 +17,26 @@
  */
 package de.ipb_halle.lbac.service;
 
-import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.kx.file.AttachmentHolder;
+import de.ipb_halle.kx.file.FileObject;
+import de.ipb_halle.kx.file.FileObjectService;
+import de.ipb_halle.lbac.admission.User;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.stream.Stream;
 
-import javax.ejb.Stateless;
+import de.ipb_halle.lbac.util.HexUtil;
+import jakarta.ejb.Stateless;
 
+import jakarta.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -39,32 +46,40 @@ import org.apache.logging.log4j.LogManager;
 @Stateless
 public class FileService implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-    private final static String defaultPath = "/data/ui";
-    private final static String pathPropName = "de.ipb_halle.lbac.cloud.servlet.FileUploadExec.Path";
+    public final static Integer MAX_FILES_IN_FOLDER = 100;
+    public static final String HASH_ALGO = "SHA-512";
+
+    @Inject
+    private FileObjectService fileObjectService;
 
     private Logger logger;
-    private String uploadRootPath;
 
     public FileService() {
         logger = LogManager.getLogger(FileService.class);
-        this.uploadRootPath = System.getProperty(pathPropName, defaultPath);
     }
 
-    //*** getter and setter
-    public static String getDefaultPath() {
-        return defaultPath;
+    /**
+     * for testing purposes
+     *
+     * @param fo FileObjectService for use in test cases
+     */
+    public FileService(FileObjectService fo) {
+        fileObjectService = fo;
+        logger = LogManager.getLogger(FileService.class);
     }
 
-    public Path getUploadPath(String path) {
-        return Paths.get(this.uploadRootPath, path);
+    public String getCollectionBasePath() {
+        return Paths.get(System.getProperty(
+                        "de.ipb_halle.lbac.cloud.servlet.FileUploadExec.Path",
+                        "/data/ui/"), "collections")
+                .toString();
     }
 
-    public String getStoragePath(String dirPath) {
-        if (storagePathExists(dirPath)) {
-            return getUploadPath(dirPath).toString();
-        }
-        return "";
+    public Path getCollectionPath(AttachmentHolder attachmentHolder) {
+        return Paths.get(getCollectionBasePath(),
+                attachmentHolder.getName());
     }
 
     /**
@@ -72,37 +87,29 @@ public class FileService implements Serializable {
      * https://docs.oracle.com/javase/tutorial/essential/io/check.html
      * attention: java nio: (!Files.exists) is NOT EQUAL to (Files.notExists)
      *
-     * @param dirPath
-     * @return
+     * @param attachmentHolder
+     * @return true if storagePath of collection exists
      */
-    public boolean storagePathExists(String dirPath) {
-        if (Files.exists(getUploadPath(dirPath))) {
+    public boolean storagePathExists(AttachmentHolder attachmentHolder) {
+        if (Files.exists(getCollectionPath(attachmentHolder))) {
             return true;
-        } else if (Files.notExists(getUploadPath(dirPath))) {
+        } else if (Files.notExists(getCollectionPath(attachmentHolder))) {
             return false;
         } else {
-            logger.error(String.format("status of filesystem %s is unknown.", getUploadPath(dirPath)));
+            logger.error(String.format("status of filesystem %s is unknown.", getCollectionPath(attachmentHolder)));
             return false;
         }
     }
 
     /**
-     * @param dirPath
-     * @return boolean of (exists & read & write permission)
-     */
-    public boolean storagePathIsAccessible(String dirPath) {
-        return Files.isDirectory(getUploadPath(dirPath)) & Files.isReadable(getUploadPath(dirPath)) & Files.isWritable(getUploadPath(dirPath));
-    }
-
-    /**
      * create new sub directory in root path
      *
-     * @param dirPath - name of directory
-     * @return
+     * @param collection - collection to create directory for
+     * @return true if collection storage path has been created successfully.
      */
-    public boolean createDir(String dirPath) {
-        if (dirPath != null && dirPath.length() > 0) {
-            Path rootPath = Paths.get(this.uploadRootPath, dirPath);
+    public boolean createDir(AttachmentHolder collection) {
+        if (collection != null) {
+            Path rootPath = getCollectionPath(collection);
             try {
 
                 Files.createDirectories(rootPath);
@@ -118,76 +125,40 @@ public class FileService implements Serializable {
     /**
      * delete all files recursively in a sub dir
      *
-     * @param dirPath input Path
+     * @param holder the collection
      * @return boolean
      */
-    public boolean deleteDir(String dirPath) {
-        if (dirPath != null && dirPath.length() > 0) {
+    public void deleteDir(AttachmentHolder holder) {
+        if (holder != null) {
+            logger.error("Upload path now " + holder.getStoragePath());
             try {
-                Path rootPath = Paths.get(this.uploadRootPath, dirPath);
+                Path rootPath = getCollectionPath(holder);
                 try (Stream<Path> walk = Files.walk(rootPath)) {
                     walk
                             .sorted(Comparator.reverseOrder())
                             .map(Path::toFile)
                             .forEach(File::delete);
                 }
-                return true;
             } catch (IOException e) {
-                logger.error("deleting dir " + dirPath + " failed.");
-                return false;
+                logger.error("deleting dir " + holder.getStoragePath() + " |  failed.");
             }
         }
-        return false;
     }
 
     /**
      * delete file with absolute path
      *
      * @param path
-     * @return
      */
-    public boolean deleteFile(String path) {
+    public void deleteFile(String path) {
         if (path != null) {
             Path filePath = Paths.get(path);
             try {
                 Files.delete(filePath);
-                return true;
             } catch (IOException e) {
-                return false;
+                this.logger.warn(String.format("deleteFile(%s) failed.", path));
             }
         }
-        return false;
-    }
-
-    /**
-     * delete file from repository
-     *
-     * @param collection
-     * @param filename
-     * @return
-     */
-    public boolean deleteFile(String collection, String filename) {
-        if (filename != null && filename.length() > 4) {
-            Path filePath = Paths.get(this.getUploadPath(collection).toString(), filename.substring(1, 2), filename.substring(3, 4), filename);
-            try {
-                Files.delete(filePath);
-                return true;
-            } catch (IOException e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * wrapper for delete file
-     *
-     * @param collection
-     * @param filename
-     * @return
-     */
-    public boolean deleteFile(Collection collection, String filename) {
-        return deleteFile(collection.getName(), filename);
     }
 
     /**
@@ -212,4 +183,73 @@ public class FileService implements Serializable {
         }
         return -1L;
     }
+
+    public FileObject saveFile(
+            AttachmentHolder objectOfAttachedFile,
+            String fileName,
+            InputStream fileStream,
+            User user) throws NoSuchAlgorithmException, IOException {
+
+        //a new file object will be in db created
+        FileObject fileObject = saveFileInDB(objectOfAttachedFile, fileName, user);
+
+        //calculation of file path in file system, with the help of file object information (Id)
+        Path fileLocation = calculateFileLocation(objectOfAttachedFile, fileObject.getId());
+
+        //save file in to system
+        String FileSaveHash = saveFileToFileSystem(fileStream, fileLocation);
+
+        //updates file object in db
+        fileObject = updateFileInDB(fileObject, fileLocation, FileSaveHash);
+
+        return fileObject;
+    }
+
+    protected FileObject saveFileInDB(AttachmentHolder objectOfAttachedFile, String fileName, User user) {
+        //create new file object
+        FileObject fileObject = new FileObject();
+
+        //set the values
+        fileObject.setFileLocation("to be set");
+        fileObject.setName(fileName);
+        fileObject.setCreated(new Date());
+        fileObject.setUserId(user.getId());
+        fileObject.setHash("");
+        fileObject.setCollectionId(objectOfAttachedFile.getId());
+
+        //the object will be saved in db,returns updated file-object (with id from db)
+        return fileObjectService.save(fileObject);
+    }
+
+    public static Path calculateFileLocation(AttachmentHolder objectOfAttachedFile, Integer fileId) {
+        String folder1 = ((Integer) (fileId / (MAX_FILES_IN_FOLDER * MAX_FILES_IN_FOLDER))).toString();
+        String folder2 = ((Integer) (fileId / (MAX_FILES_IN_FOLDER))).toString();
+        return Paths.get(objectOfAttachedFile.getStoragePath(), folder1, folder2, fileId.toString());
+    }
+
+    protected FileObject updateFileInDB(FileObject fileObject, Path fileName, String hash) {
+
+        fileObject.setFileLocation(fileName.toString());
+        fileObject.setHash(hash);
+
+        //goes to kx fileObjectService and merges the entity in db and returns updated object from db
+        return fileObjectService.save(fileObject);
+    }
+
+    protected String saveFileToFileSystem(InputStream inputStream, Path fileLocation) throws IOException, NoSuchAlgorithmException {
+        //generates path
+        Path parent = fileLocation.getParent();
+
+        if (!parent.toFile().exists()) {
+            if (!parent.toFile().mkdirs()) {
+                throw new IOException(String.format("mkdirs failed for %s", parent));
+            }
+        }
+        MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
+        DigestInputStream dis = new DigestInputStream(inputStream, md);
+
+        Files.copy(dis, fileLocation);
+        return HexUtil.toHex(md.digest());
+    }
+
 }

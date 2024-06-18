@@ -18,13 +18,16 @@
 package de.ipb_halle.lbac.material.mocks;
 
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
-
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
  * @author fmauz
  */
 public class MaterialOverviewBeanMock extends MaterialOverviewBean {
-    
+
+    public MaterialOverviewBeanMock(LoggingProfiler profiler) {
+        this.loggingProfiler = profiler;
+    }
 
 }

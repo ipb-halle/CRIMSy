@@ -314,9 +314,11 @@ function devCert {
         #
 	id=`openssl x509 -in devcert/$SERIAL.pem -text |\
 	  grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
-	ln -s $SERIAL.pem devcert/$id.pem
-	ln -s $SERIAL.key devcert/$id.key
-	ln -s $SERIAL.passwd devcert/$id.passwd
+        pushd devcert >/dev/null
+	ln -s $SERIAL.pem $id.pem
+	ln -s $SERIAL.key $id.key
+	ln -s $SERIAL.passwd $id.passwd
+        popd >/dev/null
 
 	DEV_CERT=devcert/$SERIAL
 	writeConfig

@@ -21,108 +21,108 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
     <h:body>
-
         <ui:composition>
-            <p:tab 
+            <p:tab
                 title="#{msgs.materialCreation_panelStrucInfos_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('STRUCTURE_INFORMATION')}">
                 <p:outputPanel
                     styleClass="structurePanelClass"
                     rendered="#{materialBean.permission.isDetailPanelVisible('STRUCTURE_INFORMATION')}">
-                    <b:container>
-                        <b:row>
-                            <b:column span="5">
-                                <h:outputText
-                                    value="#{msgs.materialCreation_panelStrucInfos_formula}"/>
-                            </b:column>
-                            <b:column span="6">
-                                <h:outputText
-                                    value="#{msgs.materialCreation_panelStrucInfos_mass}"/>
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="6">
-                                <mol:molecule
-                                    value="#{materialBean.structureInfos.structureModel}"
-                                    pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                    format="MDLV2000"
-                                    border="true"
-                                    readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                    widgetVar="structurePlugin">
-                                </mol:molecule>
-                                <!-- This JS snippet guarantees proper plugin initialization after
-                                     this p:tab is rendered by AJAX and the tab comes into focus. -->
-                                <script>structurePlugin.then(plugin => plugin.init());</script>
+                    
+                    <!--container nr1 row-->
 
-                            </b:column>
-                            <b:column span="6">
-                                <b:container>
-                                    <b:row>
-                                        <b:column span="6">
-                                            <b:selectBooleanCheckbox 
-                                                disabled="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                                value="#{materialBean.autoCalcFormularAndMasses}"
-                                                caption="Formel und Masse automatisch berechnen"
-                                                ajax="true"
-                                                update="@(.autocalculatable)"/>
-                                        </b:column>
-                                    </b:row>
-                                    <b:row>
-                                        <b:column span="2">
-                                            <h:outputText
-                                                value="#{msgs.materialCreation_panelStrucInfos_sumformula}"/>
-                                        </b:column>
-                                        <b:column span="2"
-                                                  styleClass="autocalculatable">
-                                            <b:inputText
-                                                disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
-                                                value="#{materialBean.structureInfos.sumFormula}">
-                                                <f:converter converterId="InputConverter" />
-                                            </b:inputText>
-                                        </b:column>
-                                    </b:row>
-                                    <b:row>
-                                        <b:column span="2">
-                                            <h:outputText
-                                                value="#{msgs.materialCreation_panelStrucInfos_molarMass}"/>
-                                        </b:column>
-                                        <b:column span="2"
-                                                  styleClass="autocalculatable">
-                                            <b:inputText
-                                                disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
-                                                value="#{materialBean.structureInfos.averageMolarMass}">
-                                                <f:converter converterId="InputConverter" />
-                                            </b:inputText>
-                                        </b:column>
-                                    </b:row>
-                                    <b:row>
-                                        <b:column span="2">
-                                            <h:outputText
-                                                value="#{msgs.materialCreation_panelStrucInfos_exactMolarMass}"/>
-                                        </b:column>
-                                        <b:column span="2"
-                                                  styleClass="autocalculatable">
-                                            <b:inputText
-                                                disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
-                                                value="#{materialBean.structureInfos.exactMolarMass}">
-                                                <f:converter converterId="InputConverter" />
-                                            </b:inputText>
-                                        </b:column>
-                                    </b:row>
-                                </b:container>
-                            </b:column>
-                        </b:row>
-                    </b:container>
+
+                    <div style="display: flex; flex-direction: row; align-items:flex-start; ">
+
+                        <!--container nr2 column-->
+
+                        <div style="display:flex; flex-direction: column;">
+                            <h:outputText
+                                style="margin:0.5rem;"
+                                value="#{msgs.materialCreation_panelStrucInfos_formula}"/>
+                            <mol:molecule
+                                value="#{materialBean.structureInfos.structureModel}"
+                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                format="MDLV2000"
+                                border="true"
+                                readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                widgetVar="structurePlugin">
+                            </mol:molecule>
+                            <!-- This JS snippet guarantees proper plugin initialization after
+                                 this p:tab is rendered by AJAX and the tab comes into focus. -->
+                            <script>structurePlugin.then(plugin => plugin.init());</script>
+                        </div>
+
+                        <!--container nr3 column-->
+
+                        <div style="display:flex; flex-direction: column;margin-left: 7rem;">
+
+                            <h:outputText
+                                style="margin:0.5rem;"
+                                value="#{msgs.materialCreation_panelStrucInfos_mass}"/>
+
+                            <!--container nr4 column-->
+                            <div style="display:flex; flex-direction: column; margin-left: 4rem;">
+
+                                <!--container nr5 row-->
+                                <div style="display: flex; flex-direction: row; align-items:flex-start; ">
+
+                                    <h:outputText
+                                        style="margin:0.5rem;"
+                                        value="#{msgs.molarMassCalculation}"/>
+
+                                    <p:selectBooleanCheckbox
+                                        style="margin:0.5rem;"
+                                        disabled="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                        value="#{materialBean.autoCalcFormularAndMasses}">
+                                        <p:ajax 
+                                            process="@this"
+                                            update="@form"/>
+                                    </p:selectBooleanCheckbox>
+                                </div>
+
+                                <h:outputText
+                                    style="margin:0.5rem;"
+                                    value="#{msgs.materialCreation_panelStrucInfos_sumformula}"/>
+
+                                <p:inputText
+                                    style="margin:0.5rem;"
+                                    disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
+                                    value="#{materialBean.structureInfos.sumFormula}">
+                                    <f:converter converterId="InputConverter" />
+                                </p:inputText>
+
+                                <h:outputText
+                                    style="margin:0.5rem;"
+                                    value="#{msgs.materialCreation_panelStrucInfos_molarMass}"/>
+
+                                <p:inputText
+                                    style="margin:0.5rem;"
+                                    disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
+                                    value="#{materialBean.structureInfos.averageMolarMass}">
+                                    <f:converter converterId="InputConverter" />
+                                </p:inputText>
+
+                                <h:outputText
+                                    style="margin:0.5rem;"
+                                    value="#{msgs.materialCreation_panelStrucInfos_exactMolarMass}"/>
+                                <p:inputText
+                                    style="margin:0.5rem;"
+                                    disabled="#{materialBean.permission.isFormulaAndMassesInputsDisabled()}"
+                                    value="#{materialBean.structureInfos.exactMolarMass}">
+                                    <f:converter converterId="InputConverter" />
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </div>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>
     </h:body>
-
 </html>

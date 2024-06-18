@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.material.consumable;
 
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *

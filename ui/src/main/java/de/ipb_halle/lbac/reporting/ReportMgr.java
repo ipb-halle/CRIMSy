@@ -26,8 +26,7 @@ import de.ipb_halle.reporting.ReportType;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
 import org.omnifaces.util.Faces;
@@ -35,18 +34,23 @@ import org.omnifaces.util.Faces;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import java.io.Serializable;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
 /**
  *
  * @author fbroda
  */
-@RequestScoped
-public class ReportMgr {
+@Named
+@SessionScoped
+public class ReportMgr implements Serializable {
+
     private static final String DEFAULT_LANGUAGE = "en";
     static final String DEFAULT_NAME = "Report with no name";
+    private static final long serialVersionUID = 1L;
 
     private Logger logger = LogManager.getLogger(getClass().getName());
 
@@ -63,7 +67,6 @@ public class ReportMgr {
             localizeReportName(report);
         }
         reports.sort(Comparator.comparing(Report::getName));
-
         return reports;
     }
 
@@ -113,7 +116,7 @@ public class ReportMgr {
         }
 
         String name = languageElement.getAsString();
-        if (StringUtils.isBlank(name)) {
+        if ((name == null) || name.equals("")) {
             return null;
         }
 
@@ -122,10 +125,10 @@ public class ReportMgr {
 
     /**
      * Submit a report to the report generator.
-     * 
-     * @param report      report template description
-     * @param parameters  map of report parameters
-     * @param type        type of report
+     *
+     * @param report report template description
+     * @param parameters map of report parameters
+     * @param type type of report
      * @param currentUser current user
      */
     public void submitReport(Report report, Map<String, Object> parameters, ReportType type, User currentUser) {

@@ -21,8 +21,8 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  *

@@ -17,17 +17,17 @@
  */
 package de.ipb_halle.scope;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
 
 /**
  * This class registers a {@link SessionScopeContext} instance as context
  * object for the {@link SessionScoped} scope. This {@link Extension} has to be
  * registered via its fully qualified class name in
- * META-INF/services/javax.enterprise.inject.spi.Extension.
+ * META-INF/services/jakarta.enterprise.inject.spi.Extension.
  * <p>
  * This implementation was inspired by chapter 4 of the book
  * Pro CDI 2 in Java EE 8: An In-Depth Guide to Context and Dependency Injection

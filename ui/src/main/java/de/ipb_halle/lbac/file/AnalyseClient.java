@@ -19,10 +19,12 @@ package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.kx.service.TextWebRequestType;
 import de.ipb_halle.kx.service.TextWebStatus;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -35,21 +37,20 @@ public class AnalyseClient {
     private final String baseURL = "http://localhost:8080/kx-web/";
 
     /**
-     * make a GET request to the remote knowledge extractor 
+     * make a GET request to the remote knowledge extractor
      * endpoint.
      *
      * @param fileId id of the fileObject to be inspected
-     * @param type the request type: initially SUBMIT; QUERY thereafter
+     * @param type   the request type: initially SUBMIT; QUERY thereafter
      * @return ideally BUSY or DONE; can also return error codes
-     *
-     * @throws Exception if either an exception occurs during the request 
-     * process or if the result cannot be converted to TextWebStatus.
+     * @throws Exception if either an exception occurs during the request
+     *                   process or if the result cannot be converted to TextWebStatus.
      */
     public TextWebStatus analyseFile(Integer fileId, TextWebRequestType type) throws Exception {
         HttpUriRequest request = new HttpGet(
                 new URL(
-                    new URL(baseURL),
-                    String.format("process?fileId=%d&type=%s", fileId, type.toString())
+                        new URL(baseURL),
+                        String.format("process?fileId=%d&type=%s", fileId, type.toString())
                 ).toExternalForm());
         HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
@@ -60,14 +61,24 @@ public class AnalyseClient {
         return TextWebStatus.valueOf(streamToString(response.getEntity().getContent()));
     }
 
+    //convert uploaded file byte[] to char[] -> string
     private String streamToString(InputStream inputStream) {
+
         try (ByteArrayOutputStream result = new ByteArrayOutputStream()) {
+
+            //create a buffer to hold chunks of data
             byte[] buffer = new byte[1024];
-            for (int length; (length = inputStream.read(buffer)) != -1; ) {
+            int length;
+
+            //read from stream in to buffer
+            while ((length = inputStream.read(buffer)) != -1) {
+
+                //write data from buffer to the ByteArrayOutputStream
                 result.write(buffer, 0, length);
             }
-            // StandardCharsets.UTF_8.name() > JDK 7
+            // convert the ByteArrayOutputStream to a String using UTF-8 encoding
             return result.toString("UTF-8");
+
         } catch (IOException e) {
             // ignore
         }

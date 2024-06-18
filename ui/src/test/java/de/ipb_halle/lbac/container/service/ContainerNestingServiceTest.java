@@ -24,10 +24,9 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -144,7 +143,7 @@ public class ContainerNestingServiceTest extends TestBase {
     }
     @SuppressWarnings("unchecked")
     private int getNestedEntries() {
-        List<BigInteger> amountList = (List) entityManagerService.doSqlQuery("SELECT COUNT(*) FROM nested_containers");
+        List<Long> amountList = (List) entityManagerService.doSqlQuery("SELECT COUNT(*) FROM nested_containers");
         return amountList.get(0).intValue();
     }
     @SuppressWarnings("unchecked")

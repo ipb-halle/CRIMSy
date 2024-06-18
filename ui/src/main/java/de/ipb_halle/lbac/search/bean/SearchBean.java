@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.navigation.Navigator;
@@ -37,16 +37,17 @@ import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.util.Set;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -93,6 +94,16 @@ public class SearchBean implements Serializable {
     @Inject
     private NodeService nodeService;
 
+    @Inject
+    private MessagePresenter messagePresenter;
+
+    @Inject
+    private LoggingProfiler loggingProfiler;
+
+
+    /*
+     * empty default constructor for testing purposes
+     */
     public SearchBean() {
     }
 
@@ -107,6 +118,7 @@ public class SearchBean implements Serializable {
             SearchService searchService,
             User user,
             NodeService nodeService) {
+        this.loggingProfiler = new LoggingProfiler();
         this.searchService = searchService;
         setCurrentAccount(new LoginEvent(user));
         this.nodeService = nodeService;
@@ -118,9 +130,13 @@ public class SearchBean implements Serializable {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("SearchBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         searchFilter = new SearchFilter(currentUser);
-        this.netObjectPresenter = new NetObjectPresenter(currentUser, JsfMessagePresenter.getInstance());
+        this.netObjectPresenter = new NetObjectPresenter(currentUser, messagePresenter);
+        loggingProfiler.profilerStop("SearchBean.setCurrentAccount");
+
     }
 
     public void actionAddFoundObjectsToShownObjects() {
@@ -193,7 +209,7 @@ public class SearchBean implements Serializable {
     }
 
     public boolean isMaterialTypeVisible() {
-        return searchFilter.getTypeFilter().isMaterials();
+        return searchFilter.getTypeFilter().shouldSearchForMaterial();
     }
 
     public List<NetObject> getShownObjects() {
@@ -234,10 +250,6 @@ public class SearchBean implements Serializable {
 
     public void toogleAdvancedSearch() {
         searchFilter.toogleAdvancedSearch();
-        if (searchFilter.isAdvancedSearch()) {
-            searchFilter.init();
-        }
-
     }
 
     public int getTextFieldLength() {
@@ -251,7 +263,7 @@ public class SearchBean implements Serializable {
     public boolean isMolEditorVisible() {
         return isMaterialTypeVisible()
                 && searchFilter.isAdvancedSearch()
-                && searchFilter.getMaterialTypeFilter().isStructures();
+                && searchFilter.getMaterialTypeFilter().shouldSearchForStructure();
     }
 
     public String getAdvancedSearchIcon() {

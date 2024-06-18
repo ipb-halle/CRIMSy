@@ -32,7 +32,7 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchService;
@@ -74,14 +74,12 @@ public class ProjectBeanTest extends TestBase {
     private ACList adminOnlyAcl, publicAcl;
     private int project1Id, project2Id, project3Id;
 
-    
     @Test
     public void test001_reloadReadableProjects() {
         instance.reloadReadableProjects();
         Assert.assertEquals(2, instance.getReadableProjects().size());
     }
 
-   
     @Test
     public void test002_getReadableProjectById() {
         Assert.assertNotNull(instance.getReadableProjectById(project1Id));
@@ -117,11 +115,7 @@ public class ProjectBeanTest extends TestBase {
     @BeforeEach
     public void init() {
         this.publicUser = context.getPublicAccount();
-        instance = new ProjectBean();
-        instance.setProjectService(projectService);
-        instance.setMemberService(memberService);
-        instance.setAclistService(aclistService);
-
+      
         adminOnlyAcl = context.getAdminOnlyACL();
         publicAcl = GlobalAdmissionContext.getPublicReadACL();
         adminUser = context.getAdminAccount();
@@ -152,7 +146,7 @@ public class ProjectBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ProjectEditBeanTest.war")
+        WebArchive deployment = prepareDeployment("ProjectBeanTest.war")
                 .addClass(ProjectBean.class)
                 .addClass(Navigator.class)
                 .addClass(ProjectService.class)

@@ -20,13 +20,13 @@ package de.ipb_halle.lbac.material.biomaterial;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -42,6 +42,7 @@ public class TaxonomyTreeController implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private LoggingProfiler loggingProfiler;
     private Set<Integer> expandedTreeNodes = new HashSet<>();
     private Integer idOfSelectedTaxonomy;
     protected TaxonomyLevelController levelController;
@@ -52,15 +53,17 @@ public class TaxonomyTreeController implements Serializable {
     private TreeNode taxonomyTree;
 
     /**
-     *
+     * @param lp
      * @param selectedTaxonomy
      * @param taxonomyService
      * @param levelController
      */
     public TaxonomyTreeController(
+            LoggingProfiler lp,
             TreeNode selectedTaxonomy,
             TaxonomyService taxonomyService,
             TaxonomyLevelController levelController) {
+        this.loggingProfiler = lp;
         this.selectedTaxonomy = selectedTaxonomy;
         this.taxonomyService = taxonomyService;
         this.levelController = levelController;
@@ -68,15 +71,17 @@ public class TaxonomyTreeController implements Serializable {
     }
 
     /**
-     *
+     * @param lp
      * @param selectedTaxonomy
      * @param taxonomyService
      * @param levelController
      */
     public TaxonomyTreeController(
+            LoggingProfiler lp,
             Taxonomy selectedTaxonomy,
             TaxonomyService taxonomyService,
             TaxonomyLevelController levelController) {
+        this.loggingProfiler = lp;
         this.idOfSelectedTaxonomy = selectedTaxonomy.getId();
         this.taxonomyService = taxonomyService;
         this.levelController = levelController;
@@ -144,9 +149,9 @@ public class TaxonomyTreeController implements Serializable {
             return new ArrayList<>();
         }
         List<TreeNode> children = new ArrayList<>();
-        for (TreeNode n : tn.getChildren()) {
-            children.addAll(getAllChildren(n));
-            children.add(n);
+        for (Object n : tn.getChildren()) {
+            children.addAll(getAllChildren((TreeNode) n));
+            children.add((TreeNode) n);
         }
         return children;
     }
@@ -187,7 +192,7 @@ public class TaxonomyTreeController implements Serializable {
         selectedTaxonomy = null;
         taxonomyTree = null;
         reloadTreeNode();
-        setSelectedTaxonomy(taxonomyTree.getChildren().get(0));
+        setSelectedTaxonomy((TreeNode) taxonomyTree.getChildren().get(0));
     }
 
     /**
@@ -198,7 +203,7 @@ public class TaxonomyTreeController implements Serializable {
      * @return
      */
     private boolean isTaxonomyInHierarchy(int id, Taxonomy taxo) {
-        for (Taxonomy t : taxo.getTaxHierachy()) {
+        for (Taxonomy t : taxo.getTaxHierarchy()) {
             if (t.getId() == id) {
                 return false;
             }
@@ -212,50 +217,72 @@ public class TaxonomyTreeController implements Serializable {
      */
     public final void reloadTreeNode() {
         try {
+            loggingProfiler.profilerStart("TaxonomyBean.treeController.shownTaxonomies");
+
             shownTaxonomies = loadShownTaxos();
+            loggingProfiler.profilerStop("TaxonomyBean.treeController.shownTaxonomies");
+
+            loggingProfiler.profilerStart("TaxonomyBean.treeController.reorganizeTaxonomyTree");
+
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("reloadTreeNode() caught an exception:", (Throwable) e);
+        } finally {
+
+            loggingProfiler.profilerStop("TaxonomyBean.treeController.reorganizeTaxonomyTree");
         }
     }
 
     /**
-     * Loads  taxonomies from the database and selects a taxonomy if there is
-     * one and expands all taxonomies which were expanded before. 
+     * Loads taxonomies from the database and selects a taxonomy if there is one
+     * and expands all taxonomies which were expanded before.
+     *
      * @param t
      */
     public final void reloadTreeNode(Taxonomy t) {
         try {
             shownTaxonomies = loadShownTaxos();
             addAbsentTaxo(t);
-            for(Taxonomy ht:t.getTaxHierachy()){
-                List<Taxonomy> childrenOfHierEntry=taxonomyService.loadDirectChildrenOf(ht.getId());
-                List<Taxonomy> grandChildrenOfHierEntry=new ArrayList<>();
-                for(Taxonomy ce:childrenOfHierEntry){
+            for (Taxonomy ht : t.getTaxHierarchy()) {
+                List<Taxonomy> childrenOfHierEntry = taxonomyService.loadDirectChildrenOf(ht.getId());
+                List<Taxonomy> grandChildrenOfHierEntry = new ArrayList<>();
+                for (Taxonomy ce : childrenOfHierEntry) {
                     grandChildrenOfHierEntry.addAll(taxonomyService.loadDirectChildrenOf(ce.getId()));
                 }
                 addAbsentTaxos(childrenOfHierEntry);
                 addAbsentTaxos(grandChildrenOfHierEntry);
             }
-            addAbsentTaxos(t.getTaxHierachy());
+            addAbsentTaxos(t.getTaxHierarchy());
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("reloadTreeNode() caught an exception:", (Throwable) e);
         }
     }
 
     public void reorganizeTaxonomyTree() {
+        loggingProfiler.profilerStart("ReorganizeTaxonomyTree.saveExpanded...");
         saveExpandedAndSelectedTreeNodes();
+        loggingProfiler.profilerStop("ReorganizeTaxonomyTree.saveExpanded...");
+
+        loggingProfiler.profilerStart("ReorganizeTaxonomyTree.createNewTaxonomy");
         Taxonomy rootTaxo = createNewTaxonomy();
+        loggingProfiler.profilerStop("ReorganizeTaxonomyTree.createNewTaxonomy");
+
         rootTaxo.setLevel(levelController.getRootLevel());
+
         taxonomyTree = new DefaultTreeNode(rootTaxo, null);
+
+        loggingProfiler.profilerStart("ReorganizeTaxonomyTree.reorderTaxonomies");
         reorderTaxonomies();
+        loggingProfiler.profilerStop("ReorganizeTaxonomyTree.reorderTaxonomies");
+
+        loggingProfiler.profilerStart("ReorganizeTaxonomyTree.shownTaxonomies");
         for (Taxonomy t : shownTaxonomies) {
             TreeNode newNode = null;
-            if (!t.getTaxHierachy().isEmpty()) {
-                TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
+            if (!t.getTaxHierarchy().isEmpty()) {
+                TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierarchy().get(0).getId());
                 newNode = new DefaultTreeNode(t, parent);
             } else {
                 newNode = new DefaultTreeNode(t, taxonomyTree);
@@ -264,7 +291,11 @@ public class TaxonomyTreeController implements Serializable {
                 selectedTaxonomy = newNode;
             }
         }
+        loggingProfiler.profilerStop("ReorganizeTaxonomyTree.shownTaxonomies");
+
+        loggingProfiler.profilerStart("ReorganizeTaxonomyTree.expandTree");
         expandTree();
+        loggingProfiler.profilerStop("ReorganizeTaxonomyTree.expandTree");
     }
 
     /**
@@ -277,17 +308,38 @@ public class TaxonomyTreeController implements Serializable {
     }
 
     private List<Taxonomy> loadShownTaxos() {
+        loggingProfiler.profilerStart("====loadShownTaxos");
+
         if (selectedTaxonomy == null) {
             shownTaxonomies = new ArrayList<>();
             shownTaxonomies.add(taxonomyService.loadRootTaxonomy());
         }
+        loggingProfiler.profilerStop("====loadShownTaxos");
+
+        loggingProfiler.profilerStart("====loadDirectChildrenOf");
+
         List<Taxonomy> children = taxonomyService.loadDirectChildrenOf(shownTaxonomies.get(0).getId());
+
+        loggingProfiler.profilerStop("====loadDirectChildrenOf");
+
+        loggingProfiler.profilerStart("====grandChildren");
+
         List<Taxonomy> grandChildren = new ArrayList<>();
         for (Taxonomy child : children) {
             grandChildren.addAll(taxonomyService.loadDirectChildrenOf(child.getId()));
         }
+        loggingProfiler.profilerStop("====grandChildren");
+
+        loggingProfiler.profilerStart("==== addAbsentTaxos(children);");
+
         addAbsentTaxos(children);
+        loggingProfiler.profilerStop("==== addAbsentTaxos(children);");
+
+        loggingProfiler.profilerStart("====addAbsentTaxos(grandChildren);");
+
         addAbsentTaxos(grandChildren);
+        loggingProfiler.profilerStop("====addAbsentTaxos(grandChildren);");
+
         return shownTaxonomies;
     }
 
@@ -346,6 +398,9 @@ public class TaxonomyTreeController implements Serializable {
     }
 
     public void initSelectionAndExpanseState() {
+        if (selectedTaxonomy == null) {
+            return;
+        }
         idOfSelectedTaxonomy = ((Taxonomy) selectedTaxonomy.getData()).getId();
         expandedTreeNodes = getAllParents(selectedTaxonomy);
         expandTree();

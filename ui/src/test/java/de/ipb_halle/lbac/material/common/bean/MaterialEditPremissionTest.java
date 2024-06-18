@@ -35,7 +35,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -69,17 +69,17 @@ public class MaterialEditPremissionTest extends TestBase {
     @Inject
     private HazardService hazardService;
     private MaterialEditPermission permissionBean;
-    private MateriaBeanMock materialBean;
+    private MaterialBeanMock materialBean;
     private UserBeanMock userBean;
 
     @BeforeEach
     public void init() {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        materialBean = new MateriaBeanMock();
+        materialBean = new MaterialBeanMock(loggingProfiler);
         materialBean.setAcListService(aclistService);
         materialBean.setHazardService(hazardService);
-        materialBean.setMessagePresenter(MessagePresenterMock.getInstance());
+        materialBean.setMessagePresenter(getMessagePresenterMock());
         permissionBean = new MaterialEditPermission(materialBean);
         materialBean.setMode(MaterialBean.Mode.CREATE);
         userBean = new UserBeanMock();
@@ -229,7 +229,7 @@ public class MaterialEditPremissionTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
-                = prepareDeployment("MaterialOverviewBeanTest.war")
+                = prepareDeployment("MaterialEditPremissionTest.war")
                         .addClass(IndexService.class);
         deployment = UserBeanDeployment.add(deployment);
         deployment = ItemDeployment.add(deployment);

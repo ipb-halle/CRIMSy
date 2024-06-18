@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.service.InfoObjectService;
 
@@ -29,10 +28,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -59,7 +58,8 @@ public class SystemSettings implements Serializable {
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
 
-    protected MessagePresenter messagePresenter;
+//  @Inject
+//  protected MessagePresenter messagePresenter;
     private String customDsgvoText = "";
 
     public SystemSettings() {
@@ -80,7 +80,6 @@ public class SystemSettings implements Serializable {
         if (ie != null) {
             customDsgvoText = ie.getValue();
         }
-        messagePresenter = JsfMessagePresenter.getInstance();
     }
 
     /**
@@ -159,7 +158,7 @@ public class SystemSettings implements Serializable {
         io.setOwner(this.globalAdmissionContext.getAdminAccount());
         io.setACList(this.globalAdmissionContext.getAdminOnlyACL());
         infoObjectService.save(io);
-        messagePresenter.info("SETTINGS_SAVED");
+//      messagePresenter.info("SETTINGS_SAVED");
     }
 
     public void setCustomDsgvoString(String text) {

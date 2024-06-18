@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.items.Article;
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 /**
  *

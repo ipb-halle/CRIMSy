@@ -1,72 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-    <composite:interface>
-        <composite:attribute
+<composite:interface>
+    <composite:attribute
             name="containerInfoPresenter"
-            required="true" />
-    </composite:interface>
+            required="true"/>
+</composite:interface>
 
-    <composite:implementation>
-        <b:row>
-            <b:column span="1">
-                <h:outputText value="#{msgs.itemEdit_containerPanel_container_name}" />
-            </b:column>
-            <b:column span="2">
-                <h:outputText value="#{cc.attrs.containerInfoPresenter.containerName}" /> 
-            </b:column>
-        </b:row>
-        <b:row>
-            <b:column span="1">
-                <h:outputText value="#{msgs.itemEdit_containerPanel_container_type}" />
-            </b:column>
-            <b:column span="2">
-                <h:outputText value="#{cc.attrs.containerInfoPresenter.containerType}" /> 
-            </b:column>
-        </b:row>
-        <b:row>
-            <b:column span="1">
-                <h:outputText value="#{msgs.itemEdit_containerPanel_container_project}" />
-            </b:column>
-            <b:column span="2">
-                <h:outputText value="#{cc.attrs.containerInfoPresenter.containerProject}" /> 
-            </b:column>
-        </b:row>
-        <b:row>
-            <b:column span="1">
-                <h:outputText value="#{msgs.itemEdit_containerPanel_container_location}" />
-            </b:column>
-            <b:column span="2">
+<composite:implementation>
+
+    <!--Container-->
+    <!--=========================================================================================-->
+    <p:row>
+        <div style="display: flex; flex-direction: row; ">
+            <p:outputPanel style="margin-right: 0.5rem;">
+                <strong>
+                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_name}: "/>
+                </strong>
+            </p:outputPanel>
+
+            <p:outputPanel>
+                <h:outputText value="#{cc.attrs.containerInfoPresenter.containerName}"/>
+            </p:outputPanel>
+        </div>
+    </p:row>
+
+    <!--Type-->
+    <!--=========================================================================================-->
+    <p:row>
+        <div style="display: flex; flex-direction: row; ">
+            <p:outputPanel style="margin-right: 2.7rem;">
+                <strong>
+                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_type}:"/>
+                </strong>
+            </p:outputPanel>
+
+            <p:outputPanel>
+                <h:outputText value="#{cc.attrs.containerInfoPresenter.containerType}"/>
+            </p:outputPanel>
+        </div>
+    </p:row>
+
+    <!--Project-->
+    <!--=========================================================================================-->
+    <p:row>
+        <div style="display: flex; flex-direction: row; ">
+            <p:outputPanel style="margin-right: 1.6rem;">
+                <strong>
+                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_project}:"/>
+                </strong>
+            </p:outputPanel>
+
+            <p:outputPanel>
+                <h:outputText value="#{cc.attrs.containerInfoPresenter.containerProject}"/>
+            </p:outputPanel>
+        </div>
+    </p:row>
+
+    <!--Location-->
+    <!--=========================================================================================-->
+    <p:row>
+        <div style="display: flex; flex-direction: row; ">
+            <p:outputPanel style="margin-right: 0.5rem;">
+                <strong>
+                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_location}:"/>
+                </strong>
+            </p:outputPanel>
+
+            <p:outputPanel style="margin-right: 0.5rem;">
                 <h:outputText
-                    value="#{cc.attrs.containerInfoPresenter.containerLocation}"
-                    escape="false">
-                    <f:converter converterId="RichTextConverter" />
+                        value="#{cc.attrs.containerInfoPresenter.containerLocation}"
+                        escape="false">
+                    <f:converter converterId="RichTextConverter"/>
                 </h:outputText>
-            </b:column>
-        </b:row>
-    </composite:implementation>
+            </p:outputPanel>
+        </div>
+    </p:row>
+
+</composite:implementation>
+
 </html>

@@ -36,10 +36,10 @@ import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
 import de.ipb_halle.lbac.globals.ACObjectController;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,11 +50,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -102,6 +102,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     @Inject
     protected ProjectService projectService;
 
+    @Inject
+    protected LoggingProfiler loggingProfiler;
+
     private Experiment experiment;
 
     private List<ExpRecord> expRecords;
@@ -119,7 +122,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ExpProjectController projectController;
-    protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+
+    @Inject
+    protected MessagePresenter messagePresenter;
     private List<Experiment> experiments = new ArrayList<>();
     private List<Experiment> templates = new ArrayList<>();
     private CreationState creationState = CreationState.CREATE;
@@ -142,6 +147,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public ExperimentBean() {
     }
 
+    //Test Contructor
     public ExperimentBean(
             ItemAgent itemAgent,
             MaterialAgent materialAgent,
@@ -149,7 +155,13 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             ProjectService projectService,
             ExperimentService experimentService,
             MessagePresenter messagePresenter,
-            ExpRecordService expRecordService) {
+            ExpRecordService expRecordService
+    ) {
+        if (loggingProfiler == null) {
+            loggingProfiler = new LoggingProfiler();
+        }
+        loggingProfiler.profilerStart("ExperimentBean Contructor");
+
         this.itemAgent = itemAgent;
         this.materialAgent = materialAgent;
         this.globalAdmissionContext = globalAdmissionContext;
@@ -157,19 +169,31 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.experimentService = experimentService;
         this.messagePresenter = messagePresenter;
         this.expRecordService = expRecordService;
+
+        loggingProfiler.profilerStop("ExperimentBean Contructor");
+
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
+        loggingProfiler.profilerStart("ExperimentBean.setCurrentAccount");
+
         currentUser = evt.getCurrentAccount();
         templates = loadExperiments(true);
         experiments = loadExperiments(false);
         cleanup();
         initEmptyExperiment();
+        loggingProfiler.profilerStop("ExperimentBean.setCurrentAccount");
+
     }
 
     @PostConstruct
     public void init() {
+        loggingProfiler.profilerStart("ExperimentBean Postcontructor");
+
         experimentBeanInit();
+
+        loggingProfiler.profilerStop("ExperimentBean Postcontructor");
+
     }
 
     protected void experimentBeanInit() {
@@ -876,11 +900,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * experiment record "save" commandButton before executing its AJAX call.
      * This includes the onclick code specified via the specific experiment
      * record controller's {@link ExpRecordController#getSaveButtonOnClick()}
-     * method plus an AJAX call to {@link #actionDoNothing()} using the <a href=
-     * "https://showcase.bootsfaces.net/forms/ajax.jsf#basic_usage">BootsFaces-specific
-     * prefixes</a>. The default onclick action of &lt;b:commandButton&gt; (AJAX
-     * call) is suppressed by a terminating JavaScript 'return false'. The
-     * actionListener and action of the commandButton are called afterwards.
+     * method. The call to actionDoNothing() in former releases is now skipped!
+     * The actionListener and action of the commandButton are called afterwards.
      *
      * @return JavaScript code to be executed
      */
@@ -894,9 +915,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 sb.append(";");
             }
         }
-        sb.append("ajax:experimentBean.actionDoNothing();javascript:return false;");
+        sb.append("PrimeFaces.oncomplete=function(xhr, status, args) { experimentBean.actionDoNothing(); return false; };");
 
         return sb.toString();
+
     }
 
     public void setSearchTerm(String searchTerm) {
@@ -934,4 +956,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public void setExperimentCodeSuffix(String suffix) {
         experimentCode.setSuffix(suffix);
     }
+
+    public ExperimentBean setLoggingProfiler(LoggingProfiler loggingProfiler) {
+        this.loggingProfiler = loggingProfiler;
+        return this;
+    }
+
 }

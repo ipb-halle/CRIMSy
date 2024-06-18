@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.material.sequence.search.service;
 
 import java.util.function.Function;
 
-import javax.ejb.Singleton;
+import jakarta.ejb.Singleton;
 
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;

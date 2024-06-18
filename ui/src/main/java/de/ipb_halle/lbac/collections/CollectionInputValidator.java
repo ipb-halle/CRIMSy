@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.i18n.UIMessage;
+
 import java.io.Serializable;
 
 import java.util.HashMap;
@@ -26,17 +27,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
-import javax.inject.Inject;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
+import jakarta.inject.Inject;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("CollectionInputValidator")
-public class CollectionInputValidator implements Validator,Serializable{
+public class CollectionInputValidator implements Validator, Serializable {
 
     @Inject
     private CollectionService collectionService;
@@ -48,9 +50,9 @@ public class CollectionInputValidator implements Validator,Serializable{
 
     //***  todo: configsets
 
-    private Pattern                     pattern;
-    private Matcher                     matcher;
-    private transient Logger            logger;
+    private Pattern pattern;
+    private Matcher matcher;
+    private transient Logger logger;
 
     /**
      * default constructor
@@ -61,9 +63,9 @@ public class CollectionInputValidator implements Validator,Serializable{
     }
 
     /**
-     * Validate a collection name. A valid collection name must only contain 
+     * Validate a collection name. A valid collection name must only contain
      * characters A-Za-z, digits and underscore. It must not be equal to a
-     * reserved name (currently 'configsets'). It must be unique to the local 
+     * reserved name (currently 'configsets'). It must be unique to the local
      * node. NOTE: This method will only validate fields with name 'name'.
      */
     @Override
@@ -76,20 +78,20 @@ public class CollectionInputValidator implements Validator,Serializable{
             matcher = pattern.matcher(tmpValue.toString());
             if (!matcher.matches()) {
                 throw new ValidatorException(
-                  UIMessage.getErrorMessage(MESSAGE_BUNDLE, "collection_validation_invalid_char", null));
+                        UIMessage.getErrorMessage(MESSAGE_BUNDLE, "collection_validation_invalid_char", null));
             }
 
             // check for reserved words
-            for (String name: RESERVED_NAMES){
-                if ( tmpValue.toString().equalsIgnoreCase(name)){
+            for (String name : RESERVED_NAMES) {
+                if (tmpValue.toString().equalsIgnoreCase(name)) {
                     throw new ValidatorException(
-                      UIMessage.getErrorMessage(MESSAGE_BUNDLE, "collection_validation_reserved", null));
+                            UIMessage.getErrorMessage(MESSAGE_BUNDLE, "collection_validation_reserved", null));
                 }
             }
 
             // check for uniqueness
             List<Collection> collections = null;
-            try { 
+            try {
                 Map<String, Object> cmap = new HashMap<String, Object>();
                 cmap.put("name", tmpValue.toString());
                 cmap.put("local", true);
@@ -97,11 +99,11 @@ public class CollectionInputValidator implements Validator,Serializable{
             } catch (Exception e) {
                 this.logger.warn("validate() caught an exception: ", (Throwable) e);
                 throw new ValidatorException(
-                  UIMessage.getErrorMessage(MESSAGE_BUNDLE, "INTERNAL_ERROR", null)); 
+                        UIMessage.getErrorMessage(MESSAGE_BUNDLE, "INTERNAL_ERROR", null));
             }
-            if (! collections.isEmpty()) {
+            if (!collections.isEmpty()) {
                 throw new ValidatorException(
-                  UIMessage.getErrorMessage(MESSAGE_BUNDLE, "collection_validation_non_unique", null));
+                        UIMessage.getErrorMessage(MESSAGE_BUNDLE, "collection_validation_non_unique", null));
             }
 
         }

@@ -27,15 +27,16 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
-import de.ipb_halle.lbac.file.mock.UploadToColMock;
+import de.ipb_halle.lbac.file.mock.FileServiceMock;
 import de.ipb_halle.lbac.service.NodeService;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.openejb.loader.Files;
 
 /**
@@ -71,8 +72,8 @@ public class DocumentCreator {
         setupStemmedWordsMap();
     }
 
-    public Collection uploadDocuments(User user, String collectionName, String... files) throws FileNotFoundException, InterruptedException {
-        Files.delete(Paths.get("target/test-classes/collections").toFile());
+    public Collection uploadDocuments(User user, String collectionName, String... files) throws Exception {
+        FileUtils.deleteDirectory(Paths.get(FileServiceMock.COLLECTIONS_MOCK_FOLDER).toFile());
         this.user = user;
         createAndSaveNewCol(collectionName);
         for (String file : files) {
@@ -85,13 +86,11 @@ public class DocumentCreator {
         collection = new Collection();
         collection.setACList(GlobalAdmissionContext.getPublicReadACL());
         collection.setDescription("xxx");
-        collection.setIndexPath("/");
         collection.setName(colName);
         collection.setNode(nodeService.getLocalNode());
         collection.setOwner(user);
-        collection.setStoragePath("/");
+        collection.setStoragePath("target/test-classes/collections/" + colName);
         collection = collectionService.save(collection);
-        collection.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
     }
 
     private void setupDocument(String name) {

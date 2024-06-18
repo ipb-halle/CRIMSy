@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.material.common;
 
 import de.ipb_halle.lbac.material.Material;
 import java.io.Serializable;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *

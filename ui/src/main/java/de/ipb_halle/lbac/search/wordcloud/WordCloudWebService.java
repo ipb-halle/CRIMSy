@@ -30,16 +30,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * REST endpoint for WordCloud Documents.
@@ -83,7 +83,7 @@ public class WordCloudWebService extends LbacWebService {
         try {
             checkAuthenticityOfRequest(request);
         } catch (NotAuthentificatedException e) {
-            request.setStatusCode("403:webrequest not authetificated." + e.getMessage());
+            request.setStatusCode("403:webrequest not authenticated." + e.getMessage());
             return request;
         }
         try {
@@ -97,7 +97,7 @@ public class WordCloudWebService extends LbacWebService {
                     docSeachState,
                     collections,
                     searchService.getTagStringForSeachRequest(request.getTerms()),
-                    Integer.MAX_VALUE, 0, searchService.getUriOfPublicCollection());
+                    Integer.MAX_VALUE, 0);
             
             for (Document d : docSeachState.getFoundDocuments()) {
                 d.setTermFreqList(
@@ -118,7 +118,7 @@ public class WordCloudWebService extends LbacWebService {
             }
 
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("getDocumentsWithTermVector() caught an exception:", (Throwable) e);
         }
         return request;
 

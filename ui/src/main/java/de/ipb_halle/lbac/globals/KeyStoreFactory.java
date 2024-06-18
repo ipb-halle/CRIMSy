@@ -24,9 +24,9 @@ import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.ejb.Stateless;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import jakarta.ejb.Stateless;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -35,9 +35,8 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 @Stateless
 public class KeyStoreFactory {
 
-    // xxxxx LBAC_PROPERTIES_PATH
-    // xxxxx this definition should move to some global location
-    // xxxxx or should be replaced by a more general approach.
+    // ToDo: xxxxx definition of LBAC_PROPERTIES_PATH should move to other location
+    // e.g. some global location or should be replaced by a more general approach.
     protected static String LBAC_PROPERTIES_PATH = "/data/conf/lbac_properties.xml";
 
     private Map<String, KeyStore> keyStore;
@@ -71,7 +70,7 @@ public class KeyStoreFactory {
             this.SSL_PROTOCOL =  prop.getProperty("SecureWebClient.SSL_PROTOCOL");
 
         } catch(Exception e) {
-            logger.error("Could not initialise KeyStoreFactory"+ ExceptionUtils.getStackTrace(e));
+            logger.error("Could not initialise KeyStoreFactory:", (Throwable) e);
         }
         return this;
     }
@@ -98,7 +97,7 @@ public class KeyStoreFactory {
             this.trustStore.put(cloudName, ts);
 
         } catch (Exception e) {
-            logger.error("Could not load keystores"+ ExceptionUtils.getStackTrace(e));
+            logger.error("Could not load keystores:", (Throwable) e);
         }
 
     }

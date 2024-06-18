@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.composition;
 
 import java.io.Serializable;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  *

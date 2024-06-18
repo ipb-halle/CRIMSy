@@ -1,312 +1,410 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  
+
   Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 -->
+<!-- ToDo: collection management form needs some additional polishing (layout, button functions) -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
 
-    <h:body>
-        <ui:composition>
-            <crimsy:acobjectModal
+<h:body>
+    <ui:composition>
+        <crimsy:acobjectModal
                 acobjectController="#{collectionBean.getAcObjectController()}"
                 groupsAgent="#{groupAgent}"
-                updateTargetClass="collectionList"
-                />
-            <h2>
-                <h:outputText value="#{msgs.collMgr_header}" />
-            </h2>
-            <p:dialog
+                updateTargetClass="collectionList"/>
+
+        <h2>
+
+            <h:outputText value="#{msgs.collMgr_header}"/>
+        </h2>
+
+        <p:dialog
                 id="modalCollection"
                 widgetVar="collectionDialogWidgetVar"
-                header="#{collectionBean.modalDialogTitle}" 
+                header="#{collectionBean.modalDialogTitle}"
                 modal="true"
                 resizable="false"
                 positionType="absolute"
                 width="600">
-                <!-- Note on style="z-index: auto;" for the b:inputTexts:
-                     Putting an icon via the facet "prepend" or "append" in
-                     conjunction with p:dialog's modal="true" leads to an 
-                     unresponsive input field (not clickable, no keyboard inputs). -->
-                <b:form id="frmModalCollection">
-                    <b:inputText id="ID" value="#{collectionBean.activeCollection.id}"
-                                 label="ID"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'UPDATE'}"
-                                 disabled="true"
-                                 placeholder=""
-                                 required="false">
-                        <f:facet name="prepend">
-                            <b:icon name="cloud"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="name" value="#{collectionBean.activeCollection.name}"
-                                 label="#{msgs.collMgr_modal_name_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="true"
-                                 disabled="#{collectionBean.editMode != 'CREATE'}"
-                                 placeholder="#{msgs.collMgr_modal_name_placeholder}"
-                                 required="#{collectionBean.editMode == 'CREATE'}">
-                        <f:validator validatorId="CollectionInputValidator"/>
-                        <f:facet name="prepend">
-                            <b:iconAwesome name="files-o"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
 
-                    <b:inputText id="description" 
-                                 value="#{collectionBean.activeCollection.description}"
-                                 label="#{msgs.collMgr_modal_description_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="true"
-                                 disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR'}"
-                                 placeholder="#{msgs.collMgr_modal_description_placeholder}"
-                                 required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }">
-                        <f:facet name="prepend">
-                            <b:iconAwesome name="fa-tag"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
+            <!-- Note on style="z-index: auto;" for the b:inputTexts:
+                 Putting an icon via the facet "prepend" or "append" in
+                 conjunction with p:dialog's modal="true" leads to an
+                 unresponsive input field (not clickable, no keyboard inputs). -->
+            <h:form id="frmModalCollection" style="border:1px solid #029ACF;border-radius:6px;">
+                <p:panel header="#{collectionBean.modalDialogTitle}"
+                         collapsed="false"
+                         styleClass="panelTitleInfoColor">
+                    <!--===============================================================================================================-->
+                    <p:outputLabel for="ID" value="ID" styleClass="ui-outputlabel-right"
+                                   rendered="#{collectionBean.editMode != 'UPDATE'}"/>
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="ID"
+                                         value="#{collectionBean.activeCollection.id}"
+                                         label="ID"
+                                         style="z-index: auto;width:100%;"
+                                         rendered="#{collectionBean.editMode != 'UPDATE'}"
+                                         disabled="true"
+                                         placeholder=""
+                                         required="false"/>
+                            <p:panel class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'UPDATE'}">
+                                <i class="pi pi-cloud"></i>
+                            </p:panel>
+                        </div>
+                    </div>
 
-                    <b:inputText id="indexpath" 
-                                 value="#{collectionBean.activeCollection.indexPath}"
-                                 label="#{msgs.collMgr_modal_indexpath_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'CREATE'}"
-                                 disabled="true">
-                        <f:facet name="prepend">
-                            <b:iconAwesome name="fa-list"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="storagepath"
-                                 value="#{collectionBean.activeCollection.storagePath}"
-                                 label="#{msgs.collMgr_modal_filepath_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode != 'CREATE'}"
-                                 disabled="true">
-                        <f:facet name="prepend">
-                            <b:iconAwesome name="fa-folder-open"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:inputText id="institut" value="#{collectionBean.activeCollection.node.institution}"
-                                 label="#{msgs.collMgr_modal_institute_label}"
-                                 style="z-index: auto;"
-                                 renderLabel="true"
-                                 rendered="#{collectionBean.editMode == 'DELETE'}"
-                                 required="false"
-                                 disabled="true">
-                        <f:facet name="prepend">
-                            <b:iconAwesome name="building"/>
-                        </f:facet>
-                    </b:inputText>
-                    <b:message for="@previous"/>
-                    <b:fetchBeanInfos/>
-                    <b:row styleClass="modal-footer">
-                        <b:button value="#{msgs.collMgr_modal_cancel}" onclick="PF('collectionDialogWidgetVar').hide()"/>
-                        <b:commandButton value="#{msgs.collMgr_modal_button_apply}"
+                    <p:message for="@previous"/>
+                    <br/>
+
+                    <!--===============================================================================================================-->
+
+                    <p:outputLabel for="name" value="#{msgs.collMgr_modal_name_label}"
+                                   styleClass="ui-outputlabel-right"/>
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="name"
+                                         value="#{collectionBean.activeCollection.name}"
+                                         label="#{msgs.collMgr_modal_name_label}"
+                                         style="z-index: auto;width:100%;"
+                                         rendered="true"
+                                         disabled="#{collectionBean.editMode != 'CREATE'}"
+                                         placeholder="#{msgs.collMgr_modal_name_placeholder}"
+                                         required="#{collectionBean.editMode == 'CREATE'}">
+                                <f:validator validatorId="CollectionInputValidator"/>
+                            </p:inputText>
+                            <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
+                        </div>
+                    </div>
+
+                    <p:message for="@previous"/>
+                    <br/>
+
+                    <!--===============================================================================================================-->
+
+                    <p:outputLabel for="description" value="#{msgs.collMgr_modal_description_label}"
+                                   styleClass="ui-outputlabel-right"/>
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="description"
+                                         value="#{collectionBean.activeCollection.description}"
+                                         label="#{msgs.collMgr_modal_description_label}"
+                                         style="z-index: auto;width:100%;"
+                                         rendered="true"
+                                         disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR'}"
+                                         placeholder="#{msgs.collMgr_modal_description_placeholder}"
+                                         required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }"/>
+
+                            <div class="ui-inputgroup-addon"><i class="pi pi-tag"></i></div>
+                        </div>
+                    </div>
+                    <p:message for="@previous"/>
+                    <br/>
+
+                    <!--===============================================================================================================-->
+                    <h:panelGroup rendered="#{collectionBean.editMode != 'CREATE'}">
+                        <p:outputLabel for="storagepath" value="#{msgs.collMgr_modal_storagepath_label}"
+                                       styleClass="ui-outputlabel-right"
+                                       rendered="#{collectionBean.editMode != 'CREATE'}"/>
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <p:inputText id="storagepath"
+                                             value="#{collectionBean.activeCollection.storagePath}"
+                                             label="#{msgs.collMgr_modal_storagepath_label}"
+                                             style="z-index: auto;width:100%"
+                                             rendered="#{collectionBean.editMode != 'CREATE'}"
+                                             disabled="true"/>
+                                <div class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'CREATE'}"><i
+                                        class="pi pi-list"></i></div>
+                            </div>
+                        </div>
+                        <p:message for="@previous"/>
+                        <br/>
+
+                        <!--===============================================================================================================-->
+
+                        <p:outputLabel for="storagepath2" value="#{msgs.collMgr_modal_filepath_label}"
+                                       styleClass="ui-outputlabel-right"
+                                       rendered="#{collectionBean.editMode != 'CREATE'}"/>
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <p:inputText id="storagepath2"
+                                             value="#{collectionBean.activeCollection.storagePath}"
+                                             label="#{msgs.collMgr_modal_filepath_label}"
+                                             style="z-index: auto;width:100%;"
+                                             rendered="#{collectionBean.editMode != 'CREATE'}"
+                                             disabled="true"/>
+
+                                <div class="ui-inputgroup-addon" rendered="#{collectionBean.editMode != 'CREATE'}"><i
+                                        class="pi pi-folder-open"></i></div>
+                            </div>
+                        </div>
+                        <p:message for="@previous"/>
+                        <br/>
+                    </h:panelGroup>
+                    <!--===============================================================================================================-->
+                    <h:panelGroup rendered="#{collectionBean.editMode == 'DELETE'}">
+                        <p:outputLabel for="institut" value="#{msgs.collMgr_modal_institute_label}"
+                                       styleClass="ui-outputlabel-right"/>
+                        <div class="col-12 md:col-4">
+                            <div class="ui-inputgroup">
+                                <p:inputText id="institut" value="#{collectionBean.activeCollection.node.institution}"
+                                             label="#{msgs.collMgr_modal_institute_label}"
+                                             style="z-index: auto;width:100%;"
+                                             required="false"
+                                             disabled="true"/>
+                                <div class="ui-inputgroup-addon"><i class="pi pi-building"></i></div>
+                            </div>
+                        </div>
+                        <p:message for="@previous"/>
+                        <br/>
+                    </h:panelGroup>
+                    <!--===============================================================================================================-->
+                    <p:row styleClass="modal-footer">
+                        <p:button value="#{msgs.collMgr_modal_cancel}"
+                                  styleClass="ui-button-secondary"
+                                  onclick="PF('collectionDialogWidgetVar').hide()"/>
+                        <p:commandButton value="#{msgs.collMgr_modal_button_apply}"
                                          rendered="#{collectionBean.getEditMode() == 'CREATE'}"
                                          update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
-                                         onclick="ajax:collectionBean.actionCreate();"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                        <b:commandButton value="#{msgs.collMgr_modal_button_edit}"
+                                         style="margin:0 0.5rem;"
+                                         styleClass="ui-button-danger"
+                                         action="#{collectionBean.actionCreate()}"
+                                         oncomplete="if(!args.validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                        <!--onclick="ajax:collectionBean.actionCreate();"-->
+
+                        <p:commandButton value="#{msgs.collMgr_modal_button_edit}"
                                          rendered="#{collectionBean.getEditMode() == 'UPDATE'}"
                                          update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
-                                         onclick="ajax:collectionBean.actionUpdate();"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                        <b:commandButton value="#{msgs.collMgr_modal_button_deletedocuments}"
+                                         style="margin:0 0.5rem;"
+                                         styleClass="ui-button-success"
+                                         action="#{collectionBean.actionUpdate()}"
+                                         oncomplete="if(!args.validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                        <!--onclick="ajax:collectionBean.actionUpdate();"-->
+
+                        <p:commandButton value="#{msgs.collMgr_modal_button_deletedocuments}"
+                                         update="growlMsg @form frmCollectionList:collectionList"
                                          rendered="#{collectionBean.getEditMode() == 'CLEAR'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
-                                         onclick="ajax:collectionBean.actionClear();"
-                                         oncomplete="if(!validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"
-                                         look="primary"/>
-                        <b:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
+                                         styleClass="ui-button-danger"
+                                         style="margin: 0 0.5rem;"
+                                         action="#{collectionBean.actionClear()}"
+                                         oncomplete="if(!args.validationFailed){PF('collectionDialogWidgetVar').hide()};return false;"/>
+                        <!--onclick="ajax:collectionBean.actionClear();"-->
+
+                        <p:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
+                                         update="growlMsg @form frmCollectionList:collectionList"
                                          rendered="#{collectionBean.getEditMode() == 'DELETE'}"
-                                         update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
-                                         onclick="ajax:collectionBean.actionDelete();"
-                                         oncomplete="PF('collectionDialogWidgetVar').hide();" 
-                                         look="primary"/>
-                    </b:row>
-                </b:form>
-            </p:dialog>
+                                         styleClass="ui-button-danger"
+                                         style="margin:0 0.5rem;"
+                                         action="#{collectionBean.actionDelete()}"
+                                         oncomplete="PF('collectionDialogWidgetVar').hide();"/>
+                        <!--onclick="ajax:collectionBean.actionDelete();"-->
+                    </p:row>
+                </p:panel>
+            </h:form>
+        </p:dialog>
 
-            <b:form id="frmCollectionList">
-                <b:poll id="searchPoll"
-                        class="searchPollClass"
-                        interval="#{collectionBean.getPollIntervall()}" 
-                        update="frmCollectionList:collectionList:collectionRefreshButton searchPoll"/>
+        <!--===============================================================================================================-->
+        <h:form id="frmCollectionList" style="border:1px solid #029ACF;border-radius:3px;">
+            <p:poll id="searchPoll"
+                    process="@this"
+                    interval="#{collectionBean.getPollIntervall()}"
+                    intervalType="millisecond"
+                    update="@this frmCollectionList:collectionList:collectionRefreshButton"/>
+            <!--class="searchPollClass"-->
 
-                <b:dataTable id="collectionList"
-                             value="#{collectionBean.getLocalCollectionList()}"
-                             styleClass="collectionList"
-                             striped="true"
-                             responsive="false"
-                             customOptions="autoWidth:true"
-                             fixedHeader="true"
-                             var="collection"
-                             saveState="false">
-                    <f:facet name="header" id="facetHeader">
-                        <tr>
-                            <th colspan="7">
-                                <b:selectBooleanCheckbox
-                                    value="#{collectionBean.showLocalCollectionsOnly}"
-                                    caption="#{msgs.collMgr_datatable_localCollections}"
-                                    update="@form frmCollectionList:collectionList" />
-                                <b:commandButton
-                                    styleClass="pull-right"
+            <p:dataTable id="collectionList"
+                         value="#{collectionBean.getLocalCollectionList()}"
+                         styleClass="collectionList"
+                         resizableColumns="false"
+                         stickyHeader="true"
+                         var="collection">
+                <!--===============================================================================================================-->
+                <f:facet name="header" id="facetHeader">
+                    <p:panel>
+
+
+                        <!--===============================================================================================================-->
+                        <p:selectBooleanCheckbox
+                                value="#{collectionBean.showLocalCollectionsOnly}"
+                                itemLabel="#{msgs.collMgr_datatable_localCollections}">
+                            <p:ajax update="@form frmCollectionList:collectionList"/>
+                        </p:selectBooleanCheckbox>
+                        <!--update="@form frmCollectionList:collectionList"-->
+                        <!--===============================================================================================================-->
+                        <p:commandButton
+                                style="margin:0 2px;"
+                                icon="pi pi-plus-circle"
+                                value="#{msgs.collMgr_button_newCollection}"
+                                ajax="true"
+                                styleClass="ui-button-danger"
+                                process="@this"
+                                update="growlMsg modalCollection frmModalCollection @form"
+                                action="#{collectionBean.actionShowNewCollectionDlg()}"
+                                rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}"
+                                oncomplete="PF('collectionDialogWidgetVar').show()">
+                            <p:ajax event="click" listener="#{collectionBean.setActiveCollection(collection)}"/>
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener"/>
+                        </p:commandButton>
+
+                        <!--===============================================================================================================-->
+                        <p:badge value="#{collectionBean.getNewDocumentsToShow()}" severity="danger">
+                            <p:commandButton
+
                                     style="margin:0 2px;"
-                                    iconAwesome="fa-plus-circle"
-                                    value="#{msgs.collMgr_button_newCollection}"
-                                    look="primary"
-                                    ajax="true"
-                                    type="button"
-                                    process="@this"
-                                    update="growlMsg modalCollection frmModalCollection"
-                                    rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}" 
-                                    onclick="ajax:collectionBean.actionShowNewCollectionDlg();"
-                                    oncomplete="PF('collectionDialogWidgetVar').show()">
-                                    <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                                </b:commandButton>
-                                <b:commandButton
-                                    styleClass="refreshButtonClass pull-right"
-                                    style="margin:0 2px;"
-                                    iconAwesome="refresh"
+                                    icon="pi pi-refresh"
                                     value="#{msgs.collMgr_button_refresh}"
-                                    look="default"
                                     ajax="true"
-                                    type="button"
+                                    type="submit"
                                     process="@this"
                                     id="collectionRefreshButton"
-                                    tooltip="#{collectionBean.getToolTipForRefresh()}"
+                                    action="#{collectionBean.refreshCollectionSearch()}"
                                     update="growlMsg frmCollectionList:collectionList frmCollectionList:searchPoll"
-                                    onclick="javascript:frmCollectionListCollectionListWidget.DataTable().destroy();ajax:collectionBean.refreshCollectionSearch();">
-                                    <b:badge 
-                                        style="margin-left: 4px"
-                                        styleClass="newcollection_badge"
-                                        value="#{collectionBean.getNewDocumentsToShow()}" />
-                                </b:commandButton>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>#{msgs.collMgr_datatable_header_name}</th>
-                            <th>#{msgs.collMgr_datatable_header_descr}</th>
-                            <th>#{msgs.collMgr_datatable_header_owner}</th>
-                            <th>#{msgs.collMgr_datatable_header_numDocs}</th>
-                            <th>#{msgs.collMgr_datatable_header_location}</th>
-                            <th style="min-width:68px">#{msgs.collMgr_datatable_header_tools}</th>
-                        </tr>
-                    </f:facet>
-                    <b:dataTableColumn order="asc">
-                        <b:badge tooltip="id: #{collection.id}"
-                                 style="margin-right:4px;background-color: #4e6aca;"
-                                 value="i"/>
-                        <h:outputText value="#{collection.name}" />
-                    </b:dataTableColumn>
-                    <b:dataTableColumn value="#{collection.description}"/>
-                    <b:dataTableColumn value="#{collection.getOwner().getName()}"/>
-                    <b:dataTableColumn>
-                        <b:badge tooltip="#{msgs.collMgr_tooltip_numDocs}"
-                                 rendered="#{collection.node.local}"
-                                 style="margin-right:4px;background-color: #4e6aca;"
-                                 value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
-                        <h:outputText value="#{collection.indexPath}" />
-                    </b:dataTableColumn>
-                    <b:dataTableColumn value="#{collection.node.institution}"/>
-                    <b:dataTableColumn>
-                        <b:commandButton
+                            >
+
+                                <p:tooltip for="collectionRefreshButton"
+                                           value="#{collectionBean.getToolTipForRefresh()}" position="right"/>
+                            </p:commandButton>
+                        </p:badge>
+
+                    </p:panel>
+                </f:facet>
+                <!--===============================================================================================================-->
+                <p:column headerText="#{msgs.collMgr_datatable_header_name}"
+                          class="headerCollectionInfoFirstColumn"
+                          sortBy="#{collection.name}"
+                          filterBy="#{collection.name}"
+                          filterMatchMode="contains">
+                    <p:badge value="i" class="bdgCollectionInfo classA classB">
+                        <h:outputText value="#{collection.name}"/>
+                    </p:badge>
+                </p:column>
+
+                <!--===============================================================================================================-->
+
+                <p:column headerText="#{msgs.collMgr_datatable_header_descr}">
+                    <h:outputText value="#{collection.description}"/>
+                </p:column>
+                <!--===============================================================================================================-->
+
+                <p:column headerText="#{msgs.collMgr_datatable_header_owner}">
+                    <h:outputText value="#{collection.getOwner().getName()}"/>
+                </p:column>
+
+                <!--===============================================================================================================-->
+                <p:column headerText="#{msgs.collMgr_datatable_header_numDocs}">
+                    <p:badge
+                            rendered="#{collection.node.local}"
+                            styleClass="mr-2" size="large" severity="warning"
+                            value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
+                    <!--tooltip="#{msgs.collMgr_tooltip_numDocs}"-->
+
+                    <h:outputText value="#{collection.storagePath}"/>
+                </p:column>
+                <!--===============================================================================================================-->
+                <p:column headerText="#{msgs.collMgr_datatable_header_location}">
+                    <h:outputText value="#{collection.node.institution}"/>
+                </p:column>
+                <!--===============================================================================================================-->
+                <p:column headerText="#{msgs.collMgr_datatable_header_tools}">
+                    <p:commandButton
+                            id="successButton"
                             style="padding: 0 4px;"
-                            icon="pencil"
-                            look="link"
+                            styleClass="ui-button-success"
+                            disabled="#{!collectionBean.isEditAllowed(collection)}"
+                            icon="pi pi-pencil"
                             ajax="true"
                             process="@this"
-                            type="button"
+                            type="submit"
                             update="growlMsg modalCollection frmModalCollection"
-                            tooltip="#{msgs.collMgr_tooltip_editCollection}"
-                            disabled="#{!collectionBean.isEditAllowed(collection)}"
                             action="#{collectionBean.setEditMode('UPDATE')}"
-                            onclick="ajax:collectionBean.setActiveCollection(collection);"
                             oncomplete="PF('collectionDialogWidgetVar').show();">
-                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                        </b:commandButton>
-                        <b:commandButton
-                            style="padding: 0 4px;"
-                            iconAwesome="fa-fast-backward"
-                            look="link"
+                        <p:ajax event="click" listener="#{collectionBean.setActiveCollection(collection)}"/>
+                        <p:tooltip for="successButton" value="#{msgs.collMgr_tooltip_editCollection}" position="right"/>
+                        <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener"/>
+                    </p:commandButton>
+                    <!--===============================================================================================================-->
+                    <p:commandButton
+                            id="backwardBtn"
+                            style="padding: 0 4px; margin: 0 0.5rem;"
+                            icon="pi pi-eraser"
                             ajax="true"
                             process="@this"
                             update="growlMsg modalCollection frmModalCollection"
                             disabled="#{!collectionBean.isClearAllowed(collection)}"
-                            type="button"
-                            tooltip="#{msgs.collMgr_tooltip_clearCollection}"
-                            onclick="ajax:collectionBean.setEditMode('CLEAR');collectionBean.setActiveCollection(collection);"
-                            oncomplete="PF('collectionDialogWidgetVar').show();" />
-                        <b:commandButton
-                            style="padding: 0 4px;"
-                            icon="trash"
-                            look="link"
-                            ajax="true"
-                            process="@this"
-                            tooltip="#{msgs.collMgr_tooltip_deleteCollection}"
-                            update="growlMsg modalCollection frmModalCollection"
-                            disabled="#{!collectionBean.isDeleteAllowed(collection)}"
-                            type="button"
-                            onclick="ajax:collectionBean.setEditMode('DELETE');collectionBean.setActiveCollection(collection);"
+                            type="submit"
+                            action="#{collectionBean.setEditMode('CLEAR')}"
                             oncomplete="PF('collectionDialogWidgetVar').show();">
-                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-                        </b:commandButton>
-                        <b:commandButton
-                            style="padding: 0 4px;"
-                            icon="glyphicon glyphicon-user"
-                            look="link"
+                        <p:ajax event="click" listener="#{collectionBean.setActiveCollection(collection)}"/>
+                        <p:tooltip for="backwardBtn" value="#{msgs.collMgr_tooltip_clearCollection}" position="right"/>
+                    </p:commandButton>
+                    <!--===============================================================================================================-->
+                    <p:commandButton
+                            id="trashBtn"
+                            style="padding: 0 4px;margin-right: 0.5rem;"
+                            styleClass="ui-button-danger"
+                            icon="pi pi-trash"
                             ajax="true"
                             process="@this"
-                            tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                            update="@(.acoEditModal)"
-                            type="button"
+                            update="growlMsg modalCollection frmModalCollection"
+                            type="submit"
+                            disabled="#{!collectionBean.isDeleteAllowed(collection)}"
+                            oncomplete="PF('collectionDialogWidgetVar').show();"
+                            action="#{collectionBean.setEditMode('DELETE')}">
+                        <p:ajax event="click" listener="#{collectionBean.setActiveCollection(collection)}"/>
+                        <p:tooltip for="trashBtn" value="#{msgs.collMgr_tooltip_deleteCollection}" position="right"/>
+                        <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener"/>
+                    </p:commandButton>
+                    <!--===============================================================================================================-->
+                    <p:commandButton
+                            id="usrBtn"
+                            style="padding: 0 4px;"
+                            icon="pi pi-user"
+                            ajax="true"
+                            process="@this"
+                            update="@all"
+                            type="submit"
                             action="#{collectionBean.actionStartAclChange(collection)}"
                             oncomplete="PF('dlgAcl').show();"
-                            disabled="#{!collectionBean.isPermissionEditAllowed(collection)}" />
-                    </b:dataTableColumn>
-                </b:dataTable>
-            </b:form>
-        </ui:composition>
-    </h:body>
+                            disabled="#{!collectionBean.isPermissionEditAllowed(collection)}"/>
+                    <!--update="@(.mainPanel)"-->
+
+                    <p:tooltip for="usrBtn" value="#{msgs.collMgr_tooltip_changeUserPermission}" position="right"/>
+
+                </p:column>
+                <!--===============================================================================================================-->
+            </p:dataTable>
+            <!--===============================================================================================================-->
+        </h:form>
+    </ui:composition>
+</h:body>
 </html>

@@ -34,7 +34,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -96,7 +96,6 @@ public class CollectionBeanTest extends TestBase {
         LoginEvent logInEvent = new LoginEvent(publicUser);
         bean.setCurrentAccount(logInEvent);
         bean.getActiveCollection().setDescription("Test");
-        bean.getActiveCollection().setIndexPath("");
         bean.getActiveCollection().setName("Test-Collection");
 
         bean.actionCreate();

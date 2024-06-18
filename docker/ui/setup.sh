@@ -21,10 +21,10 @@ popd
 curl -L --silent --output $TOMCAT_HOME/webapps/depict.war $DEPICT
 
 #
-# Remove default Faces installation (Mojarra 2.2.*);
+# Remove default Faces installation (Mojarra 3.0.*);
 # MyFaces is contained in extralib
 #
-rm $TOMCAT_HOME/lib/javax.faces-2.2.*.jar
+mv $TOMCAT_HOME/lib/jakarta.faces-3.0.*.jar $TOMCAT_HOME/lib/jakarta.faces-3.0.x.jar.do_not_use
 
 #
 # Remove default webapps

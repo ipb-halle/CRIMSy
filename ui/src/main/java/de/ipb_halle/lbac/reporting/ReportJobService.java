@@ -19,35 +19,20 @@ package de.ipb_halle.lbac.reporting;
 
 import static de.ipb_halle.job.JobService.CONDITION_JOBTYPE;
 import static de.ipb_halle.job.JobService.CONDITION_OWNERID;
-import static de.ipb_halle.job.JobService.CONDITION_STATUS;
-import static de.ipb_halle.job.JobStatus.BUSY;
-import static de.ipb_halle.job.JobStatus.COMPLETED;
-import static de.ipb_halle.job.JobStatus.FAILED;
 import static de.ipb_halle.job.JobStatus.PENDING;
 import static de.ipb_halle.job.JobType.REPORT;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.RejectedExecutionException;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.job.JobEntity;

@@ -129,6 +129,7 @@
                                         <p:commandButton
                                             action="#{cc.attrs.agent.actionSetMaterial(material)}"
                                             ajax="true"
+                                            styleClass="ui-button-danger"
                                             value=" #{msgs.materialAgent_table_insert}"
                                             update="@(.assayTargetRow) @(.assayRecordTable)"
                                             oncomplete="PF('dlg_materialEdit').hide();"

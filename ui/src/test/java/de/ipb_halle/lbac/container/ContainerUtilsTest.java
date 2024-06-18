@@ -33,7 +33,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
  * @author flange
  */
 public class ContainerUtilsTest {
-    private MessagePresenter messagePresenter = MessagePresenterMock.getInstance();
+    private MessagePresenter messagePresenter = new MessagePresenterMock();
 
     @Test
     public void test_filterLocalizeAndSortContainerTypes() {

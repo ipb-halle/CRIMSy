@@ -2,7 +2,7 @@
 <!--
   
   Leibniz Bioactives Cloud
-  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  Copyright 2024 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,27 +17,15 @@
   limitations under the License.
   
 -->
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+<web-app xmlns="http://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_4_0.xsd"
+         version="4.0">
     <description>Leibniz Bioactives Cloud</description>
     <display-name>Leibniz Bioactives Cloud (UI and REST)</display-name>
 
-    <!--
-        2020-12-22: FBroda
-        According to TomEE logs, this parameter is not needed, because it is 
-        specified already in the deployment descriptor.
-
     <context-param>
-        <param-name>javax.faces.CONFIG_FILES</param-name>
-        <param-value>/WEB-INF/faces-config.xml</param-value>
-
-            Comma separated list of URIs of (additional) faces configs files.
-            (e.g. /WEB-INF/my-configs.xml)
-            See JSF 1.0 PRD2, 10.3.2
-
-    </context-param>
-    -->
-    <context-param>
-        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-name>jakarta.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
         <!--
             State saving method: "client" or "server" (= default)
@@ -62,48 +50,22 @@
         <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
     </listener>
 
-
-    <!--
-        Tells Bootsfaces to download the components (Datatable, JQuery, 
-        CSS, ...) from CDN (true), leave this task to local html document 
-        (false) or something else (custom)
-    -->
     <context-param>
-        <param-name>net.bootsfaces.get_datatable_from_cdn</param-name>
-        <param-value>custom</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.get_jquery_from_cdn</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.get_jqueryui_from_cdn</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>facelets.LIBRARIES</param-name>
+        <param-name>jakarta.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/nwc.taglib.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.get_bootstrap_from_cdn</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.get_fontawesome_from_cdn</param-name>
-        <param-value>false</param-value>
     </context-param>
 
     <!-- debugging mode for jsf: set param to Development -->
     <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-name>jakarta.faces.PROJECT_STAGE</param-name>
         <param-value>Production</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+        <param-name>jakarta.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+        <param-name>jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
         <param-value>true</param-value>
     </context-param>
 
@@ -112,55 +74,28 @@
     the frequent refresh of the configuration files in WEB-INF. It does
     not interfere with our typical deployment mechanism that overwrites
     ui.war. -->
+<!-- 2023-03-07 revert to jakarta faces 3.0.2
     <context-param>
         <param-name>org.apache.myfaces.CONFIG_REFRESH_PERIOD</param-name>
         <param-value>0</param-value>
     </context-param>
+-->
 
-    <!-- file upload servlet incl. filter -->
-    <servlet>
-        <display-name>FileUpload Service</display-name>
-        <servlet-name>FileUploadWebService</servlet-name>
-        <servlet-class>de.ipb_halle.lbac.file.FileUploadWebService</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>FileUploadWebService</servlet-name>
-        <url-pattern>/uploaddocs/*</url-pattern>
-    </servlet-mapping>
-    <filter>
-        <filter-name>FileUploadSecurityFilter</filter-name>
-        <filter-class>de.ipb_halle.lbac.cloud.servlet.FileUploadSecurityFilter</filter-class>
-        <async-supported>true</async-supported>
-    </filter>
-    <filter-mapping>
-        <filter-name>FileUploadSecurityFilter</filter-name>
-        <servlet-name>FileUploadWebService</servlet-name>
-        <url-pattern>/uploaddocs/*</url-pattern>
-    </filter-mapping>
     <!-- Faces Servlet -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-    <!-- bootfaces theme -->
-    <context-param>
-        <param-name>BootsFaces_USETHEME</param-name>
-        <param-value>default</param-value>
-    </context-param>
-    <context-param>
-        <param-name>BootsFaces_THEME</param-name>
-        <param-value>simplex</param-value>
-    </context-param>
     <!-- primefaces stuff -->
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>bootstrap</param-value>
+<!--    <param-value>bootstrap</param-value> -->
+        <param-value>saga</param-value>
     </context-param>
     <context-param>
         <param-name>primefaces.FONT_AWESOME</param-name>
@@ -195,20 +130,6 @@
         <extension>json</extension>
         <mime-type>application/json</mime-type>
     </mime-mapping>
-    <!-- Activates the waitcursor and the double-click protection -->
-    <context-param>
-        <param-name>net.bootsfaces.blockUI</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <!-- html5 friendly markup -->
-    <context-param>
-        <param-name>javax.faces.FACELETS_DECORATORS</param-name>
-        <param-value>net.bootsfaces.decorator.BootsFacesTagDecorator</param-value>
-    </context-param>
-    <context-param>
-        <param-name>net.bootsfaces.defaults.decorator</param-name>
-        <param-value>false</param-value>
-    </context-param>
     <!-- Remove unused cookie of MyFaces -->
     <context-param>
         <param-name>org.apache.myfaces.FLASH_SCOPE_DISABLED</param-name>
@@ -289,7 +210,7 @@
         <location>/500.xhtml</location>
     </error-page>
     <error-page>
-        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <exception-type>jakarta.faces.application.ViewExpiredException</exception-type>
         <location>/expired.xhtml</location>
     </error-page>
 </web-app>

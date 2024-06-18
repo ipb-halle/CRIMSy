@@ -17,14 +17,11 @@
  */
 package de.ipb_halle.lbac.device.job;
 
-import de.ipb_halle.crimsy_api.DTO;
 import de.ipb_halle.job.Job;
 import de.ipb_halle.job.JobEntity;
 import de.ipb_halle.job.JobType;
 import de.ipb_halle.job.NetJob;
 import de.ipb_halle.lbac.admission.User;
-
-import java.util.Date;
 
 /**
  * PrintJob 

@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -39,8 +39,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class GroupMgrBeanTest extends TestBase {
     @Inject
     private GroupMgrBean groupMgrBean;
-
-    private MessagePresenterMock presenterMock = MessagePresenterMock.getInstance();
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -57,8 +55,8 @@ public class GroupMgrBeanTest extends TestBase {
         // Try to create group with invalid name.
         groupMgrBean.actionCreate();
         
-        Assert.assertEquals("groupMgr_no_valide_name", presenterMock.getLastErrorMessage());
-        presenterMock.resetMessages();
+        Assert.assertEquals(GroupMgrBean.GROUP_INVALID_NAME, getMessagePresenterMock().getLastErrorMessage());
+        resetMessagePresenterMock();
 
         // Try to create group with valid name
         groupMgrBean.getGroup().setName(("GroupMgrBeanTest:test01_createNewGroup"));
@@ -70,7 +68,7 @@ public class GroupMgrBeanTest extends TestBase {
         // Try to create the same group again - should not create the group
         groupMgrBean.getGroup().setName(("GroupMgrBeanTest:test01_createNewGroup"));
         groupMgrBean.actionCreate();
-        Assert.assertEquals("groupMgr_no_valide_name", presenterMock.getLastErrorMessage());
+        Assert.assertEquals(GroupMgrBean.GROUP_INVALID_NAME, getMessagePresenterMock().getLastErrorMessage());
         Assert.assertEquals(groupsBeforeCreation + 1, memberService.loadGroups(new HashMap<>()).size());
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + g.getId());
     }

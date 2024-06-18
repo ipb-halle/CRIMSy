@@ -27,12 +27,17 @@ import de.ipb_halle.lbac.exp.ItemAgent;
 import de.ipb_halle.lbac.exp.MaterialAgent;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.performance.LoggingProfiler;
 
 /**
  *
  * @author fmauz
  */
 public class ExperimentBeanMock extends ExperimentBean {
+
+    public ExperimentBeanMock() {
+        this.loggingProfiler = new LoggingProfiler();
+    }
 
     public ExperimentBeanMock setGlobalAdmissionContext(GlobalAdmissionContext context) {
         this.globalAdmissionContext = context;
@@ -68,9 +73,9 @@ public class ExperimentBeanMock extends ExperimentBean {
         this.projectService = projectService;
         return this;
     }
-    
+
     public ExperimentBeanMock setMessagePresenter(MessagePresenter messagePresenter) {
-        this.messagePresenter=messagePresenter;
+        this.messagePresenter = messagePresenter;
         return this;
     }
 

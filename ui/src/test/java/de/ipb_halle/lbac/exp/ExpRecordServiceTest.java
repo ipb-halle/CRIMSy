@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -155,7 +155,7 @@ public class ExpRecordServiceTest extends TestBase {
         assertEquals("ghi", loadedImage2.getImage());
     }
     
-    // TODO: Test for saving/loading of Assay and Text records
+    // ToDo: Test for saving/loading of Assay and Text records
 
     @Deployment
     public static WebArchive createDeployment() {

@@ -32,19 +32,18 @@ import de.ipb_halle.lbac.globals.health.HealthStateRepair;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.DependsOn;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.DependsOn;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 @Singleton
 @Startup
@@ -89,7 +88,7 @@ public class InitApplication {
         try {
             healthCheck();
         } catch (Exception e) {
-            logger.error("Error at healthcheck"+ ExceptionUtils.getStackTrace(e));
+            logger.error("init(): error at healthcheck:", (Throwable) e);
         }
         restCheck();
         initialiseKeyManager();
@@ -156,7 +155,7 @@ public class InitApplication {
                 keyManager.updatePublicKeyOfLocalNode();
             }
         } catch (Exception e) {
-            logger.error("Error at initialising keymanager"+ ExceptionUtils.getStackTrace(e));
+            logger.error("Error at initialising keymanager:", (Throwable) e);
         }
     }
 }

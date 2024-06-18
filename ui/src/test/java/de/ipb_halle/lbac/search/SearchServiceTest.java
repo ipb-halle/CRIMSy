@@ -84,7 +84,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.openejb.loader.Files;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -562,7 +562,7 @@ public class SearchServiceTest extends TestBase {
                     "DocumentSearchServiceTest",
                     "Wasserstoff.docx"
             );
-        } catch (FileNotFoundException | InterruptedException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Could not upload file");
         }
         DocumentSearchRequestBuilder requestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);

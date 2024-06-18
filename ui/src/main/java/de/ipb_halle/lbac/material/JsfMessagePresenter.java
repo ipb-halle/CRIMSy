@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.material;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Produces;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.i18n.UIMessage;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.context.SessionScoped;
+import java.io.Serializable;
 
 /**
  *
@@ -33,14 +35,12 @@ import de.ipb_halle.lbac.i18n.UIMessage;
  * (2) via the producer method marked by @Produces
  * The @Any annotation on the class marks a lower priority, thus (2) is considered.
  */
+@SessionScoped
 @Any
-public class JsfMessagePresenter implements MessagePresenter {
+public class JsfMessagePresenter implements MessagePresenter, Serializable {
+    private final static long serialVersionUID = 1L;
     private static JsfMessagePresenter instance;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
-    private JsfMessagePresenter() {
-
-    }
 
     @Override
     public void error(String message, Object... args) {
@@ -52,20 +52,23 @@ public class JsfMessagePresenter implements MessagePresenter {
         UIMessage.info(null, MESSAGE_BUNDLE, message, args);
     }
 
+/*
     public static synchronized MessagePresenter getInstance() {
         if (instance == null) {
             instance = new JsfMessagePresenter();
         }
         return instance;
     }
+*/
 
     @Override
     public String presentMessage(String messageKey, Object... args) {
           return Messages.getString(MESSAGE_BUNDLE, messageKey, args);
     }
-
+/*
     @Produces
     public MessagePresenter produce() {
         return JsfMessagePresenter.getInstance();
     }
+*/
 }

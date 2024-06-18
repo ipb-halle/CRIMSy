@@ -441,7 +441,7 @@ function runUpdate {
         remote=`echo $record | cut -d';' -f2`
         login=`echo $record | cut -d';' -f3`
 
-	for cmd in `echo $UPDATE_CMD | tr ';' ' '` ; done
+	for cmd in `echo "$UPDATE_CMD" | tr ';' ' '` ; do
 	        echo "updating node $node with $cmd"
 	        echo | ssh -o "StrictHostKeyChecking no" "$login@$remote" sudo ./dist/bin/update.sh $cmd
 	done

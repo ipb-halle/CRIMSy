@@ -23,10 +23,10 @@ package de.ipb_halle.lbac.entity;
  * local or remote. (Serialized) node objects can be queried from the master
  * node to get information about all existing nodes.
  */
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import de.ipb_halle.crimsy_api.DTO;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;

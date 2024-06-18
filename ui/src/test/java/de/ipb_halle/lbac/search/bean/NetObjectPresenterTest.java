@@ -66,7 +66,7 @@ public class NetObjectPresenterTest extends TestBase {
     @BeforeEach
     public void init() {
         netObjects = netObjectFactory.createNetObjects();
-        presenter = new NetObjectPresenter(new User(), MessagePresenterMock.getInstance());
+        presenter = new NetObjectPresenter(new User(), getMessagePresenterMock());
     }
 
     @Test
