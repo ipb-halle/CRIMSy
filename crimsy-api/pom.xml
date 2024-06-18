@@ -23,11 +23,11 @@
  <modelVersion>4.0.0</modelVersion>
  
  <groupId>de.ipb-halle</groupId>
- <artifactId>crimsy-job-api</artifactId>
+ <artifactId>crimsy-api</artifactId>
  <version>1.0</version>
  <packaging>jar</packaging>
  
- <name>CRIMSy Job API</name>
+ <name>CRIMSy API</name>
  <url>http://github.com/ipb-halle/CRIMSy</url>
  
  <properties>
