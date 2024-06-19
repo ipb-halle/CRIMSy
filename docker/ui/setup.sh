@@ -4,7 +4,6 @@
 #
 #
 TOMCAT_HOME=/usr/local/tomee
-DEPICT=https://github.com/cdk/depict/releases/download/1.8/cdkdepict-1.8.war
 
 #
 # Install extra libs
@@ -14,11 +13,6 @@ for i in $TOMCAT_HOME/extralib/*.jar ; do
 	ln -s $i `basename $i`
 done
 popd
-
-#
-# get cdkdepict tool
-#
-curl -L --silent --output $TOMCAT_HOME/webapps/depict.war $DEPICT
 
 #
 # Remove default Faces installation (Mojarra 3.0.*);

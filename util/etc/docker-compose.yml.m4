@@ -28,6 +28,13 @@ LBAC_PGSQL_PORT_ENABLE     - "5432:5432"
     volumes:
       - LBAC_DATASTORE/data/db:/data/db
 
+  depict:
+    image: simolecule/cdkdepict
+    labels:
+      de.ipb-halle.lbac.docker-container: "depict"
+    networks:
+      - lbac_private
+
   fasta:
     image: LBAC_IMAGE_REGISTRY/crimsyfasta:LBAC_VERSION
     depends_on:
