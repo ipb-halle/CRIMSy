@@ -56,7 +56,7 @@
               <style:content-styles scale="true" keep-aspect-ratio="true"/>
               <style:spatial-styles x="352.623" y="5" min-width="223.377" min-height="144.805"/>
             </style:element-style>
-            <attribute-expression namespace="http://reporting.pentaho.org/namespaces/engine/attributes/core" name="value" formula="=CONCATENATE(&quot;http://depict:8080/depict/depict/bow/svg?smi=&quot;; URLENCODE([smiles]))"/>
+            <attribute-expression namespace="http://reporting.pentaho.org/namespaces/engine/attributes/core" name="value" formula="=CONCATENATE(&quot;http://depict:8080/depict/bow/svg?smi=&quot;; URLENCODE([smiles]))"/>
           </content-field>
           <sub-report href="/subreport/content.xml">
             <input-parameter master-fieldname="materialid" detail-fieldname="paramMaterialId"/>
