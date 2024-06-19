@@ -137,7 +137,7 @@ function buildDocker {
         grep -vE "^#" "$BRANCH_FILE" |\
         if [ -z "$STAGE_LABEL" ] ; then cat ; else grep "$STAGE_LABEL" ; fi |\
         while read record ; do
-	    . $LBAC_REPO/setjdk.sh `echo $record | cut -d';' -f2`
+	    . $LBAC_REPO/util/bin/setjdk.sh `echo $record | cut -d';' -f2`
             BRANCH=`echo $record | cut -d';' -f3`
             RELEASE_FLAGS=`echo $record | cut -d';' -f4`
             echo "processing branch file entry: $record"
