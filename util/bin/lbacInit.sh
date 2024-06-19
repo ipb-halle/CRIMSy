@@ -157,6 +157,7 @@ function start {
     startService db || error "Starting database container failed"
     startService fasta || error "Starting fasta container failed"
     startService ui || error "Starting ui container failed"
+    startService depict || error "Starting depict container failed"
     startService proxy || error "Starting proxy container failes"
 }
 #
@@ -169,6 +170,7 @@ function stopService {
 
 function stop {
     stopService proxy
+    stopService depict
     stopService ui
     stopService fasta
     stopService db
