@@ -19,15 +19,33 @@
 #
 #==========================================================
 #
-# select the JDK version 
+# Select the JDK version 
+# ----------------------
+# Unfortunately JDK installation paths are not standardized 
+# among different Linux distributions
 #
+
 case "$1" in
-	jdk8|JDK8)
-		export JAVA_HOME=/usr/lib/jvm/temurin-8-jdk-amd64
-		alias java=$JAVA_HOME/bin/java
-		;;
-	jdk17|JDK17)
-		export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-		alias java=$JAVA_HOME/bin/java
-		;;
+    jdk8|JDK8)
+            for JAVA_HOME in /usr/lib/jvm/temurin-8-jdk-amd64 \
+                    /usr/lib64/jvm/java-1.8.0-openjdk-1.8.0 \
+                    ;do
+                if [ -d $JAVA_HOME ] ; then
+                    export JAVA_HOME
+                    alias java=$JAVA_HOME/bin/java
+                    return
+                fi
+            done
+            ;;
+    jdk17|JDK17)
+            for JAVA_HOME in /usr/lib/jvm/java-17-openjdk-amd64 \
+                    /usr/lib64/jvm/java-17-openjdk-17 \
+                    ; do
+                if [ -d $JAVA_HOME ] ; then
+                    export JAVA_HOME
+                    alias java=$JAVA_HOME/bin/java
+                    return
+                fi
+            done
+            ;;
 esac
