@@ -34,29 +34,136 @@
             <h:form id="form1">
                 <p:panelGrid styleClass="main-search-panel">
                     <p:row>
-                        <p:column  style="display:flex; align-items:center; justify-content:center;background:#f4f4f4;" >
-                            <p:graphicImage name="img/cloudlogo.svg"
-                                            id="forum-cloudlogo"
-                                            styleClass="img-responsive"/>
+                        <p:column  
+                            colspan="3"                            
+                            style="background:#f4f4f4;" 
+                            styleClass="search-panel-logo">
+                            <div>
+                                <p:graphicImage name="img/cloudlogo.svg"
+                                                id="forum-cloudlogo"
+                                                styleClass="img-responsive"/>
+                            </div>
                         </p:column>
-                        <p:column 
-                            rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}" rowspan="3">BBB</p:column>
-                    </p:row>
 
-                    <p:row>
-                        <p:column > 
-                            <p:commandButton
-                                styleClass="advancedSearchButton"
-                                style="margin-left: 0;"
-                                ajax="true"
-                                update="@(.main-search-panel)"
-                                action="#{searchBean.toogleAdvancedSearch()}"
-                                icon="pi pi-cloud"/></p:column>
+                        <p:row>
+                            <p:column > 
+                                <p:commandButton
+                                    styleClass="advancedSearchButton"
+                                    style="margin-left: 0;"
+                                    ajax="true"
+                                    update="@(.main-search-panel)"
+                                    action="#{searchBean.toogleAdvancedSearch()}"
+                                    icon="pi pi-cloud"/></p:column>
+                            <p:column 
+
+                                rowspan="2"
+                                styleClass="advanced-search-panel"
+                                rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}"
+                                >
+
+                                <p:panel 
+                                    styleClass="panel1"
+                                    >
+                                    <p:panel>
+                                        <div style="display: flex;flex-direction: row;justify-content: center;align-items: center;"
+                                             >
+                                            <h:outputText
+                                                style="margin: 0 1rem;"
+                                                value="#{msgs.searchMgr_advancedSearch_title}"/>
+                                        </div>
+                                    </p:panel>
+
+                                    <p:panel>
+                                        <!--rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}" -->
+
+
+                                        <div class="selectOneMenus">
+                                            <p:outputPanel>
+                                                <p:selectCheckboxMenu id="typesMenu"
+                                                                      dynamic="true"
+                                                                      filter="false"
+                                                                      label="#{msgs.searchMgr_advancedSearch_types}"
+                                                                      style="width: 10rem;margin-right: 20px;" 
+                                                                      scrollHeight="250"
+                                                                      value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}">
+                                                    <f:selectItems 
+                                                        var="item"
+                                                        value="#{searchBean.getSearchFilter().typeFilter.types}"
+                                                        itemLabel="#{searchBean.getSearchFilter().typeFilter.getLocalizedType(item)}"
+                                                        />
+                                                    <p:ajax process="@this"
+                                                            update="@(.fff)"/>
+                                                </p:selectCheckboxMenu>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel styleClass="fff">
+                                                <p:selectCheckboxMenu 
+                                                    dynamic="true"
+                                                    filter="false"
+                                                    rendered="#{searchBean.isMaterialTypeVisible()}"
+                                                    label="#{msgs.searchMgr_advancedSearch_material_types}"
+                                                    style="width: 10rem"  
+                                                    scrollHeight="250"
+                                                    value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}">
+                                                    <f:selectItems 
+                                                        var="item"
+                                                        value="#{searchBean.getSearchFilter().getMaterialTypeFilter().getTypes()}"
+                                                        itemLabel="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(item)}"
+                                                        />
+                                                    <p:ajax process="@this"
+                                                            update="@(.fff)"/>
+                                                </p:selectCheckboxMenu>
+                                            </p:outputPanel>
+
+                                        </div>
+
+                                        <p:outputPanel styleClass="fff eee">
+                                            <ui:repeat value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}" var="var">                                 
+                                                <p:commandButton
+                                                    value="#{searchBean.getSearchFilter().typeFilter.getLocalizedType(var)}"
+                                                    styleClass="rounded-button ui-button-danger"
+                                                    style="margin:0.2rem;"
+                                                    ajax="true">
+                                                </p:commandButton>
+                                            </ui:repeat>
+
+                                            <ui:repeat value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}" var="var">                                 
+                                                <p:commandButton
+                                                    rendered="#{searchBean.isMaterialTypeVisible()}"
+                                                    value="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(var)}"
+                                                    styleClass="rounded-button"
+                                                    style="margin: 0.2rem;"
+                                                    ajax="true">
+                                                </p:commandButton>
+                                            </ui:repeat>
+                                        </p:outputPanel>
+
+                                        <div class="molEditor">
+                                            <mol:molecule
+                                                id="molEditorSearchPage"
+                                                value="#{searchBean.getSearchFilter().structureString}"
+                                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                format="MDLV2000"
+                                                border="true"
+                                                readonly="false">
+                                            </mol:molecule>
+                                        </div>
+
+                                    </p:panel>
+
+                                </p:panel>
+
+
+
+                            </p:column>
+                        </p:row>
                     </p:row>
                     <p:row>
-                        <p:column >DDD</p:column>
+                        <p:column 
+                            styleClass="search-result-panel">DDD</p:column>
                     </p:row>
                 </p:panelGrid>
+
             </h:form>
         </ui:composition>
     </h:body>
