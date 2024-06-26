@@ -23,7 +23,7 @@
 
 .main-search-panel{
     width:100%;
- 
+
 }
 
 .advanced-search-panel{
@@ -37,8 +37,14 @@
 
 .search-panel-logo > div{
     display: flex;
-    align-items: center;    
+    align-items: center;
 }
 .search-panel-logo > div > img{
-    margin:auto; 
+    margin:auto;
+}
+.interaction-search-panel > div{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
 }

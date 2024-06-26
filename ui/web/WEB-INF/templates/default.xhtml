@@ -32,7 +32,14 @@
                 <ui:include src="/WEB-INF/templates/fileupload.xhtml"/>
             </ui:insert>
             <h:form id="form1">
+                <div>
+                    <p:poll id="searchPoll"
+                            interval="#{searchBean.getPollIntervall()}"
+                            intervalType="millisecond"
+                            update=" newDocumentsBadge searchPoll addDocumentButton"/>
+                </div>
                 <p:panelGrid styleClass="main-search-panel">
+                    <!-- Logo Panel -->
                     <p:row>
                         <p:column  
                             colspan="3"                            
@@ -44,126 +51,211 @@
                                                 styleClass="img-responsive"/>
                             </div>
                         </p:column>
+                    </p:row>
+                    <p:row>
+                        <!-- search interaction panel -->
+                        <p:column styleClass="interaction-search-panelXXX" > 
+                            <div>
+                                <div class="ui-inputgroup">
+                                    <div class="ui-inputgroup-addon">
+                                        <i class="pi pi-cloud"></i>
+                                    </div>
 
-                        <p:row>
-                            <p:column > 
-                                <p:commandButton
-                                    styleClass="advancedSearchButton"
-                                    style="margin-left: 0;"
-                                    ajax="true"
-                                    update="@(.main-search-panel)"
-                                    action="#{searchBean.toogleAdvancedSearch()}"
-                                    icon="pi pi-cloud"/></p:column>
-                            <p:column 
+                                    <p:inputText styleClass="searchRequest"
+                                                 placeholder="#{msgs.searchMgr_searchtext_placeholder}"
+                                                 required="false"
+                                                 style="width:100%;"
+                                                 label=""
+                                                 value="#{searchBean.searchFilter.searchTerms}"/>
 
-                                rowspan="2"
-                                styleClass="advanced-search-panel"
-                                rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}"
+                                    <p:commandButton
+                                        value=""
+                                        style="margin-left: 8px"
+                                        type="submit"
+                                        action="#{searchBean.actionTriggerSearch()}"
+                                        ajax="true"
+                                        update="@form newDocumentsBadge"
+                                        icon="pi pi-search"
+                                        />
+                                    <p:commandButton
+                                        styleClass="advancedSearchButton"
+                                        style="margin-left: 0;"
+                                        ajax="true"
+                                        update="@(.main-search-panel)"
+                                        action="#{searchBean.toogleAdvancedSearch()}"
+                                        icon="pi pi-cloud"/>
+                                    <div>
+                                        <p:badge value="#{searchBean.getAmountOfNotShownObjects()}"
+                                                 style="margin-left: 4px"
+                                                 severity="danger"
+                                                 id="newDocumentsBadge">                                           
+                                                <!--tooltip="#{msgs.searchMgr_refreshButton_tooltip}"-->
+                                        </p:badge>
+                                        <p:commandButton
+                                            styleClass="#{searchBean.getActualizeButtonStyleClass()}"
+                                            id="addDocumentButton"
+                                            type="submit"
+                                            action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
+                                            ajax="true"
+                                            update="foundObjectDataTableId newDocumentsBadge  addDocumentButton"
+                                            icon="pi pi-refresh"
+                                            process="@form"
+                                            rendered="true"
+                                            value="#{msgs.searchMgr_fetchButton}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:column>
+                        <!-- advanced search panel -->
+                        <p:column 
+                            rowspan="2"
+                            styleClass="advanced-search-panel"
+                            rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}"
+                            >
+                            <p:panel 
+                                styleClass="panel1"
                                 >
-
-                                <p:panel 
-                                    styleClass="panel1"
-                                    >
-                                    <p:panel>
-                                        <div style="display: flex;flex-direction: row;justify-content: center;align-items: center;"
-                                             >
-                                            <h:outputText
-                                                style="margin: 0 1rem;"
-                                                value="#{msgs.searchMgr_advancedSearch_title}"/>
-                                        </div>
-                                    </p:panel>
-
-                                    <p:panel>
-                                        <!--rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}" -->
-
-
-                                        <div class="selectOneMenus">
-                                            <p:outputPanel>
-                                                <p:selectCheckboxMenu id="typesMenu"
-                                                                      dynamic="true"
-                                                                      filter="false"
-                                                                      label="#{msgs.searchMgr_advancedSearch_types}"
-                                                                      style="width: 10rem;margin-right: 20px;" 
-                                                                      scrollHeight="250"
-                                                                      value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}">
-                                                    <f:selectItems 
-                                                        var="item"
-                                                        value="#{searchBean.getSearchFilter().typeFilter.types}"
-                                                        itemLabel="#{searchBean.getSearchFilter().typeFilter.getLocalizedType(item)}"
-                                                        />
-                                                    <p:ajax process="@this"
-                                                            update="@(.fff)"/>
-                                                </p:selectCheckboxMenu>
-                                            </p:outputPanel>
-
-                                            <p:outputPanel styleClass="fff">
-                                                <p:selectCheckboxMenu 
-                                                    dynamic="true"
-                                                    filter="false"
-                                                    rendered="#{searchBean.isMaterialTypeVisible()}"
-                                                    label="#{msgs.searchMgr_advancedSearch_material_types}"
-                                                    style="width: 10rem"  
-                                                    scrollHeight="250"
-                                                    value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}">
-                                                    <f:selectItems 
-                                                        var="item"
-                                                        value="#{searchBean.getSearchFilter().getMaterialTypeFilter().getTypes()}"
-                                                        itemLabel="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(item)}"
-                                                        />
-                                                    <p:ajax process="@this"
-                                                            update="@(.fff)"/>
-                                                </p:selectCheckboxMenu>
-                                            </p:outputPanel>
-
-                                        </div>
-
-                                        <p:outputPanel styleClass="fff eee">
-                                            <ui:repeat value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}" var="var">                                 
-                                                <p:commandButton
-                                                    value="#{searchBean.getSearchFilter().typeFilter.getLocalizedType(var)}"
-                                                    styleClass="rounded-button ui-button-danger"
-                                                    style="margin:0.2rem;"
-                                                    ajax="true">
-                                                </p:commandButton>
-                                            </ui:repeat>
-
-                                            <ui:repeat value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}" var="var">                                 
-                                                <p:commandButton
-                                                    rendered="#{searchBean.isMaterialTypeVisible()}"
-                                                    value="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(var)}"
-                                                    styleClass="rounded-button"
-                                                    style="margin: 0.2rem;"
-                                                    ajax="true">
-                                                </p:commandButton>
-                                            </ui:repeat>
-                                        </p:outputPanel>
-
-                                        <div class="molEditor">
-                                            <mol:molecule
-                                                id="molEditorSearchPage"
-                                                value="#{searchBean.getSearchFilter().structureString}"
-                                                pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
-                                                format="MDLV2000"
-                                                border="true"
-                                                readonly="false">
-                                            </mol:molecule>
-                                        </div>
-
-                                    </p:panel>
-
+                                <p:panel>
+                                    <div style="display: flex;flex-direction: row;justify-content: center;align-items: center;"
+                                         >
+                                        <h:outputText
+                                            style="margin: 0 1rem;"
+                                            value="#{msgs.searchMgr_advancedSearch_title}"/>
+                                    </div>
                                 </p:panel>
 
+                                <p:panel>
+                                    <!--rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}" -->
 
 
-                            </p:column>
-                        </p:row>
+                                    <div class="selectOneMenus">
+                                        <p:outputPanel>
+                                            <p:selectCheckboxMenu id="typesMenu"
+                                                                  dynamic="true"
+                                                                  filter="false"
+                                                                  label="#{msgs.searchMgr_advancedSearch_types}"
+                                                                  style="width: 10rem;margin-right: 20px;" 
+                                                                  scrollHeight="250"
+                                                                  value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}">
+                                                <f:selectItems 
+                                                    var="item"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.types}"
+                                                    itemLabel="#{searchBean.getSearchFilter().typeFilter.getLocalizedType(item)}"
+                                                    />
+                                                <p:ajax process="@this"
+                                                        update="@(.fff)"/>
+                                            </p:selectCheckboxMenu>
+                                        </p:outputPanel>
+
+                                        <p:outputPanel styleClass="fff">
+                                            <p:selectCheckboxMenu 
+                                                dynamic="true"
+                                                filter="false"
+                                                rendered="#{searchBean.isMaterialTypeVisible()}"
+                                                label="#{msgs.searchMgr_advancedSearch_material_types}"
+                                                style="width: 10rem"  
+                                                scrollHeight="250"
+                                                value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}">
+                                                <f:selectItems 
+                                                    var="item"
+                                                    value="#{searchBean.getSearchFilter().getMaterialTypeFilter().getTypes()}"
+                                                    itemLabel="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(item)}"
+                                                    />
+                                                <p:ajax process="@this"
+                                                        update="@(.fff)"/>
+                                            </p:selectCheckboxMenu>
+                                        </p:outputPanel>
+
+                                    </div>
+
+                                    <p:outputPanel styleClass="fff eee">
+                                        <ui:repeat value="#{searchBean.getSearchFilter().typeFilter.selectedTypes}" var="var">                                 
+                                            <p:commandButton
+                                                value="#{searchBean.getSearchFilter().typeFilter.getLocalizedType(var)}"
+                                                styleClass="rounded-button ui-button-danger"
+                                                style="margin:0.2rem;"
+                                                ajax="true">
+                                            </p:commandButton>
+                                        </ui:repeat>
+
+                                        <ui:repeat value="#{searchBean.getSearchFilter().getMaterialTypeFilter().selectedMaterialTypes}" var="var">                                 
+                                            <p:commandButton
+                                                rendered="#{searchBean.isMaterialTypeVisible()}"
+                                                value="#{searchBean.getSearchFilter().getMaterialTypeFilter().getLocalizedType(var)}"
+                                                styleClass="rounded-button"
+                                                style="margin: 0.2rem;"
+                                                ajax="true">
+                                            </p:commandButton>
+                                        </ui:repeat>
+                                    </p:outputPanel>
+
+                                    <div class="molEditor">
+                                        <mol:molecule
+                                            id="molEditorSearchPage"
+                                            value="#{searchBean.getSearchFilter().structureString}"
+                                            pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                            format="MDLV2000"
+                                            border="true"
+                                            readonly="false">
+                                        </mol:molecule>
+                                    </div>
+                                </p:panel>
+                            </p:panel>
+                        </p:column>
                     </p:row>
                     <p:row>
                         <p:column 
-                            styleClass="search-result-panel">DDD</p:column>
+                            styleClass="search-result-panel">
+
+                            <p:dataTable
+                                styleClass="foundObjectDataTable"
+                                id="foundObjectDataTableId"
+                                var="searchable"
+                                value="#{searchBean.shownObjects}"
+                                rows="10"
+                                paginator="true" paginatorPosition="both"
+                                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                >
+                                <!--saveState="false"-->
+                                <p:column headerText="#{msgs.searchMgr_resulttable_name}">
+                                    <h:commandLink
+                                        style="color:red;"
+                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                        action="#{documentDownloadBean.actionDownload(searchable)}"
+                                        rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}"
+                                        />
+                                    <h:commandLink
+                                        style="color:blue;"
+                                        action="#{searchBean.navigateToObject(searchable)}"
+                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                        rendered="#{searchBean.netObjectPresenter.isInternalLinkVisible(searchable)}"
+                                        />
+                                        <!--href="#{searchBean.netObjectPresenter.getLink(searchable)}"-->
+                                    <h:commandLink
+                                        style="color:green;"
+                                        disabled="true"
+                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                        rendered="#{searchBean.netObjectPresenter.isExternalLinkVisible(searchable)}"
+                                        />
+                                        <!--href="#{searchBean.netObjectPresenter.getLink(searchable)}"-->
+
+                                </p:column>
+                                <p:column headerText="#{msgs.searchMgr_resulttable_location}">
+                                    <h:outputText value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.searchMgr_resulttable_type}">
+                                    <h:outputText  value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"/>
+                                </p:column>
+                                <p:column headerText="#{msgs.searchMgr_resulttable_relevance}">
+                                    <h:outputText value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:column>
                     </p:row>
                 </p:panelGrid>
-
             </h:form>
         </ui:composition>
     </h:body>
