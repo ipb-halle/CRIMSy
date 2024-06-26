@@ -222,10 +222,11 @@
                                 var="searchable"
                                 value="#{searchBean.shownObjects}"
                                 rows="10"
-                                paginator="true" paginatorPosition="both"
+                                paginator="true" paginatorPosition="bottom"
                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                 rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                paginatorAlwaysVisible="false"
                                 >
                                 <!--saveState="false"-->
                                 <p:column headerText="#{msgs.searchMgr_resulttable_name}">
