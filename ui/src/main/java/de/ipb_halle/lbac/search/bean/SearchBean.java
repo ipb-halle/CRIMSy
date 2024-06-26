@@ -285,5 +285,4 @@ public class SearchBean implements Serializable {
             return POLLING_INTERVALL_INACTIVE;
         }
     }
-
 }
