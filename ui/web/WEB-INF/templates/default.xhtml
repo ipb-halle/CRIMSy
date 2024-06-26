@@ -54,45 +54,39 @@
                     </p:row>
                     <p:row>
                         <!-- search interaction panel -->
-                        <p:column styleClass="interaction-search-panelXXX" > 
-                            <div>
-                                <div class="ui-inputgroup">
-                                    <div class="ui-inputgroup-addon">
-                                        <i class="pi pi-cloud"></i>
-                                    </div>
-
-                                    <p:inputText styleClass="searchRequest"
-                                                 placeholder="#{msgs.searchMgr_searchtext_placeholder}"
-                                                 required="false"
-                                                 style="width:100%;"
-                                                 label=""
-                                                 value="#{searchBean.searchFilter.searchTerms}"/>
-
-                                    <p:commandButton
-                                        value=""
-                                        style="margin-left: 8px"
-                                        type="submit"
-                                        action="#{searchBean.actionTriggerSearch()}"
-                                        ajax="true"
-                                        update="@form newDocumentsBadge"
-                                        icon="pi pi-search"
-                                        />
-                                    <p:commandButton
-                                        styleClass="advancedSearchButton"
-                                        style="margin-left: 0;"
-                                        ajax="true"
-                                        update="@(.main-search-panel)"
-                                        action="#{searchBean.toogleAdvancedSearch()}"
-                                        icon="pi pi-cloud"/>
-                                    <div>
-                                        <p:badge value="#{searchBean.getAmountOfNotShownObjects()}"
-                                                 style="margin-left: 4px"
-                                                 severity="danger"
-                                                 id="newDocumentsBadge">                                           
-                                                <!--tooltip="#{msgs.searchMgr_refreshButton_tooltip}"-->
-                                        </p:badge>
+                        <p:column styleClass="interaction-search-panel" >                           
+                            <p:panelGrid>
+                                <p:row>
+                                    <p:column styleClass="interaction-search-panel-first-column">
+                                        <div>
+                                            <i class="pi pi-cloud"></i>
+                                        </div>
+                                        <p:inputText styleClass="searchRequest"
+                                                     placeholder="#{msgs.searchMgr_searchtext_placeholder}"
+                                                     required="false"
+                                                     label=""
+                                                     value="#{searchBean.searchFilter.searchTerms}"/>
+                                    </p:column> 
+                                    <p:column styleClass="interaction-search-panel-second-column">
                                         <p:commandButton
-                                            styleClass="#{searchBean.getActualizeButtonStyleClass()}"
+                                            styleClass="searchButton"
+                                            value="search"
+                                            style="margin-left: 8px"
+                                            type="submit"
+                                            action="#{searchBean.actionTriggerSearch()}"
+                                            ajax="true"
+                                            update="@form newDocumentsBadge"
+                                            icon="pi pi-search"
+                                            />
+                                        <p:commandButton
+                                            value="advanced"
+                                            styleClass="advancedSearchButton searchButton"
+                                            ajax="true"
+                                            update="@(.main-search-panel)"
+                                            action="#{searchBean.toogleAdvancedSearch()}"
+                                            icon="pi pi-cloud"/>                                                                               
+                                        <p:commandButton
+                                            styleClass="#{searchBean.getActualizeButtonStyleClass()} searchButton"
                                             id="addDocumentButton"
                                             type="submit"
                                             action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
@@ -102,9 +96,24 @@
                                             process="@form"
                                             rendered="true"
                                             value="#{msgs.searchMgr_fetchButton}"/>
-                                    </div>
-                                </div>
-                            </div>
+                                        <p:badge value="#{searchBean.getAmountOfNotShownObjects()}"
+                                                 severity="danger"
+                                                 styleClass="newDocumentsBadge"
+                                                 id="newDocumentsBadge">                                           
+                                                <!--tooltip="#{msgs.searchMgr_refreshButton_tooltip}"-->
+                                        </p:badge>
+                                    </p:column> 
+                                    <p:column styleClass="interaction-search-panel-third-column">
+                                        <p:commandButton  icon="pi pi-cloud-upload"
+                                                          value="#{msgs.searchMgr_uploadbutton}"
+                                                          update="@none"
+                                                          styleClass="ui-button-danger"
+                                                          onclick="$('tbody.files').find('tr').remove();
+                                                                  PF('fileUploadModal').show()"
+                                                          rendered="#{userBean.hasUploadPermission()}"/>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
                         </p:column>
                         <!-- advanced search panel -->
                         <p:column 

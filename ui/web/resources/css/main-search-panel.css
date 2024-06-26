@@ -42,9 +42,20 @@
 .search-panel-logo > div > img{
     margin:auto;
 }
-.interaction-search-panel > div{
+.interaction-search-panel > table{
+    width:100%;
+}
+.interaction-search-panel-first-column {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
+}
+.interaction-search-panel-first-column > input {
+    width:100%;
+}
+.interaction-search-panel-second-column > .searchButton{
+    margin-left:5px;
+}
+.interaction-search-panel-second-column > .newDocumentsBadge{
+    position:absolute;
+    margin-left: -11px;
+    margin-top: -10px;
 }
