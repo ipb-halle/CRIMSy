@@ -72,7 +72,7 @@
                                     <p:column styleClass="interaction-search-panel-second-column">
                                         <p:commandButton
                                             styleClass="searchButton"
-                                            value="search"
+                                            value="#{msgs.searchMgr_triggerSearch}"
                                             style="margin-left: 8px"
                                             type="submit"
                                             action="#{searchBean.actionTriggerSearch()}"
@@ -81,7 +81,7 @@
                                             icon="pi pi-search"
                                             />
                                         <p:commandButton
-                                            value="advanced"
+                                            value="#{msgs.searchMgr_advancedSearch_button}"
                                             styleClass="advancedSearchButton searchButton"
                                             ajax="true"
                                             update="@(.main-search-panel)"
@@ -109,7 +109,7 @@
                                                           update="@none"
                                                           styleClass="ui-button-danger uploadButton"
                                                           onclick="$('tbody.files').find('tr').remove();
-                                                                      PF('fileUploadModal').show()"
+                                                                  PF('fileUploadModal').show()"
                                                           rendered="#{userBean.hasUploadPermission()}"/>
                                     </p:column> 
                                 </p:row>
