@@ -31,7 +31,7 @@
 }
 
 .search-result-panel{
-    height:600px;
+
 }
 /** format info box test results in ldpap check **/
 
@@ -55,13 +55,20 @@
     width:100%;
 }
 
+.interaction-search-panel-row  {
+    height:80px;
+}
+
 interaction-search-panel  .interaction-search-panel-second-column {
     border-style: none;
 }
-.interaction-search-panel-second-column > .searchButton{
+.interaction-search-panel-second-column  .searchButton{
     margin-left:5px;
 }
-.interaction-search-panel-second-column > .newDocumentsBadge{
+.interaction-search-panel-second-column  .uploadButton{
+    margin-left:30px;
+}
+.interaction-search-panel-second-column  .newDocumentsBadge{
     position:absolute;
     margin-left: -11px;
     margin-top: -10px;
@@ -83,6 +90,7 @@ body .main-search-panel tbody .interaction-search-panel {
 
 body .main-search-panel tbody .search-result-panel {
     border-style: none;
+    vertical-align: top;
 }
 body .main-search-panel tbody .advanced-search-panel {
     border-style: none;

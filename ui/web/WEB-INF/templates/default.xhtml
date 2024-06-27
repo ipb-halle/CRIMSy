@@ -42,7 +42,7 @@
                     <!-- Logo Panel -->
                     <p:row>
                         <p:column  
-                            colspan="3"                            
+                            colspan="2"                            
                             style="background:#f4f4f4;" 
                             styleClass="search-panel-logo">
                             <div>
@@ -52,7 +52,7 @@
                             </div>
                         </p:column>
                     </p:row>
-                    <p:row>
+                    <p:row styleClass="interaction-search-panel-row">
                         <!-- search interaction panel -->
                         <p:column styleClass="interaction-search-panel" >                           
                             <p:panelGrid>
@@ -104,16 +104,14 @@
                                                  id="newDocumentsBadge">                                           
                                                 <!--tooltip="#{msgs.searchMgr_refreshButton_tooltip}"-->
                                         </p:badge>
-                                    </p:column> 
-                                    <p:column styleClass="interaction-search-panel-third-column">
                                         <p:commandButton  icon="pi pi-cloud-upload"
                                                           value="#{msgs.searchMgr_uploadbutton}"
                                                           update="@none"
-                                                          styleClass="ui-button-danger"
+                                                          styleClass="ui-button-danger uploadButton"
                                                           onclick="$('tbody.files').find('tr').remove();
-                                                                  PF('fileUploadModal').show()"
+                                                                      PF('fileUploadModal').show()"
                                                           rendered="#{userBean.hasUploadPermission()}"/>
-                                    </p:column>
+                                    </p:column> 
                                 </p:row>
                             </p:panelGrid>
                         </p:column>
