@@ -58,14 +58,16 @@
                             <p:panelGrid>
                                 <p:row>
                                     <p:column styleClass="interaction-search-panel-first-column">
-                                        <div>
-                                            <i class="pi pi-cloud"></i>
+
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-cloud"></i></span>
+                                            <p:inputText styleClass="searchRequest"
+                                                         placeholder="#{msgs.searchMgr_searchtext_placeholder}"
+                                                         required="false"
+                                                         label=""
+                                                         value="#{searchBean.searchFilter.searchTerms}"/>   
                                         </div>
-                                        <p:inputText styleClass="searchRequest"
-                                                     placeholder="#{msgs.searchMgr_searchtext_placeholder}"
-                                                     required="false"
-                                                     label=""
-                                                     value="#{searchBean.searchFilter.searchTerms}"/>
+
                                     </p:column> 
                                     <p:column styleClass="interaction-search-panel-second-column">
                                         <p:commandButton

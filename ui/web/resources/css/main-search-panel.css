@@ -48,7 +48,10 @@
 .interaction-search-panel  .interaction-search-panel-first-column {
     display: flex;
 }
-.interaction-search-panel-first-column > input {
+.interaction-search-panel-first-column  input {
+    width:100%;
+}
+.interaction-search-panel-first-column  .ui-inputgroup {
     width:100%;
 }
 
