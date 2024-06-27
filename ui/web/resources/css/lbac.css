@@ -679,11 +679,7 @@ select.selCollection {
     margin-left: -5px;
 }
 .advancedSearchButton{
-    margin-left: -0px;
-    margin-top: 2px;
-    padding-top:2px !important;
-    width:10px;
-    height:23px;
+   
 }
 
 .advancedSearchButton i{
