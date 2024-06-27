@@ -24,7 +24,7 @@
  
  <groupId>de.ipb-halle</groupId>
  <artifactId>crimsy-api</artifactId>
- <version>1.0</version>
+ <version>1.0.0</version>
  <packaging>jar</packaging>
  
  <name>CRIMSy API</name>
