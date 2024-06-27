@@ -25,7 +25,7 @@
 
     <groupId>de.ipb-halle</groupId>
     <artifactId>ui</artifactId>
-    <version>2.2.3</version>
+    <version>2.2.4</version>
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
