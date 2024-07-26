@@ -36,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import jakarta.inject.Inject;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -245,8 +247,11 @@ public class TaxonomyServiceTest extends TestBase {
         userGroups = project.getUserGroups().getId();
         createTaxonomyTreeInDB(userGroups, owner.getId());
         List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
-        List<Taxonomy> directChildren = service.loadDirectChildrenOf(taxonomies.get(0).getId());
-        Assert.assertEquals(3, directChildren.size());
+        List<Taxonomy> directChildren = service.loadDirectChildrenOf(getIdOfTaxonomy("Leben_de", taxonomies));
+        Assert.assertEquals(7, directChildren.size());
+
+        directChildren = service.loadDirectChildrenOf(getIdOfTaxonomy("Ohrlappenpilze_de", taxonomies));
+        Assert.assertEquals(0, directChildren.size());
     }
 
     @Test
@@ -264,6 +269,14 @@ public class TaxonomyServiceTest extends TestBase {
             parents.add((Integer) o);
         }
         return parents;
+    }
+
+    private int getIdOfTaxonomy(String name, List<Taxonomy> taxonomies) {
+        return taxonomies.stream()
+                .filter(taxo -> {
+                    return taxo.getFirstName().equals(name);
+                })
+                .toList().get(0).getId();
     }
 
     @Deployment

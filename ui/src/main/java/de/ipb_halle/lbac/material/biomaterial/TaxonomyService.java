@@ -80,6 +80,26 @@ public class TaxonomyService implements Serializable {
             + "WHERE ef2.taxoid=ef.taxoid "
             + "AND t2.level < t.level);";
 
+    private final String RECURSION_CHILD_TAXONOMIES
+            = " WITH RECURSIVE current_recursion_result AS ( "
+            + "SELECT et.taxoid,et.parentid, 1 AS depth "
+            + "FROM taxonomy_direct_children et "
+            + "WHERE parentid=:taxoid "
+            + "UNION "
+            + "SELECT  "
+            + "et.taxoid, "
+            + "et.parentid, "
+            + "crr.depth+ 1 "
+            + "FROM "
+            + "taxonomy_direct_children et "
+            + "INNER JOIN "
+            + "current_recursion_result crr ON crr.taxoid = et.parentid "
+            + "WHERE crr.depth<2 "
+            + ") "
+            + "SELECT frr.taxoid "
+            + "FROM "
+            + "current_recursion_result frr; ";
+
     private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
 
     @Inject
@@ -183,7 +203,9 @@ public class TaxonomyService implements Serializable {
 
     public List<Taxonomy> loadDirectChildrenOf(int taxonomyId) {
         List<Taxonomy> results = new ArrayList<>();
-        Query q = this.em.createNativeQuery(SQL_GET_DIRECT_CHILDREN);
+
+        Query q = this.em.createNativeQuery(RECURSION_CHILD_TAXONOMIES);
+        this.em.createNativeQuery("SELECT * from info").getResultList();
         q.setParameter("taxoid", taxonomyId);
         @SuppressWarnings("unchecked")
         List<Integer> a = (List) q.getResultList();
