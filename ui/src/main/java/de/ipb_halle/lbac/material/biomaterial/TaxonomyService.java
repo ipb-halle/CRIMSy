@@ -94,11 +94,14 @@ public class TaxonomyService implements Serializable {
             + "taxonomy_direct_children et "
             + "INNER JOIN "
             + "current_recursion_result crr ON crr.taxoid = et.parentid "
-            + "WHERE crr.depth<2 "
+            + "WHERE crr.depth<:MAX_DEPTH "
             + ") "
-            + "SELECT frr.taxoid "
+            + "SELECT frr.taxoid, mi.value,tl.id,tl.name,tl.rank,frr.parentid "
             + "FROM "
-            + "current_recursion_result frr; ";
+            + "current_recursion_result frr "
+            + "INNER JOIN material_indices mi on mi.materialid = frr.taxoid "
+            + "INNER JOIN taxonomy t on t.id=frr.taxoid "
+            + "INNER JOIN taxonomy_level tl on tl.id = t.level; ";
 
     private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
 
@@ -143,7 +146,7 @@ public class TaxonomyService implements Serializable {
         for (TaxonomyEntity entity : loadedTaxonomyEntities) {
             List<Taxonomy> childrenTaxonomiesOfLoadedTaxonomy = new ArrayList<>();
             if (shouldChildrenBeLoaded) {
-                childrenTaxonomiesOfLoadedTaxonomy.addAll(loadChildrensOfTaxonomy(entity));
+                childrenTaxonomiesOfLoadedTaxonomy.addAll(loadChildrenOfTaxonomy(entity.getId(), 100));
                 Collections.sort(childrenTaxonomiesOfLoadedTaxonomy, (o1, o2) -> o1.getLevel().getRank() > o2.getLevel().getRank() ? -1 : 1);
             }
             MaterialAttributes materialAttributes = loadMaterialAttributes(entity);
@@ -174,16 +177,27 @@ public class TaxonomyService implements Serializable {
         return materialAttributes;
     }
 
-    private List<Taxonomy> loadChildrensOfTaxonomy(TaxonomyEntity entity) {
-        List<Taxonomy> loadedChildren = new ArrayList<>();
-        List<Integer> idsOfCildrenTaxonomies = em.createNativeQuery(SQL_GET_NESTED_TAXONOMIES).setParameter("id", entity.getId()).getResultList();
-        for (Integer childId : idsOfCildrenTaxonomies) {
-            Map<String, Object> parameterOfChildQuery = new HashMap<>();
-            parameterOfChildQuery.put("id", childId);
-            loadedChildren.addAll(loadTaxonomy(parameterOfChildQuery, false));
-        }
+    private List<Taxonomy> loadChildrenOfTaxonomy(int taxonomyId, int maxDepth) {
+        List<Taxonomy> results = new ArrayList<>();
 
-        return loadedChildren;
+        Query q = this.em.createNativeQuery(RECURSION_CHILD_TAXONOMIES)
+                .setParameter("taxoid", taxonomyId)
+                .setParameter("MAX_DEPTH", maxDepth);
+
+        List<Object[]> resultSet = q.getResultList();
+
+        for (Object[] result : resultSet) {
+            int id = (int) result[0];
+            String name = (String) result[1];
+            int levelid = (int) result[2];
+            String levelName = (String) result[3];
+            int levelRank = (int) result[4];
+            int parentId = (int) result[5];
+            TaxonomyLevel level = new TaxonomyLevel(levelid, levelName, levelRank);
+            results.add(new TaxonomyTreeEntry(id, name, new ArrayList<>(), null, level, parentId));
+        }
+        return results;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -202,17 +216,7 @@ public class TaxonomyService implements Serializable {
     }
 
     public List<Taxonomy> loadDirectChildrenOf(int taxonomyId) {
-        List<Taxonomy> results = new ArrayList<>();
-
-        Query q = this.em.createNativeQuery(RECURSION_CHILD_TAXONOMIES);
-        this.em.createNativeQuery("SELECT * from info").getResultList();
-        q.setParameter("taxoid", taxonomyId);
-        @SuppressWarnings("unchecked")
-        List<Integer> a = (List) q.getResultList();
-        for (Integer tid : a) {
-            results.add(loadTaxonomyById(tid));
-        }
-        return results;
+        return loadChildrenOfTaxonomy(taxonomyId, 2);
     }
 
     public Taxonomy loadTaxonomyById(Integer id) {

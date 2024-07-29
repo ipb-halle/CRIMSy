@@ -42,7 +42,7 @@ public class Taxonomy extends Material {
 
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private TaxonomyLevel level;
+    protected TaxonomyLevel level;
     private List<Taxonomy> taxHierachy = new ArrayList<>();
 
     public Taxonomy(int id,
