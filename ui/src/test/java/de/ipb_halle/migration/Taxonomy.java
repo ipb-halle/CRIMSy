@@ -85,11 +85,16 @@ public class Taxonomy {
     public final static String TAXONOMY_STRAIN_REF = "strain";
 
     public final static String UNKNOWN_TAXONOMY_PARENT_ID = "UNKNOWN_TAXONOMY_PARENT_ID";
+    private Map<Integer, Integer> parentOfClassMap;
 
     private InhouseDB inhouseDB;
     private int unknownParentId;       // link to this id, if no reference is given
 
     public Taxonomy(InhouseDB inhouseDB) {
+        this.parentOfClassMap = new HashMap<> ();
+        parentOfClassMap.put(19, 18972); // Pflanzen
+        parentOfClassMap.put(20, 18973); // Pilze
+        parentOfClassMap.put(15, 18974); // Unbekannt
         this.inhouseDB = inhouseDB;
         addInsertBuilders();
         this.unknownParentId = inhouseDB.getConfigInt(UNKNOWN_TAXONOMY_PARENT_ID);
@@ -139,7 +144,8 @@ public class Taxonomy {
                 String st = reader.readLine(); 
                 int oldId = Integer.parseInt(st.replaceAll(pattern, "$1"));
                 String name = st.replaceAll(pattern, "$2");
-                int parentId = Integer.parseInt(st.replaceAll(pattern, "$3"));
+                int parentId = this.parentOfClassMap.get(
+                        Integer.parseInt(st.replaceAll(pattern, "$3")));
 
                 save(name, 
                     this.inhouseDB.getConfigInt(INPUT_TAXONOMY_CLASS_LEVEL),
