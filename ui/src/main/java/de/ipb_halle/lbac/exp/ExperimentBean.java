@@ -28,7 +28,9 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.datalink.LinkCreationProcess;
+
 import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
+
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.image.ImageController;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
@@ -552,6 +554,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     /**
+     *
      */
     public void cleanup() {
         this.expRecordController = new NullController(this);
@@ -673,7 +676,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
         if ((lastSavedExpRecord != null) && (record.getExpRecordId() != null)
                 && (record.getExpRecordId()
-                        .equals(lastSavedExpRecord.getExpRecordId()))) {
+                .equals(lastSavedExpRecord.getExpRecordId()))) {
             sj.add(expRecordLastSavedCssClass);
         }
 

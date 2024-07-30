@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.exp;
 
 /**
- *
  * @author fmauz
  */
 public class ExperimentCode {
@@ -33,6 +32,10 @@ public class ExperimentCode {
 
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
+
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
@@ -45,11 +48,7 @@ public class ExperimentCode {
         this.suffix = suffix;
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
 
-    
     public String generateNewExperimentCode(int expNumber) {
         return prefix.replace(numberPattern, String.format(numberFormat, expNumber)) + seperator + suffix;
     }
@@ -69,9 +68,9 @@ public class ExperimentCode {
             throw new RuntimeException("Experimentcode not valide. Must contain a '-'");
         }
         ExperimentCode code = new ExperimentCode();
-        int indexOfFirstSeperator= expCode.indexOf(code.seperator);
+        int indexOfFirstSeperator = expCode.indexOf(code.seperator);
         code.setPrefix(expCode.substring(0, indexOfFirstSeperator));
-        code.setSuffix(expCode.substring(indexOfFirstSeperator+1));
+        code.setSuffix(expCode.substring(indexOfFirstSeperator + 1));
         return code;
     }
 
