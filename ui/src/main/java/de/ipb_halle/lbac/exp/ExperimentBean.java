@@ -162,7 +162,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         if (loggingProfiler == null) {
             loggingProfiler = new LoggingProfiler();
         }
-        loggingProfiler.profilerStart("ExperimentBean Contructor");
+        loggingProfiler.profilerStart("ExperimentBean Constructor");
 
         this.itemAgent = itemAgent;
         this.materialAgent = materialAgent;
@@ -172,7 +172,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.messagePresenter = messagePresenter;
         this.expRecordService = expRecordService;
 
-        loggingProfiler.profilerStop("ExperimentBean Contructor");
+        loggingProfiler.profilerStop("ExperimentBean Constructor");
 
     }
 
@@ -348,7 +348,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         //New exp from template
         if (!templateMode || experiment.getId() == null) {
             this.expRecords = new ArrayList<>();
-            projectController = new ExpProjectController(projectService, currentUser);
+            projectController = new ExpProjectController(projectService, aclistService, currentUser);
             initEmptyExperiment();
         }
     }
@@ -514,7 +514,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public boolean isNewExpButtonDisabled() {
-        return !currentUser.hasShortCut();
+        ExpProjectController controller = new ExpProjectController(projectService, aclistService, currentUser);
+        return !currentUser.hasShortCut() || controller.getChoosableProjects().isEmpty();
     }
 
     public String getNewExpToolTip() {
