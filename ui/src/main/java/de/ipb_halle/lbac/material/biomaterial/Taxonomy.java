@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -25,15 +27,16 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
  * @author fmauz
  */
 public class Taxonomy extends Material {
@@ -46,17 +49,34 @@ public class Taxonomy extends Material {
     private List<Taxonomy> taxHierachy = new ArrayList<>();
 
     public Taxonomy(int id,
-            List<MaterialName> names,
-            HazardInformation hazards,
-            StorageInformation storageInformation,
-            List<Taxonomy> hierarchy,
-            User owner,
-            Date creationDate) {
+                    Integer projectId,
+                    List<MaterialName> names,
+                    List<Taxonomy> hierarchy,
+                    User owner,
+                    Date creationDate,
+                    ACList acList) {
+        super(id, names, projectId, new HazardInformation(), new StorageInformation());
+        this.setOwner(owner);
+        this.creationTime = creationDate;
+        this.type = MaterialType.TAXONOMY;
+        this.taxHierachy = hierarchy;
+        setACList(acList);
+
+    }
+
+    public Taxonomy(int id,
+                    List<MaterialName> names,
+                    HazardInformation hazards,
+                    StorageInformation storageInformation,
+                    List<Taxonomy> hierarchy,
+                    User owner,
+                    Date creationDate) {
         super(id, names, null, hazards, storageInformation);
         this.setOwner(owner);
         this.creationTime = creationDate;
         this.type = MaterialType.TAXONOMY;
         this.taxHierachy = hierarchy;
+
 
     }
 

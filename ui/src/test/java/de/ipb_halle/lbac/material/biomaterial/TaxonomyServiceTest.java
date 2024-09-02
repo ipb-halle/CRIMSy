@@ -92,8 +92,21 @@ public class TaxonomyServiceTest extends TestBase {
 
         List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(1, 2);
 
-        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).collect(Collectors.toList());
+        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
         List<Integer> ids = Arrays.asList(1, 2, 3, 8, 14, 15, 16, 17);
+        Assert.assertTrue(resultList.containsAll(ids));
+
+
+    }
+    @Test
+    public void test0016_loadSelectedTaxonomyByIDandDepth() {
+        project = creationTools.createProject();
+        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
+
+        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(8, 1);
+
+        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
+        List<Integer> ids = Arrays.asList(8,9,11);
         Assert.assertTrue(resultList.containsAll(ids));
 
 

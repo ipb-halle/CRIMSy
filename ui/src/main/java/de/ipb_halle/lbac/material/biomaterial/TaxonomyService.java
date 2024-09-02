@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -108,20 +110,30 @@ public class TaxonomyService implements Serializable {
         return new TaxonomyLevel(this.em.find(TaxonomyLevelEntity.class, id));
     }
 
+    private String definedQuery = "select taxoid" +
+            " from effective_taxonomy   group by taxoid" +
+            " having count(taxoid)<= ( select count(taxoid)+:depth" +
+            " from effective_taxonomy" +
+            " group by taxoid" +
+            " having bool_or(parentid=:rootId)" +
+            " order by count(taxoid)" +
+            " limit 1   )" +
+            " AND bool_or(parentid=:rootId);";
+
     public List<Taxonomy> loadSelectedTaxonomyByIDandDepth(Integer rootId, Integer depth) {
         List<Taxonomy> loadedTaxonomy = new ArrayList<>();
-        
-        loadedTaxonomy.add(null);
-        loadedTaxonomy.add(null);
-        loadedTaxonomy.add(null);
-        loadedTaxonomy.add(null);
-        loadedTaxonomy.add(null);
-        loadedTaxonomy.add(null);
-        loadedTaxonomy.add(null);
-        int[] ids = {1, 2, 3, 8, 14, 15, 16, 17};
+        User owner = new User();
+
+        Query query = em.createNativeQuery(definedQuery);
+        query.setParameter("rootId", rootId);
+        query.setParameter("depth", depth);
+
+        List<Integer> idsOfTaxonomie = (List<Integer>) query.getResultList();
+
+
         int count = 0;
-        for (int id : ids) {
-            loadedTaxonomy.add(new Taxonomy(id,null,null,null,null,null,null));
+        for (Integer id : idsOfTaxonomie) {
+            loadedTaxonomy.add(new Taxonomy(id, 123, new ArrayList<>(), new ArrayList<>(), new User(), new Date(), new ACList()));
             count++;
         }
         return loadedTaxonomy;
