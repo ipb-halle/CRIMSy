@@ -110,15 +110,16 @@ public class TaxonomyService implements Serializable {
         return new TaxonomyLevel(this.em.find(TaxonomyLevelEntity.class, id));
     }
 
-    private String definedQuery = "select taxoid" +
-            " from effective_taxonomy   group by taxoid" +
-            " having count(taxoid)<= ( select count(taxoid)+:depth" +
-            " from effective_taxonomy" +
-            " group by taxoid" +
-            " having bool_or(parentid=:rootId)" +
-            " order by count(taxoid)" +
-            " limit 1   )" +
-            " AND bool_or(parentid=:rootId);";
+    private String definedQuery = "select taxoid"
+            + " from effective_taxonomy "
+            + " group by taxoid"
+            + " having count(taxoid)<= ( select count(taxoid)+:depth"
+            + " from effective_taxonomy"
+            + " group by taxoid"
+            + " having bool_or(parentid=:rootId)"
+            + " order by count(taxoid)"
+            + " limit 1   )"
+            + " AND bool_or(parentid=:rootId);";
 
     public List<Taxonomy> loadSelectedTaxonomyByIDandDepth(Integer rootId, Integer depth) {
         List<Taxonomy> loadedTaxonomy = new ArrayList<>();
@@ -129,7 +130,7 @@ public class TaxonomyService implements Serializable {
         query.setParameter("depth", depth);
 
         List<Integer> idsOfTaxonomie = (List<Integer>) query.getResultList();
-
+        idsOfTaxonomie.add(rootId);
 
         int count = 0;
         for (Integer id : idsOfTaxonomie) {
