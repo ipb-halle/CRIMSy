@@ -21,16 +21,11 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.admission.MemberService;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -41,7 +36,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
  * @author fmauz
  */
 @Stateless
@@ -112,6 +106,25 @@ public class TaxonomyService implements Serializable {
     @SuppressWarnings("unchecked")
     public TaxonomyLevel loadTaxonomyLevelById(Integer id) {
         return new TaxonomyLevel(this.em.find(TaxonomyLevelEntity.class, id));
+    }
+
+    public List<Taxonomy> loadSelectedTaxonomyByIDandDepth(Integer rootId, Integer depth) {
+        List<Taxonomy> loadedTaxonomy = new ArrayList<>();
+        
+        loadedTaxonomy.add(null);
+        loadedTaxonomy.add(null);
+        loadedTaxonomy.add(null);
+        loadedTaxonomy.add(null);
+        loadedTaxonomy.add(null);
+        loadedTaxonomy.add(null);
+        loadedTaxonomy.add(null);
+        int[] ids = {1, 2, 3, 8, 14, 15, 16, 17};
+        int count = 0;
+        for (int id : ids) {
+            loadedTaxonomy.add(new Taxonomy(id,null,null,null,null,null,null));
+            count++;
+        }
+        return loadedTaxonomy;
     }
 
     @SuppressWarnings("unchecked")

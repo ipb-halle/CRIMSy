@@ -21,7 +21,9 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
+
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
@@ -31,10 +33,10 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -45,7 +47,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- *
  * @author fmauz
  */
 @ExtendWith(PostgresqlContainerExtension.class)
@@ -82,6 +83,20 @@ public class TaxonomyServiceTest extends TestBase {
     public void test001_loadTaxonomyLevels() {
         List<TaxonomyLevel> levels = service.loadTaxonomyLevel();
         Assert.assertEquals("test001: 21 levels must be found", 21, levels.size());
+    }
+
+    @Test
+    public void test0015_loadSelectedTaxonomyByIDandDepth() {
+        project = creationTools.createProject();
+        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
+
+        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(1, 2);
+
+        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).collect(Collectors.toList());
+        List<Integer> ids = Arrays.asList(1, 2, 3, 8, 14, 15, 16, 17);
+        Assert.assertTrue(resultList.containsAll(ids));
+
+
     }
 
     @Test
