@@ -108,7 +108,6 @@ public class TaxonomyServiceTest extends TestBase {
         List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
         List<Integer> ids = Arrays.asList(8, 11);
         Assert.assertTrue(resultList.containsAll(ids));
-
     }
 
     @Test

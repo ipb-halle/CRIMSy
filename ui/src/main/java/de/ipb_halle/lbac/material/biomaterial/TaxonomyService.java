@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.admission.MemberService;
 
@@ -129,15 +130,32 @@ public class TaxonomyService implements Serializable {
         query.setParameter("rootId", rootId);
         query.setParameter("depth", depth);
 
-        List<Integer> idsOfTaxonomie = (List<Integer>) query.getResultList();
-        idsOfTaxonomie.add(rootId);
+        //here we got IDs of Taxonomies from Data Storage
+        List<Integer> ListOfTaxonomiesIdsFromQuery = (List<Integer>) query.getResultList();
+        //adding a root ID to the resulting list
+        ListOfTaxonomiesIdsFromQuery.add(rootId);
+        //creation of Material Entities Lists from gotten Taxonomy IDs
+        List<MaterialEntity> materialEntities = createMaterialEntitiesFromTaxonomyIds(ListOfTaxonomiesIdsFromQuery);
 
-        int count = 0;
-        for (Integer id : idsOfTaxonomie) {
-            loadedTaxonomy.add(new Taxonomy(id, 123, new ArrayList<>(), new ArrayList<>(), new User(), new Date(), new ACList()));
-            count++;
+
+        for (MaterialEntity materialEntity : materialEntities) {
+            loadedTaxonomy.add(new Taxonomy(materialEntity.getMaterialid(), 123, new ArrayList<>(), new ArrayList<>(), new User(), new Date(), new ACList()));
         }
         return loadedTaxonomy;
+    }
+
+    private String queryForMaterialEntietiesBasedOnTaxonomieIds = " select materialid, materialtypeid, ctime, aclist_id, owner_id, deactivated, projectid " +
+            "from materials where materialid in (:listOfTaxonomieIds) ;";
+
+    //Method for creation of Material Entities Lists from gotten Taxonomy IDs
+    private List<MaterialEntity> createMaterialEntitiesFromTaxonomyIds(List<Integer> listOfTaxonomiesIdsFromQuery) {
+
+        Query query = em.createNativeQuery(queryForMaterialEntietiesBasedOnTaxonomieIds, MaterialEntity.class);
+        query.setParameter("listOfTaxonomieIds", listOfTaxonomiesIdsFromQuery);
+
+        List<MaterialEntity> materialEntityList = (List<MaterialEntity>) query.getResultList();
+
+        return materialEntityList;
     }
 
     @SuppressWarnings("unchecked")
