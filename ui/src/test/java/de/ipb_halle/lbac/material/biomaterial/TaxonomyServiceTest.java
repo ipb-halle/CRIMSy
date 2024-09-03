@@ -113,7 +113,8 @@ public class TaxonomyServiceTest extends TestBase {
         List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(8, 0);
 
         //checking the Users
-        User user = (User) loaded_Taxonomies.stream().filter(x->x.getOwner().getId() ==8);
+        User user = (User) loaded_Taxonomies.stream().filter(x -> x.getOwner().getId() == 5);
+        Assert.assertTrue(user.getName().equalsIgnoreCase("admin"));
 
         //checking the Material Names
         Taxonomy taxonomy = loaded_Taxonomies.stream().filter(x -> x.getId() == 8).toList().get(0);

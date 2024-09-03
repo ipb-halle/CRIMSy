@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.admission;
 /**
  * MemberService provides service to load, save, update users and groups.
  */
+
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.service.NodeService;
@@ -38,6 +39,7 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -110,7 +112,29 @@ public class MemberService implements Serializable {
         }
     }
 
+    public List<User> createUserMapFromGivenUsersIds(Set<Integer> usersIds) {
+        String queryToCreateUsersList = "select id, name, membertype, email, phone, login, password, shortcut from usersgroups where id in (:usersIds) ;";
 
+        Query query = em.createNativeQuery(queryToCreateUsersList, UserEntity.class);
+        query.setParameter("usersIds", usersIds);
+        List<UserEntity> userEntityList = (List<UserEntity>) query.getResultList();
+
+        List<User> userList = new ArrayList<>();
+        for (UserEntity userEntity : userEntityList) {
+            User user = new User();
+            user.setId(userEntity.getId());
+            user.setName(userEntity.getName());
+            user.setEmail(userEntity.getEmail());
+            user.setPhone(userEntity.getPhone());
+            user.setLogin(userEntity.getLogin());
+            user.setPassword(userEntity.getPassword());
+            user.setShortcut(userEntity.getShortCut());
+            userList.add(user);
+        }
+
+
+        return userList;
+    }
 
     public User loadLocalAdminUser() {
         Map<String, Object> cmap = new HashMap<>();
@@ -336,7 +360,6 @@ public class MemberService implements Serializable {
     }
 
     /**
-     *
      * @param id
      * @return
      */

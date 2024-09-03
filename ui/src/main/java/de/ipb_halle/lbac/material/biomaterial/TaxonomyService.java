@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
@@ -143,6 +144,9 @@ public class TaxonomyService implements Serializable {
         List<MaterialEntity> materialEntities = createMaterialEntitiesFromTaxonomyIds(listOfTaxonomiesIdsFromQuery);
         //creation of MaterialName Map from given Taxonomy Ids
         Map<Integer, List<MaterialName>> materialNamesMap = indexService.createMaterialNamesMapFromTaxonomyIds(listOfTaxonomiesIdsFromQuery);
+        //creation of UsersList from given Taxonomy Ids
+        HashSet<Integer> userIds= (HashSet<Integer>) materialEntities.stream().map(me->me.getOwner()).collect(Collectors.toSet());
+        Map<Integer,User> users = (Map<Integer, User>) memberService.createUserMapFromGivenUsersIds(userIds);
 
         for (MaterialEntity materialEntity : materialEntities) {
             loadedTaxonomy.add(new Taxonomy(
@@ -150,7 +154,7 @@ public class TaxonomyService implements Serializable {
                     123,
                     materialNamesMap.get(materialEntity.getMaterialid()),
                     new ArrayList<>(),
-                    new User(),
+                    users.get(materialEntity.getOwner()),
                     new Date(),
                     new ACList()));
         }
@@ -162,7 +166,7 @@ public class TaxonomyService implements Serializable {
     private List<MaterialEntity> createMaterialEntitiesFromTaxonomyIds(List<Integer> listOfTaxonomiesIdsFromQuery) {
         //Native query
         String queryForMaterialEntietiesBasedOnTaxonomieIds = " select materialid, materialtypeid, ctime, aclist_id, owner_id, deactivated, projectid " +
-            "from materials where materialid in (:listOfTaxonomieIds) ;";
+                "from materials where materialid in (:listOfTaxonomieIds) ;";
 
         Query query = em.createNativeQuery(queryForMaterialEntietiesBasedOnTaxonomieIds, MaterialEntity.class);
         query.setParameter("listOfTaxonomieIds", listOfTaxonomiesIdsFromQuery);
