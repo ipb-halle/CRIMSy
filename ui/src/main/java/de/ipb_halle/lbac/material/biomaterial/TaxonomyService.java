@@ -20,8 +20,10 @@ package de.ipb_halle.lbac.material.biomaterial;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
+import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.admission.MemberService;
 
@@ -88,6 +90,9 @@ public class TaxonomyService implements Serializable {
     @Inject
     private MemberService memberService;
 
+    @Inject
+    private IndexService indexService;
+
     @PostConstruct
     public void init() {
     }
@@ -131,24 +136,33 @@ public class TaxonomyService implements Serializable {
         query.setParameter("depth", depth);
 
         //here we got IDs of Taxonomies from Data Storage
-        List<Integer> ListOfTaxonomiesIdsFromQuery = (List<Integer>) query.getResultList();
+        List<Integer> listOfTaxonomiesIdsFromQuery = (List<Integer>) query.getResultList();
         //adding a root ID to the resulting list
-        ListOfTaxonomiesIdsFromQuery.add(rootId);
+        listOfTaxonomiesIdsFromQuery.add(rootId);
         //creation of Material Entities Lists from gotten Taxonomy IDs
-        List<MaterialEntity> materialEntities = createMaterialEntitiesFromTaxonomyIds(ListOfTaxonomiesIdsFromQuery);
-
+        List<MaterialEntity> materialEntities = createMaterialEntitiesFromTaxonomyIds(listOfTaxonomiesIdsFromQuery);
+        //creation of MaterialName Map from given Taxonomy Ids
+        Map<Integer, List<MaterialName>> materialNamesMap = indexService.createMaterialNamesMapFromTaxonomyIds(listOfTaxonomiesIdsFromQuery);
 
         for (MaterialEntity materialEntity : materialEntities) {
-            loadedTaxonomy.add(new Taxonomy(materialEntity.getMaterialid(), 123, new ArrayList<>(), new ArrayList<>(), new User(), new Date(), new ACList()));
+            loadedTaxonomy.add(new Taxonomy(
+                    materialEntity.getMaterialid(),
+                    123,
+                    materialNamesMap.get(materialEntity.getMaterialid()),
+                    new ArrayList<>(),
+                    new User(),
+                    new Date(),
+                    new ACList()));
         }
         return loadedTaxonomy;
     }
 
-    private String queryForMaterialEntietiesBasedOnTaxonomieIds = " select materialid, materialtypeid, ctime, aclist_id, owner_id, deactivated, projectid " +
-            "from materials where materialid in (:listOfTaxonomieIds) ;";
 
     //Method for creation of Material Entities Lists from gotten Taxonomy IDs
     private List<MaterialEntity> createMaterialEntitiesFromTaxonomyIds(List<Integer> listOfTaxonomiesIdsFromQuery) {
+        //Native query
+        String queryForMaterialEntietiesBasedOnTaxonomieIds = " select materialid, materialtypeid, ctime, aclist_id, owner_id, deactivated, projectid " +
+            "from materials where materialid in (:listOfTaxonomieIds) ;";
 
         Query query = em.createNativeQuery(queryForMaterialEntietiesBasedOnTaxonomieIds, MaterialEntity.class);
         query.setParameter("listOfTaxonomieIds", listOfTaxonomiesIdsFromQuery);

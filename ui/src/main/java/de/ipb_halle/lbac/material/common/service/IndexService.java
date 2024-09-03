@@ -17,17 +17,23 @@
  */
 package de.ipb_halle.lbac.material.common.service;
 
+import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity;
+
 import java.io.Serializable;
+import java.security.KeyStore;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 
 /**
- *
  * @author fmauz
  */
 @Stateless
@@ -46,5 +52,33 @@ public class IndexService implements Serializable {
             back.put(ie.getId(), ie.getName());
         }
         return back;
+    }
+
+    public Map<Integer, List<MaterialName>> createMaterialNamesMapFromTaxonomyIds(List<Integer> taxonomieIdsList) {
+        String queryForGettingMaterialNames = "select id, materialid, typeid, value, language, rank " +
+                "from material_indices " +
+                "where typeid =1 " +
+                "and materialid in(:taxonomieIdsList) ;";
+        //we send the query with a list of Ids using MaterialIndexEntryEntity with given typeid of 1 ()
+        Query query = em.createNativeQuery(queryForGettingMaterialNames, MaterialIndexEntryEntity.class);
+
+        //setting of TaxonomyIds List as query variable
+        query.setParameter("taxonomieIdsList", taxonomieIdsList);
+        //getting results
+        List<MaterialIndexEntryEntity> materialNameEntires = (List<MaterialIndexEntryEntity>) query.getResultList();
+
+        Map<Integer, List<MaterialName>> resultMap = new HashMap<>();
+
+        //building a resulting HashMap with if condition(if the id of material is already in the map, then the materialName should be added to the List<MaterialName> materialNames)
+        for (MaterialIndexEntryEntity materialIndexEntry : materialNameEntires) {
+            MaterialName materialName = new MaterialName(materialIndexEntry.getValue(), materialIndexEntry.getLanguage(), materialIndexEntry.getRank());
+
+            if (!resultMap.containsKey(materialIndexEntry.getId())) {
+                resultMap.put(materialIndexEntry.getId(), new ArrayList<>());
+            }
+            resultMap.get(materialIndexEntry.getId()).add(materialName);
+        }
+
+        return resultMap;
     }
 }

@@ -90,12 +90,19 @@ public class TaxonomyServiceTest extends TestBase {
         project = creationTools.createProject();
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
 
+        //method for loading of Taxonomies
         List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(1, 1);
 
+        //Stream of Taxonomies loaded from data storage to the Taxonomies IdList
         List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
+
+
+        Taxonomy taxonomy = loaded_Taxonomies.stream().filter(x -> x.getId() == 1).toList().get(0);
+
+        Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Leben_de"));
+
         List<Integer> ids = Arrays.asList(1, 2, 3, 8, 14, 15, 16, 17);
         Assert.assertTrue(resultList.containsAll(ids));
-
     }
 
     @Test
@@ -105,6 +112,14 @@ public class TaxonomyServiceTest extends TestBase {
 
         List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(8, 0);
 
+        //checking the Users
+        User user = (User) loaded_Taxonomies.stream().filter(x->x.getOwner().getId() ==8);
+
+        //checking the Material Names
+        Taxonomy taxonomy = loaded_Taxonomies.stream().filter(x -> x.getId() == 8).toList().get(0);
+        Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Dacrymycetes_de"));
+
+        //checking the Taxonomy Ids
         List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
         List<Integer> ids = Arrays.asList(8, 11);
         Assert.assertTrue(resultList.containsAll(ids));

@@ -21,6 +21,7 @@ package de.ipb_halle.lbac.admission;
  * MemberService provides service to load, save, update users and groups.
  */
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
@@ -108,6 +109,8 @@ public class MemberService implements Serializable {
             em.merge(group.createEntity());
         }
     }
+
+
 
     public User loadLocalAdminUser() {
         Map<String, Object> cmap = new HashMap<>();
