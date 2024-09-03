@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.admission;
 /**
  * MemberService provides service to load, save, update users and groups.
  */
-
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.service.NodeService;
@@ -44,6 +43,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.util.UUID;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -112,34 +112,39 @@ public class MemberService implements Serializable {
         }
     }
 
-    public List<User> createUserMapFromGivenUsersIds(Set<Integer> usersIds) {
-        String queryToCreateUsersList = "select id, name, membertype, email, phone, login, password, shortcut from usersgroups where id in (:usersIds) ;";
+    @SuppressWarnings("unchecked")
+    public Map<Integer, User> createUserMapFromGivenUsersIds(Set<Integer> usersIds) {
 
-        Query query = em.createNativeQuery(queryToCreateUsersList, UserEntity.class);
-        query.setParameter("usersIds", usersIds);
-        List<UserEntity> userEntityList = (List<UserEntity>) query.getResultList();
+        String sql
+                = "SELECT id,membertype,subsystemtype,subsystemdata,modified,node_id,login,name,email,password,phone,shortcut "
+                + "FROM usersgroups  "
+                + "WHERE id in (:userids) "
+                + "AND (node_id  = :local_node_id "
+                + " OR node_id  = :public_node_id) ;";
 
-        List<User> userList = new ArrayList<>();
-        for (UserEntity userEntity : userEntityList) {
-            User user = new User();
-            user.setId(userEntity.getId());
-            user.setName(userEntity.getName());
-            user.setEmail(userEntity.getEmail());
-            user.setPhone(userEntity.getPhone());
-            user.setLogin(userEntity.getLogin());
-            user.setPassword(userEntity.getPassword());
-            user.setShortcut(userEntity.getShortCut());
-            userList.add(user);
+        Query query = em.createNativeQuery(sql, UserEntity.class);
+        query.setParameter("userids", usersIds);
+
+        query.setParameter("local_node_id", nodeService.getLocalNode().getId());
+        query.setParameter("public_node_id", UUID.fromString(GlobalAdmissionContext.PUBLIC_NODE_ID));
+        System.out.println("Node ID nach Abfrage:  " + nodeService.getLocalNodeId());
+        Map<Integer, User> userMap = new HashMap<>();
+
+        em.createNativeQuery("Select id,name,cast(node_id AS varchar) from usersgroups").getResultList();
+
+        for (UserEntity entity : (List<UserEntity>) query.getResultList()) {
+            userMap.put(entity.getId(), new User(entity, nodeService.getLocalNode()));
+
         }
 
-
-        return userList;
+        return userMap;
     }
 
     public User loadLocalAdminUser() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(PARAM_LOGIN, "admin");
         cmap.put(PARAM_NODE_ID, nodeService.getLocalNodeId());
+        System.out.println("Node ID nach Anlage ADMIN:  " + nodeService.getLocalNodeId());
         List<User> users = loadUsers(cmap);
         if (users.isEmpty()) {
             return null;

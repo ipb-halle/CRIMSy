@@ -96,7 +96,6 @@ public class TaxonomyServiceTest extends TestBase {
         //Stream of Taxonomies loaded from data storage to the Taxonomies IdList
         List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
 
-
         Taxonomy taxonomy = loaded_Taxonomies.stream().filter(x -> x.getId() == 1).toList().get(0);
 
         Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Leben_de"));
@@ -113,8 +112,8 @@ public class TaxonomyServiceTest extends TestBase {
         List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(8, 0);
 
         //checking the Users
-        User user = (User) loaded_Taxonomies.stream().filter(x -> x.getOwner().getId() == 5);
-        Assert.assertTrue(user.getName().equalsIgnoreCase("admin"));
+        User user = loaded_Taxonomies.stream().filter(x -> x.getOwner().getId() == 2).toList().get(0).getOwner();
+        Assert.assertTrue(user.getName().equalsIgnoreCase("Public Account"));
 
         //checking the Material Names
         Taxonomy taxonomy = loaded_Taxonomies.stream().filter(x -> x.getId() == 8).toList().get(0);

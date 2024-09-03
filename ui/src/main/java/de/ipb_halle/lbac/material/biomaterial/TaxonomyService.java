@@ -147,6 +147,8 @@ public class TaxonomyService implements Serializable {
         //creation of UsersList from given Taxonomy Ids
         HashSet<Integer> userIds= (HashSet<Integer>) materialEntities.stream().map(me->me.getOwner()).collect(Collectors.toSet());
         Map<Integer,User> users = (Map<Integer, User>) memberService.createUserMapFromGivenUsersIds(userIds);
+        
+        
 
         for (MaterialEntity materialEntity : materialEntities) {
             loadedTaxonomy.add(new Taxonomy(
