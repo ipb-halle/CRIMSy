@@ -261,48 +261,58 @@ public class TaxonomyServiceTest extends TestBase {
     public void test015_loadSelectedTaxonomyByIDandDepth() {
         project = creationTools.createProject();
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
+        int idOfRoot = 1;
 
-        //method for loading of Taxonomies
-        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(1, 1);
+        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(idOfRoot, 1);
 
-        //Stream of Taxonomies loaded from data storage to the Taxonomies IdList
-        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
+        checkIdsOfLoadedTaxonomies(loaded_Taxonomies, Arrays.asList(1, 2, 3, 8, 14, 15, 16, 17));
 
-        Taxonomy taxonomy = getTaxonomyById(loaded_Taxonomies, 1);
+        //Check of specific taxonomy (root)
+        Taxonomy taxonomyToCheck = getTaxonomyById(loaded_Taxonomies, idOfRoot);
+        checkUserOfTaxonomy(taxonomyToCheck, ownerid);
+        checkNamesOfTaxonomy(taxonomyToCheck, Arrays.asList("Leben_de"));
 
-        Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Leben_de"));
-
-        List<Integer> ids = Arrays.asList(1, 2, 3, 8, 14, 15, 16, 17);
-        Assert.assertTrue(resultList.containsAll(ids));
     }
 
     @Test
     public void test016_loadSelectedTaxonomyByIDandDepth() {
+        int idOfRoot = 8;
         project = creationTools.createProject();
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
 
-        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(8, 0);
+        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(idOfRoot, 0);
 
-        //checking the Users
-        User user = loaded_Taxonomies.stream().filter(x -> x.getOwner().getId() == 2).toList().get(0).getOwner();
-        Assert.assertTrue(user.getName().equalsIgnoreCase("Public Account"));
+        checkIdsOfLoadedTaxonomies(loaded_Taxonomies, Arrays.asList(8, 11));
 
-        //checking the Material Names
-        Taxonomy taxonomy = getTaxonomyById(loaded_Taxonomies, 8);
-        Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Dacrymycetes_de"));
+        //Check of specific taxonomy (root)
+        Taxonomy taxonomyToCheck = getTaxonomyById(loaded_Taxonomies, idOfRoot);
+        checkUserOfTaxonomy(taxonomyToCheck, ownerid);
+        checkNamesOfTaxonomy(taxonomyToCheck, Arrays.asList("Dacrymycetes_de"));
 
-        //checking the Taxonomy Ids
-        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
-        List<Integer> ids = Arrays.asList(8, 11);
-        Assert.assertTrue(resultList.containsAll(ids));
     }
 
-    private Taxonomy getTaxonomyById(List<Taxonomy> loadedTaxonomy, int id) {
-        List<Taxonomy> taxonomies = loadedTaxonomy.stream().filter(x -> x.getId() == id).toList();
+    private Taxonomy getTaxonomyById(List<Taxonomy> loadedTaxonomies, int id) {
+        List<Taxonomy> taxonomies = loadedTaxonomies.stream().filter(x -> x.getId() == id).toList();
         if (taxonomies.size() != 1) {
             throw new RuntimeException("There was not exactly 1 taxonomy with id " + id);
         }
         return taxonomies.get(0);
+    }
+
+    private void checkIdsOfLoadedTaxonomies(List<Taxonomy> loadedTaxonomies, List<Integer> expectedIds) {
+        List<Integer> resultList = loadedTaxonomies.stream().map(x -> x.getId()).toList();
+        Assert.assertEquals(expectedIds.size(), resultList.size());
+        Assert.assertTrue(resultList.containsAll(expectedIds));
+    }
+
+    private void checkUserOfTaxonomy(Taxonomy taxonomy, Integer expectedUserId) {
+        Assert.assertEquals(expectedUserId, taxonomy.getOwner().getId());
+    }
+
+    private void checkNamesOfTaxonomy(Taxonomy taxonomy, List<String> expectedNames) {
+        Assert.assertEquals(expectedNames.size(), taxonomy.getNames().size());
+        List<String> namesOfTaxo = taxonomy.getNames().stream().map((name) -> name.getValue()).toList();
+        Assert.assertTrue(expectedNames.containsAll(namesOfTaxo));
     }
 
     private Set<Integer> getParentsOfTaxo(int id) {
