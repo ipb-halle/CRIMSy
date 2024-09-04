@@ -271,6 +271,7 @@ public class TaxonomyServiceTest extends TestBase {
         Taxonomy taxonomyToCheck = getTaxonomyById(loaded_Taxonomies, idOfRoot);
         checkUserOfTaxonomy(taxonomyToCheck, ownerid);
         checkNamesOfTaxonomy(taxonomyToCheck, Arrays.asList("Leben_de"));
+        checkAclOfTaxonomy(taxonomyToCheck, project.getUserGroups().getId());
 
     }
 
@@ -288,6 +289,7 @@ public class TaxonomyServiceTest extends TestBase {
         Taxonomy taxonomyToCheck = getTaxonomyById(loaded_Taxonomies, idOfRoot);
         checkUserOfTaxonomy(taxonomyToCheck, ownerid);
         checkNamesOfTaxonomy(taxonomyToCheck, Arrays.asList("Dacrymycetes_de"));
+        checkAclOfTaxonomy(taxonomyToCheck, project.getUserGroups().getId());
 
     }
 
@@ -322,6 +324,10 @@ public class TaxonomyServiceTest extends TestBase {
             parents.add((Integer) o);
         }
         return parents;
+    }
+
+    private void checkAclOfTaxonomy(Taxonomy t, Integer expectedAclId) {
+        Assert.assertEquals(expectedAclId, t.getACList().getId());
     }
 
     @Deployment
