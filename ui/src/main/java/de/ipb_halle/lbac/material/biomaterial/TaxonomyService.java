@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -94,6 +95,9 @@ public class TaxonomyService implements Serializable {
     @Inject
     private IndexService indexService;
 
+    @Inject
+    private ACListService acListService;
+
     @PostConstruct
     public void init() {
     }
@@ -138,16 +142,23 @@ public class TaxonomyService implements Serializable {
 
         //here we got IDs of Taxonomies from Data Storage
         List<Integer> listOfTaxonomiesIdsFromQuery = (List<Integer>) query.getResultList();
+
         //adding a root ID to the resulting list
         listOfTaxonomiesIdsFromQuery.add(rootId);
+
         //creation of Material Entities Lists from gotten Taxonomy IDs
         List<MaterialEntity> materialEntities = createMaterialEntitiesFromTaxonomyIds(listOfTaxonomiesIdsFromQuery);
+
         //creation of MaterialName Map from given Taxonomy Ids
         Map<Integer, List<MaterialName>> materialNamesMap = indexService.createMaterialNamesMapFromTaxonomyIds(listOfTaxonomiesIdsFromQuery);
+
         //creation of UsersList from given Taxonomy Ids
         HashSet<Integer> userIds= (HashSet<Integer>) materialEntities.stream().map(me->me.getOwner()).collect(Collectors.toSet());
         Map<Integer,User> users = (Map<Integer, User>) memberService.createUserMapFromGivenUsersIds(userIds);
-        
+
+        //creation of ACL List from given ACL Ids
+        HashSet<Integer> aclIds = (HashSet<Integer>) materialEntities.stream().map(x -> x.getACList()).collect(Collectors.toSet());
+        Map<Integer, ACList> aclLists = (Map<Integer, ACList>) acListService.createACListMapFromGivenACIds(aclIds);
         
 
         for (MaterialEntity materialEntity : materialEntities) {
@@ -158,7 +169,7 @@ public class TaxonomyService implements Serializable {
                     new ArrayList<>(),
                     users.get(materialEntity.getOwner()),
                     new Date(),
-                    new ACList()));
+                    aclLists.get(materialEntity.getACList())));
         }
         return loadedTaxonomy;
     }

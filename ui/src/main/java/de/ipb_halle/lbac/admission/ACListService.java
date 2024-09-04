@@ -23,10 +23,11 @@ package de.ipb_halle.lbac.admission;
  * new ACList object should be created. If this new ACL already exists in the
  * database (as determined by the ACList.permEquals() method), this existing
  * ACList should replace the newly created ACL.
- *
+ * <p>
  * This immutability is currently not enforced by implementation but it should
  * be part of convention.
  */
+
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.crimsy_api.AttributeType;
@@ -37,16 +38,14 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -108,7 +107,6 @@ public class ACListService implements Serializable {
         return this.ownerAccount;
     }
 
-    
 
     /**
      * check if User u is permitted to perform action perm under ACList acl.
@@ -138,8 +136,8 @@ public class ACListService implements Serializable {
      * permissions to an object.
      *
      * @param perm the permission flag (READ, CREATE, EDIT, DELETE, ...)
-     * @param aco the access controlled object
-     * @param u the user for which access should be checked.
+     * @param aco  the access controlled object
+     * @param u    the user for which access should be checked.
      * @return true if action is permitted
      */
     public boolean isPermitted(ACPermission perm, ACObject aco, User u) {
@@ -159,6 +157,22 @@ public class ACListService implements Serializable {
             }
         }
         return false;
+    }
+
+    public Map<Integer, ACList> createACListMapFromGivenACIds(HashSet<Integer> acListsIds) {
+        String queryForAclists ="select id, name, permcode from aclists where id in (:aclistsIds) ;";
+        Query query = em.createNativeQuery(queryForAclists, ACListEntity.class);
+        query.setParameter("aclistsIds", acListsIds);
+
+        List<ACListEntity> acListEntities = (List<ACListEntity>) query.getResultList();
+
+        Map<Integer, ACList> acListMap = new HashMap<>();
+        for (ACListEntity acListEntity : acListEntities){
+            ACList acList = new ACList(acListEntity);
+            acListMap.put(acListEntity.getId(), acList);
+        }
+
+        return acListMap;
     }
 
     /**
@@ -235,7 +249,7 @@ public class ACListService implements Serializable {
         Root<ACListEntity> acListRoot = criteriaQuery.from(ACListEntity.class);
         criteriaQuery.select(acListRoot);
 
-        for(ACListEntity entity: this.em.createQuery(criteriaQuery).getResultList()) {
+        for (ACListEntity entity : this.em.createQuery(criteriaQuery).getResultList()) {
             ACList acl = new ACList(entity);
             acl.setACEntries(loadACEntries(acl));
             acl.updatePermCode();
@@ -262,7 +276,7 @@ public class ACListService implements Serializable {
             }
             return acl;
         }
-        
+
         return r;
     }
 
