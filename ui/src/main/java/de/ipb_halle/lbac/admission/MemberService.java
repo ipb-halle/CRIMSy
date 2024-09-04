@@ -21,7 +21,6 @@ package de.ipb_halle.lbac.admission;
  * MemberService provides service to load, save, update users and groups.
  */
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
@@ -114,27 +113,17 @@ public class MemberService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public Map<Integer, User> createUserMapFromGivenUsersIds(Set<Integer> usersIds) {
-
+        Map<Integer, User> userMap = new HashMap<>();
         String sql
                 = "SELECT id,membertype,subsystemtype,subsystemdata,modified,node_id,login,name,email,password,phone,shortcut "
                 + "FROM usersgroups  "
-                + "WHERE id in (:userids) "
-                + "AND (node_id  = :local_node_id "
-                + " OR node_id  = :public_node_id) ;";
+                + "WHERE id in (:userids) ;";
 
         Query query = em.createNativeQuery(sql, UserEntity.class);
         query.setParameter("userids", usersIds);
 
-        query.setParameter("local_node_id", nodeService.getLocalNode().getId());
-        query.setParameter("public_node_id", UUID.fromString(GlobalAdmissionContext.PUBLIC_NODE_ID));
-        System.out.println("Node ID nach Abfrage:  " + nodeService.getLocalNodeId());
-        Map<Integer, User> userMap = new HashMap<>();
-
-        em.createNativeQuery("Select id,name,cast(node_id AS varchar) from usersgroups").getResultList();
-
         for (UserEntity entity : (List<UserEntity>) query.getResultList()) {
             userMap.put(entity.getId(), new User(entity, nodeService.getLocalNode()));
-
         }
 
         return userMap;

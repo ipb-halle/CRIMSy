@@ -35,7 +35,6 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -83,46 +82,6 @@ public class TaxonomyServiceTest extends TestBase {
     public void test001_loadTaxonomyLevels() {
         List<TaxonomyLevel> levels = service.loadTaxonomyLevel();
         Assert.assertEquals("test001: 21 levels must be found", 21, levels.size());
-    }
-
-    @Test
-    public void test0015_loadSelectedTaxonomyByIDandDepth() {
-        project = creationTools.createProject();
-        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
-
-        //method for loading of Taxonomies
-        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(1, 1);
-
-        //Stream of Taxonomies loaded from data storage to the Taxonomies IdList
-        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
-
-        Taxonomy taxonomy = loaded_Taxonomies.stream().filter(x -> x.getId() == 1).toList().get(0);
-
-        Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Leben_de"));
-
-        List<Integer> ids = Arrays.asList(1, 2, 3, 8, 14, 15, 16, 17);
-        Assert.assertTrue(resultList.containsAll(ids));
-    }
-
-    @Test
-    public void test0016_loadSelectedTaxonomyByIDandDepth() {
-        project = creationTools.createProject();
-        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
-
-        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(8, 0);
-
-        //checking the Users
-        User user = loaded_Taxonomies.stream().filter(x -> x.getOwner().getId() == 2).toList().get(0).getOwner();
-        Assert.assertTrue(user.getName().equalsIgnoreCase("Public Account"));
-
-        //checking the Material Names
-        Taxonomy taxonomy = loaded_Taxonomies.stream().filter(x -> x.getId() == 8).toList().get(0);
-        Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Dacrymycetes_de"));
-
-        //checking the Taxonomy Ids
-        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
-        List<Integer> ids = Arrays.asList(8, 11);
-        Assert.assertTrue(resultList.containsAll(ids));
     }
 
     @Test
@@ -296,6 +255,54 @@ public class TaxonomyServiceTest extends TestBase {
         userGroups = project.getUserGroups().getId();
         createTaxonomyTreeInDB(userGroups, owner.getId());
         Assert.assertNotNull(service.loadRootTaxonomy());
+    }
+
+    @Test
+    public void test015_loadSelectedTaxonomyByIDandDepth() {
+        project = creationTools.createProject();
+        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
+
+        //method for loading of Taxonomies
+        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(1, 1);
+
+        //Stream of Taxonomies loaded from data storage to the Taxonomies IdList
+        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
+
+        Taxonomy taxonomy = getTaxonomyById(loaded_Taxonomies, 1);
+
+        Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Leben_de"));
+
+        List<Integer> ids = Arrays.asList(1, 2, 3, 8, 14, 15, 16, 17);
+        Assert.assertTrue(resultList.containsAll(ids));
+    }
+
+    @Test
+    public void test016_loadSelectedTaxonomyByIDandDepth() {
+        project = creationTools.createProject();
+        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
+
+        List<Taxonomy> loaded_Taxonomies = service.loadSelectedTaxonomyByIDandDepth(8, 0);
+
+        //checking the Users
+        User user = loaded_Taxonomies.stream().filter(x -> x.getOwner().getId() == 2).toList().get(0).getOwner();
+        Assert.assertTrue(user.getName().equalsIgnoreCase("Public Account"));
+
+        //checking the Material Names
+        Taxonomy taxonomy = getTaxonomyById(loaded_Taxonomies, 8);
+        Assert.assertTrue(taxonomy.getNames().get(0).getValue().equalsIgnoreCase("Dacrymycetes_de"));
+
+        //checking the Taxonomy Ids
+        List<Integer> resultList = loaded_Taxonomies.stream().map(x -> x.getId()).toList();
+        List<Integer> ids = Arrays.asList(8, 11);
+        Assert.assertTrue(resultList.containsAll(ids));
+    }
+
+    private Taxonomy getTaxonomyById(List<Taxonomy> loadedTaxonomy, int id) {
+        List<Taxonomy> taxonomies = loadedTaxonomy.stream().filter(x -> x.getId() == id).toList();
+        if (taxonomies.size() != 1) {
+            throw new RuntimeException("There was not exactly 1 taxonomy with id " + id);
+        }
+        return taxonomies.get(0);
     }
 
     private Set<Integer> getParentsOfTaxo(int id) {
