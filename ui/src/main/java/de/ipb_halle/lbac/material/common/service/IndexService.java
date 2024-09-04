@@ -55,10 +55,10 @@ public class IndexService implements Serializable {
     }
 
     public Map<Integer, List<MaterialName>> createMaterialNamesMapFromTaxonomyIds(List<Integer> taxonomieIdsList) {
-        String queryForGettingMaterialNames = "select id, materialid, typeid, value, language, rank " +
-                "from material_indices " +
-                "where typeid =1 " +
-                "and materialid in(:taxonomieIdsList) ;";
+        String queryForGettingMaterialNames = "select id, materialid, typeid, value, language, rank "
+                + "from material_indices "
+                + "where typeid =1 "
+                + "and materialid in(:taxonomieIdsList) ;";
         //we send the query with a list of Ids using MaterialIndexEntryEntity with given typeid of 1 ()
         Query query = em.createNativeQuery(queryForGettingMaterialNames, MaterialIndexEntryEntity.class);
 
@@ -73,10 +73,10 @@ public class IndexService implements Serializable {
         for (MaterialIndexEntryEntity materialIndexEntry : materialNameEntires) {
             MaterialName materialName = new MaterialName(materialIndexEntry.getValue(), materialIndexEntry.getLanguage(), materialIndexEntry.getRank());
 
-            if (!resultMap.containsKey(materialIndexEntry.getId())) {
-                resultMap.put(materialIndexEntry.getId(), new ArrayList<>());
+            if (!resultMap.containsKey(materialIndexEntry.getMaterialid())) {
+                resultMap.put(materialIndexEntry.getMaterialid(), new ArrayList<>());
             }
-            resultMap.get(materialIndexEntry.getId()).add(materialName);
+            resultMap.get(materialIndexEntry.getMaterialid()).add(materialName);
         }
 
         return resultMap;
