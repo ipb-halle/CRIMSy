@@ -32,6 +32,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import java.util.Set;
 
 /**
  * @author fmauz
@@ -54,7 +55,7 @@ public class IndexService implements Serializable {
         return back;
     }
 
-    public Map<Integer, List<MaterialName>> createMaterialNamesMapFromTaxonomyIds(List<Integer> taxonomieIdsList) {
+    public Map<Integer, List<MaterialName>> createMaterialNamesMapFromTaxonomyIds(Set<Integer> taxonomieIdsList) {
         String queryForGettingMaterialNames = "select id, materialid, typeid, value, language, rank "
                 + "from material_indices "
                 + "where typeid =1 "

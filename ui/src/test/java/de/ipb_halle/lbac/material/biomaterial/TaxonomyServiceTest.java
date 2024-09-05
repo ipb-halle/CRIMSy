@@ -273,6 +273,9 @@ public class TaxonomyServiceTest extends TestBase {
         checkNamesOfTaxonomy(taxonomyToCheck, Arrays.asList("Leben_de"));
         checkAclOfTaxonomy(taxonomyToCheck, project.getUserGroups().getId());
 
+        taxonomyToCheck = getTaxonomyById(loaded_Taxonomies, 3);
+        checkHierarchy(taxonomyToCheck, Arrays.asList(2, 1));
+
     }
 
     @Test
@@ -290,6 +293,9 @@ public class TaxonomyServiceTest extends TestBase {
         checkUserOfTaxonomy(taxonomyToCheck, ownerid);
         checkNamesOfTaxonomy(taxonomyToCheck, Arrays.asList("Dacrymycetes_de"));
         checkAclOfTaxonomy(taxonomyToCheck, project.getUserGroups().getId());
+
+        taxonomyToCheck = getTaxonomyById(loaded_Taxonomies, 8);
+        checkHierarchy(taxonomyToCheck, Arrays.asList(2, 1));
 
     }
 
@@ -309,6 +315,12 @@ public class TaxonomyServiceTest extends TestBase {
 
     private void checkUserOfTaxonomy(Taxonomy taxonomy, Integer expectedUserId) {
         Assert.assertEquals(expectedUserId, taxonomy.getOwner().getId());
+    }
+
+    private void checkHierarchy(Taxonomy t, List<Integer> expectedHierarchy) {
+        List<Integer> idsOfHierarchy = t.getTaxHierarchy().stream().map(ht -> ht.getId()).toList();
+        Assert.assertEquals(expectedHierarchy.size(), idsOfHierarchy.size());
+        Assert.assertTrue(expectedHierarchy.containsAll(idsOfHierarchy));
     }
 
     private void checkNamesOfTaxonomy(Taxonomy taxonomy, List<String> expectedNames) {
