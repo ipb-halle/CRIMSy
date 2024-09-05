@@ -121,7 +121,7 @@ public class TaxonomyService implements Serializable {
         return new TaxonomyLevel(this.em.find(TaxonomyLevelEntity.class, id));
     }
 
-    private String definedQuery = "select taxoid"
+    private final String TAXONOMY_IDS_OF_ROOT_WITH_DEPTH = "select taxoid"
             + " from effective_taxonomy "
             + " group by taxoid"
             + " having count(taxoid)<= ( select count(taxoid)+:depth"
@@ -132,7 +132,7 @@ public class TaxonomyService implements Serializable {
             + " limit 1   )"
             + " AND bool_or(parentid=:rootId);";
 
-    private String hierarchyQuery = "select taxoid,parentid "
+    private final String IDS_OF_HIERARCHY = "select taxoid,parentid "
             + "from effective_taxonomy et "
             + "join taxonomy t on t.id = et.parentid "
             + "join taxonomy_level tl on t.level = tl.id "
@@ -144,31 +144,20 @@ public class TaxonomyService implements Serializable {
         List<Taxonomy> loadedTaxonomy = new ArrayList<>();
         Map<Integer, Taxonomy> chachedTaxonomies = new HashMap<>();
 
-        User owner = new User();
-
-        Query query = em.createNativeQuery(definedQuery);
-        query.setParameter("rootId", rootId);
-        query.setParameter("depth", depth);
-
-        //here we got IDs of Taxonomies from Data Storage
-        Set<Integer> listOfTaxonomiesIdsFromQuery = new HashSet<>((List<Integer>) query.getResultList());
+        Set<Integer> setOfTaxoIds = getIdsOfRootWithDepth(rootId, depth);
+        Map<Integer, List<Integer>> mapOfAncestorIds = loadParentIdsOfTaxonomies(setOfTaxoIds);
 
         //adding a root ID to the resulting list
-        listOfTaxonomiesIdsFromQuery.add(rootId);
-        List<Integer[]> idsOfRootHierarchy = (List<Integer[]>) em.createNativeQuery(hierarchyQuery).setParameter("ids", listOfTaxonomiesIdsFromQuery).getResultList();
-
-        Set<Integer> xxx = new HashSet<>();
-        for (Object[] o : idsOfRootHierarchy) {
-            xxx.add((Integer) o[1]);
+        Set<Integer> combinedIds = new HashSet<Integer>(setOfTaxoIds);
+        for (List<Integer> parentsOfTaxo : mapOfAncestorIds.values()) {
+            combinedIds.addAll(parentsOfTaxo);
         }
 
-        listOfTaxonomiesIdsFromQuery.addAll(xxx);
-
         //creation of Material Entities Lists from gotten Taxonomy IDs
-        List<MaterialEntity> materialEntities = createMaterialEntitiesFromTaxonomyIds(listOfTaxonomiesIdsFromQuery);
+        List<MaterialEntity> materialEntities = createMaterialEntitiesFromTaxonomyIds(combinedIds);
 
         //creation of MaterialName Map from given Taxonomy Ids
-        Map<Integer, List<MaterialName>> materialNamesMap = indexService.createMaterialNamesMapFromTaxonomyIds(listOfTaxonomiesIdsFromQuery);
+        Map<Integer, List<MaterialName>> materialNamesMap = indexService.createMaterialNamesMapFromTaxonomyIds(combinedIds);
 
         //creation of UsersList from given Taxonomy Ids
         HashSet<Integer> userIds = (HashSet<Integer>) materialEntities.stream().map(me -> me.getOwner()).collect(Collectors.toSet());
@@ -178,30 +167,62 @@ public class TaxonomyService implements Serializable {
         HashSet<Integer> aclIds = (HashSet<Integer>) materialEntities.stream().map(x -> x.getACList()).collect(Collectors.toSet());
         Map<Integer, ACList> aclLists = acListService.createACListMapFromGivenACIds(aclIds);
 
+        //Load Projects
+        //HashSet<Integer> aclIds = (HashSet<Integer>) materialEntities.stream().map(x -> x.getACList()).collect(Collectors.toSet());
+        //Map<Integer, ACList> aclLists = acListService.createACListMapFromGivenACIds(aclIds);
+        int projectId = 123;
+
         for (MaterialEntity materialEntity : materialEntities) {
+
             Taxonomy t = new Taxonomy(
                     materialEntity.getMaterialid(),
-                    123,
+                    projectId,
                     materialNamesMap.get(materialEntity.getMaterialid()),
-                    new ArrayList<>(),
                     users.get(materialEntity.getOwner()),
-                    new Date(),
+                    materialEntity.getCtime(),
                     aclLists.get(materialEntity.getACList()));
-
-            if (!idsOfRootHierarchy.contains(t.getId())) {
-                loadedTaxonomy.add(t);
-            }
-            chachedTaxonomies.put(materialEntity.getMaterialid(), t);
+            chachedTaxonomies.put(t.getId(), t);
+            loadedTaxonomy.add(t);
         }
 
-        chachedTaxonomies.get(rootId)
-                .getTaxHierarchy()
-                .add(chachedTaxonomies.get(idsOfRootHierarchy.get(0)));
-        chachedTaxonomies.get(rootId)
-                .getTaxHierarchy()
-                .add(chachedTaxonomies.get(idsOfRootHierarchy.get(1)));
+        for (Taxonomy t : loadedTaxonomy) {
+            List<Integer> parentIds = mapOfAncestorIds.get(t.getId());
+            for (Integer parentId : parentIds) {
+                if (parentId != null) {
+                    t.getTaxHierarchy().add(chachedTaxonomies.get(parentId));
+                }
+            }
+        }
 
-        return loadedTaxonomy;
+        return loadedTaxonomy.stream().filter(t -> setOfTaxoIds.contains(t.getId())).toList();
+    }
+
+    private Map<Integer, List<Integer>> loadParentIdsOfTaxonomies(Collection<Integer> ids) {
+        List<Integer[]> idsOfRootHierarchy = (List<Integer[]>) em.createNativeQuery(IDS_OF_HIERARCHY).setParameter("ids", ids).getResultList();
+        Object xx = em.createNativeQuery("Select * from effective_taxonomy order by taxoid").getResultList();
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        map.put(1, new ArrayList<>());
+        for (Object[] o : idsOfRootHierarchy) {
+            Integer taxoId = (Integer) o[0];
+            Integer parentId = (Integer) o[1];
+            if (!map.containsKey(taxoId)) {
+                map.put(taxoId, new ArrayList<>());
+            }
+            map.get(taxoId).add((parentId));
+        }
+
+        return map;
+
+    }
+
+    private Set<Integer> getIdsOfRootWithDepth(Integer rootId, Integer depth) {
+        Query query = em.createNativeQuery(TAXONOMY_IDS_OF_ROOT_WITH_DEPTH);
+        query.setParameter("rootId", rootId);
+        query.setParameter("depth", depth);
+        //here we got IDs of Taxonomies from Data Storage
+        Set<Integer> listOfTaxonomiesIdsFromQuery = new HashSet<>((List<Integer>) query.getResultList());
+        listOfTaxonomiesIdsFromQuery.add(rootId);
+        return listOfTaxonomiesIdsFromQuery;
     }
 
     //Method for creation of Material Entities Lists from gotten Taxonomy IDs

@@ -49,34 +49,32 @@ public class Taxonomy extends Material {
     private List<Taxonomy> taxHierachy = new ArrayList<>();
 
     public Taxonomy(int id,
-                    Integer projectId,
-                    List<MaterialName> names,
-                    List<Taxonomy> hierarchy,
-                    User owner,
-                    Date creationDate,
-                    ACList acList) {
+            Integer projectId,
+            List<MaterialName> names,
+            User owner,
+            Date creationDate,
+            ACList acList) {
         super(id, names, projectId, new HazardInformation(), new StorageInformation());
         this.setOwner(owner);
         this.creationTime = creationDate;
         this.type = MaterialType.TAXONOMY;
-        this.taxHierachy = hierarchy;
+        this.taxHierachy = new ArrayList<>();
         setACList(acList);
 
     }
 
     public Taxonomy(int id,
-                    List<MaterialName> names,
-                    HazardInformation hazards,
-                    StorageInformation storageInformation,
-                    List<Taxonomy> hierarchy,
-                    User owner,
-                    Date creationDate) {
+            List<MaterialName> names,
+            HazardInformation hazards,
+            StorageInformation storageInformation,
+            List<Taxonomy> hierarchy,
+            User owner,
+            Date creationDate) {
         super(id, names, null, hazards, storageInformation);
         this.setOwner(owner);
         this.creationTime = creationDate;
         this.type = MaterialType.TAXONOMY;
         this.taxHierachy = hierarchy;
-
 
     }
 
