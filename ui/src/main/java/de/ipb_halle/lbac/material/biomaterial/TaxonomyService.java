@@ -133,7 +133,7 @@ public class TaxonomyService implements Serializable {
             + " AND bool_or(parentid=:rootId);";
 
     @SuppressWarnings("unchecked")
-    public List<Taxonomy> loadSelectedTaxonomyByIDandDepth(Integer rootId, Integer depth) {
+    public List<Taxonomy> loadTaxonomyByIdAndDepth(Integer rootId, Integer depth) {
         List<Taxonomy> loadedTaxonomy = new ArrayList<>();
         Map<Integer, Taxonomy> chachedTaxonomies = new HashMap<>();
 

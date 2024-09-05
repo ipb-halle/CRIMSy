@@ -75,13 +75,12 @@ public class TissueService implements Serializable {
                 .setParameter("taxoid", targetTaxo.getId())
                 .getResultList();
         for (TissueEntity entity : entities) {
-            Map<String, Object> cmap = new HashMap<>();
-            cmap.put("id", entity.getTaxoid());
-            Taxonomy t = taxonomyService.loadTaxonomy(cmap, true).get(0);
+
             tissues.add(
-                    new Tissue(entity.getId(),
+                    new Tissue(
+                            entity.getId(),
                             materialService.loadMaterialNamesById(entity.getId()),
-                            t)
+                            taxonomyService.loadTaxonomyByIdAndDepth(entity.getTaxoid(), 0).get(0))
             );
         }
         return tissues;
