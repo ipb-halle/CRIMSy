@@ -137,7 +137,7 @@ public class TaxonomyService implements Serializable {
         List<Taxonomy> loadedTaxonomy = new ArrayList<>();
         Map<Integer, Taxonomy> chachedTaxonomies = new HashMap<>();
 
-        Set<Integer> setOfTaxoIds = getIdsOfRootWithDepth(rootId, depth);
+        Set<Integer> setOfTaxoIds = getIdsOfRootWithDepth(rootId, depth - 1);
         Map<Integer, List<Integer>> mapOfAncestorIds = loadParentIdsOfTaxonomies(setOfTaxoIds);
 
         Set<Integer> combinedIds = combineIds(setOfTaxoIds, mapOfAncestorIds);
@@ -155,6 +155,12 @@ public class TaxonomyService implements Serializable {
         //Load Projects
         int projectId = 123;
 
+        String taxonomyEntitiesQuery = "SELECT id,level FROM taxonomy WHERE id in(:ids) ;";
+        List<TaxonomyEntity> taxonomyEntities = em.createNativeQuery(taxonomyEntitiesQuery, TaxonomyEntity.class).setParameter("ids", combinedIds).getResultList();
+        Set<Integer> levelIds = new HashSet(taxonomyEntities.stream().map(x -> x.getLevel()).toList());
+        List<TaxonomyLevel> levels = loadTaxonomyLevel();
+
+        //Load TaxonomyLevel;
         for (MaterialEntity materialEntity : materialEntities) {
             Taxonomy t = new Taxonomy(
                     materialEntity.getMaterialid(),
@@ -165,6 +171,14 @@ public class TaxonomyService implements Serializable {
                     aclLists.get(materialEntity.getACList()));
             chachedTaxonomies.put(t.getId(), t);
             loadedTaxonomy.add(t);
+
+            for (TaxonomyEntity te : taxonomyEntities) {
+                if (te.getId().equals(materialEntity.getMaterialid())) {
+                    TaxonomyLevel level = levels.stream().filter(tl -> tl.getId() == te.getLevel()).toList().get(0);
+                    t.setLevel(level);
+                }
+            }
+            taxonomyEntities.stream().filter(x -> x.getId().equals(t.getId())).toList().get(0);
         }
 
         addHierarchyToTaxonomies(loadedTaxonomy, mapOfAncestorIds, chachedTaxonomies);
@@ -343,9 +357,7 @@ public class TaxonomyService implements Serializable {
     }
 
     public Taxonomy loadTaxonomyById(Integer id) {
-        Map<String, Object> cmap = new HashMap<>();
-        cmap.put("id", id);
-        List<Taxonomy> results = loadTaxonomy(cmap, true);
+        List<Taxonomy> results = loadTaxonomyByIdAndDepth(id, 0);
         if (results.size() == 1) {
             return results.get(0);
         } else {

@@ -263,7 +263,7 @@ public class TaxonomyServiceTest extends TestBase {
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
         int idOfRoot = 1;
 
-        List<Taxonomy> loaded_Taxonomies = service.loadTaxonomyByIdAndDepth(idOfRoot, 1);
+        List<Taxonomy> loaded_Taxonomies = service.loadTaxonomyByIdAndDepth(idOfRoot, 2);
 
         checkIdsOfLoadedTaxonomies(loaded_Taxonomies, Arrays.asList(1, 2, 3, 8, 14, 15, 16, 17));
 
@@ -284,7 +284,7 @@ public class TaxonomyServiceTest extends TestBase {
         project = creationTools.createProject();
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
 
-        List<Taxonomy> loaded_Taxonomies = service.loadTaxonomyByIdAndDepth(idOfRoot, 0);
+        List<Taxonomy> loaded_Taxonomies = service.loadTaxonomyByIdAndDepth(idOfRoot, 1);
 
         checkIdsOfLoadedTaxonomies(loaded_Taxonomies, Arrays.asList(8, 11));
 
