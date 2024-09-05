@@ -47,28 +47,28 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class TaxonomyService implements Serializable {
-
+    
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-
+    
     private final String SQL_GET_TAXONOMY_LEVELS = "SELECT id,name,rank FROM taxonomy_level";
-
+    
     private final String SQL_GET_TAXONOMY
             = "SELECT id,level "
             + "FROM taxonomy "
             + "WHERE (level=:level OR :level=-1) "
             + "AND (id=:id OR :id=-1) "
             + "ORDER BY level";
-
+    
     private final String SQL_GET_MATERIAL_INFOS
             = "SELECT ctime,aclist_id,owner_id "
             + "FROM materials "
             + "WHERE materialid=:mid";
-
+    
     private final String SQL_CHECK_ROOT_TAXONOMY_PRESENT
             = "SELECT count(*) "
             + "FROM taxonomy "
             + "WHERE level=1";
-
+    
     private final String SQL_GET_DIRECT_CHILDREN
             = "SELECT taxoid "
             + "FROM effective_taxonomy ef "
@@ -80,32 +80,32 @@ public class TaxonomyService implements Serializable {
             + "JOIN taxonomy  t2 on t2.id=:taxoid "
             + "WHERE ef2.taxoid=ef.taxoid "
             + "AND t2.level < t.level);";
-
+    
     private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
-
+    
     @Inject
     private MaterialService materialService;
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-
+    
     @Inject
     private MemberService memberService;
-
+    
     @Inject
     private IndexService indexService;
-
+    
     @Inject
     private ACListService acListService;
-
+    
     @PostConstruct
     public void init() {
     }
-
+    
     public Set<String> getSimilarTaxonomy(String name) {
         return new HashSet<>();
     }
-
+    
     @SuppressWarnings("unchecked")
     public List<TaxonomyLevel> loadTaxonomyLevel() {
         List<TaxonomyLevel> levels = new ArrayList<>();
@@ -115,12 +115,12 @@ public class TaxonomyService implements Serializable {
         }
         return levels;
     }
-
+    
     @SuppressWarnings("unchecked")
     public TaxonomyLevel loadTaxonomyLevelById(Integer id) {
         return new TaxonomyLevel(this.em.find(TaxonomyLevelEntity.class, id));
     }
-
+    
     private final String TAXONOMY_IDS_OF_ROOT_WITH_DEPTH = "select taxoid"
             + " from effective_taxonomy "
             + " group by taxoid"
@@ -131,19 +131,19 @@ public class TaxonomyService implements Serializable {
             + " order by count(taxoid)"
             + " limit 1   )"
             + " AND bool_or(parentid=:rootId);";
-
+    
     private final String IDS_OF_HIERARCHY = "select taxoid,parentid "
             + "from effective_taxonomy et "
             + "join taxonomy t on t.id = et.parentid "
             + "join taxonomy_level tl on t.level = tl.id "
             + "where et.taxoid in (:ids) "
             + "order by taxoid asc, rank desc; ";
-
+    
     @SuppressWarnings("unchecked")
     public List<Taxonomy> loadSelectedTaxonomyByIDandDepth(Integer rootId, Integer depth) {
         List<Taxonomy> loadedTaxonomy = new ArrayList<>();
         Map<Integer, Taxonomy> chachedTaxonomies = new HashMap<>();
-
+        
         Set<Integer> setOfTaxoIds = getIdsOfRootWithDepth(rootId, depth);
         Map<Integer, List<Integer>> mapOfAncestorIds = loadParentIdsOfTaxonomies(setOfTaxoIds);
 
@@ -171,9 +171,9 @@ public class TaxonomyService implements Serializable {
         //HashSet<Integer> aclIds = (HashSet<Integer>) materialEntities.stream().map(x -> x.getACList()).collect(Collectors.toSet());
         //Map<Integer, ACList> aclLists = acListService.createACListMapFromGivenACIds(aclIds);
         int projectId = 123;
-
+        
         for (MaterialEntity materialEntity : materialEntities) {
-
+            
             Taxonomy t = new Taxonomy(
                     materialEntity.getMaterialid(),
                     projectId,
@@ -184,7 +184,7 @@ public class TaxonomyService implements Serializable {
             chachedTaxonomies.put(t.getId(), t);
             loadedTaxonomy.add(t);
         }
-
+        
         for (Taxonomy t : loadedTaxonomy) {
             List<Integer> parentIds = mapOfAncestorIds.get(t.getId());
             for (Integer parentId : parentIds) {
@@ -193,10 +193,10 @@ public class TaxonomyService implements Serializable {
                 }
             }
         }
-
+        
         return loadedTaxonomy.stream().filter(t -> setOfTaxoIds.contains(t.getId())).toList();
     }
-
+    
     private Map<Integer, List<Integer>> loadParentIdsOfTaxonomies(Collection<Integer> ids) {
         List<Integer[]> idsOfRootHierarchy = (List<Integer[]>) em.createNativeQuery(IDS_OF_HIERARCHY).setParameter("ids", ids).getResultList();
         Object xx = em.createNativeQuery("Select * from effective_taxonomy order by taxoid").getResultList();
@@ -210,11 +210,26 @@ public class TaxonomyService implements Serializable {
             }
             map.get(taxoId).add((parentId));
         }
-
+        
+        Map<Integer, List<Integer>> newValues = new HashMap<>();
+        Set<Integer> idsNotInKeySet = new HashSet<>();
+        for (List<Integer> idsOfKey : map.values()) {
+            idsNotInKeySet.addAll(idsOfKey);
+        }
+        idsNotInKeySet.removeAll(map.keySet());
+        
+        for (Integer id : idsNotInKeySet) {
+            for (List<Integer> values : map.values()) {
+                if (values.indexOf(id) != -1) {
+                    newValues.put(id, values.subList(values.indexOf(id) + 1, values.size()));
+                }
+            }
+        }
+        map.putAll(newValues);
         return map;
-
+        
     }
-
+    
     private Set<Integer> getIdsOfRootWithDepth(Integer rootId, Integer depth) {
         Query query = em.createNativeQuery(TAXONOMY_IDS_OF_ROOT_WITH_DEPTH);
         query.setParameter("rootId", rootId);
@@ -230,21 +245,21 @@ public class TaxonomyService implements Serializable {
         //Native query
         String queryForMaterialEntietiesBasedOnTaxonomieIds = " select materialid, materialtypeid, ctime, aclist_id, owner_id, deactivated, projectid "
                 + "from materials where materialid in (:listOfTaxonomieIds) ;";
-
+        
         Query query = em.createNativeQuery(queryForMaterialEntietiesBasedOnTaxonomieIds, MaterialEntity.class);
         query.setParameter("listOfTaxonomieIds", listOfTaxonomiesIdsFromQuery);
-
+        
         List<MaterialEntity> materialEntityList = (List<MaterialEntity>) query.getResultList();
-
+        
         return materialEntityList;
     }
-
+    
     @SuppressWarnings("unchecked")
     public List<Taxonomy> loadTaxonomy(Map<String, Object> queryParameters, boolean shouldChildrenBeLoaded) {
         List<Taxonomy> loadedTaxonomies = new ArrayList<>();
-
+        
         List<TaxonomyEntity> loadedTaxonomyEntities = queryTaxonomyByParamater(queryParameters);
-
+        
         for (TaxonomyEntity entity : loadedTaxonomyEntities) {
             List<Taxonomy> childrenTaxonomiesOfLoadedTaxonomy = new ArrayList<>();
             if (shouldChildrenBeLoaded) {
@@ -252,7 +267,7 @@ public class TaxonomyService implements Serializable {
                 Collections.sort(childrenTaxonomiesOfLoadedTaxonomy, (o1, o2) -> o1.getLevel().getRank() > o2.getLevel().getRank() ? -1 : 1);
             }
             MaterialAttributes materialAttributes = loadMaterialAttributes(entity);
-
+            
             Taxonomy loadedTaxonomy = new Taxonomy(
                     entity.getId(),
                     materialService.loadMaterialNamesById(entity.getId()),
@@ -261,24 +276,24 @@ public class TaxonomyService implements Serializable {
                     childrenTaxonomiesOfLoadedTaxonomy,
                     memberService.loadUserById(materialAttributes.getOwnerId()),
                     materialAttributes.getCreationTime());
-
+            
             loadedTaxonomy.setLevel(new TaxonomyLevel(em.find(TaxonomyLevelEntity.class, entity.getLevel())));
-
+            
             loadedTaxonomy.setHistory(materialService.loadHistoryOfMaterial(entity.getId()));
             loadedTaxonomies.add(loadedTaxonomy);
         }
         return loadedTaxonomies;
     }
-
+    
     private MaterialAttributes loadMaterialAttributes(TaxonomyEntity entity) {
         List<Object> materialEntityList = this.em.createNativeQuery(SQL_GET_MATERIAL_INFOS)
                 .setParameter("mid", entity.getId())
                 .getResultList();
-
+        
         MaterialAttributes materialAttributes = new MaterialAttributes(materialEntityList);
         return materialAttributes;
     }
-
+    
     private List<Taxonomy> loadChildrensOfTaxonomy(TaxonomyEntity entity) {
         List<Taxonomy> loadedChildren = new ArrayList<>();
         List<Integer> idsOfCildrenTaxonomies = em.createNativeQuery(SQL_GET_NESTED_TAXONOMIES).setParameter("id", entity.getId()).getResultList();
@@ -287,10 +302,10 @@ public class TaxonomyService implements Serializable {
             parameterOfChildQuery.put("id", childId);
             loadedChildren.addAll(loadTaxonomy(parameterOfChildQuery, false));
         }
-
+        
         return loadedChildren;
     }
-
+    
     @SuppressWarnings("unchecked")
     private List<TaxonomyEntity> queryTaxonomyByParamater(Map<String, Object> queryParameters) {
         Query query = this.em.createNativeQuery(SQL_GET_TAXONOMY, TaxonomyEntity.class);
@@ -299,13 +314,13 @@ public class TaxonomyService implements Serializable {
         List<TaxonomyEntity> loadedTaxonomyEntities = (List<TaxonomyEntity>) query.getResultList();
         return loadedTaxonomyEntities;
     }
-
+    
     @SuppressWarnings("unchecked")
     public int checkRootTaxonomy() {
         List<Long> results = this.em.createNativeQuery(SQL_CHECK_ROOT_TAXONOMY_PRESENT).getResultList();
         return results.get(0).intValue();
     }
-
+    
     public List<Taxonomy> loadDirectChildrenOf(int taxonomyId) {
         List<Taxonomy> results = new ArrayList<>();
         Query q = this.em.createNativeQuery(SQL_GET_DIRECT_CHILDREN);
@@ -317,7 +332,7 @@ public class TaxonomyService implements Serializable {
         }
         return results;
     }
-
+    
     public Taxonomy loadTaxonomyById(Integer id) {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("id", id);
@@ -328,29 +343,29 @@ public class TaxonomyService implements Serializable {
             return null;
         }
     }
-
+    
     public Taxonomy loadRootTaxonomy() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("level", loadTaxonomyLevel().get(0).getId());
         return loadTaxonomy(cmap, false).get(0);
     }
-
+    
     private class MaterialAttributes {
-
+        
         private Object[] parameter;
-
+        
         MaterialAttributes(List<Object> parameter) {
             this.parameter = (Object[]) parameter.get(0);
         }
-
+        
         public int getOwnerId() {
             return (int) parameter[2];
         }
-
+        
         public Date getCreationTime() {
             return new Date(((Timestamp) parameter[0]).getTime());
         }
-
+        
     }
-
+    
 }
