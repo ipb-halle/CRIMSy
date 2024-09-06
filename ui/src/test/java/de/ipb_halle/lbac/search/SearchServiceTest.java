@@ -49,6 +49,7 @@ import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
@@ -584,6 +585,8 @@ public class SearchServiceTest extends TestBase {
     }
 
     private void createMaterials() {
+        createTaxanomy(1, "Life", 1, publicAclId, publicUser.getId());
+        entityManagerService.doSqlUpdate("ALTER SEQUENCE materials_materialid_seq RESTART WITH 2");
         materialCreator = new MaterialCreator(entityManagerService);
         materialid1 = materialCreator.createStructure(
                 publicUser.getId(),
@@ -604,7 +607,8 @@ public class SearchServiceTest extends TestBase {
                 context.getNoAccessACL().getId(),
                 project1.getId(),
                 "Testmaterial-003-notReadable");
-        createTaxanomy(1, "Life", 1, publicAclId, publicUser.getId());
+        Material m = materialService.loadMaterialById(1);
+
         bioMaterial = creationTools.createBioMaterial(project1, "BioMaterial001", taxonomyService.loadRootTaxonomy(), null);
         materialService.saveMaterialToDB(bioMaterial, publicAclId, new HashMap<>(), publicUser.getId());
     }
