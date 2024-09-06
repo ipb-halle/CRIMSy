@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import jakarta.inject.Inject;
+import java.util.Arrays;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -79,46 +80,48 @@ public class TissueServiceTest extends TestBase {
     }
 
     @Test
-    public void test001_saveAndloadTissues() {
+    public void test001_loadTissues() {
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
-        List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName("Wurzel", "de", 1));
-        names.add(new MaterialName("Root", "en", 2));
-        names.add(new MaterialName("Radix", "la", 3));
-        for (Taxonomy t : taxoService.loadTaxonomyByIdAndDepth(1, 99)) {
-            System.out.println(t.getFirstName());
-        }
-        //Filtering by name would be better
-        Taxonomy taxo = taxoService.loadTaxonomyByIdAndDepth(1, 99).get(3);
-        Tissue tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
+        List<Taxonomy> taxonomies = taxoService.loadTaxonomyByIdAndDepth(1, 99);
+        Taxonomy champignonTaxo = getTaxonomyByName("Champignonartige_de", taxonomies);
+        Taxonomy mushroomTaxo = getTaxonomyByName("Pilze_de", taxonomies);
+        Taxonomy waterLillyKind = getTaxonomyByName("Seerosenartige_de", taxonomies);
+        Taxonomy waterLilly = getTaxonomyByName("Seerosengewächse_de", taxonomies);
 
-        names = new ArrayList<>();
-        names.add(new MaterialName("Hyphen", "de", 1));
-        names.add(new MaterialName("flocci, hyphae", "la", 2));
-        //Filtering by name would be better
-        taxo = taxoService.loadTaxonomyByIdAndDepth(1, 99).get(1);
-        tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
-
-        names = new ArrayList<>();
-        names.add(new MaterialName("Blüte", "de", 1));
-        //Filtering by name would be better
-        Taxonomy seerose = taxoService.loadTaxonomyByIdAndDepth(1, 99).get(11);
-        tissue = new Tissue(100, names, seerose);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
-
-        names = new ArrayList<>();
-        names.add(new MaterialName("Stützrippe", "de", 1));
-        taxo = taxoService.loadTaxonomyByIdAndDepth(1, 99).get(18);
-        tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
+        createTissue(champignonTaxo, "Wurzel", "root", "radix");
+        createTissue(mushroomTaxo, "Hyphen", "flocci, hyphae");
+        createTissue(waterLillyKind, "Blüte");
+        createTissue(waterLillyKind, "Stützrippe");
 
         List<Tissue> loadedTissues = tissueService.loadTissues();
         Assert.assertEquals(4, loadedTissues.size());
 
-        List<Tissue> contrainedTissues = tissueService.loadTissues(seerose);
+        List<Tissue> contrainedTissues = tissueService.loadTissues(waterLilly);
         Assert.assertEquals(2, contrainedTissues.size());
+    }
+
+    private Tissue createTissue(Taxonomy taxo, String... names) {
+        Tissue tissue = new Tissue(100, createMaterialNames(names), taxo);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
+        return tissue;
+    }
+
+    private Taxonomy getTaxonomyByName(String name, List<Taxonomy> taxonomies) {
+        for (Taxonomy t : taxonomies) {
+            if (t.getNames().stream().map(tName -> tName.getValue()).toList().contains(name)) {
+                return t;
+            }
+        }
+        throw new RuntimeException("Could not find taxonomy with name " + name);
+    }
+
+    private List<MaterialName> createMaterialNames(String... names) {
+        List<MaterialName> materialNames = new ArrayList<>();
+        for (int i = 0; i < names.length; i++) {
+            materialNames.add(new MaterialName(names[i], "language " + i, i + 1));
+        }
+
+        return materialNames;
     }
 
     @Deployment

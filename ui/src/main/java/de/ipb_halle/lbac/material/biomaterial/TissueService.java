@@ -52,6 +52,7 @@ public class TissueService implements Serializable {
             + "FROM tissues t "
             + "JOIN effective_taxonomy et ON et.parentid=t.taxoid "
             + "WHERE et.taxoid=:taxoid OR et.parentid=:taxoid";
+    
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @SuppressWarnings("unchecked")
@@ -62,7 +63,7 @@ public class TissueService implements Serializable {
             tissues.add(
                     new Tissue(entity.getId(),
                             materialService.loadMaterialNamesById(entity.getId()),
-                            taxonomyService.loadTaxonomyById(entity.getId()))
+                            taxonomyService.loadTaxonomyById(entity.getTaxoid()))
             );
         }
         return tissues;
@@ -75,12 +76,11 @@ public class TissueService implements Serializable {
                 .setParameter("taxoid", targetTaxo.getId())
                 .getResultList();
         for (TissueEntity entity : entities) {
-
             tissues.add(
                     new Tissue(
                             entity.getId(),
                             materialService.loadMaterialNamesById(entity.getId()),
-                            taxonomyService.loadTaxonomyByIdAndDepth(entity.getTaxoid(), 0).get(0))
+                            targetTaxo)
             );
         }
         return tissues;
