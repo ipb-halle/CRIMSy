@@ -152,10 +152,11 @@
                                                 ajax="true"
                                                 styleClass="experimentActionButton ui-button-danger"
                                                 value="#{experimentBean.getCreateNewExperimentButtonLabel()}"
-                                                action="#{experimentBean.actionNewExperiment()}"
                                                 update="@(.expDataClass)"
                                                 disabled="#{experimentBean.isNewExpButtonDisabled()}"
-                                                oncomplete="PF('dlg_experimentData').show();"/>
+                                                action="#{experimentBean.actionNewExperiment()}"
+                                                oncomplete="PF('dlg_experimentData').show();"
+                                            />
 
                                             <p:tooltip
                                                 position="top"
