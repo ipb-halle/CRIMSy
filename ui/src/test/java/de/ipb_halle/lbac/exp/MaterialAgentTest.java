@@ -144,7 +144,7 @@ public class MaterialAgentTest extends TestBase {
         holder = experimentBean.getExpRecordController();
 
         materialAgent.setMaterialHolder(holder);
-        taxo1 = taxonomyService.loadTaxonomy(new HashMap<>(), false).get(0);
+        taxo1 = taxonomyService.loadRootTaxonomy();
         project = creationTools.createProject();
 
     }

@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
@@ -127,7 +126,7 @@ public abstract class HistoryOperationTest extends TestBase {
 
     private void setUpTaxonomy() {
         createTaxonomyTreeInDB(publicAclId, publicUser.getId());
-        List<Taxonomy> taxonomyList = taxonomyService.loadTaxonomy(new HashMap<>(), true);
+        List<Taxonomy> taxonomyList = taxonomyService.loadTaxonomyByIdAndDepth(1, 99);
         plantsTaxonomy = taxonomyList.get(3);
         mushroomsTaxonomy = taxonomyList.get(1);
     }

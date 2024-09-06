@@ -183,11 +183,11 @@ public class TaxonomyBeanTest extends TestBase {
         bean.nameController.getNames().get(1).setValue("test003_en");
         bean.getLevelController().setSelectedLevel(bean.getLevelController().getPossibleLevels().get(0));
 
-        List<Taxonomy> taxos = taxonomyService.loadTaxonomy(new HashMap<>(), true);
+        List<Taxonomy> taxos = taxonomyService.loadTaxonomyByIdAndDepth(1, 99);
         Assert.assertEquals(21, taxos.size());
         bean.actionClickSecondButton();
 
-        taxos = taxonomyService.loadTaxonomy(new HashMap<>(), true);
+        taxos = taxonomyService.loadTaxonomyByIdAndDepth(1, 99);
         Assert.assertEquals(22, taxos.size());
 
         nodeToOperateOn = null;
@@ -201,7 +201,7 @@ public class TaxonomyBeanTest extends TestBase {
         bean.nameController.getNames().get(0).setLanguage("en");
         bean.getLevelController().setSelectedLevel(bean.getLevelController().getPossibleLevels().get(0));
         bean.actionClickFirstButton();
-        taxos = taxonomyService.loadTaxonomy(new HashMap<>(), true);
+        taxos = taxonomyService.loadTaxonomyByIdAndDepth(1, 99);
         Assert.assertEquals(22, taxos.size());
         Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
     }

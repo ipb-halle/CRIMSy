@@ -88,7 +88,7 @@ public class TaxonomyServiceTest extends TestBase {
     public void test002_loadTaxonomies() {
         project = creationTools.createProject();
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
-        List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+        List<Taxonomy> taxonomies = service.loadTaxonomyByIdAndDepth(1, 99);
         Assert.assertEquals("test001: 21 taxonomies must be found", 21, taxonomies.size());
 
         Taxonomy life = taxonomies.get(0);
@@ -124,7 +124,7 @@ public class TaxonomyServiceTest extends TestBase {
         userGroups = project.getUserGroups().getId();
         createTaxonomyTreeInDB(userGroups, owner.getId());
 
-        List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+        List<Taxonomy> taxonomies = service.loadTaxonomyByIdAndDepth(1, 99);
 
         Taxonomy editedTaxonomy = taxonomies.get(20).copyMaterial();
         editedTaxonomy.getNames().get(0).setValue("Haarnixen_de_edited");
@@ -141,7 +141,7 @@ public class TaxonomyServiceTest extends TestBase {
                 null,
                 owner.getId());
 
-        taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+        taxonomies = service.loadTaxonomyByIdAndDepth(1, 99);
         Taxonomy t = taxonomies.get(4);
         Assert.assertEquals("Haarnixen_de_edited", t.getNames().get(0).getValue());
         Assert.assertEquals("english_name", t.getNames().get(1).getValue());
@@ -244,7 +244,7 @@ public class TaxonomyServiceTest extends TestBase {
         project = creationTools.createProject();
         userGroups = project.getUserGroups().getId();
         createTaxonomyTreeInDB(userGroups, owner.getId());
-        List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+        List<Taxonomy> taxonomies = service.loadTaxonomyByIdAndDepth(1, 99);
         List<Taxonomy> directChildren = service.loadDirectChildrenOf(taxonomies.get(0).getId());
         Assert.assertEquals(3, directChildren.size());
     }

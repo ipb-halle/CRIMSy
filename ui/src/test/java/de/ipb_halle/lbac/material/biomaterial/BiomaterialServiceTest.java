@@ -70,7 +70,7 @@ public class BiomaterialServiceTest extends TestBase {
     private TaxonomyService taxonomyService;
 
     @Inject
-    private MaterialService materialService;   
+    private MaterialService materialService;
 
     @Inject
     private ProjectService projectService;
@@ -97,7 +97,8 @@ public class BiomaterialServiceTest extends TestBase {
     @Test
     public void test001_saveAndLoadBioMaterials() {
         String materialName = "Löwnzahn";
-        Taxonomy taxo = taxonomyService.loadTaxonomy(new HashMap<>(), true).get(15);
+        //Here filtering by name would be better
+        Taxonomy taxo = taxonomyService.loadTaxonomyByIdAndDepth(1, 99).get(15);
         Tissue tissue = saveTissueInDB(taxo);
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName(materialName, "de", 1));
@@ -134,7 +135,8 @@ public class BiomaterialServiceTest extends TestBase {
     @Test
     public void test002_editBioMaterial() throws Exception {
 
-        Taxonomy taxo = taxonomyService.loadTaxonomy(new HashMap<>(), true).get(15);
+        //Filtering by name would be better
+        Taxonomy taxo = taxonomyService.loadTaxonomyByIdAndDepth(1, 99).get(15);
         Tissue tissue = saveTissueInDB(taxo);
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("Löwnzahn", "de", 1));
@@ -146,7 +148,8 @@ public class BiomaterialServiceTest extends TestBase {
 
         BioMaterial editedBioMaterial = biomaterial.copyMaterial();
         editedBioMaterial.setTissue(null);
-        Taxonomy newTaxonomy = taxonomyService.loadTaxonomy(new HashMap<>(), true).get(12);
+        //Filtering by name would be better
+        Taxonomy newTaxonomy = taxonomyService.loadTaxonomyByIdAndDepth(1, 99).get(12);
         editedBioMaterial.setTaxonomy(newTaxonomy);
         materialService.saveEditedMaterial(editedBioMaterial, biomaterial, project.getUserGroups().getId(), owner.getId());
 
