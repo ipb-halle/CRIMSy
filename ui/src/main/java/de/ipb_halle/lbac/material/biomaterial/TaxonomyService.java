@@ -166,6 +166,8 @@ public class TaxonomyService implements Serializable {
                 if (te.getId().equals(materialEntity.getMaterialid())) {
                     TaxonomyLevel level = levels.stream().filter(tl -> tl.getId() == te.getLevel()).toList().get(0);
                     t.setLevel(level);
+                    //Setting of a history
+                    t.setHistory(materialService.loadHistoryOfMaterial(te.getId()));
                 }
             }
             taxonomyEntities.stream().filter(x -> x.getId().equals(t.getId())).toList().get(0);
