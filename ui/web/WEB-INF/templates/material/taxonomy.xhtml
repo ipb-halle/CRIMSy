@@ -26,7 +26,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 <h:body>
-    <h:form id="taxonomyForm">
+    <h:form id="taxonomyForm" style="height:65rem;">
         <p:outputPanel>
             <p:row styleClass="taxonomy-top-row">
 
@@ -244,22 +244,46 @@
                 </p:outputPanel>
             </p:outputPanel>
             <p:row>
+
                 <div style="display: flex; flex-direction: row; justify-content: center;">
                     <!--Life Tree-->
                     <!--********************************************************************************-->
-                    <p:outputPanel styleClass="taxonomyTreeColumn">
+                    <p:outputPanel id="bui" styleClass="taxonomyTreeColumn" style="height:100%; width:60%; overflow-y:auto;">
+
+                        <!-- UI-spinner. Shows Loading... text, while loading.Blocks the whole p:outputPanel with id = "bui". -->
+                        <p:blockUI block="bui" widgetVar="loadingSpinner">
+                            <div style="background-color: aliceblue; display: flex; justify-content: center; align-items: center; max-width:380px;">
+                                <h1 style="color: darkblue; font-size: 34px; margin:0 auto;">Loading...</h1>
+                            </div>
+                        </p:blockUI>
+
+                        <!-- Scrollable Tree Component -->
                         <p:tree
+                                id="taxonomyTree"
                                 value="#{taxonomyBean.treeController.taxonomyTree}"
                                 var="node"
                                 selectionMode="single"
                                 styleClass="taxonomyTree"
                                 dynamic="true"
-                                selection="#{taxonomyBean.selectedTaxonomy}">
+                                selection="#{taxonomyBean.selectedTaxonomy}"
+                                style="height:100%;">
 
-                            <p:ajax event="select" update="taxonomyForm:editButton, @(.taxonomyInfos) "
-                                    listener="#{taxonomyBean.onTaxonomySelect}"/>
-                            <p:ajax event="expand" listener="#{taxonomyBean.onTaxonomyExpand}"/>
-                            <p:ajax event="collapse" listener="#{taxonomyBean.onTaxonomyCollapse}"/>
+                            <p:ajax event="select"
+                                    update="taxonomyForm:editButton, @(.taxonomyInfos)"
+                                    listener="#{taxonomyBean.onTaxonomySelect}"
+                                    onstart="PF('loadingSpinner').show();"
+                                    oncomplete="PF('loadingSpinner').hide();"
+
+                            />
+                            <p:ajax event="expand"
+                                    listener="#{taxonomyBean.onTaxonomyExpand}"
+                                    onstart="PF('loadingSpinner').show();"
+                            />
+                            <p:ajax event="collapse"
+                                    listener="#{taxonomyBean.onTaxonomyCollapse}"
+                                    onstart="PF('loadingSpinner').show();"
+                                    oncomplete="PF('loadingSpinner').hide();"
+                            />
                             <p:treeNode>
                                 <h:outputText value="#{node.getFirstName()}"/>
                             </p:treeNode>
