@@ -252,9 +252,7 @@
 
                         <!-- UI-spinner. Shows Loading... text, while loading.Blocks the whole p:outputPanel with id = "bui". -->
                         <p:blockUI block="bui" widgetVar="loadingSpinner">
-                            <div style="background-color: aliceblue; display: flex; justify-content: center; align-items: center; max-width:380px;">
-                                <h1 style="color: darkblue; font-size: 34px; margin:0 auto;">Loading...</h1>
-                            </div>
+                            <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
                         </p:blockUI>
 
                         <!-- Scrollable Tree Component -->
@@ -278,6 +276,7 @@
                             <p:ajax event="expand"
                                     listener="#{taxonomyBean.onTaxonomyExpand}"
                                     onstart="PF('loadingSpinner').show();"
+                                    oncomplete="PF('loadingSpinner').hide();"
                             />
                             <p:ajax event="collapse"
                                     listener="#{taxonomyBean.onTaxonomyCollapse}"

@@ -269,23 +269,23 @@ public class TaxonomyService implements Serializable {
         return materialEntityList;
     }
 
-    private MaterialAttributes loadMaterialAttributes(TaxonomyEntity entity) {
-        List<Object> materialEntityList = this.em.createNativeQuery(SQL_GET_MATERIAL_INFOS)
-                .setParameter("mid", entity.getId())
-                .getResultList();
+//    private MaterialAttributes loadMaterialAttributes(TaxonomyEntity entity) {
+//        List<Object> materialEntityList = this.em.createNativeQuery(SQL_GET_MATERIAL_INFOS)
+//                .setParameter("mid", entity.getId())
+//                .getResultList();
+//
+//        MaterialAttributes materialAttributes = new MaterialAttributes(materialEntityList);
+//        return materialAttributes;
+//    }
 
-        MaterialAttributes materialAttributes = new MaterialAttributes(materialEntityList);
-        return materialAttributes;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<TaxonomyEntity> queryTaxonomyByParamater(Map<String, Object> queryParameters) {
-        Query query = this.em.createNativeQuery(SQL_GET_TAXONOMY, TaxonomyEntity.class);
-        query.setParameter("level", queryParameters.containsKey("level") ? queryParameters.get("level") : -1);
-        query.setParameter("id", queryParameters.containsKey("id") ? queryParameters.get("id") : -1);
-        List<TaxonomyEntity> loadedTaxonomyEntities = (List<TaxonomyEntity>) query.getResultList();
-        return loadedTaxonomyEntities;
-    }
+//    @SuppressWarnings("unchecked")
+//    private List<TaxonomyEntity> queryTaxonomyByParamater(Map<String, Object> queryParameters) {
+//        Query query = this.em.createNativeQuery(SQL_GET_TAXONOMY, TaxonomyEntity.class);
+//        query.setParameter("level", queryParameters.containsKey("level") ? queryParameters.get("level") : -1);
+//        query.setParameter("id", queryParameters.containsKey("id") ? queryParameters.get("id") : -1);
+//        List<TaxonomyEntity> loadedTaxonomyEntities = (List<TaxonomyEntity>) query.getResultList();
+//        return loadedTaxonomyEntities;
+//    }
 
     @SuppressWarnings("unchecked")
     public int checkRootTaxonomy() {
@@ -318,22 +318,22 @@ public class TaxonomyService implements Serializable {
         return loadTaxonomyByIdAndDepth(1, 0).get(0);
     }
 
-    private class MaterialAttributes {
-
-        private Object[] parameter;
-
-        MaterialAttributes(List<Object> parameter) {
-            this.parameter = (Object[]) parameter.get(0);
-        }
-
-        public int getOwnerId() {
-            return (int) parameter[2];
-        }
-
-        public Date getCreationTime() {
-            return new Date(((Timestamp) parameter[0]).getTime());
-        }
-
-    }
+//    private class MaterialAttributes {
+//
+//        private Object[] parameter;
+//
+//        MaterialAttributes(List<Object> parameter) {
+//            this.parameter = (Object[]) parameter.get(0);
+//        }
+//
+//        public int getOwnerId() {
+//            return (int) parameter[2];
+//        }
+//
+//        public Date getCreationTime() {
+//            return new Date(((Timestamp) parameter[0]).getTime());
+//        }
+//
+//    }
 
 }
