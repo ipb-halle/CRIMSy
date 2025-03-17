@@ -17,19 +17,21 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author fmauz
  */
 public class ExpProjectController {
@@ -37,21 +39,25 @@ public class ExpProjectController {
     private Project choosenProject;
     private List<Project> choosableProjects = new ArrayList<>();
     private ProjectService projectService;
+    private ACListService acListService;
     private User currentUser;
     private Map<String, Project> nameMap = new HashMap<>();
 
-    public ExpProjectController(ProjectService projectService, User currentUser) {
+    public ExpProjectController(ProjectService projectService, ACListService acListService, User currentUser) {
         choosableProjects = new ArrayList<>();
         this.projectService = projectService;
+        this.acListService = acListService;
         this.currentUser = currentUser;
         if (currentUser != null) {
             ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(currentUser, 0, Integer.MAX_VALUE);
             builder.setDeactivated(false);
             SearchResult result = projectService.loadProjects(builder.build());
-            choosableProjects = result.getAllFoundObjects(Project.class, result.getNode());
-            this.nameMap = new HashMap<>();
-            for (Project p : choosableProjects) {
-                nameMap.put(p.getName(), p);
+            List<Project> allProjects = result.getAllFoundObjects(Project.class, result.getNode());
+            for (Project p : allProjects) {
+                if (acListService.isPermitted(ACPermission.permCREATE, p, currentUser)) {
+                    choosableProjects.add(p);
+                    nameMap.put(p.getName(), p);
+                }
             }
 
         }

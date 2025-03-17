@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -35,6 +37,9 @@ import jakarta.inject.Inject;
 public class ProjectConverter implements Converter {
 
     @Inject
+    private ACListService acListService;
+
+    @Inject
     ProjectService service;
 
     @Inject
@@ -42,7 +47,7 @@ public class ProjectConverter implements Converter {
 
     @Override
     public Project getAsObject(FacesContext fc, UIComponent uic, String string) throws ConverterException {
-        ExpProjectController projectController = new ExpProjectController(service, userBean.getCurrentAccount());
+        ExpProjectController projectController = new ExpProjectController(service, acListService, userBean.getCurrentAccount());
         Project p = projectController.getProjectByName(string);
         return p;
     }

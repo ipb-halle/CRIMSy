@@ -152,7 +152,7 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
 
     public abstract ExpRecord getNewRecord();
 
-    public boolean isDiagrammButtonVisible(Assay assay) {
+    public boolean isDiagramButtonVisible(Assay assay) {
         List<LinkedData> linkedData = assay.getLinkedData();
 
         // There needs to be at least one result. (n.b.: The first list element is the ASSAY_TARGET.)

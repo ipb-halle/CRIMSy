@@ -28,7 +28,9 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.datalink.LinkCreationProcess;
+
 import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
+
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.image.ImageController;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
@@ -147,7 +149,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public ExperimentBean() {
     }
 
-    //Test Contructor
+    //Test Constructor
     public ExperimentBean(
             ItemAgent itemAgent,
             MaterialAgent materialAgent,
@@ -155,12 +157,13 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             ProjectService projectService,
             ExperimentService experimentService,
             MessagePresenter messagePresenter,
-            ExpRecordService expRecordService
+            ExpRecordService expRecordService,
+            ACListService acListService
     ) {
         if (loggingProfiler == null) {
             loggingProfiler = new LoggingProfiler();
         }
-        loggingProfiler.profilerStart("ExperimentBean Contructor");
+        loggingProfiler.profilerStart("ExperimentBean Constructor");
 
         this.itemAgent = itemAgent;
         this.materialAgent = materialAgent;
@@ -169,8 +172,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.experimentService = experimentService;
         this.messagePresenter = messagePresenter;
         this.expRecordService = expRecordService;
+        this.aclistService = acListService;
 
-        loggingProfiler.profilerStop("ExperimentBean Contructor");
+        loggingProfiler.profilerStop("ExperimentBean Constructor");
 
     }
 
@@ -197,7 +201,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     protected void experimentBeanInit() {
-        projectController = new ExpProjectController(projectService, currentUser);
+        projectController = new ExpProjectController(projectService, aclistService, currentUser);
         /*
          * ToDo: create an experiment with real user and ACL
          */
@@ -334,7 +338,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public void actionStartEditExperiment(Experiment exp) {
         creationState = CreationState.EDIT;
         this.experiment = exp;
-        projectController = new ExpProjectController(projectService, currentUser);
+        projectController = new ExpProjectController(projectService, aclistService, currentUser);
         experimentCode = ExperimentCode.createInstanceOfExistingExp(exp.getCode());
         loadExpRecords();
     }
@@ -346,7 +350,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         //New exp from template
         if (!templateMode || experiment.getId() == null) {
             this.expRecords = new ArrayList<>();
-            projectController = new ExpProjectController(projectService, currentUser);
+            projectController = new ExpProjectController(projectService, aclistService, currentUser);
             initEmptyExperiment();
         }
     }
@@ -512,7 +516,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public boolean isNewExpButtonDisabled() {
-        return !currentUser.hasShortCut();
+        ExpProjectController controller = new ExpProjectController(projectService, aclistService, currentUser);
+        return !currentUser.hasShortCut() || controller.getChoosableProjects().isEmpty();
     }
 
     public String getNewExpToolTip() {
@@ -552,6 +557,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     /**
+     *
      */
     public void cleanup() {
         this.expRecordController = new NullController(this);
@@ -673,7 +679,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
         if ((lastSavedExpRecord != null) && (record.getExpRecordId() != null)
                 && (record.getExpRecordId()
-                        .equals(lastSavedExpRecord.getExpRecordId()))) {
+                .equals(lastSavedExpRecord.getExpRecordId()))) {
             sj.add(expRecordLastSavedCssClass);
         }
 

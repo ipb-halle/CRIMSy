@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.exp.mocks;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.exp.ExpRecordController;
@@ -79,7 +80,13 @@ public class ExperimentBeanMock extends ExperimentBean {
         return this;
     }
 
-    public void setExpRecordController(ExpRecordController expRecordController) {
+    public ExperimentBeanMock setExpRecordController(ExpRecordController expRecordController) {
         this.expRecordController = expRecordController;
+        return this;
+    }
+
+    public ExperimentBeanMock setACListService(ACListService acListService) {
+        this.aclistService = acListService;
+        return this;
     }
 }
