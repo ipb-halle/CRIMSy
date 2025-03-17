@@ -231,12 +231,11 @@ public class TaxonomyService implements Serializable {
 
     private Map<Integer, List<Integer>> createParentsMap(Collection<Integer> ids) {
         List<Integer[]> idsOfRootHierarchy = (List<Integer[]>) em.createNativeQuery(IDS_OF_HIERARCHY).setParameter("ids", ids).getResultList();
-        Object xx = em.createNativeQuery("Select * from effective_taxonomy order by taxoid").getResultList();
         Map<Integer, List<Integer>> map = new HashMap<>();
         map.put(1, new ArrayList<>());
-        for (Object[] o : idsOfRootHierarchy) {
-            Integer taxoId = (Integer) o[0];
-            Integer parentId = (Integer) o[1];
+        for (Integer[] rootIds : idsOfRootHierarchy) {
+            Integer taxoId = rootIds[0];
+            Integer parentId = rootIds[1];
             if (!map.containsKey(taxoId)) {
                 map.put(taxoId, new ArrayList<>());
             }

@@ -96,7 +96,7 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(1, life.getLevel().getId());
         Assert.assertEquals("Leben_de", life.getFirstName());
 
-        Taxonomy wulstlinge = taxonomies.get(16);
+        Taxonomy wulstlinge = taxonomies.get(5);
         Assert.assertEquals(7, wulstlinge.getLevel().getId());
         Assert.assertEquals("Wulstlinge_de", wulstlinge.getFirstName());
         Assert.assertEquals(6, (int) wulstlinge.getId());
@@ -107,7 +107,7 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(2, (int) wulstlinge.getTaxHierarchy().get(3).getId());
         Assert.assertEquals(1, (int) wulstlinge.getTaxHierarchy().get(4).getId());
 
-        Taxonomy ohrlappenpilze = taxonomies.get(9);
+        Taxonomy ohrlappenpilze = taxonomies.get(10);
         Assert.assertEquals(6, ohrlappenpilze.getLevel().getId());
         Assert.assertEquals("Gallerttränenverwandte_de", ohrlappenpilze.getFirstName());
         Assert.assertEquals(11, (int) ohrlappenpilze.getId());
@@ -142,12 +142,15 @@ public class TaxonomyServiceTest extends TestBase {
                 owner.getId());
 
         taxonomies = service.loadTaxonomyByIdAndDepth(1, 99);
-        Taxonomy t = taxonomies.get(4);
+        Taxonomy t = taxonomies.get(20);
         Assert.assertEquals("Haarnixen_de_edited", t.getNames().get(0).getValue());
         Assert.assertEquals("english_name", t.getNames().get(1).getValue());
-        Assert.assertEquals(2, t.getTaxHierarchy().size());
-        Assert.assertEquals(16, (int) t.getTaxHierarchy().get(0).getId());
-        Assert.assertEquals(1, (int) t.getTaxHierarchy().get(1).getId());
+        List<Taxonomy> hierarchy = t.getTaxHierarchy();
+
+        // ToDo: currently, a totally wrong hierarchy gets loaded and tests fail
+        Assert.assertEquals(2, hierarchy.size());
+        Assert.assertEquals(16, (int) hierarchy.get(0).getId());
+        Assert.assertEquals(1, (int) hierarchy.get(1).getId());
 
         Assert.assertEquals(3, t.getLevel().getId());
 

@@ -97,6 +97,9 @@ public class TestBase implements Serializable {
     public final static UUID TEST_NODE_ID = UUID.fromString("986ad1be-9a3b-4a70-8600-c489c2a00da4");
     public final static String TESTCLOUD = "TESTCLOUD";
 
+    public final static int MUSHROOMS = 1;
+    public final static int PLANTS = 15;
+
     protected String INSERT_TAXONOMY_MATERIAL_SQL = "INSERT INTO MATERIALS VALUES("
             + "%d,"
             + "7,"

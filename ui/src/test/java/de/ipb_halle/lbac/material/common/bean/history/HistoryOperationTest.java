@@ -127,8 +127,8 @@ public abstract class HistoryOperationTest extends TestBase {
     private void setUpTaxonomy() {
         createTaxonomyTreeInDB(publicAclId, publicUser.getId());
         List<Taxonomy> taxonomyList = taxonomyService.loadTaxonomyByIdAndDepth(1, 99);
-        plantsTaxonomy = taxonomyList.get(3);
-        mushroomsTaxonomy = taxonomyList.get(1);
+        plantsTaxonomy = taxonomyList.get(PLANTS);
+        mushroomsTaxonomy = taxonomyList.get(MUSHROOMS);
     }
 
     private MaterialEditState createMaterialEditState() {
