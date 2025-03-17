@@ -149,7 +149,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public ExperimentBean() {
     }
 
-    //Test Contructor
+    //Test Constructor
     public ExperimentBean(
             ItemAgent itemAgent,
             MaterialAgent materialAgent,
@@ -157,7 +157,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             ProjectService projectService,
             ExperimentService experimentService,
             MessagePresenter messagePresenter,
-            ExpRecordService expRecordService
+            ExpRecordService expRecordService,
+            ACListService acListService
     ) {
         if (loggingProfiler == null) {
             loggingProfiler = new LoggingProfiler();
@@ -171,6 +172,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.experimentService = experimentService;
         this.messagePresenter = messagePresenter;
         this.expRecordService = expRecordService;
+        this.aclistService = acListService;
 
         loggingProfiler.profilerStop("ExperimentBean Constructor");
 
@@ -199,7 +201,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     protected void experimentBeanInit() {
-        projectController = new ExpProjectController(projectService, currentUser);
+        projectController = new ExpProjectController(projectService, aclistService, currentUser);
         /*
          * ToDo: create an experiment with real user and ACL
          */
@@ -336,7 +338,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public void actionStartEditExperiment(Experiment exp) {
         creationState = CreationState.EDIT;
         this.experiment = exp;
-        projectController = new ExpProjectController(projectService, currentUser);
+        projectController = new ExpProjectController(projectService, aclistService, currentUser);
         experimentCode = ExperimentCode.createInstanceOfExistingExp(exp.getCode());
         loadExpRecords();
     }

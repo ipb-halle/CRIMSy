@@ -63,22 +63,6 @@ public class ExpProjectController {
         }
     }
 
-
-    public ExpProjectController(ProjectService projectService, User currentUser) {
-        this.projectService = projectService;
-        this.currentUser = currentUser;
-        if (currentUser != null) {
-            ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(currentUser, 0, Integer.MAX_VALUE);
-            builder.setDeactivated(false);
-            SearchResult result = projectService.loadProjects(builder.build());
-            choosableProjects = result.getAllFoundObjects(Project.class, result.getNode());
-            for (Project p : choosableProjects) {
-                nameMap.put(p.getName(), p);
-            }
-
-        }
-    }
-
     public List<Project> getChoosableProjects() {
         return choosableProjects;
     }

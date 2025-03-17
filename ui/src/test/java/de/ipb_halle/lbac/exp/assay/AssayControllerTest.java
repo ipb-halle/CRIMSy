@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.exp.ItemAgent;
 import de.ipb_halle.lbac.exp.MaterialAgent;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -44,14 +43,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(ArquillianExtension.class)
 public class AssayControllerTest extends TestBase {
 
-    // This implicitly tests ExpRecordController.isDiagrammButtonVisible(Assay).
+    // This implicitly tests ExpRecordController.isDiagramButtonVisible(Assay).
     @Test
-    public void test001_isDiagrammButtonVisible() {
+    public void test001_isDiagramButtonVisible() {
         ExperimentBean bean = new ExperimentBean(
                 new ItemAgent(),
                 new MaterialAgent(),
                 context,
-                null, null, getMessagePresenterMock(), null
+                null, null, getMessagePresenterMock(),
+                null, null
         );
 
         bean.init();
@@ -64,23 +64,23 @@ public class AssayControllerTest extends TestBase {
 
         // Assay has neither results nor a target material.
         assay = new Assay();
-        Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
+        Assert.assertFalse(controller.isDiagramButtonVisible(assay));
 
         // Add material to target, but no results.
         assay = new Assay();
         assay.setTarget(bioMaterial);
-        Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
+        Assert.assertFalse(controller.isDiagramButtonVisible(assay));
 
         // Add a result record, but no material to the target.
         assay = new Assay();
         assay.getLinkedData().add(data);
-        Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
+        Assert.assertFalse(controller.isDiagramButtonVisible(assay));
 
         // All conditions fulfilled, button is visible.
         assay = new Assay();
         assay.setTarget(bioMaterial);
         assay.getLinkedData().add(data);
-        Assert.assertTrue(controller.isDiagrammButtonVisible(assay));
+        Assert.assertTrue(controller.isDiagramButtonVisible(assay));
     }
 
     @Deployment

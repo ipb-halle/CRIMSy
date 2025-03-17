@@ -17,12 +17,7 @@
  */
 package de.ipb_halle.lbac.exp;
 
-import de.ipb_halle.lbac.admission.ACEntry;
-import de.ipb_halle.lbac.admission.ACList;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LoginEvent;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.*;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static org.junit.Assert.assertEquals;
@@ -90,6 +85,9 @@ public class ExperimentBeanTest extends TestBase {
     @Inject
     private MaterialService materialService;
 
+    @Inject
+    private ACListService acListService;
+
     private ExperimentBeanMock experimentBean;
     private User publicUser;
     private ACList publicReadAcl;
@@ -120,7 +118,8 @@ public class ExperimentBeanTest extends TestBase {
                 .setMemberService(memberService)
                 .setProjectService(projectService)
                 .setMessagePresenter(getMessagePresenterMock())
-                .setItemAgent(itemAgentMock);
+                .setItemAgent(itemAgentMock)
+                .setACListService(acListService);
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
 
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE name NOT IN('Public Group','Admin Group') AND membertype='G'");
@@ -426,6 +425,7 @@ public class ExperimentBeanTest extends TestBase {
                 .addClass(AssayService.class)
                 .addClass(TextService.class)
                 .addClass(MaterialService.class)
+                .addClass(ACListService.class)
                 .addClass(ProjectService.class);
         return ExperimentDeployment.add(UserBeanDeployment.add(ItemDeployment.add(deployment)));
     }

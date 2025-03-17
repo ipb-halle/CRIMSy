@@ -17,27 +17,25 @@
  */
 package de.ipb_halle.lbac.datalink;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.exp.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.exp.*;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import java.util.ArrayList;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -46,6 +44,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.primefaces.event.FlowEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -57,6 +58,9 @@ public class LinkCreationProcessTest extends TestBase {
 
     private LinkCreationProcess linkCreationProcess;
     private ExperimentBean experimentBean;
+
+    @Inject
+    private ACListService acListService;
     @Inject
     private MaterialAgent materialAgent;
     @Inject
@@ -76,27 +80,28 @@ public class LinkCreationProcessTest extends TestBase {
     @Inject
     private ItemService itemService;
 
-    private User publicUser;
     private int materialId, materialId2, materialId3;
     private int itemId;
 
     @BeforeEach
     public void init() {
-        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        // publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         Project project = new ProjectCreator(projectService, GlobalAdmissionContext.getPublicReadACL())
                 .setProjectName("LinkCreationProcessTest_Project")
                 .setType(ProjectType.BIOCHEMICAL_PROJECT)
-                .createAndSaveProject(publicUser);
-        experimentBean = new ExperimentBean(itemAgent, materialAgent, context, projectService, expService, getMessagePresenterMock(), expRecService);
-        LoginEvent event = new LoginEvent(publicUser);
+                .createAndSaveProject(adminUser);
+        experimentBean = new ExperimentBean(itemAgent, materialAgent, context, projectService,
+                expService, getMessagePresenterMock(), expRecService, acListService);
+        LoginEvent event = new LoginEvent(adminUser);
         experimentBean.setCurrentAccount(event);
+        experimentBean.init();
         linkCreationProcess = new LinkCreationProcess(materialAgent, itemAgent, experimentBean);
         linkCreationProcess.init();
-        materialId = materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M1");
-        materialId2 = materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M2");
-        materialId3 = materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M3");
+        materialId = materialCreator.createStructure(adminUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M1");
+        materialId2 = materialCreator.createStructure(adminUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M2");
+        materialId3 = materialCreator.createStructure(adminUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M3");
         itemId = itemCreator.createItem(
-                publicUser.getId(),
+                adminUser.getId(),
                 GlobalAdmissionContext.getPublicReadACL().getId(),
                 materialId,
                 "LinkCreationProcessTest_I1",
@@ -181,6 +186,7 @@ public class LinkCreationProcessTest extends TestBase {
                 .addClass(AssayService.class)
                 .addClass(TextService.class)
                 .addClass(MaterialService.class)
+                .addClass(ACListService.class)
                 .addClass(ProjectService.class);
         return ExperimentDeployment.add(UserBeanDeployment.add(ItemDeployment.add(deployment)));
     }
@@ -189,7 +195,9 @@ public class LinkCreationProcessTest extends TestBase {
         linkCreationProcess.startLinkCreation();
         experimentBean.actionNewExperiment();
         experimentBean.getExperiment().setCode("LinkCreationProcessTest_EXP1");
-        experimentBean.getProjectController().setChoosenProject(experimentBean.getProjectController().getChoosableProjects().get(0));
+        ExpProjectController epc = experimentBean.getProjectController();
+        List<Project> projects = epc.getChoosableProjects();
+        epc.setChoosenProject(projects.get(0));
         experimentBean.actionSaveExperiment();
         experimentBean.actionNewExperimentRecord("TEXT", 0);
     }
