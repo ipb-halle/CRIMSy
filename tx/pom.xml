@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ipb-halle</groupId>
     <artifactId>tx</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>tx</name>
     
     <!-- define (additional) repositories -->
@@ -157,13 +157,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.10.0</version>
-        </dependency>
-
-        <!-- commons-lang3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
         </dependency>
 
         <!-- SLF4J -->
