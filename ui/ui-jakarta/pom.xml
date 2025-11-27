@@ -1,0 +1,164 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>de.ipb-halle</groupId>
+    <artifactId>ui-jakarta</artifactId>
+    <version>2.2.5</version>
+    <packaging>war</packaging>
+    
+    <parent>
+        <groupId>de.ipb-halle</groupId>
+        <artifactId>ui</artifactId>
+        <version>2.2.5</version>
+        <relativePath>../pom.xml</relativePath> 
+    </parent>
+
+    
+    <name>CRIMSy UI Jakarta</name>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+
+        <!-- Jakarta EE API -->
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <scope>provided</scope>
+            <version>9.1.0</version>
+        </dependency>
+
+
+        <!-- JSF (Jakarta Faces) -->
+        <dependency>
+            <groupId>jakarta.faces</groupId>
+            <artifactId>jakarta.faces-api</artifactId>
+            <version>2.3.2</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Other Jakrta EE dependencies as required (JPA, CDI, etc.) -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Bean validation -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- CDI -->
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        
+        <!-- OpenAPI integration -->
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>openapi-generator-maven-plugin</artifactId>
+            <version>7.14.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        
+        
+        
+        
+        
+        
+        <!-- Needed for @Api, @ApiOperation, etc. -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.6.11</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- Configure the WAR plugin to skip web.xml -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <!-- OpenAPI Code Generator -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.14.0</version>
+                <executions>
+                    <execution>
+                        <id>server-api</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/usert-api.yml</inputSpec>
+                            <generatorName>jaxrs-spec</generatorName>
+
+                            <apiPackage>de.ipb_halle.lbac.api</apiPackage>
+                            <modelPackage>de.ipb_halle.lbac.model</modelPackage>
+
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <interfaceOnly>true</interfaceOnly>
+                                <generateImpl>false</generateImpl>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Add generated sources -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi/src/gen/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

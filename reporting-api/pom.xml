@@ -44,14 +44,21 @@
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
+	<repository>
+		<id>Franks repo</id>
+		<url>http://nwc04170.ipb-halle.de:4000/repository/</url>
+	</repository>
         <repository>
             <id>sonatype public</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+	<!--
         <repository>
             <id>pentaho-releases</id>
+	-->
             <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
             <!-- address no longer valid <url>https://nexus.pentaho.org/content/groups/omni</url> -->
+	<!--
             <url>https://repo.orl.eng.hitachivantara.com/artifactory/pnt-mvn</url>
 
             <releases>
@@ -61,6 +68,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+	-->
     </repositories>
  
     <build>
