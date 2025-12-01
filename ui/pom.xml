@@ -26,17 +26,11 @@
     <groupId>de.ipb-halle</groupId>
     <artifactId>ui</artifactId>
     <version>2.2.5</version>
-    <packaging>pom</packaging>
- 
-    <modules>
-        <module>ui-jakarta</module>
-    </modules>
-    
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
     </scm>
-    
+    <packaging>war</packaging>
 
     <name>CRIMSy ui</name>
     <url>https://github.com/ipb-halle/CRIMSy</url>
@@ -330,7 +324,14 @@
     </build>
 
     <dependencies>
-
+        
+        <!-- crimsy-jakrta-api -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>ui-jakarta</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
         <!-- crimsy-job-api -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
@@ -381,24 +382,7 @@
             <artifactId>commons-io</artifactId>
             <version>2.14.0</version>
         </dependency>
-        
-        
-        <!-- Jakarta EE API for ui-jakarta module -->
-        <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>10.0.0</version>
-            <scope>provided</scope>
-        </dependency>
 
-        <!-- OpenAPI tools -->
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>openapi-generator-cli</artifactId>
-            <version>7.14.0</version>
-        </dependency>
-            
-            
         <!-- Provided dependencies by the server -->
         <!-- APIs for CDI (Contexts and Dependency Injection for Java)-->
         <dependency>

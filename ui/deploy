@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e # Stop on first error
+
+echo "============================"
+echo "0. Ensure ui-jakarta is installed"
+echo "============================"
+
+mvn -f ../ui-jakarta/pom.xml clean install -DskipTests
+
+
+echo "============================"
+echo "1. Building UI WAR"
+echo "============================"
+
+mvn -f ./pom.xml clean package -DskipTests
+
+WAR_FILE=./target/ui.war
+
+
+#if [ ! -f ./ui-jakarta/target/ui.war ]; then
+  # echo "Error: The WAR file was not generated!"
+ #  exit 1
+#fi
+
+echo "============================"
+echo "2. Deploying war to Docker container"
+echo "============================"
+
+docker cp "$WAR_FILE" dist_ui_1:/usr/local/tomee/webapps/ui.war
+
+echo "Deployment complete!"
+

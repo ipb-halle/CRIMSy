@@ -42,7 +42,7 @@
         <module>reporting-api</module>
         <module>reporting</module>
         <module>ui</module>
-        <!--<module>ui/ui-jakarta</module>-->
+        <module>ui-jakarta</module>
     </modules>
 
     <properties>

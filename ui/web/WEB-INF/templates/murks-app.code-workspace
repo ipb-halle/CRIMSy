@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../playground/murks/murks-app"
+		},
+		{
+			"path": "../../../.."
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}
