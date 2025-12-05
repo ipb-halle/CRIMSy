@@ -60,7 +60,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- check Maven Central for latest versions! -->
-        <tika.version>1.28.3</tika.version>
+        <tika.version>3.2.2</tika.version>
         <hibernate.version>5.3.26.Final</hibernate.version>
     </properties>
 
