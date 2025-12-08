@@ -1,12 +1,6 @@
 #!/bin/bash
 set -e # Stop on first error
 
-echo "============================"
-echo "0. Ensure ui-jakarta is installed"
-echo "============================"
-
-mvn -f ../ui-jakarta/pom.xml clean install -DskipTests
-
 
 echo "============================"
 echo "1. Building UI WAR"
