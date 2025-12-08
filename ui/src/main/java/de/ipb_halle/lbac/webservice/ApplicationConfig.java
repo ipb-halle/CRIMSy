@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.webservice;
 
+import de.ipb_halle.LoginEndpoint;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
@@ -37,8 +38,7 @@ import jakarta.ws.rs.core.Application;
 public class ApplicationConfig extends Application {
 
     public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(
-                CloudNodeWebService.class,
+        return new HashSet<Class<?>>(Arrays.asList(CloudNodeWebService.class,
                 CollectionWebService.class,
                 DeactivateGroupWebService.class,
                 SearchWebService.class,
@@ -48,6 +48,8 @@ public class ApplicationConfig extends Application {
                 PostingWebService.class,
                 PrintWebService.class,
                 SimpleRESTPojoExample.class,
-                DocumentWebService.class));
+                DocumentWebService.class,
+                LoginEndpoint.class)
+                );
     }
 }
