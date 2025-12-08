@@ -42,6 +42,7 @@
 
     <properties>
         <hibernate.version>6.1.7.Final</hibernate.version>
+        <openapi.generator.version>6.0.1</openapi.generator.version>
         <tomee.classifier>plus</tomee.classifier>
         <tomee.servlet-engine>8.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
@@ -320,17 +321,33 @@
                             </configuration>
                         </plugin>
             -->
+            
+            <!-- OpenAPI plugin -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi.generator.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${basedir}/src/main/resources/usert-api.yml</inputSpec>
+                            <generatorName>jaxrs-spec</generatorName>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <apiPackage>de.ipb_halle.api</apiPackage>
+                            <modelPackage>de.ipb_halle.model</modelPackage>
+                            <invokerPackage>de.ipb_halle.invoker</invokerPackage>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
     </build>
 
     <dependencies>
-        
-        <!-- crimsy-jakrta-api -->
-        <dependency>
-            <groupId>de.ipb-halle</groupId>
-            <artifactId>ui-jakarta</artifactId>
-            <version>1.0</version>
-        </dependency>
         
         <!-- crimsy-job-api -->
         <dependency>
@@ -736,6 +753,14 @@
             <groupId>de.ipb-halle</groupId>
             <artifactId>fasta-search-service-models</artifactId>
             <version>2.0.0</version>
+        </dependency>
+        
+        
+        <!-- Add OpenAPI generator dependency -->
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>openapi-generator-maven-plugin</artifactId>
+            <version>${openapi.generator.version}</version>
         </dependency>
 
     </dependencies>
