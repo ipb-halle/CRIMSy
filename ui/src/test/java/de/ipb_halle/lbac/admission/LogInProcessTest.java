@@ -42,7 +42,7 @@ public class LogInProcessTest extends TestBase {
     @Test
     public void tryLogIn_Local_Test() {
 
-        Map<User, Group> ug = createUser_Group("localUser2", AdmissionSubSystemType.LOCAL);
+        Map<User, Group> ug = createUser_Group("localUser", "pass123", AdmissionSubSystemType.LOCAL);
 
         User u = null;
         Group g = null;
@@ -61,7 +61,7 @@ public class LogInProcessTest extends TestBase {
     @Test
     public void tryLogIn_Not_Local_Test() {
 
-        Map<User, Group> ug = createUser_Group("localUser", AdmissionSubSystemType.BUILTIN);
+        Map<User, Group> ug = createUser_Group("notLocalUser", "pass123", AdmissionSubSystemType.BUILTIN);
 
         User u = null;
         Group g = null;
@@ -107,30 +107,29 @@ public class LogInProcessTest extends TestBase {
 */
     
     
-    public Map<User, Group> createUser_Group(String login, AdmissionSubSystemType type) {
-        String name = "user:" + login + " " + System.currentTimeMillis();
-        String pass = "pass123";
+    public Map<User, Group> createUser_Group(String login, String password, AdmissionSubSystemType admissionSubSystemType) {
+     
+        String name = "userTest" + " " + System.currentTimeMillis();
         User u = new User();
         u.setLogin(login);
         u.setName(name);
-
-        u.setPassword(credentialHandler.computeDigest(pass));
+        u.setPassword(credentialHandler.computeDigest(password));
         u.setNode(nodeService.getLocalNode());
-        u.setSubSystemType(type);
+        u.setSubSystemType(admissionSubSystemType);
         u = memberService.save(u);
 
         Group g = new Group();
         g.setName("Group of user " + u.getLogin());
         g.setNode(nodeService.getLocalNode());
         g.setSubSystemData("L");
-        g.setSubSystemType(type);
+        g.setSubSystemType(admissionSubSystemType);
         g = memberService.save(g);
 
         membershipService.addMembership(u, u);
         membershipService.addMembership(g, u);
 
-        Map<User, Group> ugmap = new HashMap();
-        ugmap.put(u, g);
-        return ugmap;
+        Map<User, Group> UserGroupMap = new HashMap<>();
+        UserGroupMap.put(u, g);
+        return UserGroupMap;
     }
 }
