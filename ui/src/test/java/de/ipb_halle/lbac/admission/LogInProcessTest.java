@@ -42,7 +42,7 @@ public class LogInProcessTest extends TestBase {
     @Test
     public void tryLogIn_Local_Test() {
 
-        Map<User, Group> ug = createUser_Group("localUser", "pass123", AdmissionSubSystemType.LOCAL);
+        Map<User, Group> ug = createUser_Group("localUser", "Local", "pass123", AdmissionSubSystemType.LOCAL);
 
         User u = null;
         Group g = null;
@@ -61,7 +61,7 @@ public class LogInProcessTest extends TestBase {
     @Test
     public void tryLogIn_Not_Local_Test() {
 
-        Map<User, Group> ug = createUser_Group("notLocalUser", "pass123", AdmissionSubSystemType.BUILTIN);
+        Map<User, Group> ug = createUser_Group("notLocalUser", "notLocal", "pass123", AdmissionSubSystemType.BUILTIN);
 
         User u = null;
         Group g = null;
@@ -107,9 +107,8 @@ public class LogInProcessTest extends TestBase {
 */
     
     
-    public Map<User, Group> createUser_Group(String login, String password, AdmissionSubSystemType admissionSubSystemType) {
+    public Map<User, Group> createUser_Group(String login, String name, String password, AdmissionSubSystemType admissionSubSystemType) {
      
-        String name = "userTest" + " " + System.currentTimeMillis();
         User u = new User();
         u.setLogin(login);
         u.setName(name);
