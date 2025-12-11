@@ -1,12 +1,10 @@
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.globals.NavigationConstants;
-import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.service.NodeService;
+import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import jakarta.security.enterprise.credential.Credential;
 
 /**
  *
@@ -15,93 +13,91 @@ import jakarta.security.enterprise.credential.Credential;
 @Stateless
 public class LogInProcess {
 
-    @Inject
+     @Inject
     NodeService nodeService;
     @Inject
     MemberService memberService;
     @Inject
-    MembershipService memberShipService;
+    MembershipService membershipService;
     @Inject
     CredentialHandler credentialHandler;
     @Inject
     LdapProperties ldapProps;
-
-    public User tryLogIn(String logIn, String pw) {
-
-        UserBeanMock userBeanMock = new UserBeanMock();
+    
+    /**
+     * Try to login a user either via LOCAL or LDAP.
+     *
+     * @param login user's login
+     * @param password user's password
+     * @return User object if login successful, null otherwise
+     */
+    public User tryLogIn(String login, String password) {
+        UserBeanMockk userBeanMock = new UserBeanMockk();
 
         userBeanMock.setNodeService(nodeService);
         userBeanMock.setMemberService(memberService);
-        userBeanMock.setMemberShipService(memberShipService);
+        userBeanMock.setMembershipService(membershipService);
         userBeanMock.setCredentialHandler(credentialHandler);
         userBeanMock.setLdapProperties(ldapProps);
 
-        IAdmissionSubSystem ia = AdmissionSubSystemType.LOCAL.getInstance();
-        User u = ia.lookup(logIn, userBeanMock);
+
+        IAdmissionSubSystem localSub = AdmissionSubSystemType.LOCAL.getInstance();
+        User u = localSub.lookup(login, userBeanMock);
+
         if (u != null) {
             // user is known to the local LBAC system
             if (u.getSubSystemType() == AdmissionSubSystemType.LOCAL) {
-                // user is a local LBAC user
-                ia.authenticate(u, pw, userBeanMock);
+                return localSub.authenticate(u, password, userBeanMock) ? u : null;
 
             } else {
                 // user is NOT a local LBAC user, perform lookup again
                 // to guard against name changes, memberships etc.
-                u = ia.lookup(logIn, userBeanMock);
+                //u = userBeanMock.authLookup(u.getSubSystem(), login, password);
+                return null;
             }
         } else {
-            // user is yet unknown to the local LBAC system
-            // lookup in LDAP
-            u = userBeanMock.authLookup(AdmissionSubSystemType.LDAP.getInstance(), logIn, pw);
+            // User unknown locally -> try LDAP
+             u = userBeanMock.authLookup(AdmissionSubSystemType.LDAP.getInstance(), login, password);
+             
         }
-
         return u;
     }
 
-    class UserBeanMock extends UserBean {
+    public class UserBeanMockk extends UserBean {
 
-        private NodeService nodeService;
-        private CredentialHandler credentialHandler;
-        private MemberService memberService;
-        private MembershipService membershipService;
-        private LdapProperties ldapProperties;
+        private CredentialHandler testCredentialHandler;
 
         public void setNodeService(NodeService nodeService) {
             this.nodeService = nodeService;
         }
 
-        public void setCredentialHandler(CredentialHandler handler) {
-            this.credentialHandler = handler;
+        public void setMemberService(MemberService memberService) {
+            this.memberService = memberService;
         }
 
-        public void setMemberService(MemberService ms) {
-            this.memberService = ms;
-        }
-
-        public void setMemberShipService(MembershipService membershipService) {
+        public void setMembershipService(MembershipService membershipService) {
             this.membershipService = membershipService;
         }
 
         public void setLdapProperties(LdapProperties ldapProps) {
-            this.ldapProperties = ldapProps;
+            super.ldapProperties = ldapProps;
+            if (ldapProps != null) {
+                ldapProps.setLdapEnabled(true);
+            }
+        }
+    
+                
+
+        public void setCredentialHandler(CredentialHandler credentialHandler) {
+            this.testCredentialHandler = credentialHandler;
         }
 
         @Override
-        public NodeService getNodeService() {
-            return this.nodeService;
-        }
-
-        public CredentialHandler getCredentialHandler() {
-            return this.credentialHandler;
-        }
-
-        public MemberService getMemberService() {
-            return memberService;
-        }
-
-        @Override
-        public LdapProperties getLdapProperties() {
-            return ldapProperties;
+        protected CredentialHandler getCredentialHandler() {
+            if (testCredentialHandler != null) {
+                return testCredentialHandler;
+            }
+            return super.getCredentialHandler();
         }
 
         public User authLookup(IAdmissionSubSystem ia, String logIn, String pw) {
