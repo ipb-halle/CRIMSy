@@ -1,25 +1,42 @@
+
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.base.TestBase;
+
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 
 import jakarta.inject.Inject;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+
 import static org.junit.Assert.assertEquals;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
-//@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class LogInProcessTest extends TestBase {
+
+
+    @Mock
+    LdapObject ldapObjectMock;
 
     @Inject
     protected LogInProcess logInProcess;
@@ -35,78 +52,94 @@ public class LogInProcessTest extends TestBase {
         return prepareDeployment("LogInProcessTest.war")
                 .addClass(LogInProcess.class)
                 .addClass(CredentialHandler.class)
-                .addClass(LdapProperties.class);
+                .addClass(LdapProperties.class)
+                .addClass(LdapHelper.class)
+                .addClass(LdapObject.class)
+                .addClass(LdapAdmissionSubSystem.class);
     }
 
     @Test
     public void tryLogIn_Local_Test() {
 
-        Map<User, Group> ug = createUser_Group("localUser", "Local", "pass123", AdmissionSubSystemType.LOCAL, "L");
-        User u = ug.keySet().iterator().next();
-        assertNotNull(u);
+        Map<User, Group> ug = createUser_Group("localUser", "pass123", AdmissionSubSystemType.LOCAL);
 
-        User uTest = logInProcess.tryLogIn("localUser", "pass123");
+        User u = null;
+        Group g = null;
+
+        for (User us : ug.keySet()) {
+            u = us;
+            g = ug.get(us);
+        }
+        assertNotNull(u);
+        assertNotNull(g);
+
+        User uTest = logInProcess.tryLogIn(u.getLogin(), u.getPassword());
         assertNotNull(uTest);
     }
 
     @Test
     public void tryLogIn_Not_Local_Test() {
 
-        Map<User, Group> ug = createUser_Group("notLocalUser", "notLocal", "pass123", AdmissionSubSystemType.BUILTIN, "L");
-        User u = ug.keySet().iterator().next();
-        assertNotNull(u);
+        Map<User, Group> ug = createUser_Group("notLocalUser", "pass123", AdmissionSubSystemType.BUILTIN);
 
-        User uTest = logInProcess.tryLogIn("notLocalUser", "notLocal");
+        User u = null;
+        Group g = null;
+
+        for (User us : ug.keySet()) {
+            u = us;
+            g = ug.get(us);
+        }
+        assertNotNull(u);
+        assertNotNull(g);
+        User uTest = logInProcess.tryLogIn(u.getLogin(), u.getPassword());
         // refactor the method "tryLogin" to handle other types of AdmissionSubSystemType besides LOCAL and Ldap
         assertEquals(uTest, null);
     }
 
-    /*  @Test
+    @Test
     public void tryLogIn_Ldap_Test() throws Exception {
-        // Create a mock LDAP user
-        Map<User, Group> ug = createUser_Group("fabian", "LDAP User", "ldapPass", AdmissionSubSystemType.LDAP, "uniqueId-001");
-        User u = ug.keySet().iterator().next();
-        assertNotNull(u, "Test user should be created!");
 
-        // Mock the LDAP helper
-        LdapHelper ldapHelperMock = mock(LdapHelper.class);
-        logInProcess.ldapHelper = ldapHelperMock; // Manually inject the mock
+        Map<User, Group> ug = createUser_Group("fabian", "pass", AdmissionSubSystemType.LDAP);
 
-        // Mock the LDAP user object
-        LdapObject ldapObjectUser = new LdapObject()
-                .setLogin(u.getLogin())
-                .setName(u.getName())
-                .setType(MemberType.USER)
-                .setEmail("fabian@example.com")
-                .setDN("cn=fabian,dc=example,dc=com")
-                .setUniqueId("uniqueId-001");
-        ldapObjectUser.addMembership("cn=ldapGroup,dc=example,dc=com");
+        User u = null;
+        Group g = null;
 
-        // Define mock behavior for LDAP
-        when(ldapHelperMock.authenticate(eq("fabian"), eq("ldapPass"))).thenReturn(true);
+        for (User us : ug.keySet()) {
+            u = us;
+            g = ug.get(us);
+        }
+        assertNotNull(u);
+        assertNotNull(g);
 
-        Map<String, LdapObject> mockLdapObjects = new HashMap<>();
-        when(ldapHelperMock.queryLdapUser(eq(u.getLogin()), eq(mockLdapObjects)))
-                .thenReturn(ldapObjectUser);
 
-        // Attempt login
-        User result = logInProcess.tryLogIn("fabian", "ldapPass");
+        User finalU = u;
+        try (MockedConstruction<LdapHelper> mocked = mockConstruction(
+                LdapHelper.class,
+                (mock, context) -> {
+                    when(mock.queryLdapUser(eq(finalU.getLogin()), anyMap()))
+                            .thenReturn(ldapObjectMock);
+                }
+        )) {
+            // ggf. LdapAdmissionSubSystem auch mocken, falls nötig:
+            User finalU1 = u;
+            try (MockedConstruction<LdapAdmissionSubSystem> mockedSub = mockConstruction(
+                    LdapAdmissionSubSystem.class,
+                    (mock, context) -> {
+                        when(mock.lookupLbacUser(eq(ldapObjectMock), any(UserBean.class))).thenReturn(finalU1);
+                    }
+            )) {
 
-        System.out.println("Login result: " + result); // Log the result to verify if it's null or not.
-
-        // Verify result
-        assertNotNull(result, "Login successful!");  // Assert that a user is returned
-        assertEquals("fabian", result.getLogin(), "Login should match the username");
-        assertEquals(AdmissionSubSystemType.LDAP, result.getSubSystemType(), "User subsystem should be LDAP!");
-
-        // Verify mock interactions
-        verify(ldapHelperMock).authenticate(eq("fabian"), eq("ldapPass"));  // Ensure authenticate was called
-        verify(ldapHelperMock).queryLdapUser(eq("fabian"), anyMap());  // Ensure queryLdapUser was called
-
+                User result = logInProcess.tryLogIn(u.getLogin(), "pass");
+                assertNotNull(result);
+                assertEquals(u.getLogin(), result.getLogin());
+            }
+        }
     }
-     */
-    public Map<User, Group> createUser_Group(String login, String name, String password, AdmissionSubSystemType admissionSubSystemType, String subSystemDataString) {
 
+
+    public Map<User, Group> createUser_Group(String login, String password, AdmissionSubSystemType admissionSubSystemType) {
+
+        String name = "userTest" + " " + System.currentTimeMillis();
         User u = new User();
         u.setLogin(login);
         u.setName(name);
@@ -118,7 +151,7 @@ public class LogInProcessTest extends TestBase {
         Group g = new Group();
         g.setName("Group of user " + u.getLogin());
         g.setNode(nodeService.getLocalNode());
-        g.setSubSystemData(subSystemDataString);
+        g.setSubSystemData("L");
         g.setSubSystemType(admissionSubSystemType);
         g = memberService.save(g);
 

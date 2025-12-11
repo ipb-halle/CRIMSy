@@ -261,7 +261,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * @return the User object from the database or a 'latent' User object which
      * will be persisted upon successful authentication
      */
-    private User lookupLbacUser(LdapObject lo, UserBean bean) {
+    protected User lookupLbacUser(LdapObject lo, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LDAP);
