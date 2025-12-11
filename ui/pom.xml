@@ -639,6 +639,19 @@
             <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
+        
+       <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.11.0</version> 
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>4.11.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- db for testing -->
         <dependency>
@@ -762,6 +775,6 @@
             <artifactId>openapi-generator-maven-plugin</artifactId>
             <version>${openapi.generator.version}</version>
         </dependency>
-
+       
     </dependencies>
 </project> 
