@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+cd "$HOME/Documents/CRIMSy/ui"
+
+mvn clean -DskipTests package
+
+docker cp target/ui.war dist_ui_1:/usr/local/tomee/webapps/ui.war
+
+docker exec -u root dist_ui_1 sh -lc '
+  chown tomee:tomee /usr/local/tomee/webapps/ui.war &&
+  chmod 644 /usr/local/tomee/webapps/ui.war
+'
+
+docker restart dist_ui_1
+
+echo "✅ ui.war deployed and dist_ui_1 restarted"
