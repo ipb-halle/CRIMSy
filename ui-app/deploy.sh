@@ -1,18 +1,23 @@
 #!/bin/bash
+set -e
 
-# Build the Docker image (use the current commit hash as the tag to avoid overwriting images)
-IMAGE_TAG="ui-app:$(git rev-parse --short HEAD)"
 
-# Build the Docker image
-echo "Building the Docker image..."
+IMAGE_TAG="ui-app:local"
+CONTAINER_NAME="ui-app"
+PORT=82
+
+echo "Building Docker image..."
 docker build -t $IMAGE_TAG .
 
-# Stop and remove the existing container if it exists
-echo "Stopping and removing existing container..."
-docker ps -q --filter "ancestor=$IMAGE_TAG" | xargs -r docker stop | xargs -r docker rm
+echo "Stopping existing container (if any)..."
+docker rm -f $CONTAINER_NAME 2>/dev/null || true
 
-# Run the new container
-echo "Starting the new container..."
-docker run -d -p 82:80 --name ui-app $IMAGE_TAG
+echo "Starting container..."
+docker run -d \
+  --name $CONTAINER_NAME \
+  -p $PORT:80 \
+  --restart unless-stopped \
+  $IMAGE_TAG
 
-echo "Deployment complete!"
+echo "Deployment complete."
+echo "App running at: http://localhost:$PORT"
