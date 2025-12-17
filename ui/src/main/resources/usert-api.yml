@@ -4,31 +4,20 @@ info:
   version: 1.0.0
 
 paths:
-  
   /loginTest:
     post:
+      tags:
+        - LoginTest
       summary: Log in a user
-      description: Autheticates a user with the provided login credentials.
-      operationId : loginTest
+      description: Authenticates a user with the provided login credentials.
+      operationId: loginTest
       requestBody:
         description: User login credentials
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
-              type: object
-              required:
-                - login
-                - password
-              properties:
-                login:
-                  type: string
-                  description: The username
-                  example: johndoe
-                password:
-                  type: string
-                  description: The password
-                  example: password123
+              $ref: '#/components/schemas/LoginTestRequest'  # Referencing the LoginTestRequest schema
       responses:
         '200':
           description: Successful login
@@ -59,4 +48,21 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Invalid request format                  
+                    example: Invalid request format
+
+components:
+  schemas:
+    LoginTestRequest:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          description: The username
+          example: johndoe
+        password:
+          type: string
+          description: The password
+          example: password123
