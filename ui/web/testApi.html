@@ -1,19 +1,23 @@
-<!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <form action="rest/loginT" method="post">
-           <input type="text" name="login" placeholder="Login">
-           <input type="password" name="password" placeholder="Password">
-           <button type="submit">Login</button> 
-        </form>
-    </body>
-</html>
+<form id="loginForm">
+    <input type="text" id="login" placeholder="Login">
+    <input type="password" id="password" placeholder="Password">
+    <button type="submit">Login</button>
+</form>
+
+<pre id="out"></pre>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("login").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("rest/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+      });
+
+      document.getElementById("out").textContent = await res.text();
+    });
+</script>
