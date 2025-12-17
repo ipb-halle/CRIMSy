@@ -4,31 +4,27 @@ info:
   version: 1.0.0
 
 paths:
-  /loginTest:
+  /login:
     post:
       tags:
-        - LoginTest
+        - Login
       summary: Log in a user
       description: Authenticates a user with the provided login credentials.
-      operationId: loginTest
+      operationId: login
       requestBody:
         description: User login credentials
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginTestRequest'  # Referencing the LoginTestRequest schema
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
           description: Successful login
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Login succeeded
+                $ref: '#/components/schemas/LoginResponse'
         '401':
           description: Unauthorized login attempt
           content:
@@ -52,7 +48,7 @@ paths:
 
 components:
   schemas:
-    LoginTestRequest:
+    LoginRequest:
       type: object
       required:
         - login
@@ -66,3 +62,11 @@ components:
           type: string
           description: The password
           example: password123
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        username:
+          type: string
+

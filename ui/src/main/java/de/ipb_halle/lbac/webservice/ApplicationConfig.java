@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.webservice;
 
 import de.ipb_halle.LoginEndpoint;
+import de.ipb_halle.api.LoginApi;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
@@ -49,6 +50,7 @@ public class ApplicationConfig extends Application {
                 PrintWebService.class,
                 SimpleRESTPojoExample.class,
                 DocumentWebService.class,
+                LoginApi.class,
                 LoginEndpoint.class)
                 );
     }

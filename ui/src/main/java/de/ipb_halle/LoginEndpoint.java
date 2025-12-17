@@ -20,9 +20,7 @@ public class LoginEndpoint {
     @Inject
     LogInProcess loginProcess;
 
-    @Inject
-    private GlobalAdmissionContext globalAdmissionContext;  // For IP check, etc.
-
+  
     /**
      * This method handles the login process. It uses the UserBean's actionLogin
      * method to authenticate the user.
