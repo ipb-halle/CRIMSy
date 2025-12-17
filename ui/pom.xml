@@ -42,7 +42,7 @@
 
     <properties>
         <hibernate.version>6.1.7.Final</hibernate.version>
-        <openapi.generator.version>6.0.1</openapi.generator.version>
+        <openapi.generator.version>7.2.0</openapi.generator.version>
         <tomee.classifier>plus</tomee.classifier>
         <tomee.servlet-engine>8.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
@@ -329,19 +329,45 @@
                 <version>${openapi.generator.version}</version>
                 <executions>
                     <execution>
+                        <id>server-api</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <inputSpec>${basedir}/src/main/resources/usert-api.yml</inputSpec>
                             <generatorName>jaxrs-spec</generatorName>
-                            <output>${project.build.directory}/generated-sources/openapi</output>
                             <apiPackage>de.ipb_halle.api</apiPackage>
                             <modelPackage>de.ipb_halle.model</modelPackage>
-                            <invokerPackage>de.ipb_halle.invoker</invokerPackage>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <interfaceOnly>true</interfaceOnly>
+                                <generateSupportingFiles>false</generateSupportingFiles>
+
+                            </configOptions>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>client-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <inputSpec>${basedir}/src/main/resources/usert-api.yml</inputSpec>
+                            <generatorName>jaxrs-cxf-client</generatorName>
+                            <apiPackage>de.ipb_halle.client_api</apiPackage>
+                            <modelPackage>de.ipb_halle.client_model</modelPackage>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useGenericResponse>true</useGenericResponse>
+
+                            </configOptions>
                         </configuration>
                     </execution>
                 </executions>
+             
             </plugin>
             
         </plugins>
@@ -640,7 +666,7 @@
             <scope>test</scope>
         </dependency>
         
-       <dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>4.11.0</version> 
@@ -774,6 +800,27 @@
             <groupId>org.openapitools</groupId>
             <artifactId>openapi-generator-maven-plugin</artifactId>
             <version>${openapi.generator.version}</version>
+        </dependency>
+        
+        
+        <!-- Swagger annotations -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>[1.5.3,1.5.16]</version>
+        </dependency>
+
+        <!-- Fix for io.swagger.jaxrs.PATCH import in generated sources for JAXRS client -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jaxrs</artifactId>
+            <version>1.6.16</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
        
     </dependencies>
