@@ -3,7 +3,7 @@ import React, { useState, FormEvent } from "react";
 const LoginForm: React.FC = () => {
     const [login, setLogin] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [result, setResult] = useState<string>("");
+    const [result, setResult] = useState<string | null>(null);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -21,38 +21,41 @@ const LoginForm: React.FC = () => {
 
             if (response.ok) {
                 const text = await response.text();
-                setResult(text || "login successful!");
+                setResult(text || "Login successful!");
             } else {
                 const errorText = await response.text();
-                setResult(`Login failed: ${errorText}`);
+                setResult(`Login failed: ${errorText}! Please tray agaian later.`);
             }
 
         } catch (err) {
-            setResult("Request failed!");
+            setResult("Request failed! Please tray agaian later.");
             console.error(err);
         }
     };
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <h2>Login Test API</h2>
-                <input
-                    type="text"
-                    placeholder="Login"
-                    value={login}
-                    onChange={(e) => setLogin(e.target.value)}
-                />
+            {result ? (
+                <div>{result}</div>
+            ) : (
+                <form onSubmit={handleSubmit}>
+                    <h2>Login Test API</h2>
+                    <input
+                        type="text"
+                        placeholder="Login"
+                        value={login}
+                        onChange={(e) => setLogin(e.target.value)}
+                    />
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button type="submit">Login</button>
-                <pre>{result}</pre> {/* Display the result here */}
-            </form>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button type="submit">Login</button>
+                </form>
+            )}
         </>
     );
 };
