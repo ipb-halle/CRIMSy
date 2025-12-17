@@ -3,6 +3,9 @@ info:
   title: CRIMSy API
   version: 1.0.0
 
+security:
+  - SessionKeyAuthentification: []
+
 paths:
   /login:
     post:
@@ -11,6 +14,7 @@ paths:
       summary: Log in a user
       description: Authenticates a user with the provided login credentials.
       operationId: login
+      security: []
       requestBody:
         description: User login credentials
         required: true
@@ -47,6 +51,14 @@ paths:
                     example: Invalid request format
 
 components:
+  securitySchemes:
+    SessionKeyAuthentification:
+      type: http
+      scheme: bearer
+      bearerFormat: UUID
+      description: Session key authentication using a custom header.
+      
+  
   schemas:
     LoginRequest:
       type: object
