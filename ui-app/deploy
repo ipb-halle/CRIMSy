@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e
+
+IMAGE_TAG="ui-app:local"
+CONTAINER_NAME="ui-app"
+PORT=82
+
+
+MODE=${1:-prod} # Use dev for local development
+
+if [ "$MODE" = "dev" ]; then
+  echo "Starting development container with volume mount ..."
+  docker rm -f $CONTAINER_NAME 2>/dev/null || true
+  docker run -d \
+    --name $CONTAINER_NAME \
+    -p $PORT:80 \
+    --restart unless-stopped \
+    $IMAGE_TAG
+  echo "Dev server running at http://localhost:$PORT"
+else
+  echo "Building production Docker image ..."
+  docker build -t $IMAGE_TAG .
+
+  echo "Stopping existing container (if any) ..."
+  docker rm -f $CONTAINER_NAME 2>/dev/null || true
+
+  echo "starting production container ..."
+  docker run -d \
+    --name $CONTAINER_NAME \
+    -p $PORT:80 \
+    --restart unless-stopped \
+    $IMAGE_TAG
+  echo "Dev server running at http://localhost:$PORT"
+fi
