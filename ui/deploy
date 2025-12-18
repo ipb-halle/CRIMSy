@@ -10,12 +10,6 @@ mvn -f ./pom.xml clean package -DskipTests
 
 WAR_FILE=./target/ui.war
 
-
-#if [ ! -f ./ui-jakarta/target/ui.war ]; then
-  # echo "Error: The WAR file was not generated!"
- #  exit 1
-#fi
-
 echo "============================"
 echo "2. Deploying war to Docker container"
 echo "============================"
