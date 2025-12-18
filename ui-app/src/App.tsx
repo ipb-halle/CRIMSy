@@ -1,11 +1,12 @@
 import React from 'react';
 import './App.css';
-import LoginForm from "./LoginForm";
+import LoginForm from "./user/LoginForm";
+import Login from './user/Login';
 
 const App: React.FC = () => {
   return (
     <div className='App'>
-      <LoginForm />
+      <Login />
     </div>
   );
 }

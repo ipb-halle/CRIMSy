@@ -1,19 +1,24 @@
 # ---------- Build stage ----------
 FROM node:18-alpine AS builder
+
 WORKDIR /app
 
 # Copy only dependency files first (enables caching)
-COPY package*.json ./
+COPY package*.json tsconfig.json ./
+
+# install dependencies
 RUN npm ci
 
 # Copy application source
-COPY . .
+COPY public ./public
+COPY src ./src
 
 # Build production assets
 RUN npm run build
 
 # ---------- Runtime stage ----------
 FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
 
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
@@ -22,7 +27,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
 
 # Copy build output
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app/build .
 
 EXPOSE 80
 
