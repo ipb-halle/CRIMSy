@@ -1,0 +1,8 @@
+node_modules
+build
+dist
+.docker
+.git
+*.log
+.env.local
+.env.development
