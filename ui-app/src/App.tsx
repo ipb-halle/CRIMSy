@@ -1,12 +1,23 @@
 import React from 'react';
 import './App.css';
-import LoginForm from "./user/LoginForm";
-import Login from './user/Login';
+
+import Login from './pages/Login';
+import HeadMeta from './components/HeadMeta';
+import Footer from './components/Footer';
+import Growl from './components/Growl';
 
 const App: React.FC = () => {
   return (
+
+
     <div className='App'>
-      <Login />
+      <HeadMeta />
+      <div className='content'>
+        <Login />
+        <Growl />
+      </div>
+      <Footer />
+
     </div>
   );
 }

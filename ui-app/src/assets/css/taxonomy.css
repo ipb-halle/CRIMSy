@@ -1,0 +1,65 @@
+/*
+ *
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+/*
+   customer styles
+
+*/
+
+.historyInfoPanel{
+    width: 250px;
+    height: 120px;
+}
+.taxonomy-top-row{
+    margin-top: 10px;
+}
+
+.taxonomy-save-button{
+    position: absolute;
+    left: 1px;
+    width: 180px;
+}
+.taxonomy-edit-button{
+    width: 90px !important;
+    position: absolute !important;
+    left: 0px;
+}
+.taxonomyTree{
+    height:400px !important;
+    width:360px !important;
+}
+
+.taxonomy-name-table{
+    height:400px !important;
+}
+
+.taxonomy-action-panel{
+    height: 120px;
+}
+
+.taxonomy-header-panel{
+    font-size: 1.25em;
+    font-weight: bold;
+}
+.taxonomy-header-panel-row{
+    padding-bottom: 20px;
+}
+
+/** format info box test results in ldpap check **/
+
