@@ -81,4 +81,8 @@ components:
           type: string
         username:
           type: string
+        token:
+          type: string
+          description: "Bearer token for authentication"
+          example: "b7fe38b9-37r4-3i9o-0e92-45zh6usd893ki4u"
 
