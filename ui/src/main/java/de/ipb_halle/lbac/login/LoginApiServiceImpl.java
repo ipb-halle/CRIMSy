@@ -4,18 +4,12 @@
  */
 package de.ipb_halle.lbac.login;
 
-//import de.ipb_halle.api.LoginTestApiService;
-import de.ipb_halle.api.LoginApi;
 import de.ipb_halle.api.LoginApiService;
-//import de.ipb_halle.client_model.LoginTestRequest;
 import de.ipb_halle.lbac.admission.LogInProcess;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.security.TokenService;
 import de.ipb_halle.model.LoginRequest;
 import de.ipb_halle.model.LoginResponse;
-import jakarta.enterprise.context.ApplicationScoped;
-
-
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
@@ -25,12 +19,13 @@ import jakarta.ws.rs.core.SecurityContext;
  * @author halocal
  */
 
-//public class LoginTestApiImpl {
-public class LoginTestApiImpl implements LoginApiService {
+public class LoginApiServiceImpl implements LoginApiService {
 
     @Inject
     LogInProcess loginProcess;
 
+    @Inject
+    TokenService tokenService;
 
    @Override
     public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
@@ -38,9 +33,17 @@ public class LoginTestApiImpl implements LoginApiService {
         String login = loginRequest.getLogin();
         String password = loginRequest.getPassword();
         User user = loginProcess.tryLogIn(login, password);
+        
         if (user != null) {
+            
+            String token = tokenService.generateToken(user.getLogin());
+            LoginResponse response = new LoginResponse();
+            response.setMessage("Login Succedd!");
+            response.setUsername(user.getLogin());
+            response.setToken(token);
+  
             return Response.status(Response.Status.OK)
-                    .entity("{\"message\":\"Login succeeded\"}")
+                    .entity(response)
                     .build();
         } else {
 
