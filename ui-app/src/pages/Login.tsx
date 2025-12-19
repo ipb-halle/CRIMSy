@@ -5,15 +5,15 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
-    const [login, setLogin] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [errors, setErrors] = useState<{ login?: string; password?: string }>({});
+    const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
     const [result, setResult] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     const validate = (): boolean => {
         const newErrors: typeof errors = {};
-        if (!login.trim()) newErrors.login = "Login is required";
+        if (!username.trim()) newErrors.username = "Login is required";
         if (!password.trim()) newErrors.password = "Password is required";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -26,7 +26,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         setLoading(true);
         setResult(null);
 
-        const payload = { login, password };
+        const payload = { login: username, password };
 
         try {
             const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/login", {
@@ -38,11 +38,15 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             });
 
             if (response.ok) {
-                const text = await response.text();
-                setResult(text || "Login successful!");
+                const data: { message: string; username: string; token: string } = await response.json();
+
+                setResult(JSON.stringify(data, null, 2)); // pretty-print JSON
+
+                // Save token to localStorage for further API calls
+                localStorage.setItem("token", data.token);
             } else {
-                const errorText = await response.text();
-                setResult(`Login failed: ${errorText}! Please tray agaian later.`);
+                const errorData = await response.json();
+                setResult(`Login failed: ${errorData.message || "Unknown error"}`);
             }
 
         } catch (err) {
@@ -52,6 +56,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             setLoading(false);
         }
     };
+
 
     return (
         <div
@@ -65,8 +70,14 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             }}
         >
             {result ? (
-                <div style={{ textAlign: "center", margin: "1rem 0", color: result.includes("failed") ? "red" : "green" }}>
-                    {result}
+                <div
+                    style={{
+                        textAlign: "center",
+                        margin: "1rem 0",
+                        color: result.includes("failed") ? "red" : "green",
+                    }}
+                >
+                    <pre>{result}</pre>
                 </div>
             ) : (
                 <form id="logInFormId" onSubmit={handleSubmit}>
@@ -86,11 +97,11 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                             <input
                                 type="text"
                                 id="loginLogin"
-                                value={login}
-                                onChange={(e) => setLogin(e.target.value)}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 style={{ width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
                             />
-                            {errors.login && <div style={{ color: "red", fontSize: "0.75rem" }}>{errors.login}</div>}
+                            {errors.username && <div style={{ color: "red", fontSize: "0.75rem" }}>{errors.username}</div>}
                         </div>
 
                         <div style={{ marginBottom: "1rem" }}>
