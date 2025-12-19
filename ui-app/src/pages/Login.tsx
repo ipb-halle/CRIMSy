@@ -1,15 +1,35 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 
 interface LoginProps {
     customLoginInfo?: string;
+}
+
+interface LoginResult {
+    message: string,
+    username?: string,
+    token?: string,
 }
 
 const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
-    const [result, setResult] = useState<string | null>(null);
+    const [result, setResult] = useState<LoginResult | null>(null);
     const [loading, setLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const storedUsername = localStorage.getItem("username");
+        if (token && storedUsername) {
+            setResult({
+                message: "Already logged in!",
+                username: storedUsername,
+                token: token,
+            })
+            setIsLoggedIn(true);
+        }
+    }, []);
 
     const validate = (): boolean => {
         const newErrors: typeof errors = {};
@@ -29,34 +49,46 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         const payload = { login: username, password };
 
         try {
-            const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(payload)
-            });
+            const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/login",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const data: LoginResult = await response.json();
 
             if (response.ok) {
-                const data: { message: string; username: string; token: string } = await response.json();
 
-                setResult(JSON.stringify(data, null, 2)); // pretty-print JSON
+                setResult(data);
+                setIsLoggedIn(true);
 
                 // Save token to localStorage for further API calls
-                localStorage.setItem("token", data.token);
+                if (data.token)
+                    localStorage.setItem("token", data.token);
+                if (data.username)
+                    localStorage.setItem("username", data.username);
             } else {
-                const errorData = await response.json();
-                setResult(`Login failed: ${errorData.message || "Unknown error"}`);
+                setResult({ message: data.message || "Login failed!" });
             }
 
         } catch (err) {
             console.error(err);
-            setResult("Request failed! Please tray agaian later.");
+            setResult({ message: "Request failed! Please tray agaian later." });
         } finally {
             setLoading(false);
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        setIsLoggedIn(false);
+        setResult(null);
+        setUsername("");
+        setPassword("");
+    };
 
     return (
         <div
@@ -69,31 +101,69 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                 margin: "2rem auto",
             }}
         >
-            {result ? (
-                <div
+            <fieldset style={{ border: "none" }}>
+                <legend
                     style={{
-                        textAlign: "center",
-                        margin: "1rem 0",
-                        color: result.includes("failed") ? "red" : "green",
+                        fontSize: "1.25rem",
+                        fontWeight: "bold",
+                        marginBottom: "1rem",
                     }}
                 >
-                    <pre>{result}</pre>
-                </div>
-            ) : (
-                <form id="logInFormId" onSubmit={handleSubmit}>
-                    <fieldset style={{ border: "none" }}>
-                        <legend style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "1rem" }}>
-                            Login
-                        </legend>
+                    Login
+                </legend>
 
-                        {customLoginInfo && (
-                            <div style={{ margin: "0.5rem 0", textAlign: "center", fontWeight: "bold" }}>
-                                {customLoginInfo}
+                {customLoginInfo && (
+                    <div
+                        style={{
+                            margin: "0.5rem 0",
+                            textAlign: "center",
+                            fontWeight: "bold"
+                        }}
+                    >
+                        {customLoginInfo}
+                    </div>
+                )}
+
+                {/* Login rsult message */}
+                {result && (
+                    <div
+                        style={{
+                            textAlign: "center",
+                            margin: "1rem 0",
+                            color: result.message?.toLowerCase().includes("failed") ? "red" : "green",
+                            border: "1px solid #029ACF",
+                            borderRadius: "3px",
+                            padding: "0.5rem",
+                            backgroundColor: "f0f8ff",
+                        }}
+                    >
+                        {result.message}
+                        {isLoggedIn && (
+                            <div style={{ marginTop: "0.5rem" }}>
+                                <button
+                                    onClick={handleLogout}
+                                    style={{
+                                        padding: "0.5rem 1.5rem",
+                                        backgroundColor: "#058816ff",
+                                        color: "#fff",
+                                        border: "none",
+                                        marginTop: "1rem",
+                                        borderRadius: "3px",
+                                        cursor: "1rem",
+                                    }}
+                                >
+                                    Logout
+                                </button>
                             </div>
                         )}
+                    </div>
+                )}
 
+                {/*Login form only if not logged in */}
+                {!isLoggedIn && (
+                    <form id="logInFormId" onSubmit={handleSubmit}>
                         <div style={{ marginBottom: "1rem" }}>
-                            <label htmlFor="loginLogin">Login name</label>
+                            <label htmlFor="loginLogin">Username</label>
                             <input
                                 type="text"
                                 id="loginLogin"
@@ -101,7 +171,9 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                                 onChange={(e) => setUsername(e.target.value)}
                                 style={{ width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
                             />
-                            {errors.username && <div style={{ color: "red", fontSize: "0.75rem" }}>{errors.username}</div>}
+                            {errors.username && (
+                                <div style={{ color: "red", fontSize: "0.75rem" }}>{errors.username}</div>
+                            )}
                         </div>
 
                         <div style={{ marginBottom: "1rem" }}>
@@ -113,7 +185,9 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 style={{ width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
                             />
-                            {errors.password && <div style={{ color: "red", fontSize: "0.75rem" }}>{errors.password}</div>}
+                            {errors.password && (
+                                <div style={{ color: "red", fontSize: "0.75rem" }}>{errors.password}</div>
+                            )}
                         </div>
 
                         <div style={{ textAlign: "center", marginBottom: "1rem" }}>
@@ -132,24 +206,10 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                                 {loading ? "Logging in..." : "Login"}
                             </button>
                         </div>
-
-
-                        <div style={{ fontSize: "0.75rem", color: "gray", textAlign: "center" }}>
-                            <p>
-                                By registering, you agree to the extended processing of your data in accordance with our{" "}
-                                <a
-                                    href="https://compchem17.ipb-halle.de/ui/dsgvo.xhtml;jsessionid=409B9E9E3286CB1F131EAC6DBBA4188E"
-                                    target="_blank"
-                                    style={{ textDecoration: "underline" }}
-                                >
-                                    Data Protection Policy!
-                                </a>
-                            </p>
-                        </div>
-                    </fieldset>
-                </form>
-            )}
-        </div >
+                    </form>
+                )}
+            </fieldset>
+        </div>
     );
 };
 
