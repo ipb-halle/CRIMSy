@@ -50,6 +50,7 @@
         <class>de.ipb_halle.lbac.entity.CloudNodeEntity</class>
         <class>de.ipb_halle.lbac.entity.InfoObjectEntity</class>
         <class>de.ipb_halle.lbac.entity.NodeEntity</class>
+        <class>de.ipb_halle.lbac.entity.UserSessionsEntity</class>
         <class>de.ipb_halle.lbac.exp.ExperimentEntity</class>
         <class>de.ipb_halle.lbac.exp.ExpRecordEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.AssayEntity</class>
