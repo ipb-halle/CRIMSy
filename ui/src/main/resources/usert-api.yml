@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: CRIMSy API
+  version: 1.0.0
+
+security:
+  - SessionKeyAuthentification: []
+
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      summary: Log in a user
+      description: Authenticates a user with the provided login credentials.
+      operationId: login
+      security: []
+      requestBody:
+        description: User login credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Unauthorized login attempt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login failed
+        '400':
+          description: Invalid input or missing parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid request format
+
+components:
+  securitySchemes:
+    SessionKeyAuthentification:
+      type: http
+      scheme: bearer
+      bearerFormat: UUID
+      description: Session key authentication using a custom header.
+      
+  
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          description: The username
+          example: johndoe
+        password:
+          type: string
+          description: The password
+          example: password123
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        username:
+          type: string
+        token:
+          type: string
+          description: "Bearer token for authentication"
+          example: "b7fe38b9-37r4-3i9o-0e92-45zh6usd893ki4u"
+

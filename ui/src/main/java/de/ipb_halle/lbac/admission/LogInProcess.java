@@ -13,7 +13,7 @@ import jakarta.inject.Inject;
 @Stateless
 public class LogInProcess {
 
-     @Inject
+    @Inject
     NodeService nodeService;
     @Inject
     MemberService memberService;
@@ -23,7 +23,7 @@ public class LogInProcess {
     CredentialHandler credentialHandler;
     @Inject
     LdapProperties ldapProps;
-    
+
     /**
      * Try to login a user either via LOCAL or LDAP.
      *
@@ -39,7 +39,6 @@ public class LogInProcess {
         userBeanMock.setMembershipService(membershipService);
         userBeanMock.setCredentialHandler(credentialHandler);
         userBeanMock.setLdapProperties(ldapProps);
-
 
         IAdmissionSubSystem localSub = AdmissionSubSystemType.LOCAL.getInstance();
         User u = localSub.lookup(login, userBeanMock);
@@ -57,8 +56,8 @@ public class LogInProcess {
             }
         } else {
             // User unknown locally -> try LDAP
-             u = userBeanMock.authLookup(AdmissionSubSystemType.LDAP.getInstance(), login, password);
-             
+            u = userBeanMock.authLookup(AdmissionSubSystemType.LDAP.getInstance(), login, password);
+
         }
         return u;
     }
@@ -85,8 +84,6 @@ public class LogInProcess {
                 ldapProps.setLdapEnabled(true);
             }
         }
-    
-                
 
         public void setCredentialHandler(CredentialHandler credentialHandler) {
             this.testCredentialHandler = credentialHandler;

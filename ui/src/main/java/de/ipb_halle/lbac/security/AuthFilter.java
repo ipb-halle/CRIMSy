@@ -15,31 +15,28 @@ import java.io.IOException;
  *
  * @author halocal
  */
-
 @Provider
-public class AuthFilter implements ContainerRequestFilter{
+public class AuthFilter implements ContainerRequestFilter {
 
     @Inject
     TokenService tokenService;
-    
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String authHeader = requestContext.getHeaderString("Authorization");
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Missing or invalid Authorization header\"}")
                     .build());
             return;
         }
-        
-        
+
         String token = authHeader.substring("Beare ".length());
-        if(!tokenService.validateToken(token)) {
+        if (!tokenService.validateToken(token)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-            .entity("{\"message\":\"Invalid token\"}")
-            .build());
+                    .entity("{\"message\":\"Invalid token\"}")
+                    .build());
         }
     }
-    
-    
+
 }
