@@ -178,20 +178,6 @@ CREATE TABLE nestingpathsets (
 );
 
 
-/*
-create user_session class
-*/
-
-CREATE TABLE user_sessions (
-    id          SERIAL NOT NULL PRIMARY KEY,
-    user_id     INTEGER NOT NULL REFERENCES usersGroups (id) ON DELETE CASCADE,
-    token       VARCHAR(255) NOT NULL UNIQUE,
-    last_seen   TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_user_sessions_user_id ON user_sessions(user_id);
-CREATE INDEX idx_user_sessions_last_seen ON user_sessions(last_seen);
-
 /* 
  * ToDo: Do some database sanitation for memberships.  
  * This cleanup / sanitation is necessary, when the membership table 
