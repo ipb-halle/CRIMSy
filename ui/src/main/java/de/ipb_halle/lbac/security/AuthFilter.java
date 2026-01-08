@@ -31,7 +31,7 @@ public class AuthFilter implements ContainerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring("Beare ".length());
+        String token = authHeader.substring("Bearer ".length());
         if (!tokenService.validateToken(token)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Invalid token\"}")
