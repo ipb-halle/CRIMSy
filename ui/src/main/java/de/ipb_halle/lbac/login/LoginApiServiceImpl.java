@@ -53,7 +53,7 @@ public class LoginApiServiceImpl implements LoginApiService {
                         .getSingleResult();
             } catch(NoResultException e) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("{\\\"message\\\":\\\"User entity not found in database!\\\"}")
+                        .entity("{\"message\":\"User entity not found in database!\"}")
                         .build();
             }
             
