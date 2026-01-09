@@ -52,7 +52,12 @@ public class TokenService {
         tokenStore.remove(token);
 
         // Remove from DB
-        UserSessionsEntity session = em.createQuery(
+        
+        em.createQuery(
+        "DELETE FROM UserSessionsEntity s WHERE s.token = :token")
+                .setParameter("token", token)
+                .executeUpdate();
+        /*UserSessionsEntity session = em.createQuery(
                 "SELECT s FROM UserSessionsEntity s WHERE s.token = :token", UserSessionsEntity.class)
                 .setParameter("token", token)
                 .getResultStream()
@@ -61,6 +66,6 @@ public class TokenService {
         
         if (session != null) {
             em.remove(session);
-        }
+        }*/
     }
 }
