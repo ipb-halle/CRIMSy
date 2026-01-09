@@ -8,6 +8,7 @@ import de.ipb_halle.api.LoginApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.security.SessionCleanupJob;
 import de.ipb_halle.lbac.security.TokenService;
 import de.ipb_halle.model.LoginRequest;
 import de.ipb_halle.model.LoginResponse;
@@ -35,7 +36,8 @@ public class LoginApiServiceImpl implements LoginApiService {
 
     @Override
     public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
-
+      
+        
         String login = loginRequest.getLogin();
         String password = loginRequest.getPassword();
         User user = loginProcess.tryLogIn(login, password);
