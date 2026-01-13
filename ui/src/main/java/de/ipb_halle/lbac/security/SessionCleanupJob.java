@@ -8,6 +8,8 @@ import de.ipb_halle.lbac.entity.UserSessionsEntity;
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -39,12 +41,7 @@ public class SessionCleanupJob {
 
         for (UserSessionsEntity sessionsEntity : expiredSessions) {
             em.remove(sessionsEntity);
-        }
-/*        int deletedCount = em.createQuery(
-                "DELETE FROM UserSessionsEntity s WHERE s.lastSeen < timeouThreshold")
-                .setParameter("timeouThreshold", timeouThreshold)
-                .executeUpdate();
-        System.out.println("SessionCleanupJob: removed " + deletedCount + " expired sessions");*/
+        }        
         System.out.println("SessionCleanupJob: removed " + expiredSessions + " expired sessions");
     }
 }
