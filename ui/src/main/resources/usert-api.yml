@@ -11,6 +11,91 @@ paths:
     post:
       tags:
         - Login
+        - Authentication        
+      summary: Log in a user
+      description: Authenticates a user with the provided login credentials.
+      operationId: loginT
+      security: []
+      requestBody:
+        description: User login credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Unauthorized login attempt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login failed
+        '400':
+          description: Invalid input or missing parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid request format
+  
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+        - Logout
+      summary: Logout the current user
+      description: Invalidates the user's session and deletes the token from database.
+      operationId: logout
+      responses:
+        '200':
+          description: Successfuly loged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout successful
+        '401':
+          description: Unauthorized request (invalid or missing token)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Inauthorized
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid request
+   
+  /auth/login:
+    post:
+      tags:
+        - Login
+        - Authentication        
       summary: Log in a user
       description: Authenticates a user with the provided login credentials.
       operationId: login
@@ -49,7 +134,7 @@ paths:
                   message:
                     type: string
                     example: Invalid request format
-
+    
 components:
   securitySchemes:
     SessionKeyAuthentification:
