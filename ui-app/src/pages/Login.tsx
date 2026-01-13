@@ -49,7 +49,8 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         const payload = { login: username, password };
 
         try {
-            const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/login",
+            //const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/login",
+            const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/auth/login",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
