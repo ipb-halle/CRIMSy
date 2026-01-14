@@ -1,4 +1,4 @@
-package de.ipb_halle.lbac.login;
+package de.ipb_halle.lbac.authentication;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LogInProcess;
