@@ -73,16 +73,19 @@ public class AuthApiServiceImpl implements AuthApiService {
             response.setMessage("Login Succedd!");
             response.setUsername(user.getLogin());
             response.setToken(token);
+            response.setExpiresInSeconds(60); // SINGLE SOURCE OF TRUTH
 
             return Response.status(Response.Status.OK)
                     .entity(response)
                     .build();
+                    
         } else {
 
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Login failed\"}")
                     .build();
         }
+
     }
 
     @Override

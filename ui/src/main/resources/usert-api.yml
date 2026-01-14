@@ -126,4 +126,9 @@ components:
           type: string
           description: "Bearer token for authentication"
           example: "b7fe38b9-37r4-3i9o-0e92-45zh6usd893ki4u"
+        expiresInSeconds:
+          type: integer
+          example: 60
+          description: Session validity duration in seconds
+
 

@@ -1,14 +1,17 @@
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useState, useEffect, useRef, FormEvent } from "react";
 
 interface LoginProps {
     customLoginInfo?: string;
 }
 
 interface LoginResult {
-    message: string,
-    username?: string,
-    token?: string,
+    message: string;
+    username?: string;
+    token?: string;
+    expiresInSeconds?: number;
 }
+
+const SESSION_FALLBACK_TIMEOUT_MS = 60 * 1000; // safety fallback
 
 const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     const [username, setUsername] = useState("");
@@ -18,18 +21,62 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     const [loading, setLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const logoutTimerRef = useRef<number | null>(null);
+
+    /* -------------------- helpers -------------------- */
+
+    const clearLogoutTimer = () => {
+        if (logoutTimerRef.current !== null) {
+            clearTimeout(logoutTimerRef.current);
+            logoutTimerRef.current = null;
+        }
+    };
+
+    const expireSession = (message: string) => {
+        clearLogoutTimer();
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+
+        setIsLoggedIn(false);
+        setResult({ message });
+        setUsername("");
+        setPassword("");
+    };
+
+    const startSessionTimer = (expiresInSeconds?: number) => {
+        clearLogoutTimer();
+
+        const timeoutMs = expiresInSeconds
+            ? expiresInSeconds * 1000
+            : SESSION_FALLBACK_TIMEOUT_MS;
+
+        logoutTimerRef.current = window.setTimeout(() => {
+            expireSession("Session expired due to inactivity. Please log in again.");
+        }, timeoutMs);
+    };
+
+    /* -------------------- session restore -------------------- */
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         const storedUsername = localStorage.getItem("username");
+
         if (token && storedUsername) {
-            setResult({
-                message: "Already logged in!",
-                username: storedUsername,
-                token: token,
-            })
             setIsLoggedIn(true);
+            setResult({
+                message: "Session restored",
+                username: storedUsername,
+                token,
+            });
+
+            // enforce max session length even after reload
+            startSessionTimer();
         }
+
+        return () => clearLogoutTimer();
     }, []);
+
+    /* -------------------- validation -------------------- */
 
     const validate = (): boolean => {
         const newErrors: typeof errors = {};
@@ -39,6 +86,8 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         return Object.keys(newErrors).length === 0;
     };
 
+    /* -------------------- login -------------------- */
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (!validate()) return;
@@ -46,78 +95,74 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         setLoading(true);
         setResult(null);
 
-        const payload = { login: username, password };
-
         try {
-            const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/auth/login",
+            const response = await fetch(
+                "https://compchem17.ipb-halle.de/ui/rest/auth/login",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({ login: username, password }),
                 }
             );
 
             const data: LoginResult = await response.json();
 
-            if (response.ok) {
-
-                setResult(data);
-                setIsLoggedIn(true);
-
-                // Save token to localStorage for further API calls
-                if (data.token)
-                    localStorage.setItem("token", data.token);
-                if (data.username)
-                    localStorage.setItem("username", data.username);
-            } else {
-                setResult({ message: data.message || "Login failed!" });
+            if (!response.ok) {
+                setResult({ message: data.message || "Login failed" });
+                return;
             }
 
+            if (!data.token || !data.username) {
+                setResult({ message: "Invalid login response" });
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("username", data.username);
+
+            setIsLoggedIn(true);
+            setResult(data);
+
+            startSessionTimer(data.expiresInSeconds);
         } catch (err) {
             console.error(err);
-            setResult({ message: "Request failed! Please tray agaian later." });
+            setResult({ message: "Request failed. Please try again later." });
         } finally {
             setLoading(false);
         }
     };
+
+    /* -------------------- logout -------------------- */
 
     const handleLogout = async () => {
         const token = localStorage.getItem("token");
 
         try {
             if (token) {
-                await fetch("https://compchem17.ipb-halle.de/ui/rest/auth/logout",
+                await fetch(
+                    "https://compchem17.ipb-halle.de/ui/rest/auth/logout",
                     {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
-                        }
+                            Authorization: `Bearer ${token}`,
+                        },
                     }
                 );
             }
         } catch (error) {
-            console.error("Logout request failed: ", error);
+            console.error("Logout request failed:", error);
         } finally {
-            localStorage.removeItem("token");
-            localStorage.removeItem("username");
-            setIsLoggedIn(false);
-            setResult(null);
-            setUsername("");
-            setPassword("");
+            expireSession("Logged out successfully");
         }
-    }
+    };
 
-    /*    const handleLogout = () => {
-    
-    
-            localStorage.removeItem("token");
-            localStorage.removeItem("username");
-            setIsLoggedIn(false);
-            setResult(null);
-            setUsername("");
-            setPassword("");
-        };*/
+    /* -------------------- rendering -------------------- */
+
+    const isError =
+        result?.message.toLowerCase().includes("failed") ||
+        result?.message.toLowerCase().includes("expired") ||
+        result?.message.toLowerCase().includes("unauthorized");
 
     return (
         <div
@@ -131,54 +176,40 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             }}
         >
             <fieldset style={{ border: "none" }}>
-                <legend
-                    style={{
-                        fontSize: "1.25rem",
-                        fontWeight: "bold",
-                        marginBottom: "1rem",
-                    }}
-                >
+                <legend style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
                     Login
                 </legend>
 
                 {customLoginInfo && (
-                    <div
-                        style={{
-                            margin: "0.5rem 0",
-                            textAlign: "center",
-                            fontWeight: "bold"
-                        }}
-                    >
+                    <div style={{ textAlign: "center", fontWeight: "bold" }}>
                         {customLoginInfo}
                     </div>
                 )}
 
-                {/* Login rsult message */}
                 {result && (
                     <div
                         style={{
                             textAlign: "center",
                             margin: "1rem 0",
-                            color: result.message?.toLowerCase().includes("failed") ? "red" : "green",
+                            color: isError ? "red" : "green",
                             border: "1px solid #029ACF",
                             borderRadius: "3px",
                             padding: "0.5rem",
-                            backgroundColor: "f0f8ff",
                         }}
                     >
                         {result.message}
+
                         {isLoggedIn && (
-                            <div style={{ marginTop: "0.5rem" }}>
+                            <div style={{ marginTop: "1rem" }}>
                                 <button
                                     onClick={handleLogout}
                                     style={{
                                         padding: "0.5rem 1.5rem",
-                                        backgroundColor: "#058816ff",
+                                        backgroundColor: "#058816",
                                         color: "#fff",
                                         border: "none",
-                                        marginTop: "1rem",
                                         borderRadius: "3px",
-                                        cursor: "1rem",
+                                        cursor: "pointer",
                                     }}
                                 >
                                     Logout
@@ -188,40 +219,37 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                     </div>
                 )}
 
-                {/*Login form only if not logged in */}
                 {!isLoggedIn && (
-                    <form id="logInFormId" onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <div style={{ marginBottom: "1rem" }}>
-                            <label htmlFor="loginLogin">Username</label>
+                            <label>Username</label>
                             <input
-                                type="text"
-                                id="loginLogin"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                style={{ width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
+                                style={{ width: "100%", padding: "0.5rem" }}
                             />
                             {errors.username && (
-                                <div style={{ color: "red", fontSize: "0.75rem" }}>{errors.username}</div>
+                                <div style={{ color: "red" }}>{errors.username}</div>
                             )}
                         </div>
 
                         <div style={{ marginBottom: "1rem" }}>
-                            <label htmlFor="loginPassword">Password</label>
+                            <label>Password</label>
                             <input
                                 type="password"
-                                id="loginPassword"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                style={{ width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
+                                style={{ width: "100%", padding: "0.5rem" }}
                             />
                             {errors.password && (
-                                <div style={{ color: "red", fontSize: "0.75rem" }}>{errors.password}</div>
+                                <div style={{ color: "red" }}>{errors.password}</div>
                             )}
                         </div>
 
-                        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+                        <div style={{ textAlign: "center" }}>
                             <button
                                 type="submit"
+                                disabled={loading}
                                 style={{
                                     padding: "0.5rem 1.5rem",
                                     backgroundColor: "#029ACF",
@@ -230,7 +258,6 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                                     borderRadius: "3px",
                                     cursor: "pointer",
                                 }}
-                                disabled={loading}
                             >
                                 {loading ? "Logging in..." : "Login"}
                             </button>
