@@ -70,7 +70,7 @@ public class AuthApiServiceImpl implements AuthApiService {
             String token = tokenService.generateToken(memberEntity);
 
             LoginResponse response = new LoginResponse();
-            response.setMessage("Login Succedd!");
+            response.setMessage("Logged in successfully!");
             response.setUsername(user.getLogin());
             response.setToken(token);
             response.setExpiresInSeconds(60); // SINGLE SOURCE OF TRUTH
@@ -107,7 +107,7 @@ public class AuthApiServiceImpl implements AuthApiService {
         tokenService.revokeToken(token);
 
         Logout200Response response = new Logout200Response();
-        response.setMessage("Logout successful");
+        response.setMessage("Logged out successfully");
         return Response.ok(response).build();
     }
 
