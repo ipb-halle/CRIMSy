@@ -13,9 +13,7 @@ import de.ipb_halle.lbac.security.TokenService;
 import de.ipb_halle.model.LoginRequest;
 import de.ipb_halle.model.LoginResponse;
 import de.ipb_halle.model.Logout200Response;
-import de.ipb_halle.model.Logout400Response;
 import de.ipb_halle.model.Logout401Response;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -23,7 +21,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import java.util.Map;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Context;
 
