@@ -49,7 +49,6 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         const payload = { login: username, password };
 
         try {
-            //const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/login",
             const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/auth/login",
                 {
                     method: "POST",
@@ -82,14 +81,43 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
-        setIsLoggedIn(false);
-        setResult(null);
-        setUsername("");
-        setPassword("");
-    };
+    const handleLogout = async () => {
+        const token = localStorage.getItem("token");
+
+        try {
+            if (token) {
+                await fetch("https://compchem17.ipb-halle.de/ui/rest/auth/logout",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        }
+                    }
+                );
+            }
+        } catch (error) {
+            console.error("Logout request failed: ", error);
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("username");
+            setIsLoggedIn(false);
+            setResult(null);
+            setUsername("");
+            setPassword("");
+        }
+    }
+
+    /*    const handleLogout = () => {
+    
+    
+            localStorage.removeItem("token");
+            localStorage.removeItem("username");
+            setIsLoggedIn(false);
+            setResult(null);
+            setUsername("");
+            setPassword("");
+        };*/
 
     return (
         <div

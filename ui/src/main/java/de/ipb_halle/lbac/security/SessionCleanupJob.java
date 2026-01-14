@@ -25,23 +25,11 @@ import java.util.List;
 @Startup
 public class SessionCleanupJob {
 
-    @PersistenceContext
-    private EntityManager em;
+    @Inject
+    private SessionService sessionService;
 
     @Schedule(hour = "*", minute = "*/1", persistent = false)
-    @Transactional
     public void cleanupExpiredSessions() {
-        LocalDateTime timeouThreshold = LocalDateTime.now().minusMinutes(1);
-
-        List<UserSessionsEntity> expiredSessions = em.createQuery(
-                "SELECT s FROM UserSessionsEntity s WHERE s.lastSeen < :threshold",
-                UserSessionsEntity.class)
-                .setParameter("threshold", timeouThreshold)
-                .getResultList();
-
-        for (UserSessionsEntity sessionsEntity : expiredSessions) {
-            em.remove(sessionsEntity);
-        }        
-        System.out.println("SessionCleanupJob: removed " + expiredSessions + " expired sessions");
+        sessionService.deleteExpiredSessions();
     }
 }

@@ -8,6 +8,7 @@ import de.ipb_halle.api.AuthApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.security.SessionService;
 import de.ipb_halle.lbac.security.TokenService;
 import de.ipb_halle.model.LoginRequest;
 import de.ipb_halle.model.LoginResponse;
@@ -19,8 +20,12 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import java.util.Map;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Context;
 
 /**
  *
@@ -34,35 +39,13 @@ public class AuthApiServiceImpl implements AuthApiService {
     @Inject
     LogInProcess loginProcess;
 
+    @Inject
+    SessionService sessionService;
+
     @PersistenceContext
     private EntityManager em;
-
-    @Override
-    public Response logout(SecurityContext securityContext) {
-
-        String token = null;
-        if (securityContext != null && securityContext.getUserPrincipal() != null) {
-            token = securityContext.getUserPrincipal().getName();
-        }
-
-        if (token == null) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(new Logout401Response()
-                            .message("Unathorized: missing token!"))
-                    .build();
-        }
-        try {
-            tokenService.revokeToken(token);
-
-            Logout200Response response = new Logout200Response();
-            response.setMessage("Logout successful");
-            return Response.ok(response).build();
-        } catch (Exception e) {
-            Logout400Response response = new Logout400Response();
-            response.setMessage("Logout faild: " + e.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST).entity(response).build();
-        }
-    }
+    @Context
+    private HttpHeaders headers;
 
     @Override
     public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
@@ -73,7 +56,7 @@ public class AuthApiServiceImpl implements AuthApiService {
 
         if (user != null) {
 
-//            String token = tokenService.generateToken(user.getLogin());
+            // String token = tokenService.generateToken(user.getLogin());
             MemberEntity memberEntity;
 
             try {
@@ -103,6 +86,29 @@ public class AuthApiServiceImpl implements AuthApiService {
                     .entity("{\"message\":\"Login failed\"}")
                     .build();
         }
+    }
+
+    @Override
+    @Transactional
+    public Response logout(SecurityContext securityContext) {
+
+        String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(new Logout401Response()
+                            .message("Unauthorized: missing or invalid token"))
+                    .build();
+        }
+
+        String token = authHeader.substring("Bearer ".length());
+
+        sessionService.deleteSessionByToken(token);
+        tokenService.revokeToken(token);
+
+        Logout200Response response = new Logout200Response();
+        response.setMessage("Logout successful");
+        return Response.ok(response).build();
     }
 
 }
