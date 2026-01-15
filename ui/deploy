@@ -4,62 +4,38 @@ set -e  # Stop on first error
 CONTAINER_NAME="dist_ui_1"
 WAR_FILE="./target/ui.war"
 KEYSTORE_PATH="/usr/local/tomee/lib/security/cacerts"
-KEYSTORE_PASS="changeit"  # Update if your keystore uses a different password
-CERT_ALIASES=(
-    "cloudONE.CI_root_CA"
-    "cloudONE.CRIMSy_CI_Cloud_ONE_CA"
-    "compchem17.ipb-halle.de"
-)
+KEYSTORE_PASS="changeit"
+CERT_ALIASES=("cloudONE.CI_root_CA" "cloudONE.CRIMSy_CI_Cloud_ONE_CA" "compchem17.ipb-halle.de")
 
-echo "============================"
-echo "1. Building UI WAR"
-echo "============================"
+echo "Building UI WAR..."
+mvn clean package -DskipTests
 
-mvn -f ./pom.xml clean package -DskipTests
-
-echo "============================"
-echo "2. Ensuring Docker container is running"
-echo "============================"
-
+echo "Ensuring Docker container is running..."
 if [ "$(docker ps -q -f name=${CONTAINER_NAME})" == "" ]; then
     if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" != "" ]; then
-        echo "Starting existing container ${CONTAINER_NAME}..."
         docker start ${CONTAINER_NAME}
+        echo "Waiting 5 seconds for container to start..."
+        sleep 5
     else
         echo "Container ${CONTAINER_NAME} does not exist! Aborting."
         exit 1
     fi
 fi
 
-echo "============================"
-echo "3. Cleaning old deployment in container"
-echo "============================"
-
+echo "Cleaning old deployment..."
 docker exec ${CONTAINER_NAME} bash -c "rm -rf /usr/local/tomee/webapps/ui* /usr/local/tomee/temp/* /usr/local/tomee/work/*"
 
-echo "============================"
-echo "4. Deploying new WAR to container"
-echo "============================"
-
+echo "Deploying new WAR..."
 docker cp "${WAR_FILE}" ${CONTAINER_NAME}:/usr/local/tomee/webapps/ui.war
 
-echo "============================"
-echo "5. Removing duplicate certificates from keystore"
-echo "============================"
-
+echo "Updating keystore (ignore errors if aliases exist)..."
 for alias in "${CERT_ALIASES[@]}"; do
     docker exec ${CONTAINER_NAME} bash -c "
         keytool -delete -alias ${alias} -keystore ${KEYSTORE_PATH} -storepass ${KEYSTORE_PASS} || true
     "
 done
 
-echo "============================"
-echo "6. Restarting TomEE"
-echo "============================"
-
-docker exec ${CONTAINER_NAME} bash -c "
-  catalina.sh stop || true
-  catalina.sh start
-"
+echo "Restarting TomEE container..."
+docker restart ${CONTAINER_NAME}
 
 echo "Deployment complete!"
