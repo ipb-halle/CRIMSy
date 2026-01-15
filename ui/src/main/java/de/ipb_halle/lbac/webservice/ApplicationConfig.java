@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.device.job.PrintWebService;
 import de.ipb_halle.lbac.forum.postings.PostingWebService;
 import de.ipb_halle.lbac.forum.topics.TopicsWebService;
 import de.ipb_halle.lbac.authentication.LoginEndpoint;
+import de.ipb_halle.lbac.authentication.RoleResource;
 import de.ipb_halle.lbac.search.SearchWebService;
 import de.ipb_halle.lbac.search.document.download.DocumentWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
@@ -53,7 +54,7 @@ public class ApplicationConfig extends Application {
                 DocumentWebService.class,
                 AuthApiService.class,
                 AuthApi.class,
-                LoginEndpoint.class)
-        );
+                LoginEndpoint.class,
+                RoleResource.class));
     }
 }

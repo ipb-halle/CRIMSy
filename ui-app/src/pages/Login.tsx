@@ -20,8 +20,13 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     const [result, setResult] = useState<LoginResult | null>(null);
     const [loading, setLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
     const logoutTimerRef = useRef<number | null>(null);
+    const [roleInfo, setRoleInfo] = useState<{
+        username: string;
+        token: string;
+        message: string;
+    } | null>(null);
+
 
     /* -------------------- helpers -------------------- */
 
@@ -41,6 +46,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         setResult({ message });
         setUsername("");
         setPassword("");
+        setRoleInfo(null);
     };
 
     const startSessionTimer = (expiresInSeconds?: number) => {
@@ -157,6 +163,39 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         }
     };
 
+
+    const handleCheckRole = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setRoleInfo(null);
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                "https://compchem17.ipb-halle.de/ui/rest/role",
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const data = await response.json();
+
+            setRoleInfo({
+                username: data.username,
+                token: data.token,
+                message: data.message,
+            });
+        } catch (err) {
+            console.error(err);
+            setRoleInfo(null);
+        }
+    };
+
+
     /* -------------------- rendering -------------------- */
 
     const isError =
@@ -202,6 +241,21 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                         {isLoggedIn && (
                             <div style={{ marginTop: "1rem" }}>
                                 <button
+                                    onClick={handleCheckRole}
+                                    style={{
+                                        padding: "0.5rem 1.5rem",
+                                        backgroundColor: "#029ACF",
+                                        color: "#fff",
+                                        border: "none",
+                                        borderRadius: "3px",
+                                        cursor: "pointer",
+                                        marginRight: "0.5rem",
+                                    }}
+                                >
+                                    Check My Role
+                                </button>
+
+                                <button
                                     onClick={handleLogout}
                                     style={{
                                         padding: "0.5rem 1.5rem",
@@ -214,8 +268,29 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                                 >
                                     Logout
                                 </button>
+
+                                {roleInfo && (
+                                    <div
+                                        style={{
+                                            marginTop: "1rem",
+                                            padding: "0.75rem",
+                                            border: "1px solid #029ACF",
+                                            borderRadius: "3px",
+                                            textAlign: "left",
+                                            fontWeight: "bold",
+                                            wordBreak: "break-all",
+                                        }}
+                                    >
+                                        <div>User: {roleInfo.username}</div>
+                                        <div>Token: {roleInfo.token}</div>
+                                        <div style={{ marginTop: "0.5rem" }}>{roleInfo.message}</div>
+                                    </div>
+                                )}
+
                             </div>
                         )}
+
+
                     </div>
                 )}
 
