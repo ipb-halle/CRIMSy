@@ -345,6 +345,7 @@
 
                             <configOptions>
                                 <useJakartaEe>true</useJakartaEe>
+                                <interfaceOnly>true</interfaceOnly>
                             </configOptions>
 
                             <output>${project.build.directory}/generated-sources/openapi</output>
