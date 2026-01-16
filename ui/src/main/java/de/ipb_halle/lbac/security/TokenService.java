@@ -20,41 +20,57 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ApplicationScoped
 public class TokenService {
-    
-    private Map<String, String> tokenStore = new ConcurrentHashMap<>();
-    
+
     @PersistenceContext
     private EntityManager em;
-    
+
     @Transactional
     //public String generateToken(String username) {
     public String generateToken(MemberEntity user) {
         String token = UUID.randomUUID().toString();
-        tokenStore.put(token, user.getName());
 
         // Save token in DB
         UserSessionsEntity session = new UserSessionsEntity(user, token);
         em.persist(session);
-        
         return token;
     }
-    
+
+    // for read only case 
+    // if there exists a transaction, it joins it, otherwise, it creates new one 
+    @Transactional(Transactional.TxType.SUPPORTS)
     public boolean validateToken(String token) {
-        return tokenStore.containsKey(token);
+        return em.createQuery(
+                "SELECT COUNT(s) FROM UserSessionsEntity s WHERE s.token = :token",
+                Long.class)
+                .setParameter("token", token)
+                .getSingleResult() > 0;
     }
-    
+
+    // for read only case
+    // if there exists a transaction, it joins it, otherwise, it creates new one
+    @Transactional(Transactional.TxType.SUPPORTS)
     public String getUsernameFromToken(String token) {
-        return tokenStore.get(token);
+        String username = null;
+        UserSessionsEntity userSessionsEntity
+                = em.createQuery(
+                        "SELECT s FROM UserSessionsEntity s WHERE s.token = :token",
+                        UserSessionsEntity.class)
+                        .setParameter("token", token)
+                        .getResultStream()
+                        .findFirst()
+                        .orElse(null);
+        if (userSessionsEntity != null) {
+            username = userSessionsEntity.getUser().getName();
+        }
+        return username;
     }
-    
+
     @Transactional
     public void revokeToken(String token) {
-        tokenStore.remove(token);
 
         // Remove from DB
-        
         em.createQuery(
-        "DELETE FROM UserSessionsEntity s WHERE s.token = :token")
+                "DELETE FROM UserSessionsEntity s WHERE s.token = :token")
                 .setParameter("token", token)
                 .executeUpdate();
         /*UserSessionsEntity session = em.createQuery(
