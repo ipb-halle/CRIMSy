@@ -1,10 +1,10 @@
 package de.ipb_halle.lbac.service;
 
-import com.google.inject.Inject;
 
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.entity.UserSessionsEntity;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
