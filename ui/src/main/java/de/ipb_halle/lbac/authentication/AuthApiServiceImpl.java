@@ -52,7 +52,6 @@ public class AuthApiServiceImpl implements AuthApiService {
         User user = loginProcess.tryLogIn(login, password);
 
         if (user != null) {
-
             // String token = tokenService.generateToken(user.getLogin());
             MemberEntity memberEntity;
 
@@ -78,14 +77,11 @@ public class AuthApiServiceImpl implements AuthApiService {
             return Response.status(Response.Status.OK)
                     .entity(response)
                     .build();
-                    
         } else {
-
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Login failed\"}")
                     .build();
         }
-
     }
 
     @Override
@@ -104,8 +100,6 @@ public class AuthApiServiceImpl implements AuthApiService {
         String token = authHeader.substring("Bearer ".length());
 
         sessionService.deleteSessionByToken(token);
-        tokenService.revokeToken(token);
-
         Logout200Response response = new Logout200Response();
         response.setMessage("Logged out successfully");
         return Response.ok(response).build();

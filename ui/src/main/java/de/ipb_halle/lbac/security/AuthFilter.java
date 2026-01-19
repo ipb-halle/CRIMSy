@@ -21,6 +21,9 @@ public class AuthFilter implements ContainerRequestFilter {
     @Inject
     TokenService tokenService;
 
+    @Inject
+    SessionService sessionService;
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String authHeader = requestContext.getHeaderString("Authorization");
@@ -32,11 +35,12 @@ public class AuthFilter implements ContainerRequestFilter {
         }
 
         String token = authHeader.substring("Bearer ".length());
-        if (!tokenService.validateToken(token)) {
+          if (!tokenService.validateToken(token)) {
+//        if (!sessionService.isTokenValid(token)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Invalid token\"}")
                     .build());
         }
+        sessionService.updateSession(token);
     }
-
 }

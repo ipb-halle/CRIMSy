@@ -1,5 +1,6 @@
 package de.ipb_halle.lbac.authentication;
 
+import de.ipb_halle.lbac.security.SessionService;
 import de.ipb_halle.lbac.security.TokenService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -12,29 +13,31 @@ public class RoleResource {
 
     @Inject
     TokenService tokenService;
+    @Inject
+    SessionService sessionService;
 
     @GET
     public Response getRoleMessage(
             @HeaderParam("Authorization") String authHeader) {
 
-        // 1️⃣ Check Authorization header
+        // Check Authorization header
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Missing or invalid Authorization header\"}")
                     .build();
         }
 
-        // 2️⃣ Validate token
+        // Validate token
         String token = authHeader.substring("Bearer ".length());
         if (!tokenService.validateToken(token)) {
+      //  if (!sessionService.isTokenValid(token)) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Invalid token\"}")
                     .build();
         }
 
-        // 3️⃣ Check username
+        // Check username
         String username = tokenService.getUsernameFromToken(token);
-
         String message;
         if ("admin".equals(username.toLowerCase())) {
             message = "You have admin access permissions.";
@@ -44,10 +47,10 @@ public class RoleResource {
 
         return Response.ok(
                 "{"
-                        + "\"username\":\"" + username + "\", "
-                        + "\"token\":\"" + token + "\", "
-                        + "\"message\":\"" + message + "\""
-                        + "}")
+                + "\"username\":\"" + username + "\", "
+                + "\"token\":\"" + token + "\", "
+                + "\"message\":\"" + message + "\""
+                + "}")
                 .build();
     }
 }
