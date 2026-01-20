@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.webservice;
 
 import de.ipb_halle.api.AuthApi;
 import de.ipb_halle.api.AuthApiService;
+import de.ipb_halle.api.UsersListApi;
+import de.ipb_halle.api.UsersListApiService;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
@@ -41,20 +43,24 @@ import jakarta.ws.rs.core.Application;
 public class ApplicationConfig extends Application {
 
     public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(CloudNodeWebService.class,
-                CollectionWebService.class,
-                DeactivateGroupWebService.class,
-                SearchWebService.class,
-                MembershipWebService.class,
-                WordCloudWebService.class,
-                TopicsWebService.class,
-                PostingWebService.class,
-                PrintWebService.class,
-                SimpleRESTPojoExample.class,
-                DocumentWebService.class,
-                AuthApiService.class,
-                AuthApi.class,
-                LoginEndpoint.class,
-                RoleResource.class));
+        return new HashSet<Class<?>>(
+                Arrays.asList(
+                        CloudNodeWebService.class,
+                        CollectionWebService.class,
+                        DeactivateGroupWebService.class,
+                        SearchWebService.class,
+                        MembershipWebService.class,
+                        WordCloudWebService.class,
+                        TopicsWebService.class,
+                        PostingWebService.class,
+                        PrintWebService.class,
+                        SimpleRESTPojoExample.class,
+                        DocumentWebService.class,
+                        AuthApiService.class,
+                        AuthApi.class,
+                        UsersListApi.class,
+                        UsersListApiService.class,
+                        LoginEndpoint.class,
+                        RoleResource.class));
     }
 }
