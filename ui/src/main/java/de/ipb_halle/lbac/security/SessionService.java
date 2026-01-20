@@ -85,11 +85,25 @@ public class SessionService {
     }
 
     @Transactional
+    public boolean updateSession(String token) {
+        int updated = em.createQuery(
+                "UPDATE UserSessionsEntity s "
+                + "SET s.lastSeen = :now "
+                + "WHERE s.token = :token")
+                .setParameter("now", LocalDateTime.now())
+                .setParameter("token", token)
+                .executeUpdate();
+
+        return updated == 1;
+    }
+
+    /*
+    @Transactional
     public void updateSession(String token) {
         em.createQuery(
                 "UPDATE UserSessionsEntity s SET s.lastSeen = :now WHERE s.token = :token")
                 .setParameter("now", LocalDateTime.now())
                 .setParameter("token", token)
                 .executeUpdate();
-    }
+    }*/
 }
