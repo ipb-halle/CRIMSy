@@ -32,6 +32,7 @@ import de.ipb_halle.lbac.authentication.RoleResource;
 import de.ipb_halle.lbac.search.SearchWebService;
 import de.ipb_halle.lbac.search.document.download.DocumentWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
+import de.ipb_halle.lbac.security.SessionResource;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -61,6 +62,7 @@ public class ApplicationConfig extends Application {
                         UsersListApi.class,
                         UsersListApiService.class,
                         LoginEndpoint.class,
-                        RoleResource.class));
+                        RoleResource.class,
+                        SessionResource.class));
     }
 }

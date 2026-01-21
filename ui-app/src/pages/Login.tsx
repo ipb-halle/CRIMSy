@@ -1,3 +1,4 @@
+import { error } from "console";
 import React, { useState, useEffect, useRef, FormEvent } from "react";
 
 interface LoginProps {
@@ -50,18 +51,58 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
 
     /* ------------------ Restore session on reload ------------------ */
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const storedUsername = localStorage.getItem("username");
 
-        if (token && storedUsername) {
-            setIsLoggedIn(true);
-            setResult({ message: `Welcome back, ${storedUsername}!`, username: storedUsername, token });
-            startSessionTimer();
-            setRoleInfo(null); // role info hidden until user clicks button
-        }
+        const checkSessions = async () => {
+            const token = localStorage.getItem("token");
+            const storedUsername = localStorage.getItem("username");
+
+            if (!token || !storedUsername) return;
+
+            try {
+                //console.log("token: ", token);
+                const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/sessions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    expireSession("Session expired. Please log in again");
+                    return;
+                }
+
+                setIsLoggedIn(true);
+                setResult({ message: `Welcome back, ${storedUsername}!`, username: storedUsername, token });
+                startSessionTimer();
+                setRoleInfo(null); // role info hidden until user clicks button
+            } catch (err) {
+                console.error(err);
+                expireSession("Session expired. Please log in again");
+            }
+        };
+
+        checkSessions();
 
         return () => clearLogoutTimer();
     }, []);
+
+    /*
+        useEffect(() => {
+            const token = localStorage.getItem("token");
+            const storedUsername = localStorage.getItem("username");
+    
+            if (token && storedUsername) {
+                setIsLoggedIn(true);
+                setResult({ message: `Welcome back, ${storedUsername}!`, username: storedUsername, token });
+                startSessionTimer();
+            }
+            return () => clearLogoutTimer();
+        }, []);
+        
+    */
+
 
     /* ------------------ Validation ------------------ */
     const validate = (): boolean => {
@@ -161,7 +202,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
 
                 {isLoggedIn && (
                     <div style={{ textAlign: "center", marginTop: "1rem" }}>
-                        <button onClick={handleCheckRole} style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}>Check My Role</button>
+                        <button onClick={handleCheckRole} style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}>Users List</button>
                         <button onClick={handleLogout} style={{ padding: "0.5rem 1.5rem" }}>Logout</button>
 
                         {roleInfo && (
