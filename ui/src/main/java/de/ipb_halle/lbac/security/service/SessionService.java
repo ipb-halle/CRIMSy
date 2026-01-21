@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package de.ipb_halle.lbac.security;
+package de.ipb_halle.lbac.security.service;
 
 import de.ipb_halle.lbac.entity.UserSessionsEntity;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,7 +10,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  *

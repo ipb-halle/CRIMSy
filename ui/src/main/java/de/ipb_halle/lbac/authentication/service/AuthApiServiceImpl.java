@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package de.ipb_halle.lbac.authentication;
+package de.ipb_halle.lbac.authentication.service;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import de.ipb_halle.api.AuthApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.security.SessionService;
-import de.ipb_halle.lbac.security.TokenService;
+import de.ipb_halle.lbac.security.service.SessionService;
+import de.ipb_halle.lbac.security.service.TokenService;
 import de.ipb_halle.model.LoginRequest;
 import de.ipb_halle.model.LoginResponse;
 import de.ipb_halle.model.Logout200Response;

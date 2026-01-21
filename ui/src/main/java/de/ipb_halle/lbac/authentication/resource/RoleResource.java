@@ -1,7 +1,7 @@
-package de.ipb_halle.lbac.authentication;
+package de.ipb_halle.lbac.authentication.resource;
 
-import de.ipb_halle.lbac.security.SessionService;
-import de.ipb_halle.lbac.security.TokenService;
+import de.ipb_halle.lbac.security.service.SessionService;
+import de.ipb_halle.lbac.security.service.TokenService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;

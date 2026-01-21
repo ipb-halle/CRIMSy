@@ -1,4 +1,4 @@
-package de.ipb_halle.lbac.security;
+package de.ipb_halle.lbac.security.filter;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;

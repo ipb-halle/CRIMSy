@@ -1,17 +1,8 @@
-import { error } from "console";
 import React, { useState, useEffect, useRef, FormEvent } from "react";
 
 interface LoginProps {
     customLoginInfo?: string;
 }
-/*
-interface LoginResult {
-    message: string;
-    username?: string;
-    token?: string;
-    expiresInSeconds?: number;
-}*/
-
 
 interface LoginResult {
     message: string;
@@ -22,10 +13,10 @@ interface LoginResult {
     groups?: string[];
 }
 
-
 const SESSION_FALLBACK_TIMEOUT_MS = 60 * 1000;
 
 const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
+    /* ------------------ State ------------------ */
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
@@ -34,6 +25,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     const [roleInfo, setRoleInfo] = useState<{ username: string; token: string; message: string } | null>(null);
     const logoutTimerRef = useRef<number | null>(null);
 
+    /* ------------------ Session Management ------------------ */
     const clearLogoutTimer = () => {
         if (logoutTimerRef.current !== null) {
             clearTimeout(logoutTimerRef.current);
@@ -62,7 +54,6 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
 
     /* ------------------ Restore session on reload ------------------ */
     useEffect(() => {
-
         const checkSessions = async () => {
             const token = localStorage.getItem("token");
             const storedUsername = localStorage.getItem("username");
@@ -99,24 +90,8 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         return () => clearLogoutTimer();
     }, []);
 
-    /*
-        useEffect(() => {
-            const token = localStorage.getItem("token");
-            const storedUsername = localStorage.getItem("username");
-    
-            if (token && storedUsername) {
-                setIsLoggedIn(true);
-                setResult({ message: `Welcome back, ${storedUsername}!`, username: storedUsername, token });
-                startSessionTimer();
-            }
-            return () => clearLogoutTimer();
-        }, []);
-        
-    */
-
-
     /* ------------------ Validation ------------------ */
-    const validate = (): boolean => {
+    const validate = () => {
         const newErrors: typeof errors = {};
         if (!username.trim()) newErrors.username = "Username required";
         if (!password.trim()) newErrors.password = "Password required";
@@ -147,7 +122,8 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             }
 
             if (!response.ok || !data.token || !data.username) {
-                return setResult({ message: data.message || "Login failed" });
+                setResult({ message: data.message || "Login failed" });
+                return;
             }
 
             localStorage.setItem("token", data.token);
@@ -157,12 +133,10 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             setResult(data);
             setRoleInfo(null);
             startSessionTimer(data.expiresInSeconds);
-
         } catch (err) {
             console.error(err);
             setResult({ message: "Request failed. Please try again later." });
         }
-
     };
 
     /* ------------------ Logout ------------------ */
@@ -182,7 +156,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         }
     };
 
-    /* ------------------ Check Role ------------------ */
+    /* ------------------ Role Info ------------------ */
     const handleCheckRole = async () => {
         const token = localStorage.getItem("token");
         if (!token) return setRoleInfo(null);
@@ -202,7 +176,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         }
     };
 
-    /* ------------------ Render ------------------ */
+    /* ------------------ Rendering ------------------ */
     const isError =
         result?.message.toLowerCase().includes("failed") ||
         result?.message.toLowerCase().includes("expired") ||
@@ -212,6 +186,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         <div style={{ border: "1px solid #029ACF", borderRadius: "3px", padding: "1rem", maxWidth: "400px", margin: "2rem auto" }}>
             <fieldset style={{ border: "none" }}>
                 <legend style={{ fontSize: "1.25rem", fontWeight: "bold" }}>Login</legend>
+
                 {customLoginInfo && <div style={{ textAlign: "center", fontWeight: "bold" }}>{customLoginInfo}</div>}
 
                 {result && (
@@ -220,22 +195,34 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                     </div>
                 )}
 
-                {isLoggedIn && (
+                {isLoggedIn ? (
                     <div style={{ textAlign: "center", marginTop: "1rem" }}>
-                        <button onClick={handleCheckRole} style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}>Users List</button>
-                        <button onClick={handleLogout} style={{ padding: "0.5rem 1.5rem" }}>Logout</button>
+                        <button onClick={handleCheckRole} style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}>
+                            Users List
+                        </button>
+                        <button onClick={handleLogout} style={{ padding: "0.5rem 1.5rem" }}>
+                            Logout
+                        </button>
 
                         {roleInfo && (
-                            <div style={{ marginTop: "1rem", padding: "0.75rem", border: "1px solid #029ACF", borderRadius: "3px", textAlign: "left", fontWeight: "bold", wordBreak: "break-all" }}>
+                            <div
+                                style={{
+                                    marginTop: "1rem",
+                                    padding: "0.75rem",
+                                    border: "1px solid #029ACF",
+                                    borderRadius: "3px",
+                                    textAlign: "left",
+                                    fontWeight: "bold",
+                                    wordBreak: "break-all"
+                                }}
+                            >
                                 <div>User: {roleInfo.username}</div>
                                 <div>Token: {roleInfo.token}</div>
                                 <div style={{ marginTop: "0.5rem" }}>{roleInfo.message}</div>
                             </div>
                         )}
                     </div>
-                )}
-
-                {!isLoggedIn && (
+                ) : (
                     <form onSubmit={handleSubmit}>
                         <div style={{ marginBottom: "1rem" }}>
                             <label>Username</label>

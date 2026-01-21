@@ -2,12 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package de.ipb_halle.lbac.security;
+package de.ipb_halle.lbac.security.resource;
 
+import de.ipb_halle.lbac.security.service.SessionService;
+import de.ipb_halle.lbac.security.service.TokenService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.OPTIONS;
 import jakarta.ws.rs.POST;

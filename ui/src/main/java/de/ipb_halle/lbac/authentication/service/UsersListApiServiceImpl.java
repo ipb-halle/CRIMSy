@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package de.ipb_halle.lbac.authentication;
+package de.ipb_halle.lbac.authentication.service;
 
 import de.ipb_halle.api.UsersListApiService;
 import jakarta.ws.rs.core.Response;
