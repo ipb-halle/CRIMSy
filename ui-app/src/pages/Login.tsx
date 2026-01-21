@@ -4,13 +4,24 @@ import React, { useState, useEffect, useRef, FormEvent } from "react";
 interface LoginProps {
     customLoginInfo?: string;
 }
+/*
+interface LoginResult {
+    message: string;
+    username?: string;
+    token?: string;
+    expiresInSeconds?: number;
+}*/
+
 
 interface LoginResult {
     message: string;
     username?: string;
     token?: string;
     expiresInSeconds?: number;
+    roles?: string[];
+    groups?: string[];
 }
+
 
 const SESSION_FALLBACK_TIMEOUT_MS = 60 * 1000;
 
@@ -127,7 +138,14 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                 body: JSON.stringify({ login: username, password }),
             });
 
-            const data: LoginResult = await response.json();
+            let data: LoginResult;
+            try {
+                data = await response.json();
+            } catch {
+                setResult({ message: "Server returned invalid response" });
+                return;
+            }
+
             if (!response.ok || !data.token || !data.username) {
                 return setResult({ message: data.message || "Login failed" });
             }
@@ -136,13 +154,15 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             localStorage.setItem("username", data.username);
 
             setIsLoggedIn(true);
-            setResult({ message: "Logged in successfully!", username: data.username, token: data.token });
+            setResult(data);
             setRoleInfo(null);
             startSessionTimer(data.expiresInSeconds);
+
         } catch (err) {
             console.error(err);
             setResult({ message: "Request failed. Please try again later." });
         }
+
     };
 
     /* ------------------ Logout ------------------ */

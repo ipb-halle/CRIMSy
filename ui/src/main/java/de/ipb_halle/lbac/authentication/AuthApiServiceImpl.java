@@ -4,6 +4,8 @@
  */
 package de.ipb_halle.lbac.authentication;
 
+import java.util.List;
+
 import de.ipb_halle.api.AuthApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
 import de.ipb_halle.lbac.admission.MemberEntity;
@@ -47,41 +49,63 @@ public class AuthApiServiceImpl implements AuthApiService {
     @Override
     public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
 
-        String login = loginRequest.getLogin();
-        String password = loginRequest.getPassword();
-        User user = loginProcess.tryLogIn(login, password);
+        LoginResponse response = new LoginResponse();
 
-        if (user != null) {
-            // String token = tokenService.generateToken(user.getLogin());
-            MemberEntity memberEntity;
+        User user = loginProcess.tryLogIn(
+                loginRequest.getLogin(),
+                loginRequest.getPassword());
 
-            try {
-                memberEntity = em.createQuery(
-                        "SELECT m FROM MemberEntity m WHERE m.login = :login", MemberEntity.class)
-                        .setParameter("login", user.getLogin())
-                        .getSingleResult();
-            } catch (NoResultException e) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("{\"message\":\"User entity not found in database!\"}")
-                        .build();
-            }
-
-            String token = tokenService.generateToken(memberEntity);
-
-            LoginResponse response = new LoginResponse();
-            response.setMessage("Logged in successfully!");
-            response.setUsername(user.getLogin());
-            response.setToken(token);
-            response.setExpiresInSeconds(60); // SINGLE SOURCE OF TRUTH
-
-            return Response.status(Response.Status.OK)
+        if (user == null) {
+            response.setMessage("Login failed");
+            return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(response)
                     .build();
-        } else {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"message\":\"Login failed\"}")
+        }
+
+        MemberEntity member;
+        try {
+            member = em.createQuery(
+                    "SELECT m FROM MemberEntity m WHERE m.login = :login",
+                    MemberEntity.class).setParameter("login", user.getLogin())
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            response.setMessage("User entity not found");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(response)
                     .build();
         }
+
+        String token = tokenService.generateToken(member);
+
+        // --- FETCH GROUP NAMES ---
+        List<String> groups = em.createQuery(
+                """
+                        SELECT g.name
+                        FROM MembershipEntity ms, MemberEntity g
+                        WHERE ms.member = :memberId
+                          AND ms.group = g.id
+                        """,
+                String.class).setParameter("memberId", member.getId())
+                .getResultList();
+
+        // --- DERIVE ROLE ---
+        boolean isAdmin = groups.stream()
+                .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
+
+        if (isAdmin)
+            System.err.println("this is Admin!\n");
+        else
+            System.err.println("this is not Admin!\n");
+
+        response.setMessage("Logged in successfully");
+        response.setUsername(user.getLogin());
+        response.setToken(token);
+        response.setExpiresInSeconds(60);
+        response.setGroups(groups);
+        response.setRoles(
+                List.of(isAdmin ? "ADMIN" : "USER"));
+
+        return Response.ok(response).build();
     }
 
     @Override

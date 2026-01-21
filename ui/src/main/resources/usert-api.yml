@@ -150,7 +150,17 @@ components:
           type: integer
           example: 60
           description: Session validity duration in seconds
-    
+        roles:
+          type: array
+          items:
+            type: string
+          description: List of roles assigned to the user
+        groups:
+          type: array
+          items:
+            type: string
+          description: List of groups the user belongs to
+        
     UserT:
       type: object
       properties:
