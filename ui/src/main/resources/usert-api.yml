@@ -90,6 +90,7 @@ paths:
                   message:
                     type: string
                     example: Invalid request format
+ 
   /usersList:
     get:
       summary: Get list of users
@@ -111,7 +112,45 @@ paths:
           description: Forbidden
         '500':
           description: Internal server error
-    
+
+  /role:
+    get:
+      tags:
+        - Authorization
+        - Role
+      summary: Get role and group information of the current user
+      description: |
+        Returns the authenticated user's username, group memberships,
+        and whether the user belongs to the Admin Group.
+      operationId: getRoleInfo
+      responses:
+        '200':
+          description: Role and group information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+        '401':
+          description: Unauthorized (missing or invalid token)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid token
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+
 components:
   securitySchemes:
     SessionKeyAuthentification:
@@ -135,6 +174,7 @@ components:
           type: string
           description: The password
           example: password123
+  
     LoginResponse:
       type: object
       properties:
@@ -172,4 +212,22 @@ components:
           type: string
         membertype:
           type: string
-        
+
+    RoleResponse:
+      type: object
+      properties:
+        username:
+          type: string
+          example: johndoe
+        groups:
+          type: array
+          items:
+            type: string
+          example:
+            - Users
+            - Admin Group
+        admin:
+          type: boolean
+          description: Indicates whether the user belongs to the Admin Group
+          example: true
+   

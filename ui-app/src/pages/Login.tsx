@@ -22,7 +22,8 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
     const [result, setResult] = useState<LoginResult | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [roleInfo, setRoleInfo] = useState<{ username: string; token: string; message: string } | null>(null);
+    //const [roleInfo, setRoleInfo] = useState<{ username: string; token: string; message: string } | null>(null);
+    const [roleInfo, setRoleInfo] = useState<{ username: string; groups: string; admin: string } | null>(null);
     const logoutTimerRef = useRef<number | null>(null);
 
     /* ------------------ Session Management ------------------ */
@@ -157,7 +158,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     };
 
     /* ------------------ Role Info ------------------ */
-    const handleCheckRole = async () => {
+    /*const handleCheckRole = async () => {
         const token = localStorage.getItem("token");
         if (!token) return setRoleInfo(null);
 
@@ -174,7 +175,35 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             console.error(err);
             setRoleInfo(null);
         }
+    };*/
+
+    const handleCheckRole = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) return setRoleInfo(null);
+
+        try {
+            const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/role", {
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            });
+
+            if (!response.ok) {
+                console.error("Failed to fetch role info: ", response.status);
+                return setRoleInfo(null);
+            }
+
+            const data = await response.json();
+            setRoleInfo({
+                username: data.username,
+                groups: Array.isArray(data.groups) ? data.groups.join(", ") : data.groups,
+                admin: data.admin.toString(),
+            });
+        } catch (err) {
+            console.error(err);
+            setRoleInfo(null);
+        }
     };
+
+
 
     /* ------------------ Rendering ------------------ */
     const isError =
@@ -198,7 +227,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                 {isLoggedIn ? (
                     <div style={{ textAlign: "center", marginTop: "1rem" }}>
                         <button onClick={handleCheckRole} style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}>
-                            Users List
+                            Check My Role
                         </button>
                         <button onClick={handleLogout} style={{ padding: "0.5rem 1.5rem" }}>
                             Logout
@@ -216,9 +245,9 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                                     wordBreak: "break-all"
                                 }}
                             >
-                                <div>User: {roleInfo.username}</div>
-                                <div>Token: {roleInfo.token}</div>
-                                <div style={{ marginTop: "0.5rem" }}>{roleInfo.message}</div>
+                                <div>Username: {roleInfo.username}</div>
+                                <div>Groups: {roleInfo.groups}</div>
+                                <div>Admin Access: {roleInfo.admin}</div>
                             </div>
                         )}
                     </div>
