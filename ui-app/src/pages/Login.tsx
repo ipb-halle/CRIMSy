@@ -41,6 +41,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         setIsLoggedIn(false);
         setResult({ message });
         setRoleInfo(null);
+        setUsersList(null);
         setUsername("");
         setPassword("");
     };
@@ -59,7 +60,11 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             const token = localStorage.getItem("token");
             const storedUsername = localStorage.getItem("username");
 
-            if (!token || !storedUsername) return;
+            if (!token || !storedUsername) {
+                setRoleInfo(null);
+                setUsersList(null);
+                return;
+            }
 
             try {
                 //console.log("token: ", token);
@@ -134,6 +139,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             setIsLoggedIn(true);
             setResult(data);
             setRoleInfo(null);
+            setUsersList(null);
             startSessionTimer(data.expiresInSeconds);
         } catch (err) {
             console.error(err);
