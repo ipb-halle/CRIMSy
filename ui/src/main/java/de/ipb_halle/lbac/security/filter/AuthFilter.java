@@ -25,6 +25,10 @@ public class AuthFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
+         if ("OPTIONS".equalsIgnoreCase(requestContext.getMethod())) {
+            return;
+        }
+
         String authHeader = requestContext.getHeaderString("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -39,7 +43,8 @@ public class AuthFilter implements ContainerRequestFilter {
         if (!tokenService.validateToken(token)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Invalid token\"}")
-                    .build());
+                    .build()
+                );
             return;
         }
 

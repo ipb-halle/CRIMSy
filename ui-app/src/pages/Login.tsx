@@ -22,8 +22,8 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
     const [result, setResult] = useState<LoginResult | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    //const [roleInfo, setRoleInfo] = useState<{ username: string; token: string; message: string } | null>(null);
     const [roleInfo, setRoleInfo] = useState<{ username: string; groups: string; admin: string } | null>(null);
+    const [usersList, setUsersList] = useState<any[] | null>(null);
     const logoutTimerRef = useRef<number | null>(null);
 
     /* ------------------ Session Management ------------------ */
@@ -80,6 +80,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                 setResult({ message: `Welcome back, ${storedUsername}!`, username: storedUsername, token });
                 startSessionTimer();
                 setRoleInfo(null); // role info hidden until user clicks button
+                setUsersList(null); // users list hidden until user clicks button
             } catch (err) {
                 console.error(err);
                 expireSession("Session expired. Please log in again");
@@ -158,26 +159,8 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
     };
 
     /* ------------------ Role Info ------------------ */
-    /*const handleCheckRole = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) return setRoleInfo(null);
-
-        try {
-            const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/role", {
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            });
-
-            if (!response.ok) return setRoleInfo(null);
-
-            const data = await response.json();
-            setRoleInfo({ username: data.username, token: data.token, message: data.message });
-        } catch (err) {
-            console.error(err);
-            setRoleInfo(null);
-        }
-    };*/
-
     const handleCheckRole = async () => {
+        setUsersList(null);
         const token = localStorage.getItem("token");
         if (!token) return setRoleInfo(null);
 
@@ -203,7 +186,28 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
         }
     };
 
+    const handleFetchUsers = async () => {
+        setRoleInfo(null)
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
+        try {
+            const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/usersList", {
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            });
+
+            if (!response.ok) {
+                console.error("Failed to fetch users:", response.status);
+                return;
+            }
+
+            const data = await response.json();
+            setUsersList(data); // store in state
+        } catch (err) {
+            console.error(err);
+            setUsersList(null);
+        }
+    };
 
     /* ------------------ Rendering ------------------ */
     const isError =
@@ -229,6 +233,10 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                         <button onClick={handleCheckRole} style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}>
                             Check My Role
                         </button>
+                        <button onClick={handleFetchUsers} style={{ padding: "0.5rem 1.5rem" }}>
+                            View Users
+                        </button>
+
                         <button onClick={handleLogout} style={{ padding: "0.5rem 1.5rem" }}>
                             Logout
                         </button>
@@ -250,6 +258,32 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                                 <div>Admin Access: {roleInfo.admin}</div>
                             </div>
                         )}
+                        {usersList && (
+                            <div
+                                style={{
+                                    marginTop: "1rem",
+                                    padding: "0.75rem",
+                                    border: "1px solid #029ACF",
+                                    borderRadius: "3px",
+                                    textAlign: "left",
+                                    fontWeight: "bold",
+                                    wordBreak: "break-all",
+                                }}
+                            >
+                                <div>Users:</div>
+                                {usersList.map((u, idx) => (
+                                    <div key={idx} style={{ marginLeft: "1rem", marginTop: "0.5rem" }}>
+                                        <div>ID: {u.id}</div>
+                                        <div>Login: {u.login}</div>
+                                        <div>Name: {u.name}</div>
+                                        <div>Type: {u.membertype}</div>
+                                        {u.info && <div style={{ color: "red" }}>{u.info}</div>}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>

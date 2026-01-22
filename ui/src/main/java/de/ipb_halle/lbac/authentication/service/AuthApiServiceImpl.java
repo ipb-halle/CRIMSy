@@ -32,101 +32,98 @@ import jakarta.ws.rs.core.Context;
  */
 public class AuthApiServiceImpl implements AuthApiService {
 
-    @Inject
-    private TokenService tokenService;
+        @Inject
+        private TokenService tokenService;
 
-    @Inject
-    LogInProcess loginProcess;
+        @Inject
+        LogInProcess loginProcess;
 
-    @Inject
-    SessionService sessionService;
+        @Inject
+        SessionService sessionService;
 
-    @PersistenceContext
-    private EntityManager em;
-    @Context
-    private HttpHeaders headers;
+        @PersistenceContext
+        private EntityManager em;
+        @Context
+        private HttpHeaders headers;
 
-    @Override
-    public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
+        @Override
+        public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
 
-        LoginResponse response = new LoginResponse();
+                LoginResponse response = new LoginResponse();
 
-        User user = loginProcess.tryLogIn(
-                loginRequest.getLogin(),
-                loginRequest.getPassword());
+                User user = loginProcess.tryLogIn(
+                                loginRequest.getLogin(),
+                                loginRequest.getPassword());
 
-        if (user == null) {
-            response.setMessage("Login failed");
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(response)
-                    .build();
+                if (user == null) {
+                        response.setMessage("Login failed");
+                        return Response.status(Response.Status.UNAUTHORIZED)
+                                        .entity(response)
+                                        .build();
+                }
+
+                MemberEntity member;
+                try {
+                        member = em.createQuery(
+                                        "SELECT m FROM MemberEntity m WHERE m.login = :login",
+                                        MemberEntity.class).setParameter("login", user.getLogin())
+                                        .getSingleResult();
+                } catch (NoResultException e) {
+                        response.setMessage("User entity not found");
+                        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                                        .entity(response)
+                                        .build();
+                }
+
+                String token = tokenService.generateToken(member);
+
+                // --- FETCH GROUP NAMES ---
+
+                List<String> groups = em.createQuery(
+                                """
+                                                        SELECT g.name
+                                                        FROM MembershipEntity ms
+                                                        JOIN MemberEntity g ON ms.group = g.id
+                                                        WHERE ms.member = :memberId
+                                                        AND TYPE(g) = GroupEntity
+                                                """, String.class)
+                                .setParameter("memberId", member.getId())
+                                .getResultList();
+
+                // --- DERIVE ROLE ---
+                boolean isAdmin = groups.stream()
+                                .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
+
+                response.setMessage("Logged in successfully");
+                response.setUsername(user.getLogin());
+                response.setToken(token);
+                response.setExpiresInSeconds(60);
+                response.setGroups(groups);
+                response.setRoles(
+                                List.of(isAdmin ? "ADMIN" : "USER"));
+
+                return Response.ok(response).build();
         }
 
-        MemberEntity member;
-        try {
-            member = em.createQuery(
-                    "SELECT m FROM MemberEntity m WHERE m.login = :login",
-                    MemberEntity.class).setParameter("login", user.getLogin())
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            response.setMessage("User entity not found");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(response)
-                    .build();
+        @Override
+        @Transactional
+        public Response logout(SecurityContext securityContext) {
+
+                String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                        return Response.status(Response.Status.UNAUTHORIZED)
+                                        .entity(new Logout401Response()
+                                                        .message("Unauthorized: missing or invalid token"))
+                                        .build();
+                }
+
+                String token = authHeader.substring("Bearer ".length());
+
+                sessionService.deleteSessionByToken(token);
+                Logout200Response response = new Logout200Response();
+                response.setMessage("Logged out successfully");
+                return Response.ok(response).build();
         }
-
-        String token = tokenService.generateToken(member);
-
-        // --- FETCH GROUP NAMES ---
-        List<String> groups = em.createQuery(
-                """
-                        SELECT g.name
-                        FROM MembershipEntity ms, MemberEntity g
-                        WHERE ms.member = :memberId
-                          AND ms.group = g.id
-                        """,
-                String.class).setParameter("memberId", member.getId())
-                .getResultList();
-
-        // --- DERIVE ROLE ---
-        boolean isAdmin = groups.stream()
-                .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
-
-        if (isAdmin)
-            System.err.println("this is Admin!\n");
-        else
-            System.err.println("this is not Admin!\n");
-
-        response.setMessage("Logged in successfully");
-        response.setUsername(user.getLogin());
-        response.setToken(token);
-        response.setExpiresInSeconds(60);
-        response.setGroups(groups);
-        response.setRoles(
-                List.of(isAdmin ? "ADMIN" : "USER"));
-
-        return Response.ok(response).build();
-    }
-
-    @Override
-    @Transactional
-    public Response logout(SecurityContext securityContext) {
-
-        String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(new Logout401Response()
-                            .message("Unauthorized: missing or invalid token"))
-                    .build();
-        }
-
-        String token = authHeader.substring("Bearer ".length());
-
-        sessionService.deleteSessionByToken(token);
-        Logout200Response response = new Logout200Response();
-        response.setMessage("Logged out successfully");
-        return Response.ok(response).build();
-    }
 
 }
