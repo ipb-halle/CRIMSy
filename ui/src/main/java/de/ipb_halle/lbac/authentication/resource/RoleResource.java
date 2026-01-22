@@ -7,7 +7,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/role")
+@Path("/roles")
 @Produces(MediaType.APPLICATION_JSON)
 public class RoleResource {
 
