@@ -1,9 +1,7 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.service.NodeService;
-import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
@@ -14,15 +12,19 @@ import jakarta.inject.Inject;
 public class LogInProcess {
 
     @Inject
-    NodeService nodeService;
+    private NodeService nodeService;
+
     @Inject
-    MemberService memberService;
+    private MemberService memberService;
+
     @Inject
-    MembershipService membershipService;
+    private MembershipService membershipService;
+
     @Inject
-    CredentialHandler credentialHandler;
+    private LdapProperties ldapProps;
+
     @Inject
-    LdapProperties ldapProps;
+    private GlobalAdmissionContext globalAdmissionContext;
 
     /**
      * Try to login a user either via LOCAL or LDAP.
@@ -32,14 +34,17 @@ public class LogInProcess {
      * @return User object if login successful, null otherwise
      */
     public User tryLogIn(String login, String password) {
-        UserBeanMockk userBeanMock = new UserBeanMockk();
+        UserBeanMock userBeanMock = new UserBeanMock();
 
         userBeanMock.setNodeService(nodeService);
         userBeanMock.setMemberService(memberService);
         userBeanMock.setMembershipService(membershipService);
-        userBeanMock.setCredentialHandler(credentialHandler);
         userBeanMock.setLdapProperties(ldapProps);
+        userBeanMock.setGlobalAdmissionContext(globalAdmissionContext);
 
+        /*
+         * This is the same logic like in UserBean.actionLogin().
+         */
         IAdmissionSubSystem localSub = AdmissionSubSystemType.LOCAL.getInstance();
         User u = localSub.lookup(login, userBeanMock);
 
@@ -56,21 +61,31 @@ public class LogInProcess {
             }
         } else {
             // User unknown locally -> try LDAP
-            u = userBeanMock.authLookup(AdmissionSubSystemType.LDAP.getInstance(), login, password);
+        	IAdmissionSubSystem ldapSub = AdmissionSubSystemType.LDAP.getInstance();
+        	u = ldapSub.lookup(login, userBeanMock);
 
+            if ((u != null) && (ldapSub.authenticate(u, password, userBeanMock))) {
+                return u;
+            }
+
+            return null;
         }
-        return u;
     }
 
-    public class UserBeanMockk extends UserBean {
-
-        private CredentialHandler testCredentialHandler;
-
+    /* 
+     * This mock class is used because UserBean is SessionScoped and cannot simply
+     * be injected into this stateless service.
+     */
+    public class UserBeanMock extends UserBean {
         public void setNodeService(NodeService nodeService) {
             this.nodeService = nodeService;
         }
 
-        public void setMemberService(MemberService memberService) {
+        public void setGlobalAdmissionContext(GlobalAdmissionContext globalAdmissionContext) {
+			this.globalAdmissionContext = globalAdmissionContext;
+		}
+
+		public void setMemberService(MemberService memberService) {
             this.memberService = memberService;
         }
 
@@ -83,26 +98,6 @@ public class LogInProcess {
             if (ldapProps != null) {
                 ldapProps.setLdapEnabled(true);
             }
-        }
-
-        public void setCredentialHandler(CredentialHandler credentialHandler) {
-            this.testCredentialHandler = credentialHandler;
-        }
-
-        @Override
-        protected CredentialHandler getCredentialHandler() {
-            if (testCredentialHandler != null) {
-                return testCredentialHandler;
-            }
-            return super.getCredentialHandler();
-        }
-
-        public User authLookup(IAdmissionSubSystem ia, String logIn, String pw) {
-            User user = ia.lookup(logIn, this);
-            if ((user != null) && (ia.authenticate(user, pw, this))) {
-                return user;
-            }
-            return null;
         }
     }
 }
