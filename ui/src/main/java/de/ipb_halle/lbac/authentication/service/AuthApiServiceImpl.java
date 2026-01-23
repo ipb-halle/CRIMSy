@@ -77,31 +77,10 @@ public class AuthApiServiceImpl implements AuthApiService {
 
                 String token = tokenService.generateToken(member);
 
-                // --- FETCH GROUP NAMES ---
-
-                List<String> groups = em.createQuery(
-                                """
-                                                        SELECT g.name
-                                                        FROM MembershipEntity ms
-                                                        JOIN MemberEntity g ON ms.group = g.id
-                                                        WHERE ms.member = :memberId
-                                                        AND TYPE(g) = GroupEntity
-                                                """, String.class)
-                                .setParameter("memberId", member.getId())
-                                .getResultList();
-
-                // --- DERIVE ROLE ---
-                boolean isAdmin = groups.stream()
-                                .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
-
-                response.setMessage("Logged in successfully");
+                response.setMessage("Logged in successfully, " + user.getLogin() + "!");
                 response.setUsername(user.getLogin());
                 response.setToken(token);
                 response.setExpiresInSeconds(60);
-                response.setGroups(groups);
-                response.setRoles(
-                                List.of(isAdmin ? "ADMIN" : "USER"));
-
                 return Response.ok(response).build();
         }
 

@@ -9,8 +9,6 @@ interface LoginResult {
     username?: string;
     token?: string;
     expiresInSeconds?: number;
-    roles?: string[];
-    groups?: string[];
 }
 
 const SESSION_FALLBACK_TIMEOUT_MS = 60 * 1000;
@@ -67,7 +65,6 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
             }
 
             try {
-                //console.log("token: ", token);
                 const response = await fetch("https://compchem17.ipb-halle.de/ui/rest/sessions", {
                     method: "POST",
                     headers: {
@@ -82,7 +79,7 @@ const Login: React.FC<LoginProps> = ({ customLoginInfo }) => {
                 }
 
                 setIsLoggedIn(true);
-                setResult({ message: `Welcome back, ${storedUsername}!`, username: storedUsername, token });
+                setResult({ message: `Welcome back, ${storedUsername}!` });
                 startSessionTimer();
                 setRoleInfo(null); // role info hidden until user clicks button
                 setUsersList(null); // users list hidden until user clicks button
