@@ -4,6 +4,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LogInProcess;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.authentication.service.AuthApiServiceImpl;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -20,7 +21,12 @@ public class LoginEndpoint {
     @Inject
     LogInProcess loginProcess;
 
-  
+    @Inject
+    AuthApiServiceImpl authApiService;
+    
+    @Context
+    private HttpHeaders headers;
+
     /**
      * This method handles the login process. It uses the UserBean's actionLogin
      * method to authenticate the user.
@@ -36,7 +42,9 @@ public class LoginEndpoint {
             @FormParam("login") String login,
             @FormParam("password") String password) {
 
-        User user = loginProcess.tryLogIn(login, password);
+        String ipAddressString = authApiService.getClientIp();
+        
+        User user = loginProcess.tryLogIn(login, password, ipAddressString);
         if (user != null) {
             return Response.status(Response.Status.OK)
                     .entity("{\"message\":\"Login succeeded\"}")

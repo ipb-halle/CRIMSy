@@ -33,9 +33,11 @@ public class LogInProcess {
      * @param password user's password
      * @return User object if login successful, null otherwise
      */
-    public User tryLogIn(String login, String password) {
+    public User tryLogIn(String login, String password, String ipAddress) {
+        
+        globalAdmissionContext.intruderLockoutUnlock(login, ipAddress);
+        
         UserBeanMock userBeanMock = new UserBeanMock();
-
         userBeanMock.setNodeService(nodeService);
         userBeanMock.setMemberService(memberService);
         userBeanMock.setMembershipService(membershipService);

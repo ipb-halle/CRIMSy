@@ -45,7 +45,7 @@ public class LogInProcessTest extends TestBase {
         User u = ug.keySet().iterator().next();
         assertNotNull(u);
 
-        User uTest = logInProcess.tryLogIn("localUser", "pass123");
+        User uTest = logInProcess.tryLogIn("localUser", "pass123", "10.10.142.20");
         assertNotNull(uTest);
     }
 
@@ -56,7 +56,7 @@ public class LogInProcessTest extends TestBase {
         User u = ug.keySet().iterator().next();
         assertNotNull(u);
 
-        User uTest = logInProcess.tryLogIn("notLocalUser", "notLocal");
+        User uTest = logInProcess.tryLogIn("notLocalUser", "notLocal", "10.10.142.20");
         // refactor the method "tryLogin" to handle other types of AdmissionSubSystemType besides LOCAL and Ldap
         assertEquals(uTest, null);
     }
