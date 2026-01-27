@@ -10,6 +10,7 @@ import de.ipb_halle.api.AuthApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.security.interceptor.Secured;
 import de.ipb_halle.lbac.security.service.SessionService;
 import de.ipb_halle.lbac.security.service.TokenService;
 import de.ipb_halle.model.LoginRequest;
@@ -53,7 +54,6 @@ public class AuthApiServiceImpl implements AuthApiService {
 
         String ipAddressString = getClientIp();
         
-        
         User user = loginProcess.tryLogIn(
                 loginRequest.getLogin(),
                 loginRequest.getPassword(), ipAddressString);
@@ -87,22 +87,24 @@ public class AuthApiServiceImpl implements AuthApiService {
         return Response.ok(response).build();
     }
 
+    @Secured
     @Override
     @Transactional
     public Response logout(SecurityContext securityContext) {
-
+        
         String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        /*if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(new Logout401Response()
                             .message("Unauthorized: missing or invalid token"))
                     .build();
-        }
+        }*/
 
         String token = authHeader.substring("Bearer ".length());
 
         sessionService.deleteSessionByToken(token);
+        
         Logout200Response response = new Logout200Response();
         response.setMessage("Logged out successfully");
         return Response.ok(response).build();
