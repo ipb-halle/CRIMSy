@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.webservice;
 
 import de.ipb_halle.api.AuthApi;
 import de.ipb_halle.api.AuthApiService;
-import de.ipb_halle.api.RoleApi;
-import de.ipb_halle.api.RoleApiService;
+import de.ipb_halle.api.MeApi;
+import de.ipb_halle.api.MeApiService;
 import de.ipb_halle.api.UsersListApi;
 import de.ipb_halle.api.UsersListApiService;
 import de.ipb_halle.lbac.admission.MembershipWebService;
@@ -64,7 +64,7 @@ public class ApplicationConfig extends Application {
                         UsersListApiService.class,
                         LoginEndpoint.class,
                         SessionResource.class,
-                        RoleApi.class,
-                        RoleApiService.class));
+                        MeApi.class,
+                        MeApiService.class));
     }
 }

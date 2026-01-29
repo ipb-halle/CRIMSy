@@ -1,6 +1,6 @@
 package de.ipb_halle.lbac.authentication.service;
 
-import de.ipb_halle.api.RoleApiService;
+import de.ipb_halle.api.MeApiService;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.security.service.TokenService;
 import de.ipb_halle.model.RoleResponse;
@@ -19,7 +19,7 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 @RequestScoped
-public class RoleApiServiceImpl implements RoleApiService {
+public class MeApiServiceImpl implements MeApiService {
 
     @Inject
     TokenService tokenService;

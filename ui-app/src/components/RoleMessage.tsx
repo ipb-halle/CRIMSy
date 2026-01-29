@@ -13,7 +13,7 @@ const RoleMessage: React.FC = () => {
 
             try {
                 const response = await fetch(
-                    "https://compchem17.ipb-halle.de/ui/rest/role",
+                    "https://compchem17.ipb-halle.de/ui/rest/me",
                     {
                         headers: {
                             "Content-Type": "application/json",

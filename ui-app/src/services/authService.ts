@@ -38,7 +38,7 @@ export const checkSessionAPI = async (token: string) => {
 };
 
 export const fetchRoleAPI = async (token: string) => {
-  const res = await fetch(`${BASE}/role`, {
+  const res = await fetch(`${BASE}/me`, {
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
   });
   return res.json();

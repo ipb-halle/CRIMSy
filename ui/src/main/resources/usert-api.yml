@@ -113,7 +113,7 @@ paths:
         '500':
           description: Internal server error
 
-  /role:
+  /me:
     get:
       tags:
         - Authorization
