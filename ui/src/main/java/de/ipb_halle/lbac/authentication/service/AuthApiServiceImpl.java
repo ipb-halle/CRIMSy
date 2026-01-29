@@ -94,19 +94,12 @@ public class AuthApiServiceImpl implements AuthApiService {
         
         String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-        /*if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(new Logout401Response()
-                            .message("Unauthorized: missing or invalid token"))
-                    .build();
-        }*/
-
         String token = authHeader.substring("Bearer ".length());
 
         sessionService.deleteSessionByToken(token);
         
         Logout200Response response = new Logout200Response();
-        response.setMessage("Logged out successfully");
+        response.setMessage("Logged out successfully!");
         return Response.ok(response).build();
     }
 

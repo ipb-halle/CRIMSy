@@ -69,7 +69,7 @@ public class SessionService {
         return true;
     }
 
-    @Transactional
+   
     public void deleteSessionByToken(String token) {
         em.createQuery("DELETE FROM UserSessionsEntity s WHERE s.token = :token")
                 .setParameter("token", token)
@@ -95,14 +95,4 @@ public class SessionService {
 
         return updated == 1;
     }
-
-    /*
-    @Transactional
-    public void updateSession(String token) {
-        em.createQuery(
-                "UPDATE UserSessionsEntity s SET s.lastSeen = :now WHERE s.token = :token")
-                .setParameter("now", LocalDateTime.now())
-                .setParameter("token", token)
-                .executeUpdate();
-    }*/
 }
