@@ -119,9 +119,6 @@ export const useAuth = () => {
                 console.error(err);
             }
         }
-        else
-
-            console.log("here logout!");
     };
 
     /* ------------------ Role Info ------------------ */
