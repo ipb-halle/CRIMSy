@@ -19,11 +19,6 @@ const LoginForm: React.FC<Props> = ({ username, password, setUsername, setPasswo
 
   return (
     <form onSubmit={onSubmit}>
-      {result && (
-        <div style={{ textAlign: "center", margin: "1rem 0", color: isError ? "red" : "green", border: "1px solid #029ACF", borderRadius: "3px", padding: "0.5rem" }}>
-          {result.message}
-        </div>
-      )}
 
       <div style={{ marginBottom: "1rem" }}>
         <label>Username</label>

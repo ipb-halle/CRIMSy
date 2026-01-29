@@ -29,7 +29,7 @@ export const useAuth = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("username");
         setIsLoggedIn(false);
-        setResult({ message }); // show message once
+        setResult({ message });
         setRoleInfo(null);
         setUsersList(null);
         setUsername("");
