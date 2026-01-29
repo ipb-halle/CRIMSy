@@ -18,10 +18,14 @@ export const loginAPI = async (login: string, password: string): Promise<LoginRe
 };
 
 export const logoutAPI = async (token: string) => {
-  return fetch(`${BASE}/auth/logout`, {
+   const res = await fetch(`${BASE}/auth/logout`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    headers: { 
+      "Content-Type": "application/json",
+       Authorization: `Bearer ${token}` },
   });
+
+  return res.json();
 };
 
 export const checkSessionAPI = async (token: string) => {

@@ -110,15 +110,18 @@ export const useAuth = () => {
     const handleLogout = async () => {
         const token = localStorage.getItem("token");
 
-        try {
-            if (token) {
-                await api.logoutAPI(token);
+        if (token) {
+            const data = await api.logoutAPI(token);
+            try {
+                expireSession(data.message);
+
+            } catch (err) {
+                console.error(err);
             }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            expireSession("Logged out successfully");
         }
+        else
+
+            console.log("here logout!");
     };
 
     /* ------------------ Role Info ------------------ */
