@@ -1,8 +1,9 @@
-import React from "react";
 import { useAuth } from "../../adapters/hooks/useAuth";
 import LoginForm from "../components/LoginForm";
 import RolePanel from "../components/RolePanel";
 import UsersPanel from "../components/UsersPanel";
+import { SearchDropdown } from "../components/SearchDropdown";
+
 
 const Login = () => {
   const {
@@ -56,6 +57,11 @@ const Login = () => {
           </div>
         )}
 
+        {isLoggedIn && (
+          <div style={{ marginTop: "20px", textAlign: "center" }}>
+            <SearchDropdown />
+          </div>
+        )}
         {isLoggedIn ? (
           <div style={{ textAlign: "center", marginTop: "1rem" }}>
 
@@ -73,6 +79,7 @@ const Login = () => {
               View Users
             </button>
 
+
             <button
               onClick={handleLogout}
               style={{
@@ -86,7 +93,7 @@ const Login = () => {
 
             <RolePanel role={roleInfo} />
             <UsersPanel data={usersList} onPageChange={handleFetchUsers} />
-            </div>
+          </div>
         ) : (
           <LoginForm
             username={username}
