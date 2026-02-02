@@ -54,11 +54,15 @@ const Login = () => {
                         marginTop: "1rem"
                     }}>
                         <button onClick={handleCheckRole} style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}>Check My Role</button>
-                        <button onClick={handleFetchUsers} style={{ padding: "0.5rem 1.5rem" }}>View Users</button>
+                        <button onClick={() => handleFetchUsers(1)} style={{ padding: "0.5rem 1.5rem" }}>View Users</button>
                         <button onClick={handleLogout} style={{ padding: "0.5rem 1.5rem" }}>Logout</button>
 
                         <RolePanel role={roleInfo} />
-                        <UsersPanel users={usersList} />
+                        <UsersPanel
+                            data={usersList}
+                            onPageChange={(page) => handleFetchUsers(page)}
+                        />
+
                     </div>
                 ) : (
                     <LoginForm

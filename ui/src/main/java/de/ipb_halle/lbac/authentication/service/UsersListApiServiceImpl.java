@@ -18,8 +18,14 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.QueryParam;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+
 
 /**
  *
@@ -27,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @RequestScoped
 public class UsersListApiServiceImpl implements UsersListApiService {
+
     @Inject
     TokenService tokenService;
 
@@ -36,8 +43,19 @@ public class UsersListApiServiceImpl implements UsersListApiService {
     @Context
     private HttpHeaders headers;
 
+    /*@Override
+    public Response usersListGet(Integer page, Integer pageSize, SecurityContext securityContext) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }*/
+    
     @Override
-    public Response usersListGet(SecurityContext securityContext) {
+    public Response usersListGet(Integer page, Integer pageSize, SecurityContext securityContext) {
+
+        if (page < 1 || pageSize < 1) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("message", "Invalid page or pageSize!"))
+                    .build();
+        }
 
         String username = null;
 
@@ -45,6 +63,8 @@ public class UsersListApiServiceImpl implements UsersListApiService {
         if (securityContext != null && securityContext.getUserPrincipal() != null) {
             username = securityContext.getUserPrincipal().getName();
         }
+        
+        
 
         // 2. Fallback: extract from Authorization header
         if (username == null) {
@@ -55,6 +75,7 @@ public class UsersListApiServiceImpl implements UsersListApiService {
                 return Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
             }
             String token = authHeader.substring("Bearer ".length());
+            
             if (!tokenService.validateToken(token)) {
                 GetRoleInfo401Response resp = new GetRoleInfo401Response();
                 resp.setMessage("Unauthorized: invalid token");
@@ -63,6 +84,7 @@ public class UsersListApiServiceImpl implements UsersListApiService {
             username = tokenService.getUsernameFromToken(token);
         }
 
+        System.out.println("username: " + username + "\n");
         // --- Load requesting user ---
         MemberEntity requestingUser;
         try {
@@ -91,32 +113,58 @@ public class UsersListApiServiceImpl implements UsersListApiService {
 
         boolean isAdmin = userGroups.stream()
                 .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
+
         // --- Fetch users ---
         List<MemberEntity> users;
+        int totalUsers = 0;
+
         if (isAdmin) {
-            // Admin: fetch all users (exclude groups)
+            // Count total uses pagination 
+            totalUsers = em.createQuery(
+                    "SELECT COUNT(m) FROM MemberEntity m WHERE TYPE(m) <> GroupEntity",
+                    Long.class)
+                    .getSingleResult()
+                    .intValue();
+
+            int offset = (page - 1) * pageSize;
+
+            // Fetch paginated users
             users = em.createQuery(
-                    "SELECT m FROM MemberEntity m WHERE TYPE(m) <> GroupEntity",
+                    "SELECT m FROM MemberEntity m WHERE TYPE(m) <> GroupEntity ORDER BY m.id",
                     MemberEntity.class)
+                    .setFirstResult(offset)
+                    .setMaxResults(pageSize)
                     .getResultList();
         } else {
             // Non-admin: only own info
             users = List.of(requestingUser);
+            totalUsers = 1;
+            page = 1;
+            pageSize = 1;
         }
-        // --- Map to API response ---
-        List<Object> responseList = users.stream().map(u -> {
-            return new java.util.HashMap<String, Object>() {
-                {
-                    put("id", u.getId());
-                    put("login", u.getName()); // or u.getLogin() if you have that field
-                    put("name", u.getName());
-                    put("membertype", u.isGroup() ? "G" : "U");
-                    if (!isAdmin) {
-                        put("info", "You are not an Admin, only your own info is shown");
-                    }
-                }
-            };
+
+        int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
+
+        // --- Map uers to API response ---
+        List<Map<String, Object>> responseUsersList = users.stream().map(u -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", u.getId());
+            map.put("name", u.getName());
+            map.put("membertype", u.isGroup() ? "G" : "U");
+            if (!isAdmin) {
+                map.put("info", "You are not an Admin, only your own info is shown");
+            }
+            return map;
         }).collect(Collectors.toList());
-        return Response.ok(responseList).build();
+
+        Map<String, Object> responsesMap = new HashMap<>();
+        responsesMap.put("totalUsers", totalUsers);
+        responsesMap.put("totalPages", totalPages);
+        responsesMap.put("currentPage", page);
+        responsesMap.put("users", responseUsersList);
+
+        return Response.ok(responsesMap).build();
     }
+
+    
 }

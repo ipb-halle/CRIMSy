@@ -95,15 +95,37 @@ paths:
     get:
       summary: Get list of users
       description: Returns all users for admin, or own info for non-admin users
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number (1-based)
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            default: 3
+          description: Number of users per page
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserT'
+                type: object
+                properties:
+                  totalUsers:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  currentPage:
+                    type: integer
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserT'
         '400':
           description: Bad request
         '401':

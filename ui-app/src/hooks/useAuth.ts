@@ -1,6 +1,6 @@
-// src/hooks/useAuth.ts
 import { useState, useEffect, useRef, FormEvent } from "react";
 import * as api from "../services/authService";
+import { UsersListResponse } from "../types/users";
 
 const SESSION_FALLBACK_TIMEOUT_MS = 60 * 1000;
 
@@ -12,7 +12,7 @@ export const useAuth = () => {
     const [result, setResult] = useState<api.LoginResult | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [roleInfo, setRoleInfo] = useState<{ username: string; groups: string; admin: string } | null>(null);
-    const [usersList, setUsersList] = useState<any[] | null>(null);
+    const [usersList, setUsersList] = useState<UsersListResponse | null>(null);
 
     const logoutTimerRef = useRef<number | null>(null);
 
@@ -141,13 +141,13 @@ export const useAuth = () => {
     };
 
     /* ------------------ Users List ------------------ */
-    const handleFetchUsers = async () => {
+    const handleFetchUsers = async (page: number = 1) => {
         setRoleInfo(null);
         const token = localStorage.getItem("token");
         if (!token) return;
 
         try {
-            const data = await api.fetchUsersAPI(token);
+            const data = await api.fetchUsersAPI(token, page, 3);
             setUsersList(data);
             setResult({ message: "Users List" });
         } catch {

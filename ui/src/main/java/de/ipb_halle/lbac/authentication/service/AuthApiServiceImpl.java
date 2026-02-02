@@ -4,7 +4,6 @@
  */
 package de.ipb_halle.lbac.authentication.service;
 
-import java.util.List;
 
 import de.ipb_halle.api.AuthApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
@@ -16,7 +15,6 @@ import de.ipb_halle.lbac.security.service.TokenService;
 import de.ipb_halle.model.LoginRequest;
 import de.ipb_halle.model.LoginResponse;
 import de.ipb_halle.model.Logout200Response;
-import de.ipb_halle.model.Logout401Response;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -44,6 +42,7 @@ public class AuthApiServiceImpl implements AuthApiService {
 
     @PersistenceContext
     private EntityManager em;
+    
     @Context
     private HttpHeaders headers;
 
