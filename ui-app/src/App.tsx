@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
 
-import Login from './pages/Login';
-import HeadMeta from './components/HeadMeta';
-import Footer from './components/Footer';
-import Growl from './components/Growl';
+import Login from './ui/pages/Login';
+import HeadMeta from './ui/components/HeadMeta';
+import Footer from './ui/components/Footer';
+import Growl from './ui/components/Growl';
 
 const App: React.FC = () => {
   return (
