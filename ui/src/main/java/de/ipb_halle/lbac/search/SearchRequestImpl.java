@@ -42,6 +42,13 @@ public class SearchRequestImpl implements SearchRequest {
         searchValues = new HashMap<>();
     }
 
+    public SearchRequestImpl(User u, int fistResults, int maxResults) {
+        this.firstResultIndex = fistResults;
+        this.maxResults = maxResults;
+        this.user = u;
+        this.searchValues = new HashMap<>();
+    }
+
     @Override
     public SearchRequest addSearchCategory(SearchCategory cat, String... values) {
         HashSet<String> valueSet = new HashSet<>();
@@ -65,13 +72,6 @@ public class SearchRequestImpl implements SearchRequest {
 
     public void setFirstResultIndex(int firstResultIndex) {
         this.firstResultIndex = firstResultIndex;
-    }
-
-    public SearchRequestImpl(User u, int fistResults, int maxResults) {
-        this.firstResultIndex = fistResults;
-        this.maxResults = maxResults;
-        this.user = u;
-        this.searchValues = new HashMap<>();
     }
 
     @Override

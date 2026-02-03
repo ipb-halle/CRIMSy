@@ -172,7 +172,47 @@ paths:
                   message:
                     type: string
                     example: User not found
-
+                    
+  /search:
+    post:
+      tags:
+        - search
+      summary: Unified search endpoint
+      description: |
+        Performs search across Materials, Items, Experiments and Documents.  
+        If "Materials" is included in searchTypes, materialTypes may be provided 
+        (Structure, Sequence, Biomaterial, Composition).       
+        All values are currently treated as string (for being simple as possible).
+      operationId: search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResult'
+        '400':
+          description: Invalid search request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid search request
+        '401':
+          description: Unauthorized
+ 
+        
 components:
   securitySchemes:
     SessionKeyAuthentification:
@@ -252,4 +292,53 @@ components:
           type: boolean
           description: Indicates whether the user belongs to the Admin Group
           example: true
-   
+          
+    SearchRequest:
+      type: object
+      required:
+        - searchTypes
+        - query
+      properties:
+        searchTypes:
+          type: array
+          description: |
+            Selected top-level search domains
+            Examples: Materials, Items, Experiments, Documents
+          items:
+            type: string
+            example:
+              - Materials
+              - Documents
+        query:
+          type: string
+          description: Free-text search query
+          example: benzin
+        materialTypes:
+          type: array
+          description: |
+            Only used when Materials is selected
+            Examples: Structure, Sequence, Biomaterial, Composition
+          items:
+            type: string
+            example:
+              - Structure
+              - Sequence
+        
+
+    SearchResult:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Materials, Items, Experiments, or Documents
+          example: Materilas         
+        subtype:
+          type: string
+          nullable: true
+          description: Material subtype when applicable
+          example: Structure
+        value:
+          type: string
+          description: Search result payload
+          example: Result for 'benzin'
+        

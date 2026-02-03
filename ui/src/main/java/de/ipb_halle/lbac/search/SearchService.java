@@ -47,7 +47,8 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class SearchService {
 
-    private ServiceAdapter adpater;
+    private ServiceAdapter serviceAdapter;
+    
     @Inject
     private ItemService itemService;
 
@@ -78,7 +79,7 @@ public class SearchService {
 
     @PostConstruct
     public void init() {
-        adpater = new ServiceAdapter(
+        serviceAdapter = new ServiceAdapter(
                 itemService,
                 materialService,
                 projectService,
@@ -110,7 +111,7 @@ public class SearchService {
     private SearchResult handleSingleSearch(SearchRequest request, SearchResult result) {
         if (shouldSearchBeDone(request)) {
             augmentDocumentSearchRequest(request, result);
-            SearchResult partialResult = adpater.doSearch(request);
+            SearchResult partialResult = serviceAdapter.doSearch(request);
             result = mergeResults(result, partialResult);
         }
         return result;
