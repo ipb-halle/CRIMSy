@@ -1,81 +1,93 @@
 import { useState } from "react";
+import "../../assets/css/searchDropdown.css"
+
+interface Option {
+  label: string;
+  value: string;
+  subOptions?: string[];
+}
 
 export const SearchDropdown = () => {
   const [open, setOpen] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedSubOptions, setSelectedSubOptions] = useState<string[]>([]);
 
-  const navigate = (path: string) => {
-    window.location.href = path;
+  const options: Option[] = [
+    {
+      label: "Materials",
+      value: "Materials",
+      subOptions: ["Strukturen", "Sequenzen", "Biomaterial", "Komposition"]
+    },
+    { label: "Containers", value: "Containers" },
+    { label: "Experiments", value: "Experiments" },
+    { label: "Documents", value: "Documents" },
+  ];
+
+  const toggleOption = (value: string) => {
+    setSelectedOptions((prev) =>
+      prev.includes(value)
+        ? prev.filter((v) => v !== value)
+        : [...prev, value]
+    );
+    alert(`You selected ${value}`);
+  };
+
+
+  const toggleSubOption = (value: string) => {
+    setSelectedSubOptions((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+    alert(`You selected ${value}`);
   };
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
+    <div className="dropdown">
       <button
         onClick={() => setOpen(!open)}
-        style={{
-          padding: "8px 16px",
-          border: "1px solid #1976d2",
-          background: "#1976d2",
-          color: "white",
-          borderRadius: "4px",
-          cursor: "pointer"
-        }}
-      >
+        className="dropdown-button">
         Search ▾
       </button>
 
       {open && (
-        <div
-          style={{
-            position: "absolute",
-            top: "110%",
-            left: 0,
-            background: "white",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            minWidth: "180px",
-            zIndex: 1000
-          }}
-        >
-          <DropdownItem
-            label="Normal Search"
-            onClick={() => navigate("/crimsy/default")}
-          />
-          <DropdownItem
-            label="Word Cloud Search"
-            onClick={() => navigate("/crimsy/wordCloud2")}
-          />
-          <DropdownItem
-            label="Sequence Search"
-            onClick={() => navigate("/crimsy/sequence/sequenceSearch")}
-          />
+        <div className="dropdown-menu">
+          {options.map((opt) => (
+            <div key={opt.value} className="dropdown-item-wrapper">
+              <label
+                className={`dropdown-item ${selectedOptions.includes(opt.value) ? "selected" : ""
+                  }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedOptions.includes(opt.value)}
+                  onChange={() => toggleOption(opt.value)}
+                />
+                {opt.label}
+              </label>
+
+              {/* Render sub-options if top-level option is selected */}
+              {opt.subOptions && selectedOptions.includes(opt.value) && (
+                <div className="sub-options">
+                  {opt.subOptions.map((subOption) => (
+                    <label
+                      key={subOption}
+                      className={`dropdown-sub-item ${selectedSubOptions.includes(subOption) ? "selected" : ""
+                        }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedSubOptions.includes(subOption)}
+                        onChange={() => toggleSubOption(subOption)}
+                      />
+                      {subOption}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
 };
 
-const DropdownItem = ({
-  label,
-  onClick
-}: {
-  label: string;
-  onClick: () => void;
-}) => (
-  <div
-    onClick={onClick}
-    style={{
-      padding: "10px",
-      cursor: "pointer",
-      borderBottom: "1px solid #eee"
-    }}
-    onMouseEnter={(e) =>
-      (e.currentTarget.style.backgroundColor = "#f0f6ff")
-    }
-    onMouseLeave={(e) =>
-      (e.currentTarget.style.backgroundColor = "white")
-    }
-  >
-    {label}
-  </div>
-);
