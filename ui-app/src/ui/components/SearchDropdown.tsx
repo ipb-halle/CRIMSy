@@ -66,7 +66,7 @@ export const SearchDropdown = () => {
 
               {/* Render sub-options if top-level option is selected */}
               {opt.subOptions && selectedOptions.includes(opt.value) && (
-                <div className="sub-options">
+                <div className="sub-options flyout">
                   {opt.subOptions.map((subOption) => (
                     <label
                       key={subOption}
