@@ -1,52 +1,13 @@
 openapi: 3.0.3
 info:
   title: CRIMSy API
-  version: 1.0.0
+  version: 1.1.0
 
 security:
-  - SessionKeyAuthentification: []
+  - SessionKeyAuthentication: []
 
 paths:
-  /auth/logout:
-    post:
-      tags:
-        - Authentication
-        - Logout
-      summary: Logout the current user
-      description: Invalidates the user's session and deletes the token from database.
-      operationId: logout
-      responses:
-        '200':
-          description: Successfuly loged out
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Logout successful
-        '401':
-          description: Unauthorized request (invalid or missing token)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Inauthorized
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid request
-   
+  
   /auth/login:
     post:
       tags:
@@ -69,72 +30,48 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                $ref: '#/components/schemas/AuthResponse'
         '401':
           description: Unauthorized login attempt
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Login failed
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: Invalid input or missing parameters
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid request format
+                $ref: '#/components/schemas/ErrorResponse'
  
-  /usersList:
-    get:
-      summary: Get list of users
-      description: Returns all users for admin, or own info for non-admin users
-      parameters:
-        - in: query
-          name: page
-          schema:
-            type: integer
-            default: 1
-          description: Page number (1-based)
-        - in: query
-          name: pageSize
-          schema:
-            type: integer
-            default: 3
-          description: Number of users per page
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+        - Logout
+      summary: Logout the current user
+      description: Invalidates the user's session and deletes the token from database.
+      operationId: logout
       responses:
         '200':
-          description: Successful response
+          description: Successfuly loged out
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  totalUsers:
-                    type: integer
-                  totalPages:
-                    type: integer
-                  currentPage:
-                    type: integer
-                  users:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserT'
-        '400':
-          description: Bad request
+                $ref: '#/components/schemas/LogoutResponse'
         '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '500':
-          description: Internal server error
-
+          description: Unauthorized request (invalid or missing token)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+   
   /me:
     get:
       tags:
@@ -157,22 +94,65 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid token
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: User not found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: User not found
-                    
+                $ref: '#/components/schemas/ErrorResponse'
+      
+  /users:
+    get:
+      tags: 
+        - Users
+      summary: Get list of users
+      description: Returns all users for admin, or own info for non-admin users
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number (1-based)
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            default: 3
+          description: Number of users per page
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedUsers'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+               
   /search:
     post:
       tags:
@@ -196,32 +176,42 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SearchResult'
+                $ref: '#/components/schemas/SearchResponse'
         '400':
           description: Invalid search request
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid search request
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
  
         
 components:
+
   securitySchemes:
-    SessionKeyAuthentification:
+    SessionKeyAuthentication:
       type: http
       scheme: bearer
       bearerFormat: UUID
       description: Session key authentication using a custom header.
-       
+      
   schemas:
+
+    ErrorResponse:
+      type: object
+      required: 
+        - message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+
     LoginRequest:
       type: object
       required:
@@ -230,40 +220,45 @@ components:
       properties:
         login:
           type: string
-          description: The username
+          description: Username
           example: johndoe
         password:
           type: string
-          description: The password
+          description: Password
           example: password123
   
-    LoginResponse:
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Bearer token for authentication        
+        expiresInSeconds:
+          type: integer
+          description: Session validity duration in seconds
+
+    LogoutResponse:
       type: object
       properties:
         message:
           type: string
-        username:
-          type: string
-        token:
-          type: string
-          description: "Bearer token for authentication"
-          example: "b7fe38b9-37r4-3i9o-0e92-45zh6usd893ki4u"
-        expiresInSeconds:
+          example: "Logged out successfully"
+
+    PagedUsers:
+      type: object
+      properties:
+        totalUsers:
           type: integer
-          example: 60
-          description: Session validity duration in seconds
-        roles:
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+        users:
           type: array
           items:
-            type: string
-          description: List of roles assigned to the user
-        groups:
-          type: array
-          items:
-            type: string
-          description: List of groups the user belongs to
-        
-    UserT:
+            $ref: '#/components/schemas/User'
+          
+    User:
       type: object
       properties:
         id:
@@ -305,10 +300,7 @@ components:
             Selected top-level search domains
             Examples: Materials, Items, Experiments, Documents
           items:
-            type: string
-            example:
-              - Materials
-              - Documents
+            $ref: '#/components/schemas/SearchType'
         query:
           type: string
           description: Free-text search query
@@ -319,26 +311,53 @@ components:
             Only used when Materials is selected
             Examples: Structure, Sequence, Biomaterial, Composition
           items:
-            type: string
-            example:
-              - Structure
-              - Sequence
+            $ref: '#/components/schemas/MaterialType'
+        page:
+          type: integer
+          default: 1
+        pageSize:
+          type: integer
+          default: 3
         
+    SearchResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
 
     SearchResult:
       type: object
       properties:
-        type:
-          type: string
+        domain:
+          $ref: '#/components/schemas/SearchType'
           description: Materials, Items, Experiments, or Documents
           example: Materilas         
         subtype:
-          type: string
+          $ref: '#/components/schemas/MaterialType'
           nullable: true
           description: Material subtype when applicable
           example: Structure
-        value:
+        id:
           type: string
-          description: Search result payload
-          example: Result for 'benzin'
+        label:
+          type: string
+   
+    SearchType:
+      type: string
+      enum:
+        - Materials
+        - Items
+        - Experiments
+        - Documents
         
+    MaterialType:
+      type: string
+      enum:
+        - Structure
+        - Sequence
+        - Biomaterial
+        - Composition
