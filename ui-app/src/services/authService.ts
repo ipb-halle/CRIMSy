@@ -56,7 +56,7 @@ export const fetchUsersAPI = async (
   page: number, pageSize: number
 ) => {
   const res = await fetch(
-    `${BASE}/usersList?page=${page}&pageSize=${pageSize}`,
+    `${BASE}/users?page=${page}&pageSize=${pageSize}`,
     {
       headers: {
         "Content-Type": "application/json",

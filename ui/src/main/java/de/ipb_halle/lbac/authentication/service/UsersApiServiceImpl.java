@@ -4,35 +4,30 @@
  */
 package de.ipb_halle.lbac.authentication.service;
 
-import de.ipb_halle.api.UsersListApiService;
+import de.ipb_halle.api.UsersApiService;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.security.service.TokenService;
-import de.ipb_halle.model.GetRoleInfo401Response;
-import de.ipb_halle.model.GetRoleInfo404Response;
+import de.ipb_halle.model.ErrorResponse;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.QueryParam;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-
 
 /**
  *
  * @author halocal
  */
 @RequestScoped
-public class UsersListApiServiceImpl implements UsersListApiService {
+public class UsersApiServiceImpl implements UsersApiService {
 
     @Inject
     TokenService tokenService;
@@ -47,9 +42,8 @@ public class UsersListApiServiceImpl implements UsersListApiService {
     public Response usersListGet(Integer page, Integer pageSize, SecurityContext securityContext) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }*/
-    
     @Override
-    public Response usersListGet(Integer page, Integer pageSize, SecurityContext securityContext) {
+    public Response usersGet(Integer page, Integer pageSize, SecurityContext securityContext) {
 
         if (page < 1 || pageSize < 1) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -63,23 +57,27 @@ public class UsersListApiServiceImpl implements UsersListApiService {
         if (securityContext != null && securityContext.getUserPrincipal() != null) {
             username = securityContext.getUserPrincipal().getName();
         }
-        
-        
 
         // 2. Fallback: extract from Authorization header
         if (username == null) {
             String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                GetRoleInfo401Response resp = new GetRoleInfo401Response();
-                resp.setMessage("Unauthorized: missing token");
-                return Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.setMessage("Unauthorized: missing token");
+                errorResponse.setCode("401");
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity(errorResponse)
+                        .build();
             }
             String token = authHeader.substring("Bearer ".length());
-            
+
             if (!tokenService.validateToken(token)) {
-                GetRoleInfo401Response resp = new GetRoleInfo401Response();
-                resp.setMessage("Unauthorized: invalid token");
-                return Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.setMessage("Unauthorized: invalid token");
+                errorResponse.setCode("401");
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity(errorResponse)
+                        .build();
             }
             username = tokenService.getUsernameFromToken(token);
         }
@@ -94,9 +92,12 @@ public class UsersListApiServiceImpl implements UsersListApiService {
                     .setParameter("login", username.toLowerCase())
                     .getSingleResult();
         } catch (NoResultException e) {
-            GetRoleInfo404Response resp = new GetRoleInfo404Response();
-            resp.setMessage("User not found");
-            return Response.status(Response.Status.NOT_FOUND).entity(resp).build();
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setMessage("User not found");
+            errorResponse.setCode("404");
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(errorResponse)
+                    .build();
         }
 
         // --- Check groups where membertype = 'G' to see if admin ---
@@ -166,5 +167,4 @@ public class UsersListApiServiceImpl implements UsersListApiService {
         return Response.ok(responsesMap).build();
     }
 
-    
 }

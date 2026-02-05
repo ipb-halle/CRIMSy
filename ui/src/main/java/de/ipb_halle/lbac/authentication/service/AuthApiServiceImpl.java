@@ -4,6 +4,8 @@
  */
 package de.ipb_halle.lbac.authentication.service;
 
+import java.util.List;
+import java.util.Map;
 
 import de.ipb_halle.api.AuthApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
@@ -12,9 +14,9 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.security.interceptor.Secured;
 import de.ipb_halle.lbac.security.service.SessionService;
 import de.ipb_halle.lbac.security.service.TokenService;
+import de.ipb_halle.model.AuthResponse;
+import de.ipb_halle.model.ErrorResponse;
 import de.ipb_halle.model.LoginRequest;
-import de.ipb_halle.model.LoginResponse;
-import de.ipb_halle.model.Logout200Response;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -42,25 +44,27 @@ public class AuthApiServiceImpl implements AuthApiService {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @Context
     private HttpHeaders headers;
 
     @Override
     public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
 
-        LoginResponse response = new LoginResponse();
-
         String ipAddressString = getClientIp();
-        
+
         User user = loginProcess.tryLogIn(
                 loginRequest.getLogin(),
-                loginRequest.getPassword(), ipAddressString);
+                loginRequest.getPassword(),
+                ipAddressString);
 
         if (user == null) {
-            response.setMessage("Login failed");
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(response)
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setMessage("Login failed: invalid credentials!");
+            errorResponse.setCode("401");
+            return Response.status(
+                    Response.Status.UNAUTHORIZED)
+                    .entity(errorResponse)
                     .build();
         }
 
@@ -71,16 +75,21 @@ public class AuthApiServiceImpl implements AuthApiService {
                     MemberEntity.class).setParameter("login", user.getLogin())
                     .getSingleResult();
         } catch (NoResultException e) {
-            response.setMessage("User entity not found");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(response)
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setMessage("User entity not found");
+            errorResponse.setCode("500");
+            return Response.status(
+                    Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(errorResponse)
                     .build();
         }
 
         String token = tokenService.generateToken(member);
 
-        response.setMessage("Logged in successfully, " + user.getLogin() + "!");
+        AuthResponse response = new AuthResponse();
+
         response.setUsername(user.getLogin());
+        response.setMessage("Logged in Successfully " + user.getLogin());
         response.setToken(token);
         response.setExpiresInSeconds(60);
         return Response.ok(response).build();
@@ -90,16 +99,21 @@ public class AuthApiServiceImpl implements AuthApiService {
     @Override
     @Transactional
     public Response logout(SecurityContext securityContext) {
-        
+
         String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-        String token = authHeader.substring("Bearer ".length());
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            ErrorResponse error = new ErrorResponse();
+            error.setMessage("Missing or invalid Authorization header");
+            error.setCode("401");
+            return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
+        }
 
+        String token = authHeader.substring("Bearer ".length());
         sessionService.deleteSessionByToken(token);
-        
-        Logout200Response response = new Logout200Response();
-        response.setMessage("Logged out successfully!");
-        return Response.ok(response).build();
+
+        Map<String, String> message = Map.of("message", "Logged out successfully!");
+        return Response.ok(message).build();
     }
 
     public String getClientIp() {

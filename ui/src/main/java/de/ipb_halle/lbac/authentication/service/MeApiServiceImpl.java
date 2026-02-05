@@ -3,9 +3,8 @@ package de.ipb_halle.lbac.authentication.service;
 import de.ipb_halle.api.MeApiService;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.security.service.TokenService;
+import de.ipb_halle.model.ErrorResponse;
 import de.ipb_halle.model.RoleResponse;
-import de.ipb_halle.model.GetRoleInfo401Response;
-import de.ipb_halle.model.GetRoleInfo404Response;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
@@ -44,15 +43,22 @@ public class MeApiServiceImpl implements MeApiService {
         if (username == null) {
             String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                GetRoleInfo401Response resp = new GetRoleInfo401Response();
-                resp.setMessage("Unauthorized: missing token");
-                return Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.setMessage("Unauthorized: missing token");
+                errorResponse.setCode("401");
+
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity(errorResponse)
+                        .build();
             }
             String token = authHeader.substring("Bearer ".length());
             if (!tokenService.validateToken(token)) {
-                GetRoleInfo401Response resp = new GetRoleInfo401Response();
-                resp.setMessage("Unauthorized: invalid token");
-                return Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.setMessage("Unauthorized: invalid token");
+                errorResponse.setCode("401");
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity(errorResponse)
+                        .build();
             }
             username = tokenService.getUsernameFromToken(token);
         }
@@ -66,9 +72,12 @@ public class MeApiServiceImpl implements MeApiService {
                     .setParameter("login", username.toLowerCase())
                     .getSingleResult();
         } catch (NoResultException e) {
-            GetRoleInfo404Response resp = new GetRoleInfo404Response();
-            resp.setMessage("User not found");
-            return Response.status(Response.Status.NOT_FOUND).entity(resp).build();
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setMessage("User not found");
+            errorResponse.setCode("404");
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(errorResponse)
+                    .build();
         }
 
         // --- Fetch groups where membertype = 'G' ---

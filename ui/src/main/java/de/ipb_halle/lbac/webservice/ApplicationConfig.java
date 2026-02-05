@@ -21,8 +21,10 @@ import de.ipb_halle.api.AuthApi;
 import de.ipb_halle.api.AuthApiService;
 import de.ipb_halle.api.MeApi;
 import de.ipb_halle.api.MeApiService;
-import de.ipb_halle.api.UsersListApi;
-import de.ipb_halle.api.UsersListApiService;
+import de.ipb_halle.api.SearchApi;
+import de.ipb_halle.api.SearchApiService;
+import de.ipb_halle.api.UsersApi;
+import de.ipb_halle.api.UsersApiService;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
@@ -60,11 +62,13 @@ public class ApplicationConfig extends Application {
                         DocumentWebService.class,
                         AuthApiService.class,
                         AuthApi.class,
-                        UsersListApi.class,
-                        UsersListApiService.class,
+                        UsersApi.class,
+                        UsersApiService.class,
                         LoginEndpoint.class,
                         SessionResource.class,
                         MeApi.class,
-                        MeApiService.class));
+                        MeApiService.class,
+                        SearchApi.class,
+                        SearchApiService.class));
     }
 }
