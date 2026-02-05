@@ -230,12 +230,17 @@ components:
     AuthResponse:
       type: object
       properties:
+        message:
+          type: string
+        username:
+          type: string
         token:
           type: string
           description: Bearer token for authentication        
         expiresInSeconds:
           type: integer
           description: Session validity duration in seconds
+        
 
     LogoutResponse:
       type: object
