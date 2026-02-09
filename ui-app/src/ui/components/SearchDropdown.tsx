@@ -7,7 +7,15 @@ interface Option {
   subOptions?: string[];
 }
 
-export const SearchDropdown = () => {
+interface Props {
+  onSearchTypesChange: (types: string[]) => void;
+  onMaterialTypesChange: (types: string[]) => void;
+}
+
+export const SearchDropdown = ({
+  onSearchTypesChange,
+  onMaterialTypesChange,
+}: Props) => {
   const [open, setOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [selectedSubOptions, setSelectedSubOptions] = useState<string[]>([]);
@@ -24,20 +32,26 @@ export const SearchDropdown = () => {
   ];
 
   const toggleOption = (value: string) => {
-    setSelectedOptions((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
-    );
-    alert(`You selected ${value}`);
+    const updated = selectedOptions.includes(value)
+      ? selectedOptions.filter((v) => v !== value)
+      : [...selectedOptions, value];
+
+    setSelectedOptions(updated);
+    onSearchTypesChange(updated);
+
+    if (value == "Materials" && selectedOptions.includes(value)) {
+      setSelectedOptions([]);
+      onSearchTypesChange([]);
+    }
   };
 
-
   const toggleSubOption = (value: string) => {
-    setSelectedSubOptions((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-    alert(`You selected ${value}`);
+    const updated = selectedOptions.includes(value)
+      ? selectedOptions.filter((v) => v !== value)
+      : [...selectedOptions, value];
+
+    setSelectedOptions(updated);
+    onSearchTypesChange(updated);
   };
 
   return (
@@ -52,10 +66,7 @@ export const SearchDropdown = () => {
         <div className="dropdown-menu">
           {options.map((opt) => (
             <div key={opt.value} className="dropdown-item-wrapper">
-              <label
-                className={`dropdown-item ${selectedOptions.includes(opt.value) ? "selected" : ""
-                  }`}
-              >
+              <label className="dropdown-item">
                 <input
                   type="checkbox"
                   checked={selectedOptions.includes(opt.value)}
@@ -65,24 +76,24 @@ export const SearchDropdown = () => {
               </label>
 
               {/* Render sub-options if top-level option is selected */}
-              {opt.subOptions && selectedOptions.includes(opt.value) && (
-                <div className="sub-options flyout">
-                  {opt.subOptions.map((subOption) => (
-                    <label
-                      key={subOption}
-                      className={`dropdown-sub-item ${selectedSubOptions.includes(subOption) ? "selected" : ""
-                        }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedSubOptions.includes(subOption)}
-                        onChange={() => toggleSubOption(subOption)}
-                      />
-                      {subOption}
-                    </label>
-                  ))}
-                </div>
-              )}
+              {opt.subOptions &&
+                selectedOptions.includes(opt.value) && (
+                  <div className="sub-options flyout">
+                    {opt.subOptions.map((sub) => (
+                      <label
+                        key={sub}
+                        className="dropdown-sub-item"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedSubOptions.includes(sub)}
+                          onChange={() => toggleSubOption(sub)}
+                        />
+                        {sub}
+                      </label>
+                    ))}
+                  </div>
+                )}
             </div>
           ))}
         </div>
@@ -90,4 +101,3 @@ export const SearchDropdown = () => {
     </div>
   );
 };
-
