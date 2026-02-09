@@ -25,6 +25,10 @@
   padding: 8px;
 }
 
+.dropdown-item-wrapper {
+  position: relative;
+}
+
 .dropdown-item {
   display: flex;
   align-items: center;
@@ -36,10 +40,7 @@
   transition: background-color 0.2s;
 }
 
-.dropdown-item:hover {
-  background-color: #f0f6ff;
-}
-
+.dropdown-item:hover,
 .dropdown-item.selected {
   background-color: #f0f6ff;
 }
@@ -48,22 +49,8 @@
   margin-right: 8px;
 }
 
-.search-button {
-  margin-top: 8px;
-  width: 100%;
-  padding: 8px;
-  background: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
-.dropdown-item-wrapper {
-  position: relative;
-}
-
-/* Flyout container */
+/* Flyout */
 .sub-options.flyout {
   position: absolute;
   left: 100%;
@@ -76,7 +63,6 @@
   z-index: 10;
 }
 
-/* Individual sub items */
 .dropdown-sub-item {
   display: flex;
   gap: 6px;
@@ -87,122 +73,4 @@
 
 .dropdown-sub-item:hover {
   background: #f3f3f3;
-}
-
-.search-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden;
-  font-size: 14px;
-}
-
-
-/* Headers */
-
-.search-table__head {
-  background-color: #f9fafb;
-}
-
-.search-table__row--header {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.search-table__cell--header {
-  padding: 12px 14px;
-  text-align: left;
-  font-weight: 600;
-  color: #374151;
-  text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-
-/* Rows */
-
-.search-table__row {
-  border-bottom: 1px solid #f1f5f9;
-  transition: background-color 0.15s ease-in-out;
-}
-
-.search-table__row:hover {
-  background-color: #f8fafc;
-}
-
-
-
-/* Cells */
-
-.search-table__cell {
-  padding: 12px 14px;
-  color: #1f2937;
-  vertical-align: middle;
-  white-space: nowrap;
-}
-
-.search-table__cell--label {
-  white-space: normal;
-  max-width: 420px;
-}
-
-.search-table__cell--mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 13px;
-  color: #4b5563;
-}
-
-.search-table__cell--empty {
-  text-align: center;
-  color: #9ca3af;
-  padding: 24px;
-}
-
-/* Domain pills */
-
-.domain-pill {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 1;
-}
-
-/* Domain colors */
-.domain-pill--materials {
-  background-color: #eef2ff;
-  color: #4338ca;
-}
-
-.domain-pill--items {
-  background-color: #ecfeff;
-  color: #0369a1;
-}
-
-.domain-pill--experiments {
-  background-color: #f0fdf4;
-  color: #166534;
-}
-
-.domain-pill--documents {
-  background-color: #fff7ed;
-  color: #9a3412;
-}
-
-/* Subtype Badge */
-
-.subtype-badge {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background-color: #f1f5f9;
-  color: #334155;
-  font-size: 12px;
-}
-
-.subtype-badge--empty {
-  background-color: transparent;
-  color: #9ca3af;
 }

@@ -2,8 +2,7 @@ import { useAuth } from "../../adapters/hooks/useAuth";
 import LoginForm from "../components/LoginForm";
 import RolePanel from "../components/RolePanel";
 import UsersPanel from "../components/UsersPanel";
-//import { SearchDropdown } from "../components/SearchDropdown";
-import { SearchPage } from "../pages/SearchPage";
+import SearchPanel from "../components/SearchPanel";
 
 
 const Login = () => {
@@ -60,7 +59,7 @@ const Login = () => {
 
         {isLoggedIn && (
           <div style={{ marginTop: "20px", textAlign: "center" }}>
-            <SearchPage />
+            <SearchPanel />
           </div>
         )}
         {isLoggedIn ? (

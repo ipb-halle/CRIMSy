@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../../assets/css/searchDropdown.css"
 
 interface Option {
@@ -17,6 +17,8 @@ export const SearchDropdown = ({
   onMaterialTypesChange,
 }: Props) => {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [selectedSubOptions, setSelectedSubOptions] = useState<string[]>([]);
 
@@ -40,24 +42,46 @@ export const SearchDropdown = ({
     onSearchTypesChange(updated);
 
     if (value == "Materials" && selectedOptions.includes(value)) {
-      setSelectedOptions([]);
+      /*setSelectedOptions([]);
       onSearchTypesChange([]);
+      setSelectedSubOptions([]);*/
+
+      setSelectedSubOptions([]);
+      onMaterialTypesChange(updated);
     }
   };
 
   const toggleSubOption = (value: string) => {
-    const updated = selectedOptions.includes(value)
-      ? selectedOptions.filter((v) => v !== value)
-      : [...selectedOptions, value];
+    const updated = selectedSubOptions.includes(value)
+      ? selectedSubOptions.filter((v) => v !== value)
+      : [...selectedSubOptions, value];
 
-    setSelectedOptions(updated);
-    onSearchTypesChange(updated);
+    setSelectedSubOptions(updated);
+    onMaterialTypesChange(updated);
   };
 
+  // Close on search dropdown menu outside click
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    };
+  }, []);
+
   return (
-    <div className="dropdown">
+    <div className="dropdown" ref={dropdownRef}>
       <button
-        onClick={() => setOpen(!open)}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
         className="dropdown-button">
         Search ▾
       </button>
