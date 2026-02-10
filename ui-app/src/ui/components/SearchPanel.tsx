@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SearchDropdown } from "./SearchDropdown";
 import { useSearch } from "../../adapters/hooks/useSearch";
-import { SearchRequest } from "../../domain/types/search";
+import { SearchRequest, SearchType, MaterialType, SearchTypeFromJSON, MaterialTypeFromJSON } from "../../adapters/api";
 import "../../assets/css/searchTable.css"
 
 interface Props {
@@ -12,20 +12,20 @@ const SearchPanel: React.FC = () => {
     const { results, loading, handleSearch } = useSearch();
 
     const [query, setQuery] = useState("");
-    const [searchTypes, setSearchTypes] = useState<string[]>([]);
-    const [materialTypes, setMaterialTypes] = useState<string[]>([]);
+    const [searchTypes, setSearchTypes] = useState<SearchType[]>([]);
+    const [materialTypes, setMaterialTypes] = useState<MaterialType[]>([]);
 
     const onSubmit = () => {
-        if (!query || searchTypes.length === 0) {
+        if (!query || searchTypes?.length === 0) {
             alert("Please enter a queary and selectat least one search type.")
             return;
         }
 
         const req: SearchRequest = {
             query,
-            searchTypes,
-            materialTypes: searchTypes.includes("Materials")
-                ? materialTypes
+            searchTypes: searchTypes.map(SearchTypeFromJSON),
+            materialTypes: searchTypes.includes(SearchType.Materials)
+                ? materialTypes.map(MaterialTypeFromJSON)
                 : undefined,
             page: 1,
             pageSize: 10,
@@ -83,7 +83,7 @@ const SearchPanel: React.FC = () => {
                     {results.map((r) => (
                         <tr key={r.id} className="search-table__row">
                             <td className="search-table__cell">
-                                <span className={`domain-pill domain-pill--${r.domain.toLowerCase()}`}>
+                                <span className={`domain-pill domain-pill--${r.domain?.toString().toLowerCase()}`}>
                                     {r.domain}
                                 </span>
                             </td>

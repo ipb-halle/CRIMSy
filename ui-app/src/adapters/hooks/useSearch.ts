@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { SearchUseCase } from "../../application/search/SearchUseCase";
 import { SearchApiRepository } from "../api/SearchApiRepository";
-import { SearchResult, SearchRequest } from "../../domain/types/search";
+import { SearchResult, SearchRequest, SearchResponse } from "../api";
 
 export const useSearch = () => {
     const repo = new SearchApiRepository();
@@ -14,8 +14,8 @@ export const useSearch = () => {
     const handleSearch = async (req: SearchRequest) => {
         setLoading(true);
         try {
-            const data = await searchUC.execute(req);
-            setResults(data.results);
+            const data: SearchResponse = await searchUC.execute(req);
+            setResults(data.results ?? []);
         } finally {
             setLoading(false);
         }

@@ -1,4 +1,4 @@
-import { User } from "../user/User";
+import { User } from "../../adapters/api/models/User";
 
 export interface UsersListResponse {
   users: User[];

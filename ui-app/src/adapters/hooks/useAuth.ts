@@ -4,6 +4,7 @@ import { LoginUseCase } from "../../application/user/LoginUseCase";
 import { LogoutUseCase } from "../../application/user/LogoutUseCase";
 import { CheckRoleUseCase } from "../../application/user/CheckRoleUseCase";
 import { FetchUsersUseCase } from "../../application/user/FetchUsersUseCase";
+import type { AuthResponse } from "../api";
 
 const SESSION_FALLBACK_TIMEOUT_MS = 60 * 1000;
 
@@ -17,7 +18,7 @@ export const useAuth = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
-  const [result, setResult] = useState<{ message: string } | null>(null);
+  const [result, setResult] = useState<AuthResponse | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleInfo, setRoleInfo] = useState<any>(null);
   const [usersList, setUsersList] = useState<any>(null);
@@ -88,12 +89,16 @@ export const useAuth = () => {
     try {
       const data = await loginUC.execute(username, password);
       if (!data.token || !data.username) {
-        setResult(data);
+        setResult({
+          message: data.message ?? "Login failed"
+        });
         return;
       }
+
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.username);
       setIsLoggedIn(true);
+
       setResult({ message: data.message });
       setRoleInfo(null);
       setUsersList(null);
@@ -133,7 +138,7 @@ export const useAuth = () => {
 
     const token = localStorage.getItem("token");
     if (!token) return;
-    
+
     try {
       const users = await usersUC.execute(token, page);
       setUsersList(users);

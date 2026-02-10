@@ -1,4 +1,5 @@
 import React, { FormEvent } from "react";
+import { AuthResponse } from "../../adapters/api/models";
 
 interface Props {
   username: string;
@@ -6,7 +7,7 @@ interface Props {
   setUsername: (v: string) => void;
   setPassword: (v: string) => void;
   errors: { username?: string; password?: string };
-  result: { message: string } | null;
+  result: string;
   onSubmit: (e?: FormEvent) => void;
 }
 

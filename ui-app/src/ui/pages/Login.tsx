@@ -3,6 +3,7 @@ import LoginForm from "../components/LoginForm";
 import RolePanel from "../components/RolePanel";
 import UsersPanel from "../components/UsersPanel";
 import SearchPanel from "../components/SearchPanel";
+import type { AuthResponse } from "../../adapters/api";
 
 
 const Login = () => {
@@ -23,9 +24,9 @@ const Login = () => {
   } = useAuth();
 
   const isError =
-    result?.message.toLowerCase().includes("failed") ||
-    result?.message.toLowerCase().includes("expired") ||
-    result?.message.toLowerCase().includes("unauthorized");
+    result?.message?.toString().toLowerCase().includes("failed") ||
+    result?.message?.toString().toLowerCase().includes("expired") ||
+    result?.message?.toString().toLowerCase().includes("unauthorized");
 
   return (
     <div
@@ -101,7 +102,7 @@ const Login = () => {
             setUsername={setUsername}
             setPassword={setPassword}
             errors={errors}
-            result={result}
+            result={result?.message ?? ""}
             onSubmit={handleLogin}
           />
         )}

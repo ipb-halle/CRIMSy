@@ -1,4 +1,4 @@
-import { SearchResponse, SearchRequest } from "../types/search";
+import { SearchResponse, SearchRequest } from "../../adapters/api";
 
 export interface SearchRepository {
     search(req: SearchRequest): Promise<SearchResponse>;

@@ -1,5 +1,6 @@
 import { SearchRepository } from "../../domain/search/SearchRepository";
-import { SearchRequest, SearchResponse } from "../../domain/types/search";
+import { SearchResponse, SearchRequest } from "../../adapters/api";
+
 
 const BASE = "https://compchem17.ipb-halle.de/ui/rest";
 

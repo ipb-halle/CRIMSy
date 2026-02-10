@@ -1,5 +1,6 @@
 import { SearchRepository } from "../../domain/search/SearchRepository";
-import { SearchRequest, SearchResponse } from "../../domain/types/search";
+//import { SearchRequest, SearchResponse } from "../../domain/types/search";
+import { SearchResponse, SearchRequest } from "../../adapters/api";
 
 export class SearchUseCase {
     constructor(private repo: SearchRepository) { }

@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import "../../assets/css/searchDropdown.css"
+import { SearchType, MaterialType, SearchTypeFromJSON, MaterialTypeFromJSON } from "../../adapters/api";
+import "../../assets/css/searchDropdown.css";
+
+
 
 interface Option {
   label: string;
@@ -8,8 +11,8 @@ interface Option {
 }
 
 interface Props {
-  onSearchTypesChange: (types: string[]) => void;
-  onMaterialTypesChange: (types: string[]) => void;
+  onSearchTypesChange: (types: SearchType[]) => void;
+  onMaterialTypesChange: (types: MaterialType[]) => void;
 }
 
 export const SearchDropdown = ({
@@ -25,12 +28,12 @@ export const SearchDropdown = ({
   const options: Option[] = [
     {
       label: "Materials",
-      value: "Materials",
-      subOptions: ["Strukturen", "Sequenzen", "Biomaterial", "Komposition"]
+      value: SearchType.Materials,
+      subOptions: [MaterialType.Structure, MaterialType.Sequence, MaterialType.Biomaterial, MaterialType.Composition]
     },
-    { label: "Containers", value: "Containers" },
-    { label: "Experiments", value: "Experiments" },
-    { label: "Documents", value: "Documents" },
+    { label: "Containers", value: SearchType.Items },
+    { label: "Experiments", value: SearchType.Experiments },
+    { label: "Documents", value: SearchType.Documents },
   ];
 
   const toggleOption = (value: string) => {
@@ -39,15 +42,13 @@ export const SearchDropdown = ({
       : [...selectedOptions, value];
 
     setSelectedOptions(updated);
-    onSearchTypesChange(updated);
+
+    const typedSearchTypes = updated.map(SearchTypeFromJSON);
+    onSearchTypesChange(typedSearchTypes);
 
     if (value == "Materials" && selectedOptions.includes(value)) {
-      /*setSelectedOptions([]);
-      onSearchTypesChange([]);
-      setSelectedSubOptions([]);*/
-
       setSelectedSubOptions([]);
-      onMaterialTypesChange(updated);
+      onMaterialTypesChange([]);
     }
   };
 
@@ -57,7 +58,9 @@ export const SearchDropdown = ({
       : [...selectedSubOptions, value];
 
     setSelectedSubOptions(updated);
-    onMaterialTypesChange(updated);
+
+    const typedSearchTypes = updated.map(MaterialTypeFromJSON);
+    onMaterialTypesChange(typedSearchTypes);
   };
 
   // Close on search dropdown menu outside click

@@ -11,7 +11,6 @@ const App: React.FC = () => {
     <div className='App'>
       <HeadMeta />
       <div className='content'>
-        {/* Always render Login; it manages logged-in state */}
         <Login />
         <Growl />
       </div>

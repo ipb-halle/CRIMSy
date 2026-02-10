@@ -6,7 +6,13 @@ CONTAINER_NAME="ui-app"
 PORT=82
 
 
-MODE=${1:-prod} # Use dev for local development
+MODE=${1:-prod}
+
+# Generate API files before build
+#echo "Generating API models..."
+#npm install
+#npm run gen:api
+
 
 if [ "$MODE" = "dev" ]; then
   echo "Starting development container with volume mount ..."
