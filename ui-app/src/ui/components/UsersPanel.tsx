@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { UsersListResponse } from "../../types/users";
+import { PagedUsers } from "../../adapters/api";
+
 
 interface UsersPanelProps {
-  data: UsersListResponse | null;
+  data: PagedUsers | null;
   onPageChange?: (page: number) => Promise<void> | void;
 }
 
@@ -42,7 +43,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
           <div>ID: {u.id}</div>
           <div>Name: {u.name}</div>
           <div>Type: {u.membertype}</div>
-          {u.info && <div style={{ color: "red" }}>{u.info}</div>}
+        {/*  {u.info && <div style={{ color: "red" }}>{u.info}</div>}*/}
         </div>
       ))}
 

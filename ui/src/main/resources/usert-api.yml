@@ -244,6 +244,8 @@ components:
 
     LogoutResponse:
       type: object
+      required:
+        - message
       properties:
         message:
           type: string
@@ -251,6 +253,11 @@ components:
 
     PagedUsers:
       type: object
+      required:
+        - totalUsers
+        - totalPages
+        - currentPage
+        - users
       properties:
         totalUsers:
           type: integer
@@ -277,6 +284,10 @@ components:
 
     RoleResponse:
       type: object
+      required:
+        - username
+        - groups
+        - admin
       properties:
         username:
           type: string

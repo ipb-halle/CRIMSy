@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { SearchType, MaterialType, SearchTypeFromJSON, MaterialTypeFromJSON } from "../../adapters/api";
+import { SearchType, MaterialType, 
+  SearchTypeFromJSON, MaterialTypeFromJSON } 
+  from "../../adapters/api";
 import "../../assets/css/searchDropdown.css";
 
 

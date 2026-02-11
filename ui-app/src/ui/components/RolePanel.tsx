@@ -1,13 +1,8 @@
 import React from "react";
-
-interface Role {
-  username: string;
-  groups: string;
-  admin: string;
-}
+import { RoleResponse } from "../../adapters/api";
 
 interface Props {
-  role: Role | null;
+  role: RoleResponse | null;
 }
 
 const RolePanel: React.FC<Props> = ({ role }) => {
@@ -16,8 +11,8 @@ const RolePanel: React.FC<Props> = ({ role }) => {
   return (
     <div style={{ marginTop: "1rem", padding: "0.75rem", border: "1px solid #029ACF", borderRadius: "3px", textAlign: "left", fontWeight: "bold", wordBreak: "break-all" }}>
       <div>Username: {role.username}</div>
-      <div>Groups: {role.groups}</div>
-      <div>Admin Access: {role.admin}</div>
+      <div>Groups: {role.groups.join(", ")}</div>
+      <div>Admin Access: {role.admin ? "Yes" : "No"}</div>
     </div>
   );
 };

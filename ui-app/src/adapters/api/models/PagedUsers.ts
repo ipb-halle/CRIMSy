@@ -32,31 +32,35 @@ export interface PagedUsers {
      * @type {number}
      * @memberof PagedUsers
      */
-    totalUsers?: number;
+    totalUsers: number;
     /**
      * 
      * @type {number}
      * @memberof PagedUsers
      */
-    totalPages?: number;
+    totalPages: number;
     /**
      * 
      * @type {number}
      * @memberof PagedUsers
      */
-    currentPage?: number;
+    currentPage: number;
     /**
      * 
      * @type {Array<User>}
      * @memberof PagedUsers
      */
-    users?: Array<User>;
+    users: Array<User>;
 }
 
 /**
  * Check if a given object implements the PagedUsers interface.
  */
 export function instanceOfPagedUsers(value: object): value is PagedUsers {
+    if (!('totalUsers' in value) || value['totalUsers'] === undefined) return false;
+    if (!('totalPages' in value) || value['totalPages'] === undefined) return false;
+    if (!('currentPage' in value) || value['currentPage'] === undefined) return false;
+    if (!('users' in value) || value['users'] === undefined) return false;
     return true;
 }
 
@@ -70,10 +74,10 @@ export function PagedUsersFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'totalUsers': json['totalUsers'] == null ? undefined : json['totalUsers'],
-        'totalPages': json['totalPages'] == null ? undefined : json['totalPages'],
-        'currentPage': json['currentPage'] == null ? undefined : json['currentPage'],
-        'users': json['users'] == null ? undefined : ((json['users'] as Array<any>).map(UserFromJSON)),
+        'totalUsers': json['totalUsers'],
+        'totalPages': json['totalPages'],
+        'currentPage': json['currentPage'],
+        'users': ((json['users'] as Array<any>).map(UserFromJSON)),
     };
 }
 
@@ -91,7 +95,7 @@ export function PagedUsersToJSONTyped(value?: PagedUsers | null, ignoreDiscrimin
         'totalUsers': value['totalUsers'],
         'totalPages': value['totalPages'],
         'currentPage': value['currentPage'],
-        'users': value['users'] == null ? undefined : ((value['users'] as Array<any>).map(UserToJSON)),
+        'users': ((value['users'] as Array<any>).map(UserToJSON)),
     };
 }
 

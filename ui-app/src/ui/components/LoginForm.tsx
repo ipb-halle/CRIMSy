@@ -1,5 +1,4 @@
 import React, { FormEvent } from "react";
-import { AuthResponse } from "../../adapters/api/models";
 
 interface Props {
   username: string;

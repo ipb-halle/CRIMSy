@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, FormEvent } from "react";
 import { AuthApiRepository } from "../api/AuthApiRepository";
 import { LoginUseCase } from "../../application/user/LoginUseCase";
 import { LogoutUseCase } from "../../application/user/LogoutUseCase";
+import { LogoutResponse } from "../api";
 import { CheckRoleUseCase } from "../../application/user/CheckRoleUseCase";
 import { FetchUsersUseCase } from "../../application/user/FetchUsersUseCase";
 import type { AuthResponse } from "../api";

@@ -24,13 +24,14 @@ export interface LogoutResponse {
      * @type {string}
      * @memberof LogoutResponse
      */
-    message?: string;
+    message: string;
 }
 
 /**
  * Check if a given object implements the LogoutResponse interface.
  */
 export function instanceOfLogoutResponse(value: object): value is LogoutResponse {
+    if (!('message' in value) || value['message'] === undefined) return false;
     return true;
 }
 
@@ -44,7 +45,7 @@ export function LogoutResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'message': json['message'] == null ? undefined : json['message'],
+        'message': json['message'],
     };
 }
 

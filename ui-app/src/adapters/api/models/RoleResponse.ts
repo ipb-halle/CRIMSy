@@ -24,25 +24,28 @@ export interface RoleResponse {
      * @type {string}
      * @memberof RoleResponse
      */
-    username?: string;
+    username: string;
     /**
      * 
      * @type {Array<string>}
      * @memberof RoleResponse
      */
-    groups?: Array<string>;
+    groups: Array<string>;
     /**
      * Indicates whether the user belongs to the Admin Group
      * @type {boolean}
      * @memberof RoleResponse
      */
-    admin?: boolean;
+    admin: boolean;
 }
 
 /**
  * Check if a given object implements the RoleResponse interface.
  */
 export function instanceOfRoleResponse(value: object): value is RoleResponse {
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('groups' in value) || value['groups'] === undefined) return false;
+    if (!('admin' in value) || value['admin'] === undefined) return false;
     return true;
 }
 
@@ -56,9 +59,9 @@ export function RoleResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'username': json['username'] == null ? undefined : json['username'],
-        'groups': json['groups'] == null ? undefined : json['groups'],
-        'admin': json['admin'] == null ? undefined : json['admin'],
+        'username': json['username'],
+        'groups': json['groups'],
+        'admin': json['admin'],
     };
 }
 
