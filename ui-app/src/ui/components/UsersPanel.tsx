@@ -43,7 +43,6 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
           <div>ID: {u.id}</div>
           <div>Name: {u.name}</div>
           <div>Type: {u.membertype}</div>
-        {/*  {u.info && <div style={{ color: "red" }}>{u.info}</div>}*/}
         </div>
       ))}
 

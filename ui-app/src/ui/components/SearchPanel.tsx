@@ -1,115 +1,73 @@
+// SearchPanel.tsx
 import React, { useState } from "react";
 import { SearchDropdown } from "./SearchDropdown";
-import { useSearch } from "../../adapters/hooks/useSearch";
-import { SearchRequest, SearchType, MaterialType, SearchTypeFromJSON, MaterialTypeFromJSON } from "../../adapters/api";
-import "../../assets/css/searchTable.css"
-
-interface Props {
-    initialQuery?: string;
-}
+import { SearchType, MaterialType } from "../../adapters/api";
+import "../../assets/css/searchTable.css";
 
 const SearchPanel: React.FC = () => {
-    const { results, loading, handleSearch } = useSearch();
+  const [searchTypes, setSearchTypes] = useState<SearchType[]>([]);
+  const [materialTypes, setMaterialTypes] = useState<MaterialType[]>([]);
+  const [submitted, setSubmitted] = useState(false);
 
-    const [query, setQuery] = useState("");
-    const [searchTypes, setSearchTypes] = useState<SearchType[]>([]);
-    const [materialTypes, setMaterialTypes] = useState<MaterialType[]>([]);
+  const handleSearchClick = () => {
+    setSubmitted(true);
+  };
 
-    const onSubmit = () => {
-        if (!query || searchTypes?.length === 0) {
-            alert("Please enter a queary and selectat least one search type.")
-            return;
-        }
+  return (
+    <div className="search-page">
+      <h2>Unified Search</h2>
 
-        const req: SearchRequest = {
-            query,
-            searchTypes: searchTypes.map(SearchTypeFromJSON),
-            materialTypes: searchTypes.includes(SearchType.Materials)
-                ? materialTypes.map(MaterialTypeFromJSON)
-                : undefined,
-            page: 1,
-            pageSize: 10,
-        };
+      <div
+        className="search-form"
+        style={{ display: "flex", gap: "10px", alignItems: "center" }}
+      >
+        <SearchDropdown
+          onSearchTypesChange={setSearchTypes}
+          onMaterialTypesChange={setMaterialTypes}
+        />
 
-        handleSearch(req);
-    };
+        <button
+          onClick={handleSearchClick}
+          style={{
+            padding: "6px 16px",
+            backgroundColor: "#029ACF",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Search
+        </button>
+      </div>
 
-    return (
-        <div className="search-page">
-            <h2>Unified Search</h2>
+      {submitted && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "15px",
+            border: "1px solid #029ACF",
+            borderRadius: "5px",
+            background: "#f5fbff",
+          }}
+        >
+          <strong>You selected:</strong>
 
-            {/* Search form */}
-            <div className="search-form">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                />
-                <SearchDropdown
-                    onSearchTypesChange={setSearchTypes}
-                    onMaterialTypesChange={setMaterialTypes}
-                />
-
-                <button
-                    onClick={onSubmit}>
-                    {loading ? "Searching..." : "Search"}
-                </button>
+          <div style={{ marginTop: "10px" }}>
+            <div>
+              <strong>Search Types:</strong>{" "}
+              {searchTypes.length > 0 ? searchTypes.join(", ") : "None"}
             </div>
 
-            {/* Results table */}
-            <table className="search-table">
-                <thead className="search-table__head">
-                    <tr className="search-table__row search-table__row--header">
-                        <th className="search-table__cell search-table__cell--header">Domain</th>
-                        <th className="search-table__cell search-table__cell--header">SubType</th>
-                        <th className="search-table__cell search-table__cell--header">ID</th>
-                        <th className="search-table__cell search-table__cell--header">Label</th>
-                    </tr>
-                </thead>
-
-                <tbody className="search-table__body">
-                    {results.length === 0 && !loading && (
-                        <tr>
-                            <td
-                                colSpan={4}
-                                className="search-table__cell search-table__cell--empty"
-                            >
-                                No results
-                            </td>
-                        </tr>
-                    )}
-
-                    {results.map((r) => (
-                        <tr key={r.id} className="search-table__row">
-                            <td className="search-table__cell">
-                                <span className={`domain-pill domain-pill--${r.domain?.toString().toLowerCase()}`}>
-                                    {r.domain}
-                                </span>
-                            </td>
-
-                            <td className="search-table__cell">
-                                {r.subtype ? (
-                                    <span className="subtyoe-badge">{r.subtype}</span>
-                                ) : (
-                                    <span className="subtyoe-badge subtyoe-badge--empty">-</span>
-                                )}
-                            </td>
-
-                            <td className="search-table__cell search.table__cell--mono">
-                                {r.id}
-                            </td>
-
-                            <td className="search-table__cell search.table__cell--label">
-                                {r.label}
-                            </td>
-
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div>
+              <strong>Material Types:</strong>{" "}
+              {materialTypes.length > 0 ? materialTypes.join(", ") : "None"}
+            </div>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default SearchPanel;

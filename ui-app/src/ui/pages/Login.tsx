@@ -3,7 +3,6 @@ import LoginForm from "../components/LoginForm";
 import RolePanel from "../components/RolePanel";
 import UsersPanel from "../components/UsersPanel";
 import SearchPanel from "../components/SearchPanel";
-import type { AuthResponse } from "../../adapters/api";
 
 
 const Login = () => {
@@ -58,42 +57,40 @@ const Login = () => {
           </div>
         )}
 
-        {isLoggedIn && (
-          <div style={{ marginTop: "20px", textAlign: "center" }}>
-            <SearchPanel />
-          </div>
-        )}
         {isLoggedIn ? (
           <div style={{ textAlign: "center", marginTop: "1rem" }}>
+            <div style={{ marginBottom: "1rem" }}>
+              <button
+                onClick={handleCheckRole}
+                style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}
+              >
+                Check My Role
+              </button>
 
-            <button
-              onClick={handleCheckRole}
-              style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}
-            >
-              Check My Role
-            </button>
+              <button
+                onClick={() => handleFetchUsers(1)}
+                style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}
+              >
+                View Users
+              </button>
 
-            <button
-              onClick={() => handleFetchUsers(1)}
-              style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}
-            >
-              View Users
-            </button>
-
-
-            <button
-              onClick={handleLogout}
-              style={{
-                padding: "0.5rem 1.5rem",
-                background: "red",
-                color: "white",
-                border: "none",
-                borderRadius: "3px",
-              }}
-            >Logout</button>
+              <button
+                onClick={handleLogout}
+                style={{
+                  padding: "0.5rem 1.5rem",
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "3px",
+                }}
+              >
+                Logout
+              </button>
+            </div>
 
             <RolePanel role={roleInfo} />
             <UsersPanel data={usersList} onPageChange={handleFetchUsers} />
+            <SearchPanel />
           </div>
         ) : (
           <LoginForm
