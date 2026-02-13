@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { AuthApiRepository } from "../api/AuthApiRepository";
-import { LoginUseCase } from "../../application/user/LoginUseCase";
-import { LogoutResponse } from "../api";
 import { FetchUsersUseCase } from "../../application/user/FetchUsersUseCase";
 import type { AuthResponse } from "../api";
 import * as api from "../../services/authService";
@@ -10,7 +8,6 @@ const SESSION_FALLBACK_TIMEOUT_MS = 600 * 1000;
 
 export const useAuth = () => {
   const repo = new AuthApiRepository();
-  const loginUC = new LoginUseCase(repo);
   const usersUC = new FetchUsersUseCase(repo);
 
   const [username, setUsername] = useState("");
@@ -85,7 +82,7 @@ export const useAuth = () => {
 
     setResult(null);
     try {
-      const data = await loginUC.execute(username, password);
+      const data = await api.loginAPI(username, password);
       if (!data.token || !data.username) {
         setResult({
           message: data.message ?? "Login failed"
