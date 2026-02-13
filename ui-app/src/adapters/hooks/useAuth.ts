@@ -3,17 +3,16 @@ import { AuthApiRepository } from "../api/AuthApiRepository";
 import { LoginUseCase } from "../../application/user/LoginUseCase";
 import { LogoutUseCase } from "../../application/user/LogoutUseCase";
 import { LogoutResponse } from "../api";
-import { CheckRoleUseCase } from "../../application/user/CheckRoleUseCase";
 import { FetchUsersUseCase } from "../../application/user/FetchUsersUseCase";
 import type { AuthResponse } from "../api";
+import * as api from "../../services/authService";
 
-const SESSION_FALLBACK_TIMEOUT_MS = 60 * 1000;
+const SESSION_FALLBACK_TIMEOUT_MS = 600 * 1000;
 
 export const useAuth = () => {
   const repo = new AuthApiRepository();
   const loginUC = new LoginUseCase(repo);
   const logoutUC = new LogoutUseCase(repo);
-  const roleUC = new CheckRoleUseCase(repo);
   const usersUC = new FetchUsersUseCase(repo);
 
   const [username, setUsername] = useState("");
@@ -61,7 +60,7 @@ export const useAuth = () => {
       if (!token || !storedUsername) return;
 
       try {
-        await repo.fetchRole(token); // simple validation
+        await api.fetchRoleAPI(token);
         setIsLoggedIn(true);
         setResult({ message: `Welcome back, ${storedUsername}!` });
         startSessionTimer();
@@ -124,7 +123,7 @@ export const useAuth = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      const role = await roleUC.execute(token);
+      const role = await api.fetchRoleAPI(token);
       setRoleInfo(role);
       setUsersList(null);
       setResult({ message: "Your Role" });

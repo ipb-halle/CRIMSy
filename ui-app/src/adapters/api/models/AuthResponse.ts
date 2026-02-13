@@ -24,7 +24,7 @@ export interface AuthResponse {
      * @type {string}
      * @memberof AuthResponse
      */
-    message?: string;
+    message: string;
     /**
      * 
      * @type {string}
@@ -49,6 +49,7 @@ export interface AuthResponse {
  * Check if a given object implements the AuthResponse interface.
  */
 export function instanceOfAuthResponse(value: object): value is AuthResponse {
+    if (!('message' in value) || value['message'] === undefined) return false;
     return true;
 }
 
@@ -62,7 +63,7 @@ export function AuthResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'message': json['message'] == null ? undefined : json['message'],
+        'message': json['message'],
         'username': json['username'] == null ? undefined : json['username'],
         'token': json['token'] == null ? undefined : json['token'],
         'expiresInSeconds': json['expiresInSeconds'] == null ? undefined : json['expiresInSeconds'],

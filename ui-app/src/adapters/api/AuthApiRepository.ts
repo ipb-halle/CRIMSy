@@ -10,10 +10,6 @@ export class AuthApiRepository implements UserRepository {
     return api.logoutAPI(token);
   }
 
-  fetchRole(token: string) {
-    return api.fetchRoleAPI(token);
-  }
-
   fetchUsers(token: string, page: number) {
     return api.fetchUsersAPI(token, page, 3);
   }

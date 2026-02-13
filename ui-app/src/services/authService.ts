@@ -1,10 +1,7 @@
 import { AuthResponse } from "../adapters/api";
-export interface LoginResult {
-  message: string;
-  username?: string;
-  token?: string;
-  expiresInSeconds?: number;
-}
+import { RoleApi } from "../adapters/api";
+import { Configuration } from "../adapters/api";
+
 
 const BASE = "https://compchem17.ipb-halle.de/ui/rest";
 
@@ -42,14 +39,15 @@ export const checkSessionAPI = async (token: string) => {
 };
 
 export const fetchRoleAPI = async (token: string) => {
-  const res = await fetch(`${BASE}/me`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
+  const config = new Configuration({
+    accessToken: async () => token
   });
-  return res.json();
-};
+
+  const roleApi = new RoleApi(config);
+
+  const roleResponse = await roleApi.getRoleInfo();
+  return roleResponse;
+}
 
 export const fetchUsersAPI = async (
   token: string,
