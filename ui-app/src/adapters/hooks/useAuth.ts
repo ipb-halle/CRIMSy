@@ -1,14 +1,10 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
-import { AuthApiRepository } from "../api/AuthApiRepository";
-import { FetchUsersUseCase } from "../../application/user/FetchUsersUseCase";
 import type { AuthResponse } from "../api";
 import * as api from "../../services/authService";
 
 const SESSION_FALLBACK_TIMEOUT_MS = 600 * 1000;
 
 export const useAuth = () => {
-  const repo = new AuthApiRepository();
-  const usersUC = new FetchUsersUseCase(repo);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -135,7 +131,7 @@ export const useAuth = () => {
     if (!token) return;
 
     try {
-      const users = await usersUC.execute(token, page);
+      const users = await api.fetchUsersAPI(token, page, 3);
       setUsersList(users);
       setRoleInfo(null);
       setResult({ message: "Users List" });
