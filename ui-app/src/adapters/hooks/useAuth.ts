@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { AuthApiRepository } from "../api/AuthApiRepository";
 import { LoginUseCase } from "../../application/user/LoginUseCase";
-import { LogoutUseCase } from "../../application/user/LogoutUseCase";
 import { LogoutResponse } from "../api";
 import { FetchUsersUseCase } from "../../application/user/FetchUsersUseCase";
 import type { AuthResponse } from "../api";
@@ -12,7 +11,6 @@ const SESSION_FALLBACK_TIMEOUT_MS = 600 * 1000;
 export const useAuth = () => {
   const repo = new AuthApiRepository();
   const loginUC = new LoginUseCase(repo);
-  const logoutUC = new LogoutUseCase(repo);
   const usersUC = new FetchUsersUseCase(repo);
 
   const [username, setUsername] = useState("");
@@ -112,7 +110,7 @@ export const useAuth = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      const data = await logoutUC.execute(token);
+      const data = await api.logoutAPI(token);
       expireSession(data.message);
     } catch {
       expireSession("Logout failed");
