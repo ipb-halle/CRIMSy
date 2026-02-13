@@ -5,6 +5,9 @@ info:
 
 security:
   - SessionKeyAuthentication: []
+servers:
+  - url: https://compchem17.ipb-halle.de/ui/rest
+    description: Production API server
 
 paths:
   
