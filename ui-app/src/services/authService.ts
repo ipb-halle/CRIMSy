@@ -1,10 +1,12 @@
 import { AuthResponse } from "../adapters/api";
 import { RoleApi } from "../adapters/api";
 import { Configuration } from "../adapters/api";
+import { LoginRequest } from "../adapters/api";
+
 
 
 const BASE = "https://compchem17.ipb-halle.de/ui/rest";
-
+/*
 export const loginAPI = async (login: string, password: string): Promise<AuthResponse> => {
   const res = await fetch(`${BASE}/auth/login`, {
     method: "POST",
@@ -12,6 +14,18 @@ export const loginAPI = async (login: string, password: string): Promise<AuthRes
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ login, password }),
+  });
+  return res.json();
+};*/
+
+
+export const loginAPI = async (loginRequest: LoginRequest): Promise<AuthResponse> => {
+  const res = await fetch(`${BASE}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(loginRequest),
   });
   return res.json();
 };

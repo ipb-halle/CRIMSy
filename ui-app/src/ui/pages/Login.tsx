@@ -7,10 +7,8 @@ import SearchPanel from "../components/SearchPanel";
 
 const Login = () => {
   const {
-    username,
-    password,
-    setUsername,
-    setPassword,
+    loginRequest,
+    setLoginRequest,
     errors,
     result,
     isLoggedIn,
@@ -94,10 +92,8 @@ const Login = () => {
           </div>
         ) : (
           <LoginForm
-            username={username}
-            password={password}
-            setUsername={setUsername}
-            setPassword={setPassword}
+            loginrequest={loginRequest}
+            setLoginRequest={setLoginRequest}
             errors={errors}
             result={result?.message ?? ""}
             onSubmit={handleLogin}

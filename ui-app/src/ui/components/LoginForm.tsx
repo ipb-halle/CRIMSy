@@ -1,20 +1,17 @@
 import React, { FormEvent } from "react";
+import { LoginRequest } from "../../adapters/api";
 
 interface Props {
-  username: string;
-  password: string;
-  setUsername: (v: string) => void;
-  setPassword: (v: string) => void;
+  loginrequest: LoginRequest;
+  setLoginRequest: (v: LoginRequest) => void;
   errors: { username?: string; password?: string };
   result: string;
   onSubmit: (e?: FormEvent) => void;
 }
 
 const LoginForm: React.FC<Props> = ({
-  username,
-  password,
-  setUsername,
-  setPassword,
+  loginrequest,
+  setLoginRequest,
   errors,
   onSubmit,
 }) => {
@@ -24,8 +21,9 @@ const LoginForm: React.FC<Props> = ({
         <input
           style={{ width: "100%", padding: "0.5rem" }}
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={loginrequest.login}
+          onChange={(e) => setLoginRequest({ ...loginrequest, login: e.target.value })
+          }
         />
         {errors.username && <div style={{ color: "red" }}>{errors.username}</div>}
       </div>
@@ -35,8 +33,10 @@ const LoginForm: React.FC<Props> = ({
           type="password"
           style={{ width: "100%", padding: "0.5rem" }}
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={loginrequest.password}
+          onChange={(e) =>
+            setLoginRequest({ ...loginrequest, password: e.target.value })
+          }
         />
         {errors.password && <div style={{ color: "red" }}>{errors.password}</div>}
       </div>

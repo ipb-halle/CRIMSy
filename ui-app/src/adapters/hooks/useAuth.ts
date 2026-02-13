@@ -1,13 +1,12 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
-import type { AuthResponse } from "../api";
+import { LoginRequest, type AuthResponse } from "../api";
 import * as api from "../../services/authService";
 
 const SESSION_FALLBACK_TIMEOUT_MS = 600 * 1000;
 
 export const useAuth = () => {
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginRequest, setLoginRequest] = useState<LoginRequest>({ login: "", password: "", });
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
   const [result, setResult] = useState<AuthResponse | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,8 +30,11 @@ export const useAuth = () => {
     setResult({ message });
     setRoleInfo(null);
     setUsersList(null);
-    setUsername("");
-    setPassword("");
+    setLoginRequest({
+      login: "",
+      password: "",
+    });
+
   };
 
   const startSessionTimer = (expiresInSeconds?: number) => {
@@ -66,8 +68,10 @@ export const useAuth = () => {
 
   const validate = () => {
     const newErrors: typeof errors = {};
-    if (!username.trim()) newErrors.username = "Username required";
-    if (!password.trim()) newErrors.password = "Password required";
+    if (!loginRequest.login.trim())
+      newErrors.username = "Username required";
+    if (!loginRequest.password.trim())
+      newErrors.password = "Password required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -78,7 +82,7 @@ export const useAuth = () => {
 
     setResult(null);
     try {
-      const data = await api.loginAPI(username, password);
+      const data = await api.loginAPI(loginRequest);
       if (!data.token || !data.username) {
         setResult({
           message: data.message ?? "Login failed"
@@ -141,10 +145,8 @@ export const useAuth = () => {
   };
 
   return {
-    username,
-    password,
-    setUsername,
-    setPassword,
+    loginRequest,
+    setLoginRequest,
     errors,
     result,
     isLoggedIn,
