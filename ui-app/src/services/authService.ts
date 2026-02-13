@@ -1,4 +1,4 @@
-// src/services/authService.ts
+import { AuthResponse } from "../adapters/api";
 export interface LoginResult {
   message: string;
   username?: string;
@@ -8,7 +8,7 @@ export interface LoginResult {
 
 const BASE = "https://compchem17.ipb-halle.de/ui/rest";
 
-export const loginAPI = async (login: string, password: string): Promise<LoginResult> => {
+export const loginAPI = async (login: string, password: string): Promise<AuthResponse> => {
   const res = await fetch(`${BASE}/auth/login`, {
     method: "POST",
     headers: {
