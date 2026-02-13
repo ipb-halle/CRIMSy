@@ -1,6 +1,6 @@
 # UsersApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://compchem17.ipb-halle.de/ui/rest*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|

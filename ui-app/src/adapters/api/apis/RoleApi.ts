@@ -15,8 +15,8 @@
 
 import * as runtime from '../runtime';
 import type {
-    ErrorResponse,
-    RoleResponse,
+  ErrorResponse,
+  RoleResponse,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
@@ -48,7 +48,7 @@ export class RoleApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/ui/rest/me`;
+        let urlPath = `/me`;
 
         const response = await this.request({
             path: urlPath,
