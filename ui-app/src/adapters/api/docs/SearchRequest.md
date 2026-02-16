@@ -7,8 +7,8 @@
 Name | Type
 ------------ | -------------
 `searchTypes` | [Array&lt;SearchType&gt;](SearchType.md)
-`query` | string
 `materialTypes` | [Array&lt;MaterialType&gt;](MaterialType.md)
+`query` | string
 `page` | number
 `pageSize` | number
 
@@ -20,8 +20,8 @@ import type { SearchRequest } from ''
 // TODO: Update the object below with actual values
 const example = {
   "searchTypes": null,
-  "query": benzin,
   "materialTypes": null,
+  "query": benzin,
   "page": null,
   "pageSize": null,
 } satisfies SearchRequest

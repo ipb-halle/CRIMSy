@@ -21,7 +21,8 @@ export const MaterialType = {
     Structure: 'Structure',
     Sequence: 'Sequence',
     Biomaterial: 'Biomaterial',
-    Composition: 'Composition'
+    Composition: 'Composition',
+    None: 'NONE'
 } as const;
 export type MaterialType = typeof MaterialType[keyof typeof MaterialType];
 

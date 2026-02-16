@@ -311,9 +311,6 @@ components:
           
     SearchRequest:
       type: object
-      required:
-        - searchTypes
-        - query
       properties:
         searchTypes:
           type: array
@@ -322,10 +319,6 @@ components:
             Examples: Materials, Items, Experiments, Documents
           items:
             $ref: '#/components/schemas/SearchType'
-        query:
-          type: string
-          description: Free-text search query
-          example: benzin
         materialTypes:
           type: array
           description: |
@@ -333,6 +326,10 @@ components:
             Examples: Structure, Sequence, Biomaterial, Composition
           items:
             $ref: '#/components/schemas/MaterialType'
+        query:
+          type: string
+          description: Free-text search query
+          example: benzin
         page:
           type: integer
           default: 1
@@ -374,6 +371,7 @@ components:
         - Items
         - Experiments
         - Documents
+        - NONE
         
     MaterialType:
       type: string
@@ -382,3 +380,4 @@ components:
         - Sequence
         - Biomaterial
         - Composition
+        - NONE

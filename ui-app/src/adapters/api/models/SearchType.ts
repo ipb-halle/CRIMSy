@@ -21,7 +21,8 @@ export const SearchType = {
     Materials: 'Materials',
     Items: 'Items',
     Experiments: 'Experiments',
-    Documents: 'Documents'
+    Documents: 'Documents',
+    None: 'NONE'
 } as const;
 export type SearchType = typeof SearchType[keyof typeof SearchType];
 

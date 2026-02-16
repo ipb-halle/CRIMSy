@@ -41,13 +41,7 @@ export interface SearchRequest {
      * @type {Array<SearchType>}
      * @memberof SearchRequest
      */
-    searchTypes: Array<SearchType>;
-    /**
-     * Free-text search query
-     * @type {string}
-     * @memberof SearchRequest
-     */
-    query: string;
+    searchTypes?: Array<SearchType>;
     /**
      * Only used when Materials is selected
      * Examples: Structure, Sequence, Biomaterial, Composition
@@ -56,6 +50,12 @@ export interface SearchRequest {
      * @memberof SearchRequest
      */
     materialTypes?: Array<MaterialType>;
+    /**
+     * Free-text search query
+     * @type {string}
+     * @memberof SearchRequest
+     */
+    query?: string;
     /**
      * 
      * @type {number}
@@ -74,8 +74,6 @@ export interface SearchRequest {
  * Check if a given object implements the SearchRequest interface.
  */
 export function instanceOfSearchRequest(value: object): value is SearchRequest {
-    if (!('searchTypes' in value) || value['searchTypes'] === undefined) return false;
-    if (!('query' in value) || value['query'] === undefined) return false;
     return true;
 }
 
@@ -89,9 +87,9 @@ export function SearchRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'searchTypes': ((json['searchTypes'] as Array<any>).map(SearchTypeFromJSON)),
-        'query': json['query'],
+        'searchTypes': json['searchTypes'] == null ? undefined : ((json['searchTypes'] as Array<any>).map(SearchTypeFromJSON)),
         'materialTypes': json['materialTypes'] == null ? undefined : ((json['materialTypes'] as Array<any>).map(MaterialTypeFromJSON)),
+        'query': json['query'] == null ? undefined : json['query'],
         'page': json['page'] == null ? undefined : json['page'],
         'pageSize': json['pageSize'] == null ? undefined : json['pageSize'],
     };
@@ -108,9 +106,9 @@ export function SearchRequestToJSONTyped(value?: SearchRequest | null, ignoreDis
 
     return {
         
-        'searchTypes': ((value['searchTypes'] as Array<any>).map(SearchTypeToJSON)),
-        'query': value['query'],
+        'searchTypes': value['searchTypes'] == null ? undefined : ((value['searchTypes'] as Array<any>).map(SearchTypeToJSON)),
         'materialTypes': value['materialTypes'] == null ? undefined : ((value['materialTypes'] as Array<any>).map(MaterialTypeToJSON)),
+        'query': value['query'],
         'page': value['page'],
         'pageSize': value['pageSize'],
     };
