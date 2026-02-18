@@ -12,6 +12,7 @@ import de.ipb_halle.model.ErrorResponse;
 import de.ipb_halle.model.MaterialType;
 import de.ipb_halle.model.RoleResponse;
 import de.ipb_halle.model.SearchRequest;
+import de.ipb_halle.model.SearchResponse;
 import de.ipb_halle.model.SearchResult;
 import de.ipb_halle.model.SearchType;
 
@@ -26,6 +27,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,26 +47,74 @@ public class SearchApiServiceImpl implements SearchApiService {
 
     @Override
     public Response search(SearchRequest searchRequest, SecurityContext securityContext) {
-        System.err.println("\n\nI am in search method\n\n");
-
         SearchResult searchResult = new SearchResult();
+        SearchResponse searchResponse = new SearchResponse();
+
+        int count = 0;
+        List<Object[]> items = new ArrayList<>();
 
         if (searchRequest.getSearchTypes().contains(SearchType.ITEMS)) {
-            searchResult.setDomain(SearchType.ITEMS);
+            items = em.createQuery(
+                    "SELECT it.id, it.label FROM ItemEntity it",
+                    Object[].class)
+                    .getResultList();
+
+            for (Object[] row : items) {
+                int id = (int) row[0];
+                String label = (String) row[1];
+                System.out.println("Item ID: " + id + " | Label: " + label);
+
+                searchResult.setDomain(SearchType.ITEMS);
+                searchResult.setSubtype(MaterialType.NONE);
+                searchResult.setId(id);
+                searchResult.setLabel(label);
+                searchResponse.addResultsItem(searchResult);
+                count++;
+            }
+        }
+        if (searchRequest.getSearchTypes().contains(SearchType.EXPERIMENTS)) {
+
+            System.out.println("EXPERIMENTS ID: " + 1 + " | Label: ex_label");
+
+            searchResult.setDomain(SearchType.EXPERIMENTS);
             searchResult.setSubtype(MaterialType.NONE);
-            searchResult.setId("1");
-            searchResult.setLabel("test connection");
-        } else {
+            searchResult.setId(1);
+            searchResult.setLabel("ex_label");
+            searchResponse.addResultsItem(searchResult);
+            count++;
+        }
+        if (searchRequest.getSearchTypes().contains(SearchType.DOCUMENTS)) {
+
+            System.out.println("DOCUMENTS ID: " + 1 + " | Label: doc_label");
+
+            searchResult.setDomain(SearchType.DOCUMENTS);
+            searchResult.setSubtype(MaterialType.NONE);
+            searchResult.setId(1);
+            searchResult.setLabel("doc_label");
+            searchResponse.addResultsItem(searchResult);
+            count++;
+        }
+        if (searchRequest.getSearchTypes().contains(SearchType.MATERIALS)) {
+
+            System.out.println("MATERIALS ID: " + 1 + " | Label: mat_label");
+
+            searchResult.setDomain(SearchType.MATERIALS);
+            searchResult.setSubtype(MaterialType.NONE);
+            searchResult.setId(1);
+            searchResult.setLabel("mat_label");
+            searchResponse.addResultsItem(searchResult);
+            count++;
+        } 
+        else {
             searchResult.setDomain(SearchType.NONE);
             searchResult.setSubtype(MaterialType.NONE);
-            searchResult.setId("0");
+            searchResult.setId(0);
             searchResult.setLabel("empty result");
+            searchResponse.addResultsItem(searchResult);
         }
 
-        System.err.println("searchTypes: " + searchRequest.getSearchTypes());
-        System.err.println("searchResult prepared: " + searchResult);
-
-        return Response.ok(searchResult).build();
+        searchResponse.setTotal(count);
+        return Response.ok(searchResponse).build();
     }
 
 }
