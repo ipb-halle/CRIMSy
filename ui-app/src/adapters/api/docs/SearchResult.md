@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `domain` | [SearchType](SearchType.md)
 `subtype` | [MaterialType](MaterialType.md)
-`id` | string
+`id` | number
 `label` | string
 
 ## Example

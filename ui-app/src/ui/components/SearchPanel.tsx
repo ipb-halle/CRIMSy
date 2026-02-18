@@ -45,8 +45,8 @@ const SearchPanel: React.FC = () => {
 
     try {
       const response = await api.searchAPI(searchRequest, token);
-      //setSearchResult(response);
       setSubmitted(true);
+      setSearchResult(response);
     } catch (error) {
       console.error("Search failed: ", error);
       setSubmitted(false);
@@ -97,23 +97,25 @@ const SearchPanel: React.FC = () => {
           <div style={{ marginLeft: "1rem", marginTop: "0.5rem" }}>
             <div>
               <strong>Domain:</strong>
-              {searchTypes.length > 0 ? searchTypes.join(", ") : "None"}
+              {searchTypes.length > 0 ?
+                searchTypes.join(", ") : " None"}
+
             </div>
 
             <div>
               <strong>Material Types:</strong>
-              {materialTypes.length > 0 ? materialTypes.join(", ") : "None"}
+              {materialTypes.length > 0 ? materialTypes.join(", ") : searchResponse?.total}
             </div>
 
             <div>
               <strong>ID:</strong>
-              {"None"}
+
 
             </div>
 
             <div>
               <strong>Label:</strong>
-              {"None"}
+
             </div>
 
           </div>

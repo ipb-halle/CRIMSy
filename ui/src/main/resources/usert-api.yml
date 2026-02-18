@@ -360,7 +360,7 @@ components:
           description: Material subtype when applicable
           example: Structure
         id:
-          type: string
+          type: integer
         label:
           type: string
    

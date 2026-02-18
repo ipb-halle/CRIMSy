@@ -15,9 +15,9 @@
 
 import * as runtime from '../runtime';
 import type {
-    ErrorResponse,
-    SearchRequest,
-    SearchResponse,
+  ErrorResponse,
+  SearchRequest,
+  SearchResponse,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
@@ -82,7 +82,6 @@ export class SearchApi extends runtime.BaseAPI {
      * Unified search endpoint
      */
     async search(requestParameters: SearchOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchResponse> {
-
         const response = await this.searchRaw(requestParameters, initOverrides);
         return await response.value();
     }

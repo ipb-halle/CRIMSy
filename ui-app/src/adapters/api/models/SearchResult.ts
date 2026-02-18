@@ -48,10 +48,10 @@ export interface SearchResult {
     subtype?: MaterialType;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SearchResult
      */
-    id?: string;
+    id?: number;
     /**
      * 
      * @type {string}
