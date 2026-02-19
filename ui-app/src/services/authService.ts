@@ -1,26 +1,15 @@
-import { RoleApi } from "../adapters/api";
+import { LogoutApi, RoleApi } from "../adapters/api";
 import { LoginApi } from "../adapters/api/apis/LoginApi";
 import { Configuration } from "../adapters/api";
 import { AuthResponse, LoginRequest } from "../adapters/api/models";
 
 const BASE = "https://compchem17.ipb-halle.de/ui/rest";
 
-/*
 export const loginAPI = async (loginRequest: LoginRequest): Promise<AuthResponse> => {
-  const res = await fetch(`${BASE}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(loginRequest),
-  });
-  return res.json();
-};*/
 
-
-export const loginAPI = async (loginRequest: LoginRequest): Promise<AuthResponse> => {
   const config = new Configuration({
   });
+
   const loginApiInstance = new LoginApi(config);
 
   const response = await loginApiInstance.login({ loginRequest });

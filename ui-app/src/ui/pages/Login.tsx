@@ -1,23 +1,19 @@
+import React from "react";
 import { useAuth } from "../../adapters/hooks/useAuth";
 import LoginForm from "../components/LoginForm";
-import RolePanel from "../components/RolePanel";
-import UsersPanel from "../components/UsersPanel";
-import SearchPanel from "../components/SearchPanel";
 
+interface Props {
+  onLogin: () => void;
+}
 
-const Login = () => {
+const Login: React.FC<Props> = ({ onLogin }) => {
   const {
     loginRequest,
     setLoginRequest,
     errors,
     result,
     isLoggedIn,
-    roleInfo,
-    usersList,
     handleLogin,
-    handleLogout,
-    handleCheckRole,
-    handleFetchUsers,
   } = useAuth();
 
   const isError =
@@ -54,52 +50,13 @@ const Login = () => {
             {result.message}
           </div>
         )}
-
-        {isLoggedIn ? (
-          <div style={{ textAlign: "center", marginTop: "1rem" }}>
-            <div style={{ marginBottom: "1rem" }}>
-              <button
-                onClick={handleCheckRole}
-                style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}
-              >
-                Check My Role
-              </button>
-
-              <button
-                onClick={() => handleFetchUsers(1)}
-                style={{ padding: "0.5rem 1.5rem", marginRight: "0.5rem" }}
-              >
-                View Users
-              </button>
-
-              <button
-                onClick={handleLogout}
-                style={{
-                  padding: "0.5rem 1.5rem",
-                  background: "red",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "3px",
-                }}
-              >
-                Logout
-              </button>
-            </div>
-
-            <RolePanel role={roleInfo} />
-            <UsersPanel data={usersList} onPageChange={handleFetchUsers} />
-            <SearchPanel />
-
-          </div>
-        ) : (
-          <LoginForm
-            loginrequest={loginRequest}
-            setLoginRequest={setLoginRequest}
-            errors={errors}
-            result={result?.message ?? ""}
-            onSubmit={handleLogin}
-          />
-        )}
+        <LoginForm
+          loginrequest={loginRequest}
+          setLoginRequest={setLoginRequest}
+          errors={errors}
+          result={result?.message ?? ""}
+          onSubmit={(e) => handleLogin(e, onLogin)}
+        />
       </fieldset>
     </div>
   );

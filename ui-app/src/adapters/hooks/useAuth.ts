@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { LoginRequest, type AuthResponse } from "../api";
 import * as api from "../../services/authService";
+import { fetchRoleAPI } from "../../services/authService";
 
 const SESSION_FALLBACK_TIMEOUT_MS = 600 * 1000;
 
@@ -14,6 +15,24 @@ export const useAuth = () => {
   const [usersList, setUsersList] = useState<any>(null);
 
   const logoutTimerRef = useRef<number | null>(null);
+
+  const checkSession = async (): Promise<boolean> => {
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
+
+    if (!token || !username) return false;
+
+    try {
+      await fetchRoleAPI(token); // verify token is valid
+      setIsLoggedIn(true);
+      setResult({ message: `Welcome back, ${username}!` });
+      startSessionTimer(); // restart session timer
+      return true;
+    } catch {
+      expireSession("Session expired. Please log in again.");
+      return false;
+    }
+  };
 
   const clearLogoutTimer = () => {
     if (logoutTimerRef.current !== null) {
@@ -45,27 +64,6 @@ export const useAuth = () => {
     }, timeoutMs);
   };
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const token = localStorage.getItem("token");
-      const storedUsername = localStorage.getItem("username");
-
-      if (!token || !storedUsername) return;
-
-      try {
-        await api.fetchRoleAPI(token);
-        setIsLoggedIn(true);
-        setResult({ message: `Welcome back, ${storedUsername}!` });
-        startSessionTimer();
-      } catch {
-        expireSession("Session expired. Please log in again.");
-      }
-    };
-
-    checkSession();
-    return () => clearLogoutTimer();
-  }, []);
-
   const validate = () => {
     const newErrors: typeof errors = {};
     if (!loginRequest.login.trim())
@@ -76,16 +74,18 @@ export const useAuth = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async (e?: FormEvent) => {
+  const handleLogin = async (e?: FormEvent, onSuccess?: () => void) => {
     if (e) e.preventDefault();
     if (!validate()) return;
 
     setResult(null);
+
     try {
       const data = await api.loginAPI(loginRequest);
+
       if (!data.token || !data.username) {
         setResult({
-          message: data.message ?? "Login failed"
+          message: data.message ?? "Login failed, No response from server!"
         });
         return;
       }
@@ -93,11 +93,12 @@ export const useAuth = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.username);
       setIsLoggedIn(true);
-
       setResult({ message: data.message });
-      setRoleInfo(null);
-      setUsersList(null);
+
+      /*      setRoleInfo(null);
+            setUsersList(null);*/
       startSessionTimer(data.expiresInSeconds);
+      if (onSuccess) onSuccess();
     } catch {
       setResult({ message: "Request failed. Please try again later." });
     }
@@ -156,5 +157,6 @@ export const useAuth = () => {
     handleLogout,
     handleCheckRole,
     handleFetchUsers,
+    checkSession,
   };
 };
