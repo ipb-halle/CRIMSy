@@ -1,10 +1,12 @@
 // src/ui/pages/SearchPanel.tsx
 import React, { useState } from "react";
-import FullSidebarFilters, { Filters } from "../components/filters/FullSidebarFilters";
+import FullSidebarFilters from "../components/filters/FullSidebarFilters";
+import { Filters } from "../components/filters/Filters";
 import { CardView } from "../components/views/CardView";
 import { TableView } from "../components/views/TableView";
 import { ViewModeToggle } from "../components/views/ViewModeToggle";
 import { dummyData } from "../../data/dummyData";
+import { filterRuls } from "../components/filters/filterRules";
 
 const containerStyle: React.CSSProperties = {
   display: "flex",
@@ -26,19 +28,13 @@ export const SearchPanel: React.FC = () => {
   const [viewMode, setViewMode] = useState<"card" | "table">("card");
 
   // Generic filter function
-  const applyFilters = () => {
-    return dummyData.materials.filter((item) => {
-      if (filters.materials && filters.materials.length > 0 && !filters.materials.includes(item.name)) return false;
-      if (filters.materialTypes && filters.materialTypes.length > 0 && !filters.materialTypes.includes(item.type)) return false;
-      if (filters.projects && filters.projects.length > 0 && !filters.projects.includes(item.project)) return false;
-      if (filters.users && filters.users.length > 0 && !filters.users.includes(item.user)) return false;
-      if (filters.containers && filters.containers.length > 0 && !filters.containers.includes(item.container)) return false;
-      if (filters.storageClasses && filters.storageClasses.length > 0 && !filters.storageClasses.includes(item.storageClass)) return false;
-      if (filters.hazards && filters.hazards.length > 0 && !filters.hazards.includes(item.hazard)) return false;
-      if (filters.deactivationStatus && filters.deactivationStatus.length > 0 && !filters.deactivationStatus.includes(item.deactivationStatus)) return false;
-      return true;
-    });
-  };
+  const applyFilters = () =>
+    dummyData.materials.filter((item) =>
+      filterRuls.every((rule) => {
+        const selected = filters[rule.key];
+        return !selected?.length || rule.matches(item, selected);
+      })
+    );
 
   const filteredMaterials = applyFilters();
 
