@@ -22,6 +22,7 @@ interface Props {
 const FullSidebarFilters: React.FC<Props> = ({ onFilterChange, style, isDropdown }) => {
   const [filters, setFilters] = useState<Filters>({});
   const [open, setOpen] = useState(!isDropdown);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleToggle = (key: keyof Filters, value: string) => {
@@ -46,23 +47,57 @@ const FullSidebarFilters: React.FC<Props> = ({ onFilterChange, style, isDropdown
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdown]);
 
-  const renderCheckboxGroup = (label: string, key: keyof Filters, options: string[]) => (
-    <div style={{ marginBottom: "0.75rem" }}>
-      <strong>{label}</strong>
-      {options.map((opt) => (
-        <div key={opt}>
-          <label>
-            <input
-              type="checkbox"
-              checked={filters[key]?.includes(opt) || false}
-              onChange={() => handleToggle(key, opt)}
-            />
-            {opt}
-          </label>
+
+  // Toggle handler for sctions
+
+  const toggleSection = (key: keyof Filters) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  }
+
+  const renderCheckboxGroup = (
+    label: string,
+    key: keyof Filters,
+    options: string[]
+  ) => {
+    const isOpen = openSections[key];
+
+    return (
+      <div style={{ marginBottom: "0.75rem" }}>
+        <div
+          onClick={() => toggleSection(key)}
+          style={{
+            cursor: "pointer",
+            display: "flex",
+            justifyContent: "space-between",
+            fontWeight: "bold",
+            padding: "0.25rem 0",
+          }}
+        >
+          <span>{label}</span>
+          <span>{isOpen ? "▴" : "▾"}</span>
         </div>
-      ))}
-    </div>
-  );
+        {isOpen && (
+          <div style={{ paddingLeft: "0.5rem", marginTop: "0,25rem" }}>
+            {options.map((opt) => (
+              <div key={opt}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={filters[key]?.includes(opt) || false}
+                    onChange={() => handleToggle(key, opt)}
+                  />
+                  {opt}
+                </label>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div
