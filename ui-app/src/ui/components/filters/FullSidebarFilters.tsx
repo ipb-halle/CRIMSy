@@ -1,17 +1,6 @@
-// src/ui/components/filters/FullSidebarFilters.tsx
 import React, { useState, useRef, useEffect, CSSProperties } from "react";
-import { dummyData } from "../../../data/dummyData";
-
-export interface Filters {
-  projects?: string[];
-  users?: string[];
-  materials?: string[];
-  materialTypes?: string[];
-  containers?: string[];
-  storageClasses?: string[];
-  hazards?: string[];
-  deactivationStatus?: string[];
-}
+import { Filters } from "./Filters";
+import { filterGroups } from "./filterConfig";
 
 interface Props {
   onFilterChange: (filters: Filters) => void;
@@ -19,7 +8,11 @@ interface Props {
   isDropdown?: boolean;
 }
 
-const FullSidebarFilters: React.FC<Props> = ({ onFilterChange, style, isDropdown }) => {
+const FullSidebarFilters: React.FC<Props> = ({
+  onFilterChange,
+  style,
+  isDropdown
+}) => {
   const [filters, setFilters] = useState<Filters>({});
   const [open, setOpen] = useState(!isDropdown);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
@@ -30,26 +23,15 @@ const FullSidebarFilters: React.FC<Props> = ({ onFilterChange, style, isDropdown
     const updated = current.includes(value)
       ? current.filter((v) => v !== value)
       : [...current, value];
+
     const newFilters = { ...filters, [key]: updated };
     setFilters(newFilters);
     onFilterChange(newFilters);
+
+    setOpenSections((prev) => ({ ...prev, [key]: true }));
   };
 
-  // Close dropdown on outside click
-  useEffect(() => {
-    if (!isDropdown) return;
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isDropdown]);
-
-
   // Toggle handler for sctions
-
   const toggleSection = (key: keyof Filters) => {
     setOpenSections((prev) => ({
       ...prev,
@@ -57,17 +39,30 @@ const FullSidebarFilters: React.FC<Props> = ({ onFilterChange, style, isDropdown
     }));
   }
 
-  const renderCheckboxGroup = (
-    label: string,
-    key: keyof Filters,
-    options: string[]
-  ) => {
-    const isOpen = openSections[key];
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!isDropdown) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isDropdown]);
+
+  const renderCheckboxGroup = (group: (typeof filterGroups)[0]) => {
+    const isOpen = openSections[group.key];
 
     return (
-      <div style={{ marginBottom: "0.75rem" }}>
+      <div key={group.key} style={{ marginBottom: "0.75rem" }}>
         <div
-          onClick={() => toggleSection(key)}
+          onClick={() => toggleSection(group.key)}
           style={{
             cursor: "pointer",
             display: "flex",
@@ -76,18 +71,19 @@ const FullSidebarFilters: React.FC<Props> = ({ onFilterChange, style, isDropdown
             padding: "0.25rem 0",
           }}
         >
-          <span>{label}</span>
+          <span>{group.label}</span>
           <span>{isOpen ? "▴" : "▾"}</span>
         </div>
+
         {isOpen && (
           <div style={{ paddingLeft: "0.5rem", marginTop: "0,25rem" }}>
-            {options.map((opt) => (
+            {group.options.map((opt) => (
               <div key={opt}>
                 <label>
                   <input
                     type="checkbox"
-                    checked={filters[key]?.includes(opt) || false}
-                    onChange={() => handleToggle(key, opt)}
+                    checked={filters[group.key]?.includes(opt) || false}
+                    onChange={() => handleToggle(group.key, opt)}
                   />
                   {opt}
                 </label>
@@ -131,18 +127,7 @@ const FullSidebarFilters: React.FC<Props> = ({ onFilterChange, style, isDropdown
         </button>
       )}
 
-      {open && (
-        <>
-          {renderCheckboxGroup("Projects", "projects", dummyData.projects.map(p => p.name))}
-          {renderCheckboxGroup("Users", "users", dummyData.users.map(u => u.name))}
-          {renderCheckboxGroup("Materials", "materials", dummyData.materials.map(m => m.name))}
-          {renderCheckboxGroup("Material Types", "materialTypes", dummyData.materialTypes)}
-          {renderCheckboxGroup("Containers", "containers", dummyData.containers)}
-          {renderCheckboxGroup("Storage Classes", "storageClasses", dummyData.storageClasses)}
-          {renderCheckboxGroup("Hazards", "hazards", dummyData.hazards)}
-          {renderCheckboxGroup("Deactivation Status", "deactivationStatus", dummyData.deactivationStatus)}
-        </>
-      )}
+      {open && filterGroups.map(renderCheckboxGroup)}
     </div>
   );
 };
