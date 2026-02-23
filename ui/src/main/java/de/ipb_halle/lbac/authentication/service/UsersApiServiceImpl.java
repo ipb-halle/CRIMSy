@@ -81,8 +81,7 @@ public class UsersApiServiceImpl implements UsersApiService {
             }
             username = tokenService.getUsernameFromToken(token);
         }
-
-        System.out.println("username: " + username + "\n");
+        
         // --- Load requesting user ---
         MemberEntity requestingUser;
         try {
