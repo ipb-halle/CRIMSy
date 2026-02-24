@@ -6,7 +6,7 @@ export const filterConfig: FilterGroup[] = [
     {
         key: "materialTypeIds",
         label: "Material Types",
-        options: dummyData.materialtypes.map(m => ({
+        options: dummyData.materialTypes.map(m => ({
             value: m.id,
             label: m.name,
         })),
@@ -49,6 +49,14 @@ export const filterConfig: FilterGroup[] = [
         options: dummyData.containers.map(c => ({
             value: c.id,
             label: c.label,
+        })),
+    },
+    {
+        key: "serverIds",
+        label: "Servers / Nodes",
+        options: dummyData.servers.map(s => ({
+            value: s.id,
+            label: s.name,
         })),
     },
     {

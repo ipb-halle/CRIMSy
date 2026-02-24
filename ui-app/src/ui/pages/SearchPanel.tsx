@@ -1,4 +1,3 @@
-// src/ui/pages/SearchPanel.tsx
 import React, { useState } from "react";
 import FullSidebarFilters from "../components/filters/FullSidebarFilters";
 import { Filters } from "../components/filters/Filters";

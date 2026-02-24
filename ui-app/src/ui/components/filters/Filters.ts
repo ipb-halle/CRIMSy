@@ -5,6 +5,7 @@ export interface Filters {
     storageClassIds?: number[];
     hazardIds?: number[];
     containerIds?: number[];
+    serverIds?: number[];
     deactivated?: boolean[];
 }
 

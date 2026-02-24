@@ -14,31 +14,37 @@ export interface MaterialIndex {
 }
 
 export interface Material {
-  materialid: number;
+  materialId: number;
   materialTypeId: number;
   projectId: number;
-  owner_id: number;
+  ownerId: number;
+  serverId: number;
   deactivated: boolean;
 }
 
 export interface Storage {
-  materialid: number;
-  storageclass: number;
+  materialId: number;
+  storageClass: number;
 }
 
 export interface MaterialHazard {
-  materialid: number;
-  typeid: number;
+  materialId: number;
+  typeId: number;
 }
 
 export interface Item {
   id: number;
-  materialid: number;
-  containerid: number;
+  materialId: number;
+  containerId: number;
+}
+
+export interface Server {
+  id: number;
+  name: string;
 }
 
 export const dummyData = {
-  materialtypes: [
+  materialTypes: [
     { id: 1, name: "STRUCTURE" },
     { id: 2, name: "MATERIAL_COMPOSITION" },
     { id: 3, name: "BIOMATERIAL" },
@@ -49,9 +55,11 @@ export const dummyData = {
   ],
 
   projects: [
-    { id: 1, name: "Project A (Chem Analysis)" },
-    { id: 2, name: "Project B (Biomaterials)" },
-    { id: 3, name: "Project C (Sequencing)" },
+    { id: 1, name: "Project A (CHEMICAL PROJECT)" },
+    { id: 2, name: "Project B (IT PROJECT)" },
+    { id: 3, name: "Project C (FINANCE PROJECT)" },
+    { id: 4, name: "Project D (BIOLOGICAL PROJECT)" },
+    { id: 5, name: "Project E (BIOCHEMICAL PROJECT)" },
   ],
 
   usersGroups: [
@@ -62,14 +70,16 @@ export const dummyData = {
 
   storageClasses: [
     { id: 1, name: "1" },
-    { id: 2, name: "2A" },
-    { id: 3, name: "2B" },
+    { id: 2, name: "2B" },
+    { id: 3, name: "2C" },
+    { id: 4, name: "3" },
   ],
 
   hazards: [
-    { id: 7, name: "GHS07" },
-    { id: 10, name: "HS" },
-    { id: 11, name: "PS" },
+    { id: 1, name: "GHS07" },
+    { id: 2, name: "HS" },
+    { id: 3, name: "PS" },
+    { id: 4, name: "GMO" },
   ],
 
   containers: [
@@ -79,28 +89,43 @@ export const dummyData = {
   ],
 
   materials: [
-    { materialid: 1, materialTypeId: 1, projectId: 1, owner_id: 1, deactivated: false },
-    { materialid: 2, materialTypeId: 5, projectId: 2, owner_id: 2, deactivated: false },
-    { materialid: 3, materialTypeId: 3, projectId: 2, owner_id: 1, deactivated: true },
+    { materialId: 1, materialTypeId: 1, projectId: 2, ownerId: 1, serverId: 3, deactivated: false },
+    { materialId: 2, materialTypeId: 5, projectId: 3, ownerId: 2, serverId: 2, deactivated: false },
+    { materialId: 3, materialTypeId: 3, projectId: 1, ownerId: 1, serverId: 3, deactivated: true },
+    { materialId: 4, materialTypeId: 7, projectId: 2, ownerId: 3, serverId: 1, deactivated: true },
+    { materialId: 5, materialTypeId: 4, projectId: 5, ownerId: 1, serverId: 3, deactivated: true },
+    { materialId: 6, materialTypeId: 2, projectId: 4, ownerId: 2, serverId: 1, deactivated: true },
   ] as Material[],
 
   storages: [
-    { materialid: 1, storageclass: 1 },
-    { materialid: 2, storageclass: 3 },
-    { materialid: 3, storageclass: 2 },
+    { materialId: 1, storageClass: 1 },
+    { materialId: 2, storageClass: 3 },
+    { materialId: 3, storageClass: 2 },
+    { materialId: 4, storageClass: 3 },
+    { materialId: 6, storageClass: 4 },
+    { materialId: 5, storageClass: 1 },
   ] as Storage[],
 
-  material_hazards: [
-    { materialid: 1, typeid: 1 },
-    { materialid: 2, typeid: 2 },
-    { materialid: 3, typeid: 6 },
+  materialHazards: [
+    { materialId: 1, typeId: 3 },
+    { materialId: 2, typeId: 2 },
+    { materialId: 3, typeId: 4 },
+    { materialId: 5, typeId: 2 },
+    { materialId: 3, typeId: 1 },
+    { materialId: 4, typeId: 3 },
   ] as MaterialHazard[],
 
   items: [
-    { id: 1, materialid: 1, containerid: 1 },
-    { id: 2, materialid: 2, containerid: 2 },
-    { id: 3, materialid: 3, containerid: 3 },
+    { id: 1, materialId: 1, containerId: 1 },
+    { id: 2, materialId: 2, containerId: 2 },
+    { id: 3, materialId: 3, containerId: 3 },
   ] as Item[],
+
+  servers: [
+    { id: 1, name: "Institute A Cloud" },
+    { id: 2, name: "Institute B Cloud" },
+    { id: 3, name: "Local Lab Server" },
+  ] as Server[],
 };
 
 export default dummyData;

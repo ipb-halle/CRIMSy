@@ -1,4 +1,3 @@
-import { Filters } from "./Filters";
 import { dummyData, Material } from "../../../data/dummyData";
 
 export const filterRuls = [
@@ -15,31 +14,37 @@ export const filterRuls = [
     {
         key: "ownerIds",
         matches: (material: Material, selected: number[]) =>
-            selected.includes(material.owner_id),
+            selected.includes(material.ownerId),
     },
     {
-        key: "storageClasses",
+        key: "storageClassIds",
         matches: (material: Material, selected: number[]) => {
-            const storage = dummyData.storages.find(s => s.materialid === material.materialid);
-            return storage ? selected.includes(storage.storageclass) : false;
+            const storage = dummyData.storages.find(
+                s => s.materialId === material.materialId
+            );
+            return storage ? selected.includes(storage.storageClass) : false;
         },
     },
     {
         key: "hazardIds",
         matches: (material: Material, selected: number[]) => {
-            const hazards = dummyData.material_hazards
-                .filter(h => h.materialid === material.materialid)
-                .map(h => h.typeid);
+            const hazards = dummyData.materialHazards
+                .filter(h => h.materialId === material.materialId)
+                .map(h => h.typeId);
             return hazards.some(h => selected.includes(h));
         },
     },
-
     {
         key: "containerIds",
         matches: (material: Material, selected: number[]) => {
-            const item = dummyData.items.find(i => i.materialid === material.materialid);
-            return item ? selected.includes(item.containerid) : false;
+            const item = dummyData.items.find(i => i.materialId === material.materialId);
+            return item ? selected.includes(item.containerId) : false;
         },
+    },
+    {
+        key: "serverIds",
+        matches: (material: Material, selected: number[]) =>
+            selected.includes(material.serverId),
     },
     {
         key: "deactivated",
