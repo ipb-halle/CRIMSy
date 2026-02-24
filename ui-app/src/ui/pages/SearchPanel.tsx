@@ -29,10 +29,10 @@ export const SearchPanel: React.FC = () => {
 
   // Generic filter function
   const applyFilters = () =>
-    dummyData.materials.filter((item) =>
-      filterRuls.every((rule) => {
-        const selected = filters[rule.key];
-        return !selected?.length || rule.matches(item, selected);
+    dummyData.materials.filter(material =>
+      filterRuls.every(rule => {
+        const selected = (filters as any)[rule.key];
+        return !selected?.length || rule.matches(material, selected);
       })
     );
 
