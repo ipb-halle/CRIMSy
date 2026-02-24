@@ -1,42 +1,49 @@
 import { Filters } from "./Filters";
-import { Material } from "../../../data/dummyData";
+import { dummyData, Material } from "../../../data/dummyData";
 
-export interface FilterRule {
-    key: keyof Filters;
-    matches: (item: Material, selected: string[]) => boolean;
-}
-
-export const filterRuls: FilterRule[] = [
+export const filterRuls = [
     {
-        key: "materials",
-        matches: (item, selected) => selected.includes(item.name),
+        key: "materialTypeIds",
+        matches: (material: Material, selected: number[]) =>
+            selected.includes(material.materialTypeId),
     },
     {
-        key: "materialTypes",
-        matches: (item, selected) => selected.includes(item.type),
+        key: "projectIds",
+        matches: (material: Material, selected: number[]) =>
+            selected.includes(material.projectId),
     },
     {
-        key: "projects",
-        matches: (item, selected) => selected.includes(item.project),
-    },
-    {
-        key: "users",
-        matches: (item, selected) => selected.includes(item.user),
-    },
-    {
-        key: "containers",
-        matches: (item, selected) => selected.includes(item.container),
+        key: "ownerIds",
+        matches: (material: Material, selected: number[]) =>
+            selected.includes(material.owner_id),
     },
     {
         key: "storageClasses",
-        matches: (item, selected) => selected.includes(item.storageClass),
+        matches: (material: Material, selected: number[]) => {
+            const storage = dummyData.storages.find(s => s.materialid === material.materialid);
+            return storage ? selected.includes(storage.storageclass) : false;
+        },
     },
     {
-        key: "hazards",
-        matches: (item, selected) => selected.includes(item.hazard),
+        key: "hazardIds",
+        matches: (material: Material, selected: number[]) => {
+            const hazards = dummyData.material_hazards
+                .filter(h => h.materialid === material.materialid)
+                .map(h => h.typeid);
+            return hazards.some(h => selected.includes(h));
+        },
+    },
+
+    {
+        key: "containerIds",
+        matches: (material: Material, selected: number[]) => {
+            const item = dummyData.items.find(i => i.materialid === material.materialid);
+            return item ? selected.includes(item.containerid) : false;
+        },
     },
     {
-        key: "deactivationStatus",
-        matches: (item, selected) => selected.includes(item.deactivationStatus),
+        key: "deactivated",
+        matches: (material: Material, selected: boolean[]) =>
+            selected.includes(material.deactivated),
     },
 ];

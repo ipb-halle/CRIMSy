@@ -1,16 +1,15 @@
 export interface Filters {
-    projects?: string[];
-    users?: string[];
-    materials?: string[];
-    materialTypes?: string[];
-    containers?: string[];
-    storageClasses?: string[];
-    hazards?: string[];
-    deactivationStatus?: string[];
+    materialTypeIds?: number[];
+    projectIds?: number[];
+    ownerIds?: number[];
+    storageClassIds?: number[];
+    hazardIds?: number[];
+    containerIds?: number[];
+    deactivated?: boolean[];
 }
 
 export interface FilterGroup {
     key: keyof Filters;
     label: string;
-    options: string[];
+    options: { value: number | boolean; label: string }[];
 }

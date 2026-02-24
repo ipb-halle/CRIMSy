@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, CSSProperties } from "react";
-import { Filters } from "./Filters";
-import { filterGroups } from "./filterConfig";
+import { FilterGroup, Filters } from "./Filters";
+import { filterConfig } from "./filterConfig";
 
 interface Props {
   onFilterChange: (filters: Filters) => void;
@@ -18,8 +18,9 @@ const FullSidebarFilters: React.FC<Props> = ({
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const handleToggle = (key: keyof Filters, value: string) => {
-    const current = filters[key] || [];
+  const handleToggle = (key: keyof Filters, value: number | boolean) => {
+    const current = (filters[key] as any[]) || [];
+
     const updated = current.includes(value)
       ? current.filter((v) => v !== value)
       : [...current, value];
@@ -27,8 +28,6 @@ const FullSidebarFilters: React.FC<Props> = ({
     const newFilters = { ...filters, [key]: updated };
     setFilters(newFilters);
     onFilterChange(newFilters);
-
-    setOpenSections((prev) => ({ ...prev, [key]: true }));
   };
 
   // Toggle handler for sctions
@@ -56,8 +55,9 @@ const FullSidebarFilters: React.FC<Props> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdown]);
 
-  const renderCheckboxGroup = (group: (typeof filterGroups)[0]) => {
+  const renderCheckboxGroup = (group: FilterGroup) => {
     const isOpen = openSections[group.key];
+    const selected = (filters[group.key] as (number | boolean)[]) || [];
 
     return (
       <div key={group.key} style={{ marginBottom: "0.75rem" }}>
@@ -78,14 +78,14 @@ const FullSidebarFilters: React.FC<Props> = ({
         {isOpen && (
           <div style={{ paddingLeft: "0.5rem", marginTop: "0,25rem" }}>
             {group.options.map((opt) => (
-              <div key={opt}>
+              <div key={String(opt.value)}>
                 <label>
                   <input
                     type="checkbox"
-                    checked={filters[group.key]?.includes(opt) || false}
-                    onChange={() => handleToggle(group.key, opt)}
+                    checked={selected.includes(opt.value)}
+                    onChange={() => handleToggle(group.key, opt.value)}
                   />
-                  {opt}
+                  {opt.label}
                 </label>
               </div>
             ))}
@@ -127,7 +127,7 @@ const FullSidebarFilters: React.FC<Props> = ({
         </button>
       )}
 
-      {open && filterGroups.map(renderCheckboxGroup)}
+      {open && filterConfig.map(renderCheckboxGroup)}
     </div>
   );
 };
