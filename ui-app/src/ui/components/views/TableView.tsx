@@ -8,12 +8,12 @@ interface TableViewProps {
 }
 
 const TableView: React.FC<TableViewProps> = ({ items }) => {
-  
+
   return (
-      <table 
-      style={{ 
-        width: "100%", 
-        borderCollapse: "collapse", 
+    <table
+      style={{
+        width: "100%",
+        borderCollapse: "collapse",
         backgroundColor: colors.surface,
       }}
     >
@@ -31,7 +31,7 @@ const TableView: React.FC<TableViewProps> = ({ items }) => {
           const project = dummyData.projects.find(p => p.id === m.projectId);
           const owner = dummyData.usersGroups.find(u => u.id === m.ownerId);
           const server = dummyData.servers.find(s => s.id === m.serverId);
-          
+
           return (
             <tr key={m.materialId}>
               <td style={{ padding: "0.75rem", borderBottom: `1px solid ${colors.border}` }}>
