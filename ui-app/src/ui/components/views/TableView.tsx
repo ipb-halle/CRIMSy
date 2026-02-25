@@ -1,40 +1,60 @@
-// src/ui/components/views/TableView.tsx
 import React from "react";
+import { Material, dummyData } from "../../../data/dummyData";
+import { colors } from "../../theme/designTokens";
+
 
 interface TableViewProps {
-  items: any[];
+  items: Material[];
 }
 
-export const TableView: React.FC<TableViewProps> = ({ items }) => {
-  if (!items.length) return <div>No items to display</div>;
-
+const TableView: React.FC<TableViewProps> = ({ items }) => {
+  
   return (
-    <div style={{ overflowX: "auto" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
-        <thead style={{ background: "#029ACF", color: "white" }}>
-          <tr>
-            {Object.keys(items[0]).map((key) => (
-              <th
-                key={key}
-                style={{ padding: "0.5rem", border: "1px solid #ccc", textAlign: "left" }}
-              >
-                {key}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, idx) => (
-            <tr key={idx} style={{ background: idx % 2 === 0 ? "#f9f9f9" : "#fff" }}>
-              {Object.values(item).map((val, i) => (
-                <td key={i} style={{ padding: "0.5rem", border: "1px solid #ccc" }}>
-                  {String(val)}
-                </td>
-              ))}
+      <table 
+      style={{ 
+        width: "100%", 
+        borderCollapse: "collapse", 
+        backgroundColor: colors.surface,
+      }}
+    >
+      <thead>
+        <tr style={{ backgroundColor: colors.primary, color: "white" }}>
+          <th style={{ padding: "0.75rem" }}>ID</th>
+          <th style={{ padding: "0.75rem" }}>Project</th>
+          <th style={{ padding: "0.75rem" }}>Owner</th>
+          <th style={{ padding: "0.75rem" }}>Server</th>
+          <th style={{ padding: "0.75rem" }}>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map(m => {
+          const project = dummyData.projects.find(p => p.id === m.projectId);
+          const owner = dummyData.usersGroups.find(u => u.id === m.ownerId);
+          const server = dummyData.servers.find(s => s.id === m.serverId);
+          
+          return (
+            <tr key={m.materialId}>
+              <td style={{ padding: "0.75rem", borderBottom: `1px solid ${colors.border}` }}>
+                {m.materialId}
+              </td>
+              <td style={{ padding: "0.75rem", borderBottom: `1px solid ${colors.border}` }}>
+                {project?.name}
+              </td>
+              <td style={{ padding: "0.75rem", borderBottom: `1px solid ${colors.border}` }}>
+                {owner?.name}
+              </td>
+              <td style={{ padding: "0.75rem", borderBottom: `1px solid ${colors.border}` }}>
+                {server?.name}
+              </td>
+              <td style={{ padding: "0.75rem", borderBottom: `1px solid ${colors.border}` }}>
+                {m.deactivated ? "Deactivated" : "Active"}
+              </td>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          );
+        })}
+      </tbody>
+    </table>
   );
 };
+
+export default TableView;

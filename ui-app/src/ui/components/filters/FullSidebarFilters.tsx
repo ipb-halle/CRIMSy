@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, CSSProperties } from "react";
 import { FilterGroup, Filters } from "./Filters";
 import { filterConfig } from "./filterConfig";
+import { colors } from "../../theme/designTokens";
 
 interface Props {
   onFilterChange: (filters: Filters) => void;
@@ -67,8 +68,9 @@ const FullSidebarFilters: React.FC<Props> = ({
             cursor: "pointer",
             display: "flex",
             justifyContent: "space-between",
-            fontWeight: "bold",
+            fontWeight: 600,
             padding: "0.25rem 0",
+            color: colors.textPrimary,
           }}
         >
           <span>{group.label}</span>
@@ -79,7 +81,7 @@ const FullSidebarFilters: React.FC<Props> = ({
           <div style={{ paddingLeft: "0.5rem", marginTop: "0,25rem" }}>
             {group.options.map((opt) => (
               <div key={String(opt.value)}>
-                <label>
+                <label style={{ fontSize: "0.9rem", color: colors.textSecondary }}>
                   <input
                     type="checkbox"
                     checked={selected.includes(opt.value)}
@@ -99,9 +101,8 @@ const FullSidebarFilters: React.FC<Props> = ({
     <div
       ref={dropdownRef}
       style={{
-        border: "1px solid #029ACF",
         borderRadius: "6px",
-        background: "#fff",
+        background: colors.surface,
         padding: "0.5rem 1rem",
         maxHeight: "80vh",
         overflowY: "auto",
@@ -115,10 +116,10 @@ const FullSidebarFilters: React.FC<Props> = ({
             width: "100%",
             padding: "0.5rem",
             marginBottom: "0.5rem",
-            border: "1px solid #029ACF",
+            border: "none",
             borderRadius: "3px",
-            background: "#029ACF",
-            color: "#fff",
+            background: colors.primary,
+            color: "white",
             fontWeight: "bold",
             cursor: "pointer",
           }}
