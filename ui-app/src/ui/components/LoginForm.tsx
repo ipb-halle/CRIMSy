@@ -1,11 +1,11 @@
 import React, { FormEvent } from "react";
 import { LoginRequest } from "../../adapters/api";
+import { colors, radius, spacing } from "../theme/designTokens";
 
 interface Props {
   loginrequest: LoginRequest;
   setLoginRequest: (v: LoginRequest) => void;
   errors: { username?: string; password?: string };
-  result: string;
   onSubmit: (e?: FormEvent) => void;
 }
 
@@ -17,41 +17,58 @@ const LoginForm: React.FC<Props> = ({
 }) => {
   return (
     <form onSubmit={onSubmit}>
-      <div style={{ marginBottom: "0.75rem" }}>
+      <div style={{ marginBottom: spacing.md }}>
         <input
-          style={{ width: "100%", padding: "0.5rem" }}
+          style={{
+            width: "100%",
+            padding: spacing.sm,
+            borderRadius: radius.sm,
+            border: `1px solid ${colors.border}`,
+          }}
           placeholder="Username"
           value={loginrequest.login}
-          onChange={(e) => setLoginRequest({ ...loginrequest, login: e.target.value })
+          onChange={(e) =>
+            setLoginRequest({ ...loginrequest, login: e.target.value })
           }
         />
-        {errors.username && <div style={{ color: "red" }}>{errors.username}</div>}
+        {errors.username && (
+          <div style={{ color: colors.danger }}>{errors.username}</div>
+        )}
       </div>
 
-      <div style={{ marginBottom: "0.75rem" }}>
+      <div style={{ marginBottom: spacing.md }}>
         <input
           type="password"
-          style={{ width: "100%", padding: "0.5rem" }}
+          style={{
+            width: "100%",
+            padding: spacing.sm,
+            borderRadius: radius.sm,
+            border: `1px solid ${colors.border}`,
+          }}
           placeholder="Password"
           value={loginrequest.password}
           onChange={(e) =>
             setLoginRequest({ ...loginrequest, password: e.target.value })
           }
         />
-        {errors.password && <div style={{ color: "red" }}>{errors.password}</div>}
+        {errors.password && (
+          <div style={{ color: colors.danger }}>{errors.password}</div>
+        )}
       </div>
 
-      <button type="submit"
+      <button
+        type="submit"
         style={{
           width: "100%",
-          padding: "0.5rem",
-          background: "#029ACF",
+          padding: spacing.sm,
+          background: colors.primary,
           color: "white",
           border: "none",
-          borderRadius: "3px",
-          fontWeight: "bold",
+          borderRadius: radius.sm,
+          fontWeight: 600,
           cursor: "pointer",
-        }}>
+        }}
+      >
         Login
       </button>
     </form>

@@ -30,7 +30,7 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
               key={material.materialId}
               onClick={() => setSelectedMaterial(material)}
               style={{
-                border: "1px solid ${colors.border}",
+                border: `1px solid ${colors.border}`,
                 borderRadius: "10px",
                 padding: "1rem",
                 boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
@@ -55,11 +55,11 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
                   fontSize: "0.75rem",
                   fontWeight: 600,
                   backgroundColor: material.deactivated
-                    ? colors.dangerBg
-                    : colors.successBg,
+                    ? colors.danger
+                    : colors.success,
                   color: material.deactivated
-                    ? colors.dangerText
-                    : colors.successText,
+                    ? colors.danger
+                    : colors.success,
                 }}
               >
                 {material.deactivated ? "Deactivated" : "Active"}

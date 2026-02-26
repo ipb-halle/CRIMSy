@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../../adapters/hooks/useAuth";
 import LoginForm from "../components/LoginForm";
+import { colors, radius, spacing } from "../theme/designTokens";
 
 interface Props {
   onLogin: () => void;
@@ -12,7 +13,6 @@ const Login: React.FC<Props> = ({ onLogin }) => {
     setLoginRequest,
     errors,
     result,
-    isLoggedIn,
     handleLogin,
   } = useAuth();
 
@@ -24,40 +24,37 @@ const Login: React.FC<Props> = ({ onLogin }) => {
   return (
     <div
       style={{
-        border: "1px solid #029ACF",
-        borderRadius: "3px",
-        padding: "1rem",
-        maxWidth: "400px",
-        margin: "2rem auto",
+        border: `1px solid ${colors.border}`,
+        borderRadius: radius.md,
+        padding: spacing.lg,
+        background: colors.surface,
+        maxWidth: "420px",
+        margin: "3rem auto",
       }}
     >
-      <fieldset style={{ border: "none" }}>
-        <legend style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
-          Login
-        </legend>
 
-        {result && (
-          <div
-            style={{
-              textAlign: "center",
-              margin: "1rem 0",
-              color: isError ? "red" : "green",
-              border: "1px solid #029ACF",
-              borderRadius: "3px",
-              padding: "0.5rem",
-            }}
-          >
-            {result.message}
-          </div>
-        )}
-        <LoginForm
-          loginrequest={loginRequest}
-          setLoginRequest={setLoginRequest}
-          errors={errors}
-          result={result?.message ?? ""}
-          onSubmit={(e) => handleLogin(e, onLogin)}
-        />
-      </fieldset>
+      <h2 style={{ marginBottom: spacing.md }}>Login</h2>
+
+      {result && (
+        <div
+          style={{
+            marginBottom: spacing.md,
+            color: isError ? colors.danger : colors.success,
+            border: `1px solid ${isError ? colors.danger : colors.success}`,
+            borderRadius: radius.sm,
+            padding: spacing.sm,
+          }}
+        >
+          {result.message}
+        </div>
+      )}
+
+      <LoginForm
+        loginrequest={loginRequest}
+        setLoginRequest={setLoginRequest}
+        errors={errors}
+        onSubmit={(e) => handleLogin(e, onLogin)}
+      />
     </div>
   );
 };
