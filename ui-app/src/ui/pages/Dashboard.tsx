@@ -34,6 +34,7 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
         if (next === "role") handleCheckRole();
         if (next === "users") handleFetchUsers(1);
     };
+
     const renderView = () => {
         switch (view) {
             case "search":
@@ -47,6 +48,7 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                         onPageChange={(page) => handleFetchUsers(page)}
                     />
                 );
+
             default:
                 return (
                     <div
@@ -135,19 +137,6 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
             {/* CONTENT AREA */}
             <div style={{ padding: spacing.lg }}>{renderView()}</div>
 
-            {/* THEME TOGGLE */}
-            <button
-                onClick={toggle}
-                style={{
-                    position: "fixed",
-                    bottom: "1rem",
-                    right: "1rem",
-                    padding: "0.5rem",
-                    borderRadius: radius.sm,
-                }}
-            >
-                {mode === "light" ? "Dark Mode" : "Light Mode"}
-            </button>
         </div>
     );
 };
