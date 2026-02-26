@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { PagedUsers } from "../../adapters/api";
 import { useTheme } from "../theme/ThemeContext";
 import { spacing, radius } from "../theme/designTokens";
@@ -13,6 +13,20 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
 
   if (!data) return null;
 
+  const { currentPage, totalPages } = data;
+
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      onPageChange?.(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      onPageChange?.(currentPage + 1);
+    }
+  };
+
   return (
     <div
       style={{
@@ -24,11 +38,11 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
       }}
     >
       <div>
-        Users (Page {data.currentPage} of {data.totalPages})
+        Users (Page {currentPage} of {totalPages})
       </div>
 
       {data.users.map((u) => (
-        <div key={u.id} style={{ marginTop:  spacing.sm}}>
+        <div key={u.id} style={{ marginTop: spacing.sm }}>
           <div>ID: {u.id}</div>
           <div>Name: {u.name}</div>
           <div>Type: {u.membertype}</div>
@@ -37,10 +51,12 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
 
       {/* Pagination controles */}
       <div style={{ marginTop: spacing.md }}>
-        <button onClick={() => onPageChange?.(data.currentPage - 1)}>
+        <button onClick={handlePrev} disabled={currentPage <= 1}>
           Previous
         </button>
-        <button onClick={() => onPageChange?.(data.currentPage + 1)} >
+        <button onClick={handleNext} disabled={currentPage >= totalPages}
+          style={{ marginLeft: spacing.sm }}
+        >
           Next
         </button>
       </div>
