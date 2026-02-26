@@ -1,13 +1,13 @@
 import React from "react";
-import { spacing, radius } from "../theme/designTokens";
-import { useTheme } from "../theme/ThemeContext"; 
+import { useTheme } from "../theme/ThemeContext";
+import { colors, spacing, radius } from "../theme/designTokens";
 
 interface Props {
   onLogout?: () => void;
 }
 
 const Navigation: React.FC<Props> = ({ onLogout }) => {
-  const { theme } = useTheme();
+const { theme } = useTheme();
 
   return (
     <nav
@@ -23,13 +23,15 @@ const Navigation: React.FC<Props> = ({ onLogout }) => {
       <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
         <div
           style={{
-            width: "32px",
-            height: "32px",
-            background: "white",
+            width: "34px",
+            height: "34px",
+            background:  theme.accent,
             borderRadius: radius.sm,
           }}
         />
-        <span style={{ fontWeight: 600 }}>IPB Biochemistry Institute</span>
+        <span style={{ fontWeight: 600 }}>
+          IPB Material & Role Managements
+        </span>
       </div>
 
       {onLogout && (

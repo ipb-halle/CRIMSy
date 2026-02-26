@@ -4,8 +4,7 @@ import UsersPanel from "../components/UsersPanel";
 import RolePanel from "../components/RolePanel";
 import { useAuth } from "../../adapters/hooks/useAuth";
 import Navigation from "../components/Navigation";
-import { useTheme } from "../theme/ThemeContext";
-import { spacing, radius } from "../theme/designTokens";
+import { colors, spacing, radius } from "../theme/designTokens";
 
 type View = "home" | "search" | "role" | "users";
 
@@ -13,6 +12,7 @@ type View = "home" | "search" | "role" | "users";
 interface Props {
     onLogout: () => void;
 }
+
 const Dashboard: React.FC<Props> = ({ onLogout }) => {
     const {
         roleInfo,
@@ -22,15 +22,10 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
         handleFetchUsers,
     } = useAuth();
 
-    const { theme, mode, toggle } = useTheme();
     const [view, setView] = useState<View>("home");
-
-    const isAdmin = roleInfo?.admin;
 
     const handleTab = (next: View) => {
         setView(next);
-
-        // trigger backend actions for role/users when selected
         if (next === "role") handleCheckRole();
         if (next === "users") handleFetchUsers(1);
     };
@@ -54,9 +49,9 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                     <div
                         style={{
                             padding: spacing.lg,
-                            background: theme.surface,
+                            background: colors.surface,
                             borderRadius: radius.md,
-                            border: `1px solid ${theme.border}`,
+                            border: `1px solid ${colors.border}`,
                         }}
                     >
                         <h2>Welcome to IPB Laboratory System</h2>
@@ -67,7 +62,7 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
     };
 
     return (
-        <div style={{ background: theme.background, minHeight: "100vh" }}>
+        <div style={{ background: colors.background, minHeight: "100vh" }}>
 
             <Navigation
                 onLogout={() => {
@@ -82,7 +77,7 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                     display: "flex",
                     gap: spacing.md,
                     padding: spacing.sm,
-                    borderBottom: `1px solid ${theme.border}`,
+                    borderBottom: `1px solid ${colors.border}`,
                 }}
             >
                 <Tab
@@ -113,7 +108,7 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                 style={{
                     padding: spacing.sm,
                     fontSize: "0.85rem",
-                    color: theme.textSecondary,
+                    color: colors.textSecondary,
                 }}
             >
                 Home {view !== "home" && ` / ${view}`}
@@ -125,9 +120,10 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                     style={{
                         margin: spacing.sm,
                         padding: spacing.sm,
-                        background: theme.surface,
+                        background: colors.surface,
                         borderRadius: radius.sm,
-                        border: `1px solid ${theme.border}`,
+                        border: `1px solid ${colors.border}`,
+                        animation: "fadeIn 0.3s ease",
                     }}
                 >
                     Welcome, {roleInfo.username}
@@ -151,14 +147,13 @@ const Tab: React.FC<TabProps> = ({ label, active, onClick }) => (
         onClick={onClick}
         style={{
             padding: "0.4rem 0.9rem",
-            background: active ? "#00509e" : "white",
-            color: active ? "white" : "black",
-            border: active ? "none" : `1px solid #ccc`,
+            background: active ? colors.primary : colors.surface,
+            color: active ? "white" : colors.textPrimary,
+            border: active ? "none" : `1px solid ${colors.border}`,
             fontWeight: active ? 600 : 500,
             borderRadius: "999px",
             transition: "all 0.2s ease",
             cursor: "pointer",
-            boxShadow: active ? "0 2px 4px rgba(0,0,0,0.15)" : "none",
         }}
     >
         {label}

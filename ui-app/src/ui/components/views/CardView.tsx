@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Material, dummyData } from "../../../data/dummyData";
-import { useTheme } from "../../theme/ThemeContext";
+import { colors, radius, spacing } from "../../theme/designTokens";
 import MaterialDetailModal from "./MaterialDetailModal";
 
 interface CardViewProps {
@@ -9,8 +9,6 @@ interface CardViewProps {
 
 const CardView: React.FC<CardViewProps> = ({ items }) => {
   const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null);
-
-  const { theme } = useTheme();
 
   return (
     <>
@@ -32,12 +30,12 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
               key={material.materialId}
               onClick={() => setSelectedMaterial(material)}
               style={{
-                border: `1px solid ${theme.border}`,
-                borderRadius: "10px",
-                padding: "1rem",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-                background: theme.surface,
+                border: `1px solid ${colors.border}`,
+                borderRadius: radius.md,
+                padding: spacing.md,
+                background: colors.surface,
                 cursor: "pointer",
+                transition: "transform 0.15s ease",
               }}
             >
               <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>
@@ -57,11 +55,11 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
                   fontSize: "0.75rem",
                   fontWeight: 600,
                   backgroundColor: material.deactivated
-                    ? theme.danger
-                    : theme.success,
+                    ? colors.danger
+                    : colors.success,
                   color: material.deactivated
-                    ? theme.danger
-                    : theme.success,
+                    ? colors.danger
+                    : colors.success,
                 }}
               >
                 {material.deactivated ? "Deactivated" : "Active"}

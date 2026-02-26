@@ -1,6 +1,6 @@
 import React from "react";
 import { Material, dummyData } from "../../../data/dummyData";
-import { useTheme } from "../../theme/ThemeContext";
+import { colors, radius, spacing } from "../../theme/designTokens";
 
 interface Props {
   material: Material;
@@ -12,9 +12,6 @@ const MaterialDetailModal: React.FC<Props> = ({ material, onClose }) => {
     .filter(h => h.materialId === material.materialId)
     .map(h => dummyData.hazards.find(d => d.id === h.typeId)?.name)
     .filter(Boolean);
-
-
-  const { theme } = useTheme();
 
   return (
     <div
@@ -29,10 +26,11 @@ const MaterialDetailModal: React.FC<Props> = ({ material, onClose }) => {
     >
       <div
         style={{
-          background: theme.surface,
-          padding: "2rem",
-          borderRadius: "10px",
+          background: colors.surface,
+          padding: spacing.lg,
+          borderRadius: radius.md,
           width: "500px",
+          animation: "fadeIn 0.2s ease",
         }}
       >
         <h2>Material #{material.materialId}</h2>
@@ -45,12 +43,12 @@ const MaterialDetailModal: React.FC<Props> = ({ material, onClose }) => {
         <button
           onClick={onClose}
           style={{
-            marginTop: "1rem",
+            marginTop: spacing.md,
             padding: "0.5rem 1rem",
-            background: theme.primary,
+            background: colors.primary,
             color: "white",
             border: "none",
-            borderRadius: "6px",
+            borderRadius:  radius.sm,
             cursor: "pointer",
           }}
         >

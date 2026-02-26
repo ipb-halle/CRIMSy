@@ -1,10 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
-import { lightTheme, darkTheme, ThemeMode, ThemeColors } from "./designTokens";
+import { colors } from "./designTokens";
 
 interface ThemeContextValue {
-  mode: ThemeMode;
-  theme: ThemeColors;
-  toggle: () => void;
+  theme: typeof colors;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -12,14 +10,8 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [mode, setMode] = useState<ThemeMode>("light");
-
-  const toggle = () => setMode(mode === "light" ? "dark" : "light");
-
-  const theme = mode === "light" ? lightTheme : darkTheme;
-
   return (
-    <ThemeContext.Provider value={{ mode, theme, toggle }}>
+    <ThemeContext.Provider value={{ theme: colors }}>
       {children}
     </ThemeContext.Provider>
   );
