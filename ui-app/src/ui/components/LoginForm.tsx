@@ -1,6 +1,7 @@
 import React, { FormEvent } from "react";
 import { LoginRequest } from "../../adapters/api";
-import { colors, radius, spacing } from "../theme/designTokens";
+import { useTheme } from "../theme/ThemeContext";
+import { radius, spacing } from "../theme/designTokens";
 
 interface Props {
   loginrequest: LoginRequest;
@@ -15,6 +16,9 @@ const LoginForm: React.FC<Props> = ({
   errors,
   onSubmit,
 }) => {
+
+  const { theme } = useTheme();
+
   return (
     <form onSubmit={onSubmit}>
       <div style={{ marginBottom: spacing.md }}>
@@ -23,7 +27,7 @@ const LoginForm: React.FC<Props> = ({
             width: "100%",
             padding: spacing.sm,
             borderRadius: radius.sm,
-            border: `1px solid ${colors.border}`,
+            border: `1px solid ${theme.border}`,
           }}
           placeholder="Username"
           value={loginrequest.login}
@@ -32,7 +36,7 @@ const LoginForm: React.FC<Props> = ({
           }
         />
         {errors.username && (
-          <div style={{ color: colors.danger }}>{errors.username}</div>
+          <div style={{ color: theme.danger }}>{errors.username}</div>
         )}
       </div>
 
@@ -43,7 +47,7 @@ const LoginForm: React.FC<Props> = ({
             width: "100%",
             padding: spacing.sm,
             borderRadius: radius.sm,
-            border: `1px solid ${colors.border}`,
+            border: `1px solid ${theme.border}`,
           }}
           placeholder="Password"
           value={loginrequest.password}
@@ -52,7 +56,7 @@ const LoginForm: React.FC<Props> = ({
           }
         />
         {errors.password && (
-          <div style={{ color: colors.danger }}>{errors.password}</div>
+          <div style={{ color: theme.danger }}>{errors.password}</div>
         )}
       </div>
 
@@ -61,7 +65,7 @@ const LoginForm: React.FC<Props> = ({
         style={{
           width: "100%",
           padding: spacing.sm,
-          background: colors.primary,
+          background: theme.primary,
           color: "white",
           border: "none",
           borderRadius: radius.sm,

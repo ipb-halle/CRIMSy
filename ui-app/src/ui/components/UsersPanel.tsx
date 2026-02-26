@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { PagedUsers } from "../../adapters/api";
-import { colors, radius } from "../theme/designTokens";
-
+import { useTheme } from "../theme/ThemeContext";
+import { spacing, radius } from "../theme/designTokens";
 
 interface UsersPanelProps {
   data: PagedUsers | null;
   onPageChange?: (page: number) => void;
 }
 
-
 const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
+  const { theme } = useTheme();
+
   if (!data) return null;
 
   return (
     <div
       style={{
-        marginTop: "1rem",
-        padding: "1rem",
-        border: `1px solid  ${colors.border}`,
-        borderRadius: radius.md
+        marginTop: spacing.lg,
+        padding: spacing.lg,
+        border: `1px solid  ${theme.border}`,
+        borderRadius: radius.md,
+        background: theme.surface,
       }}
     >
       <div>
@@ -26,7 +28,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
       </div>
 
       {data.users.map((u) => (
-        <div key={u.id} style={{ marginTop: "0.5rem" }}>
+        <div key={u.id} style={{ marginTop:  spacing.sm}}>
           <div>ID: {u.id}</div>
           <div>Name: {u.name}</div>
           <div>Type: {u.membertype}</div>
@@ -34,7 +36,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
       ))}
 
       {/* Pagination controles */}
-      <div style={{ marginTop: "1rem" }}>
+      <div style={{ marginTop: spacing.md }}>
         <button onClick={() => onPageChange?.(data.currentPage - 1)}>
           Previous
         </button>

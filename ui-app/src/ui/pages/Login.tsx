@@ -1,7 +1,8 @@
 import React from "react";
 import { useAuth } from "../../adapters/hooks/useAuth";
 import LoginForm from "../components/LoginForm";
-import { colors, radius, spacing } from "../theme/designTokens";
+import { radius, spacing } from "../theme/designTokens";
+import { useTheme } from "../theme/ThemeContext";
 
 interface Props {
   onLogin: () => void;
@@ -16,6 +17,8 @@ const Login: React.FC<Props> = ({ onLogin }) => {
     handleLogin,
   } = useAuth();
 
+  const { theme } = useTheme();
+
   const isError =
     result?.message?.toString().toLowerCase().includes("failed") ||
     result?.message?.toString().toLowerCase().includes("expired") ||
@@ -24,10 +27,10 @@ const Login: React.FC<Props> = ({ onLogin }) => {
   return (
     <div
       style={{
-        border: `1px solid ${colors.border}`,
+        border: `1px solid ${theme.border}`,
         borderRadius: radius.md,
         padding: spacing.lg,
-        background: colors.surface,
+        background: theme.surface,
         maxWidth: "420px",
         margin: "3rem auto",
       }}
@@ -39,8 +42,8 @@ const Login: React.FC<Props> = ({ onLogin }) => {
         <div
           style={{
             marginBottom: spacing.md,
-            color: isError ? colors.danger : colors.success,
-            border: `1px solid ${isError ? colors.danger : colors.success}`,
+            color: isError ? theme.danger : theme.success,
+            border: `1px solid ${isError ? theme.danger : theme.success}`,
             borderRadius: radius.sm,
             padding: spacing.sm,
           }}

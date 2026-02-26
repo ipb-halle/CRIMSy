@@ -3,64 +3,177 @@ import SearchPanel from "./SearchPanel";
 import UsersPanel from "../components/UsersPanel";
 import RolePanel from "../components/RolePanel";
 import { useAuth } from "../../adapters/hooks/useAuth";
+import Navigation from "../components/Navigation";
+import { useTheme } from "../theme/ThemeContext";
+import { spacing, radius } from "../theme/designTokens";
 
-const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
-    const [activeTab, setActiveTab] = useState<"search" | "role" | "users">("search");
-    const { roleInfo, usersList, handleCheckRole, handleFetchUsers } = useAuth();
+type View = "home" | "search" | "role" | "users";
 
-    const renderContent = () => {
-        switch (activeTab) {
+
+interface Props {
+    onLogout: () => void;
+}
+const Dashboard: React.FC<Props> = ({ onLogout }) => {
+    const {
+        roleInfo,
+        usersList,
+        handleLogout,
+        handleCheckRole,
+        handleFetchUsers,
+    } = useAuth();
+
+    const { theme, mode, toggle } = useTheme();
+    const [view, setView] = useState<View>("home");
+
+    const isAdmin = roleInfo?.admin;
+
+    const handleTab = (next: View) => {
+        setView(next);
+
+        // trigger backend actions for role/users when selected
+        if (next === "role") handleCheckRole();
+        if (next === "users") handleFetchUsers(1);
+    };
+    const renderView = () => {
+        switch (view) {
             case "search":
                 return <SearchPanel />;
             case "role":
-                return (
-                    <div style={{ padding: "1rem" }}>
-                        <button onClick={handleCheckRole}>Reload Role</button>
-                        <RolePanel role={roleInfo} />
-                    </div>
-                );
+                return <RolePanel role={roleInfo} />;
             case "users":
                 return (
-                    <div style={{ padding: "1rem" }}>
-                        <button onClick={() => handleFetchUsers(1)}>Reload Users</button>
-                        <UsersPanel data={usersList} onPageChange={handleFetchUsers} />
+                    <UsersPanel
+                        data={usersList}
+                        onPageChange={(page) => handleFetchUsers(page)}
+                    />
+                );
+            default:
+                return (
+                    <div
+                        style={{
+                            padding: spacing.lg,
+                            background: theme.surface,
+                            borderRadius: radius.md,
+                            border: `1px solid ${theme.border}`,
+                        }}
+                    >
+                        <h2>Welcome to IPB Laboratory System</h2>
+                        <p>Select a menu item to continue.</p>
                     </div>
                 );
         }
     };
 
     return (
-        <div style={{ maxWidth: "1200px", margin: "1rem auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
-            {/* Menu */}
-            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-                <button onClick={() => setActiveTab("search")}>Search</button>
-                <button onClick={() => setActiveTab("role")}>Check Role</button>
-                <button onClick={() => setActiveTab("users")}>Users List</button>
-                <button
-                    onClick={() => {
-                        localStorage.removeItem("token");
-                        localStorage.removeItem("username");
-                        onLogout();
-                    }}
-                    style={{ background: "red", color: "white" }}
-                >
-                    Logout
-                </button>
+        <div style={{ background: theme.background, minHeight: "100vh" }}>
+
+            <Navigation
+                onLogout={() => {
+                    handleLogout();
+                    onLogout();
+                }}
+            />
+
+            {/* TAB MENU */}
+            <div
+                style={{
+                    display: "flex",
+                    gap: spacing.md,
+                    padding: spacing.sm,
+                    borderBottom: `1px solid ${theme.border}`,
+                }}
+            >
+                <Tab
+                    label="Home"
+                    active={view === "home"}
+                    onClick={() => setView("home")} />
+                <Tab
+                    label="Search"
+                    active={view === "search"}
+                    onClick={() => handleTab("search")}
+                />
+
+                <Tab
+                    label="Role Check"
+                    active={view === "role"}
+                    onClick={() => handleTab("role")}
+                />
+                <Tab
+                    label="User List"
+                    active={view === "users"}
+                    onClick={() => handleTab("users")}
+                />
+
             </div>
 
-            {/* Content */}
-            <div style={{
-                border: "1px solid #029ACF",
-                borderRadius: "6px",
-                background: "#fff",
-                overflowX: "auto",
-                minHeight: "400px",
-                padding: "1rem"
-            }}>
-                {renderContent()}
+            {/* BREADCRUMB */}
+            <div
+                style={{
+                    padding: spacing.sm,
+                    fontSize: "0.85rem",
+                    color: theme.textSecondary,
+                }}
+            >
+                Home {view !== "home" && ` / ${view}`}
             </div>
+
+            {/* NOTIFICATION */}
+            {roleInfo && (
+                <div
+                    style={{
+                        margin: spacing.sm,
+                        padding: spacing.sm,
+                        background: theme.surface,
+                        borderRadius: radius.sm,
+                        border: `1px solid ${theme.border}`,
+                    }}
+                >
+                    Welcome, {roleInfo.username}
+                </div>
+            )}
+
+            {/* CONTENT AREA */}
+            <div style={{ padding: spacing.lg }}>{renderView()}</div>
+
+            {/* THEME TOGGLE */}
+            <button
+                onClick={toggle}
+                style={{
+                    position: "fixed",
+                    bottom: "1rem",
+                    right: "1rem",
+                    padding: "0.5rem",
+                    borderRadius: radius.sm,
+                }}
+            >
+                {mode === "light" ? "Dark Mode" : "Light Mode"}
+            </button>
         </div>
     );
 };
+
+interface TabProps {
+    label: string;
+    active: boolean;
+    onClick: () => void;
+}
+const Tab: React.FC<TabProps> = ({ label, active, onClick }) => (
+    <button
+        onClick={onClick}
+        style={{
+            padding: "0.4rem 0.9rem",
+            background: active ? "#00509e" : "white",
+            color: active ? "white" : "black",
+            border: active ? "none" : `1px solid #ccc`,
+            fontWeight: active ? 600 : 500,
+            borderRadius: "999px",
+            transition: "all 0.2s ease",
+            cursor: "pointer",
+            boxShadow: active ? "0 2px 4px rgba(0,0,0,0.15)" : "none",
+        }}
+    >
+        {label}
+    </button>
+);
 
 export default Dashboard;

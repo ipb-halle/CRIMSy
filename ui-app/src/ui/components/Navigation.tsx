@@ -1,15 +1,18 @@
 import React from "react";
-import { colors, spacing, radius } from "../theme/designTokens";
+import { spacing, radius } from "../theme/designTokens";
+import { useTheme } from "../theme/ThemeContext"; 
 
 interface Props {
   onLogout?: () => void;
 }
 
 const Navigation: React.FC<Props> = ({ onLogout }) => {
+  const { theme } = useTheme();
+
   return (
     <nav
       style={{
-        background: colors.primary,
+        background: theme.primary,
         color: "white",
         padding: `${spacing.sm} ${spacing.md}`,
         display: "flex",

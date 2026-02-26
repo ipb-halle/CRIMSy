@@ -1,6 +1,6 @@
 import React from "react";
 import { Material, dummyData } from "../../../data/dummyData";
-import { colors } from "../../theme/designTokens";
+import { useTheme } from "../../theme/ThemeContext";
 
 interface Props {
   material: Material;
@@ -12,6 +12,9 @@ const MaterialDetailModal: React.FC<Props> = ({ material, onClose }) => {
     .filter(h => h.materialId === material.materialId)
     .map(h => dummyData.hazards.find(d => d.id === h.typeId)?.name)
     .filter(Boolean);
+
+
+  const { theme } = useTheme();
 
   return (
     <div
@@ -26,7 +29,7 @@ const MaterialDetailModal: React.FC<Props> = ({ material, onClose }) => {
     >
       <div
         style={{
-          background: colors.surface,
+          background: theme.surface,
           padding: "2rem",
           borderRadius: "10px",
           width: "500px",
@@ -44,7 +47,7 @@ const MaterialDetailModal: React.FC<Props> = ({ material, onClose }) => {
           style={{
             marginTop: "1rem",
             padding: "0.5rem 1rem",
-            background: colors.primary,
+            background: theme.primary,
             color: "white",
             border: "none",
             borderRadius: "6px",

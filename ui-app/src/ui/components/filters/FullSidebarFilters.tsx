@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, CSSProperties } from "react";
 import { FilterGroup, Filters } from "./Filters";
 import { filterConfig } from "./filterConfig";
-import { colors } from "../../theme/designTokens";
+import { radius, spacing } from "../../theme/designTokens";
+import { useTheme } from "../../theme/ThemeContext";
 
 interface Props {
   onFilterChange: (filters: Filters) => void;
@@ -18,6 +19,9 @@ const FullSidebarFilters: React.FC<Props> = ({
   const [open, setOpen] = useState(!isDropdown);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+
+  const { theme } = useTheme();
 
   const handleToggle = (key: keyof Filters, value: number | boolean) => {
     const current = (filters[key] as any[]) || [];
@@ -70,7 +74,7 @@ const FullSidebarFilters: React.FC<Props> = ({
             justifyContent: "space-between",
             fontWeight: 600,
             padding: "0.25rem 0",
-            color: colors.textPrimary,
+            color: theme.textPrimary,
           }}
         >
           <span>{group.label}</span>
@@ -81,7 +85,7 @@ const FullSidebarFilters: React.FC<Props> = ({
           <div style={{ paddingLeft: "0.5rem", marginTop: "0,25rem" }}>
             {group.options.map((opt) => (
               <div key={String(opt.value)}>
-                <label style={{ fontSize: "0.9rem", color: colors.textSecondary }}>
+                <label style={{ fontSize: "0.9rem", color: theme.textSecondary }}>
                   <input
                     type="checkbox"
                     checked={selected.includes(opt.value)}
@@ -102,7 +106,7 @@ const FullSidebarFilters: React.FC<Props> = ({
       ref={dropdownRef}
       style={{
         borderRadius: "6px",
-        background: colors.surface,
+        background: theme.surface,
         padding: "0.5rem 1rem",
         maxHeight: "80vh",
         overflowY: "auto",
@@ -118,7 +122,7 @@ const FullSidebarFilters: React.FC<Props> = ({
             marginBottom: "0.5rem",
             border: "none",
             borderRadius: "3px",
-            background: colors.primary,
+            background: theme.primary,
             color: "white",
             fontWeight: "bold",
             cursor: "pointer",

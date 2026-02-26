@@ -5,7 +5,6 @@ import CardView from "../components/views/CardView";
 import TableView from "../components/views/TableView";
 import { dummyData, Material } from "../../data/dummyData";
 import { filterRuls } from "../components/filters/filterRules";
-import { colors } from "../theme/designTokens";
 
 
 const PAGE_SIZE = 12;
@@ -36,6 +35,7 @@ const SearchPanel: React.FC = () => {
   const [view, setView] = useState<"card" | "table">("card");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+
 
   //  Apply all filters + search term
   const applyFilters = () =>
