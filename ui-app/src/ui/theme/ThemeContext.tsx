@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext } from "react";
 import { colors } from "./designTokens";
 
 interface ThemeContextValue {
@@ -9,13 +9,11 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
-}) => {
-  return (
-    <ThemeContext.Provider value={{ theme: colors }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
+}) => (
+  <ThemeContext.Provider value={{ theme: colors }}>
+    {children}
+  </ThemeContext.Provider>
+);
 
 export const useTheme = () => {
   const ctx = useContext(ThemeContext);

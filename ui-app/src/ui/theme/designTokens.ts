@@ -1,8 +1,6 @@
-export type ThemeMode = "light";
-
 export interface ThemeColors {
   primary: string;
-  primaryDark: string;
+  secondary: string;
   accent: string;
   background: string;
   surface: string;
@@ -16,7 +14,7 @@ export interface ThemeColors {
 
 export const colors: ThemeColors = {
   primary: "#003f88",
-  primaryDark: "#00509d",
+  secondary: "#00509d",
   accent: "#2f9e44",
   background: "#f4f7fb",
   surface: "#ffffff",

@@ -12,8 +12,7 @@ const RolePanel: React.FC<Props> = ({ role }) => {
   return (
     <div
       style={{
-        marginTop: spacing.lg,
-        padding: spacing.lg,
+        padding: spacing.md,
         border: `1px solid  ${colors.border}`,
         borderRadius: radius.md,
         background: colors.surface,
@@ -25,21 +24,16 @@ const RolePanel: React.FC<Props> = ({ role }) => {
       </div>
 
       <div
-        style={{ marginTop: spacing.sm }}
+        style={{
+          marginTop: spacing.sm,
+          padding: "0.2rem 0.6rem",
+          borderRadius: radius.sm,
+          background: role.admin ? colors.success : colors.secondary,
+          color: "white",
+          display: "inline-block",
+        }}
       >
-        <span style={{ fontWeight: 600 }}>Role:</span>
-        <span
-          style={{
-            marginLeft: spacing.sm,
-            padding: "0.2rem 0.6rem",
-            borderRadius: radius.sm,
-            background: role.admin ? colors.success : colors.accent,
-            color: "white",
-            fontSize: "0.75rem",
-          }}
-        >
-          {role.admin ? "Administrator" : "User"}
-        </span>
+        {role.admin ? "Administrator" : "User"}
       </div>
     </div>
   );

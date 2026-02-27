@@ -1,63 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import FullSidebarFilters from "../components/filters/FullSidebarFilters";
 import { Filters } from "../components/filters/Filters";
 import CardView from "../components/views/CardView";
 import TableView from "../components/views/TableView";
-import { dummyData, Material } from "../../data/dummyData";
+import { dummyData } from "../../data/dummyData";
 import { filterRuls } from "../components/filters/filterRules";
+import { spacing } from "../theme/designTokens";
+import MaterialDetailModal from "../components/views/MaterialDetailModal";
 
-
-const PAGE_SIZE = 12;
-
-const containerStyle: React.CSSProperties = {
-  display: "flex",
-  gap: "1rem",
-  margin: "1rem",
-  boxSizing: "border-box",
-  flexWrap: "wrap",
-};
-
-const sidebarStyle: React.CSSProperties = {
-  minWidth: "250px",
-  maxWidth: "300px",
-  flexShrink: 0,
-};
-
-const contentStyle: React.CSSProperties = {
-  flex: 1,
-  minWidth: "300px",
-  maxWidth: "100%",
-  overflow: "hidden",
-};
+const PAGE_SIZE = 6;
 
 const SearchPanel: React.FC = () => {
   const [filters, setFilters] = useState<Filters>({});
   const [view, setView] = useState<"card" | "table">("card");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<"id" | "project">("id");
 
 
   //  Apply all filters + search term
-  const applyFilters = () =>
-    dummyData.materials
-      .filter(material =>
-        filterRuls.every(rule => {
+  const results = useMemo(() => {
+    return dummyData.materials
+      .filter((material) =>
+        filterRuls.every((rule) => {
           const selected = (filters as any)[rule.key];
           return !selected?.length || rule.matches(material, selected);
         })
       )
       .filter(material =>
-        material.materialId.toString().includes(searchTerm)
+        search ? material.materialId.toString().includes(search) : true
+      )
+      .sort((a, b) =>
+        sort === "id" ? a.materialId - b.materialId : a.projectId - b.projectId
       );
-
-
-  const filtered = applyFilters();
+  }, [filters, search, sort]);
 
   // Pagination
-  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const paged = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   // CSV Export
-  const exportCSV = () => {
+  /*const exportCSV = () => {
     const rows = filtered.map(m => ({
       id: m.materialId,
       project: m.projectId,
@@ -77,64 +59,71 @@ const SearchPanel: React.FC = () => {
     a.download = "materials.csv";
     a.click();
     URL.revokeObjectURL(url);
-  };
+  };*/
 
   return (
-    <div>
+    <div style={{ display: "flex", gap: spacing.md }}>
       {/* Sidebar Filters */}
-      <div style={{ display: "flex", gap: "1rem" }}>
+      <div style={{ width: "260px", flexShrink: 0 }}>
         <FullSidebarFilters
           onFilterChange={setFilters}
-          isDropdown
         />
+      </div>
 
-        {/* Results  */}
-        <div style={{ flex: 1 }}>
+      {/* Results  */}
+      <div style={{ flex: 1 }}>
 
-          {/* View Toggle */}
-          <div style={{ marginBottom: "1rem" }}>
-            <input
-              placeholder="Search ID..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setPage(1);
-              }}
-            />
-          </div>
+        {/* View Toggle */}
+        <div style={{ marginBottom: spacing.md }}>
+          <input
+            placeholder="Search ID..."
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+            style={{ padding: spacing.sm }}
+          />
 
-          <div style={{ marginBottom: "1rem" }}>
-            <button onClick={() => setView("card")}>
-              Card View
-            </button>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as any)}
+            style={{ marginLeft: spacing.sm }}
+          >
+            <option value="id">Sort by ID</option>
+            <option value="project">Sort by Project</option>
+          </select>
+        </div>
 
-            <button
-              onClick={() => setView("table")} >
-              Table View
-            </button>
-          </div>
+        {/* Results */}
+        {view === "card" ? (
+          <CardView items={paged} />
+        ) : (
+          <TableView items={paged} />
+        )}
 
-          {/* Results */}
-          {view === "card" ? (
-            <CardView items={paged} />
-          ) : (
-            <TableView items={paged} />
-          )}
+        {/* Pagination */}
+        <div style={{ marginTop: spacing.md }}>
+          <button
+            disabled={page <= 1}
+            onClick={() => setPage(page - 1)}
+          >
+            Prev
+          </button>
 
-          {/* Pagination */}
-          <div style={{ marginTop: "1rem" }}>
-            {Array.from({ length: Math.ceil(filtered.length / PAGE_SIZE) }).map(
-              (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPage(i + 1)}>
-                  {i + 1}
-                </button>
-              ))}
-          </div>
+          <span style={{ margin: "0 1rem" }}>
+            Page {page} / {Math.ceil(results.length / PAGE_SIZE) || 1}
+          </span>
+
+          <button
+            disabled={page * PAGE_SIZE >= results.length}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </button>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

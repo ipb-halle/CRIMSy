@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
+import '../src/assets/css/App.css';
 
 import Login from './ui/pages/Login';
 import HeadMeta from './ui/components/HeadMeta';

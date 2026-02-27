@@ -11,13 +11,15 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
 
   if (!data) return null;
 
+  const prev = data.currentPage > 1;
+  const next = data.currentPage < data.totalPages;
+
   const { currentPage, totalPages } = data;
 
   return (
     <div
       style={{
-        marginTop: spacing.lg,
-        padding: spacing.lg,
+        padding: spacing.md,
         border: `1px solid  ${colors.border}`,
         borderRadius: radius.md,
         background: colors.surface,
@@ -27,36 +29,25 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
       <div>
         Users (Page {currentPage} of {totalPages})
       </div>
+      {data.users.map(u => (
+        <div key={u.id} style={{ marginTop: spacing.sm }}>
+          {u.name} ({u.membertype})
+        </div>
+      ))}
 
-      <div style={{ display: "grid", gap: spacing.sm }}>
-        {data.users.map((u) => (
-          <div
-            key={u.id}
-            style={{
-              padding: spacing.sm,
-              border: `1px solid ${colors.border}`,
-              borderRadius: radius.sm,
-            }}
-          >
-            <div><strong>ID: </strong>{u.id}</div>
-            <div><strong>Name: </strong>{u.name}</div>
-            <div><strong>Type: </strong>{u.membertype}</div>
-          </div>
-        ))}
-      </div>
 
       {/* Pagination controles */}
       <div style={{ marginTop: spacing.md }}>
         <button
           onClick={() => onPageChange?.(currentPage - 1)}
-          disabled={currentPage <= 1}
+          disabled={!prev}
         >
-          Previous
+          Prev
         </button>
 
         <button
           onClick={() => onPageChange?.(currentPage + 1)}
-          disabled={currentPage >= totalPages}
+          disabled={!next}
           style={{ marginLeft: spacing.sm }}
         >
           Next

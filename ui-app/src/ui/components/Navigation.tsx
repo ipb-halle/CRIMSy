@@ -1,13 +1,13 @@
 import React from "react";
 import { useTheme } from "../theme/ThemeContext";
-import { colors, spacing, radius } from "../theme/designTokens";
+import { spacing, radius } from "../theme/designTokens";
 
 interface Props {
   onLogout?: () => void;
 }
 
 const Navigation: React.FC<Props> = ({ onLogout }) => {
-const { theme } = useTheme();
+  const { theme } = useTheme();
 
   return (
     <nav
@@ -25,12 +25,12 @@ const { theme } = useTheme();
           style={{
             width: "34px",
             height: "34px",
-            background:  theme.accent,
+            background: theme.accent,
             borderRadius: radius.sm,
           }}
         />
         <span style={{ fontWeight: 600 }}>
-          IPB Material & Role Managements
+          IPB Laboratory Dashboard
         </span>
       </div>
 
@@ -41,7 +41,7 @@ const { theme } = useTheme();
             background: "transparent",
             border: "1px solid white",
             color: "white",
-            padding: "0.3rem 0.6rem",
+            padding: "0.3rem 0.7rem",
             borderRadius: radius.sm,
             cursor: "pointer",
           }}
