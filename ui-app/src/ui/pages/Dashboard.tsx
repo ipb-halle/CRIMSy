@@ -65,7 +65,13 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
     };
 
     return (
-        <div style={{ background: theme.background, minHeight: "100vh" }}>
+        <div style={{
+            background: theme.background,
+            minHeight: "0",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column"
+        }}>
 
             <Navigation
                 onLogout={() => {
@@ -135,7 +141,13 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
             )}
 
             {/* CONTENT AREA */}
-            <div style={{ padding: spacing.lg }}>{renderView()}</div>
+            <div style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: spacing.lg
+            }}>
+                {renderView()}
+            </div>
 
         </div>
     );

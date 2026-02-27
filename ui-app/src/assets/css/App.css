@@ -13,15 +13,28 @@ body,
   flex-direction: column;
 }
 
+
+
+@media (max-width: 768px) {
+  .App>.content {
+    padding: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .Footer {
+    text-align: center;
+  }
+
+  .Footer div {
+    width: 100%;
+  }
+}
+
+/*
 .App-logo {
   height: 40vmin;
   pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
 }
 
 .App-header {
@@ -46,10 +59,15 @@ body,
   to {
     transform: rotate(360deg);
   }
-}
+}*/
 
 .App>.content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-y: hidden;
+}
+
+.Footer {
+  flex-shrink: 0;
 }
