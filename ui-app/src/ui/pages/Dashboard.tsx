@@ -25,8 +25,6 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
     const { theme } = useTheme();
     const [view, setView] = useState<View>("home");
 
-    const isAdmin = roleInfo?.admin;
-
     const handleTab = (next: View) => {
         setView(next);
         if (next === "role") handleCheckRole();
@@ -53,12 +51,19 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                         style={{
                             padding: spacing.lg,
                             background: theme.surface,
+                            boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
                             borderRadius: radius.md,
                             border: `1px solid ${theme.border}`,
                         }}
                     >
-                        <h2>Welcome to IPB Laboratory System</h2>
-                        <p>Select a menu item to continue.</p>
+                        <h2
+                            style={{ color: "#003c78", marginBottom: spacing.sm }}
+                        >Welcome to IPB Laboratory System
+                        </h2>
+                        <p
+                            style={{ color: theme.textSecondary }}>
+                            Select a menu item to continue.
+                        </p>
                     </div>
                 );
         }
@@ -87,19 +92,20 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                     gap: spacing.md,
                     padding: spacing.sm,
                     borderBottom: `1px solid ${theme.border}`,
+                    background: "#ffffff",
                     flexWrap: "wrap",
                 }}
             >
                 <Tab
                     label="Home"
                     active={view === "home"}
-                    onClick={() => setView("home")} />
+                    onClick={() => setView("home")}
+                />
                 <Tab
                     label="Search"
                     active={view === "search"}
                     onClick={() => handleTab("search")}
                 />
-
                 <Tab
                     label="Role Check"
                     active={view === "role"}
@@ -110,7 +116,6 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                     active={view === "users"}
                     onClick={() => handleTab("users")}
                 />
-
             </div>
 
             {/* BREADCRUMB */}
@@ -162,10 +167,10 @@ const Tab: React.FC<TabProps> = ({ label, active, onClick }) => (
     <button
         onClick={onClick}
         style={{
-            padding: "0.4rem 0.9rem",
-            background: active ? "#00509d" : "white",
+            padding: "0.45rem 1.1rem",
+            background: active ? "#00509d" : "#fff",
             color: active ? "white" : "black",
-            border: active ? "none" : `1px solid #ccc`,
+            border: active ? "none" : `1px solid #d0dce8`,
             fontWeight: active ? 600 : 500,
             borderRadius: "999px",
             transition: "all 0.2s ease",

@@ -16,7 +16,7 @@ export const colors: ThemeColors = {
   primary: "#003f88",
   secondary: "#00509d",
   accent: "#2f9e44",
-  background: "#f4f7fb",
+  background: "#f4f8fb",
   surface: "#ffffff",
   border: "#dce4ed",
   textPrimary: "#102a43",

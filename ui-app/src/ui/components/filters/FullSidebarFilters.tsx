@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, CSSProperties } from "react";
+import React, { useState, CSSProperties } from "react";
 import { FilterGroup, Filters } from "./Filters";
 import { filterConfig } from "./filterConfig";
 import { radius, spacing } from "../../theme/designTokens";
@@ -56,40 +56,64 @@ const FullSidebarFilters: React.FC<Props> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdown]);
 */
+
   const renderCheckboxGroup = (group: FilterGroup) => {
     const isOpen = openSections[group.key];
     const selected = (filters[group.key] as any[]) || [];
 
     return (
-      <div key={group.key} style={{ marginBottom: "0.75rem" }}>
+      <div key={group.key} style={{ marginBottom: spacing.md }}>
         <div
           onClick={() => toggleSection(group.key)}
           style={{
             cursor: "pointer",
             display: "flex",
             justifyContent: "space-between",
-            fontWeight: "bold",
-            padding: "0.25rem 0",
-            //  color: theme.textPrimary,
+            alignItems: "center",
+            fontWeight: 600,
+            fontSize: "0.95rem",
+            color: "#003c78",
+            padding: "0.4rem 0",
+            borderBottom: "1px solid #e6eef5",
           }}
         >
           <span>{group.label}</span>
-          <span>{isOpen ? "▴" : "▾"}</span>
+          <span
+            style={{ fontSize: "0.8rem" }}>
+            {isOpen ? "▴" : "▾"}
+          </span>
         </div>
 
         {isOpen && (
-          <div style={{ paddingLeft: "0.5rem", marginTop: "0,25rem", textAlign: "left" }}>
+          <div
+            style={{
+              paddingLeft: spacing.sm,
+              marginTop: spacing.sm,
+              textAlign: "left"
+            }}
+          >
             {group.options.map((opt) => (
-              <div key={String(opt.value)}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(opt.value)}
-                    onChange={() => handleToggle(group.key, opt.value)}
-                  />
-                  {opt.label}
-                </label>
-              </div>
+              <label
+                key={String(opt.value)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                  marginBottom: "0.3rem",
+                  fontSize: "0.85rem",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={selected.includes(opt.value)}
+                  onChange={() => handleToggle(group.key, opt.value)}
+                  style={{
+                    accentColor: "#00509e",
+                  }}
+                />
+                {opt.label}
+              </label>
             ))}
           </div>
         )}
@@ -100,16 +124,16 @@ const FullSidebarFilters: React.FC<Props> = ({
   return (
     <div
       style={{
-        border: "1px solid #029ACF",
-        borderRadius: "6px",
+        border: "1px solid #d8e2ec",
+        borderRadius: radius.md,
         background: "#fff",
-        padding: "0.5rem",
-        maxHeight: "80vh",
+        padding: spacing.md,
+        maxHeight: "75vh",
         overflowY: "auto",
+        boxShadow: "0 4px 14px rgba(0,0,0,0.05)",
         ...style,
       }}
     >
-
       {filterConfig.map(renderCheckboxGroup)}
     </div>
   );

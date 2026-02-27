@@ -1,5 +1,5 @@
 import React from "react";
-import { radius, spacing } from "../theme/designTokens";
+import { spacing } from "../theme/designTokens";
 
 interface FooterProps {
     buildNumber?: string;
@@ -10,9 +10,15 @@ const Footer: React.FC<FooterProps> = ({ buildNumber }) => {
         <footer
             className="Footer"
             style={{
-                color: "white",
-                padding: spacing.lg,
-                background: "linear-gradient(90deg, #00509e, #00843d)"
+                position: "sticky",
+                bottom: 0,
+                width: "100%",
+                color: "#e8f4ff",
+                padding: "0.5rem 1rem",
+                fontSize: "0.8rem",
+                borderTop: "2px solid #00a651",
+                background: "linear-gradient(90deg, #003c78 0%, #007a33 100%)",
+                boxShadow: "0 -2px 8px rgba(0,0,0,0.08)"
             }}>
             <div
                 style={{
@@ -20,24 +26,29 @@ const Footer: React.FC<FooterProps> = ({ buildNumber }) => {
                     margin: "0 auto",
                     display: "flex",
                     justifyContent: "space-around",
+                    alignItems: "center",
                     flexWrap: "wrap",
                     gap: spacing.md,
-                }}>
-                <div>
-                    <span>CRIMSy-Version: {buildNumber || "N/A"}</span><br />
-                    <a href="/dsgvo" target="_blank" rel="noopener noreferrer">GDPR</a> /
-                    <a href="/funding" target="_blank" rel="noopener noreferrer">Funding</a>
+                }}
+            >
+
+                <div style={{ opacity: 0.9 }}>
+                    © {new Date().getFullYear()} Leibniz-Institut für Pflanzenbiochemie
                 </div>
-                <div style={{ textAlign: "right" }}>
-                    <span>© Leibniz-Institut f. Pflanzenbiochemie</span>
-                    <br />
-                    <span>Licensed under </span>
+
+                <div style={{ opacity: 0.85 }}>
+                    CRIMSy v{buildNumber || "N/A"}
+                </div>
+
+                <div style={{ display: "flex", gap: "1rem" }}>
+                    <a href="/dsgvo" style={{ color: "#cfe9ff", textDecoration: "none" }}>GDPR</a> /
+                    <a href="/funding" style={{ color: "#cfe9ff", textDecoration: "none" }}>Funding</a>
                     <a
                         href="https://www.apache.org/licenses/LICENSE-2.0"
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ color: "#dff" }}>
-                        Apache License, Version 2.0
+                        style={{ color: "#cfe9ff", textDecoration: "none" }}>
+                        Apache 2.0
                     </a>
                 </div>
             </div>
