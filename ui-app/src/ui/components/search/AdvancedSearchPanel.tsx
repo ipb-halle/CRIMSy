@@ -1,5 +1,5 @@
 import React from "react";
-import { colors, spacing, radius } from "../../theme/designTokens";
+import { colors, spacing, radius } from "../../../assets/css/theme/designTokens";
 
 interface Props {
   onSearch: () => void;

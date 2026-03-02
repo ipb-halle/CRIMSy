@@ -1,8 +1,8 @@
 import React from "react";
 import { useAuth } from "../../adapters/hooks/useAuth";
 import LoginForm from "../components/LoginForm";
-import { radius, spacing } from "../theme/designTokens";
-import { useTheme } from "../theme/ThemeContext";
+import { radius, spacing } from "../../assets/css/theme/designTokens";
+import { useTheme } from "../../assets/css/theme/ThemeContext";
 
 interface Props {
   onLogin: () => void;

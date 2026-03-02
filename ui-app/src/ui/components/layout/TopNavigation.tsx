@@ -1,5 +1,5 @@
 import React from "react";
-import { colors, spacing } from "../../theme/designTokens";
+import { colors, spacing } from "../../../assets/css/theme/designTokens";
 
 interface Props {
   active: string;

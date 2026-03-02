@@ -1,6 +1,6 @@
 import React from "react";
 import { PagedUsers } from "../../adapters/api";
-import { colors, spacing, radius } from "../theme/designTokens";
+import { colors, spacing, radius } from "../../assets/css/theme/designTokens";
 
 interface UsersPanelProps {
   data: PagedUsers | null;

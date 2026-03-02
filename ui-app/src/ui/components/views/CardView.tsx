@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Material, dummyData } from "../../../data/dummyData";
-import { colors, radius, spacing } from "../../theme/designTokens";
+import { colors, radius, spacing } from "../../../assets/css/theme/designTokens";
 import MaterialDetailModal from "./MaterialDetailModal";
 
 interface CardViewProps {
@@ -57,9 +57,7 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
                   backgroundColor: material.deactivated
                     ? colors.danger
                     : colors.success,
-                  color: material.deactivated
-                    ? colors.danger
-                    : colors.success,
+                  color: "white",
                 }}
               >
                 {material.deactivated ? "Deactivated" : "Active"}
@@ -67,14 +65,15 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
             </div>
           );
         })}
-      </div>
+      </div >
 
       {selectedMaterial && (
         <MaterialDetailModal
           material={selectedMaterial}
           onClose={() => setSelectedMaterial(null)}
         />
-      )}
+      )
+      }
     </>
   );
 };

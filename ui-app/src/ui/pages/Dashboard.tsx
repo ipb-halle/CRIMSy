@@ -4,8 +4,8 @@ import UsersPanel from "../components/UsersPanel";
 import RolePanel from "../components/RolePanel";
 import { useAuth } from "../../adapters/hooks/useAuth";
 import Navigation from "../components/Navigation";
-import { useTheme } from "../theme/ThemeContext";
-import { spacing, radius } from "../theme/designTokens";
+import { useTheme } from "../../assets/css/theme/ThemeContext";
+import { spacing, radius } from "../../assets/css/theme/designTokens";
 
 type View = "home" | "search" | "role" | "users";
 

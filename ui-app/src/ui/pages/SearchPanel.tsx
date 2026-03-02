@@ -5,7 +5,8 @@ import CardView from "../components/views/CardView";
 import TableView from "../components/views/TableView";
 import { dummyData } from "../../data/dummyData";
 import { filterRuls } from "../components/filters/filterRules";
-import { spacing } from "../theme/designTokens";
+import styles from "../../assets/css/components/SearchPanel.module.css";
+//import styles from "./SearchPanel.module.css";
 
 const PAGE_SIZE = 6;
 
@@ -15,9 +16,9 @@ const SearchPanel: React.FC = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<"id" | "project">("id");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-
-  //  Apply all filters + search term
+  // Apply all filters + search term
   const results = useMemo(() => {
     return dummyData.materials
       .filter((material) =>
@@ -63,143 +64,105 @@ const SearchPanel: React.FC = () => {
   };*/
 
   return (
-    <div style={{
-      display: "flex",
-      gap: spacing.lg,
-      alignItems: "flex-start"
-    }}
-    >
-      {/* Sidebar Filters */}
-      <div style={{ width: "260px", flexShrink: 0 }}>
-        <FullSidebarFilters
-          onFilterChange={setFilters}
+    <div className={styles.layout}>
+
+      {/* Desktop Sidebar */}
+      <aside className={styles.sidebar}>
+        <FullSidebarFilters onFilterChange={setFilters} />
+      </aside>
+
+      {/* MOBILE DRAWER OVERLAY */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="drawer-overlay"
         />
+      )}
+
+      {/* Mobile Drawer */}
+      <div className={`mobile-drawer ${sidebarOpen ? "open" : ""}`}>
+        <button onClick={() => setSidebarOpen(false)}>Close</button>
+        <FullSidebarFilters onFilterChange={setFilters} />
       </div>
 
-      {/* Results  */}
-      <div style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        minHeight: 0
-      }}
-      >
+      {/* Results Area */}
+      <main className={styles.results}>
 
-        {/* View Toggle */}
-        <div style={{
-          marginBottom: spacing.lg,
-          display: "flex",
-          flexWrap: "wrap",
-          gap: spacing.sm,
-          alignItems: "center",
-        }}
+        {/* Mobile Filter Button */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="mobile-only"
         >
+          Filters
+        </button>
+
+        {/* View & Search Controls */}
+        <div className={styles.controls}>
           <input
+            className={styles.input}
             placeholder="Search Material ID..."
             value={search}
             onChange={(e) => {
               setPage(1);
               setSearch(e.target.value);
             }}
-            style={{
-              padding: "0.45rem 0.75rem",
-              borderRadius: "6px",
-              border: "1px solid #cfd9e3",
-              minWidth: "180px",
-            }}
           />
 
           <select
+            className={styles.select}
             value={sort}
             onChange={(e) => setSort(e.target.value as any)}
-            style={{
-              padding: "0.45rem 0.6rem",
-              borderRadius: "6px",
-              border: "1px solid #cfd9e3",
-            }}
           >
             <option value="id">Sort by ID</option>
             <option value="project">Sort by Project</option>
           </select>
+        </div>
 
+        {/* View Section */}
+        <div className={styles.viewSwitch}>
           <button
-            onClick={() => setView(view === "card" ? "table" : "card")}
-            style={{
-              padding: "0.45rem 0.9rem",
-              background: "#00509e",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
-          >
-            {view === "card" ? "Table View" : "Card View"}
-          </button>
+            type="button"
+            onClick={() => setView("card")}
+            className={view === "card" ? styles.activeView : ""}
+          >Card View</button>
+          <button
+            type="button"
+            onClick={() => setView("table")}
+            className={view === "table" ? styles.activeView : ""}
+          >Table View</button>
         </div>
 
         {/* Results */}
-        <div
-          style={{
-            background: "#ffffff",
-            padding: spacing.lg,
-            borderRadius: "8px",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
-          }}
-        >
+        <div>
           {view === "card" ? (
             <CardView items={paged} />
           ) : (
             <TableView items={paged} />
           )}
         </div>
+
         {/* Pagination */}
-        <div
-          style={{
-            marginTop: spacing.lg,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: spacing.md,
-          }}
-        >
+        <div className={styles.pagination}>
           <button
             disabled={page <= 1}
             onClick={() => setPage(page - 1)}
-            style={{
-              padding: "0.4rem 0.9rem",
-              background: "#00509e",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              opacity: page <= 1 ? 0.5 : 1,
-            }}
           >
             Prev
           </button>
 
-          <span >
+          <span>
             Page {page} / {Math.ceil(results.length / PAGE_SIZE) || 1}
           </span>
 
           <button
             disabled={page * PAGE_SIZE >= results.length}
             onClick={() => setPage(page + 1)}
-            style={{
-              padding: "0.4rem 0.9rem",
-              background: "#00509e",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              opacity: page * PAGE_SIZE >= results.length ? 0.5 : 1,
-            }}
           >
             Next
           </button>
         </div>
-      </div>
-    </div>
+      </main>
+    </div >
   );
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { useTheme } from "../theme/ThemeContext";
-import { spacing, radius } from "../theme/designTokens";
+import { useTheme } from "../../assets/css/theme/ThemeContext";
+import { spacing, radius } from "../../assets/css/theme/designTokens";
 
 interface Props {
   onLogout?: () => void;

@@ -1,18 +1,19 @@
 import React, { useState, CSSProperties } from "react";
 import { FilterGroup, Filters } from "./Filters";
 import { filterConfig } from "./filterConfig";
-import { radius, spacing } from "../../theme/designTokens";
-import { useTheme } from "../../theme/ThemeContext";
+import { radius, spacing } from "../../../assets/css/theme/designTokens";
+import { useTheme } from "../../../assets/css/theme/ThemeContext";
 
 interface Props {
   onFilterChange: (filters: Filters) => void;
-  style?: CSSProperties;
-  isDropdown?: boolean;
+  /*style?: CSSProperties;
+  isDropdown?: boolean;*/
 }
 
 const FullSidebarFilters: React.FC<Props> = ({
-  onFilterChange,
-  style,
+  onFilterChange
+  //,
+  //style,
 }) => {
   const [filters, setFilters] = useState<Filters>({});
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
@@ -37,7 +38,7 @@ const FullSidebarFilters: React.FC<Props> = ({
       ...prev,
       [key]: !prev[key],
     }));
-  }
+  };
 
   /*// Close dropdown on outside click
   useEffect(() => {
@@ -62,24 +63,18 @@ const FullSidebarFilters: React.FC<Props> = ({
     const selected = (filters[group.key] as any[]) || [];
 
     return (
-      <div key={group.key} style={{ marginBottom: spacing.md }}>
+      <div key={group.key} style={{ marginBottom: "0.75rem" }}>
         <div
           onClick={() => toggleSection(group.key)}
           style={{
             cursor: "pointer",
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
-            fontWeight: 600,
-            fontSize: "0.95rem",
-            color: "#003c78",
-            padding: "0.4rem 0",
-            borderBottom: "1px solid #e6eef5",
+            fontWeight: "bold",
           }}
         >
           <span>{group.label}</span>
-          <span
-            style={{ fontSize: "0.8rem" }}>
+          <span>
             {isOpen ? "▴" : "▾"}
           </span>
         </div>
@@ -87,8 +82,8 @@ const FullSidebarFilters: React.FC<Props> = ({
         {isOpen && (
           <div
             style={{
-              paddingLeft: spacing.sm,
-              marginTop: spacing.sm,
+              //paddingLeft: spacing.sm,
+              marginTop: "0.25rem",
               textAlign: "left"
             }}
           >
@@ -96,21 +91,13 @@ const FullSidebarFilters: React.FC<Props> = ({
               <label
                 key={String(opt.value)}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.4rem",
-                  marginBottom: "0.3rem",
-                  fontSize: "0.85rem",
-                  cursor: "pointer",
+                  display: "block"
                 }}
               >
                 <input
                   type="checkbox"
                   checked={selected.includes(opt.value)}
                   onChange={() => handleToggle(group.key, opt.value)}
-                  style={{
-                    accentColor: "#00509e",
-                  }}
                 />
                 {opt.label}
               </label>
@@ -124,14 +111,12 @@ const FullSidebarFilters: React.FC<Props> = ({
   return (
     <div
       style={{
-        border: "1px solid #d8e2ec",
-        borderRadius: radius.md,
-        background: "#fff",
-        padding: spacing.md,
-        maxHeight: "75vh",
+        border: `1px solid ${theme.border || "#ccc"}`,
+        borderRadius: radius.sm,
+        background: theme.surface || "#fff",
+        padding: "0.75rem",
+        maxHeight: "80vh",
         overflowY: "auto",
-        boxShadow: "0 4px 14px rgba(0,0,0,0.05)",
-        ...style,
       }}
     >
       {filterConfig.map(renderCheckboxGroup)}

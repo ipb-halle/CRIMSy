@@ -1,6 +1,6 @@
 import React from "react";
 import { Material, dummyData } from "../../../data/dummyData";
-import { useTheme } from "../../theme/ThemeContext";
+import { useTheme } from "../../../assets/css/theme/ThemeContext";
 
 interface TableViewProps {
   items: Material[];

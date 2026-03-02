@@ -1,5 +1,5 @@
 import React from "react";
-import { spacing } from "../theme/designTokens";
+import { spacing } from "../../assets/css/theme/designTokens";
 
 interface FooterProps {
     buildNumber?: string;

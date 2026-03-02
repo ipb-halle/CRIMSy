@@ -3,7 +3,7 @@ import Login from './ui/pages/Login';
 import Footer from './ui/components/Footer';
 import Dashboard from './ui/pages/Dashboard';
 import { useAuth } from "./adapters/hooks/useAuth";
-import { ThemeProvider } from "./ui/theme/ThemeContext";
+import { ThemeProvider } from "./assets/css/theme/ThemeContext";
 import '../src/assets/css/App.css';
 
 const App: React.FC = () => {

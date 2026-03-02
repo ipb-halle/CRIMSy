@@ -1,6 +1,6 @@
 import React from "react";
 import { Material, dummyData } from "../../../data/dummyData";
-import { colors, radius, spacing } from "../../theme/designTokens";
+import { colors, radius, spacing } from "../../../assets/css/theme/designTokens";
 
 interface Props {
   material: Material;

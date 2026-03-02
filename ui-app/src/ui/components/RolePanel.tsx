@@ -1,6 +1,6 @@
 import React from "react";
 import { RoleResponse } from "../../adapters/api";
-import { colors, radius, spacing } from "../theme/designTokens";
+import { colors, radius, spacing } from "../../assets/css/theme/designTokens";
 
 interface Props {
   role: RoleResponse | null;

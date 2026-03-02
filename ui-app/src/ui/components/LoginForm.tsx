@@ -1,7 +1,7 @@
 import React, { FormEvent } from "react";
 import { LoginRequest } from "../../adapters/api";
-import { useTheme } from "../theme/ThemeContext";
-import { radius, spacing } from "../theme/designTokens";
+import { useTheme } from "../../assets/css/theme/ThemeContext";
+import { radius, spacing } from "../../assets/css/theme/designTokens";
 
 interface Props {
   loginrequest: LoginRequest;

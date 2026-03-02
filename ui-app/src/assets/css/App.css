@@ -7,7 +7,6 @@ body {
   box-sizing: border-box;
 }
 
-
 #root {
   height: 100%;
   margin: 0;
@@ -22,15 +21,82 @@ body {
   flex-direction: column;
 }
 
-
-
-@media (max-width: 768px) {
-  .App>.content {
-    padding: 0;
-  }
+/* Prevent footer overflow */
+.App>.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
+.Footer {
+  flex-shrink: 0;
+}
+
+/* Layout */
+.search-layout {
+  display: flex;
+  gap: 1rem;
+}
+
+.sidebar-desktop {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+.results-area {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Mobile Drawer*/
+.mobile-only {
+  display: none;
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 10;
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 260px;
+  height: 100%;
+  background: var(--color-surface);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+  transition: left 0.25s ease;
+  z-index: 20;
+  padding: var(--space-md);
+  overflow-y: auto;
+}
+
+.mobile-drawer.open {
+  left: 0;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
+  .search-layout {
+    display: block;
+  }
+
+  .sidebar-desktop {
+    display: none;
+  }
+
+  .mobile-only {
+    display: inline-block;
+    margin-bottom: var(--space-md);
+  }
+
+  .App>.content {
+    padding: 0.5rem;
+  }
+
   .Footer {
     text-align: center;
   }
@@ -38,45 +104,4 @@ body {
   .Footer div {
     width: 100%;
   }
-}
-
-/*
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}*/
-
-.App>.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: hidden;
-}
-
-.Footer {
-  flex-shrink: 0;
 }
