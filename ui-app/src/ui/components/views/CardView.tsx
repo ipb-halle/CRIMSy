@@ -21,6 +21,7 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
       >
 
         {items.map(material => {
+          const name = dummyData.materials.find(m => m.materialName === material.materialName);
           const project = dummyData.projects.find(p => p.id === material.projectId);
           const owner = dummyData.usersGroups.find(u => u.id === material.ownerId);
           const server = dummyData.servers.find(s => s.id === material.serverId);
@@ -39,7 +40,7 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
               }}
             >
               <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>
-                Material #{material.materialId}
+                {material.materialName.toUpperCase()}
               </div>
 
               <div><strong>Project:</strong> {project?.name}</div>

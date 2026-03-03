@@ -6,8 +6,9 @@ import { useAuth } from "../../adapters/hooks/useAuth";
 import Navigation from "../components/Navigation";
 import { useTheme } from "../../assets/css/theme/ThemeContext";
 import { spacing, radius } from "../../assets/css/theme/designTokens";
+import AdminAddMaterial from "./admin/AdminAddMaterial";
 
-type View = "home" | "search" | "role" | "users";
+type View = "home" | "search" | "role" | "users" | "addMaterial";
 
 interface Props {
     onLogout: () => void;
@@ -48,6 +49,8 @@ const Dashboard: React.FC<Props> = (
                         onPageChange={(page) => handleFetchUsers(page)}
                     />
                 );
+            case "addMaterial":
+                return <AdminAddMaterial />;
 
             default:
                 return (
@@ -122,6 +125,12 @@ const Dashboard: React.FC<Props> = (
                     active={view === "users"}
                     onClick={() => handleTab("users")}
                 />
+                <Tab
+                    label="Add Material"
+                    active={view === "addMaterial"}
+                    onClick={() => handleTab("addMaterial")}
+                />
+
             </div>
 
             {/* BREADCRUMB */}

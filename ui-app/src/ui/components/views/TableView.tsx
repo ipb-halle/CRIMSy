@@ -23,6 +23,7 @@ const TableView: React.FC<TableViewProps> = (
       <thead>
         <tr style={{ backgroundColor: theme.primary, color: "white" }}>
           <th style={{ padding: "0.75rem" }}>ID</th>
+          <th style={{ padding: "0.75rem" }}>Name</th>
           <th style={{ padding: "0.75rem" }}>Project</th>
           <th style={{ padding: "0.75rem" }}>Owner</th>
           <th style={{ padding: "0.75rem" }}>Server</th>
@@ -30,15 +31,19 @@ const TableView: React.FC<TableViewProps> = (
         </tr>
       </thead>
       <tbody>
-        {items.map(m => {
-          const project = dummyData.projects.find(p => p.id === m.projectId);
-          const owner = dummyData.usersGroups.find(u => u.id === m.ownerId);
-          const server = dummyData.servers.find(s => s.id === m.serverId);
+        {items.map(material => {
+          const name = dummyData.materials.find(m => m.materialName === material.materialName);
+          const project = dummyData.projects.find(p => p.id === material.projectId);
+          const owner = dummyData.usersGroups.find(u => u.id === material.ownerId);
+          const server = dummyData.servers.find(s => s.id === material.serverId);
 
           return (
-            <tr key={m.materialId}>
+            <tr key={material.materialId}>
               <td style={{ padding: "0.75rem", borderBottom: `1px solid ${theme.border}` }}>
-                {m.materialId}
+                {material.materialId}
+              </td>
+              <td style={{ padding: "0.75rem", borderBottom: `1px solid ${theme.border}` }}>
+                {name?.materialName}
               </td>
               <td style={{ padding: "0.75rem", borderBottom: `1px solid ${theme.border}` }}>
                 {project?.name}
@@ -50,7 +55,7 @@ const TableView: React.FC<TableViewProps> = (
                 {server?.name}
               </td>
               <td style={{ padding: "0.75rem", borderBottom: `1px solid ${theme.border}` }}>
-                {m.deactivated ? "Deactivated" : "Active"}
+                {material.deactivated ? "Deactivated" : "Active"}
               </td>
             </tr>
           );

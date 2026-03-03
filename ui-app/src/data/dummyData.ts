@@ -15,6 +15,7 @@ export interface MaterialIndex {
 
 export interface Material {
   materialId: number;
+  materialName: string;
   materialTypeId: number;
   projectId: number;
   ownerId: number;
@@ -90,12 +91,12 @@ export const dummyData = {
   ],
 
   materials: [
-    { materialId: 1, materialTypeId: 1, projectId: 2, ownerId: 1, serverId: 3, deactivated: false },
-    { materialId: 2, materialTypeId: 5, projectId: 3, ownerId: 2, serverId: 2, deactivated: false },
-    { materialId: 3, materialTypeId: 3, projectId: 1, ownerId: 1, serverId: 3, deactivated: true },
-    { materialId: 4, materialTypeId: 7, projectId: 2, ownerId: 3, serverId: 1, deactivated: true },
-    { materialId: 5, materialTypeId: 4, projectId: 5, ownerId: 1, serverId: 3, deactivated: true },
-    { materialId: 6, materialTypeId: 2, projectId: 4, ownerId: 2, serverId: 1, deactivated: true },
+    { materialId: 1, materialName: "benzin", materialTypeId: 4, projectId: 2, ownerId: 1, serverId: 3, deactivated: false },
+    { materialId: 2, materialName: "sulfat", materialTypeId: 2, projectId: 1, ownerId: 2, serverId: 2, deactivated: false },
+    { materialId: 3, materialName: "oil", materialTypeId: 3, projectId: 3, ownerId: 1, serverId: 3, deactivated: true },
+    { materialId: 4, materialName: "water", materialTypeId: 7, projectId: 4, ownerId: 3, serverId: 1, deactivated: true },
+    { materialId: 5, materialName: "carbon", materialTypeId: 4, projectId: 5, ownerId: 1, serverId: 3, deactivated: true },
+    { materialId: 6, materialName: "gas", materialTypeId: 2, projectId: 4, ownerId: 2, serverId: 1, deactivated: true },
   ] as Material[],
 
   storages: [

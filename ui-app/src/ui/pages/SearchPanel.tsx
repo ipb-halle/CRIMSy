@@ -3,12 +3,15 @@ import FullSidebarFilters from "../components/filters/FullSidebarFilters";
 import { Filters } from "../components/filters/Filters";
 import CardView from "../components/views/CardView";
 import TableView from "../components/views/TableView";
-import { dummyData } from "../../data/dummyData";
+import { materialRepository } from "../../infrastructure/repositories/InMemoryMaterialRepository";
+import { MaterialService } from "../../domain/material/MaterialService";
 import { filterRuls } from "../components/filters/filterRules";
 import styles from "../../assets/css/components/SearchPanel.module.css";
 import ExportDropdown from "../components/ExportDropdown";
 
 const PAGE_SIZE = 6;
+
+const materialService = new MaterialService(materialRepository);
 
 const SearchPanel: React.FC = () => {
   const [filters, setFilters] = useState<Filters>({});
@@ -18,9 +21,11 @@ const SearchPanel: React.FC = () => {
   const [sort, setSort] = useState<"id" | "project">("id");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+
   // Apply all filters + search term
   const results = useMemo(() => {
-    return dummyData.materials
+    return materialService
+      .getAllMaterials()
       .filter((material) =>
         filterRuls.every((rule) => {
           const selected = (filters as any)[rule.key];
@@ -28,7 +33,9 @@ const SearchPanel: React.FC = () => {
         })
       )
       .filter(material =>
-        search ? material.materialId.toString().includes(search) : true
+        search
+          ? material.materialId.toString().includes(search)
+          : true
       )
       .sort((a, b) =>
         sort === "id"
@@ -131,7 +138,9 @@ const SearchPanel: React.FC = () => {
 
         {/* Results */}
         <div className={styles.resultsGrid}>
-          {view === "card" ? (
+          {results.length === 0 ? (
+            <div>No results found! </div>
+          ) : view === "card" ? (
             <CardView items={paged} />
           ) : (
             <TableView items={paged} />
@@ -148,7 +157,8 @@ const SearchPanel: React.FC = () => {
           </button>
 
           <span>
-            Page {page} / {Math.ceil(results.length / PAGE_SIZE) || 1}
+            Page {page} /{""}
+            {Math.ceil(results.length / PAGE_SIZE) || 1}
           </span>
 
           <button
