@@ -41,20 +41,17 @@ export const useAuth = () => {
     }
   };
 
-  const expireSession = (message: string) => {
-    clearLogoutTimer();
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    setIsLoggedIn(false);
-    setResult({ message });
-    setRoleInfo(null);
-    setUsersList(null);
-    setLoginRequest({
-      login: "",
-      password: "",
-    });
-
-  };
+  const expireSession =
+    (message: string) => {
+      clearLogoutTimer();
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      setIsLoggedIn(false);
+      setResult({ message });
+      setRoleInfo(null);
+      setUsersList(null);
+      setLoginRequest({ login: "", password: "", });
+    };
 
   const startSessionTimer = (expiresInSeconds?: number) => {
     clearLogoutTimer();
@@ -84,9 +81,7 @@ export const useAuth = () => {
       const data = await api.loginAPI(loginRequest);
 
       if (!data.token || !data.username) {
-        setResult({
-          message: data.message ?? "Login failed, No response from server!"
-        });
+        setResult({ message: data.message ?? "Login failed, No response from server!" });
         return;
       }
 
@@ -94,9 +89,6 @@ export const useAuth = () => {
       localStorage.setItem("username", data.username);
       setIsLoggedIn(true);
       setResult({ message: data.message });
-
-      /*      setRoleInfo(null);
-            setUsersList(null);*/
       startSessionTimer(data.expiresInSeconds);
       if (onSuccess) onSuccess();
     } catch {

@@ -21,7 +21,7 @@ const LoginForm: React.FC<Props> = ({
 
   return (
     <form onSubmit={onSubmit}>
-      <div style={{ marginBottom: spacing.md }}>
+      <div style={{ marginBottom: spacing.md }} >
         <input
           style={{
             width: "100%",
@@ -31,8 +31,7 @@ const LoginForm: React.FC<Props> = ({
           }}
           placeholder="Username"
           value={loginrequest.login}
-          onChange={(e) =>
-            setLoginRequest({ ...loginrequest, login: e.target.value })
+          onChange={(e) => setLoginRequest({ ...loginrequest, login: e.target.value })
           }
         />
         {errors.username && (
@@ -40,7 +39,8 @@ const LoginForm: React.FC<Props> = ({
         )}
       </div>
 
-      <div style={{ marginBottom: spacing.md }}>
+      <div
+        style={{ marginBottom: spacing.md }}>
         <input
           type="password"
           style={{
@@ -51,9 +51,7 @@ const LoginForm: React.FC<Props> = ({
           }}
           placeholder="Password"
           value={loginrequest.password}
-          onChange={(e) =>
-            setLoginRequest({ ...loginrequest, password: e.target.value })
-          }
+          onChange={(e) => setLoginRequest({ ...loginrequest, password: e.target.value })}
         />
         {errors.password && (
           <div style={{ color: theme.danger }}>{errors.password}</div>

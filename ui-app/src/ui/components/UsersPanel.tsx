@@ -7,7 +7,10 @@ interface UsersPanelProps {
   onPageChange?: (page: number) => void;
 }
 
-const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
+const UsersPanel: React.FC<UsersPanelProps> = (
+  { data,
+    onPageChange }
+) => {
 
   if (!data) return null;
 
@@ -29,15 +32,18 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ data, onPageChange }) => {
       <div>
         Users (Page {currentPage} of {totalPages})
       </div>
-      {data.users.map(u => (
-        <div key={u.id} style={{ marginTop: spacing.sm }}>
-          {u.name} ({u.membertype})
-        </div>
-      ))}
+      {data.users.map(
+        u => (
+          <div key={u.id} style={{ marginTop: spacing.sm }}>
+            {u.name} ({u.membertype})
+          </div>
+        ))}
 
 
       {/* Pagination controles */}
-      <div style={{ marginTop: spacing.md }}>
+      <div
+        style={{ marginTop: spacing.md }}
+      >
         <button
           onClick={() => onPageChange?.(currentPage - 1)}
           disabled={!prev}

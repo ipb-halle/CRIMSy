@@ -3,17 +3,9 @@ import React from "react";
 const HeadMeta: React.FC = () => {
     return (
         <>
-            {/*}
-            <meta httpEquiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; frame-src 'self' blob:;" />
-            <meta httpEquiv="X-Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; frame-src 'self' blob:;" />
-            <meta httpEquiv="X-WebKit-CSP" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; frame-src 'self' blob:;" /> 
-            */}
-            <meta httpEquiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; connect-src 'self' https://compchem17.ipb-halle.de;   frame-src 'self' blob:;
-  "
+            <meta httpEquiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; connect-src 'self' https://compchem17.ipb-halle.de;   frame-src 'self' blob:;"
             />
-
             <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-
             <meta name="apple-mobile-web-app-capable" content="yes" />
             {/* Apple Icons */}
             <link rel="apple-touch-icon" sizes="57x57" href="/assets/img/systemIcons/apple-icon-57x57.png" />

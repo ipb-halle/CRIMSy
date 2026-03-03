@@ -13,7 +13,9 @@ interface Props {
     onLogout: () => void;
 }
 
-const Dashboard: React.FC<Props> = ({ onLogout }) => {
+const Dashboard: React.FC<Props> = (
+    { onLogout }
+) => {
     const {
         roleInfo,
         usersList,
@@ -25,7 +27,9 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
     const { theme } = useTheme();
     const [view, setView] = useState<View>("home");
 
-    const handleTab = (next: View) => {
+    const handleTab = (
+        next: View
+    ) => {
         setView(next);
         if (next === "role") handleCheckRole();
         if (next === "users") handleFetchUsers(1);
@@ -58,11 +62,13 @@ const Dashboard: React.FC<Props> = ({ onLogout }) => {
                     >
                         <h2
                             style={{ color: "#003c78", marginBottom: spacing.sm }}
-                        >Welcome to IPB Laboratory System
+                        >
+                            Welcome to IPB Laboratory System
                         </h2>
                         <p
-                            style={{ color: theme.textSecondary }}>
-                            Select a menu item to continue.
+                            style={{ color: theme.textSecondary }}
+                        >
+                            Select a menu item to continue!
                         </p>
                     </div>
                 );
@@ -163,7 +169,9 @@ interface TabProps {
     active: boolean;
     onClick: () => void;
 }
-const Tab: React.FC<TabProps> = ({ label, active, onClick }) => (
+const Tab: React.FC<TabProps> = (
+    { label, active, onClick }
+) => (
     <button
         onClick={onClick}
         style={{

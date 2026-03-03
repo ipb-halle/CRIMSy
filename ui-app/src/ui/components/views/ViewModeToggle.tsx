@@ -1,4 +1,3 @@
-// src/ui/components/views/ViewModeToggle.tsx
 import React from "react";
 
 interface Props {

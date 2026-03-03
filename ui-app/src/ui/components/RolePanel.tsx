@@ -6,7 +6,9 @@ interface Props {
   role: RoleResponse | null;
 }
 
-const RolePanel: React.FC<Props> = ({ role }) => {
+const RolePanel: React.FC<Props> = (
+  { role }
+) => {
   if (!role) return null;
 
   return (

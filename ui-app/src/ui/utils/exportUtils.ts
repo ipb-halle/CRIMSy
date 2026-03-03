@@ -1,6 +1,4 @@
-import { blob } from "stream/consumers";
 import { Material } from "../../data/dummyData";
-import { isTemplateExpression } from "typescript";
 
 export type ExportFormat = "csv" | "json" | "xlsx" | "pdf";
 
@@ -10,12 +8,18 @@ export interface ExportOptions {
     branding?: boolean;
 }
 
-export const exportToJSON = (items: Material[], options: ExportOptions = {}) => {
+export const exportToJSON = (
+    items: Material[],
+    options: ExportOptions = {}
+) => {
     const blob = new Blob([JSON.stringify(items, null, 2)], { type: "application/json" });
     triggerDownload(blob, options.filename || "export.json");
 }
 
-export const exportToCSV = (items: Material[], options: ExportOptions = {}) => {
+export const exportToCSV = (
+    items: Material[],
+    options: ExportOptions = {}
+) => {
     const rows = items.map(m => ({
         id: m.materialId,
         project: m.projectId,
@@ -36,8 +40,10 @@ export const exportToCSV = (items: Material[], options: ExportOptions = {}) => {
     triggerDownload(blob, options.filename || "export.csv");
 };
 
-export const exportToExcel = async (items: Material[],
-    options: ExportOptions = {}) => {
+export const exportToExcel = async (
+    items: Material[],
+    options: ExportOptions = {}
+) => {
     const { utils, writeFile } = await import("xlsx");
     const rows = items.map(m => ({
         ID: m.materialId,
@@ -53,7 +59,10 @@ export const exportToExcel = async (items: Material[],
     writeFile(wb, options.filename || "export.xlsx");
 };
 
-export const exportToPDF = async (items: Material[], options: ExportOptions = {}) => {
+export const exportToPDF = async (
+    items: Material[],
+    options: ExportOptions = {}
+) => {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
 
@@ -76,7 +85,10 @@ export const exportToPDF = async (items: Material[], options: ExportOptions = {}
     doc.save(options.filename || "export.pdf");
 };
 
-const triggerDownload = (blob: Blob, filename: string) => {
+const triggerDownload = (
+    blob: Blob,
+    filename: string
+) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

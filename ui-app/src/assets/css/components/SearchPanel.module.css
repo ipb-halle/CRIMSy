@@ -63,11 +63,6 @@
     border-color: var(--color-primary);
 }
 
-/*
-.viewSwitch button+button {
-    margin-left: var(--space-sm);
-}*/
-
 .pagination {
     margin-top: var(--space-md);
 }
@@ -94,7 +89,6 @@
     .mobileDrawer {
         display: block;
     }
-
 }
 
 .drawerOverlay {

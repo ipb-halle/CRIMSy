@@ -6,14 +6,10 @@ import { useTheme } from "../../../assets/css/theme/ThemeContext";
 
 interface Props {
   onFilterChange: (filters: Filters) => void;
-  /*style?: CSSProperties;
-  isDropdown?: boolean;*/
 }
 
 const FullSidebarFilters: React.FC<Props> = ({
   onFilterChange
-  //,
-  //style,
 }) => {
   const [filters, setFilters] = useState<Filters>({});
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
@@ -40,25 +36,8 @@ const FullSidebarFilters: React.FC<Props> = ({
     }));
   };
 
-  /*// Close dropdown on outside click
-  useEffect(() => {
-    if (!isDropdown) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isDropdown]);
-*/
-
-  const renderCheckboxGroup = (group: FilterGroup) => {
+  const renderCheckboxGroup = (
+    group: FilterGroup) => {
     const isOpen = openSections[group.key];
     const selected = (filters[group.key] as any[]) || [];
 
@@ -74,15 +53,12 @@ const FullSidebarFilters: React.FC<Props> = ({
           }}
         >
           <span>{group.label}</span>
-          <span>
-            {isOpen ? "▴" : "▾"}
-          </span>
+          <span> {isOpen ? "▴" : "▾"} </span>
         </div>
 
         {isOpen && (
           <div
             style={{
-              //paddingLeft: spacing.sm,
               marginTop: "0.25rem",
               textAlign: "left"
             }}
@@ -90,9 +66,7 @@ const FullSidebarFilters: React.FC<Props> = ({
             {group.options.map((opt) => (
               <label
                 key={String(opt.value)}
-                style={{
-                  display: "block"
-                }}
+                style={{ display: "block" }}
               >
                 <input
                   type="checkbox"

@@ -6,7 +6,9 @@ interface Props {
   onLogout?: () => void;
 }
 
-const Navigation: React.FC<Props> = ({ onLogout }) => {
+const Navigation: React.FC<Props> = (
+  { onLogout }
+) => {
   const { theme } = useTheme();
 
   return (
@@ -20,7 +22,8 @@ const Navigation: React.FC<Props> = ({ onLogout }) => {
         alignItems: "center",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
+      <div
+        style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
         <div
           style={{
             width: "34px",

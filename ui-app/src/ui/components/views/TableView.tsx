@@ -6,7 +6,9 @@ interface TableViewProps {
   items: Material[];
 }
 
-const TableView: React.FC<TableViewProps> = ({ items }) => {
+const TableView: React.FC<TableViewProps> = (
+  { items }
+) => {
 
   const { theme } = useTheme();
 

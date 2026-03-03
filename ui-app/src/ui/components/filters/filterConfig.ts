@@ -1,7 +1,6 @@
 import { dummyData } from "../../../data/dummyData";
 import { FilterGroup } from "./Filters";
 
-
 export const filterConfig: FilterGroup[] = [
     {
         key: "materialTypeIds",

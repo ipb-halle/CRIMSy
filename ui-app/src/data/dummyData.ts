@@ -55,17 +55,18 @@ export const dummyData = {
   ],
 
   projects: [
-    { id: 1, name: "Project A (CHEMICAL PROJECT)" },
-    { id: 2, name: "Project B (IT PROJECT)" },
-    { id: 3, name: "Project C (FINANCE PROJECT)" },
-    { id: 4, name: "Project D (BIOLOGICAL PROJECT)" },
-    { id: 5, name: "Project E (BIOCHEMICAL PROJECT)" },
+    { id: 1, name: "Project A (CHEMICAL)" },
+    { id: 2, name: "Project B (IT)" },
+    { id: 3, name: "Project C (FINANCE)" },
+    { id: 4, name: "Project D (BIOLOGICAL)" },
+    { id: 5, name: "Project E (BIOCHEMICAL)" },
   ],
 
   usersGroups: [
-    { id: 1, name: "Alice", memberType: "U" },
-    { id: 2, name: "Bob", memberType: "U" },
-    { id: 3, name: "Charlie", memberType: "U" },
+    { id: 1, name: "Admin", memberType: "A" },
+    { id: 2, name: "Alice", memberType: "U" },
+    { id: 3, name: "Bob", memberType: "U" },
+    { id: 4, name: "Charlie", memberType: "U" },
   ],
 
   storageClasses: [

@@ -8,7 +8,6 @@ import { filterRuls } from "../components/filters/filterRules";
 import styles from "../../assets/css/components/SearchPanel.module.css";
 import ExportDropdown from "../components/ExportDropdown";
 
-
 const PAGE_SIZE = 6;
 
 const SearchPanel: React.FC = () => {
@@ -45,7 +44,8 @@ const SearchPanel: React.FC = () => {
     <div className={styles.layout}>
 
       {/* Desktop Sidebar */}
-      <aside className={styles.sidebar}>
+      <aside
+        className={styles.sidebar}>
         <FullSidebarFilters onFilterChange={setFilters} />
       </aside>
 
@@ -116,13 +116,16 @@ const SearchPanel: React.FC = () => {
             type="button"
             onClick={() => setView("card")}
             className={view === "card" ? styles.activeView : ""}
-          >Card View
+          >
+            Card View
           </button>
+
           <button
             type="button"
             onClick={() => setView("table")}
             className={view === "table" ? styles.activeView : ""}
-          >Table View
+          >
+            Table View
           </button>
         </div>
 

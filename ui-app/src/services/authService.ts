@@ -7,8 +7,7 @@ const BASE = "https://compchem17.ipb-halle.de/ui/rest";
 
 export const loginAPI = async (loginRequest: LoginRequest): Promise<AuthResponse> => {
 
-  const config = new Configuration({
-  });
+  const config = new Configuration({});
 
   const loginApiInstance = new LoginApi(config);
 
@@ -17,7 +16,9 @@ export const loginAPI = async (loginRequest: LoginRequest): Promise<AuthResponse
 
 };
 
-export const logoutAPI = async (token: string) => {
+export const logoutAPI = async (
+  token: string
+) => {
   const res = await fetch(`${BASE}/auth/logout`, {
     method: "POST",
     headers: {
@@ -29,7 +30,9 @@ export const logoutAPI = async (token: string) => {
   return res.json();
 };
 
-export const checkSessionAPI = async (token: string) => {
+export const checkSessionAPI = async (
+  token: string
+) => {
   return fetch(`${BASE}/sessions`, {
     method: "POST",
     headers: {
@@ -39,7 +42,9 @@ export const checkSessionAPI = async (token: string) => {
   });
 };
 
-export const fetchRoleAPI = async (token: string) => {
+export const fetchRoleAPI = async (
+  token: string
+) => {
   const config = new Configuration({
     accessToken: async () => token
   });
