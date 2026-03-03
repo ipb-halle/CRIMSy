@@ -18,6 +18,7 @@
     grid-template-columns: 1fr auto;
     gap: var(--space-sm);
     margin-bottom: var(--space-md);
+    align-items: center;
 }
 
 .input {
@@ -34,30 +35,38 @@
 
 .viewSwitch {
     margin-bottom: var(--space-md);
+    display: flex;
+    gap: var(--space-sm);
 }
 
 .viewSwitch button {
     padding: var(--space-sm) var(--space-md);
     border: 1px solid var(--color-border);
     background: var(--color-surface);
-    cursor: pointer;
-    border-radius: var(--radius-sm);
+    /*    cursor: pointer;
+    border-radius: var(--radius-sm);*/
 }
 
 .viewSwitch button:hover {
     background: var(--color-hover);
 }
 
+.viewSwitch .active {
+    background: var(--color-primary);
+    color: white;
+}
+
 .activeView {
     background: var(--color-primary);
-    color: rgb(3, 3, 160);
+    color: rgb(7, 102, 39);
     font-weight: bold;
     border-color: var(--color-primary);
 }
 
+/*
 .viewSwitch button+button {
     margin-left: var(--space-sm);
-}
+}*/
 
 .pagination {
     margin-top: var(--space-md);
@@ -71,6 +80,59 @@
 
     .sidebar {
         display: none;
-        /* hide docked sidebar */
     }
+
+    .mobileOnly {
+        display: inline-block;
+        margin-bottom: var(--space-md);
+    }
+
+    .drawerOverlay {
+        display: block;
+    }
+
+    .mobileDrawer {
+        display: block;
+    }
+
+}
+
+.drawerOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 10;
+    display: none;
+}
+
+.mobileDrawer {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 260px;
+    height: 100%;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+    background: white;
+    z-index: 20;
+    transition: left 0.25s ease;
+    padding: 1rem;
+    overflow-y: auto;
+    display: none;
+}
+
+.open {
+    left: 0;
+    display: block;
+}
+
+.closeDrawer {
+    margin-bottom: 1rem;
+}
+
+.resultBadge {
+    background: var(--color-accent);
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
 }

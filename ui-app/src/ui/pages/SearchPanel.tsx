@@ -6,7 +6,8 @@ import TableView from "../components/views/TableView";
 import { dummyData } from "../../data/dummyData";
 import { filterRuls } from "../components/filters/filterRules";
 import styles from "../../assets/css/components/SearchPanel.module.css";
-//import styles from "./SearchPanel.module.css";
+import ExportDropdown from "../components/ExportDropdown";
+
 
 const PAGE_SIZE = 6;
 
@@ -40,29 +41,6 @@ const SearchPanel: React.FC = () => {
   // Pagination
   const paged = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  // CSV Export
-  /*const exportCSV = () => {
-    const rows = filtered.map(m => ({
-      id: m.materialId,
-      project: m.projectId,
-      owner: m.ownerId,
-      server: m.serverId,
-      status: m.deactivated ? "Deactivated" : "Active",
-    }));
-
-    const header = "ID,Project,Owner,Server,Status\n";
-    const csv = header + rows.map(r =>
-      `${r.id},${r.project},${r.owner},${r.server},${r.status}`
-    ).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "materials.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-  };*/
-
   return (
     <div className={styles.layout}>
 
@@ -75,13 +53,19 @@ const SearchPanel: React.FC = () => {
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="drawer-overlay"
+          className={styles.drawerOverlay}
         />
       )}
 
       {/* Mobile Drawer */}
-      <div className={`mobile-drawer ${sidebarOpen ? "open" : ""}`}>
-        <button onClick={() => setSidebarOpen(false)}>Close</button>
+      <div
+        className={`${styles.mobileDrawer} ${sidebarOpen ? styles.open : ""}`}>
+        <button
+          className={styles.closeDrawer}
+          onClick={() => setSidebarOpen(false)}
+        >
+          Close
+        </button>
         <FullSidebarFilters onFilterChange={setFilters} />
       </div>
 
@@ -91,9 +75,9 @@ const SearchPanel: React.FC = () => {
         {/* Mobile Filter Button */}
         <button
           onClick={() => setSidebarOpen(true)}
-          className="mobile-only"
+          className={styles.mobileOnly}
         >
-          Filters
+          Show Filters
         </button>
 
         {/* View & Search Controls */}
@@ -116,6 +100,14 @@ const SearchPanel: React.FC = () => {
             <option value="id">Sort by ID</option>
             <option value="project">Sort by Project</option>
           </select>
+
+          {/* Result Badge */}
+          <div className={styles.resultBadge}>
+            {results.length} results
+          </div>
+
+          {/* Export */}
+          <ExportDropdown items={results} />
         </div>
 
         {/* View Section */}
@@ -124,16 +116,18 @@ const SearchPanel: React.FC = () => {
             type="button"
             onClick={() => setView("card")}
             className={view === "card" ? styles.activeView : ""}
-          >Card View</button>
+          >Card View
+          </button>
           <button
             type="button"
             onClick={() => setView("table")}
             className={view === "table" ? styles.activeView : ""}
-          >Table View</button>
+          >Table View
+          </button>
         </div>
 
         {/* Results */}
-        <div>
+        <div className={styles.resultsGrid}>
           {view === "card" ? (
             <CardView items={paged} />
           ) : (
