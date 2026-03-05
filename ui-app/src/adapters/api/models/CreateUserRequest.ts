@@ -16,73 +16,73 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface User
+ * @interface CreateUserRequest
  */
-export interface User {
+export interface CreateUserRequest {
     /**
      * 
      * @type {string}
-     * @memberof User
-     */
-    id?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
+     * @memberof CreateUserRequest
      */
     username?: string;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof CreateUserRequest
      */
-    name?: string;
+    email?: string;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof CreateUserRequest
+     */
+    password?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserRequest
      */
     role?: string;
 }
 
 /**
- * Check if a given object implements the User interface.
+ * Check if a given object implements the CreateUserRequest interface.
  */
-export function instanceOfUser(value: object): value is User {
+export function instanceOfCreateUserRequest(value: object): value is CreateUserRequest {
     return true;
 }
 
-export function UserFromJSON(json: any): User {
-    return UserFromJSONTyped(json, false);
+export function CreateUserRequestFromJSON(json: any): CreateUserRequest {
+    return CreateUserRequestFromJSONTyped(json, false);
 }
 
-export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User {
+export function CreateUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateUserRequest {
     if (json == null) {
         return json;
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
         'username': json['username'] == null ? undefined : json['username'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'email': json['email'] == null ? undefined : json['email'],
+        'password': json['password'] == null ? undefined : json['password'],
         'role': json['role'] == null ? undefined : json['role'],
     };
 }
 
-export function UserToJSON(json: any): User {
-    return UserToJSONTyped(json, false);
+export function CreateUserRequestToJSON(json: any): CreateUserRequest {
+    return CreateUserRequestToJSONTyped(json, false);
 }
 
-export function UserToJSONTyped(value?: User | null, ignoreDiscriminator: boolean = false): any {
+export function CreateUserRequestToJSONTyped(value?: CreateUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'id': value['id'],
         'username': value['username'],
-        'name': value['name'],
+        'email': value['email'],
+        'password': value['password'],
         'role': value['role'],
     };
 }

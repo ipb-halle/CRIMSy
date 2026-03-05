@@ -6,7 +6,7 @@
 
 Name | Type
 ------------ | -------------
-`login` | string
+`username` | string
 `password` | string
 
 ## Example
@@ -16,7 +16,7 @@ import type { LoginRequest } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "login": johndoe,
+  "username": johndoe,
   "password": password123,
 } satisfies LoginRequest
 

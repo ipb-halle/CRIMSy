@@ -1,8 +1,5 @@
 /* tslint:disable */
 /* eslint-disable */
-export * from './AuthenticationApi';
-export * from './AuthorizationApi';
-export * from './LogoutApi';
-export * from './RoleApi';
-export * from './SearchApi';
-export * from './UsersApi';
+export * from './AuditLogsApi';
+export * from './AuthApi';
+export * from './MMEApi';

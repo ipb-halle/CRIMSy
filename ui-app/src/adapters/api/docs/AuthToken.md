@@ -1,28 +1,24 @@
 
-# User
+# AuthToken
 
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`id` | string
-`username` | string
-`name` | string
-`role` | string
+`token` | string
+`expiresInSeconds` | number
 
 ## Example
 
 ```typescript
-import type { User } from ''
+import type { AuthToken } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
-  "username": null,
-  "name": null,
-  "role": null,
-} satisfies User
+  "token": null,
+  "expiresInSeconds": null,
+} satisfies AuthToken
 
 console.log(example)
 
@@ -31,7 +27,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as User
+const exampleParsed = JSON.parse(exampleJSON) as AuthToken
 console.log(exampleParsed)
 ```
 

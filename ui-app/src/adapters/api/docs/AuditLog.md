@@ -1,28 +1,30 @@
 
-# User
+# AuditLog
 
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`id` | string
-`username` | string
-`name` | string
-`role` | string
+`id` | number
+`userId` | number
+`action` | string
+`entity` | string
+`timestamp` | Date
 
 ## Example
 
 ```typescript
-import type { User } from ''
+import type { AuditLog } from ''
 
 // TODO: Update the object below with actual values
 const example = {
   "id": null,
-  "username": null,
-  "name": null,
-  "role": null,
-} satisfies User
+  "userId": null,
+  "action": null,
+  "entity": null,
+  "timestamp": null,
+} satisfies AuditLog
 
 console.log(example)
 
@@ -31,7 +33,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as User
+const exampleParsed = JSON.parse(exampleJSON) as AuditLog
 console.log(exampleParsed)
 ```
 

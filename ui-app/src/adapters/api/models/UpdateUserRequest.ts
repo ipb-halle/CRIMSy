@@ -16,73 +16,65 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface User
+ * @interface UpdateUserRequest
  */
-export interface User {
+export interface UpdateUserRequest {
     /**
      * 
      * @type {string}
-     * @memberof User
-     */
-    id?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
+     * @memberof UpdateUserRequest
      */
     username?: string;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof UpdateUserRequest
      */
-    name?: string;
+    email?: string;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof UpdateUserRequest
      */
     role?: string;
 }
 
 /**
- * Check if a given object implements the User interface.
+ * Check if a given object implements the UpdateUserRequest interface.
  */
-export function instanceOfUser(value: object): value is User {
+export function instanceOfUpdateUserRequest(value: object): value is UpdateUserRequest {
     return true;
 }
 
-export function UserFromJSON(json: any): User {
-    return UserFromJSONTyped(json, false);
+export function UpdateUserRequestFromJSON(json: any): UpdateUserRequest {
+    return UpdateUserRequestFromJSONTyped(json, false);
 }
 
-export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User {
+export function UpdateUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateUserRequest {
     if (json == null) {
         return json;
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
         'username': json['username'] == null ? undefined : json['username'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'email': json['email'] == null ? undefined : json['email'],
         'role': json['role'] == null ? undefined : json['role'],
     };
 }
 
-export function UserToJSON(json: any): User {
-    return UserToJSONTyped(json, false);
+export function UpdateUserRequestToJSON(json: any): UpdateUserRequest {
+    return UpdateUserRequestToJSONTyped(json, false);
 }
 
-export function UserToJSONTyped(value?: User | null, ignoreDiscriminator: boolean = false): any {
+export function UpdateUserRequestToJSONTyped(value?: UpdateUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'id': value['id'],
         'username': value['username'],
-        'name': value['name'],
+        'email': value['email'],
         'role': value['role'],
     };
 }
