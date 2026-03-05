@@ -30,8 +30,8 @@ const LoginForm: React.FC<Props> = ({
             border: `1px solid ${theme.border}`,
           }}
           placeholder="Username"
-          value={loginrequest.login}
-          onChange={(e) => setLoginRequest({ ...loginrequest, login: e.target.value })
+          value={loginrequest.username}
+          onChange={(e) => setLoginRequest({ ...loginrequest, username: e.target.value })
           }
         />
         {errors.username && (

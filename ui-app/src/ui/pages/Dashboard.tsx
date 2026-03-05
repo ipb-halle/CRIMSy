@@ -7,6 +7,7 @@ import Navigation from "../components/Navigation";
 import { useTheme } from "../../assets/css/theme/ThemeContext";
 import { spacing, radius } from "../../assets/css/theme/designTokens";
 import AdminAddMaterial from "./admin/AdminAddMaterial";
+import styles from "../../assets/css/components/Dashboard.module.css";
 
 type View = "home" | "search" | "role" | "users" | "addMaterial";
 
@@ -54,24 +55,12 @@ const Dashboard: React.FC<Props> = (
 
             default:
                 return (
-                    <div
-                        style={{
-                            padding: spacing.lg,
-                            background: theme.surface,
-                            boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
-                            borderRadius: radius.md,
-                            border: `1px solid ${theme.border}`,
-                        }}
-                    >
-                        <h2
-                            style={{ color: "#003c78", marginBottom: spacing.sm }}
-                        >
+                    <div className={styles.researchCard} >
+                        <h2>
                             Welcome to IPB Laboratory System
                         </h2>
-                        <p
-                            style={{ color: theme.textSecondary }}
-                        >
-                            Select a menu item to continue!
+                        <p>
+                            Search materials, manage data, and export results!
                         </p>
                     </div>
                 );
@@ -130,7 +119,6 @@ const Dashboard: React.FC<Props> = (
                     active={view === "addMaterial"}
                     onClick={() => handleTab("addMaterial")}
                 />
-
             </div>
 
             {/* BREADCRUMB */}

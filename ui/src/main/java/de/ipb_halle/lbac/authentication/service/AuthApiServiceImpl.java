@@ -1,11 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.ipb_halle.lbac.authentication.service;
-
-import java.util.List;
-import java.util.Map;
 
 import de.ipb_halle.api.AuthApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
@@ -14,9 +7,12 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.security.interceptor.Secured;
 import de.ipb_halle.lbac.security.service.SessionService;
 import de.ipb_halle.lbac.security.service.TokenService;
-import de.ipb_halle.model.AuthResponse;
+
+import de.ipb_halle.model.AuthToken;
 import de.ipb_halle.model.ErrorResponse;
 import de.ipb_halle.model.LoginRequest;
+import de.ipb_halle.model.RoleResponse;
+
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -26,6 +22,8 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Context;
+
+import java.util.List;
 
 /**
  *
@@ -54,7 +52,7 @@ public class AuthApiServiceImpl implements AuthApiService {
         String ipAddressString = getClientIp();
 
         User user = loginProcess.tryLogIn(
-                loginRequest.getLogin(),
+                loginRequest.getUsername(),
                 loginRequest.getPassword(),
                 ipAddressString);
 
@@ -72,11 +70,12 @@ public class AuthApiServiceImpl implements AuthApiService {
         try {
             member = em.createQuery(
                     "SELECT m FROM MemberEntity m WHERE m.login = :login",
-                    MemberEntity.class).setParameter("login", user.getLogin())
+                    MemberEntity.class)
+                    .setParameter("login", user.getLogin())
                     .getSingleResult();
         } catch (NoResultException e) {
             ErrorResponse errorResponse = new ErrorResponse();
-            errorResponse.setMessage("User entity not found");
+            errorResponse.setMessage("User not found");
             errorResponse.setCode("500");
             return Response.status(
                     Response.Status.INTERNAL_SERVER_ERROR)
@@ -86,10 +85,11 @@ public class AuthApiServiceImpl implements AuthApiService {
 
         String token = tokenService.generateToken(member);
 
-        AuthResponse response = new AuthResponse();
-
-        response.setUsername(user.getLogin());
-        response.setMessage("Logged in Successfully " + user.getLogin());
+        AuthToken response  = new AuthToken();
+        /*
+         * response.setUsername(user.getLogin());
+         * response.setMessage("Logged in Successfully " + user.getLogin());
+         */
         response.setToken(token);
         response.setExpiresInSeconds(60);
         return Response.ok(response).build();
@@ -112,8 +112,74 @@ public class AuthApiServiceImpl implements AuthApiService {
         String token = authHeader.substring("Bearer ".length());
         sessionService.deleteSessionByToken(token);
 
-        Map<String, String> message = Map.of("message", "Logged out successfully!");
-        return Response.ok(message).build();
+        /*
+         * Map<String, String> message = Map.of("message", "Logged out successfully!");
+         */
+        return Response.ok().build();
+    }
+
+    @Override
+    @Secured
+    public Response authMeGet(SecurityContext securityContext) {
+
+        String username = null;
+
+        if (securityContext != null && securityContext.getUserPrincipal() != null) {
+            username = securityContext.getUserPrincipal().getName();
+        }
+
+        if (username == null) {
+            String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                ErrorResponse error = new ErrorResponse();
+                error.setMessage("Unauthorized: missing token");
+                error.setCode("401");
+                return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
+            }
+            String token = authHeader.substring("Bearer ".length());
+            if (!tokenService.validateToken(token)) {
+                ErrorResponse error = new ErrorResponse();
+                error.setMessage("Unauthorized: invalid token");
+                error.setCode("401");
+                return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
+            }
+
+            username = tokenService.getUsernameFromToken(token);
+        }
+        MemberEntity member;
+        try {
+            member = em.createQuery(
+                    "SELECT m FROM MemberEntity m WHERE m.login = :login",
+                    MemberEntity.class)
+                    .setParameter("login", username.toLowerCase())
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            ErrorResponse error = new ErrorResponse();
+            error.setMessage("User not found");
+            error.setCode("404");
+            return Response.status(Response.Status.NOT_FOUND).entity(error).build();
+        }
+
+        List<String> groups = em.createQuery(
+                """
+                        SELECT g.name
+                        FROM MembershipEntity ms
+                        JOIN MemberEntity g ON ms.group = g.id
+                        WHERE ms.member = :memberId
+                        AND TYPE(g) = GroupEntity
+                        """, String.class)
+                .setParameter("memberId", member.getId())
+                .getResultList();
+
+        boolean isAdmin = groups.stream()
+                .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
+
+        RoleResponse response = new RoleResponse();
+        response.setUsername(username);
+        response.setGroups(groups);
+        response.setAdmin(isAdmin);
+
+        return Response.ok(response).build();
     }
 
     public String getClientIp() {

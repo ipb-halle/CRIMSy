@@ -1,61 +1,57 @@
-import { LogoutApi, RoleApi } from "../adapters/api";
-import { LoginApi } from "../adapters/api/apis/LoginApi";
+import { AuthApi } from "../adapters/api";
 import { Configuration } from "../adapters/api";
-import { AuthResponse, LoginRequest } from "../adapters/api/models";
+import { AuthToken, LoginRequest, User } from "../adapters/api/models";
 
-const BASE = "https://compchem17.ipb-halle.de/ui/rest";
-
-export const loginAPI = async (loginRequest: LoginRequest): Promise<AuthResponse> => {
+export const loginAPI = async (
+  loginRequest: LoginRequest
+): Promise<AuthToken> => {
 
   const config = new Configuration({});
+  const loginApiInstance = new AuthApi(config);
 
-  const loginApiInstance = new LoginApi(config);
-
-  const response = await loginApiInstance.login({ loginRequest });
+  const response = await loginApiInstance.login({
+    loginRequest
+  });
   return response;
-
 };
 
 export const logoutAPI = async (
   token: string
-) => {
-  const res = await fetch(`${BASE}/auth/logout`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
+): Promise<void> => {
+  const config = new Configuration({
+    accessToken: async () => token
   });
+  const api = new AuthApi(config);
 
-  return res.json();
+  await api.logout();
 };
 
 export const checkSessionAPI = async (
   token: string
-) => {
-  return fetch(`${BASE}/sessions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-  });
+): Promise<User> => {
+  const api = new AuthApi(
+    new Configuration({
+      accessToken: async () => token
+    })
+  );
+
+  return await api.authMeGet();
 };
 
 export const fetchRoleAPI = async (
   token: string
-) => {
+): Promise<User> => {
   const config = new Configuration({
     accessToken: async () => token
   });
 
-  const roleApi = new RoleApi(config);
+  const roleApi = new AuthApi(config);
 
-  const roleResponse = await roleApi.getRoleInfo();
+  const roleResponse = await roleApi.authMeGet();
   return roleResponse;
-}
+};
 
-export const fetchUsersAPI = async (
+/*export const fetchUsersAPI = async (
   token: string,
   page: number, pageSize: number
 ) => {
@@ -69,4 +65,5 @@ export const fetchUsersAPI = async (
     }
   );
   return res.json();
-};
+
+};*/

@@ -1,23 +1,46 @@
 openapi: 3.0.3
 info:
   title: CRIMSy API
-  version: 1.1.0
+  version: 1.0.0
+  description: |
+    API specification for managing research materials, users, authentication,
+    search capabilities, administration workflows, and audit logging.
+    Designed for integration with React frontends and Java/Jakarta backend services.
 
-security:
-  - SessionKeyAuthentication: []
 servers:
   - url: https://compchem17.ipb-halle.de/ui/rest
     description: Production API server
 
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: Authentication and session management
+  - name: Users
+    description: User administration and profile management
+  - name: Materials
+    description: Material registry and metadata management
+  - name: MME
+    description: Material management environment system overview
+  - name: Search
+    description: Advanced multi-domain search functionality
+  - name: Admin
+    description: Administrative operations for system management
+  - name: Export
+    description: Data export in various formats
+  - name: AuditLogs
+    description: System audit logs and activity tracking
+
 paths:
-  
   /auth/login:
     post:
       tags:
-        - Login
-        - Authentication        
-      summary: Log in a user
-      description: Authenticates a user with the provided login credentials.
+        - Auth
+      summary: Authenticate user and create session
+      description: |
+        Validates user credentials and returns a session token.
+        The token must be included in subsequent requests via the Authorization header.
       operationId: login
       security: []
       requestBody:
@@ -26,188 +49,122 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
       responses:
-        '200':
-          description: Successful login
+        "200":
+          description: Login successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '401':
+                $ref: "#/components/schemas/AuthToken"
+        "401":
           description: Unauthorized login attempt
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
+                $ref: "#/components/schemas/ErrorResponse"
+        "400":
           description: Invalid input or missing parameters
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
- 
+                $ref: "#/components/schemas/ErrorResponse"
+
   /auth/logout:
     post:
       tags:
-        - Authentication
-        - Logout
-      summary: Logout the current user
+        - Auth
+      summary: Logout current user & end user session
       description: Invalidates the user's session and deletes the token from database.
       operationId: logout
       responses:
-        '200':
-          description: Successfuly loged out
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LogoutResponse'
-        '401':
+        "200":
+          description: Successfully logged out
+        "401":
           description: Unauthorized request (invalid or missing token)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
+                $ref: "#/components/schemas/ErrorResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-   
-  /me:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
     get:
       tags:
-        - Authorization
-        - Role
-      summary: Get role and group information of the current user
+        - Auth
+      summary: Retrieve authenticated user
       description: |
-        Returns the authenticated user's username, group memberships,
-        and whether the user belongs to the Admin Group.
-      operationId: getRoleInfo
+        Returns the authenticated user's role information and group memberships.
+        This endpoint is used by the frontend to determine access permissions.
+      operationId: authMeGet
       responses:
-        '200':
-          description: Role and group information retrieved successfully
+        "200":
+          description: Role and permission information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoleResponse'
-        '401':
+                $ref: "#/components/schemas/RoleResponse"
+        "401":
           description: Unauthorized (missing or invalid token)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      
-  /users:
-    get:
-      tags: 
-        - Users
-      summary: Get list of users
-      description: Returns all users for admin, or own info for non-admin users
-      parameters:
-        - in: query
-          name: page
-          schema:
-            type: integer
-            default: 1
-          description: Page number (1-based)
-        - in: query
-          name: pageSize
-          schema:
-            type: integer
-            default: 3
-          description: Number of users per page
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PagedUsers'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-               
-  /search:
-    post:
-      tags:
-        - search
-      summary: Unified search endpoint
-      description: |
-        Performs search across Materials, Items, Experiments and Documents.  
-        If "Materials" is included in searchTypes, materialTypes may be provided 
-        (Structure, Sequence, Biomaterial, Composition).       
-        All values are currently treated as string (for being simple as possible).
-      operationId: search
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SearchRequest'
-      responses:
-        '200':
-          description: Search results
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchResponse'
-        '400':
-          description: Invalid search request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
- 
-        
-components:
+                $ref: "#/components/schemas/ErrorResponse"
 
+  /mme:
+    get:
+      tags:
+        - MME
+      summary: System overview
+      description: Returns high-level system information.
+      responses:
+        "200":
+          description: System information
+
+  /audit/logs:
+    get:
+      tags:
+        - AuditLogs
+      summary: Retrieve audit logs
+      description: |
+        Returns system activity logs for compliance and debugging.
+        Logs include user actions and administrative events.
+      responses:
+        "200":
+          description: Audit log list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuditLog"
+
+components:
   securitySchemes:
-    SessionKeyAuthentication:
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: UUID
-      description: Session key authentication using a custom header.
-      
-  schemas:
+      description: |
+        Authentication via Bearer token.
+        The token is obtained from /auth/login and sent as:
+        Authorization: Bearer <token>
 
+  schemas:
     ErrorResponse:
       type: object
-      required: 
+      required:
         - message
       properties:
         message:
@@ -218,34 +175,49 @@ components:
     LoginRequest:
       type: object
       required:
-        - login
+        - username
         - password
       properties:
-        login:
+        username:
           type: string
-          description: Username
+          description: User login name
           example: johndoe
         password:
           type: string
-          description: Password
+          description: User password
           example: password123
-  
-    AuthResponse:
+
+    AuthToken:
       type: object
-      required:
-        - message
       properties:
-        message:
-          type: string
-        username:
-          type: string
         token:
           type: string
-          description: Bearer token for authentication        
+          description: Token
         expiresInSeconds:
           type: integer
           description: Session validity duration in seconds
-        
+
+    CreateUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
 
     LogoutResponse:
       type: object
@@ -256,35 +228,16 @@ components:
           type: string
           example: "Logged out successfully"
 
-    PagedUsers:
-      type: object
-      required:
-        - totalUsers
-        - totalPages
-        - currentPage
-        - users
-      properties:
-        totalUsers:
-          type: integer
-        totalPages:
-          type: integer
-        currentPage:
-          type: integer
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-          
     User:
       type: object
       properties:
         id:
           type: string
-        login:
+        username:
           type: string
         name:
           type: string
-        membertype:
+        role:
           type: string
 
     RoleResponse:
@@ -308,76 +261,18 @@ components:
           type: boolean
           description: Indicates whether the user belongs to the Admin Group
           example: true
-          
-    SearchRequest:
+    
+    AuditLog:
       type: object
       properties:
-        searchTypes:
-          type: array
-          description: |
-            Selected top-level search domains
-            Examples: Materials, Items, Experiments, Documents
-          items:
-            $ref: '#/components/schemas/SearchType'
-        materialTypes:
-          type: array
-          description: |
-            Only used when Materials is selected
-            Examples: Structure, Sequence, Biomaterial, Composition
-          items:
-            $ref: '#/components/schemas/MaterialType'
-        query:
-          type: string
-          description: Free-text search query
-          example: benzin
-        page:
-          type: integer
-          default: 1
-        pageSize:
-          type: integer
-          default: 3
-        
-    SearchResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchResult'
-
-    SearchResult:
-      type: object
-      properties:
-        domain:
-          $ref: '#/components/schemas/SearchType'
-          description: Materials, Items, Experiments, or Documents
-          example: Materilas         
-        subtype:
-          $ref: '#/components/schemas/MaterialType'
-          nullable: true
-          description: Material subtype when applicable
-          example: Structure
         id:
           type: integer
-        label:
+        userId:
+          type: integer
+        action:
           type: string
-   
-    SearchType:
-      type: string
-      enum:
-        - Materials
-        - Items
-        - Experiments
-        - Documents
-        - NONE
-        
-    MaterialType:
-      type: string
-      enum:
-        - Structure
-        - Sequence
-        - Biomaterial
-        - Composition
-        - NONE
+        entity:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
