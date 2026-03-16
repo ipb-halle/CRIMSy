@@ -11,9 +11,6 @@ servers:
   - url: https://compchem17.ipb-halle.de/ui/rest
     description: Production API server
 
-security:
-  - bearerAuth: []
-
 tags:
   - name: Auth
     description: Authentication and session management
@@ -33,6 +30,7 @@ tags:
     description: System audit logs and activity tracking
 
 paths:
+  
   /auth/login:
     post:
       tags:
@@ -40,7 +38,8 @@ paths:
       summary: Authenticate user and create session
       description: |
         Validates user credentials and returns a session token.
-        The token must be included in subsequent requests via the Authorization header.
+        On success, a bearer token is returned. The token must be
+        included in all subsequent requests using the Authorization header.
       operationId: login
       security: []
       requestBody:
@@ -58,13 +57,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuthToken"
         "401":
-          description: Unauthorized login attempt
+          description: Invalid username and/or passowrd
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "400":
-          description: Invalid input or missing parameters
+          description: Invalid request format
           content:
             application/json:
               schema:
@@ -77,17 +76,17 @@ paths:
       summary: Logout current user & end user session
       description: Invalidates the user's session and deletes the token from database.
       operationId: logout
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Successfully logged out
-        "401":
-          description: Unauthorized request (invalid or missing token)
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "400":
-          description: Invalid request
+              schema: 
+                $ref: "#/components/schemas/LogoutResponse"
+        "401":
+          description: Invalid or missing authentication token
           content:
             application/json:
               schema:
@@ -97,18 +96,20 @@ paths:
     get:
       tags:
         - Auth
-      summary: Retrieve authenticated user
+      summary: Retrieve authenticated user information
       description: |
         Returns the authenticated user's role information and group memberships.
         This endpoint is used by the frontend to determine access permissions.
-      operationId: authMeGet
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
       responses:
         "200":
-          description: Role and permission information
+          description: Authenticated user information
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RoleResponse"
+                $ref: "#/components/schemas/AuthUser"
         "401":
           description: Unauthorized (missing or invalid token)
           content:
@@ -122,34 +123,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /mme:
-    get:
-      tags:
-        - MME
-      summary: System overview
-      description: Returns high-level system information.
-      responses:
-        "200":
-          description: System information
-
-  /audit/logs:
-    get:
-      tags:
-        - AuditLogs
-      summary: Retrieve audit logs
-      description: |
-        Returns system activity logs for compliance and debugging.
-        Logs include user actions and administrative events.
-      responses:
-        "200":
-          description: Audit log list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AuditLog"
-
 components:
   securitySchemes:
     bearerAuth:
@@ -159,19 +132,10 @@ components:
       description: |
         Authentication via Bearer token.
         The token is obtained from /auth/login and sent as:
-        Authorization: Bearer <token>
+        Authorization: Bearer 9c1f82e6-bdf1-4a8a-8c88-74eecdc4a999
 
   schemas:
-    ErrorResponse:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-
+ 
     LoginRequest:
       type: object
       required:
@@ -180,76 +144,54 @@ components:
       properties:
         username:
           type: string
+          minLength: 3
+          maxLength: 50
           description: User login name
           example: johndoe
         password:
           type: string
+          minLength: 8
           description: User password
           example: password123
 
     AuthToken:
       type: object
+      required:
+        - token
+        - expiresInSeconds
       properties:
         token:
           type: string
+          #format: uuid
           description: Token
+          example: "550e8400-e29b-41d4-a716-446655440000"
         expiresInSeconds:
           type: integer
           description: Session validity duration in seconds
+          example: 3600
 
-    CreateUserRequest:
-      type: object
-      properties:
-        username:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-        role:
-          type: string
-
-    UpdateUserRequest:
-      type: object
-      properties:
-        username:
-          type: string
-        email:
-          type: string
-        role:
-          type: string
-
-    LogoutResponse:
+    AuthUser:
       type: object
       required:
-        - message
+        - id
+        - username
       properties:
-        message:
-          type: string
-          example: "Logged out successfully"
-
-    User:
-      type: object
-      properties:
-        id:
-          type: string
+        id: 
+          type: integer
+          description: Unique user ID
+          example: 42
         username:
           type: string
+          description: User login name
+          example: johndoe
         name:
           type: string
-        role:
+          description: Full name
+          example: John Doe
+        email:
           type: string
-
-    RoleResponse:
-      type: object
-      required:
-        - username
-        - groups
-        - admin
-      properties:
-        username:
-          type: string
-          example: johndoe
+          format: email
+          example: john.doe@example.com
         groups:
           type: array
           items:
@@ -261,18 +203,27 @@ components:
           type: boolean
           description: Indicates whether the user belongs to the Admin Group
           example: true
-    
-    AuditLog:
+        
+   
+    LogoutResponse:
       type: object
+      required:
+        - message
       properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        action:
+        message:
           type: string
-        entity:
+          example: "Logged out successfully"
+       
+    ErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
           type: string
-        timestamp:
+          example: Unauthorized request
+        code:
           type: string
-          format: date-time
+          example: AUTH_401
+
+    
