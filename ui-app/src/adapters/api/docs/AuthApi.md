@@ -4,19 +4,19 @@ All URIs are relative to *https://compchem17.ipb-halle.de/ui/rest*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**authMeGet**](AuthApi.md#authmeget) | **GET** /auth/me | Retrieve authenticated user |
+| [**getCurrentUser**](AuthApi.md#getcurrentuser) | **GET** /auth/me | Retrieve authenticated user information |
 | [**login**](AuthApi.md#loginoperation) | **POST** /auth/login | Authenticate user and create session |
 | [**logout**](AuthApi.md#logout) | **POST** /auth/logout | Logout current user &amp; end user session |
 
 
 
-## authMeGet
+## getCurrentUser
 
-> User authMeGet()
+> AuthUser getCurrentUser()
 
-Retrieve authenticated user
+Retrieve authenticated user information
 
-Returns information about the currently authenticated user.
+Returns the authenticated user\&#39;s role information and group memberships. This endpoint is used by the frontend to determine access permissions. 
 
 ### Example
 
@@ -25,7 +25,7 @@ import {
   Configuration,
   AuthApi,
 } from '';
-import type { AuthMeGetRequest } from '';
+import type { GetCurrentUserRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
@@ -36,7 +36,7 @@ async function example() {
   const api = new AuthApi(config);
 
   try {
-    const data = await api.authMeGet();
+    const data = await api.getCurrentUser();
     console.log(data);
   } catch (error) {
     console.error(error);
@@ -53,7 +53,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**User**](User.md)
+[**AuthUser**](AuthUser.md)
 
 ### Authorization
 
@@ -68,7 +68,7 @@ This endpoint does not need any parameter.
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **200** | User information |  -  |
+| **200** | Authenticated user information |  -  |
 | **401** | Unauthorized (missing or invalid token) |  -  |
 | **404** | User not found |  -  |
 
@@ -81,7 +81,7 @@ This endpoint does not need any parameter.
 
 Authenticate user and create session
 
-Validates user credentials and returns a session token. The token must be included in subsequent requests via the Authorization header. 
+Validates user credentials and returns a session token. On success, a bearer token is returned. The token must be included in all subsequent requests using the Authorization header. 
 
 ### Example
 
@@ -138,15 +138,15 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Login successful |  -  |
-| **401** | Unauthorized login attempt |  -  |
-| **400** | Invalid input or missing parameters |  -  |
+| **401** | Invalid username and/or passowrd |  -  |
+| **400** | Invalid request format |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
 ## logout
 
-> logout()
+> LogoutResponse logout()
 
 Logout current user &amp; end user session
 
@@ -187,7 +187,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-`void` (Empty response body)
+[**LogoutResponse**](LogoutResponse.md)
 
 ### Authorization
 
@@ -203,8 +203,7 @@ This endpoint does not need any parameter.
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Successfully logged out |  -  |
-| **401** | Unauthorized request (invalid or missing token) |  -  |
-| **400** | Invalid request |  -  |
+| **401** | Invalid or missing authentication token |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 

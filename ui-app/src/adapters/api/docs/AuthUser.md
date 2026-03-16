@@ -1,28 +1,32 @@
 
-# User
+# AuthUser
 
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`id` | string
+`id` | number
 `username` | string
 `name` | string
-`role` | string
+`email` | string
+`groups` | Array&lt;string&gt;
+`admin` | boolean
 
 ## Example
 
 ```typescript
-import type { User } from ''
+import type { AuthUser } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
-  "username": null,
-  "name": null,
-  "role": null,
-} satisfies User
+  "id": 42,
+  "username": johndoe,
+  "name": John Doe,
+  "email": john.doe@example.com,
+  "groups": ["Users","Admin Group"],
+  "admin": true,
+} satisfies AuthUser
 
 console.log(example)
 
@@ -31,7 +35,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as User
+const exampleParsed = JSON.parse(exampleJSON) as AuthUser
 console.log(exampleParsed)
 ```
 

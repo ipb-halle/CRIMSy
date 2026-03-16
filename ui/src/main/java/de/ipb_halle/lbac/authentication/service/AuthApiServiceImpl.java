@@ -9,9 +9,10 @@ import de.ipb_halle.lbac.security.service.SessionService;
 import de.ipb_halle.lbac.security.service.TokenService;
 
 import de.ipb_halle.model.AuthToken;
+import de.ipb_halle.model.AuthUser;
 import de.ipb_halle.model.ErrorResponse;
 import de.ipb_halle.model.LoginRequest;
-import de.ipb_halle.model.RoleResponse;
+import de.ipb_halle.model.LogoutResponse;
 
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -49,6 +50,7 @@ public class AuthApiServiceImpl implements AuthApiService {
     @Override
     public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
 
+        System.out.println("in login method!\n");
         String ipAddressString = getClientIp();
 
         User user = loginProcess.tryLogIn(
@@ -84,12 +86,15 @@ public class AuthApiServiceImpl implements AuthApiService {
         }
 
         String token = tokenService.generateToken(member);
+        if (token == null) {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setMessage("Invalid credentials");
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(errorResponse)
+                    .build();
+        }
 
-        AuthToken response  = new AuthToken();
-        /*
-         * response.setUsername(user.getLogin());
-         * response.setMessage("Logged in Successfully " + user.getLogin());
-         */
+        AuthToken response = new AuthToken();
         response.setToken(token);
         response.setExpiresInSeconds(60);
         return Response.ok(response).build();
@@ -100,28 +105,36 @@ public class AuthApiServiceImpl implements AuthApiService {
     @Transactional
     public Response logout(SecurityContext securityContext) {
 
-        String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+        System.out.println("in logout method!\n");
 
+        String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+        /*
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             ErrorResponse error = new ErrorResponse();
             error.setMessage("Missing or invalid Authorization header");
             error.setCode("401");
             return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
+        } else*/ if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring("Bearer ".length());
+            sessionService.deleteSessionByToken(token);
         }
 
-        String token = authHeader.substring("Bearer ".length());
-        sessionService.deleteSessionByToken(token);
+        LogoutResponse logoutResponse = new LogoutResponse();
+        logoutResponse.setMessage("Logout Successfully");
+        return Response.ok(logoutResponse).build();
+    }
 
-        /*
-         * Map<String, String> message = Map.of("message", "Logged out successfully!");
-         */
-        return Response.ok().build();
+    public String getClientIp() {
+        String ipAddressString = headers.getHeaderString("X-FORWARDED-FOR");
+        if (ipAddressString != null && !ipAddressString.isEmpty()) {
+            return ipAddressString.split(",")[0].trim();
+        }
+        return null;
     }
 
     @Override
     @Secured
-    public Response authMeGet(SecurityContext securityContext) {
-
+    public Response getCurrentUser(SecurityContext securityContext) {
         String username = null;
 
         if (securityContext != null && securityContext.getUserPrincipal() != null) {
@@ -174,20 +187,13 @@ public class AuthApiServiceImpl implements AuthApiService {
         boolean isAdmin = groups.stream()
                 .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
 
-        RoleResponse response = new RoleResponse();
-        response.setUsername(username);
-        response.setGroups(groups);
-        response.setAdmin(isAdmin);
+        AuthUser authUserResponse = new AuthUser();
+        authUserResponse.setUsername(username);
+        authUserResponse.setGroups(groups);
+        authUserResponse.setAdmin(isAdmin);
 
-        return Response.ok(response).build();
-    }
+        return Response.ok(authUserResponse).build();
 
-    public String getClientIp() {
-        String ipAddressString = headers.getHeaderString("X-FORWARDED-FOR");
-        if (ipAddressString != null && !ipAddressString.isEmpty()) {
-            return ipAddressString.split(",")[0].trim();
-        }
-        return null;
     }
 
 }

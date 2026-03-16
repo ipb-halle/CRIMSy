@@ -16,19 +16,22 @@
 import * as runtime from '../runtime';
 import type {
   AuthToken,
+  AuthUser,
   ErrorResponse,
   LoginRequest,
-  User,
+  LogoutResponse,
 } from '../models/index';
 import {
     AuthTokenFromJSON,
     AuthTokenToJSON,
+    AuthUserFromJSON,
+    AuthUserToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     LoginRequestFromJSON,
     LoginRequestToJSON,
-    UserFromJSON,
-    UserToJSON,
+    LogoutResponseFromJSON,
+    LogoutResponseToJSON,
 } from '../models/index';
 
 export interface LoginOperationRequest {
@@ -41,10 +44,10 @@ export interface LoginOperationRequest {
 export class AuthApi extends runtime.BaseAPI {
 
     /**
-     * Returns information about the currently authenticated user.
-     * Retrieve authenticated user
+     * Returns the authenticated user\'s role information and group memberships. This endpoint is used by the frontend to determine access permissions. 
+     * Retrieve authenticated user information
      */
-    async authMeGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
+    async getCurrentUserRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUser>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -67,20 +70,20 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserFromJSON(jsonValue));
     }
 
     /**
-     * Returns information about the currently authenticated user.
-     * Retrieve authenticated user
+     * Returns the authenticated user\'s role information and group memberships. This endpoint is used by the frontend to determine access permissions. 
+     * Retrieve authenticated user information
      */
-    async authMeGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
-        const response = await this.authMeGetRaw(initOverrides);
+    async getCurrentUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUser> {
+        const response = await this.getCurrentUserRaw(initOverrides);
         return await response.value();
     }
 
     /**
-     * Validates user credentials and returns a session token. The token must be included in subsequent requests via the Authorization header. 
+     * Validates user credentials and returns a session token. On success, a bearer token is returned. The token must be included in all subsequent requests using the Authorization header. 
      * Authenticate user and create session
      */
     async loginRaw(requestParameters: LoginOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthToken>> {
@@ -112,7 +115,7 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * Validates user credentials and returns a session token. The token must be included in subsequent requests via the Authorization header. 
+     * Validates user credentials and returns a session token. On success, a bearer token is returned. The token must be included in all subsequent requests using the Authorization header. 
      * Authenticate user and create session
      */
     async login(requestParameters: LoginOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthToken> {
@@ -124,7 +127,7 @@ export class AuthApi extends runtime.BaseAPI {
      * Invalidates the user\'s session and deletes the token from database.
      * Logout current user & end user session
      */
-    async logoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async logoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LogoutResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -147,15 +150,16 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => LogoutResponseFromJSON(jsonValue));
     }
 
     /**
      * Invalidates the user\'s session and deletes the token from database.
      * Logout current user & end user session
      */
-    async logout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.logoutRaw(initOverrides);
+    async logout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LogoutResponse> {
+        const response = await this.logoutRaw(initOverrides);
+        return await response.value();
     }
 
 }

@@ -1,15 +1,18 @@
-import { useState, useRef, useEffect, FormEvent } from "react";
-import { LoginRequest, type AuthResponse } from "../api";
+import { useState, useRef, FormEvent } from "react";
+import { LoginRequest } from "../api";
 import * as api from "../../services/authService";
-import { fetchRoleAPI } from "../../services/authService";
 
 const SESSION_FALLBACK_TIMEOUT_MS = 600 * 1000;
 
 export const useAuth = () => {
 
-  const [loginRequest, setLoginRequest] = useState<LoginRequest>({ login: "", password: "", });
+  const [loginRequest, setLoginRequest] = useState<LoginRequest>({
+    username: "",
+    password: "",
+  });
+
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
-  const [result, setResult] = useState<AuthResponse | null>(null);
+  const [result, setResult] = useState<{ message: string } | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleInfo, setRoleInfo] = useState<any>(null);
   const [usersList, setUsersList] = useState<any>(null);
@@ -23,7 +26,7 @@ export const useAuth = () => {
     if (!token || !username) return false;
 
     try {
-      await fetchRoleAPI(token); // verify token is valid
+      await api.fetchRoleAPI(token); // verify token is valid
       setIsLoggedIn(true);
       setResult({ message: `Welcome back, ${username}!` });
       startSessionTimer(); // restart session timer
@@ -50,7 +53,7 @@ export const useAuth = () => {
       setResult({ message });
       setRoleInfo(null);
       setUsersList(null);
-      setLoginRequest({ login: "", password: "", });
+      setLoginRequest({ username: "", password: "", });
     };
 
   const startSessionTimer = (expiresInSeconds?: number) => {
@@ -63,7 +66,7 @@ export const useAuth = () => {
 
   const validate = () => {
     const newErrors: typeof errors = {};
-    if (!loginRequest.login.trim())
+    if (!loginRequest.username.trim())
       newErrors.username = "Username required";
     if (!loginRequest.password.trim())
       newErrors.password = "Password required";
@@ -78,18 +81,20 @@ export const useAuth = () => {
     setResult(null);
 
     try {
-      const data = await api.loginAPI(loginRequest);
+      const auth = await api.loginAPI(loginRequest);
 
-      if (!data.token || !data.username) {
-        setResult({ message: data.message ?? "Login failed, No response from server!" });
+      if (!auth.token) {
+        setResult({ message: "Login failed,  no token received!" });
         return;
       }
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("username", data.username);
+      localStorage.setItem("token", auth.token);
+      const user = await api.fetchRoleAPI(auth.token);
+      if (user?.username) {
+        localStorage.setItem("username", user.username);
+      }
       setIsLoggedIn(true);
-      setResult({ message: data.message });
-      startSessionTimer(data.expiresInSeconds);
+      startSessionTimer(auth.expiresInSeconds);
       if (onSuccess) onSuccess();
     } catch {
       setResult({ message: "Request failed. Please try again later." });
@@ -98,12 +103,14 @@ export const useAuth = () => {
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
+
     if (!token) return;
     try {
-      const data = await api.logoutAPI(token);
-      expireSession(data.message);
-    } catch {
+      await api.logoutAPI(token);
+      expireSession("Logged out successfully");
+    } catch (error) {
       expireSession("Logout failed");
+      console.error(error);
     }
   };
 
@@ -128,8 +135,8 @@ export const useAuth = () => {
     if (!token) return;
 
     try {
-      const users = await api.fetchUsersAPI(token, page, 3);
-      setUsersList(users);
+      // const users = await api.fetchUsersAPI(token, page, 3);
+      //setUsersList(users);
       setRoleInfo(null);
       setResult({ message: "Users List" });
     } catch {

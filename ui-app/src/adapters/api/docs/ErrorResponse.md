@@ -16,8 +16,8 @@ import type { ErrorResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "message": null,
-  "code": null,
+  "message": Unauthorized request,
+  "code": AUTH_401,
 } satisfies ErrorResponse
 
 console.log(example)

@@ -19,12 +19,6 @@ package de.ipb_halle.lbac.webservice;
 
 import de.ipb_halle.api.AuthApi;
 import de.ipb_halle.api.AuthApiService;
-import de.ipb_halle.api.MeApi;
-import de.ipb_halle.api.MeApiService;
-import de.ipb_halle.api.SearchApi;
-import de.ipb_halle.api.SearchApiService;
-import de.ipb_halle.api.UsersApi;
-import de.ipb_halle.api.UsersApiService;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
@@ -35,6 +29,8 @@ import de.ipb_halle.lbac.authentication.LoginEndpoint;
 import de.ipb_halle.lbac.search.SearchWebService;
 import de.ipb_halle.lbac.search.document.download.DocumentWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
+import de.ipb_halle.lbac.security.filter.AuthFilter;
+import de.ipb_halle.lbac.security.filter.CorsResponseFilter;
 import de.ipb_halle.lbac.security.resource.SessionResource;
 
 import java.util.Arrays;
@@ -60,15 +56,15 @@ public class ApplicationConfig extends Application {
                         PrintWebService.class,
                         SimpleRESTPojoExample.class,
                         DocumentWebService.class,
+                      // AuthFilter.class,
+                        CorsResponseFilter.class,
                         AuthApiService.class,
-                        AuthApi.class,
+                        AuthApi.class, /*
                         UsersApi.class,
-                        UsersApiService.class,
+                        UsersApiService.class,*/
                         LoginEndpoint.class,
-                        SessionResource.class,
-                        MeApi.class,
-                        MeApiService.class,
-                        SearchApi.class,
-                        SearchApiService.class));
+                        SessionResource.class
+                /*                        SearchApi.class,
+                SearchApiService.class*/));
     }
 }

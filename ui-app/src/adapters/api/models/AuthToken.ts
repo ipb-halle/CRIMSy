@@ -24,19 +24,21 @@ export interface AuthToken {
      * @type {string}
      * @memberof AuthToken
      */
-    token?: string;
+    token: string;
     /**
      * Session validity duration in seconds
      * @type {number}
      * @memberof AuthToken
      */
-    expiresInSeconds?: number;
+    expiresInSeconds: number;
 }
 
 /**
  * Check if a given object implements the AuthToken interface.
  */
 export function instanceOfAuthToken(value: object): value is AuthToken {
+    if (!('token' in value) || value['token'] === undefined) return false;
+    if (!('expiresInSeconds' in value) || value['expiresInSeconds'] === undefined) return false;
     return true;
 }
 
@@ -50,8 +52,8 @@ export function AuthTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'token': json['token'] == null ? undefined : json['token'],
-        'expiresInSeconds': json['expiresInSeconds'] == null ? undefined : json['expiresInSeconds'],
+        'token': json['token'],
+        'expiresInSeconds': json['expiresInSeconds'],
     };
 }
 
