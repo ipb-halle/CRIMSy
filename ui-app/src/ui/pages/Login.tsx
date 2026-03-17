@@ -38,7 +38,7 @@ const Login: React.FC<Props> = ({ onLogin }) => {
 
       <h2 style={{ marginBottom: spacing.md }}>Login</h2>
 
-      {result && (
+      {result?.message && (
         <div
           style={{
             marginBottom: spacing.md,
