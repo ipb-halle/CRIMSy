@@ -50,7 +50,6 @@ public class AuthApiServiceImpl implements AuthApiService {
     @Override
     public Response login(LoginRequest loginRequest, SecurityContext securityContext) {
 
-        System.out.println("in login method!\n");
         String ipAddressString = getClientIp();
 
         User user = loginProcess.tryLogIn(
@@ -100,36 +99,26 @@ public class AuthApiServiceImpl implements AuthApiService {
         return Response.ok(response).build();
     }
 
-    @Secured
     @Override
     @Transactional
+    @Secured
     public Response logout(SecurityContext securityContext) {
 
-        System.out.println("in logout method!\n");
-
         String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
-        /*
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             ErrorResponse error = new ErrorResponse();
             error.setMessage("Missing or invalid Authorization header");
             error.setCode("401");
             return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
-        } else*/ if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring("Bearer ".length());
-            sessionService.deleteSessionByToken(token);
         }
+
+        String token = authHeader.substring("Bearer ".length());
+        sessionService.deleteSessionByToken(token);
 
         LogoutResponse logoutResponse = new LogoutResponse();
         logoutResponse.setMessage("Logout Successfully");
         return Response.ok(logoutResponse).build();
-    }
-
-    public String getClientIp() {
-        String ipAddressString = headers.getHeaderString("X-FORWARDED-FOR");
-        if (ipAddressString != null && !ipAddressString.isEmpty()) {
-            return ipAddressString.split(",")[0].trim();
-        }
-        return null;
     }
 
     @Override
@@ -196,4 +185,11 @@ public class AuthApiServiceImpl implements AuthApiService {
 
     }
 
+    public String getClientIp() {
+        String ipAddressString = headers.getHeaderString("X-FORWARDED-FOR");
+        if (ipAddressString != null && !ipAddressString.isEmpty()) {
+            return ipAddressString.split(",")[0].trim();
+        }
+        return null;
+    }
 }
