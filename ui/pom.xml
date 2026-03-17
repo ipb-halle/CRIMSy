@@ -346,6 +346,8 @@
                             <configOptions>
                                 <useJakartaEe>true</useJakartaEe>
                                 <interfaceOnly>true</interfaceOnly>
+                                <useBeanValidation>true</useBeanValidation>
+                                <parameterAnnotations>true</parameterAnnotations>
                             </configOptions>
 
                             <output>${project.build.directory}/generated-sources/openapi</output>
@@ -782,10 +784,6 @@
             <version>5.1.0</version>
             <scope>test</scope>
         </dependency>
-
-
-
-
 
         <dependency>
             <groupId>org.awaitility</groupId>
