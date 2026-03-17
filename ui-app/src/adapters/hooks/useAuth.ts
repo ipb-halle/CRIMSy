@@ -5,7 +5,6 @@ import * as api from "../../services/authService";
 const SESSION_FALLBACK_TIMEOUT_MS = 600 * 1000;
 
 export const useAuth = () => {
-
   const [loginRequest, setLoginRequest] = useState<LoginRequest>({
     username: "",
     password: "",
@@ -28,8 +27,7 @@ export const useAuth = () => {
     try {
       await api.fetchRoleAPI(token); // verify token is valid
       setIsLoggedIn(true);
-      setResult({ message: `Welcome back, ${username}!` });
-      startSessionTimer(); // restart session timer
+      startSessionTimer();
       return true;
     } catch {
       expireSession("Session expired. Please log in again.");
@@ -46,11 +44,11 @@ export const useAuth = () => {
 
   const expireSession =
     (message: string) => {
+      setResult({ message });
       clearLogoutTimer();
       localStorage.removeItem("token");
       localStorage.removeItem("username");
       setIsLoggedIn(false);
-      setResult({ message });
       setRoleInfo(null);
       setUsersList(null);
       setLoginRequest({ username: "", password: "", });
@@ -78,8 +76,6 @@ export const useAuth = () => {
     if (e) e.preventDefault();
     if (!validate()) return;
 
-    setResult(null);
-
     try {
       const auth = await api.loginAPI(loginRequest);
 
@@ -95,7 +91,9 @@ export const useAuth = () => {
       }
       setIsLoggedIn(true);
       startSessionTimer(auth.expiresInSeconds);
-      if (onSuccess) onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch {
       setResult({ message: "Request failed. Please try again later." });
     }
@@ -106,8 +104,10 @@ export const useAuth = () => {
 
     if (!token) return;
     try {
-      await api.logoutAPI(token);
-      expireSession("Logged out successfully");
+      const res = await api.logoutAPI(token);
+      setTimeout(() => {
+        expireSession("Logged out successfully");
+      }, 1200);
     } catch (error) {
       expireSession("Logout failed");
       console.error(error);
