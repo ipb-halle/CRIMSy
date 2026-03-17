@@ -61,7 +61,7 @@ export const logoutAPI = async (token: string): Promise<LogoutResponse> => {
   }
 
   const data = JSON.parse(responseBody);
-  alert("Logged out Successfully!\n Click to continue!");
+  //alert("Logged out Successfully!\n Click to continue!");
   return data;
 };
 

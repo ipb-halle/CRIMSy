@@ -101,8 +101,11 @@ export const useAuth = () => {
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
-
     if (!token) return;
+
+    const confirmed = window.confirm("Are you sure you want to log out?");
+    if (!confirmed) return; // user canceled
+
     try {
       const res = await api.logoutAPI(token);
       setTimeout(() => {
