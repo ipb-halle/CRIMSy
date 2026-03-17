@@ -144,13 +144,14 @@ components:
       properties:
         username:
           type: string
-          minLength: 3
+          minLength: 5
           maxLength: 50
+          pattern: '^[a-zA-Z0-9]+$' # only alphanumeric
           description: User login name
           example: johndoe
         password:
           type: string
-          minLength: 8
+          minLength: 5
           description: User password
           example: password123
 
