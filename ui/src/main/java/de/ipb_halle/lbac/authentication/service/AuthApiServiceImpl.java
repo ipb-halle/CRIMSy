@@ -23,6 +23,9 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Context;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import java.util.List;
 
@@ -130,24 +133,22 @@ public class AuthApiServiceImpl implements AuthApiService {
             username = securityContext.getUserPrincipal().getName();
         }
 
-        if (username == null) {
-            String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                ErrorResponse error = new ErrorResponse();
-                error.setMessage("Unauthorized: missing token");
-                error.setCode("401");
-                return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
-            }
-            String token = authHeader.substring("Bearer ".length());
-            if (!tokenService.validateToken(token)) {
-                ErrorResponse error = new ErrorResponse();
-                error.setMessage("Unauthorized: invalid token");
-                error.setCode("401");
-                return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
-            }
-
-            username = tokenService.getUsernameFromToken(token);
+        String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            ErrorResponse error = new ErrorResponse();
+            error.setMessage("Unauthorized: missing token");
+            error.setCode("401");
+            return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
         }
+        String token = authHeader.substring("Bearer ".length());
+        if (!sessionService.isTokenValid(token, false)) {
+            ErrorResponse error = new ErrorResponse();
+            error.setMessage("Unauthorized: invalid token");
+            error.setCode("401");
+            return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
+        }
+
+        username = tokenService.getUsernameFromToken(token);
         MemberEntity member;
         try {
             member = em.createQuery(
@@ -176,11 +177,14 @@ public class AuthApiServiceImpl implements AuthApiService {
         boolean isAdmin = groups.stream()
                 .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
 
+        LocalDateTime expiresAt = sessionService.getSessionExpiry(token);
+        
         AuthUser authUserResponse = new AuthUser();
         authUserResponse.setUsername(username);
         authUserResponse.setGroups(groups);
         authUserResponse.setAdmin(isAdmin);
-
+        authUserResponse.setExpiresAt(Date.from(expiresAt.atZone(ZoneId.systemDefault()).toInstant()));
+        
         return Response.ok(authUserResponse).build();
 
     }

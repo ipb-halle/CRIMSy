@@ -1,34 +1,28 @@
 
-# AuthUser
+# PaginatedUserResponse
 
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`id` | number
-`username` | string
-`name` | string
-`email` | string
-`groups` | Array&lt;string&gt;
-`admin` | boolean
-`expiresAt` | Date
+`items` | [Array&lt;UserSummary&gt;](UserSummary.md)
+`totalItems` | number
+`totalPages` | number
+`currentPage` | number
 
 ## Example
 
 ```typescript
-import type { AuthUser } from ''
+import type { PaginatedUserResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": 42,
-  "username": johndoe,
-  "name": John Doe,
-  "email": john.doe@example.com,
-  "groups": ["Users","Admin Group"],
-  "admin": true,
-  "expiresAt": 2026-03-25T10:45:14Z,
-} satisfies AuthUser
+  "items": null,
+  "totalItems": 245,
+  "totalPages": 13,
+  "currentPage": 1,
+} satisfies PaginatedUserResponse
 
 console.log(example)
 
@@ -37,7 +31,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as AuthUser
+const exampleParsed = JSON.parse(exampleJSON) as PaginatedUserResponse
 console.log(exampleParsed)
 ```
 

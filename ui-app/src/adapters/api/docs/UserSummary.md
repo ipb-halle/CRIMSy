@@ -1,5 +1,5 @@
 
-# AuthUser
+# UserSummary
 
 
 ## Properties
@@ -7,28 +7,26 @@
 Name | Type
 ------------ | -------------
 `id` | number
-`username` | string
+`login` | string
 `name` | string
 `email` | string
 `groups` | Array&lt;string&gt;
 `admin` | boolean
-`expiresAt` | Date
 
 ## Example
 
 ```typescript
-import type { AuthUser } from ''
+import type { UserSummary } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": 42,
-  "username": johndoe,
+  "id": 1,
+  "login": jdoe,
   "name": John Doe,
   "email": john.doe@example.com,
   "groups": ["Users","Admin Group"],
   "admin": true,
-  "expiresAt": 2026-03-25T10:45:14Z,
-} satisfies AuthUser
+} satisfies UserSummary
 
 console.log(example)
 
@@ -37,7 +35,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as AuthUser
+const exampleParsed = JSON.parse(exampleJSON) as UserSummary
 console.log(exampleParsed)
 ```
 

@@ -122,8 +122,60 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
+  
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Retrieve list of all users
+      description: |
+        Returns all users from the system with basic details.
+        Useful for populating user lists in the frontend.
+      operationId: getUsersList
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number (starts from 1)
+          required: false
+          schema: 
+            type: integer
+            default: 1
+            minimum: 1
+        - name: pageSize
+          in: query
+          description: Number of users per page
+          required: false
+          schema: 
+            type: integer
+            default: 10
+            minimum: 1 
+            maximum: 100
+      responses:
+        "200":
+          description: Array of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserSummary"
+        "401":
+          description: Unauthorized (missing or invalid token)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  
 components:
+  
   securitySchemes:
     bearerAuth:
       type: http
@@ -163,7 +215,6 @@ components:
       properties:
         token:
           type: string
-          #format: uuid
           description: Token
           example: "550e8400-e29b-41d4-a716-446655440000"
         expiresInSeconds:
@@ -204,8 +255,74 @@ components:
           type: boolean
           description: Indicates whether the user belongs to the Admin Group
           example: true
+        expiresAt:
+          type: string
+          format: date-time
+          description: timestamp inddicating when the session will expire
+          example: "2026-03-25T10:45:14.000Z"
+          x-java-type: java.time.LocalDateTime
+       
         
+    UserSummary:
+      type: object
+      required:
+        - id
+        - login
+      properties:
+        id: 
+          type: integer
+          description: User ID
+          example: 1
+        login:
+          type: string
+          description: User login
+          example: jdoe
+        name:
+          type: string
+          description: Full name
+          example: John Doe
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: john.doe@example.com
+        groups:
+          type: array
+          items:
+            type: string
+          example:
+            - Users
+            - Admin Group
+        admin:
+          type: boolean
+          description: Indicates whether the user belongs to the Admin Group
+          example: true
    
+    PaginatedUserResponse:
+      type: object
+      required:
+        - items
+        - totalItems
+        - totalPages
+        - currentPage
+      properties:
+        items: 
+          type: array
+          items:
+            $ref: "#/components/schemas/UserSummary"
+        totalItems:
+          type: integer
+          description: Total number of users in the system
+          example: 245
+        totalPages:
+          type: integer
+          description: Total number of pages
+          example: 13
+        currentPage:
+          type: integer
+          description: Current page number
+          example: 1
+    
     LogoutResponse:
       type: object
       required:

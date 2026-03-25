@@ -42,6 +42,7 @@ export const logoutAPII = async (token: string): Promise<LogoutResponse> => {
 
 export const logoutAPI = async (token: string): Promise<LogoutResponse> => {
   if (!token) throw new Error("No token found");
+
   const res = await fetch(`${BASE}`, {
     method: "POST",
     headers: {
@@ -61,7 +62,6 @@ export const logoutAPI = async (token: string): Promise<LogoutResponse> => {
   }
 
   const data = JSON.parse(responseBody);
-  //alert("Logged out Successfully!\n Click to continue!");
   return data;
 };
 

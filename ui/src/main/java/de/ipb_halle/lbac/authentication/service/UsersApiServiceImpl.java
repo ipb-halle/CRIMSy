@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
  */
 @RequestScoped
 public class UsersApiServiceImpl implements UsersApiService {
+    //implements UsersApiService {
 
     @Inject
     TokenService tokenService;
@@ -38,12 +39,8 @@ public class UsersApiServiceImpl implements UsersApiService {
     @Context
     private HttpHeaders headers;
 
-    /*@Override
-    public Response usersListGet(Integer page, Integer pageSize, SecurityContext securityContext) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }*/
     @Override
-    public Response usersGet(Integer page, Integer pageSize, SecurityContext securityContext) {
+    public Response getUsersList(Integer page, Integer pageSize, SecurityContext securityContext) {
 
         if (page < 1 || pageSize < 1) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -71,7 +68,7 @@ public class UsersApiServiceImpl implements UsersApiService {
             }
             String token = authHeader.substring("Bearer ".length());
 
-            if (!tokenService.validateToken(token)) {
+            if (!tokenService.validateToken(token, false)) {
                 ErrorResponse errorResponse = new ErrorResponse();
                 errorResponse.setMessage("Unauthorized: invalid token");
                 errorResponse.setCode("401");
@@ -81,7 +78,7 @@ public class UsersApiServiceImpl implements UsersApiService {
             }
             username = tokenService.getUsernameFromToken(token);
         }
-        
+
         // --- Load requesting user ---
         MemberEntity requestingUser;
         try {
@@ -165,5 +162,4 @@ public class UsersApiServiceImpl implements UsersApiService {
 
         return Response.ok(responsesMap).build();
     }
-
 }

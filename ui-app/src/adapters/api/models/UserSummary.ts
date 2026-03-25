@@ -16,87 +16,80 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface AuthUser
+ * @interface UserSummary
  */
-export interface AuthUser {
+export interface UserSummary {
     /**
-     * Unique user ID
+     * User ID
      * @type {number}
-     * @memberof AuthUser
+     * @memberof UserSummary
      */
     id: number;
     /**
-     * User login name
+     * User login
      * @type {string}
-     * @memberof AuthUser
+     * @memberof UserSummary
      */
-    username: string;
+    login: string;
     /**
      * Full name
      * @type {string}
-     * @memberof AuthUser
+     * @memberof UserSummary
      */
     name?: string;
     /**
-     * 
+     * Email address
      * @type {string}
-     * @memberof AuthUser
+     * @memberof UserSummary
      */
     email?: string;
     /**
      * 
      * @type {Array<string>}
-     * @memberof AuthUser
+     * @memberof UserSummary
      */
     groups?: Array<string>;
     /**
      * Indicates whether the user belongs to the Admin Group
      * @type {boolean}
-     * @memberof AuthUser
+     * @memberof UserSummary
      */
     admin?: boolean;
-    /**
-     * timestamp inddicating when the session will expire
-     * @type {Date}
-     * @memberof AuthUser
-     */
-    expiresAt?: Date;
 }
 
 /**
- * Check if a given object implements the AuthUser interface.
+ * Check if a given object implements the UserSummary interface.
  */
-export function instanceOfAuthUser(value: object): value is AuthUser {
+export function instanceOfUserSummary(value: object): value is UserSummary {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('login' in value) || value['login'] === undefined) return false;
     return true;
 }
 
-export function AuthUserFromJSON(json: any): AuthUser {
-    return AuthUserFromJSONTyped(json, false);
+export function UserSummaryFromJSON(json: any): UserSummary {
+    return UserSummaryFromJSONTyped(json, false);
 }
 
-export function AuthUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthUser {
+export function UserSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSummary {
     if (json == null) {
         return json;
     }
     return {
         
         'id': json['id'],
-        'username': json['username'],
+        'login': json['login'],
         'name': json['name'] == null ? undefined : json['name'],
         'email': json['email'] == null ? undefined : json['email'],
         'groups': json['groups'] == null ? undefined : json['groups'],
         'admin': json['admin'] == null ? undefined : json['admin'],
-        'expiresAt': json['expiresAt'] == null ? undefined : (new Date(json['expiresAt'])),
     };
 }
 
-export function AuthUserToJSON(json: any): AuthUser {
-    return AuthUserToJSONTyped(json, false);
+export function UserSummaryToJSON(json: any): UserSummary {
+    return UserSummaryToJSONTyped(json, false);
 }
 
-export function AuthUserToJSONTyped(value?: AuthUser | null, ignoreDiscriminator: boolean = false): any {
+export function UserSummaryToJSONTyped(value?: UserSummary | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -104,12 +97,11 @@ export function AuthUserToJSONTyped(value?: AuthUser | null, ignoreDiscriminator
     return {
         
         'id': value['id'],
-        'username': value['username'],
+        'login': value['login'],
         'name': value['name'],
         'email': value['email'],
         'groups': value['groups'],
         'admin': value['admin'],
-        'expiresAt': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
     };
 }
 
