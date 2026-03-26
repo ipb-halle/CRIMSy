@@ -4,17 +4,15 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.api.SearchApiService;
+//import de.ipb_halle.api.SearchApiService;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.security.service.TokenService;
-import de.ipb_halle.model.ErrorResponse;
-import de.ipb_halle.model.MaterialType;
+import de.ipb_halle.model.ErrorResponse;/*
 import de.ipb_halle.model.RoleResponse;
 import de.ipb_halle.model.SearchRequest;
 import de.ipb_halle.model.SearchResponse;
-import de.ipb_halle.model.SearchResult;
-import de.ipb_halle.model.SearchType;
+import de.ipb_halle.model.SearchResult;*/
 
 import jakarta.inject.Inject;
 
@@ -34,7 +32,8 @@ import java.util.List;
  *
  * @author halocal
  */
-public class SearchApiServiceImpl implements SearchApiService {
+public class SearchApiServiceImpl{
+// implements SearchApiService {
 
     @Inject
     TokenService tokenService;
@@ -45,7 +44,7 @@ public class SearchApiServiceImpl implements SearchApiService {
     @Context
     private HttpHeaders headers;
 
-    @Override
+  /*  @Override
     public Response search(SearchRequest searchRequest, SecurityContext securityContext) {
         SearchResult searchResult = new SearchResult();
         SearchResponse searchResponse = new SearchResponse();
@@ -116,5 +115,5 @@ public class SearchApiServiceImpl implements SearchApiService {
         searchResponse.setTotal(count);
         return Response.ok(searchResponse).build();
     }
-
+*/
 }
