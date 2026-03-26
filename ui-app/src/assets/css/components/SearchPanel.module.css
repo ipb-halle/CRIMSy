@@ -8,6 +8,15 @@
     flex-shrink: 0;
 }
 
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
 .results {
     flex: 1;
     min-width: 0;
@@ -15,7 +24,7 @@
 
 .controls {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     gap: var(--space-sm);
     margin-bottom: var(--space-md);
     align-items: center;
@@ -43,28 +52,37 @@
     padding: var(--space-sm) var(--space-md);
     border: 1px solid var(--color-border);
     background: var(--color-surface);
-    /*    cursor: pointer;
-    border-radius: var(--radius-sm);*/
-}
-
-.viewSwitch button:hover {
-    background: var(--color-hover);
-}
-
-.viewSwitch .active {
-    background: var(--color-primary);
-    color: white;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
 }
 
 .activeView {
     background: var(--color-primary);
-    color: rgb(7, 102, 39);
+    color: rgb(7, 102, 39);/*
     font-weight: bold;
-    border-color: var(--color-primary);
+    border-color: var(--color-primary);*/
+}
+
+.filterSummary {
+  padding: var(--space-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-sm);
+  font-size: 0.9rem;
 }
 
 .pagination {
     margin-top: var(--space-md);
+}
+
+.resultsGrid {
+  min-height: 200px;
+}
+
+.emptyState {
+  padding: var(--space-md);
+  text-align: center;
 }
 
 /* Mobile Mode */
@@ -106,10 +124,10 @@
     width: 260px;
     height: 100%;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
-    background: white;
+    background:var(--color-surface);
     z-index: 20;
     transition: left 0.25s ease;
-    padding: 1rem;
+    padding:var(--space-md);
     overflow-y: auto;
     display: none;
 }
@@ -128,5 +146,5 @@
     color: white;
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--radius-sm);
-    font-weight: 600;
+   /* font-weight: 600;*/
 }
