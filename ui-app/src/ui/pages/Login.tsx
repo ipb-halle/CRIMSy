@@ -5,17 +5,18 @@ import { radius, spacing } from "../../assets/css/theme/designTokens";
 import { useTheme } from "../../assets/css/theme/ThemeContext";
 
 interface Props {
+  auth: ReturnType<typeof useAuth>;
   onLogin: () => void;
 }
 
-const Login: React.FC<Props> = ({ onLogin }) => {
+const Login: React.FC<Props> = ({ auth, onLogin }) => {
   const {
     loginRequest,
     setLoginRequest,
     errors,
     result,
     handleLogin,
-  } = useAuth();
+  } = auth;
 
   const { theme } = useTheme();
 

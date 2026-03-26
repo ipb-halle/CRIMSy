@@ -8,15 +8,20 @@ import '../src/assets/css/App.css';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { checkSession } = useAuth();
 
-  // On mount, verify if token exists and is valid
+  const auth = useAuth(() => {
+    setIsLoggedIn(false);
+  });
+
   useEffect(() => {
-    const verifyLogin = async () => {
-      const valid = await checkSession();
-      if (valid) setIsLoggedIn(true);
-    };
-    verifyLogin();
+    auth.checkSession()
+      .then((isValid) => {
+        setIsLoggedIn(isValid);
+      })
+      .catch((err) => {
+        console.log("Session check failed: ", err);
+        setIsLoggedIn(false);
+      });
   }, []);
 
   return (
@@ -24,9 +29,13 @@ const App: React.FC = () => {
       <div className='App'>
         <div className='content'>
           {isLoggedIn ? (
-            <Dashboard onLogout={() => setIsLoggedIn(false)} />
+            <Dashboard
+              auth={auth}
+              onLogout={() => setIsLoggedIn(false)} />
           ) : (
-            <Login onLogin={() => setIsLoggedIn(true)} />
+            <Login
+              auth={auth}
+              onLogin={() => setIsLoggedIn(true)} />
           )}
         </div>
         <Footer />

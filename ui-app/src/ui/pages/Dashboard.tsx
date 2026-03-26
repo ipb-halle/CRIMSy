@@ -12,11 +12,12 @@ import styles from "../../assets/css/components/Dashboard.module.css";
 type View = "home" | "search" | "role" | "users" | "addMaterial";
 
 interface Props {
+    auth: ReturnType<typeof useAuth>;
     onLogout: () => void;
 }
 
 const Dashboard: React.FC<Props> = (
-    { onLogout }
+    { auth, onLogout }
 ) => {
     const {
         roleInfo,
@@ -24,10 +25,17 @@ const Dashboard: React.FC<Props> = (
         handleLogout,
         handleCheckRole,
         handleFetchUsers,
-    } = useAuth();
+        remainingTime
+    } = auth;
 
     const { theme } = useTheme();
     const [view, setView] = useState<View>("home");
+
+    const formatTime = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m}:${s.toString().padStart(2, "0")}`;
+    };
 
     const handleTab = (
         next: View
@@ -77,8 +85,8 @@ const Dashboard: React.FC<Props> = (
         }}>
 
             <Navigation
-                onLogout={() => {
-                    handleLogout();
+                onLogout={async () => {
+                    await handleLogout();
                     onLogout();
                 }}
             />
@@ -142,11 +150,23 @@ const Dashboard: React.FC<Props> = (
                         borderRadius: radius.sm,
                         border: `1px solid ${theme.accent}`,
                         color: theme.textPrimary,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
                     }}
                 >
-                    Welcome, {roleInfo.username}
+                    <span>
+                        Welcome, {roleInfo.username}
+                    </span>
+                    <span style={{
+                        fontWeight: 600,
+                        color: remainingTime < 30 ? theme.danger : theme.textPrimary
+                    }}>
+                        ⏳ {formatTime(remainingTime)}
+                    </span>
                 </div>
-            )}
+            )
+            }
 
             {/* CONTENT AREA */}
             <div style={{
@@ -157,7 +177,7 @@ const Dashboard: React.FC<Props> = (
                 {renderView()}
             </div>
 
-        </div>
+        </div >
     );
 };
 
