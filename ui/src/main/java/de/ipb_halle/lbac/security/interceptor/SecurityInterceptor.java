@@ -40,7 +40,7 @@ public class SecurityInterceptor {
         }
         String token = authHeader.substring("Bearer ".length());
 
-        boolean validatedToken = tokenService.validateToken(token);
+        boolean validatedToken = tokenService.validateToken(token, false);
         if (!validatedToken) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Invalid or expired token\"}")

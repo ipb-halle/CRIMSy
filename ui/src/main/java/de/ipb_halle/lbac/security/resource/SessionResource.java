@@ -45,7 +45,7 @@ public class SessionResource {
 
         String token = authHeader.substring(7);
 
-        if (!tokenService.validateToken(token)) {
+        if (!tokenService.validateToken(token, true)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 

@@ -48,7 +48,7 @@ public class TokenService {
     
     
      @Transactional
-     public boolean validateToken(String token) {
-         return !sessionService.isTokenExpired(token);
+     public boolean validateToken(String token, boolean tokenExpired) {
+         return !sessionService.isTokenExpired(token, tokenExpired);
      }
 }
