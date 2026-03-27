@@ -2,7 +2,8 @@ import { useState, useRef, FormEvent, useEffect, use } from "react";
 import { LoginRequest } from "../api";
 import * as api from "../../services/authService";
 
-const SESSION_CHECK_INTERVAL_MS = 30 * 1000;
+const SESSION_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // refresh every 5 min
+const SESSION_TIMER_INTERVAL_MS = 1000;
 
 export const useAuth = (onAutoLogout?: () => void) => {
   const [loginRequest, setLoginRequest] = useState<LoginRequest>({ username: "", password: "", });
@@ -12,12 +13,14 @@ export const useAuth = (onAutoLogout?: () => void) => {
   const [usersList, setUsersList] = useState<any>(null);
   const [remainingTime, setRemainingTime] = useState<number>(0);
   const intervalRef = useRef<number | null>(null);
+  const countdownRef = useRef<number | null>(null);
 
 
   const clearTimers = () => {
-    if (intervalRef.current) {
+    if (intervalRef.current)
       clearInterval(intervalRef.current);
-    }
+    if (countdownRef.current)
+      clearInterval(countdownRef.current);
   };
 
   const expireSession = (message: string) => {
@@ -36,27 +39,32 @@ export const useAuth = (onAutoLogout?: () => void) => {
   const checkSession = async (): Promise<boolean> => {
     const token = localStorage.getItem("token");
     const username = localStorage.getItem("username");
+    const expiresAt = localStorage.getItem("tokenExpiry");
 
-    if (!token || !username) {
+    if (!token || !username || !expiresAt)
       return false;
-    }
 
     try {
       const user = await api.fetchRoleAPI(token);
       setRoleInfo(user);
-      const expiresAt = user.expiresAt as string | Date;
+
+
+      console.log("checkSession expiresAt: " + expiresAt);
 
 
       const expireInSeconds = new Date(expiresAt).getTime();
+      console.log("checkSession expireInSeconds: " + expireInSeconds);
       // localStorage.setItem("tokenExpiry", expireInSeconds.toString());
       const remainingSeconds = Math.max((expireInSeconds - Date.now()) / 1000, 0);
       setRemainingTime(remainingSeconds);
+
+      startSessionRefresh();
+      startCountdownTimer();
 
       if (remainingSeconds <= 0) {
         expireSession("Session expired! Please log in again.");
         return false;
       }
-
       return true;
     } catch {
       expireSession("Session expired. Please log in again.");
@@ -64,14 +72,27 @@ export const useAuth = (onAutoLogout?: () => void) => {
     }
   };
 
-  const startSessionTimer = (expiresInSeconds: number) => {
-    clearTimers();
-    setRemainingTime(expiresInSeconds);
-
+  const startSessionRefresh = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
     intervalRef.current = window.setInterval(async () => {
       const valid = await checkSession();
       if (!valid) clearTimers();
-    }, SESSION_CHECK_INTERVAL_MS);
+    }, SESSION_REFRESH_INTERVAL_MS);
+  };
+
+  const startCountdownTimer = () => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    countdownRef.current = window.setInterval(() => {
+      setRemainingTime(prev => {
+        if (prev <= 1) {
+          clearInterval(countdownRef.current!);
+          expireSession("Session expired! Please log in again.");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, SESSION_TIMER_INTERVAL_MS);
   };
 
   const validate = () => {
@@ -88,7 +109,6 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
     try {
       const auth = await api.loginAPI(loginRequest);
-
       if (!auth.token) {
         setResult({ message: "Login failed,  no token received!" });
         return;
@@ -97,7 +117,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
       localStorage.setItem("token", auth.token);
 
       const user = await api.fetchRoleAPI(auth.token);
-      if (!user || !user.expiresAt) {
+      if (!user) {
         setResult({ message: "Failed to retrieve session info!" });
         return;
       }
@@ -106,13 +126,21 @@ export const useAuth = (onAutoLogout?: () => void) => {
         localStorage.setItem("username", user.username);
       }
 
-      const expiryTimestamp = new Date(user.expiresAt).getTime();
-      localStorage.setItem("tokenExpiry", expiryTimestamp.toString());
-      const remainingSeconds = Math.max((expiryTimestamp - Date.now()) / 1000, 0);
-      setRoleInfo(user);
-      //      setRemainingTime(remainingSeconds);
-      startSessionTimer(remainingSeconds);
+      const expiry = new Date(Date.now() + auth.expiresInSeconds * 1000); // +1 minute
+      console.log("login expiryTimestamp1: " + expiry.toLocaleTimeString());
 
+      if (isNaN(auth.expiresInSeconds)) {
+        console.error("Invalid expiresAt from backend:", expiry);
+        expireSession("Session error. Please login again.");
+        return false;
+      }
+      localStorage.setItem("tokenExpiry", expiry.toString());
+
+      const remainingSeconds = Math.max((expiry.getTime() - Date.now()) / 1000, 0);
+      setRoleInfo(user);
+      setRemainingTime(remainingSeconds);
+      startSessionRefresh();
+      startCountdownTimer();
       if (onSuccess) {
         onSuccess();
       }
