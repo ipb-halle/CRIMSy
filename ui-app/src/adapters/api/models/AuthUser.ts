@@ -55,12 +55,6 @@ export interface AuthUser {
      * @memberof AuthUser
      */
     admin?: boolean;
-    /**
-     * timestamp inddicating when the session will expire
-     * @type {Date}
-     * @memberof AuthUser
-     */
-    expiresAt?: Date;
 }
 
 /**
@@ -88,7 +82,6 @@ export function AuthUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'email': json['email'] == null ? undefined : json['email'],
         'groups': json['groups'] == null ? undefined : json['groups'],
         'admin': json['admin'] == null ? undefined : json['admin'],
-        'expiresAt': json['expiresAt'] == null ? undefined : (new Date(json['expiresAt'])),
     };
 }
 
@@ -109,7 +102,6 @@ export function AuthUserToJSONTyped(value?: AuthUser | null, ignoreDiscriminator
         'email': value['email'],
         'groups': value['groups'],
         'admin': value['admin'],
-        'expiresAt': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
     };
 }
 

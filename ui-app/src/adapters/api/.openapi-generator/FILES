@@ -1,5 +1,5 @@
-.openapi-generator-ignore
 apis/AuthApi.ts
+apis/UsersApi.ts
 apis/index.ts
 docs/AuthApi.md
 docs/AuthToken.md
@@ -7,11 +7,16 @@ docs/AuthUser.md
 docs/ErrorResponse.md
 docs/LoginRequest.md
 docs/LogoutResponse.md
+docs/PaginatedUserResponse.md
+docs/UserSummary.md
+docs/UsersApi.md
 index.ts
 models/AuthToken.ts
 models/AuthUser.ts
 models/ErrorResponse.ts
 models/LoginRequest.ts
 models/LogoutResponse.ts
+models/PaginatedUserResponse.ts
+models/UserSummary.ts
 models/index.ts
 runtime.ts

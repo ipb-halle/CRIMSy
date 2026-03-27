@@ -255,13 +255,6 @@ components:
           type: boolean
           description: Indicates whether the user belongs to the Admin Group
           example: true
-        expiresAt:
-          type: string
-          format: date-time
-          description: timestamp inddicating when the session will expire
-          example: "2026-03-25T10:45:14.000Z"
-          x-java-type: java.time.LocalDateTime
-       
         
     UserSummary:
       type: object

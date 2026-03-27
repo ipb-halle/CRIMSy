@@ -183,7 +183,6 @@ public class AuthApiServiceImpl implements AuthApiService {
         authUserResponse.setUsername(username);
         authUserResponse.setGroups(groups);
         authUserResponse.setAdmin(isAdmin);
-        authUserResponse.setExpiresAt(Date.from(expiresAt.atZone(ZoneId.systemDefault()).toInstant()));
         
         return Response.ok(authUserResponse).build();
 

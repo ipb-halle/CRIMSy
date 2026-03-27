@@ -12,7 +12,6 @@ Name | Type
 `email` | string
 `groups` | Array&lt;string&gt;
 `admin` | boolean
-`expiresAt` | Date
 
 ## Example
 
@@ -27,7 +26,6 @@ const example = {
   "email": john.doe@example.com,
   "groups": ["Users","Admin Group"],
   "admin": true,
-  "expiresAt": 2026-03-25T10:45:14Z,
 } satisfies AuthUser
 
 console.log(example)
