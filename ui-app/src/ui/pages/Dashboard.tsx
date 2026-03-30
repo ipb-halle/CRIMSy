@@ -141,7 +141,7 @@ const Dashboard: React.FC<Props> = (
             </div>
 
             {/* NOTIFICATION */}
-            {roleInfo && (
+            {remainingTime > 0 && (
                 <div
                     style={{
                         margin: spacing.sm,
@@ -156,7 +156,7 @@ const Dashboard: React.FC<Props> = (
                     }}
                 >
                     <span>
-                        Welcome, {roleInfo.username}
+                        {roleInfo ? `Welcome, ${roleInfo.username}` : "Logged in"}
                     </span>
                     <span style={{
                         fontWeight: 600,
@@ -165,8 +165,7 @@ const Dashboard: React.FC<Props> = (
                         ⏳ {formatTime(remainingTime)}
                     </span>
                 </div>
-            )
-            }
+            )}
 
             {/* CONTENT AREA */}
             <div style={{
