@@ -1,5 +1,6 @@
 package de.ipb_halle.lbac.security.filter;
 
+import de.ipb_halle.lbac.security.interceptor.Secured;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -12,8 +13,10 @@ import java.security.Principal;
 
 import de.ipb_halle.lbac.security.service.SessionService;
 import de.ipb_halle.lbac.security.service.TokenService;
+import jakarta.ws.rs.HttpMethod;
 
 @Provider
+@Secured
 public class AuthFilter implements ContainerRequestFilter {
 
     @Inject
@@ -25,12 +28,14 @@ public class AuthFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
-         if ("OPTIONS".equalsIgnoreCase(requestContext.getMethod())) {
+        String path = requestContext.getUriInfo().getPath();
+        String methoString = requestContext.getMethod();
+        if(HttpMethod.OPTIONS.equalsIgnoreCase(methoString) || path.equals("auth/login")||  path.equals("auth/logout")) {
             return;
         }
-
+        
         String authHeader = requestContext.getHeaderString("Authorization");
-
+        
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Missing or invalid Authorization header\"}")
@@ -40,19 +45,18 @@ public class AuthFilter implements ContainerRequestFilter {
 
         String token = authHeader.substring("Bearer ".length());
 
-        if (!tokenService.validateToken(token)) {
+        if (!tokenService.validateToken(token, false)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Invalid token\"}")
                     .build()
-                );
+            );
             return;
         }
-
-        sessionService.updateSession(token);
 
         final String username = tokenService.getUsernameFromToken(token);
 
         requestContext.setSecurityContext(new SecurityContext() {
+
             @Override
             public Principal getUserPrincipal() {
                 return () -> username;
