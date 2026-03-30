@@ -25,6 +25,7 @@ public class SessionService {
     private static final int SESSION_TIMEOUT_SECONDS = 60; // adjust as needed
 
     private LocalDateTime getExpirationThreshold() {
+        LocalDateTime threshold = LocalDateTime.now().minusSeconds(SESSION_TIMEOUT_SECONDS);
         return LocalDateTime.now().minusSeconds(SESSION_TIMEOUT_SECONDS);
     }
 
@@ -48,9 +49,10 @@ public class SessionService {
         }
 
         boolean expiredSession = session.getLastSeen().isBefore(getExpirationThreshold());
+
         if (expiredSession) {
             deleteSessionByToken(token);
-        } else if(updateLastSeen) {
+        } else if (updateLastSeen) {
             updateSession(token);
         }
         return expiredSession;
@@ -69,7 +71,6 @@ public class SessionService {
 
     @Transactional
     public void deleteExpiredSessions() {
-        System.out.println("in delete, expire threshold: " + getExpirationThreshold());
         em.createQuery("DELETE FROM UserSessionsEntity s WHERE s.lastSeen < :threshold")
                 .setParameter("threshold", getExpirationThreshold())
                 .executeUpdate();
@@ -94,7 +95,8 @@ public class SessionService {
         if (session == null) {
             return null;
         }
-        return session.getLastSeen().plusSeconds(SESSION_TIMEOUT_SECONDS);
-         //return session.getLastSeen();
+
+        LocalDateTime sessionExpired = session.getLastSeen().plusSeconds(SESSION_TIMEOUT_SECONDS);
+        return sessionExpired;
     }
 }
