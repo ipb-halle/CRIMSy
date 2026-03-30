@@ -46,21 +46,21 @@ export interface Server {
 
 export const dummyData = {
   materialTypes: [
-    { id: 1, name: "STRUCTURE" },
-    { id: 2, name: "MATERIAL_COMPOSITION" },
-    { id: 3, name: "BIOMATERIAL" },
-    { id: 4, name: "CONSUMABLE" },
-    { id: 5, name: "SEQUENCE" },
-    { id: 6, name: "TISSUE" },
-    { id: 7, name: "TAXONOMY" },
+    { id: 1, name: "Structure" },
+    { id: 2, name: "Composition" },
+    { id: 3, name: "Biomaterial" },
+    { id: 4, name: "Consumable" },
+    { id: 5, name: "Sequence" },
+    { id: 6, name: "Tissue" },
+    { id: 7, name: "Taxonomy" },
   ],
 
   projects: [
-    { id: 1, name: "Project A (CHEMICAL)" },
+    { id: 1, name: "Project A (Chemical)" },
     { id: 2, name: "Project B (IT)" },
-    { id: 3, name: "Project C (FINANCE)" },
-    { id: 4, name: "Project D (BIOLOGICAL)" },
-    { id: 5, name: "Project E (BIOCHEMICAL)" },
+    { id: 3, name: "Project C (Finance)" },
+    { id: 4, name: "Project D (Biological)" },
+    { id: 5, name: "Project E (Biocheical)" },
   ],
 
   usersGroups: [
