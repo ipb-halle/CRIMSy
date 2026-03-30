@@ -23,6 +23,7 @@ export const spacing = {
 };
 
 export const radius = {
+  ssm: "var(--radius-ssm)",
   sm: "var(--radius-sm)",
   md: "var(--radius-md)",
   lg: "var(--radius-lg)",
