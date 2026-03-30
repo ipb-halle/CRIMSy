@@ -141,7 +141,7 @@ public class AuthApiServiceImpl implements AuthApiService {
             return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
         }
         String token = authHeader.substring("Bearer ".length());
-        if (!sessionService.isTokenValid(token, false)) {
+        if (!sessionService.isTokenValid(token, true)) {
             ErrorResponse error = new ErrorResponse();
             error.setMessage("Unauthorized: invalid token");
             error.setCode("401");
@@ -176,11 +176,11 @@ public class AuthApiServiceImpl implements AuthApiService {
 
         boolean isAdmin = groups.stream()
                 .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
-
-        LocalDateTime expiresAt = sessionService.getSessionExpiry(token);
         
         AuthUser authUserResponse = new AuthUser();
+        authUserResponse.setId(member.getId());
         authUserResponse.setUsername(username);
+        authUserResponse.setName(member.getName());
         authUserResponse.setGroups(groups);
         authUserResponse.setAdmin(isAdmin);
         

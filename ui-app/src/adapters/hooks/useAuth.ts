@@ -1,8 +1,8 @@
-import { useState, useRef, FormEvent, useEffect, use } from "react";
+import { useState, useRef, FormEvent, useEffect } from "react";
 import { LoginRequest } from "../api";
 import * as api from "../../services/authService";
 
-const SESSION_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // refresh every 5 min
+const SESSION_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 const SESSION_TIMER_INTERVAL_MS = 1000;
 
 export const useAuth = (onAutoLogout?: () => void) => {
@@ -15,10 +15,33 @@ export const useAuth = (onAutoLogout?: () => void) => {
   const intervalRef = useRef<number | null>(null);
   const countdownRef = useRef<number | null>(null);
 
+  const ACTIVITY_EVENTS = ["click", "mousemove", "keydown", "scroll"];
+
+  let lastActivityPingRef = useRef<number>(0);
+  const ACTIVITY_THROTTLE_MS = 1000;
+
+  const sendActivityPing = async () => {
+    const now = Date.now();
+
+    if (now - lastActivityPingRef.current < ACTIVITY_THROTTLE_MS) return;
+    lastActivityPingRef.current = now;
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      await api.fetchRoleAPI(token);
+      const expiresInSeconds = Number(localStorage.getItem("expiresInSeconds")) || 60;
+
+      setRemainingTime(expiresInSeconds);
+      startCountdownTimer();
+
+    } catch {
+      expireSession("Session expired. Please log in again.");
+    }
+  };
 
   const clearTimers = () => {
-    if (intervalRef.current)
-      clearInterval(intervalRef.current);
     if (countdownRef.current)
       clearInterval(countdownRef.current);
   };
@@ -38,30 +61,18 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
   const checkSession = async (): Promise<boolean> => {
     const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
-    const expiresAt = localStorage.getItem("tokenExpiry");
-
-    if (!token || !username || !expiresAt)
+    if (!token)
       return false;
 
     try {
       const user = await api.fetchRoleAPI(token);
       setRoleInfo(user);
 
-
-      console.log("checkSession expiresAt: " + expiresAt);
-
-
-      const expireInSeconds = new Date(expiresAt).getTime();
-      console.log("checkSession expireInSeconds: " + expireInSeconds);
-      // localStorage.setItem("tokenExpiry", expireInSeconds.toString());
-      const remainingSeconds = Math.max((expireInSeconds - Date.now()) / 1000, 0);
-      setRemainingTime(remainingSeconds);
-
-      startSessionRefresh();
+      const expiresInSeconds = Number(localStorage.getItem("expiresInSeconds")) || 60;
+      setRemainingTime(expiresInSeconds);
       startCountdownTimer();
 
-      if (remainingSeconds <= 0) {
+      if (expiresInSeconds <= 0) {
         expireSession("Session expired! Please log in again.");
         return false;
       }
@@ -70,15 +81,6 @@ export const useAuth = (onAutoLogout?: () => void) => {
       expireSession("Session expired. Please log in again.");
       return false;
     }
-  };
-
-  const startSessionRefresh = () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    intervalRef.current = window.setInterval(async () => {
-      const valid = await checkSession();
-      if (!valid) clearTimers();
-    }, SESSION_REFRESH_INTERVAL_MS);
   };
 
   const startCountdownTimer = () => {
@@ -95,28 +97,25 @@ export const useAuth = (onAutoLogout?: () => void) => {
     }, SESSION_TIMER_INTERVAL_MS);
   };
 
-  const validate = () => {
-    const newErrors: typeof errors = {};
-    if (!loginRequest.username.trim()) newErrors.username = "Username required";
-    if (!loginRequest.password.trim()) newErrors.password = "Password required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleLogin = async (e?: FormEvent, onSuccess?: () => void) => {
     if (e) e.preventDefault();
-    if (!validate()) return;
 
     try {
       const auth = await api.loginAPI(loginRequest);
+
       if (!auth.token) {
         setResult({ message: "Login failed,  no token received!" });
         return;
       }
 
       localStorage.setItem("token", auth.token);
+      localStorage.setItem("expiresInSeconds", auth.expiresInSeconds.toString());
 
       const user = await api.fetchRoleAPI(auth.token);
+      setRoleInfo(user);
+      setRemainingTime(auth.expiresInSeconds);
+      startCountdownTimer();
+
       if (!user) {
         setResult({ message: "Failed to retrieve session info!" });
         return;
@@ -126,21 +125,6 @@ export const useAuth = (onAutoLogout?: () => void) => {
         localStorage.setItem("username", user.username);
       }
 
-      const expiry = new Date(Date.now() + auth.expiresInSeconds * 1000); // +1 minute
-      console.log("login expiryTimestamp1: " + expiry.toLocaleTimeString());
-
-      if (isNaN(auth.expiresInSeconds)) {
-        console.error("Invalid expiresAt from backend:", expiry);
-        expireSession("Session error. Please login again.");
-        return false;
-      }
-      localStorage.setItem("tokenExpiry", expiry.toString());
-
-      const remainingSeconds = Math.max((expiry.getTime() - Date.now()) / 1000, 0);
-      setRoleInfo(user);
-      setRemainingTime(remainingSeconds);
-      startSessionRefresh();
-      startCountdownTimer();
       if (onSuccess) {
         onSuccess();
       }
@@ -159,7 +143,6 @@ export const useAuth = (onAutoLogout?: () => void) => {
     try {
       await api.logoutAPI(token);
     } catch (error) {
-      //  expireSession("Logout failed!");
       console.error(error);
     } finally {
       expireSession("Logged out successfully!");
@@ -187,21 +170,34 @@ export const useAuth = (onAutoLogout?: () => void) => {
     if (!token) return;
 
     try {
-      // const users = await api.fetchUsersAPI(token, page, 3);
-      //setUsersList(users);
       setRoleInfo(null);
       setResult({ message: "Users List" });
     } catch {
       setUsersList(null);
     }
   };
-  /*
-    useEffect(() => {
-      checkSession().then((valid) => {
-        if (valid) startSessionTimer(remainingTime);
-      });
-      return () => clearTimers();
-    }, []);*/
+
+  useEffect(() => {
+    const handleActivity = () => {
+      sendActivityPing();
+    };
+
+    ACTIVITY_EVENTS.forEach(event =>
+      window.addEventListener(event, handleActivity)
+    );
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        sendActivityPing(); // tab switch
+      }
+    });
+
+    return () => {
+      ACTIVITY_EVENTS.forEach(event =>
+        window.removeEventListener(event, handleActivity)
+      );
+    };
+  }, []);
 
   return {
     loginRequest,
