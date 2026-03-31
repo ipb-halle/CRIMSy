@@ -10,7 +10,6 @@ import styles from "../../assets/css/components/SearchPanel.module.css";
 import ExportDropdown from "../components/ExportDropdown";
 
 const PAGE_SIZE = 6;
-
 const materialService = new MaterialService(materialRepository);
 
 const SearchPanel: React.FC = () => {
@@ -47,13 +46,20 @@ const SearchPanel: React.FC = () => {
   // Pagination
   const paged = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  const filterSummary = Object.entries(filters)
+    .filter(([_, v]) => (v as any[])?.length)
+    .map(([k, v]) => `${k}: ${(v as any[]).length}`)
+    .join(" • ");
+
   return (
     <div className={styles.layout}>
 
       {/* Desktop Sidebar */}
       <aside
         className={styles.sidebar}>
-        <FullSidebarFilters onFilterChange={setFilters} />
+        <div className={styles.card}>
+          <FullSidebarFilters onFilterChange={setFilters} />
+        </div>
       </aside>
 
       {/* MOBILE DRAWER OVERLAY */}
@@ -87,6 +93,13 @@ const SearchPanel: React.FC = () => {
           Show Filters
         </button>
 
+        {/* Filter summary */}
+        {filterSummary && (
+          <div className={styles.filterSummary}>
+            Filters: {filterSummary}
+          </div>
+        )}
+        
         {/* View & Search Controls */}
         <div className={styles.controls}>
           <input
