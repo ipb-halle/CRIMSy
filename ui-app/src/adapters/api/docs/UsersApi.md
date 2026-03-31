@@ -10,7 +10,7 @@ All URIs are relative to *https://compchem17.ipb-halle.de/ui/rest*
 
 ## getUsersList
 
-> Array&lt;UserSummary&gt; getUsersList(page, pageSize)
+> PaginatedUserResponse getUsersList(page, pageSize)
 
 Retrieve list of all users
 
@@ -62,7 +62,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**Array&lt;UserSummary&gt;**](UserSummary.md)
+[**PaginatedUserResponse**](PaginatedUserResponse.md)
 
 ### Authorization
 

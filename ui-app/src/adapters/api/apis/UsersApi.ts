@@ -16,13 +16,13 @@
 import * as runtime from '../runtime';
 import type {
   ErrorResponse,
-  UserSummary,
+  PaginatedUserResponse,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-    UserSummaryFromJSON,
-    UserSummaryToJSON,
+    PaginatedUserResponseFromJSON,
+    PaginatedUserResponseToJSON,
 } from '../models/index';
 
 export interface GetUsersListRequest {
@@ -39,7 +39,7 @@ export class UsersApi extends runtime.BaseAPI {
      * Returns all users from the system with basic details. Useful for populating user lists in the frontend. 
      * Retrieve list of all users
      */
-    async getUsersListRaw(requestParameters: GetUsersListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UserSummary>>> {
+    async getUsersListRaw(requestParameters: GetUsersListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -70,14 +70,14 @@ export class UsersApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UserSummaryFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserResponseFromJSON(jsonValue));
     }
 
     /**
      * Returns all users from the system with basic details. Useful for populating user lists in the frontend. 
      * Retrieve list of all users
      */
-    async getUsersList(requestParameters: GetUsersListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UserSummary>> {
+    async getUsersList(requestParameters: GetUsersListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserResponse> {
         const response = await this.getUsersListRaw(requestParameters, initOverrides);
         return await response.value();
     }
