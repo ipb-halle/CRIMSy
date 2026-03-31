@@ -23,18 +23,8 @@ const Navigation: React.FC<Props> = (
       }}
     >
       <div
-        style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
-        <div
-          style={{
-            width: "34px",
-            height: "34px",
-            background: theme.accent,
-            borderRadius: radius.sm,
-          }}
-        />
-        <span style={{ fontWeight: 600 }}>
+        style={{ fontWeight: 600, fontSize: "1.1rem" }}>
           IPB Laboratory Dashboard
-        </span>
       </div>
 
       {onLogout && (
@@ -44,8 +34,8 @@ const Navigation: React.FC<Props> = (
             background: "transparent",
             border: "1px solid white",
             color: "white",
-            padding: "0.3rem 0.7rem",
-            borderRadius: radius.sm,
+            padding: "6px 14px",
+            borderRadius: radius.ssm,
             cursor: "pointer",
           }}
         >
