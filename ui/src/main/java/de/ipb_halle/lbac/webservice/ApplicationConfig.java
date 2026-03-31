@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.webservice;
 
 import de.ipb_halle.api.AuthApi;
 import de.ipb_halle.api.AuthApiService;
+import de.ipb_halle.api.UsersApi;
+import de.ipb_halle.api.UsersApiService;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
@@ -30,7 +32,7 @@ import de.ipb_halle.lbac.search.SearchWebService;
 import de.ipb_halle.lbac.search.document.download.DocumentWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
 import de.ipb_halle.lbac.security.filter.AuthFilter;
-import de.ipb_halle.lbac.security.filter.CorsResponseFilter;
+import de.ipb_halle.lbac.security.filter.CorsRequestFilter;
 import de.ipb_halle.lbac.security.resource.SessionResource;
 
 import java.util.Arrays;
@@ -56,15 +58,13 @@ public class ApplicationConfig extends Application {
                         PrintWebService.class,
                         SimpleRESTPojoExample.class,
                         DocumentWebService.class,
-                      // AuthFilter.class,
-                        CorsResponseFilter.class,
+                        AuthFilter.class,
+                        CorsRequestFilter.class,
                         AuthApiService.class,
-                        AuthApi.class, /*
-                        UsersApi.class,
-                        UsersApiService.class,*/
+                        AuthApi.class,
                         LoginEndpoint.class,
-                        SessionResource.class
-                /*                        SearchApi.class,
-                SearchApiService.class*/));
+                        SessionResource.class,
+                        UsersApi.class,
+                        UsersApiService.class));
     }
 }
