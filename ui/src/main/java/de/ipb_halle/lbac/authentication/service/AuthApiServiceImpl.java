@@ -1,6 +1,7 @@
 package de.ipb_halle.lbac.authentication.service;
 
 import de.ipb_halle.api.AuthApiService;
+import de.ipb_halle.api.UsersApiService;
 import de.ipb_halle.lbac.admission.LogInProcess;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.admission.User;
@@ -23,9 +24,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Context;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 import java.util.List;
 
@@ -43,6 +41,9 @@ public class AuthApiServiceImpl implements AuthApiService {
 
     @Inject
     SessionService sessionService;
+
+    @Inject
+    UsersApiService usersApiService;
 
     @PersistenceContext
     private EntityManager em;
@@ -127,14 +128,11 @@ public class AuthApiServiceImpl implements AuthApiService {
     @Override
     @Secured
     public Response getCurrentUser(SecurityContext securityContext) {
-        String username = null;
 
-        if (securityContext != null && securityContext.getUserPrincipal() != null) {
-            username = securityContext.getUserPrincipal().getName();
-        }
-
+        String username;
         String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")
+                || securityContext == null || securityContext.getUserPrincipal() == null) {
             ErrorResponse error = new ErrorResponse();
             error.setMessage("Unauthorized: missing token");
             error.setCode("401");
@@ -176,14 +174,14 @@ public class AuthApiServiceImpl implements AuthApiService {
 
         boolean isAdmin = groups.stream()
                 .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
-        
+
         AuthUser authUserResponse = new AuthUser();
         authUserResponse.setId(member.getId());
         authUserResponse.setUsername(username);
         authUserResponse.setName(member.getName());
         authUserResponse.setGroups(groups);
         authUserResponse.setAdmin(isAdmin);
-        
+
         return Response.ok(authUserResponse).build();
 
     }

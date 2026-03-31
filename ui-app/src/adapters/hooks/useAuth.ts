@@ -162,18 +162,20 @@ export const useAuth = (onAutoLogout?: () => void) => {
     }
   };
 
-  const handleFetchUsers = async (page: number = 1) => {
+  const handleFetchUsers = async (page: number = 1, pageSize: number = 5) => {
     setUsersList(null);
-    setRoleInfo(null);
+    //setRoleInfo(null);
 
     const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
-      setRoleInfo(null);
+      const paginatedUserResponse = await api.fetchUsersAPI(token, page, pageSize);
+      setUsersList(paginatedUserResponse);
       setResult({ message: "Users List" });
     } catch {
       setUsersList(null);
+      setResult({ message: "Users List is Empty!" });
     }
   };
 

@@ -42,7 +42,7 @@ const Dashboard: React.FC<Props> = (
     ) => {
         setView(next);
         if (next === "role") handleCheckRole();
-        if (next === "users") handleFetchUsers(1);
+        if (next === "users") handleFetchUsers(1, 5);
     };
 
     const renderView = () => {

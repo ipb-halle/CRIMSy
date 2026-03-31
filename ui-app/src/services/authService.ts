@@ -1,6 +1,12 @@
-import { AuthApi } from "../adapters/api";
+import { AuthApi, UsersApi } from "../adapters/api";
 import { Configuration } from "../adapters/api";
-import { AuthToken, LoginRequest, AuthUser, LogoutResponse } from "../adapters/api/models";
+import {
+  AuthToken,
+  LoginRequest,
+  AuthUser,
+  LogoutResponse,
+  PaginatedUserResponse
+} from "../adapters/api/models";
 
 
 let BASE = "https://compchem17.ipb-halle.de/ui/rest/auth/logout";
@@ -91,22 +97,16 @@ export const fetchRoleAPI = async (
 };
 
 
-function expireSession(arg0: string) {
-  throw new Error("Function not implemented.");
-}
-/*export const fetchUsersAPI = async (
+export const fetchUsersAPI = async (
   token: string,
   page: number, pageSize: number
-) => {
-  const res = await fetch(
-    `${BASE}/users?page=${page}&pageSize=${pageSize}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-    }
-  );
-  return res.json();
+): Promise<PaginatedUserResponse> => {
+  const config = new Configuration({
+    accessToken: async () => token
+  });
 
-};*/
+  const userResponse = new UsersApi(config);
+
+  const paginatedUserResponse = await userResponse.getUsersList({ page, pageSize });
+  return paginatedUserResponse;
+};

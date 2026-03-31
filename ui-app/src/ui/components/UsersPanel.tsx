@@ -1,9 +1,9 @@
 import React from "react";
-import { PagedUsers } from "../../adapters/api";
+import { PaginatedUserResponse } from "../../adapters/api";
 import { colors, spacing, radius } from "../../assets/css/theme/designTokens";
 
 interface UsersPanelProps {
-  data: PagedUsers | null;
+  data: PaginatedUserResponse | null;
   onPageChange?: (page: number) => void;
 }
 
@@ -32,10 +32,12 @@ const UsersPanel: React.FC<UsersPanelProps> = (
       <div>
         Users (Page {currentPage} of {totalPages})
       </div>
-      {data.users.map(
+      {data.items.map(
         u => (
           <div key={u.id} style={{ marginTop: spacing.sm }}>
-            {u.name} ({u.membertype})
+            {"name: " + u.name}
+            {", login: " + u.login}
+            {", admin: " + u.admin}
           </div>
         ))}
 

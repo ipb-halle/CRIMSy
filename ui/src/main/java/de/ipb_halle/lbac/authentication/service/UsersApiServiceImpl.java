@@ -5,18 +5,22 @@
 package de.ipb_halle.lbac.authentication.service;
 
 import de.ipb_halle.api.UsersApiService;
+import de.ipb_halle.lbac.admission.MemberEntity;
+import de.ipb_halle.lbac.security.service.TokenService;
+import de.ipb_halle.model.ErrorResponse;
+import de.ipb_halle.model.PaginatedUserResponse;
+import de.ipb_halle.model.UserSummary;
+
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import de.ipb_halle.lbac.admission.MemberEntity;
-import de.ipb_halle.lbac.security.service.TokenService;
-import de.ipb_halle.model.ErrorResponse;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +32,6 @@ import java.util.stream.Collectors;
  */
 @RequestScoped
 public class UsersApiServiceImpl implements UsersApiService {
-    //implements UsersApiService {
 
     @Inject
     TokenService tokenService;
@@ -50,12 +53,12 @@ public class UsersApiServiceImpl implements UsersApiService {
 
         String username = null;
 
-        // 1. First, try SecurityContext
+        // First, try SecurityContext
         if (securityContext != null && securityContext.getUserPrincipal() != null) {
             username = securityContext.getUserPrincipal().getName();
         }
 
-        // 2. Fallback: extract from Authorization header
+        // Fallback: extract from Authorization header
         if (username == null) {
             String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -109,7 +112,8 @@ public class UsersApiServiceImpl implements UsersApiService {
                 .getResultList();
 
         boolean isAdmin = userGroups.stream()
-                .anyMatch(g -> "Admin Group".equalsIgnoreCase(g));
+                .anyMatch(a -> "Admin Group".equalsIgnoreCase(a));
+        System.out.println("users.admin-stream: " + isAdmin + " \n");
 
         // --- Fetch users ---
         List<MemberEntity> users;
@@ -141,7 +145,6 @@ public class UsersApiServiceImpl implements UsersApiService {
         }
 
         int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
-
         // --- Map uers to API response ---
         List<Map<String, Object>> responseUsersList = users.stream().map(u -> {
             Map<String, Object> map = new HashMap<>();
@@ -154,12 +157,32 @@ public class UsersApiServiceImpl implements UsersApiService {
             return map;
         }).collect(Collectors.toList());
 
+        // --- Map uers to API response ---
+        List<UserSummary> responseUsersListt = users.stream()
+                .filter(u -> u.isUser())
+                .map(u -> {
+                    UserSummary summary = new UserSummary();
+
+                    summary.setId(u.getId());
+                    summary.setLogin(u.getName());
+                    summary.setEmail("");
+                    //    summary.setGroups(u.isGroup() ? {"G"} : {"U"});
+                    summary.setGroups(userGroups);
+                    summary.setAdmin(isAdmin);
+                    return summary;
+                }).collect(Collectors.toList());
+
+        PaginatedUserResponse paginatedUserResponse = new PaginatedUserResponse();
         Map<String, Object> responsesMap = new HashMap<>();
         responsesMap.put("totalUsers", totalUsers);
         responsesMap.put("totalPages", totalPages);
         responsesMap.put("currentPage", page);
         responsesMap.put("users", responseUsersList);
 
-        return Response.ok(responsesMap).build();
+        paginatedUserResponse.setCurrentPage(page);
+        paginatedUserResponse.setTotalItems(totalUsers);
+        paginatedUserResponse.setTotalPages(totalPages);
+        paginatedUserResponse.setItems(responseUsersListt);
+        return Response.ok(paginatedUserResponse).build();
     }
 }
