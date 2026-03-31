@@ -346,6 +346,7 @@
                             <configOptions>
                                 <useJakartaEe>true</useJakartaEe>
                                 <interfaceOnly>true</interfaceOnly>
+                                <skipDefaultInterface>true</skipDefaultInterface>
                                 <useBeanValidation>true</useBeanValidation>
                                 <parameterAnnotations>true</parameterAnnotations>
                             </configOptions>
