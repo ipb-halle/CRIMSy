@@ -1,9 +1,9 @@
 import React from "react";
-import { RoleResponse } from "../../adapters/api";
+import { AuthUser } from "../../adapters/api";
 import { colors, radius, spacing } from "../../assets/css/theme/designTokens";
 
 interface Props {
-  role: RoleResponse | null;
+  role: AuthUser | null;
 }
 
 const RolePanel: React.FC<Props> = (
