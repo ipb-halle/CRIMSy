@@ -158,9 +158,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserSummary"
+                $ref: "#/components/schemas/PaginatedUserResponse"
         "401":
           description: Unauthorized (missing or invalid token)
           content:
@@ -185,7 +183,7 @@ components:
         Authentication via Bearer token.
         The token is obtained from /auth/login and sent as:
         Authorization: Bearer 9c1f82e6-bdf1-4a8a-8c88-74eecdc4a999
-
+  
   schemas:
  
     LoginRequest:
