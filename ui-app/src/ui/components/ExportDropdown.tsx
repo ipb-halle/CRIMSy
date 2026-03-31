@@ -32,7 +32,11 @@ const ExportDropdown: React.FC<Props> = ({ items }) => {
                 exportToExcel(items, opts);
                 break;
             case "pdf":
-                exportToPDF(items, opts);
+                exportToPDF(items,
+                    {
+                        ...opts,
+                        branding: true
+                    });
                 break;
         }
     };
