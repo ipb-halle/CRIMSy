@@ -264,10 +264,6 @@ components:
           type: integer
           description: User ID
           example: 1
-        login:
-          type: string
-          description: User login
-          example: jdoe
         name:
           type: string
           description: Full name
