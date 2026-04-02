@@ -10,9 +10,9 @@ export const useAuth = (onAutoLogout?: () => void) => {
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
   const [result, setResult] = useState<{ message: string } | null>(null);
   const [roleInfo, setRoleInfo] = useState<any>(null);
+  const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
   const [usersList, setUsersList] = useState<any>(null);
   const [remainingTime, setRemainingTime] = useState<number>(0);
-  const intervalRef = useRef<number | null>(null);
   const countdownRef = useRef<number | null>(null);
 
   const ACTIVITY_EVENTS = ["click", "mousemove", "keydown", "scroll"];
@@ -65,8 +65,8 @@ export const useAuth = (onAutoLogout?: () => void) => {
       return false;
 
     try {
-      const user = await api.fetchRoleAPI(token);
-      setRoleInfo(user);
+      const userRole = await api.fetchRoleAPI(token);
+      setRoleInfo(userRole);
 
       const expiresInSeconds = Number(localStorage.getItem("expiresInSeconds")) || 60;
       setRemainingTime(expiresInSeconds);
@@ -111,18 +111,18 @@ export const useAuth = (onAutoLogout?: () => void) => {
       localStorage.setItem("token", auth.token);
       localStorage.setItem("expiresInSeconds", auth.expiresInSeconds.toString());
 
-      const user = await api.fetchRoleAPI(auth.token);
-      setRoleInfo(user);
+      const userInfo = await api.fetchRoleAPI(auth.token);
+      setRoleInfo(userInfo);
       setRemainingTime(auth.expiresInSeconds);
       startCountdownTimer();
 
-      if (!user) {
+      if (!userInfo) {
         setResult({ message: "Failed to retrieve session info!" });
         return;
       }
 
-      if (user?.username) {
-        localStorage.setItem("username", user.username);
+      if (userInfo?.username) {
+        localStorage.setItem("username", userInfo.username);
       }
 
       if (onSuccess) {
@@ -153,8 +153,8 @@ export const useAuth = (onAutoLogout?: () => void) => {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      const role = await api.fetchRoleAPI(token);
-      setRoleInfo(role);
+      const userInfo = await api.fetchRoleAPI(token);
+      setRoleInfo(userInfo);
       setUsersList(null);
       setResult({ message: "Your Role" });
     } catch {
@@ -172,6 +172,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
     try {
       const paginatedUserResponse = await api.fetchUsersAPI(token, page, pageSize);
       setUsersList(paginatedUserResponse);
+      setTotalUsersCount(paginatedUserResponse.totalItems);
       setResult({ message: "Users List" });
     } catch {
       setUsersList(null);
@@ -210,6 +211,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
     usersList,
     remainingTime,
     handleLogin,
+    totalUsersCount,
     handleLogout,
     handleCheckRole,
     handleFetchUsers,
