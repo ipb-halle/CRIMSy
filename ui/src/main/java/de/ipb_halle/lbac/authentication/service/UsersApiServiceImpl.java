@@ -164,10 +164,13 @@ public class UsersApiServiceImpl implements UsersApiService {
                     UserSummary summary = new UserSummary();
 
                     summary.setId(u.getId());
-                    summary.setLogin(u.getName());
+                    summary.setName(u.getName());
                     summary.setEmail("");
                     //    summary.setGroups(u.isGroup() ? {"G"} : {"U"});
                     summary.setGroups(userGroups);
+                    /*
+                    boolean isAdminUser = u.
+                .anyMatch(a -> "Admin Group".equalsIgnoreCase(a));*/
                     summary.setAdmin(isAdmin);
                     return summary;
                 }).collect(Collectors.toList());
