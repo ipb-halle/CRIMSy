@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import ReactPaginate from "react-paginate";
 import { PaginatedUserResponse, UserSummary } from "../../adapters/api";
@@ -6,13 +6,24 @@ import { colors, spacing, radius } from "../../assets/css/theme/designTokens";
 
 interface UsersPanelProps {
   data: PaginatedUserResponse | null;
+  totalCount: number;
   onPageChange?: (page: number) => void;
+  onRowsPerPageChange?: (size: number) => void;
 }
 
 const UsersPanel: React.FC<UsersPanelProps> = (
   { data,
-    onPageChange }
+    totalCount,
+    onPageChange,
+    onRowsPerPageChange,
+  }
 ) => {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (data) setLoading(false);
+  }, [data]);
+
   if (!data) return null;
 
   const { currentPage, totalPages, items } = data;
@@ -26,7 +37,7 @@ const UsersPanel: React.FC<UsersPanelProps> = (
     },
     {
       name: "Admin",
-      selector: (row: any) => (row.admin ? "Yes" : "No"),
+      selector: row => (row.admin ? "Yes" : "No"),
       sortable: true,
       center: true,
       cell: row => (
@@ -46,9 +57,14 @@ const UsersPanel: React.FC<UsersPanelProps> = (
     },
   ];
 
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    const page = selectedItem.selected + 1; // react-paginate is 0-based
+  const handlePageChange = (page: number) => {
+    setLoading(true);
     onPageChange?.(page);
+  };
+
+  const handleRowsPerPageChange = (size: number) => {
+    setLoading(true);
+    onRowsPerPageChange?.(size);
   };
 
   return (
@@ -71,7 +87,7 @@ const UsersPanel: React.FC<UsersPanelProps> = (
           fontWeight: 600,
         }}
       >
-        <span>  Users </span>
+        <span> Users </span>
         <span style={{ color: "#666", fontSize: "14px" }}>
           (Page {currentPage} of {totalPages})
         </span>
@@ -82,10 +98,29 @@ const UsersPanel: React.FC<UsersPanelProps> = (
         keyField="id"
         columns={columns}
         data={items}
-        pagination={false} // we use external pagination
+        pagination
+        paginationServer
+        paginationTotalRows={totalCount}
+        onChangePage={handlePageChange}
+        onChangeRowsPerPage={handleRowsPerPageChange}
         highlightOnHover
         striped
         responsive
+        progressPending={loading}
+        progressComponent={
+          <div style={{ display: "flex", justifyContent: "center", padding: spacing.md }}>
+            <div
+              style={{
+                width: 24,
+                height: 24,
+                border: "4px solid #ddd",
+                borderTop: `4px solid ${colors.primary || "#1976d2"}`,
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite",
+              }}
+            />
+          </div>
+        }
         customStyles={{
           rows: {
             style: {
@@ -99,50 +134,50 @@ const UsersPanel: React.FC<UsersPanelProps> = (
               backgroundColor: "#fafafa",
             },
           },
+          pagination: {
+            style: {
+              display: "flex",
+              justifyContent: "center",
+              padding: spacing.sm,
+              gap: "6px",
+            },
+          },
         }}
       />
-
-      {/* Pagination */}
-      <div style={{ marginTop: spacing.md }}>
-        <ReactPaginate
-          previousLabel="← Prev"
-          nextLabel="Next →"
-          breakLabel="..."
-          pageCount={totalPages}
-          marginPagesDisplayed={1}
-          pageRangeDisplayed={2}
-          onPageChange={handlePageClick}
-          forcePage={currentPage - 1}
-          containerClassName="pagination"
-          activeClassName="active"
-        />
-      </div>
 
       {/* Inline styles (quick improvement) */}
       <style>
         {`
-          .pagination {
-            display: flex;
-            gap: 6px;
-            list-style: none;
-            padding: 0;
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
           }
 
-          .pagination li {
+          /* Customize DataTable pagination buttons */
+          .rdt_Pagination button {
             padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
+            border-radius: ${radius.sm};
             border: 1px solid #ddd;
+            background: ${colors.surface};
+            cursor: pointer;
+            font-weight: 500;
+            color: #333;
           }
 
-          .pagination li.active {
-            background: #1976d2;
-            color: white;
-            border-color: #1976d2;
-          }
-
-          .pagination li:hover {
+          .rdt_Pagination button:hover {
             background: #f0f0f0;
+          }
+
+          .rdt_Pagination .rdt_Pagination-selected {
+            background: ${colors.primary || "#1976d2"};
+            color: white;
+            border-color: ${colors.primary || "#1976d2"};
+          }
+
+          .rdt_Pagination select {
+            border-radius: ${radius.sm};
+            border: 1px solid #ddd;
+            padding: 4px 6px;
           }
         `}
       </style>
