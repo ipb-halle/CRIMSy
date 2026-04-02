@@ -31,6 +31,7 @@ const Dashboard: React.FC<Props> = (
 
     const { theme } = useTheme();
     const [view, setView] = useState<View>("home");
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const formatTime = (seconds: number) => {
         const m = Math.floor(seconds / 60);
@@ -43,7 +44,18 @@ const Dashboard: React.FC<Props> = (
     ) => {
         setView(next);
         if (next === "role") handleCheckRole();
-        if (next === "users") handleFetchUsers(1, 5);
+        if (next === "users") handleFetchUsers(1, rowsPerPage);
+    };
+
+    // Called when user changes page
+    const handlePageFetch = (page: number) => {
+        handleFetchUsers(page, rowsPerPage);
+    };
+
+    // Called when user changes rows per page
+    const handleRowsChange = (size: number) => {
+        setRowsPerPage(size);
+        handleFetchUsers(1, size); // reset to first page
     };
 
     const renderView = () => {
@@ -57,13 +69,13 @@ const Dashboard: React.FC<Props> = (
                     <UsersPanel
                         data={usersList}
                         totalCount={totalUsersCount}
-                        onPageChange={(page) => handleFetchUsers(page, 5)
-                        }
+                        rowsPerPage={rowsPerPage}
+                        onPageChange={handlePageFetch}
+                        onRowsPerPageChange={handleRowsChange}
                     />
                 );
             case "addMaterial":
                 return <AdminAddMaterial />;
-
             default:
                 return (
                     <div className={styles.researchCard} >
@@ -82,7 +94,6 @@ const Dashboard: React.FC<Props> = (
             display: "flex",
             flexDirection: "column"
         }}>
-
             <Navigation
                 onLogout={async () => {
                     await handleLogout();
