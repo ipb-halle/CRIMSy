@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
-import ReactPaginate from "react-paginate";
 import { PaginatedUserResponse, UserSummary } from "../../adapters/api";
 import { colors, spacing, radius } from "../../assets/css/theme/designTokens";
 
 interface UsersPanelProps {
   data: PaginatedUserResponse | null;
   totalCount: number;
+  rowsPerPage: number;
   onPageChange?: (page: number) => void;
   onRowsPerPageChange?: (size: number) => void;
 }
@@ -14,6 +14,7 @@ interface UsersPanelProps {
 const UsersPanel: React.FC<UsersPanelProps> = (
   { data,
     totalCount,
+    rowsPerPage,
     onPageChange,
     onRowsPerPageChange,
   }
@@ -93,16 +94,20 @@ const UsersPanel: React.FC<UsersPanelProps> = (
         </span>
       </div>
 
-      {/* Table */}
+      {/* DataTable */}
       <DataTable
-        keyField="id"
+        key={`${currentPage}-${rowsPerPage}`}
+        //    keyField="id"
         columns={columns}
         data={items}
         pagination
         paginationServer
         paginationTotalRows={totalCount}
+        paginationPerPage={rowsPerPage}
+        paginationDefaultPage={currentPage}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleRowsPerPageChange}
+        paginationRowsPerPageOptions={[5, 10, 15]}
         highlightOnHover
         striped
         responsive
@@ -121,28 +126,6 @@ const UsersPanel: React.FC<UsersPanelProps> = (
             />
           </div>
         }
-        customStyles={{
-          rows: {
-            style: {
-              minHeight: "56px",
-            },
-          },
-          headCells: {
-            style: {
-              fontWeight: 600,
-              fontSize: "14px",
-              backgroundColor: "#fafafa",
-            },
-          },
-          pagination: {
-            style: {
-              display: "flex",
-              justifyContent: "center",
-              padding: spacing.sm,
-              gap: "6px",
-            },
-          },
-        }}
       />
 
       {/* Inline styles (quick improvement) */}
@@ -151,33 +134,6 @@ const UsersPanel: React.FC<UsersPanelProps> = (
           @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-          }
-
-          /* Customize DataTable pagination buttons */
-          .rdt_Pagination button {
-            padding: 6px 10px;
-            border-radius: ${radius.sm};
-            border: 1px solid #ddd;
-            background: ${colors.surface};
-            cursor: pointer;
-            font-weight: 500;
-            color: #333;
-          }
-
-          .rdt_Pagination button:hover {
-            background: #f0f0f0;
-          }
-
-          .rdt_Pagination .rdt_Pagination-selected {
-            background: ${colors.primary || "#1976d2"};
-            color: white;
-            border-color: ${colors.primary || "#1976d2"};
-          }
-
-          .rdt_Pagination select {
-            border-radius: ${radius.sm};
-            border: 1px solid #ddd;
-            padding: 4px 6px;
           }
         `}
       </style>
