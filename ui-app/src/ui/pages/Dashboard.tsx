@@ -22,6 +22,7 @@ const Dashboard: React.FC<Props> = (
     const {
         roleInfo,
         usersList,
+        totalUsersCount,
         handleLogout,
         handleCheckRole,
         handleFetchUsers,
@@ -55,7 +56,9 @@ const Dashboard: React.FC<Props> = (
                 return (
                     <UsersPanel
                         data={usersList}
-                        onPageChange={(page) => handleFetchUsers(page)}
+                        totalCount={totalUsersCount}
+                        onPageChange={(page) => handleFetchUsers(page, 5)
+                        }
                     />
                 );
             case "addMaterial":
@@ -64,12 +67,8 @@ const Dashboard: React.FC<Props> = (
             default:
                 return (
                     <div className={styles.researchCard} >
-                        <h2>
-                            Welcome to IPB Laboratory System
-                        </h2>
-                        <p>
-                            Search materials, manage data, and export results!
-                        </p>
+                        <h2>Welcome to IPB Laboratory System</h2>
+                        <p>Search materials, manage data, and export results!</p>
                     </div>
                 );
         }
