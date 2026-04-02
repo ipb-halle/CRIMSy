@@ -26,12 +26,6 @@ export interface UserSummary {
      */
     id: number;
     /**
-     * User login
-     * @type {string}
-     * @memberof UserSummary
-     */
-    login: string;
-    /**
      * Full name
      * @type {string}
      * @memberof UserSummary
@@ -62,7 +56,6 @@ export interface UserSummary {
  */
 export function instanceOfUserSummary(value: object): value is UserSummary {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('login' in value) || value['login'] === undefined) return false;
     return true;
 }
 
@@ -77,7 +70,6 @@ export function UserSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         
         'id': json['id'],
-        'login': json['login'],
         'name': json['name'] == null ? undefined : json['name'],
         'email': json['email'] == null ? undefined : json['email'],
         'groups': json['groups'] == null ? undefined : json['groups'],
@@ -97,7 +89,6 @@ export function UserSummaryToJSONTyped(value?: UserSummary | null, ignoreDiscrim
     return {
         
         'id': value['id'],
-        'login': value['login'],
         'name': value['name'],
         'email': value['email'],
         'groups': value['groups'],

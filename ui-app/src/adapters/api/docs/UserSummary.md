@@ -7,7 +7,6 @@
 Name | Type
 ------------ | -------------
 `id` | number
-`login` | string
 `name` | string
 `email` | string
 `groups` | Array&lt;string&gt;
@@ -21,7 +20,6 @@ import type { UserSummary } from ''
 // TODO: Update the object below with actual values
 const example = {
   "id": 1,
-  "login": jdoe,
   "name": John Doe,
   "email": john.doe@example.com,
   "groups": ["Users","Admin Group"],
