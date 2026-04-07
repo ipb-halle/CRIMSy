@@ -5,6 +5,7 @@
 package de.ipb_halle.lbac.authentication.service;
 
 import de.ipb_halle.api.UsersApiService;
+import de.ipb_halle.lbac.admission.GroupEntity;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.security.service.TokenService;
 import de.ipb_halle.model.ErrorResponse;
@@ -21,9 +22,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -45,41 +44,19 @@ public class UsersApiServiceImpl implements UsersApiService {
     @Override
     public Response getUsersList(Integer page, Integer pageSize, SecurityContext securityContext) {
 
+        // --- Validate pagination ---
         if (page < 1 || pageSize < 1) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("message", "Invalid page or pageSize!"))
                     .build();
         }
 
-        String username = null;
+        // --- Resolve username from security context ---
+        String username = resolveUsername(securityContext);
 
-        // First, try SecurityContext
-        if (securityContext != null && securityContext.getUserPrincipal() != null) {
-            username = securityContext.getUserPrincipal().getName();
-        }
-
-        // Fallback: extract from Authorization header
+        // --- Fallback: extract from Authorization header ---
         if (username == null) {
-            String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.setMessage("Unauthorized: missing token");
-                errorResponse.setCode("401");
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity(errorResponse)
-                        .build();
-            }
-            String token = authHeader.substring("Bearer ".length());
-
-            if (!tokenService.validateToken(token, false)) {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.setMessage("Unauthorized: invalid token");
-                errorResponse.setCode("401");
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity(errorResponse)
-                        .build();
-            }
-            username = tokenService.getUsernameFromToken(token);
+            return buildUnauthorized("Unauthorized: missing or invalid token");
         }
 
         // --- Load requesting user ---
@@ -91,35 +68,30 @@ public class UsersApiServiceImpl implements UsersApiService {
                     .setParameter("login", username.toLowerCase())
                     .getSingleResult();
         } catch (NoResultException e) {
-            ErrorResponse errorResponse = new ErrorResponse();
-            errorResponse.setMessage("User not found");
-            errorResponse.setCode("404");
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(errorResponse)
-                    .build();
+            return buildError(Response.Status.NOT_FOUND, "User not found");
         }
 
-        // --- Check groups where membertype = 'G' to see if admin ---
-        List<String> userGroups = em.createQuery(
+        // --- Determine if requester is admin (where membertype = 'G') ---
+        List<String> requesterGroups = em.createQuery(
                 """
                         SELECT g.name
-                        FROM MembershipEntity ms
-                        JOIN MemberEntity g ON ms.group = g.id
-                        WHERE ms.member = :memberId
+                        FROM MembershipEntity ms, MemberEntity g
+                        WHERE ms.group = g.id 
+                        AND ms.member = :memberId
                         AND TYPE(g) = GroupEntity
                         """, String.class)
                 .setParameter("memberId", requestingUser.getId())
                 .getResultList();
 
-        boolean isAdmin = userGroups.stream()
+        boolean requesterIsAdmin = requesterGroups.stream()
                 .anyMatch(a -> "Admin Group".equalsIgnoreCase(a));
-        System.out.println("users.admin-stream: " + isAdmin + " \n");
+        System.out.println("\n users.admin-stream: " + requesterIsAdmin + " \n");
 
         // --- Fetch users ---
         List<MemberEntity> users;
         int totalUsers = 0;
 
-        if (isAdmin) {
+        if (requesterIsAdmin) {
             // Count total uses pagination 
             totalUsers = em.createQuery(
                     "SELECT COUNT(m) FROM MemberEntity m WHERE TYPE(m) <> GroupEntity",
@@ -129,7 +101,7 @@ public class UsersApiServiceImpl implements UsersApiService {
 
             int offset = (page - 1) * pageSize;
 
-            // Fetch paginated users
+            // --- Fetch paginated users ---
             users = em.createQuery(
                     "SELECT m FROM MemberEntity m WHERE TYPE(m) <> GroupEntity ORDER BY m.id",
                     MemberEntity.class)
@@ -144,22 +116,49 @@ public class UsersApiServiceImpl implements UsersApiService {
             pageSize = 1;
         }
 
-        int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
-        // --- Map uers to API response ---
-        List<Map<String, Object>> responseUsersList = users.stream().map(u -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", u.getId());
-            map.put("name", u.getName());
-            map.put("membertype", u.isGroup() ? "G" : "U");
-            if (!isAdmin) {
-                map.put("info", "You are not an Admin, only your own info is shown");
-            }
-            return map;
-        }).collect(Collectors.toList());
+        // --- Collect user IDs ---
+        List<Integer> userIds = users.stream()
+                .map(MemberEntity::getId)
+                .collect(Collectors.toList());
 
-        // --- Map uers to API response ---
-        List<UserSummary> responseUsersListt = users.stream()
-                .filter(u -> u.isUser())
+        for (int i : userIds) {
+            System.out.println("user id:: " + i + " \n");
+        }
+
+        List<Object[]> roleResults = Collections.emptyList();
+
+// --- Fetch All roles for All users in one query ---
+        if (!userIds.isEmpty()) {
+            roleResults = em.createQuery(
+                    """
+                SELECT ms.member, g.name
+                FROM MembershipEntity ms, MemberEntity g
+                WHERE ms.group = g.id
+                AND ms.member IN :userIds
+                AND TYPE(g) = :groupType
+                """, Object[].class)
+                    .setParameter("userIds", userIds)
+                    .setParameter("groupType", GroupEntity.class)
+                    .getResultList();
+        }
+        System.out.println("roleResults: " + roleResults.size() + " \n");
+
+        // --- Map userIds -> roles ---
+        Map<Integer, List<String>> userRolesMap = new HashMap<>();
+
+        System.out.println("useRolesMap: " + userRolesMap.size() + " \n");
+
+        for (Object[] row : roleResults) {
+            Integer userId = (Integer) row[0];
+            String role = (String) row[1];
+
+            userRolesMap.computeIfAbsent(userId, k -> new ArrayList<>())
+                    .add(role);
+        }
+
+        // --- Build response ---
+        List<UserSummary> responseUsers = users.stream()
+                .filter(MemberEntity::isUser)
                 .map(u -> {
                     UserSummary summary = new UserSummary();
 
@@ -167,25 +166,57 @@ public class UsersApiServiceImpl implements UsersApiService {
                     summary.setName(u.getName());
                     summary.setEmail("");
                     //    summary.setGroups(u.isGroup() ? {"G"} : {"U"});
-                    summary.setGroups(userGroups);
-                    /*
-                    boolean isAdminUser = u.
-                .anyMatch(a -> "Admin Group".equalsIgnoreCase(a));*/
+                    List<String> roles = userRolesMap.getOrDefault(u.getId(), Collections.emptyList());
+                    summary.setGroups(roles);
+                    boolean isAdmin = roles.stream()
+                            .anyMatch(a -> "Admin Group".equalsIgnoreCase(a));
                     summary.setAdmin(isAdmin);
                     return summary;
                 }).collect(Collectors.toList());
 
-        PaginatedUserResponse paginatedUserResponse = new PaginatedUserResponse();
-        Map<String, Object> responsesMap = new HashMap<>();
-        responsesMap.put("totalUsers", totalUsers);
-        responsesMap.put("totalPages", totalPages);
-        responsesMap.put("currentPage", page);
-        responsesMap.put("users", responseUsersList);
+        int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
 
-        paginatedUserResponse.setCurrentPage(page);
-        paginatedUserResponse.setTotalItems(totalUsers);
-        paginatedUserResponse.setTotalPages(totalPages);
-        paginatedUserResponse.setItems(responseUsersListt);
-        return Response.ok(paginatedUserResponse).build();
+        PaginatedUserResponse response = new PaginatedUserResponse();
+
+        response.setCurrentPage(page);
+        response.setTotalItems(totalUsers);
+        response.setTotalPages(totalPages);
+        response.setItems(responseUsers);
+        return Response.ok(response).build();
     }
+    // ----------- Helpers -----------
+
+    private String resolveUsername(SecurityContext securityContext) {
+        if (securityContext != null && securityContext.getUserPrincipal() != null) {
+            return securityContext.getUserPrincipal().getName();
+        }
+
+        String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+
+        String token = authHeader.substring("Bearer ".length());
+
+        if (!tokenService.validateToken(token, false)) {
+            return null;
+        }
+        return tokenService.getUsernameFromToken(token);
+    }
+
+    private Response buildUnauthorized(String message) {
+        ErrorResponse error = new ErrorResponse();
+        error.setMessage(message);
+        error.setCode("401");
+        return Response.status(Response.Status.UNAUTHORIZED).entity(error).build();
+    }
+
+    private Response buildError(Response.Status status, String message) {
+        ErrorResponse error = new ErrorResponse();
+        error.setMessage(message);
+        error.setCode(String.valueOf(status.getStatusCode()));
+        return Response.status(status).entity(error).build();
+    }
+
 }
