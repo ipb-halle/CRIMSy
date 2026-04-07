@@ -74,7 +74,24 @@ const UsersPanel: React.FC<UsersPanelProps> = (
         </button >
       ),
     },
+    {
+      name: "Delete",
+      cell: (row: any) => (
+        <button
+          //onClick{() => handleEdit(row)}
 
+          style={{
+            padding: "6px 10px",
+            borderRadius: "6px",
+            background: "#1976d2",
+            color: "fff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >Delete
+        </button >
+      ),
+    },
   ];
 
   const handlePageChange = (page: number) => {
