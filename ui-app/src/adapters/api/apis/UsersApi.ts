@@ -15,25 +15,140 @@
 
 import * as runtime from '../runtime';
 import type {
+  DeleteUser200Response,
   ErrorResponse,
   PaginatedUserResponse,
+  UserSummary,
 } from '../models/index';
 import {
+    DeleteUser200ResponseFromJSON,
+    DeleteUser200ResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     PaginatedUserResponseFromJSON,
     PaginatedUserResponseToJSON,
+    UserSummaryFromJSON,
+    UserSummaryToJSON,
 } from '../models/index';
+
+export interface CreateUserRequest {
+    userSummary: UserSummary;
+}
+
+export interface DeleteUserRequest {
+    id: number;
+}
 
 export interface GetUsersListRequest {
     page?: number;
     pageSize?: number;
 }
 
+export interface UpdateUserRequest {
+    id: number;
+    userSummary: UserSummary;
+}
+
 /**
  * 
  */
 export class UsersApi extends runtime.BaseAPI {
+
+    /**
+     * Allows admin to add a new user
+     * Create a new user
+     */
+    async createUserRaw(requestParameters: CreateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSummary>> {
+        if (requestParameters['userSummary'] == null) {
+            throw new runtime.RequiredError(
+                'userSummary',
+                'Required parameter "userSummary" was null or undefined when calling createUser().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/users`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSummaryToJSON(requestParameters['userSummary']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSummaryFromJSON(jsonValue));
+    }
+
+    /**
+     * Allows admin to add a new user
+     * Create a new user
+     */
+    async createUser(requestParameters: CreateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSummary> {
+        const response = await this.createUserRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Allows admin to remove a user
+     * Delete a user
+     */
+    async deleteUserRaw(requestParameters: DeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeleteUser200Response>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling deleteUser().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/users/{id}`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DeleteUser200ResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Allows admin to remove a user
+     * Delete a user
+     */
+    async deleteUser(requestParameters: DeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeleteUser200Response> {
+        const response = await this.deleteUserRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Returns all users from the system with basic details. Useful for populating user lists in the frontend. 
@@ -79,6 +194,63 @@ export class UsersApi extends runtime.BaseAPI {
      */
     async getUsersList(requestParameters: GetUsersListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserResponse> {
         const response = await this.getUsersListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Allows admin to edit user information
+     * Update an existing user
+     */
+    async updateUserRaw(requestParameters: UpdateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSummary>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling updateUser().'
+            );
+        }
+
+        if (requestParameters['userSummary'] == null) {
+            throw new runtime.RequiredError(
+                'userSummary',
+                'Required parameter "userSummary" was null or undefined when calling updateUser().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/users/{id}`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSummaryToJSON(requestParameters['userSummary']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSummaryFromJSON(jsonValue));
+    }
+
+    /**
+     * Allows admin to edit user information
+     * Update an existing user
+     */
+    async updateUser(requestParameters: UpdateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSummary> {
+        const response = await this.updateUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

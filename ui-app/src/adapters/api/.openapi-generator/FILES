@@ -4,6 +4,7 @@ apis/index.ts
 docs/AuthApi.md
 docs/AuthToken.md
 docs/AuthUser.md
+docs/DeleteUser200Response.md
 docs/ErrorResponse.md
 docs/LoginRequest.md
 docs/LogoutResponse.md
@@ -13,6 +14,7 @@ docs/UsersApi.md
 index.ts
 models/AuthToken.ts
 models/AuthUser.ts
+models/DeleteUser200Response.ts
 models/ErrorResponse.ts
 models/LoginRequest.ts
 models/LogoutResponse.ts
