@@ -171,7 +171,137 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  
+    
+    post:
+      tags:
+        - Users 
+      summary: Create a new user
+      description: Allows admin to add a new user
+      operationId: createUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: User information to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSummary"              
+      responses:
+        "200":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSummary"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"                
+    
+  /users/{id}:  
+    put:
+      tags:
+        - Users 
+      summary: Update an existing user
+      description: Allows admin to edit user information
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Update user info
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSummary"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSummary"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"                
+    
+    delete:
+      tags:
+        - Users 
+      summary: Delete a user
+      description: Allows admin to remove a user
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User deleted successfully"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"                
+        
+
+        
+    
 components:
   
   securitySchemes:
@@ -330,5 +460,3 @@ components:
         code:
           type: string
           example: AUTH_401
-
-    
