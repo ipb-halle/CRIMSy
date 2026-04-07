@@ -125,9 +125,25 @@ const UsersPanel: React.FC<UsersPanelProps> = (
         }}
       >
         <span> Users </span>
-        <span style={{ color: "#666", fontSize: "14px" }}>
-          (Page {currentPage} of {totalPages})
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
+          <span style={{ color: "#666", fontSize: "14px" }}>
+            (Page {currentPage} of {totalPages})
+          </span>
+          <button
+            //onClick={() => handleCreateUSer()}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "6px",
+              background: "#2e7d32",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: 500,
+            }}
+          >
+            Create User
+          </button>
+        </div>
       </div>
 
       {/* DataTable */}
