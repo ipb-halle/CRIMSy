@@ -56,6 +56,25 @@ const UsersPanel: React.FC<UsersPanelProps> = (
         </span>
       ),
     },
+    {
+      name: "Edit",
+      cell: (row: any) => (
+        <button
+          //onClick{() => handleEdit(row)}
+
+          style={{
+            padding: "6px 10px",
+            borderRadius: "6px",
+            background: "#1976d2",
+            color: "fff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >Edit
+        </button >
+      ),
+    },
+
   ];
 
   const handlePageChange = (page: number) => {
@@ -107,7 +126,7 @@ const UsersPanel: React.FC<UsersPanelProps> = (
         paginationDefaultPage={currentPage}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleRowsPerPageChange}
-        paginationRowsPerPageOptions={[5, 10, 15]}
+        paginationRowsPerPageOptions={[5, 10, 15, 20, 25, 30, 40, 50]}
         highlightOnHover
         striped
         responsive
