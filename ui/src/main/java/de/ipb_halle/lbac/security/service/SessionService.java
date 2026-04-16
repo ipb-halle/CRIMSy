@@ -26,7 +26,7 @@ public class SessionService {
 
     private LocalDateTime getExpirationThreshold() {
         LocalDateTime threshold = LocalDateTime.now().minusSeconds(SESSION_TIMEOUT_SECONDS);
-        return LocalDateTime.now().minusSeconds(SESSION_TIMEOUT_SECONDS);
+        return threshold;
     }
 
     @Transactional(Transactional.TxType.SUPPORTS)
@@ -63,6 +63,7 @@ public class SessionService {
         return !isTokenExpired(token, updateLastSeen);
     }
 
+    @Transactional
     public void deleteSessionByToken(String token) {
         em.createQuery("DELETE FROM UserSessionsEntity s WHERE s.token = :token")
                 .setParameter("token", token)
@@ -88,7 +89,7 @@ public class SessionService {
 
         return updated == 1;
     }
-
+/*
     @Transactional
     public LocalDateTime getSessionExpiry(String token) {
         UserSessionsEntity session = getUserSessionsEntityByToken(token);
@@ -98,5 +99,5 @@ public class SessionService {
 
         LocalDateTime sessionExpired = session.getLastSeen().plusSeconds(SESSION_TIMEOUT_SECONDS);
         return sessionExpired;
-    }
+    }*/
 }
