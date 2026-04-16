@@ -5,7 +5,8 @@ import {
   LoginRequest,
   AuthUser,
   LogoutResponse,
-  PaginatedUserResponse
+  PaginatedUserResponse,
+  DeleteUser200Response
 } from "../adapters/api/models";
 
 
@@ -96,7 +97,6 @@ export const fetchRoleAPI = async (
   return authUser;
 };
 
-
 export const fetchUsersAPI = async (
   token: string,
   page: number, pageSize: number
@@ -109,4 +109,34 @@ export const fetchUsersAPI = async (
 
   const paginatedUserResponse = await userResponse.getUsersList({ page, pageSize });
   return paginatedUserResponse;
+};
+
+export const deleteUsersAPI = async (
+  token: string,
+  id: number
+): Promise<DeleteUser200Response> => {
+
+  if (!token) {
+    throw new Error("Missing token");
+  }
+
+  console.log("[API] deleteUser called with:", { token, id });
+
+  const config = new Configuration({
+    accessToken: async () => {
+      console.log("[API] injecting token into header");
+      return token;
+    }
+  });
+
+  const api = new UsersApi(config);
+
+  try {
+    const res = await api.deleteUser({ id });
+    console.log("API delete success; ", res);
+    return res;
+  } catch (err) {
+    console.error("API delete failed; ", err);
+    throw err;
+  }
 };
