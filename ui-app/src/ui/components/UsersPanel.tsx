@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { PaginatedUserResponse, UserSummary } from "../../adapters/api";
 import { colors, spacing, radius } from "../../assets/css/theme/designTokens";
+import * as api from "../../services/authService";
 
 interface UsersPanelProps {
   data: PaginatedUserResponse | null;
@@ -11,14 +12,13 @@ interface UsersPanelProps {
   onRowsPerPageChange?: (size: number) => void;
 }
 
-const UsersPanel: React.FC<UsersPanelProps> = (
-  { data,
-    totalCount,
-    rowsPerPage,
-    onPageChange,
-    onRowsPerPageChange,
-  }
-) => {
+const UsersPanel: React.FC<UsersPanelProps> = ({
+  data,
+  totalCount,
+  rowsPerPage,
+  onPageChange,
+  onRowsPerPageChange,
+}) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -28,6 +28,50 @@ const UsersPanel: React.FC<UsersPanelProps> = (
   if (!data) return null;
 
   const { currentPage, totalPages, items } = data;
+
+  const handleDeleteUser = async (id: number) => {
+    const rawToken = localStorage.getItem("token");
+    console.log("[DELETE] raw token:", rawToken);
+
+    if (!rawToken) {
+      alert("No auth token found");
+      return;
+    }
+
+    let token: string;
+    try {
+      token = JSON.parse(rawToken);
+    } catch {
+      token = rawToken;
+    }
+
+    console.log("[DELETE] clicked for user:", id);
+    console.log("[DELETE] final token:", token);
+    /*
+        const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+        if (!confirmDelete) return;*/
+
+    try {
+      setLoading(true);
+
+      console.log("[DELETE] before API call");
+
+      const res = await api.deleteUsersAPI(token, id);
+
+      //console.log("[Delete] success response: ", res);
+      console.log("[DELETE] after API call:", res);
+
+
+      onPageChange?.(currentPage);
+      alert("[Delete] success response: " + res.message);
+
+    } catch (err: any) {
+      console.error("[Delete] error: ", err);
+      alert(err?.message || "Failed to delete user");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const columns: TableColumn<UserSummary>[] = [
     {
@@ -41,7 +85,7 @@ const UsersPanel: React.FC<UsersPanelProps> = (
       selector: row => (row.admin ? "Yes" : "No"),
       sortable: true,
       center: true,
-      cell: row => (
+      cell: (row) => (
         <span
           style={{
             padding: "4px 8px",
@@ -58,10 +102,9 @@ const UsersPanel: React.FC<UsersPanelProps> = (
     },
     {
       name: "Edit",
-      cell: (row: any) => (
+      cell: (row) => (
         <button
-          //onClick{() => handleEdit(row)}
-
+          //onClick{() => handleEditUser(row)}
           style={{
             padding: "6px 10px",
             borderRadius: "6px",
@@ -70,16 +113,16 @@ const UsersPanel: React.FC<UsersPanelProps> = (
             border: "none",
             cursor: "pointer",
           }}
-        >Edit
+        >
+          Edit
         </button >
       ),
     },
     {
       name: "Delete",
-      cell: (row: any) => (
+      cell: (row: UserSummary) => (
         <button
-          //onClick{() => handleEdit(row)}
-
+          onClick={() => handleDeleteUser(row.id)}
           style={{
             padding: "6px 10px",
             borderRadius: "6px",
@@ -88,7 +131,8 @@ const UsersPanel: React.FC<UsersPanelProps> = (
             border: "none",
             cursor: "pointer",
           }}
-        >Delete
+        >
+          Delete
         </button >
       ),
     },
@@ -125,10 +169,12 @@ const UsersPanel: React.FC<UsersPanelProps> = (
         }}
       >
         <span> Users </span>
+
         <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
           <span style={{ color: "#666", fontSize: "14px" }}>
             (Page {currentPage} of {totalPages})
           </span>
+
           <button
             //onClick={() => handleCreateUSer()}
             style={{
@@ -149,7 +195,6 @@ const UsersPanel: React.FC<UsersPanelProps> = (
       {/* DataTable */}
       <DataTable
         key={`${currentPage}-${rowsPerPage}`}
-        //    keyField="id"
         columns={columns}
         data={items}
         pagination
