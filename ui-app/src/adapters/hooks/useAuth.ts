@@ -2,7 +2,6 @@ import { useState, useRef, FormEvent, useEffect } from "react";
 import { LoginRequest } from "../api";
 import * as api from "../../services/authService";
 
-const SESSION_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 const SESSION_TIMER_INTERVAL_MS = 1000;
 
 export const useAuth = (onAutoLogout?: () => void) => {
@@ -15,7 +14,8 @@ export const useAuth = (onAutoLogout?: () => void) => {
   const [remainingTime, setRemainingTime] = useState<number>(0);
   const countdownRef = useRef<number | null>(null);
 
-  const ACTIVITY_EVENTS = ["click", "mousemove", "keydown", "scroll"];
+  //const ACTIVITY_EVENTS = ["click", "mousemove", "keydown", "scroll"];
+  const ACTIVITY_EVENTS = ["keydown", "scroll"];
 
   let lastActivityPingRef = useRef<number>(0);
   const ACTIVITY_THROTTLE_MS = 1000;
@@ -164,7 +164,6 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
   const handleFetchUsers = async (page: number = 1, pageSize: number = 5) => {
     setUsersList(null);
-    //setRoleInfo(null);
 
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -180,8 +179,14 @@ export const useAuth = (onAutoLogout?: () => void) => {
     }
   };
 
+
+
   useEffect(() => {
-    const handleActivity = () => {
+    const handleActivity = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      if (e.type === "click" && target?.closest("button")) {
+        return;
+      }
       sendActivityPing();
     };
 
