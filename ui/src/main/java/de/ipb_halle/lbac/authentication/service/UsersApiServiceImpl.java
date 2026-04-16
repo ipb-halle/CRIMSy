@@ -7,7 +7,11 @@ package de.ipb_halle.lbac.authentication.service;
 import de.ipb_halle.api.UsersApiService;
 import de.ipb_halle.lbac.admission.GroupEntity;
 import de.ipb_halle.lbac.admission.MemberEntity;
+import de.ipb_halle.lbac.admission.MembershipEntity;
+import de.ipb_halle.lbac.admission.UserEntity;
+import de.ipb_halle.lbac.security.interceptor.Secured;
 import de.ipb_halle.lbac.security.service.TokenService;
+import de.ipb_halle.model.DeleteUser200Response;
 import de.ipb_halle.model.ErrorResponse;
 import de.ipb_halle.model.PaginatedUserResponse;
 import de.ipb_halle.model.UserSummary;
@@ -21,6 +25,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,7 +90,6 @@ public class UsersApiServiceImpl implements UsersApiService {
 
         boolean requesterIsAdmin = requesterGroups.stream()
                 .anyMatch(a -> "Admin Group".equalsIgnoreCase(a));
-        System.out.println("\n users.admin-stream: " + requesterIsAdmin + " \n");
 
         // --- Fetch users ---
         List<MemberEntity> users;
@@ -121,10 +125,6 @@ public class UsersApiServiceImpl implements UsersApiService {
                 .map(MemberEntity::getId)
                 .collect(Collectors.toList());
 
-        for (int i : userIds) {
-            System.out.println("user id:: " + i + " \n");
-        }
-
         List<Object[]> roleResults = Collections.emptyList();
 
 // --- Fetch All roles for All users in one query ---
@@ -141,12 +141,9 @@ public class UsersApiServiceImpl implements UsersApiService {
                     .setParameter("groupType", GroupEntity.class)
                     .getResultList();
         }
-        System.out.println("roleResults: " + roleResults.size() + " \n");
 
         // --- Map userIds -> roles ---
         Map<Integer, List<String>> userRolesMap = new HashMap<>();
-
-        System.out.println("useRolesMap: " + userRolesMap.size() + " \n");
 
         for (Object[] row : roleResults) {
             Integer userId = (Integer) row[0];
@@ -165,7 +162,6 @@ public class UsersApiServiceImpl implements UsersApiService {
                     summary.setId(u.getId());
                     summary.setName(u.getName());
                     summary.setEmail("");
-                    //    summary.setGroups(u.isGroup() ? {"G"} : {"U"});
                     List<String> roles = userRolesMap.getOrDefault(u.getId(), Collections.emptyList());
                     summary.setGroups(roles);
                     boolean isAdmin = roles.stream()
@@ -184,7 +180,177 @@ public class UsersApiServiceImpl implements UsersApiService {
         response.setItems(responseUsers);
         return Response.ok(response).build();
     }
+
+    // ----------------- Admin CRUD Operations -----------------
+    @Override
+    public Response createUser(UserSummary userSummary, SecurityContext securityContext) {
+        if (!isAdmin(securityContext)) {
+            return unauthorized();
+        }
+
+        if (userSummary == null || userSummary.getName() == null || userSummary.getEmail() == null) {
+            return badRequest("Missing required fields");
+
+        }
+        List<UserEntity> duplicates = em.createQuery(
+                "SELECT u FROM UserEntity u WHERE u.login = :login OR u.email = :email", UserEntity.class)
+                .setParameter("login", userSummary.getName())
+                .setParameter("email", userSummary.getEmail())
+                .getResultList();
+        if (!duplicates.isEmpty()) {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setMessage("User with this login or email already exists");
+            errorResponse.setCode("409");
+            return Response.status(Response.Status.CONFLICT).entity(errorResponse).build();
+        }
+        UserEntity newUser = new UserEntity();
+        newUser.setName(userSummary.getName());
+        newUser.setEmail(userSummary.getEmail());
+        newUser.setLogin(userSummary.getName());
+        newUser.setPassword("default"); // TODO: hash password
+        em.persist(newUser);
+
+        return Response.status(Response.Status.CREATED).entity(toDto(newUser)).build();
+    }
+
+    @Override
+    @Transactional
+    @Secured
+    public Response deleteUser(Integer id, SecurityContext securityContext) {
+/*
+        if (!isAdmin(securityContext)) {
+            return unauthorized();
+        }*/
+        if (id == null) {
+            return badRequest("Invalid user ID");
+        }
+
+        UserEntity user = em.find(UserEntity.class, id);
+        if (user == null) {
+            return notFound("User not found");
+        }
+
+        List<MembershipEntity> memberships = em.createQuery(
+                "SELECT ms FROM MembershipEntity ms WHERE ms.member = :userId", MembershipEntity.class)
+                .setParameter("userId", id)
+                .getResultList();
+        memberships.forEach(em::remove);
+
+        em.remove(user);
+
+        DeleteUser200Response resp = new DeleteUser200Response();
+        resp.setMessage("User deleted successfully");
+        return Response.ok(resp).build();
+    }
+
+    @Override
+    public Response updateUser(Integer id, UserSummary userSummary, SecurityContext securityContext) {
+        if (!isAdmin(securityContext)) {
+            return unauthorized();
+        }
+        if (id == null || userSummary == null) {
+            return badRequest("Invalid input");
+        }
+
+        UserEntity user = em.find(UserEntity.class, id);
+        if (user == null) {
+            return notFound("User not found");
+        }
+
+        if (userSummary.getName() != null) {
+            user.setName(userSummary.getName());
+        }
+        if (userSummary.getEmail() != null) {
+            user.setEmail(userSummary.getEmail());
+        }
+
+        if (userSummary.getGroups() != null) {
+            List<MembershipEntity> memberships = em.createQuery(
+                    "SELECT ms FROM MembershipEntity ms WHERE ms.member = :userId", MembershipEntity.class)
+                    .setParameter("userId", id)
+                    .getResultList();
+            memberships.forEach(em::remove);
+
+            for (String gname : userSummary.getGroups()) {
+                List<GroupEntity> groups = em.createQuery(
+                        "SELECT g FROM GroupEntity g WHERE g.name = :name", GroupEntity.class)
+                        .setParameter("name", gname)
+                        .getResultList();
+                if (!groups.isEmpty()) {
+                    MembershipEntity ms = new MembershipEntity();
+                    ms.setMember(id);
+                    ms.setGroup(groups.get(0).getId());
+                    em.persist(ms);
+                }
+            }
+        }
+
+        return Response.ok(toDto(user)).build();
+
+    }
+
     // ----------- Helpers -----------
+    private boolean isAdmin(SecurityContext securityContext) {
+        if (securityContext == null || securityContext.getUserPrincipal() == null) {
+            return false;
+        }
+        String username = securityContext.getUserPrincipal().getName();
+        try {
+            Integer memberId = em.createQuery(
+                    "SELECT m.id FROM UserEntity m WHERE m.login = :login",
+                    Integer.class)
+                    .setParameter("login", username)
+                    .getSingleResult();
+            List<String> groups = em.createQuery(
+                    "SELECT g.name FROM MembershipEntity ms, GroupEntity g "
+                    + "WHERE ms.group = g.id AND ms.member = :memberID",
+                    String.class)
+                    .setParameter("memberId", memberId)
+                    .getResultList();
+            return groups.stream().anyMatch(g -> g.equalsIgnoreCase("Admin Group"));
+        } catch (NoResultException e) {
+            return false;
+        }
+    }
+
+    private Response unauthorized() {
+        ErrorResponse err = new ErrorResponse();
+        err.setMessage("Unauthorized");
+        err.setCode("401");
+        return Response.status(Response.Status.UNAUTHORIZED).entity(err).build();
+    }
+
+    private Response notFound(String msg) {
+        ErrorResponse err = new ErrorResponse();
+        err.setMessage(msg);
+        err.setCode("404");
+        return Response.status(Response.Status.NOT_FOUND).entity(err).build();
+    }
+
+    private Response badRequest(String msg) {
+        ErrorResponse err = new ErrorResponse();
+        err.setMessage(msg);
+        err.setCode("400");
+        return Response.status(Response.Status.BAD_REQUEST).entity(err).build();
+    }
+
+    private UserSummary toDto(UserEntity u) {
+        UserSummary s = new UserSummary();
+        s.setId(u.getId());
+        s.setName(u.getName());
+        s.setEmail(u.getEmail());
+        s.setGroups(fetchUserGroups(u.getId()));
+        s.setAdmin(s.getGroups().stream().anyMatch(g -> g.equalsIgnoreCase("Admin Group")));
+        return s;
+    }
+
+    private List<String> fetchUserGroups(Integer userId) {
+        return em.createQuery(
+                "SELECT g.name FROM MembershipEntity ms, GroupEntity g "
+                + "WHERE ms.group = g.id AND ms.member = :userId", String.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
 
     private String resolveUsername(SecurityContext securityContext) {
         if (securityContext != null && securityContext.getUserPrincipal() != null) {
@@ -218,5 +384,4 @@ public class UsersApiServiceImpl implements UsersApiService {
         error.setCode(String.valueOf(status.getStatusCode()));
         return Response.status(status).entity(error).build();
     }
-
 }
