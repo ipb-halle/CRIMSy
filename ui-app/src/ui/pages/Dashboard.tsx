@@ -48,14 +48,14 @@ const Dashboard: React.FC<Props> = (
     };
 
     // Called when user changes page
-    const handlePageFetch = (page: number) => {
-        handleFetchUsers(page, rowsPerPage);
+    const handlePageFetch = async (page: number) => {
+        await handleFetchUsers(page, rowsPerPage);
     };
 
     // Called when user changes rows per page
-    const handleRowsChange = (size: number) => {
+    const handleRowsChange = async (size: number) => {
         setRowsPerPage(size);
-        handleFetchUsers(1, size); // reset to first page
+        await handleFetchUsers(1, size); // reset to first page
     };
 
     const renderView = () => {
