@@ -40,10 +40,7 @@ public class TokenService {
     public String getUsernameFromToken(String token) {
         String username = null;
         UserSessionsEntity userSessionsEntity = sessionService.getUserSessionsEntityByToken(token);
-        if (userSessionsEntity != null) {
-            username = userSessionsEntity.getUser().getName();
-        }
-        return username;
+         return userSessionsEntity != null ? userSessionsEntity.getUser().getName() : null;
     }
     
     
