@@ -4,6 +4,7 @@
  */
 package de.ipb_halle.lbac.security.interceptor;
 
+import de.ipb_halle.lbac.security.service.SessionService;
 import de.ipb_halle.lbac.security.service.TokenService;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
@@ -23,6 +24,10 @@ public class SecurityInterceptor {
 
     @Inject
     private TokenService tokenService;
+    
+    
+    @Inject
+    private SessionService sessionService;
 
     @Context
     @Inject
@@ -31,16 +36,18 @@ public class SecurityInterceptor {
     @AroundInvoke
     public Object checkToken(InvocationContext invocationContext) throws Exception {
 
-        String authHeader = headers.getHeaderString("Authorization");
+        String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Missing or invalid Auhtorization header\"}")
                     .build();
         }
+        
         String token = authHeader.substring("Bearer ".length());
 
-        boolean validatedToken = tokenService.validateToken(token, false);
+        //boolean validatedToken = tokenService.validateToken(token, true);
+        boolean validatedToken = sessionService.isTokenValid(token, true);
         if (!validatedToken) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"message\":\"Invalid or expired token\"}")
