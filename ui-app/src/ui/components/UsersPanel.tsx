@@ -30,7 +30,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
   const { currentPage, totalPages, items } = data;
 
   const handleDeleteUser = async (id: number) => {
-    if (loading) return;
+    //if (loading) return;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -39,10 +39,6 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
     }
 
     const user = items.find(u => u.id === id);
-
-    console.log("[DELETE] clicked for user:", id);
-
-    console.log("[DELETE] final token:", token);
 
     const confirmed = window.confirm(
       `Delete user "${user?.name || id}"?\nThis action cannot be undone.`
@@ -55,12 +51,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
     try {
       setLoading(true);
 
-      console.log("[DELETE] before API call");
-
       const res = await api.deleteUsersAPI(token, id);
-
-      //console.log("[Delete] success response: ", res);
-      console.log("[DELETE] after API call:", res);
 
       onPageChange?.(currentPage);
       alert("User deleted successfully");
