@@ -30,27 +30,28 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
   const { currentPage, totalPages, items } = data;
 
   const handleDeleteUser = async (id: number) => {
-    const rawToken = localStorage.getItem("token");
-    console.log("[DELETE] raw token:", rawToken);
+    if (loading) return;
 
-    if (!rawToken) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       alert("No auth token found");
       return;
     }
 
-    let token: string;
-    try {
-      token = JSON.parse(rawToken);
-    } catch {
-      token = rawToken;
-    }
+    const user = items.find(u => u.id === id);
 
     console.log("[DELETE] clicked for user:", id);
-    console.log("[DELETE] final token:", token);
-    /*
-        const confirmDelete = window.confirm("Are you sure you want to delete this user?");
-        if (!confirmDelete) return;*/
 
+    console.log("[DELETE] final token:", token);
+
+    const confirmed = window.confirm(
+      `Delete user "${user?.name || id}"?\nThis action cannot be undone.`
+    );
+
+    if (!confirmed) {
+      console.log("[DELETE] cancelled by admin");
+      return;
+    }
     try {
       setLoading(true);
 
@@ -61,9 +62,8 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
       //console.log("[Delete] success response: ", res);
       console.log("[DELETE] after API call:", res);
 
-
       onPageChange?.(currentPage);
-      alert("[Delete] success response: " + res.message);
+      alert("User deleted successfully");
 
     } catch (err: any) {
       console.error("[Delete] error: ", err);
@@ -109,7 +109,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
             padding: "6px 10px",
             borderRadius: "6px",
             background: "#1976d2",
-            color: "fff",
+            color: "#fff",
             border: "none",
             cursor: "pointer",
           }}
@@ -127,7 +127,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
             padding: "6px 10px",
             borderRadius: "6px",
             background: "#1976d2",
-            color: "fff",
+            color: "#fff",
             border: "none",
             cursor: "pointer",
           }}
