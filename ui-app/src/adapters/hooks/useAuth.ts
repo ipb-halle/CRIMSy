@@ -15,7 +15,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
   const countdownRef = useRef<number | null>(null);
 
   //const ACTIVITY_EVENTS = ["click", "mousemove", "keydown", "scroll"];
-  const ACTIVITY_EVENTS = ["keydown", "scroll"];
+  const ACTIVITY_EVENTS = ["keydown", "mousedown", "touchstart", "scroll", "pointerdown",];
 
   let lastActivityPingRef = useRef<number>(0);
   const ACTIVITY_THROTTLE_MS = 1000;
@@ -180,32 +180,31 @@ export const useAuth = (onAutoLogout?: () => void) => {
   };
 
 
-  /*
-    useEffect(() => {
-      const handleActivity = (e: Event) => {
-        const target = e.target as HTMLElement | null;
-        if (e.type === "click" && target?.closest("button")) {
-          return;
-        }
-        sendActivityPing();
-      };
-  
+  useEffect(() => {
+    const handleActivity = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      if (e.type === "click" && target?.closest("button")) {
+        return;
+      }
+      sendActivityPing();
+    };
+
+    ACTIVITY_EVENTS.forEach(event =>
+      window.addEventListener(event, handleActivity)
+    );
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        sendActivityPing(); // tab switch
+      }
+    });
+
+    return () => {
       ACTIVITY_EVENTS.forEach(event =>
-        window.addEventListener(event, handleActivity)
+        window.removeEventListener(event, handleActivity)
       );
-  
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) {
-          sendActivityPing(); // tab switch
-        }
-      });
-  
-      return () => {
-        ACTIVITY_EVENTS.forEach(event =>
-          window.removeEventListener(event, handleActivity)
-        );
-      };
-    }, []);*/
+    };
+  }, []);
 
   return {
     loginRequest,
