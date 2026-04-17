@@ -180,32 +180,32 @@ export const useAuth = (onAutoLogout?: () => void) => {
   };
 
 
-
-  useEffect(() => {
-    const handleActivity = (e: Event) => {
-      const target = e.target as HTMLElement | null;
-      if (e.type === "click" && target?.closest("button")) {
-        return;
-      }
-      sendActivityPing();
-    };
-
-    ACTIVITY_EVENTS.forEach(event =>
-      window.addEventListener(event, handleActivity)
-    );
-
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) {
-        sendActivityPing(); // tab switch
-      }
-    });
-
-    return () => {
+  /*
+    useEffect(() => {
+      const handleActivity = (e: Event) => {
+        const target = e.target as HTMLElement | null;
+        if (e.type === "click" && target?.closest("button")) {
+          return;
+        }
+        sendActivityPing();
+      };
+  
       ACTIVITY_EVENTS.forEach(event =>
-        window.removeEventListener(event, handleActivity)
+        window.addEventListener(event, handleActivity)
       );
-    };
-  }, []);
+  
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          sendActivityPing(); // tab switch
+        }
+      });
+  
+      return () => {
+        ACTIVITY_EVENTS.forEach(event =>
+          window.removeEventListener(event, handleActivity)
+        );
+      };
+    }, []);*/
 
   return {
     loginRequest,
