@@ -120,11 +120,8 @@ export const deleteUsersAPI = async (
     throw new Error("Missing token");
   }
 
-  console.log("[API] deleteUser called with:", { token, id });
-
   const config = new Configuration({
     accessToken: async () => {
-      console.log("[API] injecting token into header");
       return token;
     }
   });
