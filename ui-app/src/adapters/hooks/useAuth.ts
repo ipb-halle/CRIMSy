@@ -164,10 +164,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
       return true;
     } catch (error) {
       console.error("[LOGOUT API ERROR", error);
-    } /*finally {
-      expireSession("Logged out successfully!");
-      sessionLockRef.current = false;
-    }*/
+    }
   };
 
   // -------- Role /  Users -------- //

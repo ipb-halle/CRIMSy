@@ -72,6 +72,7 @@ const Dashboard: React.FC<Props> = (
                         rowsPerPage={rowsPerPage}
                         onPageChange={handlePageFetch}
                         onRowsPerPageChange={handleRowsChange}
+                        isAdmin={roleInfo?.admin === true}
                     />
                 );
             case "addMaterial":

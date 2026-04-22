@@ -10,6 +10,7 @@ interface UsersPanelProps {
   rowsPerPage: number;
   onPageChange?: (page: number) => void;
   onRowsPerPageChange?: (size: number) => void;
+  isAdmin: boolean;
 }
 
 const UsersPanel: React.FC<UsersPanelProps> = ({
@@ -18,6 +19,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
+  isAdmin,
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -91,42 +93,45 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
         </span>
       ),
     },
-    {
-      name: "Edit",
-      cell: (row) => (
-        <button
-          //onClick{() => handleEditUser(row)}
-          style={{
-            padding: "6px 10px",
-            borderRadius: "6px",
-            background: "#1976d2",
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Edit
-        </button >
-      ),
-    },
-    {
-      name: "Delete",
-      cell: (row: UserSummary) => (
-        <button
-          onClick={() => handleDeleteUser(row.id)}
-          style={{
-            padding: "6px 10px",
-            borderRadius: "6px",
-            background: "#1976d2",
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Delete
-        </button >
-      ),
-    },
+    ...(isAdmin ? [
+      {
+        name: "Edit",
+        cell: (row: UserSummary) => (
+          <button
+            //onClick{() => handleEditUser(row)}
+            style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              background: "#1976d2",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Edit
+          </button >
+        ),
+      },
+      {
+        name: "Delete",
+        cell: (row: UserSummary) => (
+          <button
+            onClick={() => handleDeleteUser(row.id)}
+            style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              background: "#1976d2",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Delete
+          </button >
+        ),
+      },
+    ] as TableColumn<UserSummary>[] : []),
+
   ];
 
   const handlePageChange = (page: number) => {
@@ -165,21 +170,22 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
           <span style={{ color: "#666", fontSize: "14px" }}>
             (Page {currentPage} of {totalPages})
           </span>
-
-          <button
-            //onClick={() => handleCreateUSer()}
-            style={{
-              padding: "6px 12px",
-              borderRadius: "6px",
-              background: "#2e7d32",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: 500,
-            }}
-          >
-            Create User
-          </button>
+          {isAdmin && (
+            <button
+              //onClick={() => handleCreateUSer()}
+              style={{
+                padding: "6px 12px",
+                borderRadius: "6px",
+                background: "#2e7d32",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+                fontWeight: 500,
+              }}
+            >
+              Create User
+            </button>
+          )}
         </div>
       </div>
 
