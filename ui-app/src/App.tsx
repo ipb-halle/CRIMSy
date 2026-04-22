@@ -10,7 +10,9 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const auth = useAuth(() => {
-    setIsLoggedIn(false);
+    if (!localStorage.getItem("token")) {
+      setIsLoggedIn(false);
+    }
   });
 
   useEffect(() => {
@@ -31,11 +33,13 @@ const App: React.FC = () => {
           {isLoggedIn ? (
             <Dashboard
               auth={auth}
-              onLogout={() => setIsLoggedIn(false)} />
+              onLogout={() => setIsLoggedIn(false)}
+            />
           ) : (
             <Login
               auth={auth}
-              onLogin={() => setIsLoggedIn(true)} />
+              onLogin={() => setIsLoggedIn(true)}
+            />
           )}
         </div>
         <Footer />
