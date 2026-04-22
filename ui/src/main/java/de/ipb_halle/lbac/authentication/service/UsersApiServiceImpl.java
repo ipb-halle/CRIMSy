@@ -81,7 +81,7 @@ public class UsersApiServiceImpl implements UsersApiService {
                 """
                         SELECT g.name
                         FROM MembershipEntity ms, MemberEntity g
-                        WHERE ms.group = g.id 
+                        WHERE ms.group = g.id
                         AND ms.member = :memberId
                         AND TYPE(g) = GroupEntity
                         """, String.class)
@@ -107,7 +107,7 @@ public class UsersApiServiceImpl implements UsersApiService {
 
             // --- Fetch paginated users ---
             users = em.createQuery(
-                    "SELECT m FROM MemberEntity m WHERE TYPE(m) <> GroupEntity ORDER BY m.id",
+                    "SELECT m FROM MemberEntity m WHERE m.login NOT LIKE '@%' AND TYPE(m) <> GroupEntity ORDER BY m.id",
                     MemberEntity.class)
                     .setFirstResult(offset)
                     .setMaxResults(pageSize)
