@@ -30,7 +30,6 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
   const { currentPage, totalPages, items } = data;
 
   const handleDeleteUser = async (id: number) => {
-    //if (loading) return;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -48,10 +47,11 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
       console.log("[DELETE] cancelled by admin");
       return;
     }
+
     try {
       setLoading(true);
 
-      const res = await api.deleteUsersAPI(token, id);
+      await api.deleteUsersAPI(token, id);
 
       onPageChange?.(currentPage);
       alert("User deleted successfully");

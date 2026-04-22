@@ -12,17 +12,63 @@ export const useAuth = (onAutoLogout?: () => void) => {
   const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
   const [usersList, setUsersList] = useState<any>(null);
   const [remainingTime, setRemainingTime] = useState<number>(0);
-  const countdownRef = useRef<number | null>(null);
 
-  //const ACTIVITY_EVENTS = ["click", "mousemove", "keydown", "scroll"];
-  const ACTIVITY_EVENTS = ["keydown", "mousedown", "touchstart", "scroll", "pointerdown",];
+  const countdownRef = useRef<number | null>(null);
 
   let lastActivityPingRef = useRef<number>(0);
   const ACTIVITY_THROTTLE_MS = 1000;
 
-  const sendActivityPing = async () => {
-    const now = Date.now();
+  const sessionLockRef = useRef(false);
 
+
+  const ACTIVITY_EVENTS = ["keydown", "mousedown", "touchstart", "scroll", "pointerdown"] as const;
+
+  // -------- Timer Helper --------//
+  const clearTimers = () => {
+    if (countdownRef.current) {
+      clearInterval(countdownRef.current);
+      countdownRef.current = null;
+    }
+  };
+
+  const startCountdownTimer = () => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+
+    countdownRef.current = window.setInterval(() => {
+      setRemainingTime(prev => {
+        if (prev <= 1) {
+          clearTimers();
+          expireSession("Session expired! Please log in again.");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, SESSION_TIMER_INTERVAL_MS);
+  };
+
+  // -------- Session Core --------//
+  const expireSession = (message: string) => {
+    clearTimers();
+
+    setResult({ message });
+    setRoleInfo(null);
+    setUsersList(null);
+    setRemainingTime(0);
+    setLoginRequest({ username: "", password: "", });
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("tokenExpiry");
+    localStorage.removeItem("expiresInSeconds");
+
+    onAutoLogout?.();
+  };
+
+  // -------- Activity Ping --------//
+  const sendActivityPing = async () => {
+    if (sessionLockRef.current) return;
+
+    const now = Date.now();
     if (now - lastActivityPingRef.current < ACTIVITY_THROTTLE_MS) return;
     lastActivityPingRef.current = now;
 
@@ -35,30 +81,12 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
       setRemainingTime(expiresInSeconds);
       startCountdownTimer();
-
     } catch {
       expireSession("Session expired. Please log in again.");
     }
   };
 
-  const clearTimers = () => {
-    if (countdownRef.current)
-      clearInterval(countdownRef.current);
-  };
-
-  const expireSession = (message: string) => {
-    clearTimers();
-    setResult({ message });
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("tokenExpiry");
-
-    setRoleInfo(null);
-    setUsersList(null);
-    setLoginRequest({ username: "", password: "", });
-    if (onAutoLogout) onAutoLogout();
-  };
-
+  // -------- Session Check -------- //
   const checkSession = async (): Promise<boolean> => {
     const token = localStorage.getItem("token");
     if (!token)
@@ -83,20 +111,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
     }
   };
 
-  const startCountdownTimer = () => {
-    if (countdownRef.current) clearInterval(countdownRef.current);
-    countdownRef.current = window.setInterval(() => {
-      setRemainingTime(prev => {
-        if (prev <= 1) {
-          clearInterval(countdownRef.current!);
-          expireSession("Session expired! Please log in again.");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, SESSION_TIMER_INTERVAL_MS);
-  };
-
+  // -------- Login -------- //
   const handleLogin = async (e?: FormEvent, onSuccess?: () => void) => {
     if (e) e.preventDefault();
 
@@ -113,42 +128,49 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
       const userInfo = await api.fetchRoleAPI(auth.token);
       setRoleInfo(userInfo);
+
       setRemainingTime(auth.expiresInSeconds);
       startCountdownTimer();
-
-      if (!userInfo) {
-        setResult({ message: "Failed to retrieve session info!" });
-        return;
-      }
 
       if (userInfo?.username) {
         localStorage.setItem("username", userInfo.username);
       }
 
-      if (onSuccess) {
-        onSuccess();
-      }
+      onSuccess?.();
     } catch {
       setResult({ message: "Request failed. Please try again later." });
     }
   };
 
+  // -------- Logout -------- //
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      alert("No auth token found");
+      return;
+    }
 
-    const confirmed = window.confirm("Are you sure you want to log out?");
-    if (!confirmed) return;
+    const confirmed = window.confirm('Are you sure you want to log out?');
+    if (!confirmed) {
+      console.log("[LOGOUT] cancelled by user!");
+      return false;
+    }
 
+    sessionLockRef.current = true;
     try {
       await api.logoutAPI(token);
-    } catch (error) {
-      console.error(error);
-    } finally {
       expireSession("Logged out successfully!");
-    }
+      sessionLockRef.current = false;
+      return true;
+    } catch (error) {
+      console.error("[LOGOUT API ERROR", error);
+    } /*finally {
+      expireSession("Logged out successfully!");
+      sessionLockRef.current = false;
+    }*/
   };
 
+  // -------- Role /  Users -------- //
   const handleCheckRole = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -179,30 +201,39 @@ export const useAuth = (onAutoLogout?: () => void) => {
     }
   };
 
-
+  // -------- Activity Listener -------- //
   useEffect(() => {
     const handleActivity = (e: Event) => {
-      const target = e.target as HTMLElement | null;
-      if (e.type === "click" && target?.closest("button")) {
+      if (sessionLockRef.current) return;
+
+      if (e.type === "mousedown") {
+        const target = e.target as HTMLElement | null;
+        if (target?.closest("button")) return;
         return;
       }
       sendActivityPing();
     };
 
     ACTIVITY_EVENTS.forEach(event =>
-      window.addEventListener(event, handleActivity)
+      window.addEventListener(event, handleActivity, { passive: true })
     );
 
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) {
-        sendActivityPing(); // tab switch
-      }
-    });
+    const onVisibilityChange = () => {
+      if (!document.hidden) sendActivityPing();
+    };
+    const onFocuse = () => sendActivityPing();
+
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("focus", onFocuse);
 
     return () => {
       ACTIVITY_EVENTS.forEach(event =>
         window.removeEventListener(event, handleActivity)
       );
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("focus", onFocuse);
+      clearTimers();
     };
   }, []);
 

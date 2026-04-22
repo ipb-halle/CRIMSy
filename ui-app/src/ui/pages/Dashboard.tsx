@@ -96,8 +96,10 @@ const Dashboard: React.FC<Props> = (
         }}>
             <Navigation
                 onLogout={async () => {
-                    await handleLogout();
-                    onLogout();
+                    const didLogout = await handleLogout();
+                    if (didLogout) {
+                        onLogout();
+                    }
                 }}
             />
 
