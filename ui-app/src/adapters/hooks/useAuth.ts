@@ -1,6 +1,7 @@
 import { useState, useRef, FormEvent, useEffect } from "react";
 import { LoginRequest } from "../api";
 import * as api from "../../services/authService";
+import { findAncestor } from "typescript";
 
 const SESSION_TIMER_INTERVAL_MS = 1000;
 
@@ -143,27 +144,31 @@ export const useAuth = (onAutoLogout?: () => void) => {
   };
 
   // -------- Logout -------- //
-  const handleLogout = async () => {
+  const handleLogout = async (): Promise<boolean> => {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("No auth token found");
-      return;
+      return false;
     }
 
+    clearTimers();
     const confirmed = window.confirm('Are you sure you want to log out?');
     if (!confirmed) {
       console.log("[LOGOUT] cancelled by user!");
+      startCountdownTimer();
       return false;
     }
 
     sessionLockRef.current = true;
     try {
       await api.logoutAPI(token);
-      expireSession("Logged out successfully!");
-      sessionLockRef.current = false;
       return true;
     } catch (error) {
       console.error("[LOGOUT API ERROR", error);
+      return true;
+    } finally {
+      expireSession("Logged out successfully!");
+      sessionLockRef.current = false;
     }
   };
 

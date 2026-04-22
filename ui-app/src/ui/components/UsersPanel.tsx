@@ -22,6 +22,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
   isAdmin,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
     if (data) setLoading(false);
@@ -32,29 +33,26 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
   const { currentPage, totalPages, items } = data;
 
   const handleDeleteUser = async (id: number) => {
-
     const token = localStorage.getItem("token");
     if (!token) {
       alert("No auth token found");
       return;
     }
 
-    const user = items.find(u => u.id === id);
-
-    const confirmed = window.confirm(
-      `Delete user "${user?.name || id}"?\nThis action cannot be undone.`
-    );
-
-    if (!confirmed) {
-      console.log("[DELETE] cancelled by admin");
-      return;
-    }
-
+    /*  const user = items.find(u => u.id === id);
+  
+      const confirmed = window.confirm(
+        `Delete user "${user?.name || id}"?\nThis action cannot be undone.`
+      );
+  
+      if (!confirmed) {
+        console.log("[DELETE] cancelled by admin");
+        return;
+      }
+  */
     try {
       setLoading(true);
-
       await api.deleteUsersAPI(token, id);
-
       onPageChange?.(currentPage);
       alert("User deleted successfully");
 
@@ -63,6 +61,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
       alert(err?.message || "Failed to delete user");
     } finally {
       setLoading(false);
+      setConfirmDeleteId(null);
     }
   };
 
@@ -115,23 +114,45 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
       {
         name: "Delete",
         cell: (row: UserSummary) => (
-          <button
-            onClick={() => handleDeleteUser(row.id)}
-            style={{
-              padding: "6px 10px",
-              borderRadius: "6px",
-              background: "#1976d2",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Delete
-          </button >
+          confirmDeleteId === row.id ? (
+            <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+              <span style={{ fontSize: "12px", color: "#666" }}>Sure?</span>
+              <button
+                onClick={() => handleDeleteUser(row.id)}
+                style={{
+                  padding: "4px 8px", borderRadius: "6px",
+                  background: "#d32f2f", color: "#fff",
+                  border: "none", cursor: "pointer", fontSize: "12px",
+                }}
+              >Yes</button>
+              <button
+                onClick={() => setConfirmDeleteId(null)}
+                style={{
+                  padding: "4px 8px", borderRadius: "6px",
+                  background: "#666", color: "#fff",
+                  border: "none", cursor: "pointer", fontSize: "12px",
+                }}
+              >No</button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmDeleteId(row.id)}
+              style={{
+                padding: "6px 10px",
+                borderRadius: "6px",
+                background: "#d32f2f",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Delete
+            </button >
+          )
         ),
       },
-    ] as TableColumn<UserSummary>[] : []),
 
+    ] as TableColumn<UserSummary>[] : []),
   ];
 
   const handlePageChange = (page: number) => {
