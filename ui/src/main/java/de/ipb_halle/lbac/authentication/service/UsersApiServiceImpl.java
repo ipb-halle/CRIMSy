@@ -98,7 +98,7 @@ public class UsersApiServiceImpl implements UsersApiService {
         if (requesterIsAdmin) {
             // Count total uses pagination 
             totalUsers = em.createQuery(
-                    "SELECT COUNT(m) FROM MemberEntity m WHERE TYPE(m) <> GroupEntity",
+                    "SELECT COUNT(m) FROM MemberEntity m WHERE m.login NOT LIKE '@%' AND TYPE(m) <> GroupEntity",
                     Long.class)
                     .getSingleResult()
                     .intValue();
