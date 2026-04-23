@@ -217,7 +217,7 @@ public class UsersApiServiceImpl implements UsersApiService {
     @Transactional
     @Secured
     public Response deleteUser(Integer id, SecurityContext securityContext) {
-/*
+        /*
         if (!isAdmin(securityContext)) {
             return unauthorized();
         }*/
@@ -244,10 +244,12 @@ public class UsersApiServiceImpl implements UsersApiService {
     }
 
     @Override
+    @Transactional
+    @Secured
     public Response updateUser(Integer id, UserSummary userSummary, SecurityContext securityContext) {
-        if (!isAdmin(securityContext)) {
+        /*if (!isAdmin(securityContext)) {
             return unauthorized();
-        }
+        }*/
         if (id == null || userSummary == null) {
             return badRequest("Invalid input");
         }
@@ -266,14 +268,16 @@ public class UsersApiServiceImpl implements UsersApiService {
 
         if (userSummary.getGroups() != null) {
             List<MembershipEntity> memberships = em.createQuery(
-                    "SELECT ms FROM MembershipEntity ms WHERE ms.member = :userId", MembershipEntity.class)
+                    "SELECT ms FROM MembershipEntity ms WHERE ms.member = :userId",
+                    MembershipEntity.class)
                     .setParameter("userId", id)
                     .getResultList();
             memberships.forEach(em::remove);
 
             for (String gname : userSummary.getGroups()) {
                 List<GroupEntity> groups = em.createQuery(
-                        "SELECT g FROM GroupEntity g WHERE g.name = :name", GroupEntity.class)
+                        "SELECT g FROM GroupEntity g WHERE g.name = :name",
+                        GroupEntity.class)
                         .setParameter("name", gname)
                         .getResultList();
                 if (!groups.isEmpty()) {
