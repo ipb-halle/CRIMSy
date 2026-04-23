@@ -6,7 +6,8 @@ import {
   AuthUser,
   LogoutResponse,
   PaginatedUserResponse,
-  DeleteUser200Response
+  DeleteUser200Response,
+  UserSummary
 } from "../adapters/api/models";
 
 
@@ -134,6 +135,35 @@ export const deleteUsersAPI = async (
     return res;
   } catch (err) {
     console.error("API delete failed; ", err);
+    throw err;
+  }
+};
+
+export const updateUserAPI = async (
+  token: string,
+  id: number,
+  userSummary: UserSummary
+): Promise<UserSummary> => {
+  if (!token) {
+    throw new Error("Missing token");
+  }
+
+  const config = new Configuration({
+    accessToken: async () => token
+  });
+
+  const api = new UsersApi(config);
+
+  try {
+    const res = await api.updateUser({
+      id,
+      userSummary
+    });
+
+    console.log("API update success; ", res);
+    return res;
+  } catch (err) {
+    console.error("API update failed; ", err);
     throw err;
   }
 };

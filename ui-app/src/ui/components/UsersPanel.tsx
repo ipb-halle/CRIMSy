@@ -24,6 +24,9 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
   const [loading, setLoading] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
+  const [editingUser, setEditingUser] = useState<UserSummary | null>(null);
+  const [selectedRole, setSelectedRole] = useState<"USER" | "ADMIN">("USER");
+
   useEffect(() => {
     if (data) setLoading(false);
   }, [data]);
@@ -39,29 +42,46 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
       return;
     }
 
-    /*  const user = items.find(u => u.id === id);
-  
-      const confirmed = window.confirm(
-        `Delete user "${user?.name || id}"?\nThis action cannot be undone.`
-      );
-  
-      if (!confirmed) {
-        console.log("[DELETE] cancelled by admin");
-        return;
-      }
-  */
     try {
       setLoading(true);
       await api.deleteUsersAPI(token, id);
       onPageChange?.(currentPage);
       alert("User deleted successfully");
-
     } catch (err: any) {
       console.error("[Delete] error: ", err);
       alert(err?.message || "Failed to delete user");
     } finally {
       setLoading(false);
       setConfirmDeleteId(null);
+    }
+  };
+
+  const handleEditUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token || !editingUser) {
+      alert("No auth token found");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const isAdmin = selectedRole === "ADMIN";
+
+      await api.updateUserAPI(token, editingUser.id, {
+        ...editingUser,
+        admin: isAdmin,
+        groups: isAdmin ? ["Users", "Admin Group"] : ["Users"],
+      });
+
+      setEditingUser(null);
+      alert("User updated successfully");
+      onPageChange?.(currentPage);
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.message || "Update failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,67 +112,74 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
         </span>
       ),
     },
-    ...(isAdmin ? [
-      {
-        name: "Edit",
-        cell: (row: UserSummary) => (
-          <button
-            //onClick{() => handleEditUser(row)}
-            style={{
-              padding: "6px 10px",
-              borderRadius: "6px",
-              background: "#1976d2",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Edit
-          </button >
-        ),
-      },
-      {
-        name: "Delete",
-        cell: (row: UserSummary) => (
-          confirmDeleteId === row.id ? (
-            <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-              <span style={{ fontSize: "12px", color: "#666" }}>Sure?</span>
-              <button
-                onClick={() => handleDeleteUser(row.id)}
-                style={{
-                  padding: "4px 8px", borderRadius: "6px",
-                  background: "#d32f2f", color: "#fff",
-                  border: "none", cursor: "pointer", fontSize: "12px",
-                }}
-              >Yes</button>
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                style={{
-                  padding: "4px 8px", borderRadius: "6px",
-                  background: "#666", color: "#fff",
-                  border: "none", cursor: "pointer", fontSize: "12px",
-                }}
-              >No</button>
-            </div>
-          ) : (
+    ...(isAdmin
+      ? [
+        {
+          name: "Edit",
+          cell: (row: UserSummary) => (
             <button
-              onClick={() => setConfirmDeleteId(row.id)}
+              onClick={() => {
+                setEditingUser(row);
+                setSelectedRole(row.admin ? "ADMIN" : "USER");
+              }}
               style={{
                 padding: "6px 10px",
                 borderRadius: "6px",
-                background: "#d32f2f",
+                background: "#1976d2",
                 color: "#fff",
                 border: "none",
                 cursor: "pointer",
               }}
             >
-              Delete
+              Manage Role
             </button >
-          )
-        ),
-      },
-
-    ] as TableColumn<UserSummary>[] : []),
+          ),
+        },
+        {
+          name: "Delete",
+          cell: (row: UserSummary) =>
+            confirmDeleteId === row.id ? (
+              <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                <span style={{ fontSize: "12px", color: "#666" }}>Sure?</span>
+                <button
+                  onClick={() => handleDeleteUser(row.id)}
+                  style={{
+                    padding: "4px 8px", borderRadius: "6px",
+                    background: "#d32f2f", color: "#fff",
+                    border: "none", cursor: "pointer", fontSize: "12px",
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={() => setConfirmDeleteId(null)}
+                  style={{
+                    padding: "4px 8px", borderRadius: "6px",
+                    background: "#666", color: "#fff",
+                    border: "none", cursor: "pointer", fontSize: "12px",
+                  }}
+                >
+                  No
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmDeleteId(row.id)}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: "6px",
+                  background: "#d32f2f",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button >
+            ),
+        },
+      ]
+      : []) as TableColumn<UserSummary>[],
   ];
 
   const handlePageChange = (page: number) => {
@@ -242,7 +269,84 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
           </div>
         }
       />
+      {/* ------- Edit Modal ------- */}
+      {editingUser && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.4)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: 20,
+              borderRadius: 10,
+              minWidth: 320,
+            }}
+          >
+            <h3>Edit User</h3>
+            <p>
+              <b>{editingUser.name}</b>
+            </p>
+            <label style={{ display: "block", marginTop: 10 }}>
+              <input
+                type="radio"
+                checked={selectedRole === "USER"}
+                onChange={() => setSelectedRole("USER")}
+              />
+              Normal User
+            </label>
 
+            <label style={{ display: "block", marginTop: 5 }}>
+              <input
+                type="radio"
+                checked={selectedRole === "ADMIN"}
+                onChange={() => setSelectedRole("ADMIN")}
+              />
+              Admin
+            </label>
+            <div
+              style={{
+                display: "flex", marginTop: 20,
+                gap: 10,
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={() => setEditingUser(null)}
+                style={{
+                  padding: "6px 10px",
+                  background: "#777",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 6,
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleEditUser}
+                style={{
+                  padding: "6px 10px",
+                  background: "#1976d2",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 6,
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Inline styles (quick improvement) */}
       <style>
         {`
