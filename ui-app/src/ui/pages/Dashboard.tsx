@@ -9,7 +9,7 @@ import { spacing, radius } from "../../assets/css/theme/designTokens";
 import AdminAddMaterial from "./admin/AdminAddMaterial";
 import styles from "../../assets/css/components/Dashboard.module.css";
 
-type View = "home" | "search" | "role" | "users" | "addMaterial";
+type View = "home" | "search" | "users" | "addMaterial";
 
 interface Props {
     auth: ReturnType<typeof useAuth>;
@@ -24,7 +24,6 @@ const Dashboard: React.FC<Props> = (
         usersList,
         totalUsersCount,
         handleLogout,
-        handleCheckRole,
         handleFetchUsers,
         remainingTime
     } = auth;
@@ -43,7 +42,6 @@ const Dashboard: React.FC<Props> = (
         next: View
     ) => {
         setView(next);
-        if (next === "role") handleCheckRole();
         if (next === "users") handleFetchUsers(1, rowsPerPage);
     };
 
@@ -62,8 +60,6 @@ const Dashboard: React.FC<Props> = (
         switch (view) {
             case "search":
                 return <SearchPanel />;
-            case "role":
-                return <RolePanel role={roleInfo} />;
             case "users":
                 return (
                     <UsersPanel
@@ -124,11 +120,6 @@ const Dashboard: React.FC<Props> = (
                     label="Search"
                     active={view === "search"}
                     onClick={() => handleTab("search")}
-                />
-                <Tab
-                    label="Role Check"
-                    active={view === "role"}
-                    onClick={() => handleTab("role")}
                 />
                 <Tab
                     label="Users List"

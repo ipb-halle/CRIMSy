@@ -174,20 +174,6 @@ export const useAuth = (onAutoLogout?: () => void) => {
     }
   };
 
-  // -------- Role /  Users -------- //
-  const handleCheckRole = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    try {
-      const userInfo = await api.fetchRoleAPI(token);
-      setRoleInfo(userInfo);
-      setUsersList(null);
-      setResult({ message: "Your Role" });
-    } catch {
-      setRoleInfo(null);
-    }
-  };
-
   const handleFetchUsers = async (page: number = 1, pageSize: number = 5) => {
     setUsersList(null);
 
@@ -252,7 +238,6 @@ export const useAuth = (onAutoLogout?: () => void) => {
     handleLogin,
     totalUsersCount,
     handleLogout,
-    handleCheckRole,
     handleFetchUsers,
     checkSession,
   };
