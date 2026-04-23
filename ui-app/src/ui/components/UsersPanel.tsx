@@ -27,6 +27,9 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
   const [editingUser, setEditingUser] = useState<UserSummary | null>(null);
   const [selectedRole, setSelectedRole] = useState<"USER" | "ADMIN">("USER");
 
+  const currentUserId = Number(localStorage.getItem("userId"));
+  const isSelf = (row: UserSummary) => row.id === currentUserId;
+
   useEffect(() => {
     if (data) setLoading(false);
   }, [data]);
@@ -93,8 +96,8 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
       grow: 2,
     },
     {
-      name: "Admin",
-      selector: row => (row.admin ? "Yes" : "No"),
+      name: "Role",
+      selector: (row) => (row.admin ? "Admin" : "User"),
       sortable: true,
       center: true,
       cell: (row) => (
@@ -112,33 +115,35 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
         </span>
       ),
     },
+
     ...(isAdmin
       ? [
         {
-          name: "Edit",
-          cell: (row: UserSummary) => (
-            <button
-              onClick={() => {
-                setEditingUser(row);
-                setSelectedRole(row.admin ? "ADMIN" : "USER");
-              }}
-              style={{
-                padding: "6px 10px",
-                borderRadius: "6px",
-                background: "#1976d2",
-                color: "#fff",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Manage Role
-            </button >
-          ),
+          name: "Actions",
+          cell: (row: UserSummary) =>
+            isSelf(row) ? null : (
+              <button
+                onClick={() => {
+                  setEditingUser(row);
+                  setSelectedRole(row.admin ? "ADMIN" : "USER");
+                }}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: "6px",
+                  background: "#1976d2",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Manage Role
+              </button >
+            ),
         },
         {
           name: "Delete",
           cell: (row: UserSummary) =>
-            confirmDeleteId === row.id ? (
+            isSelf(row) ? null : confirmDeleteId === row.id ? (
               <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
                 <span style={{ fontSize: "12px", color: "#666" }}>Sure?</span>
                 <button
@@ -290,7 +295,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
               minWidth: 320,
             }}
           >
-            <h3>Edit User</h3>
+            <h3>Change Role</h3>
             <p>
               <b>{editingUser.name}</b>
             </p>
@@ -300,7 +305,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
                 checked={selectedRole === "USER"}
                 onChange={() => setSelectedRole("USER")}
               />
-              Normal User
+              User
             </label>
 
             <label style={{ display: "block", marginTop: 5 }}>

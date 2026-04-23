@@ -59,6 +59,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    localStorage.removeItem("userId");
     localStorage.removeItem("tokenExpiry");
     localStorage.removeItem("expiresInSeconds");
 
@@ -135,6 +136,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
       if (userInfo?.username) {
         localStorage.setItem("username", userInfo.username);
+        localStorage.setItem("userId", userInfo.id.toString());
       }
 
       onSuccess?.();
