@@ -1,27 +1,24 @@
 import { useState, useRef, FormEvent, useEffect } from "react";
-import { LoginRequest } from "../api";
-import * as api from "../../services/authService";
-import { findAncestor } from "typescript";
+import { LoginRequest, AuthUser, PaginatedUserResponse } from "../api";
+import { authApi, usersApi } from "../apiClient";
 
 const SESSION_TIMER_INTERVAL_MS = 1000;
 
 export const useAuth = (onAutoLogout?: () => void) => {
   const [loginRequest, setLoginRequest] = useState<LoginRequest>({ username: "", password: "", });
+
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
   const [result, setResult] = useState<{ message: string } | null>(null);
-  const [roleInfo, setRoleInfo] = useState<any>(null);
+  const [roleInfo, setRoleInfo] = useState<AuthUser | null>(null);
   const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
-  const [usersList, setUsersList] = useState<any>(null);
+  const [usersList, setUsersList] = useState<PaginatedUserResponse | null>(null);
   const [remainingTime, setRemainingTime] = useState<number>(0);
 
   const countdownRef = useRef<number | null>(null);
-
-  let lastActivityPingRef = useRef<number>(0);
-  const ACTIVITY_THROTTLE_MS = 1000;
-
+  const lastActivityPingRef = useRef<number>(0);
   const sessionLockRef = useRef(false);
 
-
+  const ACTIVITY_THROTTLE_MS = 1000;
   const ACTIVITY_EVENTS = ["keydown", "mousedown", "touchstart", "scroll", "pointerdown"] as const;
 
   // -------- Timer Helper --------//
@@ -57,12 +54,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
     setRemainingTime(0);
     setLoginRequest({ username: "", password: "", });
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("tokenExpiry");
-    localStorage.removeItem("expiresInSeconds");
-
+    localStorage.clear();
     onAutoLogout?.();
   };
 
@@ -78,7 +70,8 @@ export const useAuth = (onAutoLogout?: () => void) => {
     if (!token) return;
 
     try {
-      await api.fetchRoleAPI(token);
+      await authApi().getCurrentUser();
+
       const expiresInSeconds = Number(localStorage.getItem("expiresInSeconds")) || 60;
 
       setRemainingTime(expiresInSeconds);
@@ -95,7 +88,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
       return false;
 
     try {
-      const userRole = await api.fetchRoleAPI(token);
+      const userRole = await authApi().getCurrentUser();
       setRoleInfo(userRole);
 
       const expiresInSeconds = Number(localStorage.getItem("expiresInSeconds")) || 60;
@@ -118,7 +111,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
     if (e) e.preventDefault();
 
     try {
-      const auth = await api.loginAPI(loginRequest);
+      const auth = await authApi().login({ loginRequest });
 
       if (!auth.token) {
         setResult({ message: "Login failed,  no token received!" });
@@ -128,7 +121,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
       localStorage.setItem("token", auth.token);
       localStorage.setItem("expiresInSeconds", auth.expiresInSeconds.toString());
 
-      const userInfo = await api.fetchRoleAPI(auth.token);
+      const userInfo = await authApi().getCurrentUser();
       setRoleInfo(userInfo);
 
       setRemainingTime(auth.expiresInSeconds);
@@ -163,7 +156,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
     sessionLockRef.current = true;
     try {
-      await api.logoutAPI(token);
+      await authApi().logout();
       return true;
     } catch (error) {
       console.error("[LOGOUT API ERROR", error);
@@ -181,7 +174,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
     if (!token) return;
 
     try {
-      const paginatedUserResponse = await api.fetchUsersAPI(token, page, pageSize);
+      const paginatedUserResponse = await usersApi().getUsersList({ page, pageSize });
       setUsersList(paginatedUserResponse);
       setTotalUsersCount(paginatedUserResponse.totalItems);
       setResult({ message: "Users List" });
@@ -213,7 +206,6 @@ export const useAuth = (onAutoLogout?: () => void) => {
     };
     const onFocuse = () => sendActivityPing();
 
-
     document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("focus", onFocuse);
 
@@ -235,8 +227,8 @@ export const useAuth = (onAutoLogout?: () => void) => {
     roleInfo,
     usersList,
     remainingTime,
-    handleLogin,
     totalUsersCount,
+    handleLogin,
     handleLogout,
     handleFetchUsers,
     checkSession,
