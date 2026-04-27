@@ -10,23 +10,6 @@ const App: React.FC = () => {
   //const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const auth = useAuth();
-  /*  const auth = useAuth(() => {
-      if (!localStorage.getItem("token")) {
-        setIsLoggedIn(false);
-      }
-    });
-  */
-  /*
-  useEffect(() => {
-    auth.checkSession()
-      .then((isValid) => {
-        setIsLoggedIn(isValid);
-      })
-      .catch((err) => {
-        console.log("Session check failed: ", err);
-        setIsLoggedIn(false);
-      });
-  }, []);*/
   const isLoggedIn = !!auth.roleInfo;
 
   return (
