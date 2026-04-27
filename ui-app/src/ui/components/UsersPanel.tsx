@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { PaginatedUserResponse, UserSummary } from "../../adapters/api";
 import { colors, spacing, radius } from "../../assets/css/theme/designTokens";
-import * as api from "../../services/authService";
+import { usersApi } from "../../adapters/apiClient";
 
 interface UsersPanelProps {
   data: PaginatedUserResponse | null;
@@ -47,7 +47,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
 
     try {
       setLoading(true);
-      await api.deleteUsersAPI(token, id);
+      await usersApi().deleteUser({ id });
       onPageChange?.(currentPage);
       alert("User deleted successfully");
     } catch (err: any) {
@@ -71,10 +71,13 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
 
       const isAdmin = selectedRole === "ADMIN";
 
-      await api.updateUserAPI(token, editingUser.id, {
-        ...editingUser,
-        admin: isAdmin,
-        groups: isAdmin ? ["Users", "Admin Group"] : ["Users"],
+      await usersApi().updateUser({
+        id: editingUser.id,
+        userSummary: {
+          ...editingUser,
+          admin: isAdmin,
+          groups: isAdmin ? ["Users", "Admin Group"] : ["Users"],
+        },
       });
 
       setEditingUser(null);
