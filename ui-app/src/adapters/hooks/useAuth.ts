@@ -1,7 +1,7 @@
-import { useState, useRef, FormEvent, useEffect } from "react";
+import { useState, useRef, FormEvent, useEffect, useCallback } from "react";
 import { LoginRequest, AuthUser, PaginatedUserResponse } from "../api";
 import { authApi, usersApi } from "../apiClient";
-import { sessionStorage } from "./authSession";
+import { authSession } from "./authSession";
 
 const SESSION_TIMER_INTERVAL_MS = 1000;
 
@@ -11,80 +11,83 @@ export const useAuth = (onAutoLogout?: () => void) => {
   const [errors] = useState<{ username?: string; password?: string }>({});
   const [result, setResult] = useState<{ message: string } | null>(null);
   const [roleInfo, setRoleInfo] = useState<AuthUser | null>(null);
-  const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
   const [usersList, setUsersList] = useState<PaginatedUserResponse | null>(null);
-  const [remainingTime, setRemainingTime] = useState<number>(0);
+  const [totalUsersCount, setTotalUsersCount] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(0);
 
-  const countdownRef = useRef<number | null>(null);
-  const lastActivityPingRef = useRef<number>(0);
-  const sessionLockRef = useRef(false);
+  const timerRef = useRef<number | null>(null);
+  const lastActivityPingRef = useRef(0);
+  const lockRef = useRef(false);
 
   const ACTIVITY_THROTTLE_MS = 1000;
   const ACTIVITY_EVENTS = ["keydown", "mousedown", "touchstart", "scroll", "pointerdown"] as const;
 
   // -------- Timer Helper --------//
-  const clearTimers = () => {
-    if (countdownRef.current) {
-      clearInterval(countdownRef.current);
-      countdownRef.current = null;
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
-  };
+  }, []);
 
-  const startCountdownTimer = () => {
-    if (countdownRef.current) clearInterval(countdownRef.current);
+  const startTimer = useCallback(() => {
+    clearTimer();
 
-    countdownRef.current = window.setInterval(() => {
+    timerRef.current = window.setInterval(() => {
       setRemainingTime(prev => {
         if (prev <= 1) {
-          clearTimers();
+          clearTimer();
           expireSession("Session expired! Please log in again.");
           return 0;
         }
         return prev - 1;
       });
     }, SESSION_TIMER_INTERVAL_MS);
-  };
+  }, [clearTimer]);
 
   // -------- Session Core --------//
-  const expireSession = (message: string) => {
-    clearTimers();
+  const expireSession = useCallback(
+    (message: string) => {
+      clearTimer();
 
-    setResult({ message });
-    setRoleInfo(null);
-    setUsersList(null);
-    setRemainingTime(0);
-    setLoginRequest({ username: "", password: "", });
+      setResult({ message });
+      setRoleInfo(null);
+      setUsersList(null);
+      setRemainingTime(0);
+      setLoginRequest({ username: "", password: "", });
 
-    sessionStorage.clear();
-    onAutoLogout?.();
-  };
+      authSession.clear();
+      onAutoLogout?.();
+    },
+    [clearTimer, onAutoLogout]
+  );
 
   // -------- Activity Ping --------//
-  const sendActivityPing = async () => {
-    if (sessionLockRef.current) return;
+  const sendActivityPing = useCallback(async () => {
+    if (lockRef.current) return;
 
     const now = Date.now();
     if (now - lastActivityPingRef.current < ACTIVITY_THROTTLE_MS) return;
     lastActivityPingRef.current = now;
 
-    const token = sessionStorage.getToken();
+    const token = authSession.getToken();
     if (!token) return;
 
     try {
       await authApi().getCurrentUser();
 
-      const expiresInSeconds = sessionStorage.getExpires();
+      const expiresInSeconds = authSession.getExpires();
 
       setRemainingTime(expiresInSeconds);
-      startCountdownTimer();
+      startTimer();
     } catch {
       expireSession("Session expired. Please log in again.");
     }
-  };
+  }, [startTimer, expireSession]);
 
   // -------- Session Check -------- //
-  const checkSession = async (): Promise<boolean> => {
-    const token = sessionStorage.getToken();
+  const checkSession = useCallback(async (): Promise<boolean> => {
+    const token = authSession.getToken();
     if (!token)
       return false;
 
@@ -92,9 +95,9 @@ export const useAuth = (onAutoLogout?: () => void) => {
       const userRole = await authApi().getCurrentUser();
       setRoleInfo(userRole);
 
-      const expiresInSeconds = sessionStorage.getExpires();
+      const expiresInSeconds = authSession.getExpires();
       setRemainingTime(expiresInSeconds);
-      startCountdownTimer();
+      startTimer();
 
       if (expiresInSeconds <= 0) {
         expireSession("Session expired! Please log in again.");
@@ -105,55 +108,59 @@ export const useAuth = (onAutoLogout?: () => void) => {
       expireSession("Session expired. Please log in again.");
       return false;
     }
-  };
+  }, [expireSession, startTimer]);
 
   // -------- Login -------- //
-  const handleLogin = async (e?: FormEvent, onSuccess?: () => void) => {
-    if (e) e.preventDefault();
+  const handleLogin = useCallback(
+    async (e?: FormEvent, onSuccess?: () => void) => {
+      if (e) e.preventDefault();
 
-    try {
-      const auth = await authApi().login({ loginRequest });
+      try {
+        const auth = await authApi().login({ loginRequest });
 
-      if (!auth.token) {
-        setResult({ message: "Login failed,  no token received!" });
-        return;
+        if (!auth.token) {
+          setResult({ message: "Login failed,  no token received!" });
+          return;
+        }
+
+        authSession.setSession(auth.token, auth.expiresInSeconds);
+        const userInfo = await authApi().getCurrentUser();
+        setRoleInfo(userInfo);
+
+        setRemainingTime(auth.expiresInSeconds);
+        startTimer();
+
+        if (userInfo?.username) {
+          authSession.setUser(userInfo.username, userInfo.id);
+        }
+        setResult({ message: "Login successful" });
+        onSuccess?.();
+      } catch {
+        setResult({ message: "Request failed. Please try again later." });
       }
-
-
-      sessionStorage.setSession(auth.token, auth.expiresInSeconds);
-      const userInfo = await authApi().getCurrentUser();
-      setRoleInfo(userInfo);
-
-      setRemainingTime(auth.expiresInSeconds);
-      startCountdownTimer();
-
-      if (userInfo?.username) {
-        sessionStorage.setUser(userInfo.username, userInfo.id);
-      }
-
-      onSuccess?.();
-    } catch {
-      setResult({ message: "Request failed. Please try again later." });
-    }
-  };
+    },
+    [loginRequest, startTimer]
+  );
 
   // -------- Logout -------- //
-  const handleLogout = async (): Promise<boolean> => {
-    const token = sessionStorage.getToken();
+  const handleLogout = useCallback(async (): Promise<boolean> => {
+    const token = authSession.getToken();
     if (!token) {
       alert("No auth token found");
       return false;
     }
 
-    clearTimers();
+    clearTimer();
+
     const confirmed = window.confirm('Are you sure you want to log out?');
     if (!confirmed) {
       console.log("[LOGOUT] cancelled by user!");
-      startCountdownTimer();
+      startTimer();
       return false;
     }
 
-    sessionLockRef.current = true;
+    lockRef.current = true;
+
     try {
       await authApi().logout();
       return true;
@@ -162,13 +169,14 @@ export const useAuth = (onAutoLogout?: () => void) => {
       return true;
     } finally {
       expireSession("Logged out successfully!");
-      sessionLockRef.current = false;
+      lockRef.current = false;
     }
-  };
+  }, [clearTimer, startTimer, expireSession]);
 
-  const handleFetchUsers = async (page: number = 1, pageSize: number = 5) => {
+  const handleFetchUsers = useCallback(async (page: number = 1, pageSize: number = 5) => {
     setUsersList(null);
-    const token = sessionStorage.getToken();
+
+    const token = authSession.getToken();
     if (!token) return;
 
     try {
@@ -180,12 +188,12 @@ export const useAuth = (onAutoLogout?: () => void) => {
       setUsersList(null);
       setResult({ message: "Users List is Empty!" });
     }
-  };
+  }, []);
 
   // -------- Activity Listener -------- //
   useEffect(() => {
     const handleActivity = (e: Event) => {
-      if (sessionLockRef.current) return;
+      if (lockRef.current) return;
 
       if (e.type === "mousedown") {
         const target = e.target as HTMLElement | null;
@@ -213,9 +221,9 @@ export const useAuth = (onAutoLogout?: () => void) => {
       );
       document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("focus", onFocuse);
-      clearTimers();
+      clearTimer();
     };
-  }, []);
+  }, [sendActivityPing, clearTimer]);
 
   return {
     loginRequest,
@@ -224,8 +232,8 @@ export const useAuth = (onAutoLogout?: () => void) => {
     result,
     roleInfo,
     usersList,
-    remainingTime,
     totalUsersCount,
+    remainingTime,
     handleLogin,
     handleLogout,
     handleFetchUsers,
