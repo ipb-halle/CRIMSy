@@ -5,25 +5,37 @@ const STORAGE_KEYS = {
     userId: "userId",
 } as const;
 
-export const sessionStorage = {
-    getToken: () => localStorage.getItem(STORAGE_KEYS.token),
+type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
+
+const get = (key: StorageKey): string | null => localStorage.getItem(key);
+
+const set = (key: StorageKey, value: string) => localStorage.setItem(key, value);
+
+const remove = (key: StorageKey) => localStorage.removeItem(key);
+
+export const authSession = {
+    getToken: (): string | null => get(STORAGE_KEYS.token),
 
     setSession: (token: string, expiresInSeconds: number) => {
-        localStorage.setItem(STORAGE_KEYS.token, token);
-        localStorage.setItem(STORAGE_KEYS.expires, String(expiresInSeconds));
+        set(STORAGE_KEYS.token, token);
+        set(STORAGE_KEYS.expires, String(expiresInSeconds));
     },
 
     setUser: (username: string, userId: number) => {
-        localStorage.setItem(STORAGE_KEYS.username, username);
-        localStorage.setItem(STORAGE_KEYS.userId, String(userId));
+        set(STORAGE_KEYS.username, username);
+        set(STORAGE_KEYS.userId, String(userId));
     },
 
-    getExpires: () =>
-        Number(localStorage.getItem(STORAGE_KEYS.expires)) || 60,
+    getExpires: (): number => {
+        const value = get(STORAGE_KEYS.expires);
+        const parsed = value ? Number(value) : 0;
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : 60;
+    },
 
     clear: () => {
-        Object.values(STORAGE_KEYS).forEach((key) =>
-            localStorage.removeItem(key)
-        );
+        remove(STORAGE_KEYS.token);
+        remove(STORAGE_KEYS.expires);
+        remove(STORAGE_KEYS.username);
+        remove(STORAGE_KEYS.userId);
     },
 };
