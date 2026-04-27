@@ -1,13 +1,14 @@
 import { useState, useRef, FormEvent, useEffect } from "react";
 import { LoginRequest, AuthUser, PaginatedUserResponse } from "../api";
 import { authApi, usersApi } from "../apiClient";
+import { sessionStorage } from "./authSession";
 
 const SESSION_TIMER_INTERVAL_MS = 1000;
 
 export const useAuth = (onAutoLogout?: () => void) => {
   const [loginRequest, setLoginRequest] = useState<LoginRequest>({ username: "", password: "", });
 
-  const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
+  const [errors] = useState<{ username?: string; password?: string }>({});
   const [result, setResult] = useState<{ message: string } | null>(null);
   const [roleInfo, setRoleInfo] = useState<AuthUser | null>(null);
   const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
@@ -54,7 +55,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
     setRemainingTime(0);
     setLoginRequest({ username: "", password: "", });
 
-    localStorage.clear();
+    sessionStorage.clear();
     onAutoLogout?.();
   };
 
@@ -66,13 +67,13 @@ export const useAuth = (onAutoLogout?: () => void) => {
     if (now - lastActivityPingRef.current < ACTIVITY_THROTTLE_MS) return;
     lastActivityPingRef.current = now;
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getToken();
     if (!token) return;
 
     try {
       await authApi().getCurrentUser();
 
-      const expiresInSeconds = Number(localStorage.getItem("expiresInSeconds")) || 60;
+      const expiresInSeconds = sessionStorage.getExpires();
 
       setRemainingTime(expiresInSeconds);
       startCountdownTimer();
@@ -83,7 +84,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
   // -------- Session Check -------- //
   const checkSession = async (): Promise<boolean> => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getToken();
     if (!token)
       return false;
 
@@ -91,7 +92,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
       const userRole = await authApi().getCurrentUser();
       setRoleInfo(userRole);
 
-      const expiresInSeconds = Number(localStorage.getItem("expiresInSeconds")) || 60;
+      const expiresInSeconds = sessionStorage.getExpires();
       setRemainingTime(expiresInSeconds);
       startCountdownTimer();
 
@@ -118,9 +119,8 @@ export const useAuth = (onAutoLogout?: () => void) => {
         return;
       }
 
-      localStorage.setItem("token", auth.token);
-      localStorage.setItem("expiresInSeconds", auth.expiresInSeconds.toString());
 
+      sessionStorage.setSession(auth.token, auth.expiresInSeconds);
       const userInfo = await authApi().getCurrentUser();
       setRoleInfo(userInfo);
 
@@ -128,8 +128,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
       startCountdownTimer();
 
       if (userInfo?.username) {
-        localStorage.setItem("username", userInfo.username);
-        localStorage.setItem("userId", userInfo.id.toString());
+        sessionStorage.setUser(userInfo.username, userInfo.id);
       }
 
       onSuccess?.();
@@ -140,7 +139,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
   // -------- Logout -------- //
   const handleLogout = async (): Promise<boolean> => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getToken();
     if (!token) {
       alert("No auth token found");
       return false;
@@ -169,8 +168,7 @@ export const useAuth = (onAutoLogout?: () => void) => {
 
   const handleFetchUsers = async (page: number = 1, pageSize: number = 5) => {
     setUsersList(null);
-
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getToken();
     if (!token) return;
 
     try {
