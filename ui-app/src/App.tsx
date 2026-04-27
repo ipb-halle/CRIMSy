@@ -7,14 +7,16 @@ import { ThemeProvider } from "./assets/css/theme/ThemeContext";
 import '../src/assets/css/App.css';
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  //const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const auth = useAuth(() => {
-    if (!localStorage.getItem("token")) {
-      setIsLoggedIn(false);
-    }
-  });
-
+  const auth = useAuth();
+  /*  const auth = useAuth(() => {
+      if (!localStorage.getItem("token")) {
+        setIsLoggedIn(false);
+      }
+    });
+  */
+  /*
   useEffect(() => {
     auth.checkSession()
       .then((isValid) => {
@@ -24,7 +26,8 @@ const App: React.FC = () => {
         console.log("Session check failed: ", err);
         setIsLoggedIn(false);
       });
-  }, []);
+  }, []);*/
+  const isLoggedIn = !!auth.roleInfo;
 
   return (
     <ThemeProvider>
@@ -33,12 +36,12 @@ const App: React.FC = () => {
           {isLoggedIn ? (
             <Dashboard
               auth={auth}
-              onLogout={() => setIsLoggedIn(false)}
+              onLogout={() => auth.handleLogout()}
             />
           ) : (
             <Login
               auth={auth}
-              onLogin={() => setIsLoggedIn(true)}
+              onLogin={() => { }}
             />
           )}
         </div>
