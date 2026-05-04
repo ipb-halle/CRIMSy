@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SearchPanel from "./SearchPanel";
-import UsersPanel from "../components/UsersPanel";
+import UsersPanel from "../components/users/UsersPanel";
 import RolePanel from "../components/RolePanel";
 import { useAuth } from "../../adapters/hooks/useAuth";
 import Navigation from "../components/Navigation";
