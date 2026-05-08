@@ -29,12 +29,23 @@
     <!-- define (additional) repositories -->
     <repositories>
         <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>sonatype public</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <!--
+                 The repository URL documented at https://central.sonatype.org/publish/publish-portal-snapshots/#consuming-via-maven
+                 does not seem to work. The following URL was constructed from the artifact's "Repository Path"
+                 of rabinfingerprint, which can be found at https://oss.sonatype.org/#nexus-search;quick~rabinfingerprint
+            -->
+            <url>https://oss.sonatype.org/service/local/repositories/snapshots/content/</url>
+            <layout>default</layout>
         </repository>
     </repositories>
     <url>http://www.ipb-halle.de</url>
