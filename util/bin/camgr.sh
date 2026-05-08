@@ -465,7 +465,7 @@ function genCert {
                 i=$(($i + 1))
                 k=`echo $j | sed s/DNS:/DNS.$i=/`
             else
-                k=`echo $j | sed s/:/=/`
+                k=`echo $j | sed s/IP Address:/IP.$i=/`
             fi
            TMP_SUBJECT_ALT_NAMES=${TMP_SUBJECT_ALT_NAMES}$k$'\n'
         done
