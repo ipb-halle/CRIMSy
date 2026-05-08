@@ -29,6 +29,12 @@
     <version>2.2</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <hibernate.version>6.1.7.Final</hibernate.version>
+        <log4j2.version>2.25.4</log4j2.version>
+        <postgresql.version>42.7.11</postgresql.version>
+    </properties>
+
     <modules>
         <module>crimsy-test</module>
         <module>crimsy-api</module>
@@ -43,10 +49,6 @@
         <module>reporting</module>
         <module>ui</module>
     </modules>
-
-    <properties>
-        <hibernate.version>6.1.7.Final</hibernate.version>
-    </properties>
 
     <build>
         <plugins>
@@ -140,7 +142,7 @@
                         <artifactItem>
                             <groupId>org.postgresql</groupId>
                             <artifactId>postgresql</artifactId>
-                            <version>42.7.2</version>
+                            <version>${postgresql.version}</version>
                         </artifactItem>
                     </artifactItems>
                 </configuration>

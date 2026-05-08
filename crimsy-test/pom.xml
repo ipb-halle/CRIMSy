@@ -26,15 +26,18 @@
     <artifactId>crimsy-test</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
- 
     <name>CRIMSY-TEST</name>
     <url>http://github.com/ipb-halle/CRIMSy</url>
  
+    <parent>
+      <groupId>de.ipb-halle</groupId>
+      <artifactId>crimsy</artifactId>
+      <version>2.2</version>
+      <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- check Maven Central for latest versions! -->
-        <hibernate.version>5.3.26.Final</hibernate.version>
     </properties>
 
     <!-- define (additional) repositories -->

@@ -17,8 +17,9 @@
  */
 package de.ipb_halle.tx.text;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -38,6 +39,6 @@ public class ParseToolTest {
         parser.parse();
         int wordCount = (Integer) parser.getFilterData().getValue(WordDetectorFilter.WORD_COUNT);
 
-        Assert.assertEquals("message", 14, wordCount);
+        Assertions.assertEquals(14, wordCount, "message");
     }
 }

@@ -20,48 +20,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
  http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ipb-halle</groupId>
     <artifactId>tx</artifactId>
     <version>1.0.2</version>
     <name>tx</name>
-    
-    <!-- define (additional) repositories -->
-    <repositories>
-        <repository>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </snapshots>
-            <name>Central Portal Snapshots</name>
-            <id>central-portal-snapshots</id>
-            <!--
-                 The repository URL documented at https://central.sonatype.org/publish/publish-portal-snapshots/#consuming-via-maven
-                 does not seem to work. The following URL was constructed from the artifact's "Repository Path"
-                 of rabinfingerprint, which can be found at https://oss.sonatype.org/#nexus-search;quick~rabinfingerprint
-            -->
-            <url>https://oss.sonatype.org/service/local/repositories/snapshots/content/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
+    <packaging>jar</packaging>
     <url>http://www.ipb-halle.de</url>
+    
+    <parent>
+      <groupId>de.ipb-halle</groupId>
+      <artifactId>crimsy</artifactId>
+      <version>2.2</version>
+      <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
     </scm>
-    <packaging>jar</packaging>
 
- 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- check Maven Central for latest versions! -->
         <tika.version>1.28.3</tika.version>
-        <hibernate.version>5.3.26.Final</hibernate.version>
     </properties>
 
     <build>
@@ -213,61 +195,6 @@
             <version>2.2.0</version>
         </dependency>
 
-        <!-- Rabin fingerprint -->
-        <dependency>
-            <groupId>org.rabinfingerprint</groupId>
-            <artifactId>rabinfingerprint</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Annotation Processor to generate JPA 2 static metamodel classes -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- hibernate ehcache removed -->
-
-        <!-- hibernate stuff -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Hibernate Validator Engine Relocation Artifact -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>5.3.6.Final</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- jpa2.2 - replacement for jpa2.1 -->
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- org.postgresql/postgresql JDBC 4.2 -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.7.2</version>
-        </dependency>
-
-        <!-- Expression Language implementation (required by bean validation / hibernate validation) -->
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>3.0.1-b12</version>
-            <scope>test</scope>
-        </dependency>
 
         <!-- Dependencies for testing -->
         <!-- unit testing -->
@@ -276,80 +203,6 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.8.2</version>
             <scope>test</scope>
-        </dependency>
-
-        <!-- keeps old JUnit4 tests functional -->
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.8.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- db for testing -->
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
-            <version>1.16.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>1.16.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Arquillian -->
-        <!-- There seems to be a bug in Arquillian resulting in no execution of 
-        @BeforeEach and @AfterEach in our tests. This is known 
-        (https://github.com/arquillian/arquillian-core/issues/309).
-        1.7.0.Alpha6 is the last version where this works (tested until 
-        1.7.0.Alpha10).-->
-        <dependency>
-            <groupId>org.jboss.arquillian.junit5</groupId>
-            <artifactId>arquillian-junit5-container</artifactId>
-            <version>1.7.0.Alpha6</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- creating virtual wars -->
-        <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-depchain</artifactId>
-            <version>1.2.6</version>
-            <type>pom</type>
-            <scope>test</scope> 
-        </dependency>
-
-        <!-- tomee for arquillian -->
-        <dependency>
-            <groupId>org.apache.tomee</groupId>
-            <artifactId>arquillian-tomee-embedded</artifactId>
-            <version>7.0.9</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-            <version>4.0.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Needed for shrinkwrap -->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <scope>test</scope>
-            <version>2.44.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
     </dependencies>

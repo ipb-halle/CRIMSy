@@ -20,27 +20,29 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
  http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
- 
     <groupId>de.ipb-halle</groupId>
     <artifactId>reporting</artifactId>
     <version>1.0.0</version>
- 
+    <packaging>war</packaging>
     <name>reporting</name>
     <url>http://www.ipb-halle.de</url>
+
+    <parent>
+      <groupId>de.ipb-halle</groupId>
+      <artifactId>crimsy</artifactId>
+      <version>2.2</version>
+      <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
     </scm>
-    <packaging>war</packaging>
-    <!-- <packaging>jar</packaging> -->
-
  
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- check Maven Central for latest versions! -->
-        <hibernate.version>6.1.7.Final</hibernate.version>
         <pentaho.version>9.4.0.0-343</pentaho.version>
     </properties>
 
@@ -192,7 +194,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.19.0</version>
+            <version>${log4j2.version}</version>
         </dependency>
 
         <!-- commons-csv -->
@@ -251,7 +253,7 @@
 
         <!-- Annotation Processor to generate JPA 2 static metamodel classes -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>${hibernate.version}</version>
             <scope>provided</scope>
@@ -261,7 +263,7 @@
 
         <!-- hibernate stuff -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
             <scope>provided</scope>
@@ -287,7 +289,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.2</version>
+            <version>${postgresql.version}</version>
         </dependency>
         
         <dependency>
