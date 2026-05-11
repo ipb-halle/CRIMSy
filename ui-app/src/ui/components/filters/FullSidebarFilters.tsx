@@ -1,7 +1,7 @@
-import React, { useState, CSSProperties } from "react";
+import React, { useState } from "react";
 import { FilterGroup, Filters } from "./Filters";
 import { filterConfig } from "./filterConfig";
-import { radius, spacing } from "../../../assets/css/theme/designTokens";
+import { radius } from "../../../assets/css/theme/designTokens";
 import { useTheme } from "../../../assets/css/theme/ThemeContext";
 
 interface Props {
