@@ -99,7 +99,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
 
   if (!data) return null;
 
-  const { currentPage, totalPages, items } = data;
+  const { currentPage, items } = data;
 
   const handleDeleteUser = async (id: number) => {
     try {
@@ -165,7 +165,6 @@ const UsersPanel: React.FC<UsersPanelProps> = ({
           </button>
         )}
       </div>
-      {/*    </div> */}
 
       {/* DataTable */}
       <DataTable
