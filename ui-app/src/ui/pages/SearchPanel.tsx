@@ -31,11 +31,14 @@ const SearchPanel: React.FC = () => {
           return !selected?.length || rule.matches(material, selected);
         })
       )
-      .filter(material =>
-        search
-          ? material.materialId.toString().includes(search)
-          : true
-      )
+      .filter(material => {
+        if (!search) return true;
+        const query = search.toLocaleLowerCase();
+        return (
+          material.materialId.toString().includes(query) ||
+          material.materialName?.toLowerCase().includes(query)
+        );
+      })
       .sort((a, b) =>
         sort === "id"
           ? a.materialId - b.materialId
@@ -104,7 +107,7 @@ const SearchPanel: React.FC = () => {
         <div className={styles.controls}>
           <input
             className={styles.input}
-            placeholder="Search Material ID..."
+            placeholder="Search Material ..."
             value={search}
             onChange={(e) => {
               setPage(1);
