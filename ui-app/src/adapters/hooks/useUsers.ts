@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { usersApi } from "../apiClient";
-import { PaginatedUserResponse, UserSummary } from "../api";
+import { UserSummary } from "../api";
 
 export const useUsers = () => {
     const [loading, setLoading] = useState(false);
