@@ -1,5 +1,5 @@
 import dummyData, { Material } from "../../data/dummyData";
-import { MaterialRepository } from "../../domain/repositories/MaterialRepository";
+import { MaterialRepository } from "./MaterialRepository";
 
 class InMemoryMaterialRepository implements MaterialRepository {
     getAll(): Material[] {

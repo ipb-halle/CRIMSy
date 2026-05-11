@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MaterialService } from "../../../domain/material/MaterialService";
-import { materialRepository } from "../../../infrastructure/repositories/InMemoryMaterialRepository";
+import { materialRepository } from "../../../domain/repositories/InMemoryMaterialRepository";
 import { dummyData } from "../../../data/dummyData";
 import { useTheme } from "../../../assets/css/theme/ThemeContext";
 import { radius, spacing } from "../../../assets/css/theme/designTokens";

@@ -3,7 +3,7 @@ import FullSidebarFilters from "../components/filters/FullSidebarFilters";
 import { Filters } from "../components/filters/Filters";
 import CardView from "../components/views/CardView";
 import TableView from "../components/views/TableView";
-import { materialRepository } from "../../infrastructure/repositories/InMemoryMaterialRepository";
+import { materialRepository } from "../../domain/repositories/InMemoryMaterialRepository";
 import { MaterialService } from "../../domain/material/MaterialService";
 import { filterRuls } from "../components/filters/filterRules";
 import styles from "../../assets/css/components/SearchPanel.module.css";
@@ -99,7 +99,7 @@ const SearchPanel: React.FC = () => {
             Filters: {filterSummary}
           </div>
         )}
-        
+
         {/* View & Search Controls */}
         <div className={styles.controls}>
           <input
