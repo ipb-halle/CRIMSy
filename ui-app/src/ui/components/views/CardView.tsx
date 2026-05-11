@@ -21,7 +21,6 @@ const CardView: React.FC<CardViewProps> = ({ items }) => {
       >
 
         {items.map(material => {
-          const name = dummyData.materials.find(m => m.materialName === material.materialName);
           const project = dummyData.projects.find(p => p.id === material.projectId);
           const owner = dummyData.usersGroups.find(u => u.id === material.ownerId);
           const server = dummyData.servers.find(s => s.id === material.serverId);
