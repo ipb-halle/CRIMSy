@@ -31,7 +31,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,12 +48,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
+import org.junit.jupiter.api.TestInstance;
 
 /**
  * @author flange
  */
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) 
 public class JobServiceTest {
     private static final long serialVersionUID = 1L;
     private final static int publicUser = 2;

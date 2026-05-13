@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -68,53 +68,53 @@ public class FileAnalyserTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(2, tvs.size());
+        Assertions.assertEquals(2, tvs.size());
         for (TermVector tv : tvs) {
             if (tv.getWordRoot().equals("java")) {
-                Assert.assertEquals(3, tv.getTermFrequency());
-                Assert.assertEquals(1, (int) tv.getFileId());
+                Assertions.assertEquals(3, tv.getTermFrequency());
+                Assertions.assertEquals(1, (int) tv.getFileId());
                 continue;
             }
             if (tv.getWordRoot().equals("failure")) {
-                Assert.assertEquals(37, tv.getTermFrequency());
-                Assert.assertEquals(1, (int) tv.getFileId());
+                Assertions.assertEquals(37, tv.getTermFrequency());
+                Assertions.assertEquals(1, (int) tv.getFileId());
                 continue;
             }
             throw new Exception("Unexpected termvector found:" + tv.getWordRoot());
         }
 
-        Assert.assertEquals(2, analyser.getWordOrigins().size());
+        Assertions.assertEquals(2, analyser.getWordOrigins().size());
         for (StemmedWordOrigin swo : analyser.getWordOrigins()) {
             switch (swo.getStemmedWord()) {
                 case "java" :
-                    Assert.assertEquals("java", swo.getOriginalWord());
+                    Assertions.assertEquals("java", swo.getOriginalWord());
                     break;
                 case "failure" :
-                    Assert.assertEquals("failure", swo.getOriginalWord());
+                    Assertions.assertEquals("failure", swo.getOriginalWord());
                     break;
                 default:
                     throw new Exception("Unexpected stemmed word found:" + swo.getStemmedWord());
             }
         }
 
-        Assert.assertEquals("undefined", analyser.getLanguage());
+        Assertions.assertEquals("undefined", analyser.getLanguage());
 
     }
 
     @Test
     public void test002_analyseGermanXls() throws FileNotFoundException {
         FileAnalyser analyser = setupAnalyser("TestTabelle.xlsx");
-        //Assert.assertEquals(20, analyser.getWordOrigins().size());
-        //Assert.assertEquals(20, analyser.getTermVector().size());
-        Assert.assertEquals("de", analyser.getLanguage());
+        //Assertions.assertEquals(20, analyser.getWordOrigins().size());
+        //Assertions.assertEquals(20, analyser.getTermVector().size());
+        Assertions.assertEquals("de", analyser.getLanguage());
     }
 
     @Test
     public void test003_analyseFrenchWord() throws FileNotFoundException {
         FileAnalyser analyser = setupAnalyser("Document_FR.docx");
-        // Assert.assertEquals(210, analyser.getWordOrigins().size());
-        // Assert.assertEquals(210, analyser.getTermVector().size());
-        Assert.assertEquals("fr", analyser.getLanguage());
+        // Assertions.assertEquals(210, analyser.getWordOrigins().size());
+        // Assertions.assertEquals(210, analyser.getTermVector().size());
+        Assertions.assertEquals("fr", analyser.getLanguage());
     }
 
     @Test
@@ -124,20 +124,20 @@ public class FileAnalyserTest {
         //  Assert.assertEquals(12, analyser.getTermVector().size());
         for (StemmedWordOrigin swo : analyser.getWordOrigins()) {
             if (swo.getStemmedWord().equals("saur")) {
-                Assert.assertTrue(swo.getOriginalWord().equals("säuren") 
+                Assertions.assertTrue(swo.getOriginalWord().equals("säuren") 
                         || swo.getOriginalWord().equals("säure"));
             }
         }
-        Assert.assertEquals("de", analyser.getLanguage());
+        Assertions.assertEquals("de", analyser.getLanguage());
     }
 
     @Test
     public void test005_checkUniqueWordOrigins() throws FileNotFoundException, Exception {
         FileAnalyser analyser =  setupAnalyser("IPB_Jahresbericht_2004.pdf");
-//      Assert.assertEquals(5319, analyser.getTermVector().size());
+//      Assertions.assertEquals(5319, analyser.getTermVector().size());
         int count = analyser.getTermVector().size();
-        Assert.assertTrue((5315 < count) && (count < 5330));
-        Assert.assertEquals("de", analyser.getLanguage());
+        Assertions.assertTrue((5315 < count) && (count < 5330));
+        Assertions.assertEquals("de", analyser.getLanguage());
     }
 
     @Test
@@ -160,10 +160,10 @@ public class FileAnalyserTest {
                 .collect(Collectors.toMap(TermVector::getWordRoot, Function.identity()));
 
         List<TermVector> resultTV = analyser.getTermVector();
-        Assert.assertEquals(expectedTV.size(), resultTV.size());
+        Assertions.assertEquals(expectedTV.size(), resultTV.size());
 
         for (TermVector tv : resultTV) {
-            Assert.assertTrue(compareTermVectors(tv, expectedTV.get(tv.getWordRoot())));
+            Assertions.assertTrue(compareTermVectors(tv, expectedTV.get(tv.getWordRoot())));
         }
 
         Set<StemmedWordOrigin> expectedSWO = new HashSet<> ();
@@ -180,12 +180,12 @@ public class FileAnalyserTest {
                         new StemmedWordOrigin("halb", "halbe")));
         Set<StemmedWordOrigin> resultSWO = new HashSet<> ();
         resultSWO.addAll(analyser.getWordOrigins());
-        Assert.assertTrue(expectedSWO.equals(resultSWO));
+        Assertions.assertTrue(expectedSWO.equals(resultSWO));
     }
 
     @Test
     public void test007_smallNumberFilteringTest() throws Exception {
         FileAnalyser analyser = setupAnalyser("ShortNumberExample.docx");
-        Assert.assertEquals(analyser.getTermVector().size(), 4);
+        Assertions.assertEquals(4, analyser.getTermVector().size());
     }
 }

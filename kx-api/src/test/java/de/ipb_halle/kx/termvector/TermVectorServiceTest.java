@@ -32,7 +32,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
@@ -112,38 +112,38 @@ public class TermVectorServiceTest {
 
         List<Integer> ids = new ArrayList<>();
         List<TermFrequency> results = termVectorService.getTermVector(ids, 10);
-        Assert.assertTrue("Result list for empty input is empty", results.isEmpty());
+        Assertions.assertTrue(results.isEmpty(), "Result list for empty input is empty");
 
         ids.add(fE1.getId());
         results = termVectorService.getTermVector(ids, 10);
-        Assert.assertEquals(2, results.size());
+        Assertions.assertEquals(2, results.size());
         int sum = 0;
         sum = results.stream().map((i) -> i.getFrequency()).reduce(sum, Integer::sum);
-        Assert.assertEquals(7, sum);
+        Assertions.assertEquals(7, sum);
 
         ids.add(fE2.getId());
         ids.add(fE3.getId());
         ids.add(fE4.getId());
         results = termVectorService.getTermVector(ids, 10);
-        Assert.assertEquals(3, results.size());
+        Assertions.assertEquals(3, results.size());
         sum = 0;
         sum = results.stream().map((i) -> i.getFrequency()).reduce(sum, Integer::sum);
-        Assert.assertEquals(30, sum);
+        Assertions.assertEquals(30, sum);
 
         results = termVectorService.getTermVector(ids, 2);
-        Assert.assertEquals(2, results.size());
+        Assertions.assertEquals(2, results.size());
 
-        Assert.assertEquals("Frequency of most frequent word", 19l, results.get(0).getFrequency().longValue());
-        Assert.assertEquals("Term of most frequent word", "testStemWord", results.get(0).getTerm());
-        Assert.assertEquals("Frequency of 2nd most frequent word", 7l, results.get(1).getFrequency().longValue());
-        Assert.assertEquals("Term of 2nd most frequent word", "testStemWord3", results.get(1).getTerm());
+        Assertions.assertEquals(19l, results.get(0).getFrequency().longValue(), "Frequency of most frequent word");
+        Assertions.assertEquals("testStemWord", results.get(0).getTerm(), "Term of most frequent word");
+        Assertions.assertEquals(7l, results.get(1).getFrequency().longValue(), "Frequency of 2nd most frequent word");
+        Assertions.assertEquals("testStemWord3", results.get(1).getTerm(), "Term of 2nd most frequent word");
 
         long totalSum = termVectorService.getSumOfAllWordsFromAllDocs();
-        Assert.assertTrue("Total number of words is >= 30", totalSum >= 30);
+        Assertions.assertTrue(totalSum >= 30, "Total number of words is >= 30");
 
         termVectorService.deleteTermVector(fE4);
         totalSum = termVectorService.getSumOfAllWordsFromAllDocs();
-        Assert.assertEquals("Total number of words after deletion = 19", 19, totalSum);
+        Assertions.assertEquals(19, totalSum, "Total number of words after deletion = 19");
 
         List<StemmedWordOrigin> wordOriginList = new ArrayList<>();
         wordOriginList.add(new StemmedWordOrigin("testStemWord", "originalWord1"));
@@ -153,9 +153,9 @@ public class TermVectorServiceTest {
         termVectorService.saveUnstemmedWordsOfDocument(wordOriginList, fE1.getId());
 
         List<StemmedWordOrigin> words = termVectorService.loadUnstemmedWordsOfDocument(fE1.getId(), "testStemWord");
-        Assert.assertEquals("Loading of unstemmed words not correct", 3, words.size());
-        Assert.assertTrue(words.get(0).getStemmedWord().equals("testStemWord"));
-        Assert.assertTrue(words.get(0).getOriginalWord().startsWith("originalWord"));
+        Assertions.assertEquals(3, words.size(), "Loading of unstemmed words not correct");
+        Assertions.assertTrue(words.get(0).getStemmedWord().equals("testStemWord"));
+        Assertions.assertTrue(words.get(0).getOriginalWord().startsWith("originalWord"));
 
     }
 

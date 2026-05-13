@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(urlPatterns = {"/process"}, asyncSupported = true)
+@WebServlet(name="TextWebService", urlPatterns = {"/process"}, asyncSupported = true)
 public class TextWebService extends HttpServlet {
 
     private final static long serialVersionUID = 1L;

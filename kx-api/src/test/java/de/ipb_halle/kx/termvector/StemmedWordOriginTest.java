@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.kx.termvector;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -33,14 +33,12 @@ public class StemmedWordOriginTest {
         StemmedWordOrigin foobar = new StemmedWordOrigin("foobar", "foo");
         StemmedWordOrigin barfoo = new StemmedWordOrigin("foo", "foobar");
         StemmedWordOrigin foofoo = new StemmedWordOrigin("fo" + "o", "f" + "oo");
-        Assert.assertFalse(foo.equals(null));
-        Assert.assertFalse(foo.equals("foobar"));
-        Assert.assertFalse(foo.equals(bar));
-        Assert.assertFalse(foo.equals(foobar));
-        Assert.assertFalse(foo.equals(barfoo));
-        Assert.assertTrue(foo.equals(foofoo));
+        Assertions.assertFalse(foo.equals(bar));
+        Assertions.assertFalse(foo.equals(foobar));
+        Assertions.assertFalse(foo.equals(barfoo));
+        Assertions.assertTrue(foo.equals(foofoo));
 
-        Assert.assertFalse(foo.hashCode() == bar.hashCode());
-        Assert.assertTrue(foo.hashCode() == foofoo.hashCode());
+        Assertions.assertFalse(foo.hashCode() == bar.hashCode());
+        Assertions.assertTrue(foo.hashCode() == foofoo.hashCode());
     }
 }

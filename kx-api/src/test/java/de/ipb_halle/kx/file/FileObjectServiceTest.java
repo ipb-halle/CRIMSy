@@ -14,8 +14,8 @@ import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -32,21 +32,21 @@ public class FileObjectServiceTest {
 
     private final int testId = 98765;
     private final static String FILE_DELETE = "DELETE FROM files WHERE id=98765";
-    
+
     // table constraints are relaxed for testing: collection_id is not required
     private final static String FILE_CREATE = "INSERT INTO files "
         + "(id, name, filename) VALUES "
         + " (98765, 'test_file.txt', '/tmp/no_such_file/98765')";
-    
+
     @Inject
     private FileObjectService fileObjectService;
-    
-    @Inject 
+
+    @Inject
     private EntityManagerService ems;
-    
+
     @Deployment
     public static WebArchive createDeployment() {
-        System.setProperty("log4j.configurationFile", "log4j2-test.xml");
+        // System.setProperty("log4j.configurationFile", "log4j2-test.xml");
 
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "FileObjectServiceTest.war")
                 .addClass(FileObjectService.class)
@@ -56,22 +56,22 @@ public class FileObjectServiceTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;
     }
-    
-    
+
+
     @BeforeEach
     public void init() {
         ems.getEntityManager().createNativeQuery(FILE_CREATE).executeUpdate();
     }
-    
+
     @AfterEach
     public void after() {
         ems.getEntityManager().createNativeQuery(FILE_DELETE).executeUpdate();
     }
-    
+
     @Test
     @Transactional
     public void test_loadByID() {
         FileObject fo = fileObjectService.loadFileObjectById(testId);
-        assertEquals("/tmp/no_such_file/98765", fo.getFileLocation()); 
+        Assertions.assertEquals("/tmp/no_such_file/98765", fo.getFileLocation());
     }
 }

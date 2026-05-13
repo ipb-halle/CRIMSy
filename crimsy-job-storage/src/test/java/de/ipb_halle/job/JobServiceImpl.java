@@ -23,6 +23,7 @@ import jakarta.ejb.Stateless;
 @Stateless
 public class JobServiceImpl extends JobService<TestJob> implements Serializable {
 
+    @Override
     protected TestJob buildJob(JobEntity e) {
         if (e != null) {
             return new TestJob(e);

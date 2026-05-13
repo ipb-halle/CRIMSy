@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import jakarta.inject.Inject;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -47,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
@@ -55,6 +55,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(PostgresqlContainerExtension.class)
 @ExtendWith(ArquillianExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) 
 public class TextWebServiceTest {
 
     // @Resource(name = "DefaultManagedExecutorService")
@@ -84,6 +85,7 @@ public class TextWebServiceTest {
                 .addAsResource("PostgresqlContainerSchemaFiles")
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+//                .addAsWebInfResource("web.xml", "web.xml");
         return archive;
     }
 
