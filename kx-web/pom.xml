@@ -135,6 +135,18 @@
         </plugins>
     </build>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <scope>import</scope>
+                <type>pom</type>
+                <version>${jakarta.platform.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <dependencies>
 
@@ -145,28 +157,66 @@
             <version>${commons-cli.version}</version>
         </dependency>
 
-        <!-- jakartaEE api-->
+        <!-- selected elements from jakarta.platform:jakarta.jakartaee-api -->
         <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>${jakarta.platform.version}</version>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+<!--        <version>3.1.0</version> -->
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+<!--        <version>2.1.0</version> -->
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.json.bind</groupId>
+            <artifactId>jakarta.json.bind-api</artifactId>
+<!--        <version>3.0.0</version> -->
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+<!--        <version>4.0.0</version> -->
             <scope>provided</scope>
         </dependency>
 
+        <!-- test ende -->
+
+
+
+  
+        <!-- Provided dependencies by the server -->
+        <!-- APIs for CDI (Contexts and Dependency Injection for Java)-->
 <!--
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>4.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+-->
+    
+        <!-- tomee JAX-RS -->
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>tomee-jaxrs</artifactId>
             <version>${tomee-jaxrs.version}</version>
+<!--            <scope>provided</scope> -->
         </dependency>
--->
+
         <!-- Servlet API -->
+<!--
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>6.1.0</version>
             <scope>provided</scope>
         </dependency>
+-->
 
 
         <!-- Logging: log4j 2 -->

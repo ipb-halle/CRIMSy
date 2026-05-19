@@ -158,7 +158,7 @@
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>tomee-jaxrs</artifactId>
-            <version>10.0.0</version>
+            <version>${tomee-jaxrs.version}</version>
             <scope>provided</scope>
         </dependency>
 

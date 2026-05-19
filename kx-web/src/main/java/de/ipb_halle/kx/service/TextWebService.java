@@ -27,15 +27,25 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name="TextWebService", urlPatterns = {"/process"}, asyncSupported = true)
-public class TextWebService extends HttpServlet {
-
+//@WebServlet(name="TextWebService", urlPatterns = {"/process"}, asyncSupported = true)
+@Path("process")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class TextWebService {
+    public final static String FILE_ID = "fileId";
+    
     private final static long serialVersionUID = 1L;
 
     private static IFileAnalyserFactory fileAnalyserFactory = new FileAnalyserFactory();
@@ -54,33 +64,16 @@ public class TextWebService extends HttpServlet {
     @Inject
     private TermVectorService termVectorService;
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        logger.info("doGet(): request received.");
-        try {
-            final PrintWriter out = resp.getWriter();
-            out.write(
-                    processRequest(req)
-                            .toString());
-        } catch (IOException e) {
-            logger.error(e);
-        }
+    @GET
+    public TextWebStatus doGet(
+        @QueryParam(FILE_ID) Integer fileId,
+        @QueryParam(TextWebRequestType.PARAMETER) TextWebRequestType type) {
+        if (type == TextWebRequestType.SUBMIT) {
+            return processSubmitRequest(fileId);
+        } 
+        return processQueryRequest(fileId);
     }
 
-    private TextWebStatus processRequest(HttpServletRequest req) {
-        try {
-            final TextWebRequestType requestType = TextWebRequestType.valueOf(req.getParameter(TextWebRequestType.PARAMETER));
-            final Integer fileId = Integer.parseInt(req.getParameter("fileId"));
-            if (requestType == TextWebRequestType.SUBMIT) {
-                return processSubmitRequest(fileId);
-            } else {
-                return processQueryRequest(fileId);
-            }
-        } catch (Exception e) {
-            logger.warn("processRequest() caught an exception:", (Throwable) e);
-        }
-        return TextWebStatus.PARAMETER_ERROR;
-    }
 
     private TextWebStatus processSubmitRequest(Integer fileId) {
         FileObject fileObj = fileObjectService.loadFileObjectById(fileId);

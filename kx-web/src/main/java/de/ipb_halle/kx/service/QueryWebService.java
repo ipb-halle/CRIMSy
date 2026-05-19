@@ -17,27 +17,29 @@
  */
 package de.ipb_halle.kx.service;
 
+import de.ipb_halle.kx.StemmingRequest;
+import de.ipb_halle.kx.StemmingResponse;
 import de.ipb_halle.tx.text.ParseTool;
 import de.ipb_halle.tx.text.TextRecord;
 import de.ipb_halle.tx.text.properties.Language;
 import de.ipb_halle.tx.text.properties.TextProperty;
 import de.ipb_halle.tx.text.properties.Word;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
-@WebServlet(urlPatterns = {"/query"})
-public class QueryWebService extends HttpServlet {
+@Path("query")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class QueryWebService {
 
     private final static long serialVersionUID = 1L;
 
@@ -45,38 +47,24 @@ public class QueryWebService extends HttpServlet {
 
     private final Logger logger = LogManager.getLogger(QueryWebService.class);
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        logger.info("doPost(): request received.");
-        try {
-            final PrintWriter out = resp.getWriter();
-            out.write(processRequest(req));
-        } catch (IOException e) {
-            logger.error("doPost() caught an exception:", (Throwable) e);
-        }
+
+    @POST
+    public Response query(StemmingRequest request) {
+        StemmingResponse response = stemmQuery(request);
+        return Response.ok(response).build();
     }
 
-    private String processRequest(HttpServletRequest req) {
-        StringBuilder query = new StringBuilder();
-        try (BufferedReader reader = req.getReader()) {
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                query.append(line);
-                query.append(" ");
-            }
-            return stemmQuery(query.toString());
-        } catch (Exception e) {
-            logger.warn("processRequest() caught an exception:", (Throwable) e);
-        }
-        return "Error";
-    }
-
-    public String stemmQuery(String queryString) {
-        TextRecord textRecord = setupTextRecord(queryString);
+    private StemmingResponse stemmQuery(StemmingRequest query) {
+        TextRecord textRecord = setupTextRecord(query.getText());
         textRecord = setupParseTool().parseSingleTextRecord(textRecord);
-        return getStemmedString(getSetOfWords(textRecord, queryString));
+        return createStemmingResponse(textRecord, query.getText());
     }
 
+    private StemmingResponse createStemmingResponse(TextRecord textRecord, String queryString) {
+        Set<String> stems = getSetOfWords(textRecord, queryString);
+        return new StemmingResponse(stems.toArray(new String[0]));
+    }
+/*
     private String getStemmedString(Set<String> words) {
         StringBuilder sb = new StringBuilder();
         AtomicReference<String> sep = new AtomicReference<>("");
@@ -86,7 +74,7 @@ public class QueryWebService extends HttpServlet {
         }
         return sb.toString();
     }
-
+*/
     private Set<String> getSetOfWords(TextRecord textRecord, String queryString) {
         Set<String> words = new HashSet<>();
         for (TextProperty prop : textRecord.getProperties(Word.TYPE)) {

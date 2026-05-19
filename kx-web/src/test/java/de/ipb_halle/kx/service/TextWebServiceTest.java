@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.kx.service;
 
+import de.ipb_halle.kx.StemmingResponse;
 import de.ipb_halle.test.ManagedExecutorServiceMock;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
 import de.ipb_halle.kx.file.FileObject;
@@ -30,6 +31,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -42,6 +48,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,6 +67,7 @@ public class TextWebServiceTest {
 
     // @Resource(name = "DefaultManagedExecutorService")
     // private ManagedExecutorService executor;
+    private final static String ENDPOINT = "/TextWebServiceTest/kx/process";
 
     @ArquillianResource
     URL baseURL;
@@ -78,6 +86,7 @@ public class TextWebServiceTest {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
 
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "TextWebServiceTest.war")
+                .addClass(KxApplication.class)
                 .addClass(FileObjectService.class)
                 .addClass(JobTracker.class)
                 .addClass(TermVectorService.class)
@@ -94,7 +103,7 @@ public class TextWebServiceTest {
         textWebService.setFileAnalyserFactory(new FileAnalyserFactoryMock());
         textWebService.setExecutorService(new ManagedExecutorServiceMock(2));
     }
-
+/*
     private String streamToString(InputStream inputStream) {
         try (ByteArrayOutputStream result = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[1024];
@@ -108,7 +117,8 @@ public class TextWebServiceTest {
         }
         return "";
     }
-
+*/
+    
     private FileObject createFileObject(String location) {
         FileObject fo = new FileObject();
         fo.setFileLocation(location);
@@ -116,6 +126,21 @@ public class TextWebServiceTest {
         return fileObjectService.save(fo);
     }
 
+
+    private TextWebStatus doRequest(Integer fileId, TextWebRequestType type) throws Exception {
+        try (Client client = ClientBuilder.newClient()) {
+            URL url = new URL(baseURL, ENDPOINT);
+            System.out.println(url.toExternalForm());
+            Response response = client.target(url.toURI())
+                    .queryParam(TextWebRequestType.PARAMETER, type.toString())
+                    .queryParam(TextWebService.FILE_ID, fileId)
+                    .request(MediaType.APPLICATION_JSON)
+                    .get(); 
+            Assertions.assertEquals(200, response.getStatus());
+            return response.readEntity(TextWebStatus.class);
+        }
+    }
+/*    
     private String doRequest(Integer fileId, TextWebRequestType type) throws IOException {
         // port number must match the arquillian setting
         HttpUriRequest request = new HttpGet(
@@ -129,20 +154,20 @@ public class TextWebServiceTest {
 
         return streamToString(response.getEntity().getContent());
     }
-
+*/
     @Test
     @RunAsClient
-    public void test001_TextWebService() throws IOException {
+    public void test001_TextWebService() throws Exception {
         FileObject fo = createFileObject("some_invalid_path");
 
-        String result = doRequest(-1, TextWebRequestType.SUBMIT);
-        assertEquals(TextWebStatus.NO_INPUT_ERROR.toString(), result, "error on invalid fileId");
+        TextWebStatus result = doRequest(-1, TextWebRequestType.SUBMIT);
+        assertEquals(TextWebStatus.NO_INPUT_ERROR, result, "error on invalid fileId");
 
         result = doRequest(fo.getId(), TextWebRequestType.QUERY);
-        assertEquals(TextWebStatus.NO_SUCH_JOB_ERROR.toString(), result, "error on non-existent job");
+        assertEquals(TextWebStatus.NO_SUCH_JOB_ERROR, result, "error on non-existent job");
 
         result = doRequest(fo.getId(), TextWebRequestType.SUBMIT);
-        assertEquals(TextWebStatus.BUSY.toString(), result, "successful job submission");
+        assertEquals(TextWebStatus.BUSY, result, "successful job submission");
 
         FileAnalyserMock mock = (FileAnalyserMock) jobTracker.getJob(fo.getId());
         mock.setStatus(TextWebStatus.DONE);
@@ -156,7 +181,7 @@ public class TextWebServiceTest {
                 new StemmedWordOrigin("kapsel", "kapselung"),
                 new StemmedWordOrigin("gefund", "gefunden")));
         result = doRequest(fo.getId(), TextWebRequestType.QUERY);
-        assertEquals(TextWebStatus.DONE.toString(), result, "successful job completion");
+        assertEquals(TextWebStatus.DONE, result, "successful job completion");
 
         assertNull((Object) jobTracker.getJob(fo.getId()), "job got removed");
     }

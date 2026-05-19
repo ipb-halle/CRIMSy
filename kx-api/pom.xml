@@ -129,7 +129,7 @@
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>tomee-jaxrs</artifactId>
-            <version>10.0.0</version>
+            <version>${tomee-jaxrs.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -242,12 +242,14 @@
         </dependency>
 
         <!-- fix JUnit5 for Arquillian -->
+<!--
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
             <version>10.0.0.Final</version>
             <scope>compile</scope>
         </dependency>
+-->
 
         <!-- creating virtual wars -->
         <dependency>

@@ -17,31 +17,26 @@
  */
 package de.ipb_halle.kx.service;
 
+import de.ipb_halle.kx.StemmingRequest;
+import de.ipb_halle.kx.StemmingResponse;
 import de.ipb_halle.testcontainers.PostgresqlContainerExtension;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import jakarta.inject.Inject;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -54,53 +49,44 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(ArquillianExtension.class)
 public class QueryWebServiceTest {
 
+    private final static String ENDPOINT = "/QueryWebServiceTest/kx/query";
+
     @ArquillianResource
     URL baseURL;
 
     @Inject
     private QueryWebService queryWebService;
-
+    
     @Deployment
     public static WebArchive createDeployment() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
 
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "QueryWebServiceTest.war")
                 .addClass(QueryWebService.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addClass(KxApplication.class);
         return archive;
     }
-
-    @BeforeEach
-    public void init() {
-    }
-
-    private String doRequest(String query) {
-        // port number must match the arquillian setting
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {;
-            HttpPost post = new HttpPost(
-                    new URL(
-                        baseURL, "query").toExternalForm());
-
-            HttpEntity entity = new ByteArrayEntity(query.getBytes("UTF-8"));
-            post.setEntity(entity);
-            HttpResponse response = client.execute(post);
-            String result = EntityUtils.toString(response.getEntity());
-
-            assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode(), "match HTTP status code");
-            return result;
-        } catch (Exception e) {
-            assertTrue(false, "unexpected exception");
+    
+    private StemmingResponse doRequest(StemmingRequest request) throws Exception {
+        try (Client client = ClientBuilder.newClient()) {
+            URL url = new URL(baseURL, ENDPOINT);
+            System.out.println(url.toExternalForm());
+            Response response = client.target(url.toURI())
+                    .request(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(request, MediaType.APPLICATION_JSON));
+            Assertions.assertEquals(200, response.getStatus());
+            return response.readEntity(StemmingResponse.class);
         }
-        return "";
     }
-
+    
     @Test
     @RunAsClient
-    public void test001_QueryWebService() throws IOException {
-
+    public void test001_QueryWebService() throws Exception {
+        StemmingRequest request = new StemmingRequest("Werkzeuge gebrauchen");
+        StemmingResponse response = doRequest(request);
         Set<String> expected = new HashSet<> (Arrays.asList("werkzeug", "gebrauch", "gebrauchen"));
-        Set<String> actual = new HashSet<> (Arrays.asList(doRequest("Werkzeuge gebrauchen").trim().split(" ")));
-        assertEquals(expected, actual);
+        Set<String> actual = new HashSet<> (Arrays.asList(response.getStems()));
+        Assertions.assertEquals(expected, actual);
 
     }
 }

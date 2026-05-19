@@ -22,6 +22,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
  http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+<!--
+        Get some help on transient dependencies:
+
+        mvn help:effective-pom
+        mvn dependency:tree
+
+-->
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.ipb-halle</groupId>
@@ -53,7 +61,7 @@
         <slf4j-api.version>1.7.30</slf4j-api.version>
 <!--    <testcontainers.version>1.16.3</testcontainers.version> -->
         <testcontainers.version>1.20.6</testcontainers.version>
-        <tomee-jaxrs.version>9.0.0</tomee-jaxrs.version>
+        <tomee-jaxrs.version>10.0.0</tomee-jaxrs.version>
     </properties>
 
     <modules>
@@ -112,11 +120,13 @@
                             <artifactId>dom4j</artifactId>
                             <version>2.1.4</version>
                         </artifactItem>
+<!--
                         <artifactItem>
                             <groupId>org.apache.myfaces.core</groupId>
                             <artifactId>myfaces-bundle</artifactId>
                             <version>4.0.0</version>
                         </artifactItem>
+-->
                         <artifactItem>
                             <groupId>org.hibernate.common</groupId>
                             <artifactId>hibernate-commons-annotations</artifactId>
@@ -228,6 +238,14 @@
                 <artifactId>crimsy-test</artifactId>
                 <version>${crimsy-test.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-bom</artifactId>
+                <scope>import</scope>
+                <type>pom</type>
+                <version>${jakarta.platform.version}</version>
             </dependency>
 
             <dependency>
