@@ -59,9 +59,9 @@
         <maven.surefire-plugin.version>3.1.2</maven.surefire-plugin.version>
         <postgresql.version>42.7.11</postgresql.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
-<!--    <testcontainers.version>1.16.3</testcontainers.version> -->
         <testcontainers.version>1.20.6</testcontainers.version>
         <tomee-jaxrs.version>10.0.0</tomee-jaxrs.version>
+        <tomee.version>10.0.1</tomee.version>
     </properties>
 
     <modules>
@@ -240,6 +240,7 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- Jakarta Platform BOM -->
             <dependency>
                 <groupId>jakarta.platform</groupId>
                 <artifactId>jakarta.jakartaee-bom</artifactId>
@@ -260,6 +261,16 @@
                 <version>${slf4j-api.version}</version>
             </dependency>
 
+            <!-- TomEE BOM -->
+            <dependency>
+                <groupId>org.apache.tomee.bom</groupId>
+                <artifactId>tomee-webprofile-api</artifactId>
+                <version>${tomee.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <!-- TestContainers BOM -->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>

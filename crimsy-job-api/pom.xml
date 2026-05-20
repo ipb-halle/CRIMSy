@@ -40,20 +40,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>      
     </properties>
 
-    <!-- define (additional) repositories -->
-<!--
-    <repositories>
-        <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>sonatype public</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-    </repositories>
--->
- 
     <build>
         <plugins>
 
@@ -98,17 +84,7 @@
     </build>
 
     <dependencies>
-
-        <!-- CRIMSy API -->
-<!--
-        <dependency>
-            <groupId>de.ipb-halle</groupId>
-            <artifactId>crimsy-api</artifactId>
-            <version>${crimsy-api.version}</version>
-        </dependency>
--->
                
-        <!-- Dependencies for testing -->
         <!-- unit testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -121,22 +97,19 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-api.version}</version>
         </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/org.apache.tomee/tomee-jaxrs -->
-        <dependency>
-            <groupId>org.apache.tomee</groupId>
-            <artifactId>tomee-jaxrs</artifactId>
-            <version>${tomee-jaxrs.version}</version>
-        </dependency>
-
         
         <!-- Jakarta XML bind -->
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
         </dependency>
+
+        <!-- JAX-RS / CXF via org.apache.tomee.bom:tomee-webprofile-api -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
