@@ -46,20 +46,6 @@
     </properties>
 
 
-    <!-- define (additional) repositories -->
-<!--
-    <repositories>
-        <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>sonatype public</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-    </repositories>
--->
- 
     <build>
         <plugins>
 
@@ -135,19 +121,6 @@
         </plugins>
     </build>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>jakarta.platform</groupId>
-                <artifactId>jakarta.jakartaee-api</artifactId>
-                <scope>import</scope>
-                <type>pom</type>
-                <version>${jakarta.platform.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-
     <dependencies>
 
         <!-- commons-cli -->
@@ -158,66 +131,39 @@
         </dependency>
 
         <!-- selected elements from jakarta.platform:jakarta.jakartaee-api -->
+        <!-- Provided by the server -->
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
-<!--        <version>3.1.0</version> -->
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
-<!--        <version>2.1.0</version> -->
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>jakarta.json.bind</groupId>
             <artifactId>jakarta.json.bind-api</artifactId>
-<!--        <version>3.0.0</version> -->
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
-<!--        <version>4.0.0</version> -->
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
-
-        <!-- test ende -->
-
-
 
   
-        <!-- Provided dependencies by the server -->
-        <!-- APIs for CDI (Contexts and Dependency Injection for Java)-->
-<!--
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>4.0.0</version>
-            <scope>provided</scope>
-        </dependency>
--->
-    
         <!-- tomee JAX-RS -->
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>tomee-jaxrs</artifactId>
             <version>${tomee-jaxrs.version}</version>
-<!--            <scope>provided</scope> -->
-        </dependency>
-
-        <!-- Servlet API -->
-<!--
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.1.0</version>
             <scope>provided</scope>
         </dependency>
--->
-
 
         <!-- Logging: log4j 2 -->
         <dependency>
@@ -233,7 +179,7 @@
             <version>${commons-csv.version}</version>
         </dependency>
 
-        <!-- kx -->
+        <!-- kx + tx -->
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>kx-api</artifactId>
@@ -258,6 +204,7 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.5</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
@@ -332,16 +279,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- keeps old JUnit4 tests functional -->
-<!--
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.8.2</version>
-            <scope>test</scope>
-        </dependency>
--->
-
         <!-- db for testing -->
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -368,16 +305,6 @@
             <version>1.7.0.Alpha6</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- fix JUnit5 for Arquillian -->
-<!--
-        <dependency>
-            <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
-            <version>10.0.0.Final</version>
-            <scope>test</scope>
-        </dependency>
--->
 
         <!-- creating virtual wars -->
         <dependency>
